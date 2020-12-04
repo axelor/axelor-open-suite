@@ -106,6 +106,10 @@
             <button name="createInvoiceBtn" title="Generate the invoice" onClick="action-supplychain-stock-move-method-generate-invoice" showIf="operationSelect &lt; 3"/>
 	    </panel>
     </form>
+    
+    <action-group name="action-stock-move-supplychain-group-partner-on-change">
+    	<action name="action-stock-move-supplychain-method-set-default-invoiced-partner"/>
+    </action-group>
 
     <action-method name="action-supplychain-stock-move-method-invoicing-wizard">
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="openInvoicingWizard"/>
@@ -145,6 +149,10 @@
 
 	<action-method name="action-stock-move-supplychain-method-set-invoiced-partner-domain">
 		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="setInvoicedPartnerDomain"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-supplychain-method-set-default-invoiced-partner">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="setDefaultInvoicedPartner"/>
 	</action-method>
 	
 	<action-validate name="action-validate-supplychain-outgoing-stock-move-check-selection">

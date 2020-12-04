@@ -22,4 +22,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 public interface SaleOrderSupplychainService {
 
   public void updateToConfirmedStatus(SaleOrder saleOrder);
+
+  public void setDefaultInvoicedAndDeliveredPartners(SaleOrder saleOrder);
 }

@@ -113,4 +113,14 @@ public class StockMoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setDefaultInvoicedPartner(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      Beans.get(StockMoveServiceSupplychain.class).setDefaultInvoicedPartner(stockMove);
+      response.setValues(stockMove);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

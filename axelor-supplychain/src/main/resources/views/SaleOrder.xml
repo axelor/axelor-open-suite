@@ -81,6 +81,22 @@
 		<action name="action-sale-order-record-interco"/>
 	</action-group>
 	
+	<action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
+		<action name="action-sale-order-supplychain-record-main-invoicing-address"/>
+		<action name="action-sale-order-method-address-str"/>
+	</action-group>
+	
+	<action-group name="action-group-sale-order-supplychain-set-delivery-address">
+		<action name="action-sale-order-supplychain-record-delivery-address"/>
+		<action name="action-sale-order-method-address-str"/>
+	</action-group>
+	
+	<action-group name="action-group-sale-order-supplychain-set-default-invoiced-delivered-partners-and-addresses">
+		<action name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners"/>
+		<action name="action-group-sale-order-supplychain-set-main-invoicing-address"/>
+		<action name="action-group-sale-order-supplychain-set-delivery-address"/>
+	</action-group>
+	
 	<action-group name="action-group-supplychain-saleorder-onload">
         <action name="action-group-sale-saleorder-onload"/>
 		<action name="action-sale-order-attrs-interco"/>
@@ -137,6 +153,14 @@
     <field name="stockLocation" expr="eval: company?.stockConfig?.directOrderStockLocation" if="directOrderLocation"/>
     <field name="stockLocation" expr="eval: null" if="!directOrderLocation"/>
   </action-record>
+
+	<action-record name="action-sale-order-supplychain-record-main-invoicing-address" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="mainInvoicingAddress" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(invoicedPartner)" if="invoicedPartner != null"/>
+	</action-record>
+	
+	<action-record name="action-sale-order-supplychain-record-delivery-address" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(deliveredPartner)" if="deliveredPartner != null"/>
+	</action-record>
 
 	<action-attrs name="action-sale-order-attrs-interco">
 		<attribute for="interco" name="hidden"
@@ -247,4 +271,8 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateStockReservationDate"/>
 	</action-method>
 
+	<action-method name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setDefaultInvoicedAndDeliveredPartners"/>
+	</action-method>
+	
 </object-views>

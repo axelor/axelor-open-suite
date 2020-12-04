@@ -649,6 +649,10 @@
 	   	<action name="action-stock-move-record-partner-shipment-informations"/>
 	   	<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1"/>
 		<action name="action-stock-move-record-set-group-product-on-printing"/>
+		<action name="action-stock-move-record-set-address-from-partner"/>
+    	<action name="action-stock-move-method-set-addresses-str"/>
+		<action name="action-stock-move-supplychain-group-partner-on-change"
+				if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
     <action-group name="action-stock-move-group-onchange-company">
@@ -807,6 +811,10 @@
 	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null" name="toStockLocation" expr="eval:company?.getStockConfig()?.getReceiptDefaultStockLocation()"/>
 	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null" name="fromStockLocation" expr="eval:company?.getStockConfig()?.getSupplierVirtualStockLocation()"/>
 	    <field name="fromStockLocation,toStockLocation" expr="eval: null" if="company == null"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-set-address-from-partner" model="com.axelor.apps.stock.db.StockMove">
+		<field name="toAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(partner)" if="partner != null"/>
 	</action-record>
 
 	<action-method name="action-stock-move-method-plan">
