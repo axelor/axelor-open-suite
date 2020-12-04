@@ -544,7 +544,6 @@ public class StockMoveController {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       Beans.get(StockMoveService.class)
           .updateStocks(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
