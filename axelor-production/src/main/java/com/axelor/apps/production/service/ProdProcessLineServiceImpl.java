@@ -85,6 +85,7 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
   public void copyWorkCenterGroup(
       ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup) {
     WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
+    workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
     workCenterGroupCopy.setTemplate(false);
     Beans.get(WorkCenterGroupRepository.class).save(workCenterGroupCopy);
     workCenterGroup
