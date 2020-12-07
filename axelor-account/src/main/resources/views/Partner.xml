@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<form id="account-partner-form" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" extension="true">
-		<extend target="//panel[@name='assignedToPanel']">
+	<form id="account-incl-invoice-payment-partner-form" name="incl-invoice-payment-partner-form" title="Partner"
+				model="com.axelor.apps.base.db.Partner"
+				extension="true">
+		<extend target="//panel[@name='showInvoicesPanel']">
 			<insert position="after">
-				<panel name="birtTemplatesPanel" title="Birt Templates">
-					<field name="invoiceBirtTemplate" domain="self.metaModel.name = 'Invoice'"/>
-				</panel>
+				<field name="invoiceBirtTemplate" domain="self.metaModel.name = 'Invoice'"/>
 			</insert>
 		</extend>
 	</form>
