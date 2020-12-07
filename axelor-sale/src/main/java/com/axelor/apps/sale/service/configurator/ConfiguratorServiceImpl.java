@@ -320,7 +320,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   public boolean areCompatible(String targetClassName, String fromClassName) {
     return targetClassName.equals(fromClassName)
         || (targetClassName.equals("BigDecimal") && fromClassName.equals("Integer"))
-        || (targetClassName.equals("BigDecimal") && fromClassName.equals("String"));
+        || (targetClassName.equals("BigDecimal") && fromClassName.equals("String"))
+        || (targetClassName.equals("String") && fromClassName.equals("GStringImpl"));
   }
 
   /**
