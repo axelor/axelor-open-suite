@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -43,5 +44,6 @@ public interface ProductTaskTemplateService {
       TeamTask parent,
       LocalDateTime startDate,
       BigDecimal qty,
-      SaleOrderLine saleOrderLine);
+      SaleOrderLine saleOrderLine)
+      throws AxelorException;
 }

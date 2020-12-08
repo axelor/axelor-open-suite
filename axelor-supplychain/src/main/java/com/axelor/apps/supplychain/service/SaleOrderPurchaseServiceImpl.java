@@ -50,14 +50,14 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
-  protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
+  protected PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain;
 
   @Inject
   public SaleOrderPurchaseServiceImpl(
       PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
-      PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl) {
+      PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychain) {
     this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
-    this.purchaseOrderLineServiceSupplychainImpl = purchaseOrderLineServiceSupplychainImpl;
+    this.purchaseOrderLineServiceSupplychain = purchaseOrderLineServiceSupplychain;
   }
 
   @Override
@@ -129,7 +129,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
                 ? saleOrder.getStockLocation()
                 : Beans.get(StockLocationService.class)
                     .getDefaultReceiptStockLocation(saleOrder.getCompany()),
-            Beans.get(AppBaseService.class).getTodayDate(),
+            Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
             supplierPartner,
@@ -150,7 +150,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       purchaseOrder.addPurchaseOrderLineListItem(
-          purchaseOrderLineServiceSupplychainImpl.createPurchaseOrderLine(
+          purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
               purchaseOrder, saleOrderLine));
     }
 

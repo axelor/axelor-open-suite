@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent" title="Events" orderBy="-startDateTime">
         <field name="calendar"/>
@@ -47,17 +47,17 @@
 	            <field name="description" colSpan="12" widget="html" showTitle="false"/>
 	        </panel>
 	        <panel title="Organization" name="organizationPanel">
-	            <field name="location"/>
 	            <field name="geo"/>
 	            <field name="user"/>
 	            <field name="organizer"/>
+	            <field name="location" colSpan="12"/>
 	        </panel>
 	        <panel title="Information" name="informationPanel">
 	            <field name="typeSelect"/>
-	            <field name="subjectTeam"/>
 	            <field name="visibilitySelect"/>
 	            <field name="disponibilitySelect"/>
 	            <field name="status"/>
+	            <field name="subjectTeam" colSpan="12"/>
 	        </panel>
         </panel-tabs>
         <panel name="addGuestsPanel" title="Add Guests" sidebar="true">

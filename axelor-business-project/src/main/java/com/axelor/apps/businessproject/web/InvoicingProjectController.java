@@ -37,7 +37,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @Singleton
 public class InvoicingProjectController {
@@ -99,7 +99,8 @@ public class InvoicingProjectController {
           ActionView.define(I18n.get("Invoice"))
               .model(Invoice.class.getName())
               .add("grid", "invoice-grid")
-              .add("form", "invoice-form");
+              .add("form", "invoice-form")
+              .param("search-filters", "customer-invoices-filters");
       response.setReload(true);
       response.setView(
           (ids.contains(","))

@@ -45,14 +45,9 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import javax.persistence.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected SequenceService sequenceService;
   protected PartnerRepository partnerRepo;
@@ -127,9 +122,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   @Transactional(
-    rollbackOn = {Exception.class},
-    ignore = {BlockedSaleOrderException.class}
-  )
+      rollbackOn = {Exception.class},
+      ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
     Partner partner = saleOrder.getClientPartner();
 
@@ -206,6 +200,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
     ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder) + "-${date}")
         .addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
+        .addParam(
+            "Timezone",
+            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())

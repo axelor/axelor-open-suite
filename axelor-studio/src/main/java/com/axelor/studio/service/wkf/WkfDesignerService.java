@@ -20,14 +20,19 @@ package com.axelor.studio.service.wkf;
 import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.db.WkfTransition;
 import com.axelor.studio.db.repo.WkfNodeRepository;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.db.repo.WkfTransitionRepository;
+import com.axelor.studio.exception.IExceptionMessage;
+import com.axelor.studio.web.WkfController;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -42,6 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -91,12 +97,17 @@ public class WkfDesignerService {
    * node.
    *
    * @param doc
+   * @throws AxelorException
    */
-  public void traverseXMLElement(Document doc) {
+  public void traverseXMLElement(Document doc) throws AxelorException {
 
     nodeSequences = new ArrayList<>();
 
     NodeList list = doc.getElementsByTagName("*");
+
+    List<Option> oldSeqenceOptions =
+        Beans.get(WkfController.class).getSelect(instance.getStatusMetaField());
+    int oldSequenceCounter = 0;
 
     int nodeCount = 1;
 
@@ -124,12 +135,17 @@ public class WkfDesignerService {
         while (nodeSequences.contains(nodeCount)) {
           nodeCount += 10;
         }
-        node.setSequence(nodeCount);
+        node.setSequence(
+            !CollectionUtils.isEmpty(oldSeqenceOptions)
+                ? Integer.parseInt(oldSeqenceOptions.get(oldSequenceCounter).getValue())
+                : nodeCount);
         nodeCount += 10;
+        oldSequenceCounter++;
         if (elementName.equals("startEvent")) node.setNodeType(WkfNodeRepository.START_NODE);
         else if (elementName.equals("endEvent")) node.setNodeType(WkfNodeRepository.END_NODE);
       } else {
         node.setName(element.getAttribute("name"));
+        node.setTitle(node.getName());
         nodeMap.remove(node.getXmlId());
       }
 
@@ -173,6 +189,21 @@ public class WkfDesignerService {
       }
       nodes.add(node);
     }
+
+    if (!CollectionUtils.isEmpty(oldSeqenceOptions) && oldSeqenceOptions.size() != nodes.size()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.CANNOT_ALTER_NODES);
+    }
+
+    oldSequenceCounter = 0;
+    for (WkfNode node : nodes) {
+      if (!CollectionUtils.isEmpty(oldSeqenceOptions)
+          && !oldSeqenceOptions.get(oldSequenceCounter).getTitle().equals(node.getTitle())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.CANNOT_ALTER_NODES);
+      }
+      oldSequenceCounter++;
+    }
   }
 
   private Map<String, WkfNode> getNodeMap() {
@@ -180,7 +211,7 @@ public class WkfDesignerService {
     WkfNodeRepository wkfNodeRepository = Beans.get(WkfNodeRepository.class);
 
     Map<String, WkfNode> nodeMap = new HashMap<>();
-    if (instance != null) {
+    if (instance.getId() != null) {
       List<WkfNode> wkfNodes =
           wkfNodeRepository.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
       for (WkfNode node : wkfNodes) {
@@ -197,7 +228,7 @@ public class WkfDesignerService {
     WkfTransitionRepository wkfTransitionRepo = Beans.get(WkfTransitionRepository.class);
 
     Map<String, WkfTransition> transitionMap = new HashMap<>();
-    if (instance != null) {
+    if (instance.getId() != null) {
       List<WkfTransition> wkfTransitions =
           wkfTransitionRepo.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
       for (WkfTransition transition : wkfTransitions) {
@@ -216,11 +247,11 @@ public class WkfDesignerService {
    * @throws ParserConfigurationException
    * @throws IOException
    * @throws SAXException
-   * @throws Exception
+   * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
   public Wkf processXml(Wkf instance)
-      throws ParserConfigurationException, SAXException, IOException {
+      throws ParserConfigurationException, SAXException, IOException, AxelorException {
 
     this.instance = instance;
     String bpmnXml = instance.getBpmnXml();
@@ -257,7 +288,7 @@ public class WkfDesignerService {
 
       List<WkfNode> allRemoveNodes = instance.getNodes();
 
-      if (!allRemoveNodes.isEmpty()) {
+      if (CollectionUtils.isNotEmpty(allRemoveNodes)) {
         for (WkfNode tempNode : allRemoveNodes) {
           tempNode.getIncoming().clear();
           tempNode.getOutgoing().clear();

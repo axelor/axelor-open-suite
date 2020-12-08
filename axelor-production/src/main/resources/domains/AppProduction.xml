@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -18,7 +18,7 @@
  		
  		<boolean name="manageResidualProductOnBom" title="Manage residual products on BOM"/>
  		<boolean name="subtractProdResidualOnCostSheet" title="Subtract the product residuals cost on Cost sheet"/>
- 		<boolean name="manageBillOfMaterialVersion" title="Manage bill of material versions" />
+ 		<boolean name="manageBillOfMaterialVersion" title="Manage bill of materials versions" />
  		<boolean name="manageProdProcessVersion" title="Manage production process versions" />
  		<boolean name="manageCostSheetGroup" title="Manage cost sheet group"/>
 

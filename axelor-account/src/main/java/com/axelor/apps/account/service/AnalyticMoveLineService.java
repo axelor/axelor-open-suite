@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,4 +44,7 @@ public interface AnalyticMoveLineService {
       AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
 
   public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList);
+
+  @CallMethod
+  boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticDistributionLineList);
 }

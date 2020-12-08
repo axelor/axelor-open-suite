@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
   
   <grid name="wkf-node-grid" title="Node" model="com.axelor.studio.db.WkfNode" canMove="true" orderBy="sequence">
        <field name="name"/>
@@ -16,10 +16,28 @@
         <field name="nodeType" readonly="true" widget="RadioSelect" />
         <field name="sequence"/>
       </panel>
+      <panel name="menuPanel">
+    	<field name="isGenerateMenu" onChange="action-wkf-node-group-isgeneratemenu-onchange"/>
+    	<field name="menuBuilder" showIf="isGenerateMenu" colSpan="12" showTitle="false" requiredIf="isGenerateMenu">
+	    	<editor>
+		    	<field name="title" title="Menu title"/>
+		    	<field name="parentMenu" domain="self.action IS NULL"/>
+	    	</editor>
+    	</field>
+      </panel>
       <panel-related name="metaActionSetPanel" field="metaActionSet" colSpan="12" orderBy="sequence" canMove="true"/>
       <panel-related name="roleSetPanel" field="roleSet" colSpan="12" />
       <panel-related name="incomingPanel" field="incoming" colSpan="12" readonly="true" />
       <panel-related name="outgoingPanel" field="outgoing" colSpan="12"  readonly="true" />
   </form>
+
+  <action-method name="action-wkf-node-method-isgeneratemenu-onchange">
+  	<call class="com.axelor.studio.web.WkfNodeController" method="removeMenuBuilder"/>
+  </action-method>
+
+  <action-group name="action-wkf-node-group-isgeneratemenu-onchange">
+    <action if="id != null &amp;&amp; !isGenerateMenu" name="save"/>
+  	<action if="id != null &amp;&amp; menuBuilder != null" name="action-wkf-node-method-isgeneratemenu-onchange"/>
+  </action-group>
   
 </object-views>

@@ -148,6 +148,11 @@ public class BankOrderController {
         ReportFactory.createReport(IReport.BANK_ORDER, name + "-${date}")
             .addParam("BankOrderId", bankOrder.getId())
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                bankOrder.getSenderCompany() != null
+                    ? bankOrder.getSenderCompany().getTimezone()
+                    : null)
             .generate()
             .getFileLink();
 
@@ -264,5 +269,19 @@ public class BankOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setStatusCorrect(ActionRequest request, ActionResponse response) {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
+    Beans.get(BankOrderService.class).setStatusToDraft(bankOrder);
+    response.setReload(true);
+  }
+
+  public void setStatusReject(ActionRequest request, ActionResponse response) {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
+    Beans.get(BankOrderService.class).setStatusToRejected(bankOrder);
+    response.setReload(true);
   }
 }

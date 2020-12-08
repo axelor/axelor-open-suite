@@ -10,7 +10,6 @@
 "axelor-base";"Partner";"partner-customer-form";"saleOrderInformation";"Free-text box for additional information about the Customer partner's orders. "
 "axelor-base";"Partner";"partner-customer-form";"purchaseOrderInformation";"Free-text box for additional information regarding orders placed with the Supplier partner. "
 "axelor-base";"Product";"product-form";"isActivity";"Only for ""Service"" products, check this box if this product is to be listed as an accessible activity in the HR module timesheets. Il will then be possible to invoice it for business projects. "
-"axelor-base";"Product";"product-form";"isPack";"This box indicates whether the product is a pack that is made up of several other products. The option to manage the packages must be activated beforehand in the configurations of the ""Sales"" application for this box to be visible."
 "axelor-base";"Product";"product-form";"saleSupplySelect";"Default product procurement method in case of a sale, not to be confused with replenishment (when the minimum stock quantity is reached). The product can be supplied through purchase, production, or, in most cases, deduction from the stock. "
 "axelor-base";"Product";"product-form";"unit";"Enables to select the product's default management unit (in most cases, the inventory unit). "
 "axelor-base";"Product";"product-form";"salesUnit";"Allows you to select a sales unit for this product, for example if it is sold in a different unit than the storage unit (for example a product stored in tons and sold per kilo)."

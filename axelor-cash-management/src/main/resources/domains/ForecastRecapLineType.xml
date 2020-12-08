@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  
+  <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
+  
+  <entity name="ForecastRecapLineType" lang="java">
+ 
+    <integer name="sequence" title="Sequence"/>
+    <integer name="elementSelect" title="Element" selection="forecast.recap.line.type.element.select"></integer>
+	<integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type"/>
+    <integer name="operationTypeSelect" title="Operation type" selection="iinvoice.operation.type.select"/>  
+    <integer name="payDaySelect" title="Pay Day" selection="forecast.recap.line.type.pay.day.select"/>
+    <string name="statusSelect" title="Statuses to take into account" />
+    <integer name="estimatedDuration" title="Estimated duration after order creation (in days)" min="0"/>
+    <string name="name" title="Name"/>
+	<extra-code><![CDATA[
+  
+      // ELEMENT SELECT
+      public static final int ELEMENT_INVOICE = 1;  // Invoice
+      public static final int ELEMENT_SALE_ORDER = 2;  // Sale Order
+      public static final int ELEMENT_PURCHASE_ORDER = 3;  // Purchase Order
+      public static final int ELEMENT_EXPENSE = 4;  // Expense
+      public static final int ELEMENT_FORECAST = 5;  // Forecast
+      public static final int ELEMENT_OPPORTUNITY = 6;  // Opportunity
+      public static final int ELEMENT_SALARY = 7;  // Salary   
+            
+  ]]></extra-code>
+    <track>
+      <field name="typeSelect"/>
+      <field name="elementSelect"/>
+      <field name="statusSelect"/>
+      <field name="operationTypeSelect"/>
+      <message if="true" on="UPDATE">Forecast recap line type updated.</message>
+    </track>
+  </entity>
+  
+</domain-models>

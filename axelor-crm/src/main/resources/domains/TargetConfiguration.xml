@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -15,7 +15,7 @@
 <!-- Opportunity -->
     <decimal name="opportunityAmountWon" title="Amount Won"/>
     <integer name="opportunityCreatedNumber" title="Created Nbr"/>
-    <integer name="opportunityCreatedWon" title="Created Won"/>
+    <integer name="opportunityCreatedWon" title="Closed Won"/>
     
 <!-- Sales order -->
 <!-- 	<decimal name="saleOrderAmountWon" title="Amount won"/> -->
@@ -28,8 +28,8 @@
     
     <integer name="periodTypeSelect" title="Period type" selection="crm.target.configuration.period.type.select"/>
     
-    <date name="fromDate" title="Date from" required="true"/>
-    <date name="toDate" title="Date to" required="true"/>
+    <date name="fromDate" title="Starting Date" required="true"/>
+    <date name="toDate" title="End date" required="true"/>
     
  	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     

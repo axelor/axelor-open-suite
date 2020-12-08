@@ -163,9 +163,9 @@ public class StockMoveController {
             (List)
                 (((List) context.get("_ids"))
                     .stream()
-                    .filter(ObjectUtils::notEmpty)
-                    .map(input -> Long.parseLong(input.toString()))
-                    .collect(Collectors.toList()));
+                        .filter(ObjectUtils::notEmpty)
+                        .map(input -> Long.parseLong(input.toString()))
+                        .collect(Collectors.toList()));
         fileLink = stockMovePrintService.printStockMoves(ids);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
@@ -208,9 +208,9 @@ public class StockMoveController {
             (List)
                 (((List) context.get("_ids"))
                     .stream()
-                    .filter(ObjectUtils::notEmpty)
-                    .map(input -> Long.parseLong(input.toString()))
-                    .collect(Collectors.toList()));
+                        .filter(ObjectUtils::notEmpty)
+                        .map(input -> Long.parseLong(input.toString()))
+                        .collect(Collectors.toList()));
         fileLink = pickingstockMovePrintService.printStockMoves(ids, userType);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
@@ -255,9 +255,9 @@ public class StockMoveController {
             (List)
                 (((List) context.get("_ids"))
                     .stream()
-                    .filter(ObjectUtils::notEmpty)
-                    .map(input -> Long.parseLong(input.toString()))
-                    .collect(Collectors.toList()));
+                        .filter(ObjectUtils::notEmpty)
+                        .map(input -> Long.parseLong(input.toString()))
+                        .collect(Collectors.toList()));
         fileLink = conformityCertificatePrintService.printConformityCertificates(ids);
         title = I18n.get("Conformity Certificates");
       } else if (context.get("id") != null) {
@@ -372,6 +372,7 @@ public class StockMoveController {
                 .model(StockMove.class.getName())
                 .add("grid", "stock-move-grid")
                 .add("form", "stock-move-form")
+                .param("search-filters", "internal-stock-move-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(reversion.get().getId()))
                 .map());
@@ -401,6 +402,7 @@ public class StockMoveController {
                 .model(StockMove.class.getName())
                 .add("grid", "stock-move-grid")
                 .add("form", "stock-move-form")
+                .param("search-filters", "internal-stock-move-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(newStockMove.getId()))
                 .map());
@@ -542,7 +544,6 @@ public class StockMoveController {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       Beans.get(StockMoveService.class)
           .updateStocks(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 
@@ -8,7 +8,7 @@
 		<string name="name" title="Control point name" required="true"/>
 		<integer name="sequence" title="Sequence"/>
 		<decimal name="controlFrequency" title="Control Frequency"/>
-		<string name="notes" title="Notes"/>
+		<string name="notes" title="Notes" large="true"/>
 		<many-to-one name="qualityProcess" title="counter" ref="QualityProcess"/>
 		<many-to-one name="optionalQualityProcess" ref="QualityProcess"/>
 		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint"/>

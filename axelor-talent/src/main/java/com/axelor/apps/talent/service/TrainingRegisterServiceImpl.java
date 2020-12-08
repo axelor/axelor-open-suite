@@ -19,16 +19,21 @@ package com.axelor.apps.talent.service;
 
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +108,8 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     List<TrainingRegister> trainingTrs = trainingRegisterRepo.all().filter(query, training).fetch();
 
-    long totalTrainingsRating = trainingTrs.stream().mapToLong(tr -> tr.getRatingSelect()).sum();
+    long totalTrainingsRating =
+        trainingTrs.stream().mapToLong(tr -> tr.getRating().longValue()).sum();
     int totalTrainingSize = trainingTrs.size();
 
     log.debug("Training: {}", training.getName());
@@ -114,7 +120,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     log.debug("Avg training rating : {}", avgRating);
 
-    training.setRating(new BigDecimal(avgRating));
+    training.setRating(BigDecimal.valueOf(avgRating));
 
     return trainingRepo.save(training);
   }
@@ -130,14 +136,15 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     List<TrainingRegister> sessionTrs = trainingRegisterRepo.all().filter(query, session).fetch();
 
-    long totalSessionsRating = sessionTrs.stream().mapToLong(tr -> tr.getRatingSelect()).sum();
+    long totalSessionsRating =
+        sessionTrs.stream().mapToLong(tr -> tr.getRating().longValue()).sum();
     int totalSessionSize = sessionTrs.size();
 
     double avgRating = totalSessionSize == 0 ? 0 : totalSessionsRating / totalSessionSize;
 
     log.debug("Avg session rating : {}", avgRating);
 
-    session.setRating(new BigDecimal(avgRating));
+    session.setRating(BigDecimal.valueOf(avgRating));
     session.setNbrRegistered(totalSessionSize);
 
     return trainingSessionRepo.save(session);
@@ -184,5 +191,44 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
         + trainingRegister.getFromDate().format(formatter)
         + "-"
         + trainingRegister.getToDate().format(formatter);
+  }
+
+  @Override
+  @Transactional
+  public String massTrainingRegisterCreation(
+      ArrayList<LinkedHashMap<String, Object>> employeeList, TrainingSession trainingSession) {
+
+    List<Long> eventsIds = new ArrayList<>();
+
+    for (LinkedHashMap<String, Object> employeeMap : employeeList) {
+
+      Employee employee =
+          Beans.get(EmployeeRepository.class)
+              .find(Long.parseLong(employeeMap.get("id").toString()));
+
+      if (employee.getUser() == null) {
+        continue;
+      }
+
+      TrainingRegister trainingRegister = new TrainingRegister();
+      trainingRegister.setTraining(trainingSession.getTraining());
+      trainingRegister.setFromDate(trainingSession.getFromDate());
+      trainingRegister.setToDate(trainingSession.getToDate());
+      trainingRegister.setTrainingSession(trainingSession);
+      trainingRegister.setEmployee(employee);
+      trainingRegister.setRating(trainingSession.getOverallRatingToApply());
+
+      Event event = this.plan(trainingRegister);
+
+      trainingRegister.getEventList().add(event);
+
+      eventsIds.add(event.getId());
+
+      trainingSession.getTrainingRegisterList().add(trainingRegister);
+    }
+
+    Beans.get(TrainingSessionRepository.class).save(trainingSession);
+
+    return eventsIds.toString().replace("[", "(").replace("]", ")");
   }
 }

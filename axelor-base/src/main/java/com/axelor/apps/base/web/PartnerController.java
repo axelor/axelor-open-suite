@@ -51,6 +51,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -61,6 +62,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -105,6 +107,7 @@ public class PartnerController {
     String fileLink =
         ReportFactory.createReport(IReport.PARTNER, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(partner))
+            .addParam("Timezone", getTimezone(partner.getUser()))
             .addParam("PartnerId", partner.getId())
             .generate()
             .getFileLink();
@@ -132,6 +135,7 @@ public class PartnerController {
     String fileLink =
         ReportFactory.createReport(IReport.PHONE_BOOK, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam("Timezone", getTimezone(user))
             .addParam("UserId", user.getId())
             .generate()
             .getFileLink();
@@ -159,6 +163,7 @@ public class PartnerController {
     String fileLink =
         ReportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam("Timezone", getTimezone(user))
             .addParam("UserId", user.getId())
             .generate()
             .getFileLink();
@@ -185,6 +190,7 @@ public class PartnerController {
     String fileLink =
         ReportFactory.createReport(IReport.CLIENT_SITUATION, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(partner))
+            .addParam("Timezone", getTimezone(user))
             .addParam("UserId", user.getId())
             .addParam("PartnerId", partner.getId())
             .addParam(
@@ -198,6 +204,13 @@ public class PartnerController {
     LOG.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  private String getTimezone(User user) {
+    if (user == null || user.getActiveCompany() == null) {
+      return null;
+    }
+    return user.getActiveCompany().getTimezone();
   }
 
   @CallMethod
@@ -241,9 +254,22 @@ public class PartnerController {
   }
 
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
-    Partner contact =
-        Beans.get(PartnerRepository.class).find(request.getContext().asType(Partner.class).getId());
-    Beans.get(PartnerService.class).addContactToPartner(contact);
+    try {
+      final Context context = request.getContext();
+      final Partner contact = context.asType(Partner.class);
+      final Context parentContext = context.getParent();
+
+      if (parentContext != null
+          && Partner.class.isAssignableFrom(parentContext.getContextClass())
+          && Objects.equals(parentContext.asType(Partner.class), contact.getMainPartner())) {
+        return;
+      }
+
+      Beans.get(PartnerService.class)
+          .addContactToPartner(Beans.get(PartnerRepository.class).find(contact.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void findContactMails(ActionRequest request, ActionResponse response) {
@@ -360,8 +386,8 @@ public class PartnerController {
       Partner partnerArchived =
           Beans.get(PartnerService.class).isThereDuplicatePartnerInArchive(partner);
       if (partnerArchived != null) {
-        response.setValue("duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
-        response.setAttr("duplicatePartnerInArchiveText", "hidden", false);
+        response.setValue("$duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
+        response.setAttr("$duplicatePartnerInArchiveText", "hidden", false);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

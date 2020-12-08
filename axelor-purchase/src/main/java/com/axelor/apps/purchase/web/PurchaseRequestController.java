@@ -79,8 +79,7 @@ public class PurchaseRequestController {
                 .filter("self.id in (?1)", requestIds)
                 .fetch();
         List<String> purchaseRequestSeqs =
-            purchaseRequests
-                .stream()
+            purchaseRequests.stream()
                 .filter(pr -> pr.getSupplierUser() == null)
                 .map(PurchaseRequest::getPurchaseRequestSeq)
                 .collect(Collectors.toList());
@@ -101,6 +100,7 @@ public class PurchaseRequestController {
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-quotation-grid")
                 .add("form", "purchase-order-form")
+                .param("search-filters", "purchase-order-filters")
                 .context("_showSingle", true)
                 .domain(
                     String.format(

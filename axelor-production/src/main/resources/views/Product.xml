@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-   <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product">
+   <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product"
+   		 onNew="action-product-attrs-scale-and-precision-production" onLoad="action-product-attrs-scale-and-precision-production">
        <panel name="mainPanel" colSpan="12">
             <field name="costSheetGroup" showIf="productSubTypeSelect == 3" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
             <field name="economicManufOrderQty"/>
@@ -26,7 +27,7 @@
 	
 	<action-view name="action-product-view-show-used-bill-of-material" title="Where-used list" 
 		model="com.axelor.apps.production.db.BillOfMaterial">
-		<view type="grid" name="bill-of-material-grid"/>
+		<view type="grid" name="product-bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
 		<domain>self.billOfMaterialSet.product.id = :id</domain>
 	</action-view>
@@ -46,6 +47,7 @@
     
     <action-attrs name="action-product-attrs-scale-and-precision-production" if-module="axelor-production">
 		<attribute name="scale" for="lastProductionPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()" />
+		<attribute name="scale" for="economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 
     <action-method name="action-method-production-building-quantity-product">

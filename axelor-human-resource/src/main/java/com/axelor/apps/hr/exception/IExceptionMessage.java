@@ -21,7 +21,7 @@ package com.axelor.apps.hr.exception;
 public interface IExceptionMessage {
 
   static final String HR_CONFIG = /*$$(*/
-      "Please configure informations for human resources for the company %s" /*)*/;
+      "Please configure information for human resources for the company %s" /*)*/;
   static final String HR_CONFIG_EXPENSE_TYPE = /*$$(*/
       "Please configure the expense type for kilometric allowance in HR config for the company %s" /*)*/;
   static final String HR_CONFIG_SENT_EXPENSE_TEMPLATE = /*$$(*/
@@ -115,6 +115,8 @@ public interface IExceptionMessage {
   static final String EMPLOYEE_NO_SENIORITY_DATE = /*$$(*/
       "The employee %s has no seniority date" /*)*/;
   static final String EMPLOYEE_NO_BIRTH_DATE = /*$$(*/ "The employee %s has no birth date" /*)*/;
+  static final String CONTACT_CANNOT_DELETE = /*$$(*/
+      "This contact is referenced from employee %s - %s" /*)*/;
 
   static final String BATCH_LEAVE_MANAGEMENT_ENDING_0 = /*$$(*/
       "Employees' leaves attempted to be computed : %s" /*)*/;
@@ -155,6 +157,15 @@ public interface IExceptionMessage {
 
   static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/
       "There is no year for society %s which includes date %s" /*)*/;
+
+  static final String KILOMETRIC_LOG_NO_CIVIL_YEAR = /*$$(*/
+      "There is no civil year for society %s which includes date %s" /*)*/;
+
+  static final String KILOMETRIC_LOG_NO_FISCAL_YEAR = /*$$(*/
+      "There is no fiscal year for society %s which includes date %s" /*)*/;
+
+  static final String KILOMETRIC_LOG_NO_PAYROLL_YEAR = /*$$(*/
+      "There is no payroll for society %s which includes date %s" /*)*/;
 
   static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/
       "There is no matching condition for the allowance %s" /*)*/;
@@ -208,4 +219,7 @@ public interface IExceptionMessage {
 
   static final String EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE = /*$$(*/
       "Please configure the template for email reminder" /*)*/;
+
+  static final String NO_TIMESHEET_FOUND_FOR_EMPLOYEE = /*$$(*/
+      "No time sheet found for employee %s" /*)*/;
 }

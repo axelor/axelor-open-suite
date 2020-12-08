@@ -18,7 +18,10 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -27,20 +30,26 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
+public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
+    implements InvoiceServiceProject {
 
   @Inject
   public InvoiceServiceProjectImpl(
@@ -52,7 +61,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      MoveToolService moveToolService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -62,7 +72,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
         appAccountService,
         partnerService,
         invoiceLineService,
-        accountConfigService);
+        accountConfigService,
+        moveToolService);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)
@@ -77,7 +88,11 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
           invoice);
     }
 
-    if (!AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayTimesheetOnPrinting()
+    if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null) != null
+        && !AuthUtils.getUser()
+            .getActiveCompany()
+            .getAccountConfig()
+            .getDisplayTimesheetOnPrinting()
         && !AuthUtils.getUser()
             .getActiveCompany()
             .getAccountConfig()
@@ -104,6 +119,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
     String fileLink =
         rS.addParam("InvoiceId", invoiceIds)
             .addParam("Locale", language)
+            .addParam(
+                "Timezone",
+                invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
             .addParam("InvoicesCopy", invoicesCopy)
             .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
             .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
@@ -113,5 +131,30 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
     List<String> res = Arrays.asList(title, fileLink);
 
     return res;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void cancel(Invoice invoice) throws AxelorException {
+    super.cancel(invoice);
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+        analyticMoveLine.setProject(null);
+      }
+    }
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  public Invoice updateLines(Invoice invoice) {
+    AnalyticMoveLineRepository analyticMoveLineRepository =
+        Beans.get(AnalyticMoveLineRepository.class);
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      invoiceLine.setProject(invoice.getProject());
+      for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+        analyticMoveLine.setProject(invoice.getProject());
+        analyticMoveLineRepository.save(analyticMoveLine);
+      }
+    }
+    return invoice;
   }
 }

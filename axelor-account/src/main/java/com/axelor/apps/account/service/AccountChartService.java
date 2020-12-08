@@ -96,13 +96,14 @@ public class AccountChartService {
 
     File configFile = File.createTempFile("input-config", ".xml");
 
-    FileOutputStream outputStream = new FileOutputStream(configFile);
-    int read = 0;
-    byte[] bytes = new byte[1024];
-    while ((read = inputStream.read(bytes)) != -1) {
-      outputStream.write(bytes, 0, read);
+    try (FileOutputStream outputStream = new FileOutputStream(configFile)) {
+      int read = 0;
+      byte[] bytes = new byte[1024];
+      while ((read = inputStream.read(bytes)) != -1) {
+        outputStream.write(bytes, 0, read);
+      }
+      outputStream.close();
     }
-    outputStream.close();
 
     return configFile;
   }

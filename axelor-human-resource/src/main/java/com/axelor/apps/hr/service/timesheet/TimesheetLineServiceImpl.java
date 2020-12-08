@@ -48,11 +48,22 @@ import org.slf4j.LoggerFactory;
 
 public class TimesheetLineServiceImpl implements TimesheetLineService {
 
-  @Inject private TimesheetService timesheetService;
+  protected TimesheetService timesheetService;
+  protected TimesheetHRRepository timesheetHRRepository;
+  protected TimesheetRepository timesheetRepository;
+  protected EmployeeRepository employeeRepository;
 
-  @Inject private TimesheetHRRepository timesheetHRRepository;
-
-  @Inject private TimesheetRepository timesheetRepository;
+  @Inject
+  public TimesheetLineServiceImpl(
+      TimesheetService timesheetService,
+      TimesheetHRRepository timesheetHRRepository,
+      TimesheetRepository timesheetRepository,
+      EmployeeRepository employeeRepository) {
+    this.timesheetService = timesheetService;
+    this.timesheetHRRepository = timesheetHRRepository;
+    this.timesheetRepository = timesheetRepository;
+    this.employeeRepository = employeeRepository;
+  }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -74,13 +85,13 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     if (timesheet != null) {
       User user = timesheet.getUser();
 
-      Employee employee = user.getEmployee();
-
-      log.debug("Employee: {}", employee);
-
       timePref = timesheet.getTimeLoggingPreferenceSelect();
 
-      if (employee != null) {
+      if (user.getEmployee() != null) {
+        Employee employee = employeeRepository.find(user.getEmployee().getId());
+
+        log.debug("Employee: {}", employee);
+
         dailyWorkHrs = employee.getDailyWorkHours();
         if (timePref == null) {
           timePref = employee.getTimeLoggingPreferenceSelect();

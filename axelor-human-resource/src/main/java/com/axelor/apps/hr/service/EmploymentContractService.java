@@ -55,6 +55,11 @@ public class EmploymentContractService {
 
     ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name + "-${date}")
         .addParam("ContractId", employmentContract.getId())
+        .addParam(
+            "Timezone",
+            employmentContract.getPayCompany() != null
+                ? employmentContract.getPayCompany().getTimezone()
+                : null)
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
         .toAttach(employmentContract)
         .generate()

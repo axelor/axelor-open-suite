@@ -1,20 +1,20 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
   
 	<module name="base" package="com.axelor.apps.base.db"/>
 	
 	<entity name="ICalendarEvent" table="ICAL_EVENT" sequential="true">
 	  <string name="uid" column="calendar_uid" unique="true" hashKey="false" title="UID"/>
 	  <string name="url" title="URL"/>
-	  <string name="subject" required="true" namecolumn="true" title="Subject"/>
+	  <string name="subject" required="true" namecolumn="true" title="Subject" large="true"/>
 	  <string name="description" title="Description" large="true"/>
 	  <string name="status" title="Status"/>
 	  <datetime name="startDateTime" required="true" title="Start date"/>
 	  <datetime name="endDateTime" required="true" title="End date"/>
 	  <boolean name="allDay" title="All day"/>
-	  <string name="location" title="Location"/>
+	  <string name="location" title="Location" large="true"/>
 	  <string name="geo" title="Geo. coordinates"/>
 	  <many-to-one name="calendar" ref="com.axelor.apps.base.db.ICalendar"/>
 	  <many-to-one name="organizer" ref="com.axelor.apps.base.db.ICalendarUser" title="Organizer"/>
@@ -22,7 +22,7 @@
 	  <string name="computedAttendeeList" large="true" title="Attendees"/>
 	  <integer name="visibilitySelect" title="Visibility" selection="i.cal.event.visibility.select" default="1"/>
 	  <integer name="disponibilitySelect" title="Availability" selection="i.cal.event.disponibility.select" default="1"/>
-	  <string name="subjectTeam"/>
+	  <string name="subjectTeam" large="true"/>
 	  <integer name="typeSelect" title="Type" selection="icalendar.event.type.select" required="true" />
 	  <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to"/>
 	  <finder-method name="findByUid" using="uid" />

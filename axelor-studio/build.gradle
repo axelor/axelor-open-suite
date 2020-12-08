@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -12,13 +13,14 @@ axelor {
 }
 
 dependencies {
-    compile project(":modules:axelor-admin")
-	compile project(":modules:axelor-message")
-	compile 'commons-lang:commons-lang:2.3'
-//	compile 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
-	compile 'org.eclipse.birt.runtime.3_7_1:Tidy:1'
-	compile 'org.apache.commons:commons-exec:1.2'
-//	compile "org.bouncycastle:bcprov-jdk15on:1.62"
+    api project(":modules:axelor-admin")
+	api project(":modules:axelor-message")
+
+	api libs.commons_lang3
+//	implementation libs.flying_saucer_pdf
+	implementation libs.tidy
+	implementation libs.commons_exec
+//	implementation libs.bcprov_jdk15on
 }
 
 def updateJsp(jspFile, check, lines) {
@@ -36,19 +38,28 @@ def updateJsp(jspFile, check, lines) {
 //XXX: this task should be removed when we introduce per module webapp support in Axelor Open Platform
 task copyWebapp(type: Copy) {
 	destinationDir = file(rootProject.buildDir)
-	into("webapp/studio") {
-		from "src/main/webapp"
+	into("webapp/studio/custom-model") {
+		from "src/main/webapp/custom-model"
 	}
+  into("webapp/css") {
+    from "src/main/webapp/css"
+  }
+  into("webapp/lib") {
+    from "src/main/webapp/lib"
+  }
+  into("webapp/js/form") {
+    from "src/main/webapp/js/form"
+  }
 	doLast {
 		// update index-head.jsp
 		updateJsp("index-head.jsp", "diagram-js.css", [
-			'<link href="studio/lib/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" rel="stylesheet">',
-			'<link href="studio/lib/bpmn-js/assets/diagram-js.css" rel="stylesheet">',
-			'<link href="studio/css/bpmn.css" rel="stylesheet">'])
+			'<link href="lib/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" rel="stylesheet">',
+			'<link href="lib/bpmn-js/assets/diagram-js.css" rel="stylesheet">',
+			'<link href="css/bpmn.css" rel="stylesheet">'])
 		// update index-foot.jsp
 		updateJsp("index-foot.jsp", "bpmn-modeler.js", [
-			'<script src="studio/lib/bpmn-js/bpmn-modeler.js"></script>',
-			'<script src="studio/js/form/form.bpmn.js"></script>'])
+			'<script src="lib/bpmn-js/bpmn-modeler.js"></script>',
+			'<script src="js/form/form.bpmn.js"></script>'])
 	}
 }
 

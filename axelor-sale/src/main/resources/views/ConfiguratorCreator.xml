@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
 	    <toolbar>
@@ -29,7 +29,7 @@
 
     	<panel name="otherDetailsPanel">
     		<field name="name"/>
-    		<button name="configureBtn" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-configure"/>
+    		<button name="configureBtn" title="Configure" showIf="id == null" onClick="save"/>
     		<panel-related name="attributesPanel" field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
     				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
     	</panel>
@@ -55,8 +55,8 @@
             <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
 		
-		<panel name="configuratorBomPanel" title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
-            <field name="configuratorBom" showTitle="false" if-module="axelor-production" colSpan="12">
+		<panel name="configuratorBomPanel" title="Configurator BoM" hideIf="id == null" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
+            <field name="configuratorBom" showTitle="false" if-module="axelor-production" colSpan="12" form-view="configurator-bom-form" grid-view="configurator-bom-grid">
                 <editor>
                     <panel>
                         <field name="company"/>
@@ -76,7 +76,7 @@
                         <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
                         <field name="product" colSpan="12"
                                showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
-                               form-view="product-form" grid-view="product-grid"/>
+                               form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
                         <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
                                x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
                     </panel>
@@ -103,7 +103,9 @@
                         <field name="configuratorProdProcess" colSpan="12"
                                canNew="true" showIf="defProdProcessAsConfigurator"/>
                     </panel>
-                    <field name="configuratorBomList" showTitle="false" form-view="configurator-bom-form" grid-view="configurator-bom-grid" colSpan="12"/>
+                  <panel colSpan="12">
+										<field name="configuratorBomList" showTitle="false" title="Components" height="15" domain="self.defineSubBillOfMaterial = true and (:id is null or self.id != :id)" form-view="configurator-bom-line-form" grid-view="configurator-bom-line-grid" canSelect="true" colSpan="12"/>
+									</panel>
                 </editor>
             </field>
         </panel>
@@ -131,10 +133,6 @@
     	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
 			  method="createConfigurator"/>
     </action-method>
-
-	<action-method name="action-configurator-creator-method-configure" model="com.axelor.apps.sale.db.ConfiguratorCreator">
-		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="configure"/>
-	</action-method>
 
     <action-method name="action-configurator-creator-method-update-activate">
         <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="updateAndActivate"/>
@@ -167,5 +165,9 @@
         <view type="grid" name="configurator-grid"/>
         <context name="_configuratorCreator" expr="eval: __self__"/>
     </action-view>
+    
+    <search-filters name="configurator-creator-filters" model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator creator filters">
+        <field name="configuratorBom" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator())"/>
+    </search-filters>
 
 </object-views>

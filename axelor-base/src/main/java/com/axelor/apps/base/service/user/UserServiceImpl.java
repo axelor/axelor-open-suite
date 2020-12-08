@@ -60,7 +60,7 @@ import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** UserService is a class that implement all methods for user informations */
+/** UserService is a class that implement all methods for user information */
 public class UserServiceImpl implements UserService {
 
   @Inject private UserRepository userRepo;

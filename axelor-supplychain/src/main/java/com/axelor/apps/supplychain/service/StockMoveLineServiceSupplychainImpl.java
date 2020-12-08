@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -75,7 +76,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       TrackingNumberRepository trackingNumberRepo,
       ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
-      PriceListService priceListService) {
+      PriceListService priceListService,
+      ProductCompanyService productCompanyService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -86,6 +88,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         unitConversionService,
         weightedAveragePriceService,
         trackingNumberRepo,
+        productCompanyService,
         shippingCoefService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
@@ -125,6 +128,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               taxed,
               taxRate);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
+      stockMoveLine.setIsQtyRequested(
+          requestedReservedQty != null && requestedReservedQty.signum() > 0);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
@@ -157,14 +162,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
-    // if this is a pack do not compute price
-    if (stockMoveLine.getProduct() == null
-        || (stockMoveLine.getLineTypeSelect() != null
-            && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK)) {
-      return stockMoveLine;
-    }
-
-    if (stockMove.getOriginId() != null && stockMove.getOriginId() != 0L) {
+    if (stockMove.getOriginId() != null
+        && stockMove.getOriginId() != 0L
+        && (stockMoveLine.getSaleOrderLine() != null
+            || stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
@@ -184,7 +185,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
@@ -199,7 +200,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
@@ -219,19 +220,20 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   protected StockMoveLine convertUnitPrice(StockMoveLine stockMoveLine, Unit fromUnit, Unit toUnit)
       throws AxelorException {
-    // convert units
+    // convert unit price, meaning the conversion is reversed : Box of 12 pieces => 12 pieces but
+    // 1/12 the price
     if (toUnit != null && fromUnit != null) {
       BigDecimal unitPriceUntaxed =
           unitConversionService.convert(
-              fromUnit,
               toUnit,
+              fromUnit,
               stockMoveLine.getUnitPriceUntaxed(),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               null);
       BigDecimal unitPriceTaxed =
           unitConversionService.convert(
-              fromUnit,
               toUnit,
+              fromUnit,
               stockMoveLine.getUnitPriceTaxed(),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               null);
@@ -331,6 +333,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (stockMoveLineList.size() == 1) {
       return stockMoveLineList.get(0);
     }
+    StockMove stockMove = stockMoveLineList.get(0).getStockMove();
 
     SaleOrderLine saleOrderLine = stockMoveLineList.get(0).getSaleOrderLine();
     PurchaseOrderLine purchaseOrderLine = stockMoveLineList.get(0).getPurchaseOrderLine();
@@ -372,11 +375,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             BigDecimal.ZERO,
             BigDecimal.ZERO,
             unit,
-            null,
+            stockMove,
             null);
 
     generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
     generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+    generatedStockMoveLine.setIsMergedStockMoveLine(true);
     return generatedStockMoveLine;
   }
 
@@ -471,5 +475,11 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setAvailableStatus(I18n.get("Invoiced"));
       stockMoveLine.setAvailableStatusSelect(1);
     }
+  }
+
+  @Override
+  public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine) {
+    return stockMoveLine.getReservedQty().compareTo(BigDecimal.ZERO) > 0
+        || stockMoveLine.getRequestedReservedQty().compareTo(BigDecimal.ZERO) > 0;
   }
 }

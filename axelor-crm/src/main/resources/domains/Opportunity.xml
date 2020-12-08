@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -13,8 +13,8 @@
    	<date name="expectedCloseDate" title="Expected close date"/>
     <decimal name="amount" title="Amount"/>
     <many-to-one name="opportunityType" ref="com.axelor.apps.crm.db.OpportunityType" title="Type of need"/>
-    <string name="bestCase" title="Best case"/>
-    <string name="worstCase" title="Worst case"/>
+    <decimal name="bestCase" title="Best case"/>
+    <decimal name="worstCase" title="Worst case"/>
     <integer name="salesStageSelect" title="Sales stage" selection="crm.opportunity.sales.stage.select"/>
     <decimal name="probability" title="Probability (%)"/>
     <string name="nextStep" title="Next step"/>
@@ -33,6 +33,7 @@
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
     <string name="lostReasonStr" title="Lost reason" large="true"/>
 	  <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+	  <string name="opportunitySeq" title="Reference" readonly="true" unique="true"/>
 
 	<extra-code>
 		<![CDATA[

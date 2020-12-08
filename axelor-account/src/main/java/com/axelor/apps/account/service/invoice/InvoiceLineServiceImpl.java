@@ -41,8 +41,11 @@ import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -54,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class InvoiceLineServiceImpl implements InvoiceLineService {
 
@@ -62,6 +66,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected PriceListService priceListService;
   protected AppAccountService appAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -69,13 +74,15 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       PriceListService priceListService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      ProductCompanyService productCompanyService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.productCompanyService = productCompanyService;
   }
 
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
@@ -107,10 +114,18 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       return createAnalyticDistributionWithTemplate(invoiceLine);
     } else {
-      LocalDate date = appAccountService.getTodayDate();
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
+      LocalDate date =
+          appAccountService.getTodayDate(
+              invoiceLine.getInvoice() != null
+                  ? invoiceLine.getInvoice().getCompany()
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
+      if (invoiceLine.getAnalyticMoveLineList() != null) {
+        for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+          analyticMoveLineService.updateAnalyticMoveLine(
+              analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
+        }
       }
       return analyticMoveLineList;
     }
@@ -123,7 +138,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             invoiceLine.getAnalyticDistributionTemplate(),
             invoiceLine.getCompanyExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate());
+            appAccountService.getTodayDate(
+                invoiceLine.getInvoice() != null
+                    ? invoiceLine.getInvoice().getCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)));
 
     return analyticMoveLineList;
   }
@@ -133,7 +153,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
 
     return accountManagementAccountService.getTaxLine(
-        appAccountService.getTodayDate(),
+        appAccountService.getTodayDate(invoice.getCompany()),
         invoiceLine.getProduct(),
         invoice.getCompany(),
         invoice.getPartner().getFiscalPosition(),
@@ -180,15 +200,23 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Currency productCurrency;
 
     if (isPurchase) {
-      price = product.getPurchasePrice();
-      productCurrency = product.getPurchaseCurrency();
+      price =
+          (BigDecimal) productCompanyService.get(product, "purchasePrice", invoice.getCompany());
+      productCurrency =
+          (Currency) productCompanyService.get(product, "purchaseCurrency", invoice.getCompany());
     } else {
-      price = product.getSalePrice();
-      productCurrency = product.getSaleCurrency();
+      price = (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
+      productCurrency =
+          (Currency) productCompanyService.get(product, "saleCurrency", invoice.getCompany());
     }
 
-    if (product.getInAti() != resultInAti) {
-      price = this.convertUnitPrice(product.getInAti(), taxLine, price);
+    if ((Boolean) productCompanyService.get(product, "inAti", invoice.getCompany())
+        != resultInAti) {
+      price =
+          this.convertUnitPrice(
+              (Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()),
+              taxLine,
+              price);
     }
 
     return currencyService
@@ -350,9 +378,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("inTaxTotal", null);
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
-    productInformation.put("subLineList", null);
-    productInformation.put("totalPack", null);
-    productInformation.put("packPriceSelect", 0);
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     if ((isPurchase
@@ -398,7 +423,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     Map<String, Object> productInformation = resetProductInformation(invoice);
 
-    boolean isAccountRequired = isAccountRequired(invoiceLine);
     Product product = invoiceLine.getProduct();
     TaxLine taxLine = null;
     Company company = invoice.getCompany();
@@ -423,24 +447,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("error", e.getMessage());
     }
 
-    if (isAccountRequired) {
-      BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
-      BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
+    BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
+    BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 
-      productInformation.put("price", price);
-      productInformation.put("inTaxPrice", inTaxPrice);
+    productInformation.put("price", price);
+    productInformation.put("inTaxPrice", inTaxPrice);
 
-      productInformation.putAll(
-          this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
+    productInformation.putAll(
+        this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
 
-      productInformation.put("productName", invoiceLine.getProduct().getName());
-    }
+    productInformation.put("productName", invoiceLine.getProduct().getName());
 
     return productInformation;
-  }
-
-  @Override
-  public boolean isAccountRequired(InvoiceLine invoiceLine) {
-    return true;
   }
 }

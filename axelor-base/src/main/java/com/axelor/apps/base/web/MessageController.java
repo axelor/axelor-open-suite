@@ -97,6 +97,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
           ReportFactory.createReport(IReport.MESSAGE_PDF, title + "-${date}")
               .addParam("Locale", language)
               .addParam("MessageId", messageIds)
+              .addParam("Timezone", null)
               .addFormat(ReportSettings.FORMAT_XLS)
               .generate()
               .getFileLink();

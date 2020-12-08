@@ -264,7 +264,7 @@ public class BankOrderLineService {
       if (bankOrderLine.getReceiverCompany() != null) {
 
         bankDetailsIds =
-            StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+            StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsList());
 
         if (bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
           bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -337,7 +337,7 @@ public class BankOrderLineService {
         && bankOrderLine.getReceiverCompany() != null) {
       candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
       if (candidateBankDetails == null) {
-        for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsSet()) {
+        for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsList()) {
           if (candidateBankDetails != null && bankDetails.getActive()) {
             candidateBankDetails = null;
             break;

@@ -66,4 +66,12 @@ public class MrpManagementRepository extends MrpRepository {
 
     return super.save(entity);
   }
+
+  @Override
+  public Mrp copy(Mrp entity, boolean deep) {
+
+    Mrp copy = super.copy(entity, deep);
+    copy.setMrpSeq(null);
+    return copy;
+  }
 }

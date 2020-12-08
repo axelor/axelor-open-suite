@@ -81,6 +81,7 @@ public class ProductionOrderWizardController {
               .model(ProductionOrder.class.getName())
               .add("form", "production-order-form")
               .add("grid", "production-order-grid")
+              .param("search-filters", "production-order-filters")
               .param("forceEdit", "true")
               .context(
                   "_showRecord",

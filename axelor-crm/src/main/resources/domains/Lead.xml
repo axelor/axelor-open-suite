@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -21,8 +21,8 @@
   	
 <!--   Primary address group -->
 	<string name="primaryAddress" title="Address"/>
-	<string name="primaryCity" title="City"/>
-	<string name="primaryState" title="Region"/>
+	<many-to-one name="primaryCity" title="City" ref="com.axelor.apps.base.db.City"/>
+	<many-to-one name="primaryState" title="Region" ref="com.axelor.apps.base.db.Region"/>
 	<string name="primaryPostalCode" title="Postal code"/>
   	<many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
   

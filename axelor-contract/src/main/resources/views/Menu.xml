@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<menuitem title="Contracts" name="contracts-root" order="-104" if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="blue"/>
 
@@ -9,6 +9,7 @@
 	<action-view name="contracts.root.customer.all" title="Customer contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
 		<view type="form" name="contract-form"/>
+		<view-param name="search-filters" value="contract-filters"/>
 		<domain>self.targetTypeSelect = 1 AND self.statusSelect != 3</domain>
 		<context name="_xTargetType" expr="eval: 1"/>
 	</action-view>
@@ -18,6 +19,7 @@
 	<action-view name="contracts.root.supplier.all" title="Supplier contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
 		<view type="form" name="contract-form"/>
+		<view-param name="search-filters" value="contract-filters"/>
 		<domain>self.targetTypeSelect = 2 AND self.statusSelect != 3</domain>
 		<context name="_xTargetType" expr="eval: 2"/>
 	</action-view>
@@ -29,6 +31,7 @@
 	<action-view name="contracts.root.conf.terminated" title="Terminated contracts" model="com.axelor.apps.contract.db.Contract">
 		<view type="grid" name="contract-grid"/>
 		<view type="form" name="contract-form"/>
+		<view-param name="search-filters" value="contract-filters"/>
 		<domain>self.statusSelect = 3</domain>
 	</action-view>
 	
@@ -37,6 +40,7 @@
 	<action-view name="contract.templates.all" title="Contract templates" model="com.axelor.apps.contract.db.ContractTemplate">
 		<view type="grid" name="contract-template-grid"/>
 		<view type="form" name="contract-template-form"/>
+		<view-param name="search-filters" value="contract-template-filters"/>
 	</action-view>
 	
 	<menuitem name="duration-all" title="Durations" parent="contracts-root-conf-all" action="duration.all" />
@@ -44,6 +48,8 @@
 	<action-view name="duration.all" title="Duration" model="com.axelor.apps.base.db.Duration">
 		<view type="grid" name="duration-grid"/>
 		<view type="form" name="duration-form"/>
+		<domain>self.applicationTypeSelect = 2</domain>
+		<context name="_applicatioTypeSelect" expr="2"/>
 	</action-view>
 
 	<menuitem name="admin-root-batch-contract" parent="admin-root-batch"
@@ -53,6 +59,7 @@
 				 model="com.axelor.apps.contract.db.ContractBatch" >
 		<view type="grid" name="contract-batch-grid"/>
 		<view type="form" name="contract-batch-form"/>
+		<view-param name="search-filters" value="contract-batch-filters"/>
 	</action-view>
 
 </object-views>

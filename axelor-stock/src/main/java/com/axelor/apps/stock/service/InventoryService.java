@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -68,7 +69,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,8 +208,10 @@ public class InventoryService {
 
       String description = line[6].replace("\"", "");
 
+      int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();
+
       if (inventoryLineMap.containsKey(code)) {
-        inventoryLineMap.get(code).setRealQty(realQty);
+        inventoryLineMap.get(code).setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
         inventoryLineMap.get(code).setDescription(description);
       } else {
         BigDecimal currentQty;
@@ -224,7 +227,11 @@ public class InventoryService {
 
         InventoryLine inventoryLine = new InventoryLine();
         List<Product> productList =
-            productRepo.all().filter("self.code = :code").bind("code", code).fetch();
+            productRepo
+                .all()
+                .filter("self.code = :code AND dtype = 'Product'")
+                .bind("code", code)
+                .fetch();
         if (productList != null && !productList.isEmpty()) {
           if (productList.size() > 1) {
             throw new AxelorException(
@@ -243,8 +250,8 @@ public class InventoryService {
         inventoryLine.setProduct(product);
         inventoryLine.setInventory(inventory);
         inventoryLine.setRack(rack);
-        inventoryLine.setCurrentQty(currentQty);
-        inventoryLine.setRealQty(realQty);
+        inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
+        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
         inventoryLine.setDescription(description);
         inventoryLine.setTrackingNumber(this.getTrackingNumber(trackingNumberSeq));
         inventoryLineList.add(inventoryLine);
@@ -309,7 +316,7 @@ public class InventoryService {
   @Transactional(rollbackOn = {Exception.class})
   public void validateInventory(Inventory inventory) throws AxelorException {
 
-    inventory.setValidatedOn(appBaseService.getTodayDate());
+    inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMove(inventory, true);

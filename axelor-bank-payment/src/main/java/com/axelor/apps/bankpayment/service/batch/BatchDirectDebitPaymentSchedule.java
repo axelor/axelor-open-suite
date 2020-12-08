@@ -125,7 +125,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     LocalDate dueDate =
         accountingBatch.getDueDate() != null
             ? accountingBatch.getDueDate()
-            : Beans.get(AppBaseService.class).getTodayDate();
+            : Beans.get(AppBaseService.class).getTodayDate(accountingBatch.getCompany());
     queryBuilder.add("self.scheduleDate <= :dueDate");
     queryBuilder.bind("dueDate", dueDate);
 
@@ -138,14 +138,16 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     queryBuilder.add(
         "self.paymentSchedule.partner.id NOT IN (SELECT DISTINCT partner.id FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
     queryBuilder.bind("blockingSelect", BlockingRepository.DEBIT_BLOCKING);
-    queryBuilder.bind("blockingToDate", Beans.get(AppBaseService.class).getTodayDate());
+    queryBuilder.bind(
+        "blockingToDate",
+        Beans.get(AppBaseService.class).getTodayDate(accountingBatch.getCompany()));
 
     if (accountingBatch.getBankDetails() != null) {
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
 
       if (accountingBatch.getIncludeOtherBankAccounts()
           && appBaseService.getAppBase().getManageMultiBanks()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 
       queryBuilder.add(
@@ -187,7 +189,12 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
             PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
             BankDetails bankDetails = paymentScheduleService.getBankDetails(paymentSchedule);
             Preconditions.checkArgument(
-                bankDetails.getActive(), I18n.get("Bank details are inactive."));
+                bankDetails.getActive(),
+                bankDetails.getPartner() != null
+                    ? bankDetails.getPartner().getFullName()
+                        + " - "
+                        + I18n.get("Bank details are inactive.")
+                    : I18n.get("Bank details are inactive."));
 
             if (directDebitPaymentMode.getOrderTypeSelect()
                 == PaymentModeRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT) {

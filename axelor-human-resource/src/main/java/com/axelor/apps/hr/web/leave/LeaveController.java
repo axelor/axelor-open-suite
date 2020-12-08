@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
@@ -44,6 +43,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -105,15 +105,20 @@ public class LeaveController {
   public void editLeaveSelected(ActionRequest request, ActionResponse response) {
     try {
       Map<String, Object> leaveMap = (Map<String, Object>) request.getContext().get("leaveSelect");
-      Long leaveId = Long.valueOf((long) leaveMap.get("id"));
-      response.setView(
-          ActionView.define(I18n.get("LeaveRequest"))
-              .model(LeaveRequest.class.getName())
-              .add("form", "leave-request-form")
-              .param("forceEdit", "true")
-              .domain("self.id = " + leaveId)
-              .context("_showRecord", leaveId)
-              .map());
+      if (leaveMap == null) {
+        response.setError(I18n.get("Select the leave request you want to edit"));
+      } else {
+        Long leaveId = Long.valueOf(leaveMap.get("id").toString());
+
+        response.setView(
+            ActionView.define(I18n.get("LeaveRequest"))
+                .model(LeaveRequest.class.getName())
+                .add("form", "leave-request-form")
+                .param("forceEdit", "true")
+                .domain("self.id = " + leaveId)
+                .context("_showRecord", leaveId)
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -128,7 +133,8 @@ public class LeaveController {
           ActionView.define(I18n.get("Leave Requests to Validate"))
               .model(LeaveRequest.class.getName())
               .add("grid", "leave-request-validate-grid")
-              .add("form", "leave-request-form");
+              .add("form", "leave-request-form")
+              .param("search-filters", "leave-request-filters");
 
       Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -148,7 +154,8 @@ public class LeaveController {
           ActionView.define(I18n.get("Colleague Leave Requests"))
               .model(LeaveRequest.class.getName())
               .add("grid", "leave-request-grid")
-              .add("form", "leave-request-form");
+              .add("form", "leave-request-form")
+              .param("search-filters", "leave-request-filters");
 
       actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
 
@@ -201,7 +208,8 @@ public class LeaveController {
 
       String domain =
           "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
-      long nbLeaveRequests = Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
+      long nbLeaveRequests =
+          Query.of(LeaveRequest.class).filter(domain).bind("_user", user).count();
 
       if (nbLeaveRequests == 0) {
         response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
@@ -210,7 +218,8 @@ public class LeaveController {
             ActionView.define(I18n.get("Leaves to be Validated by your subordinates"))
                 .model(LeaveRequest.class.getName())
                 .add("grid", "leave-request-grid")
-                .add("form", "leave-request-form");
+                .add("form", "leave-request-form")
+                .param("search-filters", "leave-request-filters");
         response.setView(actionView.domain(domain).context("_user", user).map());
       }
     } catch (Exception e) {
@@ -424,6 +433,7 @@ public class LeaveController {
     }
   }
 
+  @CallMethod
   public String leaveValidateMenuTag() {
 
     return Beans.get(HRMenuTagService.class)

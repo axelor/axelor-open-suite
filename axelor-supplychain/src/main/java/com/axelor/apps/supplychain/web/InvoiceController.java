@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
@@ -272,6 +271,7 @@ public class InvoiceController {
                 .model(Invoice.class.getName())
                 .add("grid", "invoice-grid")
                 .add("form", "invoice-form")
+                .param("search-filters", "customer-invoices-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());
@@ -305,30 +305,6 @@ public class InvoiceController {
                       .SUBSCRIPTION_INVOICE_GENERATION_ERROR),
               e.getMessage()));
       TraceBackService.trace(e);
-    }
-  }
-
-  public void addSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      response.setValue(
-          "invoiceLineList",
-          Beans.get(InvoiceServiceSupplychain.class).addSubLines(invoice.getInvoiceLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
-  public void removeSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      response.setValue(
-          "invoiceLineList",
-          Beans.get(InvoiceServiceSupplychain.class).removeSubLines(invoice.getInvoiceLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
     }
   }
 }

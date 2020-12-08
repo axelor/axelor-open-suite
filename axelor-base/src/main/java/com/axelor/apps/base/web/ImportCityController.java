@@ -20,47 +20,65 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import org.apache.commons.io.FileUtils;
+import java.util.List;
 
 @Singleton
 public class ImportCityController {
+
+  @Inject private ImportCityService importCityService;
 
   /**
    * Import cities
    *
    * @param request
    * @param response
+   * @throws InterruptedException
    */
   @SuppressWarnings("unchecked")
   public void importCity(ActionRequest request, ActionResponse response) {
 
+    MetaFile dataFile = new MetaFile();
+
     String typeSelect = (String) request.getContext().get("typeSelect");
-    LinkedHashMap<String, Object> map =
-        (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
-    MetaFile dataFile =
-        Beans.get(MetaFileRepository.class).find(((Integer) map.get("id")).longValue());
 
-    try {
-      ImportHistory importHistory =
-          Beans.get(ImportCityService.class).importCity(typeSelect, dataFile);
-      response.setAttr("importHistoryList", "value:add", importHistory);
-      File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
-      response.setNotify(
-          FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
-              .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+    if (typeSelect.equals("geonames")) {
+      LinkedHashMap<String, Object> map =
+          (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      List<ImportHistory> importHistoryList = new ArrayList<ImportHistory>();
+
+      String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
+
+      try {
+        if (map != null) {
+          dataFile =
+              Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
+          importHistoryList.add(importCityService.importCity(typeSelect, dataFile));
+        }
+
+        if (downloadFileName != null) {
+          dataFile = importCityService.downloadZip(downloadFileName);
+          importHistoryList.add(importCityService.importCity(typeSelect, dataFile));
+        }
+
+        response.setAttr("$importHistoryList", "hidden", false);
+        response.setAttr("$importHistoryList", "value", importHistoryList);
+
+        response.setFlash(I18n.get("City import completed"));
+
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
+      }
     }
   }
 }

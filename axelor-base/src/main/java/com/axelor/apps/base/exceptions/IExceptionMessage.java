@@ -57,7 +57,11 @@ public interface IExceptionMessage {
   static final String UNIT_CONVERSION_1 = /*$$(*/
       "Please configure unit conversion from '%s' to '%s'." /*)*/;
 
-  static final String UNIT_CONVERSION_2 = /*$$(*/ "Please configure units." /*)*/;
+  static final String UNIT_CONVERSION_2 = /*$$(*/ "Start unit cannot be void." /*)*/;
+
+  static final String UNIT_CONVERSION_3 = /*$$(*/ "Conversion impossible because of no unit." /*)*/;
+
+  static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
   static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
@@ -229,6 +233,12 @@ public interface IExceptionMessage {
   static final String PRODUCT_NO_ACTIVE_COMPANY = /*$$(*/
       "No active company for this user, please define an active company." /*)*/;
 
+  public static final String PRODUCT_COMPANY_NO_PRODUCT = /*$$(*/
+      "Attempted to get field '%s' for unspecified product." /*)*/;
+
+  public static final String PRODUCT_COMPANY_NO_FIELD = /*$$(*/
+      "Attempted to get a field from product '%s' but forgot to specify which field." /*)*/;
+
   /** Calendar */
   static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 
@@ -333,6 +343,14 @@ public interface IExceptionMessage {
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
       "The worth and quantity value of each class must be greater than 0." /*)*/;
 
+  /* DMS Import */
+  public static final String DMS_IMPORT_PROCESS_SUCCESS_MESSAGE = /*$$(*/
+      "File loaded successfully" /*)*/;
+  public static final String DMS_IMPORT_FILE_PROCESS_ERROR = /*$$(*/
+      "Error while processing zip file" /*)*/;
+  public static final String DMS_IMPORT_INVALID_ZIP_ERROR = /*$$(*/
+      "Uploaded file is not a valid zip file" /*)*/;
+
   /** Advanced Import */
   public static final String ADVANCED_IMPORT_NO_IMPORT_FILE = /*$$(*/
       "Data file doesn't exist" /*)*/;
@@ -352,7 +370,7 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_5 = /*$$(*/
       "Sub field doesn't exist of field(%s) for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_6 = /*$$(*/
-      "Search fields are missing for the object(%s)" /*)*/;
+      "Please enter search call or search fields for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_TAB_ERR = /*$$(*/
       "File tab is not matched inside file" /*)*/;
   public static final String ADVANCED_IMPORT_NO_OBJECT = /*$$(*/
@@ -376,7 +394,13 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_LOG_9 = /*$$(*/ "Invalid type of data" /*)*/;
   public static final String ADVANCED_IMPORT_LOG_10 = /*$$(*/
       "Action does not exists or invalid for the object(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_11 = /*$$(*/
+      "Invalid Search call for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_RESET = /*$$(*/
       "Reset imported data successfully" /*)*/;
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;
+  public static final String SERVER_CONNECTION_ERROR = /*$$(*/
+      "Unable to connect to Geonames server" /*)*/;
+  public static final String DUPLICATE_ACTIVE_BANK_DETAILS = /*$$(*/
+      "The same bank details are already active." /*)*/;
 }

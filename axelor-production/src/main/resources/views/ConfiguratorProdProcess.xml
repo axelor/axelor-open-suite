@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     <form name="configurator-prod-process-form" title="Configurator Prod Process"
           model="com.axelor.apps.production.db.ConfiguratorProdProcess">
         <panel name="mainPanel">
@@ -32,7 +32,9 @@
             </panel>
             <panel name="workshopStockLocationPanel" title="Workshop" if="__config__.app.getApp('production').getManageWorkshop()">
                 <field name="defWorkshopStockLocationAsFormula" colSpan="6"/>
-                <field name="workshopStockLocation" canEdit="false" colSpan="12" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" showIf="!defWorkshopStockLocationAsFormula"/>
+                <field name="workshopStockLocation" canEdit="false" colSpan="12" grid-view="stock-location-grid" form-view="stock-location-form"
+                       domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
+                       showIf="!defWorkshopStockLocationAsFormula" if="__config__.app.getApp('production').getManageWorkshop()"/>
                 <field name="workshopStockLocationFormula" colSpan="12" height="120"
                        widget="CodeEditor" x-code-syntax="groovy"
                        showTitle="false" showIf="defWorkshopStockLocationAsFormula"/>
@@ -47,5 +49,12 @@
 		<field name="name"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
   </grid>
+  
+  <search-filters name="configurator-prod-process-filters" model="com.axelor.apps.production.db.ConfiguratorProdProcess" title="Configurator Prod Process filters">
+  	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  	<field name="defWorkshopStockLocationAsFormula" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
+    <field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
+    <field name="workshopStockLocationFormula" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>                
+  </search-filters>
     
 </object-views>

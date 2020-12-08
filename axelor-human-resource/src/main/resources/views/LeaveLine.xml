@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="leave-line-grid" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine" orderBy="leaveReason">
-		<field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form"/>
+		<field name="leaveReason" />
 		<field name="totalQuantity"/>
 	    <field name="quantity"/>
 	    <field name="daysToValidate"/>
 	</grid>
+	
+	<grid name="leave-line-grid-all-employee" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine" orderBy="employee">
+			<field name="employee" />
+			<field name="leaveReason" />
+			<field name="totalQuantity"/>
+			<field name="quantity"/>
+			<field name="daysToValidate"/>
+	</grid>
 
 	<form name="leave-line-form" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine" width="large">
 		<panel name="mainPanel">
-			<field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form" />
+			<field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form" onChange="action-leave-line-record-set-name"/>
 		    <field name="quantity" readonly="true"/>
 		    <field name="daysToValidate" readonly="true" colSpan="4"/>
 		    <field name="daysValidated" readonly="true" colSpan="4"/>
@@ -20,8 +28,19 @@
 	    <panel-related name="leaveManagementListPanel" field="leaveManagementList" editable="true" grid-view="leave-management-grid" form-view="leave-management-form" onChange="action-leave-line-method-compute-quantity-available"/>
 	</form>
 	
+	<form name="leave-line-form-all-employee" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine" width="large">
+		<panel>
+			<field name="employee" grid-view="employee-lite-grid" form-view="employee-form" />
+		</panel>
+		<panel-include view="leave-line-form"/>
+	</form>
+	
 	<action-method name="action-leave-line-method-compute-quantity-available">
 		<call class="com.axelor.apps.hr.web.leave.management.LeaveManagementController" method="computeQuantityAvailable"/>
 	</action-method>
+	
+	<action-record name="action-leave-line-record-set-name" model="com.axelor.apps.hr.db.LeaveLine">
+		<field name="name" expr="eval: leaveReason?.leaveReason"/>
+	</action-record>
 	
 </object-views>

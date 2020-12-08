@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="dpae-grid" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
     <field name="employee"/>
@@ -25,19 +25,22 @@
       <field name="firstName"/>
       <field name="socialSecurityNumber"/>
       <field name="sexSelect"/>
-      <field name="dateOfBirth"/>
+      <field name="birthDate"/>
       <field name="departmentOfBirth"/>
       <field name="cityOfBirth"/>
       <field name="countryOfBirth"/>
     </panel>
 
     <panel name="contractPanel" title="Contract">
-      <field name="dateOfHire"/>
-      <field name="timeOfHire"/>
+      <field name="hireDate"/>
+      <field name="hireTime"/>
       <field name="trialPeriodDuration"/>
       <field name="contractType"/>
-      <field name="endDateOfContract"/>
+      <field name="contractEndDate"/>
     </panel>
   </form>
 
+	<search-filters name="dpae-filters" model="com.axelor.apps.hr.db.DPAE" title="DPAE filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

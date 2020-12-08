@@ -35,6 +35,8 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.db.repo.WapHistoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -48,6 +50,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -569,7 +572,9 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     Unit stockLocationUnit = stockLocationLine.getUnit();
 
     if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
-      int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+      AppBaseService appBaseService = Beans.get(AppBaseService.class);
+      int scale = appBaseService.getNbDecimalDigitForUnitPrice();
+      int qtyScale = appBaseService.getNbDecimalDigitForQty();
       BigDecimal oldQty = stockLocationLine.getCurrentQty();
       BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
@@ -588,7 +593,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
       BigDecimal avgQty = BigDecimal.ZERO;
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
-        avgQty = oldQty.divide(currentQty, scale, RoundingMode.HALF_UP);
+        avgQty = oldQty.divide(currentQty, qtyScale, RoundingMode.HALF_UP);
       }
       BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty);
       updateWap(stockLocationLine, newAvgPrice.setScale(scale, RoundingMode.HALF_UP));
@@ -750,7 +755,12 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     wapHistoryRepo.save(
         new WapHistory(
             stockLocationLine,
-            appBaseService.getTodayDate(),
+            appBaseService.getTodayDate(
+                stockLocationLine.getStockLocation() != null
+                    ? stockLocationLine.getStockLocation().getCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)),
             wap,
             stockLocationLine.getCurrentQty(),
             stockLocationLine.getUnit(),

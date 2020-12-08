@@ -22,4 +22,6 @@ public interface IExceptionMessage {
   static final String FORECAST_COMPANY = /*$$(*/ "Please select a company" /*)*/;
   static final String FORCAST_RECAP_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for ForcastRecap" /*)*/;
+  static final String FORECAST_RECAP_MISSING_FORECAST_RECAP_LINE_TYPE = /*$$(*/
+      "No move type found for element : %s" /*)*/;
 }

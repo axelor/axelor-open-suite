@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -125,12 +124,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       }
     }
 
-    if (order.getDuration() != null && order.getCreationDate() != null) {
-      order.setEndOfValidityDate(
-          Beans.get(DurationService.class)
-              .computeDuration(order.getDuration(), order.getCreationDate()));
-    }
-
     AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
     if (appSupplychain != null) {
       order.setShipmentMode(clientPartner.getShipmentMode());
@@ -166,11 +159,12 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             ? this.generateProject(
                 null,
                 saleOrder.getFullName() + "_project",
-                saleOrder.getSalemanUser(),
+                saleOrder.getSalespersonUser(),
                 saleOrder.getCompany(),
                 saleOrder.getClientPartner())
             : project;
     saleOrder.setProject(project);
+    project.setDescription(saleOrder.getDescription());
     return project;
   }
 
@@ -192,7 +186,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.addMembersUserSetItem(assignedTo);
     }
 
-    project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
@@ -206,7 +199,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         generateProject(
             parent,
             saleOrderLine.getFullName(),
-            saleOrderLine.getSaleOrder().getSalemanUser(),
+            saleOrderLine.getSaleOrder().getSalespersonUser(),
             parent.getCompany(),
             parent.getClientPartner());
     project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);

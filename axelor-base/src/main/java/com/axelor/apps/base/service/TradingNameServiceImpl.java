@@ -46,8 +46,7 @@ public class TradingNameServiceImpl implements TradingNameService {
               .bind("tradingName", tradingName.getId())
               .fetch();
       printingSettingsList =
-          tradingNamePrintingSettingsList
-              .stream()
+          tradingNamePrintingSettingsList.stream()
               .map(TradingNamePrintingSettings::getPrintingSettings)
               .collect(Collectors.toList());
     }
@@ -57,6 +56,8 @@ public class TradingNameServiceImpl implements TradingNameService {
   @Override
   public PrintingSettings getDefaultPrintingSettings(TradingName tradingName, Company company) {
     List<PrintingSettings> printingSettingsList = getPrintingSettingsList(tradingName, company);
-    return printingSettingsList.isEmpty() ? null : printingSettingsList.get(0);
+    return printingSettingsList.isEmpty()
+        ? company.getPrintingSettings()
+        : printingSettingsList.get(0);
   }
 }

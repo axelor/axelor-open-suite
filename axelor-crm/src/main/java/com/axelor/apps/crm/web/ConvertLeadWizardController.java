@@ -169,6 +169,7 @@ public class ConvertLeadWizardController {
             .model(Partner.class.getName())
             .add("form", form)
             .add("grid", grid)
+            .param("search-filters", "partner-filters")
             .context("_showRecord", partner.getId())
             .map());
   }
@@ -177,11 +178,11 @@ public class ConvertLeadWizardController {
 
     Lead lead = findLead(request);
 
-    response.setAttr("$primaryAddress", "value", lead.getPrimaryAddress());
-    response.setAttr("$primaryCity", "value", lead.getPrimaryCity());
-    response.setAttr("$primaryState", "value", lead.getPrimaryState());
-    response.setAttr("$primaryPostalCode", "value", lead.getPrimaryPostalCode());
-    response.setAttr("$primaryCountry", "value", lead.getPrimaryCountry());
+    response.setAttr("$partner.$primaryAddress", "value", lead.getPrimaryAddress());
+    response.setAttr("$partner.$primaryCity", "value", lead.getPrimaryCity());
+    response.setAttr("$partner.$primaryState", "value", lead.getPrimaryState());
+    response.setAttr("$partner.$primaryPostalCode", "value", lead.getPrimaryPostalCode());
+    response.setAttr("$partner.$primaryCountry", "value", lead.getPrimaryCountry());
     response.setAttr("$contactAddress", "value", lead.getPrimaryAddress());
     response.setAttr("$contactCity", "value", lead.getPrimaryCity());
     response.setAttr("$contactState", "value", lead.getPrimaryState());
@@ -212,6 +213,7 @@ public class ConvertLeadWizardController {
     response.setAttr("isProspect", "value", true);
     response.setAttr("partnerTypeSelect", "value", "1");
     response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
+    response.setAttr("nbrEmployees", "value", 0);
   }
 
   public void setIndividualPartner(ActionRequest request, ActionResponse response)
@@ -219,8 +221,13 @@ public class ConvertLeadWizardController {
 
     Lead lead = findLead(request);
 
-    response.setAttr("firstName", "value", lead.getFirstName());
-    response.setAttr("name", "value", lead.getName());
+    if (request.getContext().get("partnerTypeSelect").toString().equals("2")) {
+      response.setAttr("firstName", "value", lead.getFirstName());
+      response.setAttr("name", "value", lead.getName());
+
+    } else {
+      response.setAttr("name", "value", lead.getEnterpriseName());
+    }
   }
 
   public void setContactDefaults(ActionRequest request, ActionResponse response)

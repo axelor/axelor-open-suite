@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.costsheet;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
@@ -32,6 +33,8 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
@@ -63,6 +66,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.validation.ValidationException;
 import org.apache.commons.io.IOUtils;
@@ -80,6 +84,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected UnitCostCalcLineRepository unitCostCalcLineRepository;
   protected AppProductionService appProductionService;
   protected ProductService productService;
+  protected ProductCompanyService productCompanyService;
 
   protected Map<Long, Integer> productMap;
 
@@ -91,7 +96,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       CostSheetService costSheetService,
       UnitCostCalcLineRepository unitCostCalcLineRepository,
       AppProductionService appProductionService,
-      ProductService productService) {
+      ProductService productService,
+      ProductCompanyService productCompanyService) {
     this.productRepository = productRepository;
     this.unitCostCalculationRepository = unitCostCalculationRepository;
     this.unitCostCalcLineService = unitCostCalcLineService;
@@ -99,6 +105,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     this.unitCostCalcLineRepository = unitCostCalcLineRepository;
     this.appProductionService = appProductionService;
     this.productService = productService;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -213,7 +220,9 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Transactional
   protected void updateStatusToComputed(UnitCostCalculation unitCostCalculation) {
 
-    unitCostCalculation.setCalculationDate(appProductionService.getTodayDate());
+    unitCostCalculation.setCalculationDate(
+        appProductionService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
 
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_COMPUTED);
 
@@ -281,7 +290,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)",
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + " AND dtype = 'Product'",
                   unitCostCalculation.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
@@ -298,7 +308,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)",
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + " AND dtype = 'Product'",
                   unitCostCalculation.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
@@ -398,7 +409,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   }
 
   /**
-   * Update the level of Bill of material. The highest for each product (0: product with parent, 1:
+   * Update the level of Bill of materials. The highest for each product (0: product with parent, 1:
    * product with a parent, 2: product with a parent that have a parent, ...)
    *
    * @param billOfMaterial
@@ -434,7 +445,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
   }
 
-  public void updateUnitCosts(UnitCostCalculation unitCostCalculation) {
+  public void updateUnitCosts(UnitCostCalculation unitCostCalculation) throws AxelorException {
 
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {
 
@@ -448,23 +459,28 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   }
 
   @Transactional
-  protected void updateUnitCosts(UnitCostCalcLine unitCostCalcLine) {
+  protected void updateUnitCosts(UnitCostCalcLine unitCostCalcLine) throws AxelorException {
 
     Product product = unitCostCalcLine.getProduct();
 
-    product.setCostPrice(
+    productCompanyService.set(
+        product,
+        "costPrice",
         unitCostCalcLine
             .getCostToApply()
             .setScale(
-                appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+                appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP),
+        unitCostCalcLine.getCompany());
 
-    productService.updateSalePrice(product);
+    productService.updateSalePrice(product, unitCostCalcLine.getCompany());
   }
 
   @Transactional
   protected void updateStatusProductCostPriceUpdated(UnitCostCalculation unitCostCalculation) {
 
-    unitCostCalculation.setUpdateCostDate(appProductionService.getTodayDate());
+    unitCostCalculation.setUpdateCostDate(
+        appProductionService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
 
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_UPDATED);
 

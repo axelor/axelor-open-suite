@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<grid name="product-supplier-portal-grid" title="Product supplier" model="com.axelor.apps.supplierportal.db.ProductSupplier">
+		<field name="productCode" />
+		<field name="productName" />
+	  	<field name="purchaseUnit" />
+	  	<field name="purchasePrice"/>
+	  	<field name="purchaseCurrency"/>
+	  	<field name="description"/>  	
+	</grid>
+
+	<form name="product-supplier-portal-form" title="Product supplier" model="com.axelor.apps.supplierportal.db.ProductSupplier"
+		onNew="action-record-product-supplier-new" width="large">
+		<panel name="mainPanel" colSpan="12">
+			<panel name="imagePanel" colSpan="2">
+      			<field name="imgProduct" showTitle="false" colSpan="12" widget="Image">
+					<viewer>
+					<![CDATA[
+			    		<img ng-show="record.imgProduct" ng-src="{{$image('picture', 'content')}}" />
+          				<img ng-show="!record.imgProduct" src="img/product-default.png" />
+					]]>
+					</viewer>
+				</field>
+				<button name="addOnCatalogBtn" title="Add on catalog" colSpan="10" onClick="save, action-method-supplier-management-add-on-catalog"/>
+			</panel>
+    		<panel name="productInfoPanel" colSpan="10" >
+				<field name="productCode" required="true"/>
+				<field name="productName" required="true"/>
+			  	<field name="purchasePrice"/>
+			  	<field name="purchaseCurrency"/>
+			  	<field name="purchaseUnit" />
+			  	<field name="description" colSpan="12"/> 
+			  	<field name="productCreated"/>
+			 </panel>
+		</panel>
+	</form>
+	
+	<action-method name="action-method-supplier-management-add-on-catalog">
+		<call class="com.axelor.apps.supplierportal.web.ProductSupplierController" method="addOnCatalog"/>
+	</action-method>
+	
+	<action-record name="action-record-product-supplier-new" model="com.axelor.apps.supplierportal.db.ProductSupplier">
+        <field name="purchaseCurrency"  expr="eval: __user__?.activeCompany?.currency" />
+	</action-record>
+	
+</object-views>

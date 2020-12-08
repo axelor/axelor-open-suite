@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
+	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project" orderBy="statusSelect, name">
 		<toolbar>
 			<button name="projectPlanningBtn" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
@@ -12,10 +12,11 @@
 				<item name="ganttWithProjectItem"  title="Gantt with project" action="action-project-open-popup-select-projects"/>
 			</menu>
 		</menubar>
-		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
-		<hilite background="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
+		<field name="name">
+		<hilite color="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
+		<hilite color="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
+		</field>
 		<field name="code"/>
-		<field name="name"/>
     <field name="parentProject"/>
 		<field name="clientPartner"/>
 		<field name="assignedTo"/>
@@ -26,6 +27,8 @@
 		<button name="openGanttBtn" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 		<field name="isProject" hidden="true"/>
 		<field name="projectTypeSelect" hidden="true"/>
+		<field name="progress"></field>
+		<field name="statusSelect"></field>
 	</grid>
 
 	<grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
@@ -76,7 +79,7 @@
 					css="label-bold bold large">
 					<editor x-show-titles="false">
 						<panel name="seq" colSpan="3">
-						<field name="code" showTitle="false" colSpan="12" required="true" if="__config__.app.getApp('project')?.generateProjectSequence"
+						<field name="code" showTitle="false" colSpan="12" readonly="true" if="__config__.app.getApp('project')?.generateProjectSequence"
 							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
 						<field name="code" showTitle="false" colSpan="12" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
 							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
@@ -253,7 +256,7 @@
 				<button name="cancelManageExpenseLinesBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-expense-line-cancel-manage-lines" />
 				<panel-dashlet name="expenseLinePanel" action="action-project-view-show-validated-expense-lines" colSpan="12" canSearch="true"/>
 			</panel>
-			<panel title="Production" name="productionPanel"  showIf="isBusinessProject"
+			<panel title="Production" name="productionPanel" showIf="isBusinessProject"
 				 if-module="axelor-business-production"
 				 if="__config__.app.isApp('business-project') 
 				 &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()">
@@ -332,11 +335,11 @@
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-					domain="self.isActivity = true" form-view="product-activity-form"
+					domain="self.isActivity = true AND dtype = 'Product'" form-view="product-activity-form"
 					grid-view="product-activity-grid" />
 				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
-				<field name="excludeTimesheetEditor" />
+				<field name="excludeTimesheetEditor" if-module="axelor-human-resource"/>
 				<field name="childProjectList" hidden="true" />
 				<field name="sequence" hidden="true" />
 				<field name="excludePlanning" if-module="axelor-business-project"
@@ -370,16 +373,14 @@
 		<panel name="characteristicsPanel" title="Characteristics" colSpan="12"
 			sidebar="true" canCollapse="true">
 			<panel name="configPanel" colSpan="12">
-				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					name="isProject" colSpan="6" widget="boolean-switch" />
+				<field name="isProject" colSpan="6" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
 				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
           name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 			</panel>
-			<panel if-module="axelor-business-project" name="project"
-				showIf="isProject" colSpan="12">
+			<panel name="projectPanel" showIf="isProject" colSpan="12">
 				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project"
 					requiredIf="isProject" />
 				<field name="parentProject" showIf="projectTypeSelect == 2" canEdit="false"
@@ -735,7 +736,7 @@
 	</action-record>
 	
 	<action-record name="action-project-record-bind-customer-parent" model="com.axelor.apps.project.db.Project">
-		<field name="clientPartner" expr="eval: _parent?.clientPartner"/>
+		<field name="clientPartner" expr="eval: __parent__?.clientPartner"/>
 	</action-record>
 
 	<action-method name="action-method-project-compute-progress">
@@ -797,7 +798,7 @@
 	</action-view>
 
 	<action-attrs name="action-business-support-attrs-project-default">
-		<attribute name="hidden" for="project" expr="eval:true" if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
+		<attribute name="hidden" for="project" expr="eval:true" if="__parent__ &amp;&amp; (__parent__?._model == 'com.axelor.apps.project.db.Project' || __parent__?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
 	</action-attrs>
 
 	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
@@ -835,4 +836,29 @@
         <view type="form" name="task-form" />
     </action-view>
 
+	<search-filters name="project-filters" model="com.axelor.apps.project.db.Project" title="Project filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="resourceBookingList" hidden="true" if="!__config__.app.getApp('project').resourceManagement"/>
+        <field name="productionOrderList" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject())"/>
+        <field name="clientPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="priceList" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+		<field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingTimesheet" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingExpenses" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingPurchases" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoicingSequenceSelect" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="consolidatePhaseWhenInvoicing" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoicingComment" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="manualElementList" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="roadmapList" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="announcementList" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="isBusinessProject" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    </search-filters>
 </object-views>

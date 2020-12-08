@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -30,7 +30,6 @@
     <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>
 	<string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
-  	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
   	<boolean name="inAti" title="In ATI"/>
   	<many-to-one name="duration" ref="com.axelor.apps.base.db.Duration" title="Validity duration"/>
   	<date name="endOfValidityDate" title="End of validity"/>
@@ -60,7 +59,7 @@
 	<decimal name="markup" title="Markup (%)"/>
   	
 <!--   	Onglet Autres informations -->
-	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
+	<many-to-one name="salespersonUser" ref="com.axelor.auth.db.User" title="Salesperson" massUpdate="true"/>
 	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" massUpdate="true"/>
 	
 <!-- 	Onglet description -->
@@ -107,7 +106,7 @@
 	
 	<!-- Subscription fields -->
 	<integer name="periodicityTypeSelect" selection="sale.subscription.periodicity.type.select" title="Periodicity type" default="2"/>
-	<integer name="numberOfPeriods" title="Number of periods" min="1" default="1" />
+	<integer name="numberOfPeriods" title="Period duration" min="1" default="1" />
 	<date name="contractStartDate" title="Contract start date" />
 	<integer name="contractPeriodInMonths" title="Contract period in months" />
 	<date name="currentContractPeriodEndDate" title="End of current contract period" />

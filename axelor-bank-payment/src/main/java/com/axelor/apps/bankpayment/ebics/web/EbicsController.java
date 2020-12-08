@@ -382,6 +382,7 @@ public class EbicsController {
       response.setValue("fullName", ebicsCertificate.getFullName());
       response.setValue("pemString", ebicsCertificate.getPemString());
       response.setValue("sha2has", ebicsCertificate.getSha2has());
+      response.setValue("serial", ebicsCertificate.getSerial());
     }
   }
 
@@ -459,6 +460,11 @@ public class EbicsController {
         ReportFactory.createReport(IReport.EBICS_CERTIFICATE, title + "-${date}${time}");
     report.addParam("CertificateId", Joiner.on(",").join(certIds));
     report.addParam("EbicsUserId", ebicsUser.getId());
+    report.addParam(
+        "Timezone",
+        ebicsUser.getAssociatedUser() != null
+            ? ebicsUser.getAssociatedUser().getActiveCompany()
+            : null);
     report.toAttach(ebicsUser);
     report.generate();
 

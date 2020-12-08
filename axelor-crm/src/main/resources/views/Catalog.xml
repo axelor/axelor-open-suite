@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<cards name="catalog-cards" title="Catalogs" model="com.axelor.apps.crm.db.Catalog" >
+		<field name="name"/>
+		<field name="catalogType"/>
+		<field name="description"/>
+		<template><![CDATA[
+			<div>
+				<div class="span4 card-image">
+					<img ng-src="{{$image(null, 'image')}}" >
+				</div>
+				<div class="span8">
+					<strong>{{name}}</strong>
+					<p class="muted" > <span x-translate>Catalog type</span> : {{catalogType.name}}</p>
+					<p class="muted">{{description}}</p>
+					<div class="buttons">
+						<a class="btn btn-small btn-info" href="" ui-action-click="com.axelor.apps.crm.web.CatalogController:showPdf" x-translate> Show PDF</a>
+					</div>
+				</div>
+			</div>
+			]]>
+		</template>
+	</cards>
+	
+	<grid name="catalog-grid" title="Catalogs" model="com.axelor.apps.crm.db.Catalog" >
+		<field name="name"/>	
+		<field name="catalogType"/>
+		<field name="description"/>
+		<field name="pdfFile" widget="binary-link" form-view="meta-files-form" grid-view="meta-files-grid"/>
+	</grid>
+	
+	<form name="catalog-form" title="Catalog" model="com.axelor.apps.crm.db.Catalog" width="large"
+	onSave="action-crm-validate-catalog-onsave" >
+		<panel name="mainPanel" >
+			<panel name="imagePanel" itemSpan="12" colSpan="2">
+				<field name="image" widget="Image"/>
+			</panel>
+			<panel name="contentPanel" itemSpan="3" colSpan="10">
+				<field name="name"/>
+				<field name="catalogType" required="true"/>
+				<field name="pdfFile" widget="binary-link" form-view="meta-files-form" grid-view="meta-files-grid"/>
+				<button name="showPdfButton" title="Show PDF" onClick="save, action-crm-method-catalog-show-pdf" readonlyIf="!pdfFile"/>
+				<field name="description" colSpan="12"/>
+			</panel>
+		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+	</form>
+
+	<action-validate name="action-crm-validate-catalog-onsave">
+		<error message="Only pdf files are allowed" if="eval: pdfFile != null &amp;&amp; com.google.common.io.Files.getFileExtension(pdfFile.fileName) != 'pdf'" />
+	</action-validate>
+	
+	<action-method name="action-crm-method-catalog-show-pdf">
+		<call class="com.axelor.apps.crm.web.CatalogController" method="showPdf"/>
+	</action-method>
+	
+</object-views>

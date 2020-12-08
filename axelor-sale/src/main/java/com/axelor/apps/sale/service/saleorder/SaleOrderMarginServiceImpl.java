@@ -52,12 +52,12 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
           totalGrossProfit = totalGrossProfit.add(saleOrderLineList.getSubTotalGrossMargin());
           marginRate =
               totalGrossProfit
-                  .divide(accountedRevenue, RoundingMode.HALF_EVEN)
-                  .multiply(new BigDecimal(100));
+                  .multiply(new BigDecimal(100))
+                  .divide(accountedRevenue, 2, RoundingMode.HALF_EVEN);
           markup =
               totalGrossProfit
-                  .divide(totalCostPrice, RoundingMode.HALF_EVEN)
-                  .multiply(new BigDecimal(100));
+                  .multiply(new BigDecimal(100))
+                  .divide(totalCostPrice, 2, RoundingMode.HALF_EVEN);
         }
       }
     }

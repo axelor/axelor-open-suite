@@ -111,7 +111,7 @@ public abstract class InvoiceGenerator {
     this.inAti = inAti;
     this.companyBankDetails = companyBankDetails;
     this.tradingName = tradingName;
-    this.today = Beans.get(AppAccountService.class).getTodayDate();
+    this.today = Beans.get(AppAccountService.class).getTodayDate(company);
   }
 
   /**
@@ -144,11 +144,11 @@ public abstract class InvoiceGenerator {
     this.externalReference = externalReference;
     this.inAti = inAti;
     this.tradingName = tradingName;
-    this.today = Beans.get(AppAccountService.class).getTodayDate();
+    this.today = Beans.get(AppAccountService.class).getTodayDate(company);
   }
 
   protected InvoiceGenerator() {
-    this.today = Beans.get(AppAccountService.class).getTodayDate();
+    this.today = Beans.get(AppAccountService.class).getTodayDate(company);
   }
 
   protected int inverseOperationType(int operationType) throws AxelorException {
@@ -266,8 +266,7 @@ public abstract class InvoiceGenerator {
     if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
       List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
       companyBankDetails =
-          bankDetailsList
-              .stream()
+          bankDetailsList.stream()
               .filter(bankDetails -> bankDetails.getIsDefault())
               .findFirst()
               .orElse(null);
@@ -303,7 +302,9 @@ public abstract class InvoiceGenerator {
 
   public int getInvoiceCopy() {
     if (partner.getIsCustomer()) {
-      return partner.getInvoicesCopySelect();
+      return (partner.getInvoicesCopySelect() == 0)
+          ? DEFAULT_INVOICE_COPY
+          : partner.getInvoicesCopySelect();
     }
     return DEFAULT_INVOICE_COPY;
   }

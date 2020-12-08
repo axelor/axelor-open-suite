@@ -57,7 +57,11 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       Period period =
           Period.between(
               employee.getSeniorityDate(),
-              refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate);
+              refDate == null
+                  ? Beans.get(AppBaseService.class)
+                      .getTodayDate(
+                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                  : refDate);
       return period.getYears();
     } catch (IllegalArgumentException e) {
       throw new AxelorException(
@@ -75,7 +79,11 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       Period period =
           Period.between(
               employee.getBirthDate(),
-              refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate);
+              refDate == null
+                  ? Beans.get(AppBaseService.class)
+                      .getTodayDate(
+                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                  : refDate);
       return period.getYears();
     } catch (IllegalArgumentException e) {
       throw new AxelorException(
@@ -152,7 +160,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         Beans.get(LeaveRequestRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4)",
+                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
                 employee.getUser(),
                 LeaveRequestRepository.STATUS_VALIDATED,
                 fromDate,
@@ -233,17 +241,17 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setFirstName(employee.getContactPartner().getFirstName());
     newDPAE.setSocialSecurityNumber(employee.getSocialSecurityNumber());
     newDPAE.setSexSelect(employee.getSexSelect());
-    newDPAE.setDateOfBirth(employee.getBirthDate());
+    newDPAE.setBirthDate(employee.getBirthDate());
     newDPAE.setDepartmentOfBirth(employee.getDepartmentOfBirth());
     newDPAE.setCityOfBirth(employee.getCityOfBirth());
     newDPAE.setCountryOfBirth(employee.getCountryOfBirth());
 
     // Contract
-    newDPAE.setDateOfHire(mainEmploymentContract.getStartDate());
-    newDPAE.setTimeOfHire(mainEmploymentContract.getStartTime());
+    newDPAE.setHireDate(mainEmploymentContract.getStartDate());
+    newDPAE.setHireTime(mainEmploymentContract.getStartTime());
     newDPAE.setTrialPeriodDuration(mainEmploymentContract.getTrialPeriodDuration());
     newDPAE.setContractType(mainEmploymentContract.getContractType());
-    newDPAE.setEndDateOfContract(mainEmploymentContract.getEndDate());
+    newDPAE.setContractEndDate(mainEmploymentContract.getEndDate());
 
     employee.addDpaeListItem(newDPAE);
 

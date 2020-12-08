@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
@@ -245,7 +246,14 @@ public class DataBackupCreateService {
   private List<Model> getMetaModelDataList(
       MetaModel metaModel, int start, Integer fetchLimit, List<String> subClasses)
       throws ClassNotFoundException {
-    return getQuery(metaModel, subClasses).fetch(fetchLimit, start);
+
+    Query<Model> query = getQuery(metaModel, subClasses);
+
+    if (query != null) {
+      return query.fetch(fetchLimit, start);
+    }
+
+    return null;
   }
 
   private long getMetaModelDataCount(MetaModel metaModel, List<String> subClasses)
@@ -370,7 +378,8 @@ public class DataBackupCreateService {
                         .getPackage()
                         .equals(Package.getPackage("com.axelor.meta.db"))
                     && !property.getTarget().isAssignableFrom(MetaFile.class)
-                    && !property.getTarget().isAssignableFrom(MetaJsonField.class))))) {
+                    && !property.getTarget().isAssignableFrom(MetaJsonField.class))))
+        && !property.isTransient()) {
       return true;
     }
     return false;
@@ -556,7 +565,7 @@ public class DataBackupCreateService {
   }
 
   public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = LocalDate.now();
+    LocalDate currentDate = DateTool.getTodayDate(null);
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 
@@ -618,40 +627,42 @@ public class DataBackupCreateService {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
     String backupZipFileName = "DataBackup_" + LocalDateTime.now().format(formatter) + ".zip";
     File zipFile = new File(dirPath, backupZipFileName);
-    try {
-      ZipOutputStream out = null;
-      out = new ZipOutputStream(new FileOutputStream(zipFile));
+    try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile))) {
+
       for (String fileName : fileNameList) {
         ZipEntry e = new ZipEntry(fileName);
         out.putNextEntry(e);
         File file = new File(dirPath, fileName);
-        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file));
-        byte[] data;
-        while (bin.available() > 0) {
-          if (bin.available() < BUFFER_SIZE) {
-            data = new byte[bin.available()];
-          } else {
-            data = new byte[BUFFER_SIZE];
+        try (BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file))) {
+          byte[] data;
+          while (bin.available() > 0) {
+            if (bin.available() < BUFFER_SIZE) {
+              data = new byte[bin.available()];
+            } else {
+              data = new byte[BUFFER_SIZE];
+            }
+            bin.read(data, 0, data.length);
+            out.write(data, 0, data.length);
           }
-          bin.read(data, 0, data.length);
-          out.write(data, 0, data.length);
+          bin.close();
+          out.closeEntry();
+
+          file.delete();
         }
-        bin.close();
-        out.closeEntry();
-        file.delete();
       }
       out.close();
     } catch (IOException e) {
       TraceBackService.trace(e, "Error From DataBackupCreateService - generateZIP()");
     }
+
     return zipFile;
   }
 
   /* Generate XML File from CSVConfig */
   private void generateConfig(String dirPath, CSVConfig csvConfig) {
-    try {
-      File file = new File(dirPath, DataBackupServiceImpl.CONFIG_FILE_NAME);
-      FileWriter fileWriter = new FileWriter(file, true);
+
+    File file = new File(dirPath, DataBackupServiceImpl.CONFIG_FILE_NAME);
+    try (FileWriter fileWriter = new FileWriter(file, true)) {
 
       XStream xStream = new XStream();
       xStream.processAnnotations(CSVConfig.class);

@@ -41,6 +41,7 @@ public class CalendarController {
             .add("calendar", "event-calendar-color-by-calendar")
             .add("grid", "event-grid")
             .add("form", "event-form")
+            .param("search-filters", "event-filters")
             .context("_typeSelect", 2)
             .domain(
                 "self.user.id = :_userId or self.calendar.user.id = :_userId or :_userId IN (SELECT attendee.user FROM self.attendees attendee) or self.organizer.user.id = :_userId")

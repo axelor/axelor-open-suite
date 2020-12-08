@@ -63,7 +63,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
       invoice.setSubscriptionFromDate(contract.getInvoicePeriodStartDate());
       invoice.setSubscriptionToDate(contract.getInvoicePeriodEndDate());
     } else if (contract.getEndDate() == null
-        || contract.getEndDate().isAfter(appBaseService.getTodayDate())) {
+        || contract.getEndDate().isAfter(appBaseService.getTodayDate(company))) {
       invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_INVOICE);
     } else {
       invoice.setOperationSubTypeSelect(
@@ -74,14 +74,11 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
     if (contract.getInvoicingDate() != null) {
       invoice.setInvoiceDate(contract.getInvoicingDate());
     } else {
-      invoice.setInvoiceDate(appBaseService.getTodayDate());
+      invoice.setInvoiceDate(appBaseService.getTodayDate(company));
     }
 
     invoice.setBankDetails(
-        contract
-            .getPartner()
-            .getBankDetailsList()
-            .stream()
+        contract.getPartner().getBankDetailsList().stream()
             .filter(it -> it.getIsDefault())
             .findFirst()
             .orElse(null));

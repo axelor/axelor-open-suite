@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -35,10 +35,10 @@
 	</selection>
 	
 	<selection name="production.order.priority.select">
-		<option value="1">Low</option>
-		<option value="2">Normal</option>
-		<option value="3">High</option>
-		<option value="4">Urgent</option>
+		<option value="1" color="cyan">Low</option>
+		<option value="2" color="blue">Normal</option>
+		<option value="3" color="orange">High</option>
+		<option value="4" color="red">Urgent</option>
 	</selection>
 	
 	<selection name="iproduction.work.center.type.select">
@@ -113,7 +113,7 @@
 		<option value="1">Partial end of production</option>
 		<option value="2">End of production</option>
 		<option value="3">Work in progress</option>
-		<option value="4">Bill of material</option>
+		<option value="4">Bill of materials</option>
 	</selection>
 
 	<selection name="production.weekly.planning.type.select">
@@ -125,6 +125,10 @@
 		<option value="1">Draft</option>
 		<option value="2">Costs computed</option>
 		<option value="3">Costs updated</option>
+	</selection>
+
+	<selection name='trace.back.origin.select' id="trace.back.origin.select.production" >
+		<option value='costSheet'>Cost sheet valuation</option>
 	</selection>
 
 </object-views>

@@ -19,12 +19,16 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.CalendarManagement;
 import com.axelor.apps.base.db.ICalendar;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -51,5 +55,34 @@ public class CalendarService extends ICalendarService {
     List<ICalendar> icalList = icalRepo.all().filter("self.user.id = ?1", user.getId()).fetch();
     calendarIdlist.addAll(Lists.transform(icalList, it -> it.getId()));
     return calendarIdlist;
+  }
+
+  @Override
+  public List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
+
+    if (calendar.getSynchronizationSelect().contentEquals(ICalendarRepository.CRM_SYNCHRO)) {
+      LocalDateTime lastSynchro = calendar.getLastSynchronizationDateT();
+      if (lastSynchro != null) {
+        return new ArrayList<ICalendarEvent>(
+            Beans.get(EventRepository.class)
+                .all()
+                .filter(
+                    "COALESCE(self.archived, false) = false "
+                        + "AND self.calendar = :calendar "
+                        + "AND COALESCE(self.updatedOn, self.createdOn) > :lastSynchro")
+                .bind("calendar", calendar)
+                .bind("lastSynchro", lastSynchro)
+                .fetch());
+      }
+
+      return new ArrayList<ICalendarEvent>(
+          Beans.get(EventRepository.class)
+              .all()
+              .filter("COALESCE(self.archived, false) = false AND self.calendar = :calendar")
+              .bind("calendar", calendar)
+              .fetch());
+    }
+
+    return super.getICalendarEvents(calendar);
   }
 }

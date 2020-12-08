@@ -17,20 +17,19 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,11 +64,6 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 
   @Override
   public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
-
-    AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
-    if (appSale != null && appSale.getActive() && appSale.getProductPackMgt()) {
-      this._addPackLines(saleOrder);
-    }
 
     this.initSaleOrderLineTaxList(saleOrder);
 
@@ -129,6 +123,11 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setInTaxTotal(BigDecimal.ZERO);
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+
+      // skip title lines in computing total amounts
+      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+        continue;
+      }
       saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add(saleOrderLine.getExTaxTotal()));
 
       // In the company accounting currency
@@ -163,28 +162,6 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     return total;
   }
 
-  private void _addPackLines(SaleOrder saleOrder) {
-
-    if (saleOrder.getSaleOrderLineList() == null) {
-      return;
-    }
-
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-
-    List<SaleOrderLine> lines = new ArrayList<SaleOrderLine>();
-    lines.addAll(saleOrderLines);
-    for (SaleOrderLine line : lines) {
-      if (line.getSubLineList() == null || line.getSubLineList().isEmpty()) {
-        continue;
-      }
-      for (SaleOrderLine subLine : line.getSubLineList()) {
-        if (subLine.getSaleOrder() == null) {
-          saleOrderLines.add(subLine);
-        }
-      }
-    }
-  }
-
   /**
    * Permet de réinitialiser la liste des lignes de TVA
    *
@@ -210,36 +187,49 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
   }
 
   @Override
-  public List<SaleOrderLine> removeSubLines(List<SaleOrderLine> soLines) {
+  public void computePackTotal(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
 
-    if (soLines == null) {
-      return soLines;
-    }
+    if (!CollectionUtils.isEmpty(saleOrderLineList)) {
+      saleOrderLineList.sort(
+          (soLine1, soLine2) -> Integer.compare(soLine1.getSequence(), soLine2.getSequence()));
 
-    List<SaleOrderLine> subLines = new ArrayList<SaleOrderLine>();
-    for (SaleOrderLine packLine : soLines) {
-      if (packLine.getTypeSelect() == 2 && packLine.getSubLineList() != null) {
-        packLine.getSubLineList().removeIf(it -> it.getId() != null && !soLines.contains(it));
-        packLine.setTotalPack(
-            packLine
-                .getSubLineList()
-                .stream()
-                .map(it -> it.getExTaxTotal())
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
-        subLines.addAll(packLine.getSubLineList());
+      BigDecimal totalAmount = BigDecimal.ZERO;
+      boolean isShowTotal = false;
+      boolean isFirstTitleLine = true;
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+          if (isFirstTitleLine) {
+            isFirstTitleLine = false;
+            isShowTotal = saleOrderLine.getIsShowTotal();
+          } else {
+            isFirstTitleLine = true;
+            saleOrderLine.setQty(BigDecimal.ZERO);
+          }
+          saleOrderLine.setExTaxTotal(
+              isFirstTitleLine && isShowTotal ? totalAmount : BigDecimal.ZERO);
+          totalAmount = BigDecimal.ZERO;
+        }
+        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+          totalAmount = totalAmount.add(saleOrderLine.getExTaxTotal());
+        }
       }
     }
-    Iterator<SaleOrderLine> lines = soLines.iterator();
+    saleOrder.setSaleOrderLineList(saleOrderLineList);
+  }
 
-    while (lines.hasNext()) {
-      SaleOrderLine subLine = lines.next();
-      if (subLine.getId() != null
-          && subLine.getParentLine() != null
-          && !subLines.contains(subLine)) {
-        lines.remove();
+  @Override
+  public void resetPackTotal(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (ObjectUtils.notEmpty(saleOrderLineList)) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+          saleOrderLine.setIsHideUnitAmounts(Boolean.FALSE);
+          saleOrderLine.setIsShowTotal(Boolean.FALSE);
+          saleOrderLine.setExTaxTotal(BigDecimal.ZERO);
+        }
       }
+      saleOrder.setSaleOrderLineList(saleOrderLineList);
     }
-
-    return soLines;
   }
 }

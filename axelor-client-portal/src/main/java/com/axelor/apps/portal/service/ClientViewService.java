@@ -18,6 +18,8 @@
 package com.axelor.apps.portal.service;
 
 import com.axelor.auth.db.User;
+import com.axelor.rpc.filter.Filter;
+import java.util.List;
 import java.util.Map;
 
 public interface ClientViewService {
@@ -27,45 +29,45 @@ public interface ClientViewService {
   public Map<String, Object> updateClientViewIndicators();
 
   /* Project */
-  public String getTotalProjectsOfUser(User user);
+  public List<Filter> getTotalProjectsOfUser(User user);
 
-  public String getNewTasksOfUser(User user);
+  public List<Filter> getNewTasksOfUser(User user);
 
-  public String getTasksInProgressOfUser(User user);
+  public List<Filter> getTasksInProgressOfUser(User user);
 
-  public String getTasksDueOfUser(User user);
+  public List<Filter> getTasksDueOfUser(User user);
 
   /* SaleOrder */
-  public String getOrdersInProgressOfUser(User user);
+  public List<Filter> getOrdersInProgressOfUser(User user);
 
-  public String getQuotationsOfUser(User user);
+  public List<Filter> getQuotationsOfUser(User user);
 
-  public String getLastOrderOfUser(User user);
+  public List<Filter> getLastOrderOfUser(User user);
 
   /* StockMove */
-  public String getLastDeliveryOfUser(User user);
+  public List<Filter> getLastDeliveryOfUser(User user);
 
-  public String getNextDeliveryOfUser(User user);
+  public List<Filter> getNextDeliveryOfUser(User user);
 
-  public String getPlannedDeliveriesOfUser(User user);
+  public List<Filter> getPlannedDeliveriesOfUser(User user);
 
-  public String getReversionsOfUser(User user);
+  public List<Filter> getReversionsOfUser(User user);
 
   /* Invoice */
-  public String getOverdueInvoicesOfUser(User user);
+  public List<Filter> getOverdueInvoicesOfUser(User user);
 
-  public String getAwaitingInvoicesOfUser(User user);
+  public List<Filter> getAwaitingInvoicesOfUser(User user);
 
-  public String getTotalRemainingOfUser(User user);
+  public List<Filter> getTotalRemainingOfUser(User user);
 
-  public String getRefundOfUser(User user);
+  public List<Filter> getRefundOfUser(User user);
 
   /* Ticket */
-  public String getTicketsOfUser(User user);
+  public List<Filter> getTicketsOfUser(User user);
 
-  public String getCompanyTicketsOfUser(User user);
+  public List<Filter> getCompanyTicketsOfUser(User user);
 
-  public String getResolvedTicketsOfUser(User user);
+  public List<Filter> getResolvedTicketsOfUser(User user);
 
-  public String getLateTicketsOfUser(User user);
+  public List<Filter> getLateTicketsOfUser(User user);
 }

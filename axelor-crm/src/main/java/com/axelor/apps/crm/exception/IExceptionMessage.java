@@ -69,7 +69,7 @@ public interface IExceptionMessage {
 
   /** Configuration */
   static final String CRM_CONFIG_1 = /*$$(*/
-      "Please configure informations for CRM for company %s" /*)*/;
+      "Please configure information for CRM for company %s" /*)*/;
 
   static final String CRM_CONFIG_USER_EMAIL = /*$$(*/
       "User %s does not have an email address configured nor is it linked to a partner with an email address configured." /*)*/;
@@ -92,4 +92,6 @@ public interface IExceptionMessage {
       "The number of repetitions must be greater than 0" /*)*/;
   static final String RECURRENCE_END_DATE = /*$$(*/
       "The end date must be after the start date" /*)*/;
+  public static final String OPPORTUNITY_1 = /*$$(*/
+      "There's no configured sequence for opportunities for the company %s" /*)*/;
 }

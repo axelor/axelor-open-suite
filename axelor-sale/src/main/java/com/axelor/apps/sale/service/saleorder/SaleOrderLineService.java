@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -37,8 +38,7 @@ public interface SaleOrderLineService {
    * @param saleOrderLine
    * @param saleOrder
    */
-  void computeProductInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
+  void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
   SaleOrderLine resetProductInformation(SaleOrderLine line);
@@ -119,8 +119,6 @@ public interface SaleOrderLineService {
 
   public Unit getSaleUnit(SaleOrderLine saleOrderLine);
 
-  public BigDecimal computeTotalPack(SaleOrderLine saleOrderLine);
-
   public SaleOrder getSaleOrder(Context context);
 
   public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
@@ -133,16 +131,18 @@ public interface SaleOrderLineService {
   public void checkMultipleQty(SaleOrderLine saleOrderLine, ActionResponse response);
 
   /**
-   * Fill price based on packPriceSelect only for packLine or subline. Works normal for standard
-   * line.
+   * Fill price for standard line.
    *
    * @param saleOrderLine
    * @param saleOrder
-   * @param packPriceSelect
    * @throws AxelorException
    */
-  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
-      throws AxelorException;
+  public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
-  public boolean checkTaxRequired(SaleOrderLine saleOrderLine, Integer packPriceSelect);
+  public SaleOrderLine createSaleOrderLine(
+      PackLine packLine,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      BigDecimal ConversionRate,
+      Integer sequence);
 }

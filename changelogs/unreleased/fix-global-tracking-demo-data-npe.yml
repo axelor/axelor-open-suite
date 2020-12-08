@@ -1,0 +1,3 @@
+---
+title: "Global tracking: fix script in demo data to avoid NPE"
+type: fix

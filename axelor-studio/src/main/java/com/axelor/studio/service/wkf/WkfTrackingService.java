@@ -17,12 +17,14 @@
  */
 package com.axelor.studio.service.wkf;
 
+import com.axelor.common.Inflector;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
+import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaStore;
-import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
@@ -71,6 +73,8 @@ public class WkfTrackingService {
 
   @Inject private WkfTrackingTimeRepository trackingTimeRepo;
 
+  @Inject private MetaJsonFieldRepository jsonFieldRepo;
+
   private BigDecimal durationHrs;
 
   private String oldStatus;
@@ -85,7 +89,7 @@ public class WkfTrackingService {
    * @throws ClassNotFoundException
    */
   @CallMethod
-  public void track(Long wkfId, Object object) {
+  public void track(Long wkfId, Object object, boolean isPreview) {
 
     if (object != null) {
 
@@ -112,19 +116,31 @@ public class WkfTrackingService {
         return;
       }
 
-      MetaJsonField wkfField = wkfTracking.getWkf().getStatusField();
+      String wkfFieldName = Beans.get(WkfService.class).getWkfFieldInfo(wkfTracking.getWkf())[0];
+      String selectionFieldName = wkfFieldName;
+      if (isPreview) {
+        wkfFieldName =
+            jsonFieldRepo
+                .findByName("wkf" + wkfTracking.getWkf().getCode() + "wkf" + wkfFieldName)
+                .getName();
+      }
+      String selection =
+          "wkf."
+              + Inflector.getInstance().dasherize(wkfTracking.getWkf().getName()).replace("_", ".");
+      selection +=
+          "." + Inflector.getInstance().dasherize(selectionFieldName).replace("_", ".") + ".select";
 
       Object status = null;
-      status = ctx.get(wkfField.getName());
+      status = ctx.get(wkfFieldName);
       log.debug("Status value: {}", status);
 
       if (status == null) {
         return;
       }
 
-      Option item = MetaStore.getSelectionItem(wkfField.getSelection(), status.toString());
+      Option item = MetaStore.getSelectionItem(selection, status.toString());
 
-      log.debug("Fetching option {} from selection {}", status, wkfField.getSelection());
+      log.debug("Fetching option {} from selection {}", status, selection);
       if (item == null) {
         return;
       }
@@ -157,6 +173,9 @@ public class WkfTrackingService {
     }
 
     Wkf wkf = wkfRepo.find((Long) ctx.get("wkfId"));
+    if (wkf == null) {
+      return null;
+    }
 
     WkfTracking wkfTracking =
         wkfTrackingRepo

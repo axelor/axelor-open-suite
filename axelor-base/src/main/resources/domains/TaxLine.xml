@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -10,7 +10,7 @@
     <many-to-one name="tax" ref="Tax" title="Tax" />
     <date name="startDate" title="Application start Date" required="true"/>
     <date name="endDate" title="Run off Date" />
-    <decimal name="value" title="Rate" scale="3" precision="20"/>
+    <decimal name="value" title="Rate" scale="3" precision="20" min="0"/>
     
     <string name="name" namecolumn="true" title="Name">
 	    <![CDATA[

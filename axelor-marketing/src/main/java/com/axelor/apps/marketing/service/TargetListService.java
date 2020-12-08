@@ -20,6 +20,7 @@ package com.axelor.apps.marketing.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.marketing.db.TargetList;
+import com.axelor.exception.AxelorException;
 import java.util.Set;
 
 public interface TargetListService {
@@ -28,7 +29,7 @@ public interface TargetListService {
 
   public String getLeadQuery(TargetList targetList);
 
-  public Set<Partner> getAllPartners(Set<TargetList> targetListSet);
+  public Set<Partner> getAllPartners(Set<TargetList> targetListSet) throws AxelorException;
 
-  public Set<Lead> getAllLeads(Set<TargetList> targetListSet);
+  public Set<Lead> getAllLeads(Set<TargetList> targetListSet) throws AxelorException;
 }

@@ -36,10 +36,10 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -76,9 +76,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine,
-      boolean isSubLine,
-      Integer packPriceSelect) {
+      StockMoveLine stockMoveLine) {
     super(
         invoice,
         product,
@@ -95,9 +93,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         discountTypeSelect,
         exTaxTotal,
         inTaxTotal,
-        isTaxInvoice,
-        isSubLine,
-        packPriceSelect);
+        isTaxInvoice);
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
@@ -116,22 +112,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine,
-      boolean isSubLine,
-      Integer packPriceSelect)
+      StockMoveLine stockMoveLine)
       throws AxelorException {
 
-    super(
-        invoice,
-        product,
-        productName,
-        description,
-        qty,
-        unit,
-        sequence,
-        isTaxInvoice,
-        isSubLine,
-        packPriceSelect);
+    super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
 
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
@@ -212,7 +196,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (saleOrderLine != null) {
 
-      if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
+      if (saleOrderLine.getAnalyticDistributionTemplate() != null
+          || !ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
         invoiceLine.setAnalyticDistributionTemplate(
             saleOrderLine.getAnalyticDistributionTemplate());
         this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
@@ -225,7 +210,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     } else if (purchaseOrderLine != null) {
 
-      if (purchaseOrderLine.getAnalyticDistributionTemplate() != null) {
+      if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
+          || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
         invoiceLine.setAnalyticDistributionTemplate(
             purchaseOrderLine.getAnalyticDistributionTemplate());
         this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
@@ -242,8 +228,9 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           purchaseOrderLine.getBudgetDistributionSumAmount());
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
-      if (product != null && isAccountRequired()) {
-        invoiceLine.setProductCode(product.getCode());
+      if (product != null) {
+        invoiceLine.setProductCode(
+            (String) productCompanyService.get(product, "code", invoice.getCompany()));
         Account account =
             accountManagementService.getProductAccount(
                 product,
@@ -355,26 +342,5 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     } else {
       return product.getPurchasesUnit();
     }
-  }
-
-  @Override
-  public boolean isAccountRequired() {
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.isAccountRequired();
-    }
-
-    if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
-
-      if (isSubLine && packPriceSelect == InvoiceLineRepository.PACK_PRICE_ONLY) {
-        return false;
-      }
-      if (typeSelect == InvoiceLineRepository.TYPE_PACK
-          && packPriceSelect == InvoiceLineRepository.SUBLINE_PRICE_ONLY) {
-        return false;
-      }
-    }
-
-    return true;
   }
 }

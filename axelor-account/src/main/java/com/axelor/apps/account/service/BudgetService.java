@@ -70,8 +70,7 @@ public class BudgetService {
     }
 
     BigDecimal totalAmountRealized =
-        budgetLineList
-            .stream()
+        budgetLineList.stream()
             .map(BudgetLine::getAmountRealized)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -102,7 +101,9 @@ public class BudgetService {
               for (BudgetLine budgetLine : budget.getBudgetLineList()) {
                 LocalDate fromDate = budgetLine.getFromDate();
                 LocalDate toDate = budgetLine.getToDate();
-                if ((fromDate.isBefore(date) || fromDate.isEqual(date))
+                if (fromDate != null
+                    && toDate != null
+                    && (fromDate.isBefore(date) || fromDate.isEqual(date))
                     && (toDate.isAfter(date) || toDate.isEqual(date))) {
                   budgetLine.setAmountRealized(
                       budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
@@ -225,8 +226,7 @@ public class BudgetService {
       return;
     }
 
-    invoiceLineList
-        .stream()
+    invoiceLineList.stream()
         .filter(invoiceLine -> invoiceLine.getBudgetDistributionList() != null)
         .flatMap(x -> x.getBudgetDistributionList().stream())
         .forEach(

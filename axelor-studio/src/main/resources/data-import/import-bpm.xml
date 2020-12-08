@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.3.xsd">
  	
  	<input file="bpm.xml" root="bpm" >
  		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" update="true" call="com.axelor.studio.service.ImportService:importAppBuilderImg">
@@ -14,19 +14,26 @@
  		</bind>
  		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" create="false" update="true" call="com.axelor.studio.service.ImportService:importAppBuilder">
  			<bind node="code" to="code" />
-			<bind node="depends" alias="depends" />
-			<bind to="dependsOnSet" alias="deps"  search="self.code in :deps"  eval="depends != null ? depends.split(',') as List : []" create="false"/>
+			<bind node="depends/depend" to="dependsOnSet" search="self.code in :code" create="false">
+				<bind node="@code" to="code"/>
+			</bind>
  		</bind>
  		<bind node="models/model" type="com.axelor.meta.db.MetaJsonModel" search="self.name = :name" update="true">
  			<bind node="name" to="name" />
             <bind node="title" to="title" />
             <bind node="onNew" to="onNew" />
             <bind node="onSave" to="onSave" />
+            <bind node="formWidth" to="formWidth" />
+            <bind node="isGenerateMenu" to="isGenerateMenu" />
             <bind node="menuTitle" to="menuTitle" />
             <bind node="menuIcon" to="menuIcon" />
             <bind node="menuBackground" to="menuBackground" />
             <bind node="menuOrder" to="menuOrder" />
             <bind node="menuTop" to="menuTop" />
+            <bind node="menuBuilder" to="menuBuilder" search="self.name = :menuBuilderName" update="true" if="isGenerateMenu != null &amp;&amp; isGenerateMenu == 'true'">
+            	<bind node="@name" to="name" alias="menuBuilderName"/>
+            	<bind node="@title" to="title"/>
+            </bind>
             <bind node="menuParent" to="menuParent" search="self.id = :menuParent" create="false"  />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"  />
  		</bind>
@@ -58,6 +65,8 @@
  			<bind node="required" to="required" />
  			<bind node="requiredIf" to="requiredIf" />
  			<bind node="readonly" to="readonly" />
+ 			<bind node="readonlyIf" to="readonlyIf" />
+ 			<bind node="includeIf" to="includeIf"/>
  			<bind node="scale" to="scale" />
  			<bind node="selection" to="selection" />
  			<bind node="sequence" to="sequence" />
@@ -100,6 +109,8 @@
  			<bind node="required" to="required" />
  			<bind node="requiredIf" to="requiredIf" />
  			<bind node="readonly" to="readonly" />
+ 			<bind node="readonlyIf" to="readonlyIf" />
+ 			<bind node="includeIf" to="includeIf"/>
  			<bind node="scale" to="scale" />
  			<bind node="selection" to="selection" />
  			<bind node="sequence" to="sequence" />
@@ -223,6 +234,29 @@
 			<bind node="transactional" to="transactional" />
 			<bind node="scriptType" to="scriptType" />
 			<bind node="scriptText" to="scriptText" />
+			<bind node="emailTemplate" to="emailTemplate" search="self.name = :name AND (self.metaModel.name = :metaModel OR self.metaJsonModel.name = :metaJsonModel)" update="true" if="_type == '4'">
+				<bind node="name" to="name"/>
+				<bind node="mediaTypeSelect" to="mediaTypeSelect"/>
+				<bind node="language" to="language" search="self.code = :language" create="false"/>
+				<bind node="metaModel" to="metaModel" search="self.name = :metaModel" create="false"/>
+				<bind node="fromAdress" to="fromAdress"/>
+				<bind node="replyToRecipients" to="replyToRecipients"/>
+				<bind node="toRecipients" to="toRecipients"/>
+				<bind node="ccRecipients" to="ccRecipients"/>
+				<bind node="bccRecipients" to="bccRecipients"/>
+				<bind node="subject" to="subject"/>
+				<bind node="content" to="content"/>
+				<bind node="templateContextList/templateContextLine" to="templateContextList">
+					<bind node="name" to="name"/>
+					<bind node="value" to="value"/>
+				</bind>
+				<bind node="target" to="target"/>
+				<bind node="isDefault" to="isDefault"/>
+				<bind node="isSystem" to="isSystem"/>
+				<bind node="isJson" to="isJson"/>
+				<bind node="metaJsonModel" to="metaJsonModel" search="self.name = :metaJsonModel" create="false"/>
+				<bind node="birtTemplate" to="birtTemplate" search="self.name = :birtTemplate" create="false"/>
+			</bind>
 			<bind node="actionBuilderViews/view" to="actionBuilderViews">
 				<bind node="viewType" to="viewType" />
 				<bind node="viewName" to="viewName" />
@@ -283,6 +317,19 @@
 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false" />
 		</bind>
 		
+		<bind node="studioMetaActions/studioMetaAction" type="com.axelor.meta.db.MetaAction" search="self.name = :name" update="true">
+			<bind node="name" to="name"/>
+			<bind node="priority" to="priority"/>
+			<bind node="sequence" to="sequence"/>
+			<bind node="type" to="type"/>
+			<bind node="xml" to="xml"/>
+			<bind node="model" to="model"/>
+			<bind node="module" to="module"/>
+			<bind node="home" to="home"/>
+			<bind node="isCustom" to="isCustom"/>
+			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
+		</bind>
+
 		<bind node="menuBuilders/menuBuilder" type="com.axelor.studio.db.MenuBuilder" search="self.name = :name" call="com.axelor.studio.service.ImportService:importMenuBuilder"  update="true">
 			<bind node="name" to="name" />
 			<bind node="title" to="title" />
@@ -311,7 +358,8 @@
 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
 		</bind>
 		
-		<bind node="wkfs/wkf" type="com.axelor.studio.db.Wkf" search="self.name = :name" update="true">
+		<bind node="wkfs/wkf" type="com.axelor.studio.db.Wkf" search="self.code = :code" update="true">
+			<bind node="code" to="code"/>
 			<bind node="name" to="name" />
 			<bind node="model" to="model" />
 			<bind node="isJson" to="isJson" alias="_isJson"/>
@@ -324,8 +372,8 @@
 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
 		</bind>
 		
-		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :name and self.wkf.name = :wkf" update="true">
-			<bind node="wkf" to="wkf" search="self.name = :wkf" create="false"/>
+		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :name and self.wkf.code = :wkf" update="true">
+			<bind node="wkf" to="wkf" search="self.code = :wkf" create="false"/>
 			<bind node="name" to="name" />
 			<bind node="title" to="title" />
 			<bind node="xmlId" to="xmlId" />
@@ -341,8 +389,8 @@
 			</bind>
 		</bind>
 		
-		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :name and self.wkf.name = :wkf" update="true" create="false">
-			<bind node="wkf" to="wkf" search="self.name = :wkf" create="false"/>
+		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :name and self.wkf.code = :wkf" update="true" create="false">
+			<bind node="wkf" to="wkf" search="self.code = :wkf" create="false"/>
 			<bind node="name" to="name" />
 			<bind node="title" to="title" />
 			<bind node="xmlId" to="xmlId" />
@@ -358,8 +406,8 @@
 			</bind>
 		</bind>
 		
-		<bind node="transitions/transition" type="com.axelor.studio.db.WkfTransition"  search="self.name = :name and self.wkf.name = :wkf" update="true">
-			<bind node="wkf" to="wkf" search="self.name = :wkf" update="true" create="false"/>
+		<bind node="transitions/transition" type="com.axelor.studio.db.WkfTransition"  search="self.name = :name and self.wkf.code = :wkf" update="true">
+			<bind node="wkf" to="wkf" search="self.code = :wkf" update="true" create="false"/>
 			<bind node="name" to="name" />
 			<bind node="xmlId" to="xmlId" />
 			<bind node="isButton" to="isButton" />
@@ -381,27 +429,27 @@
 				<bind node="isTargetJson" to="isTargetJson" />
 				<bind node="logicOp" to="logicOp" />
 			</bind>
-			<bind node="source" to="source" search="self.name = :source and self.wkf.name = :wkf" update="false" create="false" />
-			<bind node="target" to="target" search="self.name = :target and self.wkf.name = :wkf" update="false" create="false" />
+			<bind node="source" to="source" search="self.name = :source and self.wkf.code = :wkf" update="false" create="false" />
+			<bind node="target" to="target" search="self.name = :target and self.wkf.code = :wkf" update="false" create="false" />
 			<bind node="alertTypeSelect" to="alertTypeSelect" />
 			<bind node="alertMsg" to="alertMsg" />
 			<bind node="successMsg" to="successMsg" />
 		</bind>
 		
-		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :nodeName and self.wkf.name = :wkf" update="true" create="false">
-			<bind node="wkf" to="wkf" search="self.name = :wkf" update="true" create="false" />
+		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :nodeName and self.wkf.code = :wkf" update="true" create="false">
+			<bind node="wkf" to="wkf" search="self.code = :wkf" update="true" create="false" />
 			<bind node="name" to="name" alias="nodeName" />
-			<bind node="incomings/incoming" to="incoming" search="self.name = :inNode and self.wkf.name = :wkf" update="false" create="false">
+			<bind node="incomings/incoming" to="incoming" search="self.name = :inNode and self.wkf.code = :wkf" update="false" create="false">
 				<bind node="text()" to="name" alias="inNode" />
 			</bind>
-			<bind node="outgoings/outgoing" to="outgoings" search="self.name = :outNode and self.wkf.name = :wkf" update="false" create="false">
+			<bind node="outgoings/outgoing" to="outgoings" search="self.name = :outNode and self.wkf.code = :wkf" update="false" create="false">
 				<bind node="text()" to="name" alias="outNode" />
 			</bind>
 		</bind>
  	</input> 
  	
  	<input file="bpm.xml" root="bpm" >
- 		<bind node="wkfs/wkf" type="com.axelor.studio.db.Wkf" search="self.name = :name" create="false" call="com.axelor.studio.service.ImportService:importAppWkf">
+ 		<bind node="wkfs/wkf" type="com.axelor.studio.db.Wkf" search="self.code = :code" create="false" call="com.axelor.studio.service.ImportService:importAppWkf">
 			<bind node="name" to="name" />
 		</bind>
  	</input>

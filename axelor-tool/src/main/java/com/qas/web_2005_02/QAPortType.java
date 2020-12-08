@@ -34,14 +34,12 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 public interface QAPortType {
 
   @WebResult(
-    name = "QALicenceInfo",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "QALicenceInfo",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(
-    operationName = "DoGetLicenseInfo",
-    action = "http://www.qas.com/web-2005-02/DoGetLicenseInfo"
-  )
+      operationName = "DoGetLicenseInfo",
+      action = "http://www.qas.com/web-2005-02/DoGetLicenseInfo")
   public QALicenceInfo doGetLicenseInfo() throws Fault;
 
   @WebResult(name = "QAData", targetNamespace = "http://www.qas.com/web-2005-02", partName = "body")
@@ -49,124 +47,106 @@ public interface QAPortType {
   public QAData doGetData() throws Fault;
 
   @WebResult(
-    name = "QAExampleAddresses",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "QAExampleAddresses",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(
-    operationName = "DoGetExampleAddresses",
-    action = "http://www.qas.com/web-2005-02/DoGetExampleAddresses"
-  )
+      operationName = "DoGetExampleAddresses",
+      action = "http://www.qas.com/web-2005-02/DoGetExampleAddresses")
   public QAExampleAddresses doGetExampleAddresses(
       @WebParam(
-            partName = "body",
-            name = "QAGetExampleAddresses",
-            targetNamespace = "http://www.qas.com/web-2005-02"
-          )
+              partName = "body",
+              name = "QAGetExampleAddresses",
+              targetNamespace = "http://www.qas.com/web-2005-02")
           QAGetExampleAddresses body)
       throws Fault;
 
   @WebResult(
-    name = "Picklist",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "Picklist",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(operationName = "DoRefine", action = "http://www.qas.com/web-2005-02/DoRefine")
   public Picklist doRefine(
       @WebParam(
-            partName = "body",
-            name = "QARefine",
-            targetNamespace = "http://www.qas.com/web-2005-02"
-          )
+              partName = "body",
+              name = "QARefine",
+              targetNamespace = "http://www.qas.com/web-2005-02")
           QARefine body)
       throws Fault;
 
   @WebResult(
-    name = "Address",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "Address",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(operationName = "DoGetAddress", action = "http://www.qas.com/web-2005-02/DoGetAddress")
   public Address doGetAddress(
       @WebParam(
-            partName = "body",
-            name = "QAGetAddress",
-            targetNamespace = "http://www.qas.com/web-2005-02"
-          )
+              partName = "body",
+              name = "QAGetAddress",
+              targetNamespace = "http://www.qas.com/web-2005-02")
           QAGetAddress body)
       throws Fault;
 
   @WebResult(
-    name = "QASearchResult",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "QASearchResult",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(operationName = "DoSearch", action = "http://www.qas.com/web-2005-02/DoSearch")
   public QASearchResult doSearch(
       @WebParam(
-            partName = "body",
-            name = "QASearch",
-            targetNamespace = "http://www.qas.com/web-2005-02"
-          )
+              partName = "body",
+              name = "QASearch",
+              targetNamespace = "http://www.qas.com/web-2005-02")
           QASearch body)
       throws Fault;
 
   @WebResult(
-    name = "QASearchOk",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "QASearchOk",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(operationName = "DoCanSearch", action = "http://www.qas.com/web-2005-02/DoCanSearch")
   public QASearchOk doCanSearch(
       @WebParam(
-            partName = "body",
-            name = "QACanSearch",
-            targetNamespace = "http://www.qas.com/web-2005-02"
-          )
+              partName = "body",
+              name = "QACanSearch",
+              targetNamespace = "http://www.qas.com/web-2005-02")
           QACanSearch body)
       throws Fault;
 
   @WebResult(
-    name = "QALayouts",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "QALayouts",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(operationName = "DoGetLayouts", action = "http://www.qas.com/web-2005-02/DoGetLayouts")
   public QALayouts doGetLayouts(
       @WebParam(
-            partName = "body",
-            name = "QAGetLayouts",
-            targetNamespace = "http://www.qas.com/web-2005-02"
-          )
+              partName = "body",
+              name = "QAGetLayouts",
+              targetNamespace = "http://www.qas.com/web-2005-02")
           QAGetLayouts body)
       throws Fault;
 
   @WebResult(
-    name = "QAPromptSet",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "QAPromptSet",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(
-    operationName = "DoGetPromptSet",
-    action = "http://www.qas.com/web-2005-02/DoGetPromptSet"
-  )
+      operationName = "DoGetPromptSet",
+      action = "http://www.qas.com/web-2005-02/DoGetPromptSet")
   public QAPromptSet doGetPromptSet(
       @WebParam(
-            partName = "body",
-            name = "QAGetPromptSet",
-            targetNamespace = "http://www.qas.com/web-2005-02"
-          )
+              partName = "body",
+              name = "QAGetPromptSet",
+              targetNamespace = "http://www.qas.com/web-2005-02")
           QAGetPromptSet body)
       throws Fault;
 
   @WebResult(
-    name = "QASystemInfo",
-    targetNamespace = "http://www.qas.com/web-2005-02",
-    partName = "body"
-  )
+      name = "QASystemInfo",
+      targetNamespace = "http://www.qas.com/web-2005-02",
+      partName = "body")
   @WebMethod(
-    operationName = "DoGetSystemInfo",
-    action = "http://www.qas.com/web-2005-02/DoGetSystemInfo"
-  )
+      operationName = "DoGetSystemInfo",
+      action = "http://www.qas.com/web-2005-02/DoGetSystemInfo")
   public QASystemInfo doGetSystemInfo() throws Fault;
 }

@@ -18,9 +18,7 @@
 package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -29,6 +27,7 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
@@ -43,17 +42,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
-    implements InvoiceServiceSupplychain {
+public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
   @Inject
   public InvoiceServiceSupplychainImpl(
@@ -65,7 +61,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      MoveToolService moveToolService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -75,7 +72,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         appAccountService,
         partnerService,
         invoiceLineService,
-        accountConfigService);
+        accountConfigService,
+        moveToolService);
   }
 
   @Override
@@ -149,9 +147,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     SaleOrder saleOrder = invoice.getSaleOrder();
     // search sale order in invoice lines
     List<SaleOrder> saleOrderList =
-        invoice
-            .getInvoiceLineList()
-            .stream()
+        invoice.getInvoiceLineList().stream()
             .map(invoiceLine -> invoice.getSaleOrder())
             .collect(Collectors.toList());
 
@@ -165,73 +161,15 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       return new ArrayList<>();
     } else {
       // get move lines from sale order
-      return saleOrderList
-          .stream()
+      return saleOrderList.stream()
           .flatMap(saleOrder1 -> saleOrder1.getAdvancePaymentList().stream())
           .filter(Objects::nonNull)
           .distinct()
           .map(AdvancePayment::getMove)
           .filter(Objects::nonNull)
           .distinct()
-          .flatMap(move -> move.getMoveLineList().stream())
+          .flatMap(move -> moveToolService.getToReconcileCreditMoveLines(move).stream())
           .collect(Collectors.toList());
     }
-  }
-
-  @Override
-  public List<InvoiceLine> addSubLines(List<InvoiceLine> invoiceLine) {
-
-    if (invoiceLine == null) {
-      return invoiceLine;
-    }
-
-    List<InvoiceLine> lines = new ArrayList<InvoiceLine>();
-    lines.addAll(invoiceLine);
-    for (InvoiceLine line : lines) {
-      if (line.getSubLineList() == null) {
-        continue;
-      }
-      for (InvoiceLine subLine : line.getSubLineList()) {
-        if (subLine.getInvoice() == null) {
-          invoiceLine.add(subLine);
-        }
-      }
-    }
-    return invoiceLine;
-  }
-
-  @Override
-  public List<InvoiceLine> removeSubLines(List<InvoiceLine> invoiceLines) {
-
-    if (invoiceLines == null) {
-      return invoiceLines;
-    }
-
-    List<InvoiceLine> subLines = new ArrayList<InvoiceLine>();
-    for (InvoiceLine packLine : invoiceLines) {
-      if (packLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK
-          && packLine.getSubLineList() != null) {
-        packLine.getSubLineList().removeIf(it -> it.getId() != null && !invoiceLines.contains(it));
-        packLine.setTotalPack(
-            packLine
-                .getSubLineList()
-                .stream()
-                .map(it -> it.getExTaxTotal())
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
-        subLines.addAll(packLine.getSubLineList());
-      }
-    }
-    Iterator<InvoiceLine> lines = invoiceLines.iterator();
-
-    while (lines.hasNext()) {
-      InvoiceLine subLine = lines.next();
-      if (subLine.getId() != null
-          && subLine.getParentLine() != null
-          && !subLines.contains(subLine)) {
-        lines.remove();
-      }
-    }
-
-    return invoiceLines;
   }
 }

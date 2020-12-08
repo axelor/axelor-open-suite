@@ -78,12 +78,12 @@ public class BankStatementController {
                 .model(BankReconciliation.class.getName())
                 .add("grid", "bank-reconciliation-grid")
                 .add("form", "bank-reconciliation-form")
+                .param("search-filters", "bank-reconciliation-filters")
                 .domain(
                     "self.id in ("
                         + Joiner.on(",")
                             .join(
-                                bankReconciliationList
-                                    .stream()
+                                bankReconciliationList.stream()
                                     .map(BankReconciliation::getId)
                                     .toArray())
                         + ")")

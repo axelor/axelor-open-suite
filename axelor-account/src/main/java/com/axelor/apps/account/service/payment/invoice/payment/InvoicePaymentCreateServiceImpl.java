@@ -250,7 +250,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         createInvoicePayment(
             invoice,
             invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
-            appBaseService.getTodayDate(),
+            appBaseService.getTodayDate(invoice.getCompany()),
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
@@ -297,14 +297,13 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
     for (Long invoiceId : invoiceList) {
 
-      invoicePaymentList.add(
+      Invoice invoice = invoiceRepository.find(invoiceId);
+      InvoicePayment invoicePayment =
           this.createInvoicePayment(
-              invoiceRepository.find(invoiceId),
-              paymentMode,
-              companyBankDetails,
-              paymentDate,
-              bankDepositDate,
-              chequeNumber));
+              invoice, paymentMode, companyBankDetails, paymentDate, bankDepositDate, chequeNumber);
+      invoicePaymentList.add(invoicePayment);
+      invoice.addInvoicePaymentListItem(invoicePayment);
+      invoicePaymentToolService.updateAmountPaid(invoice);
     }
 
     return invoicePaymentList;

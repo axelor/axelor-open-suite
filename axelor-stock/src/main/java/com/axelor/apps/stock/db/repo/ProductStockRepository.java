@@ -17,16 +17,25 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ProductStockRepository extends ProductBaseRepository {
 
@@ -34,7 +43,44 @@ public class ProductStockRepository extends ProductBaseRepository {
 
   @Inject private StockLocationRepository stockLocationRepo;
 
+  @Inject private AppStockService appStockService;
+
   @Inject private StockLocationLineService stockLocationLineService;
+
+  public Product save(Product product) {
+
+    Set<MetaField> specificProductFieldSet =
+        appBaseService.getAppBase().getCompanySpecificProductFieldsList();
+    if (!specificProductFieldSet.isEmpty() && appBaseService.getAppBase().getEnableMultiCompany()) {
+      ArrayList<Company> productCompanyList = new ArrayList<>();
+      if (product.getProductCompanyList() != null) {
+        for (ProductCompany productCompany : product.getProductCompanyList()) {
+          productCompanyList.add(productCompany.getCompany());
+        }
+      }
+      Mapper mapper = Mapper.of(Product.class);
+      List<StockConfig> stockConfigList = Beans.get(StockConfigRepository.class).all().fetch();
+      for (StockConfig stockConfig : stockConfigList) {
+        if (stockConfig.getCompany() != null
+            && !productCompanyList.contains(stockConfig.getCompany())
+            && stockConfig.getReceiptDefaultStockLocation() != null
+            && (stockConfig.getCompany().getArchived() == null
+                || !stockConfig.getCompany().getArchived())) {
+          ProductCompany productCompany = new ProductCompany();
+          for (MetaField specificField : specificProductFieldSet) {
+            mapper.set(
+                productCompany,
+                specificField.getName(),
+                mapper.get(product, specificField.getName()));
+          }
+          productCompany.setCompany(stockConfig.getCompany());
+          productCompany.setProduct(product);
+          product.addProductCompanyListItem(productCompany);
+        }
+      }
+    }
+    return super.save(product);
+  }
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {

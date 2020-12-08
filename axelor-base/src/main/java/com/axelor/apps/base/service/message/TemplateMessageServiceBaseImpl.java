@@ -17,15 +17,18 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -42,6 +45,8 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import org.eclipse.birt.core.data.DataTypeUtil;
 import org.eclipse.birt.core.exception.BirtException;
@@ -56,7 +61,12 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   @Inject
   public TemplateMessageServiceBaseImpl(
       MessageService messageService, TemplateContextService templateContextService) {
-    super(messageService, templateContextService);
+    super(
+        AuthUtils.getUser().getActiveCompany() != null
+            ? AuthUtils.getUser().getActiveCompany().getTimezone()
+            : "",
+        messageService,
+        templateContextService);
   }
 
   @Override
@@ -67,11 +77,31 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       return metaFiles;
     }
 
+    Locale locale =
+        Optional.ofNullable(template.getLanguage())
+            .map(Language::getCode)
+            .map(Locale::new)
+            .orElseGet(AppFilter::getLocale);
+    maker.setLocale(locale);
+
     metaFiles.add(createMetaFileUsingBirtTemplate(maker, template.getBirtTemplate()));
 
     logger.debug("Metafile to attach: {}", metaFiles);
 
     return metaFiles;
+  }
+
+  @Override
+  public TemplateMaker initMaker(long objectId, String model, String tag, Template template)
+      throws ClassNotFoundException {
+    Locale locale =
+        Optional.ofNullable(template.getLanguage())
+            .map(Language::getCode)
+            .map(Locale::new)
+            .orElseGet(AppFilter::getLocale);
+    maker.setLocale(locale);
+
+    return super.initMaker(objectId, model, tag, template);
   }
 
   public MetaFile createMetaFileUsingBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate)

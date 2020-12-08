@@ -244,9 +244,7 @@ public class InvoicingProjectService {
             false,
             saleOrderLine,
             null,
-            null,
-            false,
-            0) {
+            null) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -294,9 +292,7 @@ public class InvoicingProjectService {
             false,
             null,
             purchaseOrderLine,
-            null,
-            false,
-            0) {
+            null) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
@@ -491,6 +487,7 @@ public class InvoicingProjectService {
     ReportSettings reportSettings =
         ReportFactory.createReport(IReport.INVOICING_PROJECT_ANNEX, title)
             .addParam("InvProjectId", invoicingProject.getId())
+            .addParam("Timezone", getTimezone(invoicingProject))
             .addParam("Locale", ReportSettings.getPrintingLocale(null));
 
     if (invoicingProject.getAttachAnnexToInvoice()) {
@@ -508,6 +505,14 @@ public class InvoicingProjectService {
       return;
     }
     reportSettings.toAttach(invoicingProject).generate();
+  }
+
+  private String getTimezone(InvoicingProject invoicingProject) {
+    if (invoicingProject.getProject() == null
+        || invoicingProject.getProject().getCompany() == null) {
+      return null;
+    }
+    return invoicingProject.getProject().getCompany().getTimezone();
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})

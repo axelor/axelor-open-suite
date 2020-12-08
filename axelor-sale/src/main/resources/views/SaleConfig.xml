@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="sale-config-grid" title="Sale configurations" model="com.axelor.apps.sale.db.SaleConfig">
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -11,11 +11,11 @@
 		<panel name="mainPanel">
 			<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 			<field name="saleOrderInAtiSelect"/>
-			<field name="defaultValidityDuration" form-view="duration-form" grid-view="duration-grid"/>
+			<field name="defaultValidityDuration" domain="self.applicationTypeSelect = 1" form-view="duration-form" grid-view="duration-grid"/>
 		</panel>
 		<panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 			<field name="acceptedCredit"/>
-			<button name="updateCustomerAcceptedCreditBtn" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit"/>
+			<button name="updateCustomerAcceptedCreditBtn" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit" prompt="All customer credit will be updated."/>
 		</panel>
 		<panel name="printingSettingsPanel" title="Printing settings">
 			<field name="displaySalemanOnPrinting" widget="boolean-switch"/>
@@ -42,9 +42,9 @@
 		<field name="company" expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
 		<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
-
+	
 	<action-method name="action-sale-config-method-update-customer-accepted-credit">
-		<call class="com.axelor.apps.supplychain.service.SupplychainSaleConfigService" method="updateCustomerCredit(__self__)"/>
+		<call class="com.axelor.apps.supplychain.web.SupplychainSaleConfigController" method="updateCustomerCredit"/>
 	</action-method>
 
 	<action-view name="action-company-view-sale-config" title="Sale config (${ name })" model="com.axelor.apps.sale.db.SaleConfig">

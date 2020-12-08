@@ -1,27 +1,20 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="LeaveLine" cacheable="true">
-    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"/>
-    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type" />
-    <decimal name="quantity" title="Remaining" scale="4" precision="8"/>
-    <decimal name="daysToValidate" title="Waiting for validation" scale="4" precision="8"/>
-    <decimal name="daysValidated" title="Days validated" scale="4" precision="8"/>
-    <decimal name="totalQuantity" title="Acquired" scale="4" precision="8"/>
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" required="true"/>
+    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type" required="true"/>
+    <decimal name="quantity" title="Remaining" scale="4" precision="20"/>
+    <decimal name="daysToValidate" title="Waiting for validation" scale="4" precision="20"/>
+    <decimal name="daysValidated" title="Days validated" scale="4" precision="20"/>
+    <decimal name="totalQuantity" title="Acquired" scale="4" precision="20"/>
     <one-to-many name="leaveManagementList" title="Leaves Management" ref="com.axelor.apps.hr.db.LeaveManagement" mappedBy="leaveLine"/>
     
-    <string name="name" namecolumn="true">
-    <![CDATA[
-      		if(this.getLeaveReason() != null)
-	  			return this.getLeaveReason().getLeaveReason();
-	  		else
-	  			return " ";
-	  ]]>
-    </string>
+    <string name="name" namecolumn="true"/>
     
   </entity>
   

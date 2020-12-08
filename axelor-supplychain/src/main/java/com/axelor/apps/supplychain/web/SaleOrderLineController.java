@@ -55,7 +55,7 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       saleOrderLine =
-          Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+          Beans.get(SaleOrderLineServiceSupplyChain.class)
               .computeAnalyticDistribution(saleOrderLine);
       response.setValue(
           "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
@@ -67,7 +67,7 @@ public class SaleOrderLineController {
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     saleOrderLine =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
             .createAnalyticDistributionWithTemplate(saleOrderLine);
     response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
   }
@@ -224,8 +224,7 @@ public class SaleOrderLineController {
         domain +=
             String.format(
                 " AND self.id IN (%s)",
-                authorizedPartnerIdsList
-                    .stream()
+                authorizedPartnerIdsList.stream()
                     .map(Object::toString)
                     .collect(Collectors.joining(",")));
       }

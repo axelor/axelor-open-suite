@@ -103,8 +103,7 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
     query.bind("anomalyList", anomalyList);
 
     String filter =
-        filterList
-            .stream()
+        filterList.stream()
             .map(item -> String.format("(%s)", item))
             .collect(Collectors.joining(" AND "));
     query.filter(filter);

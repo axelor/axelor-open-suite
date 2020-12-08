@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
@@ -27,6 +28,7 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -40,10 +42,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
@@ -54,14 +54,18 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected UserService userService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MessageServiceBaseImpl(
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
-      UserService userService) {
-    super(metaAttachmentRepository, messageRepository);
+      SendMailQueueService sendMailQueueService,
+      UserService userService,
+      AppBaseService appBaseService) {
+    super(metaAttachmentRepository, messageRepository, sendMailQueueService);
     this.userService = userService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -79,7 +83,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
       Set<MetaFile> metaFiles,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
     Message message =
         super.createMessage(
@@ -95,7 +100,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
             metaFiles,
             addressBlock,
             mediaTypeSelect,
-            emailAccount);
+            emailAccount,
+            signature);
 
     message.setSenderUser(AuthUtils.getUser());
     message.setCompany(userService.getUserActiveCompany());
@@ -120,16 +126,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
     logger.debug("Default BirtTemplate : {}", birtTemplate);
 
-    String language = AuthUtils.getUser().getLanguage();
-
-    TemplateMaker maker = new TemplateMaker(new Locale(language), '$', '$');
-    maker.setContext(messageRepository.find(message.getId()), "Message");
+    TemplateMaker maker = new TemplateMaker(company.getTimezone(), AppFilter.getLocale(), '$', '$');
+    maker.setContext(messageRepository.find(message.getId()), Message.class.getSimpleName());
 
     String fileName =
         "Message "
             + message.getSubject()
             + "-"
-            + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+            + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
 
     return Beans.get(TemplateMessageServiceBaseImpl.class)
         .generateBirtTemplateLink(

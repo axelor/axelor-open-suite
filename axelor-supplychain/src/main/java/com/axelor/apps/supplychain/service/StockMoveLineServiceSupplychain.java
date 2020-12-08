@@ -82,4 +82,6 @@ public interface StockMoveLineServiceSupplychain {
   boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine);
 
   void setInvoiceStatus(StockMoveLine stockMoveLine);
+
+  public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine);
 }

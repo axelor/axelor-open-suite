@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -24,8 +24,11 @@
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
-	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
-    <string name="addressStr" title="Address" large="true" multiline="true"/>
+      <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
+      <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>
+
+		<string name="addressStr" title="Address" large="true" multiline="true"/>
+		<string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
     <string name="internalReference" title="Internal Ref."/>
     <string name="externalReference" title="External Ref."/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
@@ -35,6 +38,7 @@
     <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
     <date name="originDate" title="Origin date"/>
+    <date name="paymentDate" title="Payment date" />
     
     <!-- Accounting information -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule" default="false"/>
@@ -74,7 +78,6 @@
 
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
-    <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit list"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Rejection move line"/>
    	<boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
     <decimal name="amountRejected" title="Rejected amount"/> 
@@ -192,7 +195,7 @@
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>
-      <message if="statusSelect == 3 &amp;&amp; dueDate.isAfter(__date__)">Important</message>
+      <message if="statusSelect == 3 &amp;&amp; dueDate &amp;&amp; dueDate.isAfter(__date__)">Important</message>
     </track>
 
   </entity>

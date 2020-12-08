@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
@@ -49,11 +50,13 @@ import com.google.inject.persist.Transactional;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceService {
@@ -135,19 +138,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       PaymentMode firstPaymentMode = dummyInvoiceList.get(0).getPaymentMode();
       Partner firstContactPartner = dummyInvoiceList.get(0).getContactPartner();
       paymentConditionToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getPaymentCondition)
               .allMatch(
                   paymentCondition -> Objects.equals(paymentCondition, firstPaymentCondition));
       paymentModeToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getPaymentMode)
               .allMatch(paymentMode -> Objects.equals(paymentMode, firstPaymentMode));
       contactPartnerToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getContactPartner)
               .allMatch(contactPartner -> Objects.equals(contactPartner, firstContactPartner));
 
@@ -229,19 +229,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       PaymentMode firstPaymentMode = dummyInvoiceList.get(0).getPaymentMode();
       Partner firstContactPartner = dummyInvoiceList.get(0).getContactPartner();
       paymentConditionToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getPaymentCondition)
               .allMatch(
                   paymentCondition -> Objects.equals(paymentCondition, firstPaymentCondition));
       paymentModeToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getPaymentMode)
               .allMatch(paymentMode -> Objects.equals(paymentMode, firstPaymentMode));
       contactPartnerToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getContactPartner)
               .allMatch(contactPartner -> Objects.equals(contactPartner, firstContactPartner));
       mapResult.put("paymentCondition", firstPaymentCondition);
@@ -329,12 +326,17 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       return Optional.empty();
     }
 
+    Set<Address> deliveryAddressSet = new HashSet<>();
+
     // create dummy invoice from the first stock move
     Invoice dummyInvoice = createDummyOutInvoice(stockMoveList.get(0));
 
     // Check if field constraints are respected
     for (StockMove stockMove : stockMoveList) {
       completeInvoiceInMultiOutgoingStockMove(dummyInvoice, stockMove);
+      if (stockMove.getToAddressStr() != null) {
+        deliveryAddressSet.add(stockMove.getToAddress());
+      }
     }
 
     /*  check if some other fields are different and assign a default value */
@@ -374,9 +376,22 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
 
+    StringBuilder deliveryAddressStr = new StringBuilder();
+    AddressService addressService = Beans.get(AddressService.class);
+
+    for (Address address : deliveryAddressSet) {
+      deliveryAddressStr.append(
+          addressService.computeAddressStr(address).replaceAll("\n", ", ") + "\n");
+    }
+
+    invoice.setDeliveryAddressStr(deliveryAddressStr.toString());
+
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     for (StockMove stockMoveLocal : stockMoveList) {
+
+      stockMoveInvoiceService.checkSplitSalePartiallyInvoicedStockMoveLines(
+          stockMoveLocal, stockMoveLocal.getStockMoveLineList());
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
               invoice, stockMoveLocal.getStockMoveLineList(), null);
@@ -637,9 +652,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   /** This method will throw an exception if the given stock move is already invoiced. */
   protected void checkIfAlreadyInvoiced(StockMove stockMove) throws AxelorException {
     if (stockMove.getInvoiceSet() != null
-        && stockMove
-            .getInvoiceSet()
-            .stream()
+        && stockMove.getInvoiceSet().stream()
             .anyMatch(invoice -> invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED)) {
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {

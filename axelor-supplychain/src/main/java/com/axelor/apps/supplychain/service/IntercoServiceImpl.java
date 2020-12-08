@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -69,6 +70,8 @@ import java.util.List;
 import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
+
+  protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -249,6 +252,11 @@ public class IntercoServiceImpl implements IntercoService {
     // tax
     purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
 
+    // analyticalDistribution
+    purchaseOrderLine =
+        Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+            .getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
+
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     return purchaseOrderLine;
   }
@@ -287,6 +295,14 @@ public class IntercoServiceImpl implements IntercoService {
 
     // tax
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
+
+    // analyticDistribution
+    saleOrderLine =
+        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+            .getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
+      obj.setSaleOrderLine(saleOrderLine);
+    }
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
     return saleOrderLine;
@@ -359,7 +375,10 @@ public class IntercoServiceImpl implements IntercoService {
       intercoInvoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
     intercoInvoice.setPriceList(intercoPriceList);
-    intercoInvoice.setInvoicesCopySelect(intercoPartner.getInvoicesCopySelect());
+    intercoInvoice.setInvoicesCopySelect(
+        (intercoPartner.getInvoicesCopySelect() == 0)
+            ? DEFAULT_INVOICE_COPY
+            : intercoPartner.getInvoicesCopySelect());
     intercoInvoice.setCreatedByInterco(true);
     intercoInvoice.setInterco(false);
 

@@ -45,7 +45,6 @@ import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -71,6 +70,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -188,7 +188,8 @@ public class ExpenseController {
         ActionView.define(I18n.get("Expenses to Validate"))
             .model(Expense.class.getName())
             .add("grid", "expense-validate-grid")
-            .add("form", "expense-form");
+            .add("form", "expense-form")
+            .param("search-filters", "expense-filters");
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -204,7 +205,8 @@ public class ExpenseController {
         ActionView.define(I18n.get("Historic colleague Expenses"))
             .model(Expense.class.getName())
             .add("grid", "expense-grid")
-            .add("form", "expense-form");
+            .add("form", "expense-form")
+            .param("search-filters", "expense-filters");
 
     actionView
         .domain(
@@ -229,13 +231,14 @@ public class ExpenseController {
         ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
             .model(Expense.class.getName())
             .add("grid", "expense-grid")
-            .add("form", "expense-form");
+            .add("form", "expense-form")
+            .param("search-filters", "expense-filters");
 
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
     long nbExpenses =
-        Query.of(ExtraHours.class)
+        Query.of(Expense.class)
             .filter(domain)
             .bind("_user", user)
             .bind("_activeCompany", activeCompany)
@@ -284,6 +287,7 @@ public class ExpenseController {
                 .model(Move.class.getName())
                 .add("grid", "move-grid")
                 .add("form", "move-form")
+                .param("search-filters", "move-filters")
                 .context("_showRecord", String.valueOf(move.getId()))
                 .map());
       }
@@ -301,6 +305,9 @@ public class ExpenseController {
     String fileLink =
         ReportFactory.createReport(IReport.EXPENSE, name)
             .addParam("ExpenseId", expense.getId())
+            .addParam(
+                "Timezone",
+                expense.getCompany() != null ? expense.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(expense)
             .generate()
@@ -312,7 +319,7 @@ public class ExpenseController {
   }
 
   /* Count Tags displayed on the menu items */
-
+  @CallMethod
   public String expenseValidateMenuTag() {
 
     return Beans.get(HRMenuTagService.class)
@@ -484,7 +491,9 @@ public class ExpenseController {
     int compt = 0;
     for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
       compt++;
-      if (expenseLine.getExpenseDate().isAfter(Beans.get(AppBaseService.class).getTodayDate())) {
+      if (expenseLine
+          .getExpenseDate()
+          .isAfter(Beans.get(AppBaseService.class).getTodayDate(expense.getCompany()))) {
         expenseLineListId.add(compt);
       }
     }
