@@ -564,6 +564,7 @@
 "DMS Import",,,
 "Daily Work Hours","Heures de travail quotidiennes",,
 "Dashboard","Tableau de bord",,
+"Data error: a print template line is its own parent.","Erreur dans les données: une ligne de modèle d'impression est son propre parent.",,
 "Data file",,,
 "Data file doesn't exist",,,
 "Data file format is invalid",,,
