@@ -151,14 +151,20 @@ public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
   }
 
   @Override
-  public MetaModel getMetaModel(PrintTemplateLine printTemplateLine) {
+  public MetaModel getMetaModel(PrintTemplateLine printTemplateLine) throws AxelorException {
     PrintTemplate printTemplate = printTemplateLine.getPrintTemplate();
-
-    while (printTemplate == null) {
+    final int MAX_ITERATION = 100;
+    int c = 0;
+    while (printTemplate == null && c < MAX_ITERATION) {
       printTemplateLine = printTemplateLine.getParent();
       printTemplate = printTemplateLine.getPrintTemplate();
+      c++;
     }
-
+    if (c == MAX_ITERATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PRINT_TEMPLATE_LINE_PARENT_LOOP));
+    }
     return printTemplate.getMetaModel();
   }
 }

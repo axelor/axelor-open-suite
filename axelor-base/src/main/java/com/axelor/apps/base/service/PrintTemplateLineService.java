@@ -30,5 +30,5 @@ public interface PrintTemplateLineService {
       throws AxelorException, IOException, ClassNotFoundException;
 
   @CallMethod
-  public MetaModel getMetaModel(PrintTemplateLine printTemplateLine);
+  public MetaModel getMetaModel(PrintTemplateLine printTemplateLine) throws AxelorException;
 }
