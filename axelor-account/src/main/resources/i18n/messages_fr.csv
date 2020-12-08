@@ -387,6 +387,8 @@
 "AccountingReportType2001.totalPerAnalyticAccount","Total par compte analytique",,
 "AccountingReportType2001.totalPerAnalyticAxis","Total par axe analytique",,
 "AccountingReportType2001.totalPerAnalyticJournal","Total par journal analytique",,
+"AccountingReportType2001.origin","Origine",,
+"AccountingReportType2001.description","Description",,
 "AccountingReportType3.balance","Solde",,
 "AccountingReportType3.company","SOCIETE :",,
 "AccountingReportType3.credit","Crédit",,
