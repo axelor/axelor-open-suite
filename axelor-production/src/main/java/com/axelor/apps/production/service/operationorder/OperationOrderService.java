@@ -42,7 +42,7 @@ public interface OperationOrderService {
       ManufOrder manufOrder,
       int priority,
       WorkCenter workCenter,
-      Machine machineWorkCenter,
+      Machine machine,
       MachineTool machineTool,
       ProdProcessLine prodProcessLine)
       throws AxelorException;

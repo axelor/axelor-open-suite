@@ -26,12 +26,18 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -41,6 +47,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -49,19 +56,46 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
 
-  @Inject protected AppAccountService appAccountService;
+  protected AppAccountService appAccountService;
+  protected AnalyticMoveLineService analyticMoveLineService;
+  protected AppSupplychainService appSupplychainService;
 
-  @Inject protected AnalyticMoveLineService analyticMoveLineService;
+  @Inject
+  public SaleOrderLineServiceSupplyChainImpl(
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      ProductMultipleQtyService productMultipleQtyService,
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      AccountManagementService accountManagementService,
+      SaleOrderLineRepository saleOrderLineRepo,
+      AppAccountService appAccountService,
+      AnalyticMoveLineService analyticMoveLineService,
+      AppSupplychainService appSupplychainService) {
+    super(
+        currencyService,
+        priceListService,
+        productMultipleQtyService,
+        appBaseService,
+        appSaleService,
+        accountManagementService,
+        saleOrderLineRepo);
+    this.appAccountService = appAccountService;
+    this.analyticMoveLineService = analyticMoveLineService;
+    this.appSupplychainService = appSupplychainService;
+  }
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -112,7 +146,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
           appAccountService.getTodayDate(
               saleOrderLine.getSaleOrder() != null
                   ? saleOrderLine.getSaleOrder().getCompany()
-                  : AuthUtils.getUser().getActiveCompany());
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, saleOrderLine.getCompanyExTaxTotal(), date);
@@ -130,9 +166,15 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
             appAccountService.getTodayDate(
                 saleOrderLine.getSaleOrder() != null
                     ? saleOrderLine.getSaleOrder().getCompany()
-                    : AuthUtils.getUser().getActiveCompany()));
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)));
 
-    saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
+    if (ObjectUtils.isEmpty(analyticMoveLineList)) {
+      saleOrderLine.clearAnalyticMoveLineList();
+    } else {
+      saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
     return saleOrderLine;
   }
 
@@ -285,5 +327,38 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     }
 
     return qty;
+  }
+
+  @Override
+  public SaleOrderLine updateProductQty(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty)
+      throws AxelorException {
+    BigDecimal qty = saleOrderLine.getQty();
+    qty =
+        qty.divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+            .multiply(newQty)
+            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+    saleOrderLine.setQty(qty);
+
+    if (appSupplychainService.isApp("supplychain")
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+      qty = this.checkInvoicedOrDeliveredOrderQty(saleOrderLine);
+      saleOrderLine.setQty(qty);
+    }
+
+    saleOrderLine = super.updateProductQty(saleOrderLine, saleOrder, oldQty, newQty);
+    if (!appSupplychainService.isApp("supplychain")
+        || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+      return saleOrderLine;
+    }
+    if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
+      this.computeAnalyticDistribution(saleOrderLine);
+    }
+    if (appSupplychainService.getAppSupplychain().getManageStockReservation()
+        && (saleOrderLine.getRequestedReservedQty().compareTo(qty) > 0
+            || saleOrderLine.getIsQtyRequested())) {
+      saleOrderLine.setRequestedReservedQty(BigDecimal.ZERO.max(qty));
+    }
+    return saleOrderLine;
   }
 }

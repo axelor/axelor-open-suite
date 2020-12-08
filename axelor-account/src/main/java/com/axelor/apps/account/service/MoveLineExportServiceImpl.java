@@ -336,20 +336,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-
-    if (accountingReport.getShowSimulatedMove()) {
-      dateQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED,
-              MoveRepository.STATUS_DAYBOOK,
-              MoveRepository.STATUS_SIMULATED);
-    } else {
-      dateQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
-    }
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -536,19 +526,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    if (accountingReport.getShowSimulatedMove()) {
-      dateQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED,
-              MoveRepository.STATUS_DAYBOOK,
-              MoveRepository.STATUS_SIMULATED);
-    } else {
-      dateQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
-    }
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -736,19 +717,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    if (accountingReport.getShowSimulatedMove()) {
-      dateQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED,
-              MoveRepository.STATUS_DAYBOOK,
-              MoveRepository.STATUS_SIMULATED);
-    } else {
-      dateQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
-    }
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -935,19 +907,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       dateQueryStr += " AND self.accountingOk = false ";
     }
     dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
-    if (accountingReport.getShowSimulatedMove()) {
-      dateQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED,
-              MoveRepository.STATUS_DAYBOOK,
-              MoveRepository.STATUS_SIMULATED);
-    } else {
-      dateQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
-    }
+
+    dateQueryStr +=
+        String.format(
+            " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -1168,11 +1132,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_VALIDATED);
     if (!administration) {
       moveLineQueryStr +=
-          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_DAYBOOK);
-    }
-    if (accountingReport.getShowSimulatedMove()) {
-      moveLineQueryStr +=
-          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_SIMULATED);
+          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_ACCOUNTED);
     }
     moveLineQueryStr += ")";
 
@@ -1360,19 +1320,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         String.format(
             "AND self.move.accountingOk = true AND self.move.ignoreInAccountingOk = false AND self.move.accountingReport = %s",
             accountingReport.getId());
-    if (accountingReport.getShowSimulatedMove()) {
-      moveLineQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED,
-              MoveRepository.STATUS_DAYBOOK,
-              MoveRepository.STATUS_SIMULATED);
-    } else {
-      moveLineQueryStr +=
-          String.format(
-              " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-              MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
-    }
+    moveLineQueryStr +=
+        String.format(
+            " AND (self.move.statusSelect = %s OR self.move.statusSelect = %s) ",
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query queryDate =
         JPA.em()
             .createQuery(

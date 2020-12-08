@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
 	<grid name="fixed-asset-grid" title="Fixed assets" model="com.axelor.apps.account.db.FixedAsset" orderBy="-createdOn,company">
 		<menubar>
@@ -81,7 +81,7 @@
     </form>
     
     <action-record name="action-fixed-asset-disposal-wizard-record-onnew" model="com.axelor.apps.base.db.Wizard">
-    	<field name="disposalDate" expr="eval: __date__"/>
+    	<field name="disposalDate" expr="eval: __config__.date"/>
     	<field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
     </action-record>
     
@@ -89,8 +89,8 @@
     	<field name="statusSelect" expr="1"/>
     	<field name="company" expr="eval:__user__.activeCompany"/>
     	<field name="computationMethodSelect" expr="eval: 'linear'"/>
-    	<field name="acquisitionDate" expr="eval: __date__"/>
-    	<field name="firstDepreciationDate" expr="eval: __date__"/>
+    	<field name="acquisitionDate" expr="eval: __config__.date"/>
+    	<field name="firstDepreciationDate" expr="eval: __config__.date"/>
     </action-record>
     
     <action-record name="action-fixed-asset-record-onchange-set-values" model="com.axelor.apps.account.db.FixedAsset">

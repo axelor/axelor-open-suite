@@ -26,7 +26,6 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -61,6 +60,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,7 +134,7 @@ public class TimesheetController {
             .filter(
                 "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
                 AuthUtils.getUser(),
-                AuthUtils.getUser().getActiveCompany())
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
     if (timesheetList.isEmpty()) {
       response.setView(
@@ -323,7 +323,7 @@ public class TimesheetController {
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
     long nbTimesheets =
-        Query.of(ExtraHours.class)
+        Query.of(Timesheet.class)
             .filter(domain)
             .bind("_user", user)
             .bind("_activeCompany", activeCompany)

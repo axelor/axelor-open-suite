@@ -30,6 +30,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -69,7 +70,8 @@ public class MrpLineServiceImpl implements MrpLineService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
-  protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderService purchaseOrderService;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected StockRulesService stockRulesService;
@@ -80,7 +82,8 @@ public class MrpLineServiceImpl implements MrpLineService {
   @Inject
   public MrpLineServiceImpl(
       AppBaseService appBaseService,
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
       StockRulesService stockRulesService,
@@ -89,7 +92,8 @@ public class MrpLineServiceImpl implements MrpLineService {
       MrpForecastRepository mrpForecastRepo) {
 
     this.appBaseService = appBaseService;
-    this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
+    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.stockRulesService = stockRulesService;
@@ -160,7 +164,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     if (purchaseOrder == null) {
       purchaseOrder =
           purchaseOrderRepo.save(
-              purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+              purchaseOrderSupplychainService.createPurchaseOrder(
                   AuthUtils.getUser(),
                   company,
                   null,
@@ -212,7 +216,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     poLine.setDesiredDelivDate(maturityDate);
     purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
-    purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     linkToOrder(mrpLine, purchaseOrder);
   }

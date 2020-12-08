@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="invoicing-project-grid" title="Invoicing business projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
 	<menubar>
@@ -86,12 +86,12 @@
 							   if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()"
 							   name="manufOrderSetPanel"/>
 				
-				<panel-related field="teamTaskSet" colSpan="12" canNew="false"
+				<panel-related field="projectTaskSet" colSpan="12" canNew="false"
 							   canEdit="false" canSelect="false"
-							   form-view="team-task-form" grid-view="business-project-team-task-grid"
-							   showIf="teamTaskSet &amp;&amp; teamTaskSet.length &gt; 0"
+							   form-view="project-task-form" grid-view="business-project-project-task-grid"
+							   showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0"
 							   readonlyIf="invoice" 
-							   name="teamTaskSetPanel"/>
+							   name="ProjectTaskSetPanel"/>
 			</panel>
 
 			<panel name="configurationsPanel" title="Configurations" readonlyIf="invoice">
@@ -100,7 +100,7 @@
                 <field name="logTimesSetPrioritySelect"/>
                 <field name="expenseLineSetPrioritySelect"/>
                 <field name="projectSetPrioritySelect"/>
-                <field name="teamTaskSetPrioritySelect"/>
+                <field name="projectTaskSetPrioritySelect"/>
             </panel>
         </panel-tabs>
 

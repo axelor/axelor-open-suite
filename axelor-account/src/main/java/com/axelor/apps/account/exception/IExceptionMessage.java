@@ -46,7 +46,7 @@ public interface IExceptionMessage {
   static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
   static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
-      "Please select 'Draft' or 'Daybook' or 'Canceled' moves" /*)*/;
+      "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
       "Move(s) has been removed or archived successfully" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
@@ -636,12 +636,12 @@ public interface IExceptionMessage {
 
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
-      "%s - Invoice's or credit note's date can't be previous last invoice ventilated's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;
 
   static final String VENTILATE_STATE_2 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated on month's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated on month's date : %s" /*)*/;
   static final String VENTILATE_STATE_3 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated on year's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated on year's date : %s" /*)*/;
   static final String VENTILATE_STATE_4 = /*$$(*/
       "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
   static final String VENTILATE_STATE_5 = /*$$(*/
@@ -674,6 +674,8 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
   static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
+  static final String PAYMENT_MODE_4 = /*$$(*/
+      "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/

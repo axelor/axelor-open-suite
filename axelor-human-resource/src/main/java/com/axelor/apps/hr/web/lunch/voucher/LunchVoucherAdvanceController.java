@@ -99,7 +99,10 @@ public class LunchVoucherAdvanceController {
                     Optional.ofNullable(lunchVoucherAdvance.getEmployee())
                         .map(Employee::getUser)
                         .map(User::getActiveCompany)
-                        .orElse(AuthUtils.getUser().getActiveCompany()))
+                        .orElse(
+                            Optional.ofNullable(AuthUtils.getUser())
+                                .map(User::getActiveCompany)
+                                .orElse(null)))
                 .format(DateTimeFormatter.ISO_DATE);
     try {
       String fileLink =

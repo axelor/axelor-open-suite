@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -507,7 +507,9 @@
     <selection name="line.type.select">
         <option value="0">Standard</option>
         <option value="1">Title</option>
-    </selection>    
+        <option value="2">Start of pack</option>
+        <option value="3">End of pack</option>
+    </selection>
     
     <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >
     	<option value="import">Importing</option>
@@ -577,6 +579,17 @@
 		<option value="1">In Progress</option>
 		<option value="2">Completed</option>
 		<option value="3">Error</option>
+	</selection>
+
+	<selection name='import.export.interface'>
+		<option value="1">EDIFACT</option>
+	</selection>
+
+	<selection name="import.export.interface.origin.select">
+		<option value="com.axelor.apps.base.db.Unit" data-grid="unit-grid" data-form="unit-form">Unit</option>
+		<option value="com.axelor.apps.account.db.Tax" data-grid="tax-grid" data-form="tax-form">Tax</option>
+		<option value="com.axelor.apps.account.db.PaymentMode" data-grid="payment-mode-grid" data-form="payment-mode-form">Payment mode</option>
+		<option value="com.axelor.apps.account.db.PaymentCondition" data-grid="payment-condition-grid" data-form="payment-condition-form">Payment condition</option>
 	</selection>
 
 </object-views>

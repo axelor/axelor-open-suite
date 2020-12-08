@@ -23,6 +23,7 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -31,6 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ContractVersionServiceImpl extends ContractVersionRepository
@@ -50,7 +52,9 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         appBaseService.getTodayDate(
             version.getContract() != null
                 ? version.getContract().getCompany()
-                : AuthUtils.getUser().getActiveCompany()));
+                : Optional.ofNullable(AuthUtils.getUser())
+                    .map(User::getActiveCompany)
+                    .orElse(null)));
   }
 
   @Override
@@ -84,7 +88,9 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         appBaseService.getTodayDate(
             version.getContract() != null
                 ? version.getContract().getCompany()
-                : AuthUtils.getUser().getActiveCompany()));
+                : Optional.ofNullable(AuthUtils.getUser())
+                    .map(User::getActiveCompany)
+                    .orElse(null)));
   }
 
   @Override
@@ -121,7 +127,9 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         appBaseService.getTodayDate(
             version.getContract() != null
                 ? version.getContract().getCompany()
-                : AuthUtils.getUser().getActiveCompany()));
+                : Optional.ofNullable(AuthUtils.getUser())
+                    .map(User::getActiveCompany)
+                    .orElse(null)));
   }
 
   @Override

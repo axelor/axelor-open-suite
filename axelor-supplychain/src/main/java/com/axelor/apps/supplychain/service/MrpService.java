@@ -45,4 +45,13 @@ public interface MrpService {
   public Mrp createProjectedStock(
       Mrp mrp, Product product, Company company, StockLocation stockLocation)
       throws AxelorException;
+
+  /**
+   * Called when an exception occurred during the mrp computation. Save the exception message and
+   * reset the mrp.
+   *
+   * @param mrp a mrp after computation
+   * @param e the exception thrown during the computation
+   */
+  void onError(Mrp mrp, Exception e);
 }

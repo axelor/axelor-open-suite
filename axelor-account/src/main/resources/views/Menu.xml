@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<menuitem name="invoice-root" title="Invoicing" order="-100"  if="__config__.app.isApp('invoice')"
 		icon="fa-file-text-o"  icon-background="#31b4a9" />
@@ -231,8 +231,8 @@
 		<view type="grid" name="cheque-rejection-grid"/>
 		<view type="form" name="cheque-rejection-form"/>
 		<view-param name="search-filters" value="cheque-rejection-filters"/>
-		<context name="_newDate1" expr="eval: __date__.minusDays(5)"/>
-		<context name="_newDate2" expr="eval: __date__.minusDays(30)"/>
+		<context name="_newDate1" expr="eval: __config__.date.minusDays(5)"/>
+		<context name="_newDate2" expr="eval: __config__.date.minusDays(30)"/>
 	</action-view>
 	
 	<menuitem name="account-root-debt-recovery" parent="account-root"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine"  canArchive="false" canDelete="false" canNew="false">
   	<toolbar>
@@ -208,7 +208,7 @@
 					<![CDATA[
 						<h4>
 							<span class="label label-info" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 1" x-translate>New</span>
-							<span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 2" x-translate>Daybook</span>
+							<span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 2" x-translate>Accounted</span>
 							<span class="label label-success" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 3" x-translate>Validated</span>
 							<span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 4" x-translate>Canceled</span>
 							<span class="label label-info" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 5" x-translate>Simulated</span>
@@ -416,6 +416,7 @@
 		<field name="description" expr="eval: __parent__?.moveLineList.get(0).description" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
 		<field name="exportedDirectDebitOk" expr="eval: __parent__?.moveLineList.get(0).exportedDirectDebitOk" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
 		<field name="partner" expr="eval: __parent__?.moveLineList.get(0).partner" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
+		<field name="origin" expr="eval: __parent__?.moveLineList.get(0).origin" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
 	</action-record>
 	
 	<action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">

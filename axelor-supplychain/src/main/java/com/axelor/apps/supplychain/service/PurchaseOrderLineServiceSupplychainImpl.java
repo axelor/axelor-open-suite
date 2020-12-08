@@ -33,6 +33,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -41,10 +42,12 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineServiceImpl {
+public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineServiceImpl
+    implements PurchaseOrderLineServiceSupplyChain {
 
   @Inject protected AnalyticMoveLineService analyticMoveLineService;
 
@@ -74,7 +77,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     Unit unit = null;
     BigDecimal qty = BigDecimal.ZERO;
 
-    if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE) {
+    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
 
       if (saleOrderLine.getProduct() != null) {
         unit = saleOrderLine.getProduct().getPurchasesUnit();
@@ -177,7 +180,9 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
             appBaseService.getTodayDate(
                 purchaseOrderLine.getPurchaseOrder() != null
                     ? purchaseOrderLine.getPurchaseOrder().getCompany()
-                    : AuthUtils.getUser().getActiveCompany()));
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)));
 
     purchaseOrderLine.clearAnalyticMoveLineList();
     analyticMoveLineList.forEach(purchaseOrderLine::addAnalyticMoveLineListItem);

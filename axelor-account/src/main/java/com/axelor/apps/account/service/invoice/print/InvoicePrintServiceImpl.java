@@ -23,12 +23,14 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -45,6 +47,7 @@ import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /** Implementation of the service printing invoices. */
 @Singleton
@@ -64,7 +67,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   public String printInvoice(
       Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException {
-    String fileName = I18n.get("Invoice") + "-" + invoice.getInvoiceId() + "." + format;
+    String fileName =
+        I18n.get(InvoiceToolService.isRefund(invoice) ? "Refund" : "Invoice")
+            + "-"
+            + invoice.getInvoiceId()
+            + "."
+            + format;
     return PdfTool.getFileLinkFromPdfFile(
         printCopiesToFile(invoice, forceRefresh, reportType, format, locale), fileName);
   }
@@ -169,7 +177,10 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         I18n.get("Invoices")
             + " - "
             + Beans.get(AppBaseService.class)
-                .getTodayDate(AuthUtils.getUser().getActiveCompany())
+                .getTodayDate(
+                    Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null))
                 .format(DateTimeFormatter.BASIC_ISO_DATE)
             + ".pdf";
     return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
@@ -209,7 +220,8 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
 
     if (Strings.isNullOrEmpty(locale)) {
-      String userLanguageCode = AuthUtils.getUser().getLanguage();
+      String userLanguageCode =
+          Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
       String companyLanguageCode =
           invoice.getCompany().getLanguage() != null
               ? invoice.getCompany().getLanguage().getCode()

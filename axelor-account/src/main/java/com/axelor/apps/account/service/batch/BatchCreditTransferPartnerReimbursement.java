@@ -45,7 +45,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
   protected final Logger log = LoggerFactory.getLogger(getClass());
   protected PartnerRepository partnerRepo;
   protected PartnerService partnerService;
-  protected ReimbursementExportService reimbursementExportService;
+  protected ReimbursementExportService partnerReimbursementExportService;
 
   @Inject
   public BatchCreditTransferPartnerReimbursement(
@@ -54,7 +54,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
       ReimbursementExportService reimbursementExportService) {
     this.partnerRepo = partnerRepo;
     this.partnerService = partnerService;
-    this.reimbursementExportService = reimbursementExportService;
+    partnerReimbursementExportService = reimbursementExportService;
   }
 
   @Override
@@ -134,14 +134,14 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                     + "AND self.move.partner = ?3 AND self.move.company = ?4 "
                     + "AND self.reimbursementStatusSelect = ?5",
                 MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_ACCOUNTED,
                 partner,
                 company,
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
             .fetch();
 
     Reimbursement reimbursement =
-        reimbursementExportService.runCreateReimbursement(moveLineList, company, partner);
+        partnerReimbursementExportService.runCreateReimbursement(moveLineList, company, partner);
     return reimbursement;
   }
 }

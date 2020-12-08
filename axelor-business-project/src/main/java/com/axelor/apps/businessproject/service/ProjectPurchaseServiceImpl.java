@@ -20,10 +20,11 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
+import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -35,9 +36,11 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
 
   @Inject
   public ProjectPurchaseServiceImpl(
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
-      PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl) {
-    super(purchaseOrderServiceSupplychainImpl, purchaseOrderLineServiceSupplychainImpl);
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
+      PurchaseOrderService purchaseOrderService) {
+    super(
+        purchaseOrderSupplychainService, purchaseOrderLineServiceSupplychain, purchaseOrderService);
   }
 
   @Override

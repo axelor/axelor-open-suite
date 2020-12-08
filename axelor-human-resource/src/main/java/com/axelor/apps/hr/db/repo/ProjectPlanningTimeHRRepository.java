@@ -20,10 +20,10 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.google.inject.Inject;
 
 public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeRepository {
@@ -32,7 +32,7 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
 
   @Inject private ProjectRepository projectRepo;
 
-  @Inject private TeamTaskRepository taskRepo;
+  @Inject private ProjectTaskRepository projectTaskRepo;
 
   @Override
   public ProjectPlanningTime save(ProjectPlanningTime projectPlanningTime) {
@@ -47,7 +47,7 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
       parentProject.setTotalPlannedHrs(planningTimeService.getProjectPlannedHrs(parentProject));
     }
 
-    TeamTask task = projectPlanningTime.getTask();
+    ProjectTask task = projectPlanningTime.getProjectTask();
     if (task != null) {
       task.setTotalPlannedHrs(planningTimeService.getTaskPlannedHrs(task));
     }
@@ -59,12 +59,12 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
   public void remove(ProjectPlanningTime projectPlanningTime) {
 
     Project project = projectPlanningTime.getProject();
-    TeamTask task = projectPlanningTime.getTask();
+    ProjectTask task = projectPlanningTime.getProjectTask();
 
     super.remove(projectPlanningTime);
 
     if (task != null) {
-      taskRepo.save(task);
+      projectTaskRepo.save(task);
     } else {
       projectRepo.save(project);
     }

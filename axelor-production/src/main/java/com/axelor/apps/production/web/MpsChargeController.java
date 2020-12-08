@@ -18,14 +18,17 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -38,6 +41,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +118,13 @@ public class MpsChargeController {
     String fileLink =
         ReportFactory.createReport(IReport.MPS_CHARGE, name + "-${date}")
             .addParam("mpsId", request.getContext().get("id"))
-            .addParam("logoPath", AuthUtils.getUser().getActiveCompany().getLogo().getFilePath())
+            .addParam(
+                "logoPath",
+                Optional.ofNullable(AuthUtils.getUser())
+                    .map(User::getActiveCompany)
+                    .map(Company::getLogo)
+                    .map(MetaFile::getFilePath)
+                    .orElse(null))
             .addParam(
                 "startMonthDate", startMonthDate.format(DateTimeFormatter.ofPattern("dd/MM/YYYY")))
             .addParam(

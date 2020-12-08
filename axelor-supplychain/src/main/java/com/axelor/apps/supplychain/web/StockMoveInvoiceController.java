@@ -33,6 +33,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -456,7 +457,10 @@ public class StockMoveInvoiceController {
             .context(
                 "todayDate",
                 Beans.get(AppSupplychainService.class)
-                    .getTodayDate(AuthUtils.getUser().getActiveCompany()));
+                    .getTodayDate(
+                        Optional.ofNullable(AuthUtils.getUser())
+                            .map(User::getActiveCompany)
+                            .orElse(null)));
 
         response.setView(viewBuilder.map());
       }
@@ -503,7 +507,10 @@ public class StockMoveInvoiceController {
             .context(
                 "todayDate",
                 Beans.get(AppSupplychainService.class)
-                    .getTodayDate(AuthUtils.getUser().getActiveCompany()));
+                    .getTodayDate(
+                        Optional.ofNullable(AuthUtils.getUser())
+                            .map(User::getActiveCompany)
+                            .orElse(null)));
 
         response.setView(viewBuilder.map());
       }

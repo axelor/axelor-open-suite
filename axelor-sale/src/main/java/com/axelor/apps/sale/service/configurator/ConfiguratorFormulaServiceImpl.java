@@ -43,16 +43,16 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
           formula,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
-    } else {
-      if (!Beans.get(ConfiguratorService.class)
-          .areCompatible(wantedTypeName, getCalculatedClassName(result))) {
-        throw new AxelorException(
-            formula,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR),
-            result.getClass().getSimpleName(),
-            wantedTypeName);
-      }
+    } else if (!Beans.get(ConfiguratorService.class)
+            .areCompatible(wantedTypeName, getCalculatedClassName(result))
+        && !wantedTypeName.equals("one-to-many")
+        && !wantedTypeName.equals("many-to-many")) {
+      throw new AxelorException(
+          formula,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR),
+          result.getClass().getSimpleName(),
+          wantedTypeName);
     }
   }
 

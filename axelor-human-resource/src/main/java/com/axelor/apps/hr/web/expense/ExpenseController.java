@@ -45,7 +45,6 @@ import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -239,7 +238,7 @@ public class ExpenseController {
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
     long nbExpenses =
-        Query.of(ExtraHours.class)
+        Query.of(Expense.class)
             .filter(domain)
             .bind("_user", user)
             .bind("_activeCompany", activeCompany)

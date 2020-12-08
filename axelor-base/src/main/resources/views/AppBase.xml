@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" 
 		width="large" canDelete="false" canNew="false" canCopy="false" >
@@ -47,10 +47,10 @@
                 <field name="enableMultiCompany" widget="boolean-switch" onChange="action-base-validate-multi-company-boolean"/>
                 <field name="storeStreets" widget="boolean-switch" />
                 <field name="isSharedAddress" widget="boolean-switch" />
-                <field name="companySpecificProductFieldsList" domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false" canEdit="false"/>
+                <panel-related field="companySpecificProductFieldsSet" domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false" canEdit="false" grid-view="meta-field-details-grid" form-view="meta-field-form"/>
                 <panel itemSpan="12" colSpan="6">
                 	<field name="defaultMailMessageTemplate"/>
-                	<field name="mailTemplateAssociationList"/>
+                	<panel-related field="mailTemplateAssociationList" grid-view="mail-template-association-grid" form-view="mail-template-association-form"/>
                 </panel>
 			</panel>
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
