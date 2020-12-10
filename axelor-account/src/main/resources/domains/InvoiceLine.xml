@@ -74,6 +74,15 @@
 		public static final int TYPE_TITLE = 1;
         ]]></extra-code>
         
+        <track>
+        	<field name="unit"/>
+        	<field name="qty"/>
+        	<field name="price"/>
+        	<field name="taxLine"/>
+        	<field name="account"/>
+        	<field name="analyticDistributionTemplate"/>
+        </track>
+        
     </entity>
 
 </domain-models>
