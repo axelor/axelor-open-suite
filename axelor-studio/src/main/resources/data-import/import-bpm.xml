@@ -11,6 +11,7 @@
  			<bind node="sequence" to="sequence" />
  			<bind node="image/@name" alias="fileName"/>
  			<bind node="image" alias="imageData" />
+ 			<bind node="modules" to="modules" />
  		</bind>
  		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" create="false" update="true" call="com.axelor.studio.service.ImportService:importAppBuilder">
  			<bind node="code" to="code" />
