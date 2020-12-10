@@ -80,6 +80,8 @@
  			<bind node="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel" update="true" create="false" />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false" />
  			<bind node="modelAppBuilder" alias="modelAppBuilder" />
+ 			<bind node="selectionText" to="selectionText"/>
+ 			<bind node="isSelectionField" to="isSelectionField"/>
  		</bind>
  		
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel == null"
@@ -124,6 +126,8 @@
  			<bind node="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel" update="true" create="false" />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
  			<bind node="modelAppBuilder" alias="modelAppBuilder" create="false"/>
+ 			<bind node="selectionText" to="selectionText"/>
+ 			<bind node="isSelectionField" to="isSelectionField"/>
  		</bind>
  
  	</input>
