@@ -440,7 +440,11 @@ public class PurchaseOrderController {
   public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
+      String message =
+          Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
+      if (message != null) {
+        response.setFlash(message);
+      }
       response.setValues(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

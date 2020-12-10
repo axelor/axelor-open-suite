@@ -376,30 +376,30 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  public void createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException {
+  public String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException {
     PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
     if (shipmentMode == null) {
-      removeShipmentCostLine(purchaseOrder);
-      if (purchaseOrder.getPurchaseOrderLineList() != null) {
-        purchaseOrderService.computePurchaseOrder(purchaseOrder);
-      }
-      return;
+      return null;
     }
     Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
     if (shipmentMode.getHasCarriagePaidPossibility()) {
       BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
-      if (purchaseOrder.getExTaxTotal().compareTo(carriagePaidThreshold) > 0) {
-        removeShipmentCostLine(purchaseOrder);
+      if (computeExTaxTotalWithoutShippingLines(purchaseOrder).compareTo(carriagePaidThreshold)
+          >= 0) {
+        String message = removeShipmentCostLine(purchaseOrder);
         purchaseOrderService.computePurchaseOrder(purchaseOrder);
-        return;
+        return message;
       }
     }
-    removeShipmentCostLine(purchaseOrder);
+    if (alreadyHasShippingCostLine(purchaseOrder, shippingCostProduct)) {
+      return null;
+    }
     PurchaseOrderLine shippingCostLine = createShippingCostLine(purchaseOrder, shippingCostProduct);
     purchaseOrderLines.add(shippingCostLine);
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
+    return null;
   }
 
   private PurchaseOrderLine createShippingCostLine(
@@ -413,17 +413,34 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     return shippingCostLine;
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  private void removeShipmentCostLine(PurchaseOrder purchaseOrder) {
+  private boolean alreadyHasShippingCostLine(
+      PurchaseOrder purchaseOrder, Product shippingCostProduct) {
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     if (purchaseOrderLines == null) {
-      return;
+      return false;
+    }
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
+      if (purchaseOrderLine.getProduct().getId() == shippingCostProduct.getId()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  private String removeShipmentCostLine(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLines == null) {
+      return null;
     }
     List<PurchaseOrderLine> linesToRemove = new ArrayList<PurchaseOrderLine>();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
       if (purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(purchaseOrderLine);
       }
+    }
+    if (linesToRemove.size() == 0) {
+      return null;
     }
     for (PurchaseOrderLine lineToRemove : linesToRemove) {
       purchaseOrderLines.remove(lineToRemove);
@@ -432,5 +449,20 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
     }
     purchaseOrder.setPurchaseOrderLineList(purchaseOrderLines);
+    return I18n.get("Carriage paid threshold is exceeded, all shipment cost lines are removed");
+  }
+
+  private BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLines == null) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal exTaxTotal = BigDecimal.ZERO;
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
+      if (!purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+        exTaxTotal = exTaxTotal.add(purchaseOrderLine.getExTaxTotal());
+      }
+    }
+    return exTaxTotal;
   }
 }

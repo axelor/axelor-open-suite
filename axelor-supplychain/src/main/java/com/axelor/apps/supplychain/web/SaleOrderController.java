@@ -914,7 +914,11 @@ public class SaleOrderController {
   public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
+      String message =
+          Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
+      if (message != null) {
+        response.setFlash(message);
+      }
       response.setValues(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
@@ -58,6 +49,15 @@ import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
@@ -248,7 +248,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   }
 
   @Override
-  public void createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
+  public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
     SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
     SaleOrderMarginService saleOrderMarginService = Beans.get(SaleOrderMarginService.class);
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
@@ -256,17 +256,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     ShipmentMode shipmentMode = saleOrder.getShipmentMode();
 
     if (shipmentMode == null) {
-      removeShipmentCostLine(saleOrder);
-      saleOrderComputeService.computeSaleOrder(saleOrder);
-      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
-      return;
+      return null;
     }
     Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
     if (shippingCostProduct == null) {
-      removeShipmentCostLine(saleOrder);
-      saleOrderComputeService.computeSaleOrder(saleOrder);
-      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
-      return;
+      return null;
     }
     BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
     if (client != null) {
@@ -283,18 +277,34 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       }
     }
     if (carriagePaidThreshold != null && shipmentMode.getHasCarriagePaidPossibility()) {
-      if (saleOrder.getExTaxTotal().compareTo(carriagePaidThreshold) > 0) {
-        removeShipmentCostLine(saleOrder);
+      if (computeExTaxTotalWithoutShippingLines(saleOrder).compareTo(carriagePaidThreshold) >= 0) {
+        String message = removeShipmentCostLine(saleOrder);
         saleOrderComputeService.computeSaleOrder(saleOrder);
         saleOrderMarginService.computeMarginSaleOrder(saleOrder);
-        return;
+        return message;
       }
     }
-    removeShipmentCostLine(saleOrder);
+    if (alreadyHasShippingCostLine(saleOrder, shippingCostProduct)) {
+      return null;
+    }
     SaleOrderLine shippingCostLine = createShippingCostLine(saleOrder, shippingCostProduct);
     saleOrderLines.add(shippingCostLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+    return null;
+  }
+
+  private boolean alreadyHasShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct) {
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    if (saleOrderLines == null) {
+      return false;
+    }
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (saleOrderLine.getProduct().getId() == shippingCostProduct.getId()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
@@ -309,10 +319,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   }
 
   @Transactional(rollbackOn = Exception.class)
-  private void removeShipmentCostLine(SaleOrder saleOrder) {
+  private String removeShipmentCostLine(SaleOrder saleOrder) {
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     if (saleOrderLines == null) {
-      return;
+      return null;
     }
     List<SaleOrderLine> linesToRemove = new ArrayList<SaleOrderLine>();
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
@@ -321,7 +331,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       }
     }
     if (linesToRemove.size() == 0) {
-      return;
+      return null;
     }
     for (SaleOrderLine lineToRemove : linesToRemove) {
       saleOrderLines.remove(lineToRemove);
@@ -330,5 +340,20 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       }
     }
     saleOrder.setSaleOrderLineList(saleOrderLines);
+    return I18n.get("Carriage paid threshold is exceeded, all shipment cost lines are removed");
+  }
+
+  private BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    if (saleOrderLines == null) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal exTaxTotal = BigDecimal.ZERO;
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (!saleOrderLine.getProduct().getIsShippingCostsProduct()) {
+        exTaxTotal = exTaxTotal.add(saleOrderLine.getExTaxTotal());
+      }
+    }
+    return exTaxTotal;
   }
 }

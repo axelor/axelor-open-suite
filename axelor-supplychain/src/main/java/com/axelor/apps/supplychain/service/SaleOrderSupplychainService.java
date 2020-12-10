@@ -24,5 +24,5 @@ public interface SaleOrderSupplychainService {
 
   public void updateToConfirmedStatus(SaleOrder saleOrder);
 
-  public void createShipmentCostLine(SaleOrder saleOrder) throws AxelorException;
+  public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException;
 }

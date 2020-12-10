@@ -71,5 +71,5 @@ public interface PurchaseOrderSupplychainService {
 
   void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
 
-  void createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
+  String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
 }
