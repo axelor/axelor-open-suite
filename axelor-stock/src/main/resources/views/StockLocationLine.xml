@@ -20,7 +20,7 @@
     	<panel name="mainPanel">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
+            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable" onChange="action-stock-location-line-set-scale-value"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
             <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
@@ -69,7 +69,7 @@
             <field name="currentQty" colSpan="4"/>
             <field name="futureQty" colSpan="4"/>
             <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
+            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable" onChange="action-stock-location-line-set-scale-value"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
             <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
@@ -92,7 +92,7 @@
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
+            <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable" onChange="action-stock-location-line-set-scale-value"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
             <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
 	        <field name="lastFutureStockMoveDate"/>
@@ -141,7 +141,7 @@
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-            <field name="avgPrice"/>
+            <field name="avgPrice" onChange="action-stock-location-line-set-scale-value"/>
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 	        <field name="trackingNumber" domain="self.product = :product"/>
             <field name="rack"/>
@@ -200,6 +200,10 @@
     	<attribute name="scale" for="avgPrice" expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
     	<attribute name="value" for="$isAvgPriceEditable" expr="eval:false"/>
     </action-attrs>
+    
+    <action-record name="action-stock-location-line-set-scale-value" model="com.axelor.apps.stock.db.StockLocationLine">
+		<field name="avgPrice" expr="eval: avgPrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
     
     <action-attrs name="action-stock-location-line-attrs-update-avg-price">
     	<attribute name="value" for="$isAvgPriceEditable" expr="eval:true"/>

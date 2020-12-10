@@ -120,8 +120,8 @@
 			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" />
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
-	        <field name="unitPriceUntaxed"/>
-					<field name="companyPurchasePrice" hidden="true"/>
+	        <field name="unitPriceUntaxed" onChange="action-stock-move-line-set-scale-value"/>
+					<field name="companyPurchasePrice" hidden="true" onChange="action-stock-move-line-set-scale-value"/>
 			<field name="reservedQty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 		    <field name="requestedReservedQty" hidden="true" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 			<panel name="reservedQtyBtnsPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
@@ -134,7 +134,7 @@
 				<button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested" onClick="save,action-method-stock-move-line-cancel-reservation"/>
 			</panel>
 			<field name="unitPriceTaxed" hidden="true"/>
-			<field name="wapPrice" hidden="true"/>
+			<field name="wapPrice" hidden="true" onChange="action-stock-move-line-set-scale-value"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
 	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
@@ -313,7 +313,7 @@
 				</viewer>
 			</field>
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
-	        <field name="unitPriceUntaxed" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="unitPriceUntaxed" readonlyIf="$get('stockMove.statusSelect') > 1" onChange="action-stock-move-line-set-scale-value"/>
        		<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
@@ -587,6 +587,12 @@
 		<attribute name="scale" for="wapPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="companyPurchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
+	
+	<action-record name="action-stock-move-line-set-scale-value" model="com.axelor.apps.stock.db.StockMoveLine">
+		<field name="unitPriceUntaxed" expr="eval: unitPriceUntaxed.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="wapPrice" expr="eval: wapPrice?.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="companyPurchasePrice" expr="eval: companyPurchasePrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
 	
 	<action-view name="action-stock-move-line-product-default-planned" title="${fullName} plan. st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine" >

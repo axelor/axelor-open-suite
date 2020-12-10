@@ -122,7 +122,7 @@
 					<field name="sellable" colSpan="6"/>
 					<field name="productSynchronizedInPrestashop" colSpan="6" if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
 					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
-					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
+					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12" onChange="action-product-set-scale-value"/>
 					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
                     <field name="saleSupplySelect" colSpan="12"
                         onChange="action-product-validate-sale-supply-select"
@@ -163,7 +163,7 @@
 	    	<panel name="purchaseCostsPanel" title="Purchase/Costs" showTitle="false">
 		      	<panel name="purchasePanel" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
-			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
+			        <field name="purchasePrice" showIf="purchasable" colSpan="6" onChange="action-product-set-scale-value"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
@@ -173,7 +173,7 @@
 					</panel>
 		      	</panel>
 	      		<panel name="costsPanel" title="Costs" colSpan="6">
-			        <field name="costPrice" colSpan="6" readonlyIf="costTypeSelect != 1" onChange="action-product-record-compute-sale-price"/>
+			        <field name="costPrice" colSpan="6" readonlyIf="costTypeSelect != 1" onChange="action-product-set-scale-value,action-product-record-compute-sale-price"/>
 			        <field name="costTypeSelect" colSpan="6" onChange="action-product-group-cost-type-select-onchange"/>
 			        <field name="managPriceCoef" colSpan="12" onChange="action-product-record-compute-sale-price"/>
 					<field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange" showIf="!defShipCoefByPartner &amp;&amp; purchasable" if-module="axelor-purchase" if="__config__.app.isApp('purchase')"/>
@@ -202,7 +202,7 @@
 	      			<panel name="stockPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 						<field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
 				        <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6" onClick="action-product-view-stock-move-line"/>
-						<field name="avgPrice" hideIf="!stockManaged"/>
+						<field name="avgPrice" hideIf="!stockManaged" onChange="action-product-set-scale-value"/>
 				        <spacer name="avgPriceSpacer"/>
 				        <panel-dashlet name="productStockPanel" colSpan="12" action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"  />
 				        <panel-dashlet name="stockReportPanel" colSpan="12" action="action-stock-report-for-product" showIf="id &amp;&amp; stockManaged"  />
@@ -446,6 +446,13 @@
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
+	
+	<action-record name="action-product-set-scale-value" model="com.axelor.apps.base.db.Product">
+		<field name="salePrice" expr="eval: salePrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="purchasePrice" expr="eval: purchasePrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="costPrice" expr="eval: costPrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+                <field name="avgPrice" expr="eval: avgPrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
 
 	<action-attrs name="action-product-attrs-set-cost-type-select">
 		<attribute for="costTypeSelect" name="selection-in" expr="[1,2]"/>

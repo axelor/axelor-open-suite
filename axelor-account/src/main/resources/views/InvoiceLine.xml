@@ -56,11 +56,11 @@
 				<field name="productName" colSpan="12" requiredIf="typeSelect != 1"/>
 				<field name="qty" colSpan="3" required="true" readonlyIf="isSubLine" onChange="action-group-account-invoice-line-qty-onchange"/>
 				<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid" readonlyIf="typeSelect == 2 || isSubLine"/>
-				<field name="price" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
-				<field name="inTaxPrice" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
+				<field name="price" colSpan="3" required="true" onChange="action-invoice-line-set-scale-value,action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
+				<field name="inTaxPrice" colSpan="3" required="true" onChange="action-invoice-line-set-scale-value,action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
 				<panel name="discountPanel" colSpan="12">
 					<field name="discountTypeSelect" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
-					<field name="discountAmount" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
+					<field name="discountAmount" colSpan="3" onChange="action-invoice-line-set-scale-value,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
 					<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 				</panel>
 				<field name="taxLine" canEdit="false" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" grid-view="tax-line-grid" form-view="tax-line-form" domain="self.endDate = null or self.endDate &gt; :__date__"/>
@@ -142,17 +142,17 @@
 				<field name="product" onChange="action-group-account-invoice-line-product-onchange" form-view="product-form" grid-view="product-grid" canView="false"/>
 				<field name="productName" requiredIf="!typeSelect == 1"/>
 				<field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
-				<field name="price" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hidden="true"/>
-				<field name="inTaxPrice" required="true" onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hidden="true"/>
+				<field name="price" required="true" onChange="action-invoice-line-set-scale-value,action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hidden="true"/>
+				<field name="inTaxPrice" required="true" onChange="action-invoice-line-set-scale-value,action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hidden="true"/>
 				<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-				<field name="priceDiscounted" hidden="true"/>
+				<field name="priceDiscounted" hidden="true" onChange="action-invoice-line-set-scale-value"/>
 				<field name="taxLine" canEdit="false" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="exTaxTotal" readonly="true"/>
 				<field name="inTaxTotal" readonly="true"/>
 				<field name="invoice" hidden="true" />
 				<panel name="discountPanel" title="Discount" colSpan="12">
 					<field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
-					<field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
+					<field name="discountAmount" onChange="action-invoice-line-set-scale-value,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
 				</panel>
 			</panel>
 		</panel-tabs>
@@ -403,6 +403,13 @@
 		<attribute name="required" for="analyticDistributionTemplate" expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
 		
 	</action-attrs>
+	
+	<action-record name="action-invoice-line-set-scale-value" model="com.axelor.apps.account.db.InvoiceLine">
+		<field name="price" expr="eval: price.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="inTaxPrice" expr="eval: inTaxPrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="priceDiscounted" expr="eval: priceDiscounted.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="discountAmount" expr="eval: discountAmount.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
 
   	<action-attrs name="action-attrs-account-invoice-line-account-onchange">
     	<attribute name="required" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />

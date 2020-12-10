@@ -106,10 +106,10 @@
 					<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="3" validIf="$qtyValid != false"/>
 					<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 					<panel name="pricePanel" colSpan="3">
-		          		<field name="price" hidden="true" colSpan="12" onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
+		          		<field name="price" hidden="true" colSpan="12" onChange="action-purchase-order-line-set-scale-value,action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
 		            		<hilite color="danger" if=" $number(saleMinPrice) &lt; $number(salePrice)"/>
 		          		</field>
-		          		<field name="inTaxPrice" hidden="true" colSpan="12" onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
+		          		<field name="inTaxPrice" hidden="true" colSpan="12" onChange="action-purchase-order-line-set-scale-value,action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
 	            			<hilite color="danger" if=" $number(saleMinPrice) &lt; $number(salePrice)"/>
 		          		</field>
 		        	</panel>
@@ -120,7 +120,7 @@
 				</panel>
 				<panel name="discountPanel" colSpan="12">
 					<field name="discountTypeSelect" colSpan="3" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
-					<field name="discountAmount" colSpan="3" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
+					<field name="discountAmount" colSpan="3" onChange="action-purchase-order-line-set-scale-value,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
 					<field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"/>
 				</panel>
 				<field name="taxLine" canEdit="false" onChange="action-group-purchase-purchase-orderline-taxline-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
@@ -408,6 +408,12 @@
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="saleMinPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
+	
+	<action-record name="action-purchase-order-line-set-scale-value" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+		<field name="price" expr="eval: price.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="inTaxPrice" expr="eval: inTaxPrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="discountAmount" expr="eval: discountAmount.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
 	
 	<action-attrs name="action-purchase-order-line-attrs-readonly-form">
 		<attribute name="readonly" for="informationsPanel" expr="eval: __parent__?.statusSelect &gt; 2"/>

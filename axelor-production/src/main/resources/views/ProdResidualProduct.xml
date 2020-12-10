@@ -14,7 +14,7 @@
      onLoad="action-prod-residual-product-attrs-qty-digits">
 		<panel name="mainPanel">        
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable'"/>
-	        <field name="qty"/>
+	        <field name="qty" onChange="action-prod-residual-product-set-scale-value"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         </panel>
     </form>
@@ -26,5 +26,9 @@
     <action-attrs name="action-prod-residual-product-attrs-qty-digits">
     	<attribute name="scale" for="qty" expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
     </action-attrs>
+    
+    <action-record name="action-prod-residual-product-set-scale-value" model="com.axelor.apps.production.db.ProdResidualProduct">
+		<field name="qty" expr="eval: qty.setScale(__config__.app.getApp('production').nbDecimalDigitForBomQty, java.math.RoundingMode.HALF_UP)"/>
+    </action-record>
     
 </object-views>

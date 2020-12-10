@@ -33,7 +33,7 @@
         	<field name="productSupplierCode"/>
         	<field name="productSupplierName"/>
         	<field name="minQty"/>
-        	<field name="price"/>
+        	<field name="price" onChange="action-supplier-catalog-set-scale-value"/>
        	</panel>
 		<panel name="descriptionPanel" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
@@ -50,7 +50,7 @@
 			<field name="productSupplierCode"/>
 			<field name="productSupplierName"/>
 			<field name="minQty"/>
-			<field name="price"/>
+			<field name="price" onChange="action-supplier-catalog-set-scale-value"/>
 		</panel>
 		<panel name="descriptionPanel" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
@@ -65,6 +65,10 @@
 		<attribute name="hidden" for="shippingCoefList"
 				   expr="eval: product &amp;&amp; !product.defShipCoefByPartner" if="eval: __parent__._model != 'com.axelor.apps.base.db.Product'"/>
 	</action-attrs>
+	
+	<action-record name="action-supplier-catalog-set-scale-value" model="com.axelor.apps.purchase.db.SupplierCatalog">
+		<field name="price" expr="eval: price.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
 
 	<action-attrs name="action-supplier-catalog-attrs-update">
 		<attribute name="hidden" for="shippingCoefList"

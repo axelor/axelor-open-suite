@@ -72,7 +72,7 @@
 			<field name="workshopStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
 			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"/>
-            <field name="qty" colSpan="3"/>
+            <field name="qty" colSpan="3" onChange="action-bill-of-material-set-scale-value"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid" canEdit="false" required="true"/>
             <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
 		</panel>
@@ -143,7 +143,7 @@
 			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="defineSubBillOfMaterial" colSpan="3" hidden="true"/>
 			<field name="hasNoManageStock" colSpan="3"/>
-			<field name="qty" colSpan="3"/>
+			<field name="qty" colSpan="3" onChange="action-bill-of-material-set-scale-value"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid" canEdit="false" required="true"/>
 			<field name="wasteRate" min="0"/>
 			<panel name="subProcessConfigurationPanel" title="Sub-process configuration" showIf="defineSubBillOfMaterial" colSpan="12" hidden="true">
@@ -241,6 +241,10 @@
     	<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     	<attribute name="scale" for="qty" expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
     </action-attrs>
+    
+    <action-record name="action-bill-of-material-set-scale-value" model="com.axelor.apps.production.db.BillOfMaterial">
+		<field name="qty" expr="eval: qty.setScale(__config__.app.getApp('production').nbDecimalDigitForBomQty, java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
     
 	<action-attrs name="action-bill-of-material-attrs-product-def-sub-bom">
         <attribute name="hidden" for="defineSubBillOfMaterial" expr="eval: product.productSubTypeSelect == 3" if="product"/>

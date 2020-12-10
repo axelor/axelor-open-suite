@@ -32,4 +32,9 @@
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
+	<action-record name="action-team-task-set-scale-value" model="com.axelor.team.db.TeamTask">
+		<field name="priceDiscounted" expr="eval: priceDiscounted.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="discountAmount" expr="eval: discountAmount.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
+	
 </object-views>

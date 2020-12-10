@@ -21,9 +21,9 @@
 			<field name="workCenter" form-view="work-center-form" grid-view="work-center-grid" showIf="typeSelect == 3"/>
 			<field name="bomLevel"/>
 			<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
-			<field name="consumptionQty"/>
+			<field name="consumptionQty" onChange="action-cost-sheet-line-set-scale-value"/>
 			<field name="unit" form-view="unit-form" grid-view="unit-grid" showIf="typeSelect != 4"/>
-			<field name="costPrice"/>
+			<field name="costPrice" onChange="action-cost-sheet-line-set-scale-value"/>
 	  	</panel>
 	</form>
 	
@@ -114,5 +114,10 @@
     	<attribute name="scale" for="consumptionQty" expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
         <attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
+    
+    <action-record name="action-cost-sheet-line-set-scale-value" model="com.axelor.apps.production.db.CostSheetLine">
+		<field name="costPrice" expr="eval: costPrice.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+		<field name="consumptionQty" expr="eval: consumptionQty.setScale(__config__.app.getApp('production').nbDecimalDigitForBomQty, java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
 	
 </object-views>

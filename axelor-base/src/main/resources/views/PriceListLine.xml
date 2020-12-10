@@ -25,7 +25,7 @@
 			<field name="typeSelect" hideIf="productCategory" selection="base.price.list.line.type.select" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
 			<field name="typeSelect" hideIf="!productCategory" selection-in="[1,2]" selection="base.price.list.line.type.select" colSpan="12" onChange="action-price-list-line-record-type-select, action-price-list-line-attrs-amount-title-change, action-price-list-line-attrs-amount-percent-title-change" />
 			<field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3" onChange="action-price-list-line-attrs-amount-percent-title-change"/>
-			<field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"/>
+			<field name="amount" colSpan="12" hideIf="amountTypeSelect == 3" onChange="action-price-list-line-set-scale-value"/>
 			<field name="minQty" colSpan="12"/>
 		</panel>
 	</form>
@@ -52,6 +52,10 @@
     <action-attrs name="action-price-list-line-attrs-scale-and-precision">
 		<attribute name="scale" for="amount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
+	
+	<action-record name="action-price-list-line-set-scale-value" model="com.axelor.apps.base.db.PriceListLine">
+		<field name="amount" expr="eval: amount.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
 	
 	<action-attrs name="action-price-list-line-attrs-amount-percent-title-change">
 		<attribute name="title" for="amount" expr="%" if="amountTypeSelect == 1"/>	

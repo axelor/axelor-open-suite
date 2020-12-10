@@ -18,7 +18,7 @@
     	<panel name="mainPanel" >
 	        <field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="priceExtra"/>
+	        <field name="priceExtra" onChange="action-product-variant-value-set-scale-value"/>
 	        <field name="applicationPriceSelect"/>
         </panel>
     </form>   
@@ -27,5 +27,9 @@
         <attribute name="scale" for="priceExtra"
             expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
+    
+    <action-record name="action-product-variant-value-set-scale-value" model="com.axelor.apps.base.db.ProductVariantValue">
+		<field name="priceExtra" expr="eval: priceExtra.setScale(__config__.app.getNbDecimalDigitForUnitPrice(), java.math.RoundingMode.HALF_UP)"/>
+	</action-record>
 
 </object-views>
