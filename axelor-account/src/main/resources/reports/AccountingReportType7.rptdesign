@@ -3,6 +3,18 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
+            <property name="name">queryText</property>
+            <property name="id">210</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">210</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">210</property>
+        </structure>
+        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -16,6 +28,30 @@
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -141,78 +177,60 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">moveline_id</property>
-                    <property name="alias">moveline_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">moveline_id</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">moveline_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">move_line_name</property>
-                    <property name="alias">move_line_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">move_line_name</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">move_line_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">move_line_description</property>
-                    <property name="alias">move_line_description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">move_line_description</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">move_line_description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_val</property>
-                    <property name="alias">date_val</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_val</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_val</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner</property>
-                    <property name="alias">partner</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">account</property>
-                    <property name="alias">account</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">account</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">account</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
-                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
-                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reconcile_group_code</property>
-                    <property name="alias">reconcile_group_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">reconcile_group_code</text-property>
                     <text-property name="heading">reconcile_group_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">due_date</property>
-                    <property name="alias">due_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">due_date</text-property>
                     <text-property name="heading">due_date</text-property>
@@ -228,6 +246,12 @@
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount_remaining</text-property>
                     <text-property name="heading">amount_remaining</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">amount_paid</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">amount_paid</text-property>
+                    <text-property name="heading">amount_paid</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -303,6 +327,11 @@
                     <structure>
                         <property name="position">12</property>
                         <property name="name">amount_remaining</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">amount_paid</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -394,12 +423,19 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">amount_paid</property>
+                    <property name="nativeName">amount_paid</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, MoveLine.name as move_line_name, MoveLine.description as move_line_description,
 MoveLine.date_val, MoveLine.partner_full_name as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 MoveLine.debit, MoveLine.credit, ReconcileGroup.code as reconcile_group_code, MoveLine.due_date, Journal.code as journal_code,
-MoveLine.amount_remaining
+MoveLine.amount_remaining,MoveLine.amount_paid
 
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
@@ -442,7 +478,7 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND (MoveLine.amount_remaining > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
+AND (MoveLine.amount_paid > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -1719,10 +1755,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <expression name="expression" type="javascript">if(row._outer["display_cumulative_balance"] == 1){
 	if(row._outer["display_only_not_completely_lettered_move_lines"] == 1){
 		if(dataSetRow["debit"]-dataSetRow["credit"]>0){
-			vars["PreviousBalance"]+(dataSetRow["debit"]-row["amount_remaining"])
+			vars["PreviousBalance"]+(dataSetRow["debit"]-dataSetRow["amount_paid"])
 		}
 		else{
-			vars["PreviousBalance"]+(row["amount_remaining"]-dataSetRow["credit"])
+			vars["PreviousBalance"]+(dataSetRow["amount_paid"]-dataSetRow["credit"])
 		}
 	}else{
 		vars["PreviousBalance"]+(dataSetRow["debit"]-dataSetRow["credit"])
@@ -1731,10 +1767,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 else{
 	if(row._outer["display_only_not_completely_lettered_move_lines"] == 1){
 		if(dataSetRow["debit"]-dataSetRow["credit"]>0){
-			dataSetRow["debit"]-row["amount_remaining"]
+			dataSetRow["debit"]-dataSetRow["amount_paid"]
 		}
 		else{
-			row["amount_remaining"]-dataSetRow["credit"]
+			dataSetRow["amount_paid"]-dataSetRow["credit"]
 		}
 	}else{
 		dataSetRow["debit"]-dataSetRow["credit"]
