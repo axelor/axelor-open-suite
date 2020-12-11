@@ -468,6 +468,7 @@
 		<option value='4'>Purchase</option>
 		<option value='5'>Payment</option>
 		<option value='6'>Cut Off</option>
+		<option value='7'>Fixed Asset</option>
 	</selection>
 	
    <selection name="account.year.period.duration.select">
