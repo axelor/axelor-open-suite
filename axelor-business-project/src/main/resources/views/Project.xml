@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<grid name="business-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
@@ -53,9 +53,9 @@
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="getPartnerData"/>
 	</action-method>
 	
-	<action-view name="action-dashlet-project-show-all-invoicing-task" title="Task Invoicing" model="com.axelor.team.db.TeamTask">
-		<view type="grid" name="business-project-team-task-grid"/>
-		<view type="form" name="team-task-form"/>
+	<action-view name="action-dashlet-project-show-all-invoicing-task" title="Task Invoicing" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="grid" name="business-project-project-task-grid"/>
+		<view type="form" name="project-task-form"/>
 		<view-param name="show-toolbar" value="true" />
 		<view-param name="popup" value="reload"/>
 		<domain>self.project.id in (:_projectIds)</domain>

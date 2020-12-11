@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
@@ -27,6 +27,7 @@
   	<integer name="eventTypeSelect" title="Event type" selection="icalendar.event.type.select"/>
   	<datetime name="eventStartDateTime" title="Start date time"/>
   	<long name="duration" title="Duration"/>
+	<datetime name="eventEndDateTime" title="End date time"/>
   	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partner/Contacts Target List" />
   	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads Target List" />
     <integer name="sequence"/>

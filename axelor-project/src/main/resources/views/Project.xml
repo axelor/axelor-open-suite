@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
+	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project" orderBy="statusSelect, name">
 		<toolbar>
 			<button name="projectPlanningBtn" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
@@ -12,10 +12,11 @@
 				<item name="ganttWithProjectItem"  title="Gantt with project" action="action-project-open-popup-select-projects"/>
 			</menu>
 		</menubar>
-		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
-		<hilite background="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
+		<field name="name">
+		<hilite color="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
+		<hilite color="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
+		</field>
 		<field name="code"/>
-		<field name="name"/>
     <field name="parentProject"/>
 		<field name="clientPartner"/>
 		<field name="assignedTo"/>
@@ -26,6 +27,8 @@
 		<button name="openGanttBtn" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 		<field name="isProject" hidden="true"/>
 		<field name="projectTypeSelect" hidden="true"/>
+		<field name="progress"></field>
+		<field name="statusSelect"></field>
 	</grid>
 
 	<grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
@@ -180,8 +183,8 @@
 				 if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource">
 				<field name="timeSpent" title="Time Spent" readonly="true"
 					colSpan="3" />
-				<panel-dashlet name="validatedTimesheetsPanel" action="action-project-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
-				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-project-dashlet-project-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="validatedTimesheetsPanel" action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-project-dashlet-project-waiting-timesheet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
 			</panel>
 			<panel title="Sales" name="salesPanel"  showIf="isBusinessProject"
 				if="__config__.app.isApp('business-project')
@@ -315,7 +318,7 @@
 				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
 			<panel title="Roadmap" name="roadmapPanel" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
-				<panel-related name="roadmapListPanel" field="roadmapList" colSpan="12" form-view="project-version-form">
+				<panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12" form-view="project-version-form">
 					<field name="title"/>
 					<field name="statusSelect"/>
 					<field name="testingServerDate"/>
@@ -334,7 +337,7 @@
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
 					domain="self.isActivity = true AND dtype = 'Product'" form-view="product-activity-form"
 					grid-view="product-activity-grid" />
-				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
+				<field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
 				<field name="excludeTimesheetEditor" if-module="axelor-human-resource"/>
 				<field name="childProjectList" hidden="true" />
@@ -471,16 +474,14 @@
 			  <field name="fullName"/>
 	</calendar>
 	
-	<action-view name="action-view-show-project-task-tree" title="Project Task Tree" model="com.axelor.team.db.TeamTask">	
-		<view type="tree" name="project-task-tree"/>
-    	<view type="form" name="team-task-form"/>
+	<action-view name="action-view-show-project-task-tree" title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">	
+		<view type="tree" name="project-project-task-tree"/>
+    	<view type="form" name="project-task-form"/>
     	<domain>self.project.id = :_id AND self.parentTask = null</domain>
      	<context name="_id" expr="eval: id"/>
 	</action-view>
-	
 
-
-	<tree name="project-task-tree" title="Tasks">
+	<tree name="project-project-task-tree" title="Tasks">
     	
     	<column name="name" type="string"/>
 			<column name="taskDate" type="date"/>
@@ -488,20 +489,20 @@
     	<column name="progress" type="integer"/>
 		<column name="openTask" type="button"/>
 
-		<node model="com.axelor.team.db.TeamTask" domain="self.project.id = :_id" onClick="action-team-task-view-task" orderBy="taskDate">
+		<node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id" onClick="action-project-task-view-task" orderBy="taskDate">
 			<field name="name" as="name"/>
 			<field name="taskDate" as="taskDate"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
-			<button name="openTaskBtn" title="Open task" onClick="action-team-task-open-task"/>
+			<button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
 		</node>
 
-		<node model="com.axelor.team.db.TeamTask" parent="parentTask" draggable="true" onClick="action-team-task-view-task" orderBy="taskDate">
+		<node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true" onClick="action-project-task-view-task" orderBy="taskDate">
 			<field name="name" as="name"/>
 			<field name="taskDate" as="taskDate"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
-			<button name="openTaskBtn" title="Open task" onClick="action-team-task-open-task"/>
+			<button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
 		</node>
     
 	</tree>
@@ -520,11 +521,11 @@
 			<button name="openTaskBtn" title="Open phase" onClick="action-project-view-phase"/>
 		</node>
 		
-		<node model="com.axelor.team.db.TeamTask" parent="project" draggable="true" onClick="action-team-task-view-task">
+		<node model="com.axelor.apps.project.db.ProjectTask" parent="project" draggable="true" onClick="action-project-task-view-task">
 			<field name="name" as="name"/>
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
-			<button name="openTaskBtn" title="Open task" onClick="action-team-task-open-task"/>
+			<button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
 		</node>
 		
 	</tree>
@@ -580,8 +581,8 @@
 		<field name="parentProject" expr="eval: null"/>
 	</action-record>
 	
-	<action-view name="action-project-task-view" title="Tasks" model="com.axelor.team.db.TeamTask">
-    	<view type="form" name="team-task-form"/>
+	<action-view name="action-project-task-view" title="Tasks" model="com.axelor.apps.project.db.ProjectTask">
+    	<view type="form" name="project-task-form"/>
         <view-param name="popup" value="reload"/>
         <view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
@@ -595,16 +596,10 @@
 		<domain>self.typeSelect = 'project' AND self.project.id = :id</domain>
 	</action-view>
 	
-	<action-view name="action-project-view-show-task" title="Tasks" model="com.axelor.apps.project.db.Project">
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
-		<domain>self.typeSelect = 'task' AND self.project.id = :id</domain>
-	</action-view>
-	
-	<action-view name="action-project-view-show-related-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
-		<view type="kanban" name="team-task-kanban"/>
-		<view type="grid" name="team-task-grid"/>
-		<view type="form" name="team-task-form"/>
+	<action-view name="action-project-view-show-related-tasks" title="Related tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="kanban" name="project-task-kanban"/>
+		<view type="grid" name="project-task-grid"/>
+		<view type="form" name="project-task-form"/>
 		<domain>(self.project.id = :_id OR self.project.parentProject.id = :_id)</domain>
 	</action-view>
 	
@@ -619,10 +614,10 @@
 	  <context name="_showRecord" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="action-project-open-gantt" title="Gantt" model="com.axelor.team.db.TeamTask">
+	<action-view name="action-project-open-gantt" title="Gantt" model="com.axelor.apps.project.db.ProjectTask">
 		<view type="gantt" name="task-gantt" />
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
+		<view type="grid" name="project-task-grid" />
+		<view type="form" name="project-task-form" />
 		<domain>self.project.id = :_id OR self.project.parentProject.id = :_id</domain>
 		<context name="_project" expr="eval:__this__"/>
 	</action-view>
@@ -634,27 +629,27 @@
 		<context name="_project" expr="eval:__self__"/>
 	</action-view>
 
-	<action-view name="action-project-add-task" model="com.axelor.team.db.TeamTask" title="Task">
-		<view name="team-task-form" type="form"/>
-		<view name="team-task-grid" type="grid"/>
+	<action-view name="action-project-add-task" model="com.axelor.apps.project.db.ProjectTask" title="Task">
+		<view name="project-task-form" type="form"/>
+		<view name="project-task-grid" type="grid"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="popup-save" value="true"/>
 		<view-param name="show-confirm" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
 		<context name="_project" expr="eval:__this__"/>
-		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
+		<context name="_typeSelect" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
 	</action-view>
 
-	<action-view name="action-project-add-ticket" model="com.axelor.team.db.TeamTask" title="Ticket">
-		<view name="team-task-form" type="form"/>
-		<view name="team-task-grid" type="grid"/>
+	<action-view name="action-project-add-ticket" model="com.axelor.apps.project.db.ProjectTask" title="Ticket">
+		<view name="project-task-form" type="form"/>
+		<view name="project-task-grid" type="grid"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="popup-save" value="true"/>
 		<view-param name="show-confirm" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="forceTitle" value="true"/>
 		<context name="_project" expr="eval:__this__"/>
-		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
+		<context name="_typeSelect" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
 	</action-view>
 
 	<action-view name="action-project-open-popup-select-users" title="Select Users" model="com.axelor.apps.base.db.Wizard">
@@ -671,18 +666,18 @@
 	  <view-param name="popup-save" value="false"/>
 	</action-view>
 	 
-	 <action-view name="action-open-project-gantt" title="Project Gantt" model="com.axelor.team.db.TeamTask">
+	 <action-view name="action-open-project-gantt" title="Project Gantt" model="com.axelor.apps.project.db.ProjectTask">
 		<view type="gantt" name="project-task-gantt" />
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
+		<view type="grid" name="project-task-grid" />
+		<view type="form" name="project-task-form" />
 		<domain>self.project.id IN (:_projectIds) OR self.project.parentProject.id IN (:_projectIds)</domain>
 		<context name="_projectIds" expr="eval: projectSet.collect{it.id}"/>
 	</action-view>
 	
-	 <action-view name="action-open-user-gantt" title="User Gantt" model="com.axelor.team.db.TeamTask">
-		<view type="gantt" name="user-task-gantt" />
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
+	 <action-view name="action-open-user-gantt" title="User Gantt" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="gantt" name="user-project-task-gantt" />
+		<view type="grid" name="project-task-grid" />
+		<view type="form" name="project-task-form" />
 		<domain>self.assignedTo.id IN (:_userIds) </domain>
 		 <context name="_userIds" expr="eval: userSet.collect{it.id}"/>
 	 	</action-view>
@@ -721,9 +716,9 @@
 		<context name="_parentProjectId" expr="eval:id" />
 	</action-view>
 	
-	<action-view name="action-project-phase-view-show-phase-task" title="Phase tasks" model="com.axelor.team.db.TeamTask">
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
+	<action-view name="action-project-phase-view-show-phase-task" title="Phase tasks" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="grid" name="project-task-grid" />
+		<view type="form" name="project-task-form" />
 		<domain>self.project.parentProject.id = :_projectId</domain>
 		<context name="_projectId" expr="eval:id" />
 	</action-view>
@@ -828,11 +823,6 @@
 		<domain>self.contract.project.id = :_id</domain>
 	</action-view>
 
-    <action-view name="dashlet.task" title="Tasks" model="com.axelor.apps.project.db.Project">
-        <view type="grid" name="task-grid" />
-        <view type="form" name="task-form" />
-    </action-view>
-
 	<search-filters name="project-filters" model="com.axelor.apps.project.db.Project" title="Project filters">
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
         <field name="resourceBookingList" hidden="true" if="!__config__.app.getApp('project').resourceManagement"/>
@@ -852,7 +842,7 @@
 		<field name="consolidatePhaseWhenInvoicing" hidden="true" if="!__config__.app.isApp('business-project')"/>
 		<field name="invoicingComment" hidden="true" if="!__config__.app.isApp('business-project')"/>
 		<field name="manualElementList" hidden="true" if="!__config__.app.isApp('business-project')"/>
-		<field name="roadmapList" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="roadmapSet" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="announcementList" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
 		<field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>

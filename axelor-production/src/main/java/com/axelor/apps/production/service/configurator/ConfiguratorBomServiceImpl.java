@@ -48,7 +48,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
   protected ConfiguratorProdProcessService confProdProcessService;
 
   @Inject
-  ConfiguratorBomServiceImpl(
+  public ConfiguratorBomServiceImpl(
       ConfiguratorBOMRepository configuratorBOMRepo,
       ConfiguratorService configuratorService,
       BillOfMaterialRepository billOfMaterialRepository,

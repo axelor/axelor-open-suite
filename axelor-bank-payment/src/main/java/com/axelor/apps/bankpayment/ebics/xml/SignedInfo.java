@@ -141,6 +141,7 @@ public class SignedInfo extends DefaultEbicsRootElement {
       Canonicalizer canonicalizer;
 
       factory = DocumentBuilderFactory.newInstance();
+      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
       factory.setNamespaceAware(true);
       factory.setValidating(true);
       builder = factory.newDocumentBuilder();

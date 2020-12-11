@@ -22,10 +22,12 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -35,8 +37,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -48,21 +48,21 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
-  private TeamTaskBusinessProjectService teamTaskBusinessProjectService;
-  private TeamTaskRepository teamTaskRepository;
+  private ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  private ProjectTaskRepository projectTaskRepo;
   private ProductCompanyService productCompanyService;
 
   @Inject
   public ProjectGeneratorFactoryTask(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
-      TeamTaskBusinessProjectService teamTaskBusinessProjectService,
-      TeamTaskRepository teamTaskRepository,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
-    this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
-    this.teamTaskRepository = teamTaskRepository;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
   }
 
@@ -78,12 +78,12 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   @Transactional(rollbackOn = {Exception.class, AxelorException.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
-    List<TeamTask> tasks = new ArrayList<>();
+    List<ProjectTask> tasks = new ArrayList<>();
     projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       boolean isTaskGenerated =
-          teamTaskRepository
+          projectTaskRepo
                   .all()
                   .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
                   .fetch()
@@ -96,11 +96,12 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
           && !(isTaskGenerated)) {
 
-        TeamTask task =
-            teamTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
+        ProjectTask task =
+            projectTaskBusinessProjectService.create(
+                saleOrderLine, project, project.getAssignedTo());
 
         if (saleOrder.getToInvoiceViaTask()) {
-          task.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
+          task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
         }
 
         task.setTaskDate(startDate.toLocalDate());
@@ -112,7 +113,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         } else {
           task.setToInvoice(false);
         }
-        teamTaskRepository.save(task);
+        projectTaskRepo.save(task);
         tasks.add(task);
       }
     }
@@ -123,10 +124,10 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     }
 
     return ActionView.define(String.format("Task%s generated", (tasks.size() > 1 ? "s" : "")))
-        .model(TeamTask.class.getName())
-        .add("grid", "team-task-grid")
-        .add("form", "team-task-form")
-        .param("search-filters", "team-task-filters")
+        .model(ProjectTask.class.getName())
+        .add("grid", "project-task-grid")
+        .add("form", "project-task-form")
+        .param("search-filters", "project-task-filters")
         .domain(String.format("self.id in (%s)", StringTool.getIdListString(tasks)));
   }
 }

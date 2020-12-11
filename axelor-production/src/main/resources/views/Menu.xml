@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	
 	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.app.isApp('production')"
@@ -184,13 +184,14 @@
 
 	<menuitem name="manufacturing-mps" parent="manufacturing-root" title="MPS" order="43" if="__config__.app.isApp('supplychain')"/>
 
-	<menuitem name="manufacturing-mps-master-production-scheduling" parent="manufacturing-mps" title="Master Production Scheduling"
+	<menuitem name="manufacturing-mps-master-production-scheduling" parent="manufacturing-mps" title="MPS"
 		action="manufacturing.mps.master.production.scheduling" order="1"/>
 
-	<action-view name="manufacturing.mps.master.production.scheduling" title="Master Production Scheduling"
+	<action-view name="manufacturing.mps.master.production.scheduling" title="MPS"
 		model="com.axelor.apps.supplychain.db.Mrp">
 		<view type="grid" name="mrp-grid"/>
 		<view type="form" name="mrp-manuf-order-form"/>
+		<view-param name="forceTitle" value="true"/>
 		<domain>self.mrpTypeSelect = 2</domain>
 	</action-view>
 

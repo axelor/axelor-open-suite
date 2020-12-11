@@ -41,7 +41,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected boolean stop = false;
+  protected boolean end = false;
 
   protected String updateCustomerAccountLog = "";
 
@@ -78,7 +78,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
           ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
           batch.getId());
       incrementAnomaly();
-      stop = true;
+      end = true;
     }
 
     checkPoint();
@@ -88,7 +88,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
   @Override
   protected void process() {
 
-    if (!stop) {
+    if (!end) {
       Company company = batch.getAccountingBatch().getCompany();
 
       AccountConfig accountConfig = company.getAccountConfig();

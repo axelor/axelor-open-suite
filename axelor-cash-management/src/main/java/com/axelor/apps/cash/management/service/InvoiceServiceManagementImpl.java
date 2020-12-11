@@ -18,6 +18,7 @@
 package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -48,7 +49,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      InvoiceLineRepository invoiceLineRepo) {
     super(
         validateFactory,
         ventilateFactory,
@@ -59,7 +61,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         partnerService,
         invoiceLineService,
         accountConfigService,
-        moveToolService);
+        moveToolService,
+        invoiceLineRepo);
   }
 
   @Override

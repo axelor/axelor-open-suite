@@ -33,4 +33,9 @@ public interface IExceptionMessage {
   static final String PROJECT_NO_TEAM = /*$$(*/ "You have selected no team for this project" /*)*/;
   static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for Project" /*)*/;
+
+  static final String PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE = /*$$(*/
+      "Frequency end date cannot be before task date." /*)*/;
+
+  static final String PROJECT_TASK_FILL_TASK_DATE = /*$$(*/ "Please fill in task date." /*)*/;
 }

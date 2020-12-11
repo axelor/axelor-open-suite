@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.app;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
@@ -29,9 +30,15 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
+
+  @Inject
+  public ConfiguratorServiceProductionImpl(AppBaseService appBaseService) {
+    super(appBaseService);
+  }
 
   /**
    * In this implementation, we also create a bill of materials.
@@ -65,12 +72,17 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       JsonContext jsonIndicators,
       SaleOrder saleOrder)
       throws AxelorException {
+
+    SaleOrderLine saleOrderLine =
+        super.generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null && checkConditions(configuratorBOM, jsonAttributes)) {
-      Beans.get(ConfiguratorBomService.class)
-          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null);
+      BillOfMaterial billOfMaterial =
+          Beans.get(ConfiguratorBomService.class)
+              .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null);
+      saleOrderLine.setBillOfMaterial(billOfMaterial);
     }
-    return super.generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+    return saleOrderLine;
   }
 
   protected boolean checkConditions(ConfiguratorBOM configuratorBOM, JsonContext jsonAttributes)

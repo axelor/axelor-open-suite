@@ -20,6 +20,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
@@ -32,7 +33,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -55,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Inject WikiRepository wikiRepo;
-  @Inject TeamTaskProjectService teamTaskProjectService;
+  @Inject ProjectTaskService projectTaskService;
 
   @Override
   public Project generateProject(
@@ -145,7 +145,7 @@ public class ProjectServiceImpl implements ProjectService {
       project.setTeam(projectTemplate.getTeam());
       project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
       project.setAssignedTo(projectTemplate.getAssignedTo());
-      project.setTeamTaskCategorySet(new HashSet<>(projectTemplate.getTeamTaskCategorySet()));
+      project.setProjectTaskCategorySet(new HashSet<>(projectTemplate.getProjectTaskCategorySet()));
       project.setSynchronize(projectTemplate.getSynchronize());
       project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
       project.setImputable(projectTemplate.getImputable());
@@ -181,11 +181,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
   }
 
-  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
+  public ProjectTask createTask(TaskTemplate taskTemplate, Project project) {
 
-    TeamTask task =
-        teamTaskProjectService.create(
-            taskTemplate.getName(), project, taskTemplate.getAssignedTo());
+    ProjectTask task =
+        projectTaskService.create(taskTemplate.getName(), project, taskTemplate.getAssignedTo());
     task.setDescription(taskTemplate.getDescription());
 
     return task;
