@@ -24,6 +24,7 @@ import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
@@ -80,5 +81,11 @@ public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
     nextTeamTask.setTaskEndDate(teamTask.getTaskEndDate());
     nextTeamTask.setBudgetedTime(teamTask.getBudgetedTime());
     nextTeamTask.setCurrency(teamTask.getCurrency());
+  }
+
+  @Override
+  @Transactional
+  public void deleteTeamTask(TeamTask teamTask) {
+    teamTaskRepo.remove(teamTask);
   }
 }

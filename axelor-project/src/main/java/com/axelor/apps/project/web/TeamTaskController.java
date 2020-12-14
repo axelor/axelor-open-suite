@@ -20,12 +20,14 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.project.service.TeamTaskProjectService;
 import com.axelor.apps.project.service.TimerTeamTaskService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import java.time.Duration;
 
 public class TeamTaskController {
@@ -95,6 +97,18 @@ public class TeamTaskController {
     try {
       TeamTask task = request.getContext().asType(TeamTask.class);
       Beans.get(TimerTeamTaskService.class).cancel(task);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void deleteTeamTask(ActionRequest request, ActionResponse response) {
+    try {
+
+      TeamTask teamTask = request.getContext().asType(TeamTask.class);
+      teamTask = Beans.get(TeamTaskRepository.class).find(teamTask.getId());
+      Beans.get(TeamTaskProjectService.class).deleteTeamTask(teamTask);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

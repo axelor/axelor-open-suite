@@ -498,6 +498,10 @@
 	<action-method name="action-team-task-method-onchange-category">
 		<call class="com.axelor.apps.businessproject.web.TeamTaskController" method="onChangeCategory"/>
 	</action-method>
+  
+    <action-method name="action-team-task-method-delete-team-task">
+        <call class="com.axelor.apps.project.web.TeamTaskController" method="deleteTeamTask"/>
+    </action-method>
 	
 	<action-attrs name="action-team-task-attrs-invoice-type-on-change">
 		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1 || invoicingType == 2"/>
@@ -530,4 +534,8 @@
 		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
 		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.task.id = :id&quot;"/>
 	</action-attrs>
+  
+    <action-validate name="action-team-task-validate-delete-team-task-confirmation">
+       <alert message="Do you really want to delete the selected record?"/>
+    </action-validate>
 </object-views>
