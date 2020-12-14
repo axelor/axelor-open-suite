@@ -10,7 +10,7 @@
 	</menubar>
     <field name="invoice" width="120"/>
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
-		<field name="deadlineDate"/>
+		<field name="deadlineDate" massUpdate="true"/>
 		<field name="createdOn"/>
 		<field name="comments"/>
 	</grid>
