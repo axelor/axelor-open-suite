@@ -38,7 +38,17 @@ public interface PartnerService {
       EmailAddress emailAddress,
       Currency currency,
       Address deliveryAddress,
-      Address mainInvoicingAddress);
+      Address mainInvoicingAddress,
+      boolean createContact);
+
+  Partner createContact(
+      Partner partner,
+      String name,
+      String firstName,
+      String fixedPhone,
+      String mobilePhone,
+      EmailAddress emailAddress,
+      Address mainAddress);
 
   void onSave(Partner partner) throws AxelorException;
 
