@@ -16,8 +16,13 @@ Axelor Open Suite includes the following modules :
 
 Axelor Open Suite is built on top of [Axelor Open Platform](https://github.com/axelor/axelor-open-platform)
 
-Download
--------------------------
+
+Installation
+================================
+
+To compile and run from source, you will need to clone Axelor Open Suite modules, which is a
+[git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) repository, using following commands:
+
 ```bash
 $ git clone git@github.com:axelor/open-suite-webapp.git
 $ cd open-suite-webapp
@@ -27,3 +32,5 @@ $ git submodule update
 $ git submodule foreach git checkout master
 $ git submodule foreach git pull origin master
 ```
+
+You can find more detailed [installation instructions](https://docs.axelor.com/abs/5.0/install/index.html) on our documentation.
