@@ -1,5 +1,3 @@
 ---
-title: "Leave request"
+title: "Leave request: manage the case of multiple leave requests for a single day."
 type: fix
-description : |
-  Consider multiple leave request for single day.
