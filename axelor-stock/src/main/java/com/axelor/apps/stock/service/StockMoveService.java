@@ -138,7 +138,7 @@ public interface StockMoveService {
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
   @Transactional
-  public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
+  public boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
 
   @Transactional
   public void splitStockMoveLinesSpecial(
