@@ -69,6 +69,11 @@
 				<panel name="wsPanel" title="Webservices"  colSpan="12">
 					<field name="currencyWsURL" colSpan="12"/>
 				</panel>
+				
+				<panel name="geonamesPanel" title="GeoNames"  colSpan="12">
+					<field name="geoNamesUrl" colSpan="12"/>
+				</panel>
+				
 		    </panel>
 		    <panel name="currencyConversionPanel" title="Currency conversion" colSpan="12">
 				<button name="updateCurrencyConversionBtn" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion"/>

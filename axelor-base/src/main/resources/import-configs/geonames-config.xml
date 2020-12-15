@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.3.xsd">
   	
   	<input file="geonames_city.csv" separator="\t" type="com.axelor.apps.base.db.City" search="self.zip = :zip AND self.name = :name AND self.country.alpha2Code = :country_alpha2Code" call="com.axelor.csv.script.ImportCity:importCity">
-  		<header>country_alpha2Code, zip, name, department_region_name, department_region_code, department_name, department_code, canton_name, canton_code, lattitude, longitude, precision de la lattitude/longitude</header>
+  		<header>country_alpha2Code, zip, name, department_region_name, department_region_code, department_name, department_code, canton_name, canton_code, lattitude, longitude, population</header>
 		<bind to="country" search="self.alpha2Code = :country_alpha2Code" update="true"/>
 		<bind to="department" type="com.axelor.apps.base.db.Department" search="self.code = :department_code AND self.name = :department_name" if="!department_code.empty &amp;&amp; !department_name.empty">
 			<bind to="code" column="department_code"/>
@@ -19,6 +19,7 @@
  			<bind to="code" column="canton_code"/>
  			<bind to="name" column="canton_name"/>
  		</bind>
+ 		<bind to="nbInhCommune" column="population"/>
 	</input>
   	
 </csv-inputs>
