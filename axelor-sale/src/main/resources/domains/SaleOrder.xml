@@ -126,6 +126,8 @@
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
+ 	
+ 	<finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
 
     <extra-code>
    		<![CDATA[
