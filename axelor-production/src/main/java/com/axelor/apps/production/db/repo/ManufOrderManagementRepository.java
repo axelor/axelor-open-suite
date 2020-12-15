@@ -27,10 +27,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import org.apache.commons.collections.CollectionUtils;
-
 import javax.persistence.PersistenceException;
-import java.util.Collections;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 
