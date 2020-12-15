@@ -18,6 +18,19 @@
         <field name="expense.statusSelect" hidden="true"/>
     </grid>
     
+    <grid name="expense-line-invoicing-project-grid" title="Expense lines" model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate" groupBy="project">
+		<hilite if="untaxedAmount == 0" color="danger"/>
+		<field name="project" width="150"/>
+		<field name="expenseProduct" form-view="product-expense-form" grid-view="product-expense-grid" width="200"/>
+		<field name="expenseDate" width="120"/>
+		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
+		<field name="totalAmount" aggregate="sum" width="170"/>
+		<field name="totalTax" aggregate="sum" width="80"/>
+        <field name="toInvoice"/>
+		<field name="comments" width="400"/>
+		<field name="untaxedAmount" hidden="true"/>
+	</grid>
+    
     <action-attrs name="action-expense-line-attrs-domain-project" id="business-project-action-expense-line-attrs-domain-project">
 		<attribute name="domain" for="project" expr="eval: &quot; self.imputable = true AND (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) &quot;"/>
 	</action-attrs>
