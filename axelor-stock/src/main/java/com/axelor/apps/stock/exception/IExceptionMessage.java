@@ -54,6 +54,12 @@ public interface IExceptionMessage {
   static final String LOCATION_LINE_3 = /*$$(*/
       "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
 
+  static final String LOCATION_LINE_MISSING_UNIT = /*$$(*/
+      "Please fill unit for the stock location line in %s for the product %s." /*)*/;
+
+  static final String DETAIL_LOCATION_LINE_MISSING_UNIT = /*$$(*/
+      "Please fill unit for the stock location line with tracking number %s in %s for the product %s." /*)*/;
+
   /** Stock Move Service and Controller */
   static final String STOCK_MOVE_1 = /*$$(*/
       "There's no configured sequence for stock's intern moves for the company %s" /*)*/;
