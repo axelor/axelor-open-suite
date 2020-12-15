@@ -1,3 +1,36 @@
+## [5.4.4] (2020-12-04)
+
+#### Changes
+
+* Reconcile: change amount field title.
+* EMPLOYEE: add french translations for employee resume printing.
+* DebtRecovery: Sorting grid based on date, company and partner.
+
+#### Fixed
+
+* Timesheet, Expense: Fix filter after clicking "Show timesheets/expenses to be validated".
+* Project grid view has been improved and displays now project progress and status.
+* Company: Prevent having twice the same active bank details.
+* Reconcile Group: add missing translation.
+* Fix opportunity in demo data missing sequence value.
+* INVOICE: Add product name translation in printing.
+* App Production: add missing translations.
+* PRODUCT: fix wrong quantity display in production information "Where-used list", in product form.
+* Campaign Reminder: Add missing translation.
+* Team Task: Cannot chose a closed project from task project view anymore.
+* Stock Move: Generate line for each 'Purchase Qty by tracking' without considering boolean 'Generate new purchase auto tracking Nbr'.
+* Configurator: link the generated bill of materials to the generated sale order line even if we do not generate a product.
+- Frequency: fix the years of a frequency.
+* Configurator Creator: correctly show only the name and the button on a new configurator creator form.
+* Demo data: do not set products cost price to 0 when importing bill of materials components.
+* INVOICE REPORT: Fixing period format.
+* Campaign: Add missing translation.
+* Configurator: add missing special variables in script.
+* Cost Sheet Line: fix error if the product has no prices configured and is not purchasable.
+* Product Company: fix missing values in demo data.
+* Campaign: Hide tool button if all child items are hidden.
+* Leave request report: Manage the case where there are multiple leave requests for a single day.
+
 ## [5.4.3] (2020-11-17)
 
 #### Changes
@@ -178,6 +211,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.4]: https://github.com/axelor/axelor-open-suite/compare/v5.4.3...v5.4.4
 [5.4.3]: https://github.com/axelor/axelor-open-suite/compare/v5.4.2...v5.4.3
 [5.4.2]: https://github.com/axelor/axelor-open-suite/compare/v5.4.1...v5.4.2
 [5.4.1]: https://github.com/axelor/axelor-open-suite/compare/v5.4.0...v5.4.1

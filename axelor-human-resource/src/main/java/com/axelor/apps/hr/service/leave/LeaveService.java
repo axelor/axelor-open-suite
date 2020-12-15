@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.mail.MessagingException;
 
 public interface LeaveService {
@@ -115,11 +116,11 @@ public interface LeaveService {
   public boolean isLeaveDay(User user, LocalDate date);
 
   /**
-   * Gets the leave for the given user for the given date.
+   * Gets the leaves for the given user for the given date.
    *
    * @param user
    * @param date
    * @return
    */
-  public LeaveRequest getLeave(User user, LocalDate date);
+  public List<LeaveRequest> getLeaves(User user, LocalDate date);
 }
