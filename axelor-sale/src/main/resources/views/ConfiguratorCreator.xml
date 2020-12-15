@@ -29,10 +29,11 @@
 
     	<panel name="otherDetailsPanel">
     		<field name="name"/>
-    		<button name="configureBtn" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-configure"/>
+    		<button name="configureBtn" title="Configure" showIf="id == null" onClick="save"/>
     		<panel-related name="attributesPanel" field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
     				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
-    	</panel>
+				<field name="qtyFormula" showIf="id &amp;&amp; generateProduct" height="60" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
+			</panel>
 
 		<panel name="actionsPanel" sidebar="true" title="Actions" hideIf="id == null">
 			<button name="activateBtn" title="Activate" onClick="action-configurator-creator-group-activate"
@@ -55,7 +56,7 @@
             <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
 		
-		<panel name="configuratorBomPanel" title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
+		<panel name="configuratorBomPanel" title="Configurator BoM" hideIf="id == null" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
             <field name="configuratorBom" showTitle="false" if-module="axelor-production" colSpan="12" form-view="configurator-bom-form" grid-view="configurator-bom-grid">
                 <editor>
                     <panel>
@@ -133,10 +134,6 @@
     	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController"
 			  method="createConfigurator"/>
     </action-method>
-
-	<action-method name="action-configurator-creator-method-configure" model="com.axelor.apps.sale.db.ConfiguratorCreator">
-		<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="configure"/>
-	</action-method>
 
     <action-method name="action-configurator-creator-method-update-activate">
         <call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="updateAndActivate"/>

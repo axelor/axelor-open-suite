@@ -53,6 +53,7 @@
 		filter="self.partner = :partner AND self.isDefault = TRUE" />
     <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
 
+    <entity-listener class="com.axelor.apps.base.db.repo.BankDetailsListener"/>
   </entity>
 
 </domain-models>

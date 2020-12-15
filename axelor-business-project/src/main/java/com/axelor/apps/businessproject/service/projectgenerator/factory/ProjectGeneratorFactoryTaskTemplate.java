@@ -25,10 +25,12 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -37,8 +39,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -53,8 +53,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
-  private TeamTaskBusinessProjectService teamTaskService;
-  private TeamTaskRepository teamTaskRepository;
+  private ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  private ProjectTaskRepository projectTaskRepo;
   private ProductTaskTemplateService productTaskTemplateService;
   private ProductCompanyService productCompanyService;
 
@@ -62,14 +62,14 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   public ProjectGeneratorFactoryTaskTemplate(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
-      TeamTaskBusinessProjectService teamTaskService,
-      TeamTaskRepository teamTaskRepository,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      ProjectTaskRepository projectTaskRepo,
       ProductTaskTemplateService productTaskTemplateService,
       ProductCompanyService productCompanyService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
-    this.teamTaskService = teamTaskService;
-    this.teamTaskRepository = teamTaskRepository;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTaskRepo = projectTaskRepo;
     this.productTaskTemplateService = productTaskTemplateService;
     this.productCompanyService = productCompanyService;
   }
@@ -86,11 +86,11 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   @Transactional(rollbackOn = {Exception.class, AxelorException.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
-    List<TeamTask> tasks = new ArrayList<>();
-    TeamTask root;
+    List<ProjectTask> tasks = new ArrayList<>();
+    ProjectTask root;
 
     root =
-        teamTaskRepository
+        projectTaskRepo
             .all()
             .filter(
                 "self.project = ? AND self.assignedTo = ? AND self.name = ?",
@@ -113,20 +113,22 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         continue;
       }
       boolean isTaskGenerated =
-          teamTaskRepository
+          projectTaskRepo
                   .all()
                   .filter("self.saleOrderLine = ? AND self.project = ?", orderLine, project)
                   .fetch()
                   .size()
               > 0;
       if (root == null) {
-        root = teamTaskService.create(saleOrder.getFullName(), project, project.getAssignedTo());
+        root =
+            projectTaskBusinessProjectService.create(
+                saleOrder.getFullName(), project, project.getAssignedTo());
         root.setTaskDate(startDate.toLocalDate());
-        tasks.add(teamTaskRepository.save(root));
+        tasks.add(projectTaskRepo.save(root));
       }
       if (product != null && !isTaskGenerated) {
         if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
-          List<TeamTask> convertedTasks =
+          List<ProjectTask> convertedTasks =
               productTaskTemplateService.convert(
                   product.getTaskTemplateSet().stream()
                       .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
@@ -139,11 +141,12 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
           convertedTasks.stream().forEach(task -> task.setSaleOrderLine(orderLine));
           tasks.addAll(convertedTasks);
         } else {
-          TeamTask childTask =
-              teamTaskService.create(orderLine.getFullName(), project, project.getAssignedTo());
+          ProjectTask childTask =
+              projectTaskBusinessProjectService.create(
+                  orderLine.getFullName(), project, project.getAssignedTo());
           this.updateTask(root, childTask, orderLine);
 
-          tasks.add(teamTaskRepository.save(childTask));
+          tasks.add(projectTaskRepo.save(childTask));
         }
       }
     }
@@ -153,14 +156,14 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
           I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
     }
     return ActionView.define("Tasks")
-        .model(TeamTask.class.getName())
-        .add("grid", "team-task-grid")
-        .add("form", "team-task-form")
-        .param("search-filters", "team-task-filters")
+        .model(ProjectTask.class.getName())
+        .add("grid", "project-task-grid")
+        .add("form", "project-task-form")
+        .param("search-filters", "project-task-filters")
         .domain("self.parentTask = " + root.getId());
   }
 
-  private void updateTask(TeamTask root, TeamTask childTask, SaleOrderLine orderLine)
+  private void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
       throws AxelorException {
     childTask.setParentTask(root);
     childTask.setQuantity(orderLine.getQty());
@@ -178,7 +181,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     childTask.setSaleOrderLine(orderLine);
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);
-      childTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
+      childTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
     }
   }
 }

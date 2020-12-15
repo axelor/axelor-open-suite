@@ -8,6 +8,7 @@
     	<field name="name"/>
     	<field name="unit"/>
     	<field name="currency"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
     </grid>
     
     <form name="pack-form" title="Pack" model="com.axelor.apps.sale.db.Pack" onNew="action-pack-record-onnew">
@@ -16,6 +17,10 @@
 	    	<field name="name" colSpan="3"/>
 	    	<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 	    	<field name="currency" colSpan="3" canEdit="false" />
+            <field name="isShowTotal" onChange="action-pack-record-reset-is-hide-unit-amounts" colSpan="3"/>
+            <field name="isHideUnitAmounts" colSpan="3" showIf="isShowTotal"/>
+            <field name="doNotDisplayHeaderAndEndPack" />
+            <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
 	    	<panel-related field="components" form-view="pack-line-form" grid-view="pack-line-grid" canMove="true" orderBy="sequence" colSpan="12"/>
     	</panel>
     </form>
@@ -25,7 +30,7 @@
 	    	<field name="$pack" required="true" type="many-to-one" title="Pack" target="com.axelor.apps.sale.db.Pack" form-view="pack-form" grid-view="pack-grid" canNew="true" canEdit="true"/>
 	    	<field name="$qty" type="decimal" title="Qty" min="1"/>
 	    	<button name="addPackBtn" title="Add Pack" onClick="action-sale-order-method-add-pack"/>
-	    	<field name="_id" hidden="true"/>
+	    	<field name="_id" title="Sale order id" hidden="true"/>
     	</panel>
     </form>
     
@@ -48,7 +53,11 @@
     </action-attrs>
     
     <action-record name="action-pack-record-onnew" model="com.axelor.apps.sale.db.Pack">
-    	<field name="currency" expr="eval: __repo__(SaleOrder).find(__parent__._id)?.currency"/>
+    	<field name="currency" expr="eval: __repo__(SaleOrder).find(__parent__._id)?.currency" if="__parent__"/>
+    </action-record>
+    
+    <action-record name="action-pack-record-reset-is-hide-unit-amounts" model="com.axelor.apps.sale.db.Pack">
+       <field name="isHideUnitAmounts" expr="eval: false" />
     </action-record>
 
 </object-views>

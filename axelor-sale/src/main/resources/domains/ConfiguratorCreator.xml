@@ -22,7 +22,10 @@
                      ref="com.axelor.auth.db.Group"/>
         <boolean name="generateProduct" title="Generate product" default="true"/>
 
+        <string name="qtyFormula" title="Quantity" large="true" help="Quantity in generated sale order line, 1 if left empty."/>
+
         <boolean name="isActive" title="Is Active" default="false"/>
 
+        <entity-listener class="com.axelor.apps.sale.db.repo.ConfiguratorCreatorListener"/>
     </entity>
 </domain-models>

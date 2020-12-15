@@ -31,9 +31,9 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -87,8 +87,8 @@ public class InvoicePaymentValidateProjectServiceImpl
             .fetchOne();
 
     if (invoicingProject != null) {
-      for (TeamTask teamTask : invoicingProject.getTeamTaskSet()) {
-        teamTask.setIsPaid(invoice.getHasPendingPayments());
+      for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
+        projectTask.setIsPaid(invoice.getHasPendingPayments());
       }
     }
   }

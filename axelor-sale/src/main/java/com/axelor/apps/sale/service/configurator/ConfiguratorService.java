@@ -57,7 +57,8 @@ public interface ConfiguratorService {
    * @param jsonIndicators
    */
   void generate(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
-      throws AxelorException, NoSuchMethodException;
+      throws AxelorException, NoSuchMethodException, ClassNotFoundException,
+          InvocationTargetException, IllegalAccessException;
 
   /**
    * Generate a product from the configurator
@@ -93,7 +94,7 @@ public interface ConfiguratorService {
    *
    * @param calculatedValue the return value of a script.
    * @param indicator an indicator.
-   * @throws AxelorException if the type don't match.
+   * @throws AxelorException if the types don't match.
    */
   void checkType(Object calculatedValue, MetaJsonField indicator) throws AxelorException;
 

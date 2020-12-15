@@ -10,10 +10,10 @@
     </grid>
 
 	<form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large"
-		onNew="action-campaign-attrs-on-new-on-load" onLoad="action-campaign-attrs-on-new-on-load">
+		onNew="action-campaign-attrs-on-new-on-load,action-campaign-attrs-manage-event-readonly" onLoad="action-campaign-attrs-on-new-on-load,action-campaign-attrs-manage-event-readonly">
 		<menubar>
 			<menu name="campaignToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-				<item name="launchEmailingItem" title="Launch emailing" action="save,action-campaign-validate-send-email,action-campaign-method-send-email" showIf="emailing"/>
+				<item name="launchEmailingItem" title="Launch emailing" action="save,action-campaign-validate-send-email,action-campaign-method-send-email" readonlyIf="!emailing"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel" >
@@ -41,7 +41,7 @@
 		<panel-tabs name="mainPanelTab">
 			<panel title="Target List" name="targetListPanel">
 				<field name="isAllowEditingOfTargets" colSpan="3" widget="boolean-switch" onChange="action-campaign-attrs-is-allow-editing-of-targets-on-change"/>
-				<panel-related name="targetModelSetPanel" field="targetModelSet" colSpan="12"/>
+				<panel-related name="targetModelSetPanel" field="targetModelSet" colSpan="12" onChange="action-campaign-attrs-manage-event-readonly,action-campaign-record-set-manage-event"/>
 				<button name="generateTargetsBtn" title="Generate Targets" onClick="save,action-campaign-generate-targets,save" colSpan="3"/>
 				<button name="inviteSelectedTargetBtn" title="Invite selected targets" showIf="manageAttendees &amp;&amp; isAllowEditingOfTargets" onClick="save,action-campaign-method-invite-selected-targets" colSpan="4"/>
 				<button name="inviteAllTargetsBtn" title="Invite all targets" showIf="manageAttendees &amp;&amp; isAllowEditingOfTargets" colSpan="4" onClick="save,action-campaign-method-invite-all-targets"/>
@@ -62,9 +62,10 @@
 				<field name="eventUser" hideIf="generateEventPerPartnerOrLead" onChange="action-campaign-record-set-team" onSelect="action-campaign-attrs-eventuser-domain" />
 				<field name="subject" requiredIf="manageAnEventPerTarget"/>
 				<field name="eventTypeSelect" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" />
-				<field name="eventStartDateTime" requiredIf="manageAnEventPerTarget"/>
-				<field name="duration" widget="duration" x-big="true" />
+				<field name="eventStartDateTime" requiredIf="manageAnEventPerTarget" onChange="action-campaign-record-set-end-date,action-campaign-record-set-duration"/>
+				<field name="eventEndDateTime" requiredIf="manageAnEventPerTarget" onChange="action-campaign-record-set-duration"/>
 				<button name="generateEventsBtn" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" readonlyIf="duration == 0"/>
+				<field name="duration" widget="duration" x-big="true" hidden="true"/>
 			</panel>
 			<panel name="targetsToContactPanel" title="Targets to contact" showIf="manageAnEventPerTarget">
 				<button name="openPlannedEventsBtn" title="Open planned events" colSpan="3" onClick="dashlet.target.to.contact.planned"/>
@@ -126,6 +127,10 @@
 				invitedPartnerSet.partnerPresentAtEventBtn,partners.partnerPresentAtEventBtn,notParticipatingPartnerSet.partnerPresentAtEventBtn"/>
 	</action-attrs>
 
+	<action-attrs name="action-campaign-attrs-manage-event-readonly">
+	    <attribute name="readonly" expr = "eval: targetModelSet == null || targetModelSet?.size() == 0" for="manageAnEventPerTarget"/>
+	</action-attrs>
+
 	<action-attrs name="action-campaign-attrs-eventuser-domain">
   		<attribute name="domain" if="team != null" expr = "eval: &quot; self.activeTeam.id IN (${team.id}) &quot;" for="eventUser"/>
   		<attribute name="domain" if="team == null" expr = "eval: null" for="eventUser"/>
@@ -139,6 +144,14 @@
 		<attribute name="value" for="manageAttendees" expr="eval: false" if="!isAllowEditingOfTargets"/>
 	</action-attrs>
 
+    <action-record name="action-campaign-record-set-manage-event" model="com.axelor.apps.marketing.db.Campaign">
+		<field name="manageAnEventPerTarget" expr="false" if="eval: targetModelSet == null || targetModelSet?.size() == 0"/>
+	</action-record>
+	
+	<action-record name="action-campaign-record-set-duration" model="com.axelor.apps.marketing.db.Campaign">
+		<field name="duration" expr="eval: com.axelor.apps.tool.date.DurationTool.getSecondsDuration( com.axelor.apps.tool.date.DurationTool.computeDuration(eventStartDateTime, eventEndDateTime))" if="eventStartDateTime != null &amp;&amp; eventEndDateTime != null"/>
+	</action-record>
+	
 	<action-record name="action-campaign-record-set-team" model="com.axelor.apps.marketing.db.Campaign">
   		<field name="team" expr="eval:eventUser.activeTeam" if="eventUser != null"/>
 	</action-record>
@@ -161,6 +174,10 @@
 	
 	<action-record name="action-campaign-record-cancel" model="com.axelor.apps.marketing.db.Campaign">
   		<field name="stageSelect" expr="0" />
+	</action-record>
+
+	<action-record name="action-campaign-record-set-end-date" model="com.axelor.apps.marketing.db.Campaign">
+		<field name="eventEndDateTime" expr="eval: eventStartDateTime.plus(java.time.Duration.ofHours(1))" />
 	</action-record>
 
 	<action-method name="action-campaign-method-send-email">

@@ -75,11 +75,11 @@
     
 		<boolean name="isSharedAddress" title="Shared address" default="false"/>
 
-		<many-to-many name="companySpecificProductFieldsList" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
+		<many-to-many name="companySpecificProductFieldsSet" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
 
 	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
 
-	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template" ref="com.axelor.apps.message.db.Template"/>
+	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template for notifications" ref="com.axelor.apps.message.db.Template"/>
 
 	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
 		<extra-code>

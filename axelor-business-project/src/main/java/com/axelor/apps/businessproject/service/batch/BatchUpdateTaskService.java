@@ -20,18 +20,18 @@ package com.axelor.apps.businessproject.service.batch;
 import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
-import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -42,22 +42,22 @@ import java.util.Map;
 public class BatchUpdateTaskService extends AbstractBatch {
 
   protected AppBusinessProjectService appBusinessProjectService;
-  protected TeamTaskBusinessProjectService teamTaskBusinessProjectService;
+  protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   protected TimesheetLineBusinessService timesheetLineBusinessService;
-  protected TeamTaskRepository teamTaskRepo;
+  protected ProjectTaskRepository projectTaskRepo;
   protected TimesheetLineRepository timesheetLineRepo;
 
   @Inject
   public BatchUpdateTaskService(
-      TeamTaskBusinessProjectService teamTaskBusinessProjectService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       AppBusinessProjectService appBusinessProjectService,
       TimesheetLineBusinessService timesheetLineBusinessService,
-      TeamTaskRepository teamTaskRepo,
+      ProjectTaskRepository projectTaskRepo,
       TimesheetLineRepository timesheetLineRepo) {
-    this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.appBusinessProjectService = appBusinessProjectService;
     this.timesheetLineBusinessService = timesheetLineBusinessService;
-    this.teamTaskRepo = teamTaskRepo;
+    this.projectTaskRepo = projectTaskRepo;
     this.timesheetLineRepo = timesheetLineRepo;
   }
 
@@ -80,13 +80,13 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
     String filter =
         !Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())
-            ? "self.id NOT IN (SELECT id FROM TeamTask WHERE "
+            ? "self.id NOT IN (SELECT id FROM ProjectTask WHERE "
                 + appBusinessProject.getExculdeTaskInvoicing()
                 + ")"
             : "self.id NOT IN (0)";
 
-    Query<TeamTask> taskQuery =
-        teamTaskRepo
+    Query<ProjectTask> taskQuery =
+        projectTaskRepo
             .all()
             .filter(
                 filter
@@ -99,19 +99,20 @@ public class BatchUpdateTaskService extends AbstractBatch {
             .order("id");
 
     int offset = 0;
-    List<TeamTask> taskList;
+    List<ProjectTask> taskList;
 
     while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
       offset += taskList.size();
-      for (TeamTask teamTask : taskList) {
+      for (ProjectTask projectTask : taskList) {
         try {
-          teamTask = teamTaskBusinessProjectService.updateTask(teamTask, appBusinessProject);
+          projectTask =
+              projectTaskBusinessProjectService.updateTask(projectTask, appBusinessProject);
 
-          if (teamTask.getToInvoice()) {
+          if (projectTask.getToInvoice()) {
             offset--;
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", teamTask.getId());
+            map.put("id", projectTask.getId());
             updatedTaskList.add(map);
           }
         } catch (Exception e) {
@@ -119,7 +120,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_1), teamTask.getId()),
+                      I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_1), projectTask.getId()),
                   e),
               ExceptionOriginRepository.INVOICE_ORIGIN,
               batch.getId());
@@ -140,12 +141,16 @@ public class BatchUpdateTaskService extends AbstractBatch {
         timesheetLineRepo
             .all()
             .filter(
-                "(self.teamTask.parentTask.invoicingType = :_invoicingType OR "
-                    + "self.teamTask.invoicingType = :_invoicingType) "
-                    + "AND self.teamTask.toInvoice = :_teamTaskToInvoice "
+                "((self.projectTask.parentTask.invoicingType = :_invoicingType "
+                    + "AND self.projectTask.parentTask.toInvoice = :_teamTaskToInvoice) "
+                    + " OR (self.projectTask.parentTask IS NULL "
+                    + "AND self.projectTask.invoicingType = :_invoicingType "
+                    + "AND self.projectTask.toInvoice = :_projectTaskToInvoice)) "
+                    + "AND self.projectTask.project.isBusinessProject = :_isBusinessProject "
                     + "AND self.toInvoice = :_toInvoice")
-            .bind("_invoicingType", TeamTaskRepository.INVOICING_TYPE_TIME_SPENT)
-            .bind("_teamTaskToInvoice", true)
+            .bind("_invoicingType", ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
+            .bind("_isBusinessProject", true)
+            .bind("_projectTaskToInvoice", true)
             .bind("_toInvoice", false)
             .order("id");
 

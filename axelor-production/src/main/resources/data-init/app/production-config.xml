@@ -11,6 +11,8 @@
      	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)" />
      </input>
      
-     <input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId"/>
+     <input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId">
+     	<bind to="applicationFieldSelect" column="applicationFieldSelect" eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"/>
+     </input>
     
 </csv-inputs>

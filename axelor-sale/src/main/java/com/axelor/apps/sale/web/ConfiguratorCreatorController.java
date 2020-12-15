@@ -21,8 +21,6 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -52,28 +50,6 @@ public class ConfiguratorCreatorController {
     configuratorCreatorService.updateIndicators(creator);
     configuratorCreatorService.activate(creator);
     response.setSignal("refresh-app", true);
-  }
-
-  /**
-   * Called from the configurator creator form on new
-   *
-   * @param request
-   * @param response
-   */
-  public void configure(ActionRequest request, ActionResponse response) {
-    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-    ConfiguratorCreatorService configuratorCreatorService =
-        Beans.get(ConfiguratorCreatorService.class);
-    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
-    User currentUser = AuthUtils.getUser();
-    configuratorCreatorService.authorizeUser(creator, currentUser);
-    try {
-      configuratorCreatorService.addRequiredFormulas(creator);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
-    }
-    response.setReload(true);
   }
 
   /**

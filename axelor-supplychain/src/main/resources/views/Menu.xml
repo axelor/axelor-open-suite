@@ -31,11 +31,11 @@
 	
 <!-- 	MRP -->
 	
-	<menuitem name="stock-mrp" parent="stock-root" title="MPS" if="__config__.app.isApp('supplychain')"  order="40"/> 
+	<menuitem name="stock-mrp" parent="stock-root" title="MRP" if="__config__.app.isApp('supplychain')"  order="40"/> 
 	
-	<menuitem name="stock-mrp-calculation" parent="stock-mrp" title="Calculation" action="stock.mrp.calculation" order="1"/>
+	<menuitem name="stock-mrp-calculation" parent="stock-mrp" title="MRP" action="stock.mrp.calculation" order="1"/>
 	
-	<action-view name="stock.mrp.calculation" title="Calculation" model="com.axelor.apps.supplychain.db.Mrp">
+	<action-view name="stock.mrp.calculation" title="MRP" model="com.axelor.apps.supplychain.db.Mrp">
 	    <view type="grid" name="mrp-grid"/>
 	    <view type="form" name="mrp-form"/>
 	</action-view>

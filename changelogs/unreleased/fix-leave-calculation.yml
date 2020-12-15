@@ -1,0 +1,5 @@
+---
+title: "Leave request"
+type: fix
+description : |
+  Consider multiple leave request for single day.

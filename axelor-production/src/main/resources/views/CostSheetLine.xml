@@ -28,7 +28,7 @@
 	</form>
 	
     <tree name="cost-sheet-line-tree-with-costsheetgroup" title="Cost sheets tree">
-        <column name="typeSelect" type="integer" widget="ImageSelect" x-labels="false"/>
+        <column name="typeSelect" type="integer" widget="image-select" x-labels="false"/>
         <column name="code" type="string"/>
         <column name="name" type="string"/>
         <column name="bomLevel" type="integer"/>

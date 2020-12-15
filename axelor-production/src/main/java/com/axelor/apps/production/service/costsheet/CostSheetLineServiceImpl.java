@@ -310,7 +310,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       }
     }
 
-    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+    if (product.getPurchasable() && (price == null || price.compareTo(BigDecimal.ZERO) == 0)) {
 
       price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
       price =
