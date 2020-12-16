@@ -211,7 +211,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           invoice);
     }
 
-    String title = I18n.get("Invoice");
+    String title = I18n.get(InvoiceToolService.isRefund(invoice) ? "Refund" : "Invoice");
     if (invoice.getInvoiceId() != null) {
       title += " " + invoice.getInvoiceId();
     }
