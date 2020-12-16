@@ -35,7 +35,6 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -75,6 +74,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected PurchaseOrderStockService purchaseOrderStockService;
   protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepository;
+  protected PurchaseOrderLineService purchaseOrderLineService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -84,7 +84,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
       BudgetSupplychainService budgetSupplychainService,
-      PurchaseOrderLineRepository purchaseOrderLineRepository) {
+      PurchaseOrderLineRepository purchaseOrderLineRepository,
+      PurchaseOrderLineService purchaseOrderLineService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -93,6 +94,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.purchaseOrderStockService = purchaseOrderStockService;
     this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderLineRepository = purchaseOrderLineRepository;
+    this.purchaseOrderLineService = purchaseOrderLineService;
   }
 
   @Override
@@ -377,7 +379,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
   @Override
   public String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException {
-    PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
     if (shipmentMode == null) {
@@ -389,7 +390,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       if (computeExTaxTotalWithoutShippingLines(purchaseOrder).compareTo(carriagePaidThreshold)
           >= 0) {
         String message = removeShipmentCostLine(purchaseOrder);
-        purchaseOrderService.computePurchaseOrder(purchaseOrder);
+        this.computePurchaseOrder(purchaseOrder);
         return message;
       }
     }
@@ -398,22 +399,23 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
     PurchaseOrderLine shippingCostLine = createShippingCostLine(purchaseOrder, shippingCostProduct);
     purchaseOrderLines.add(shippingCostLine);
-    purchaseOrderService.computePurchaseOrder(purchaseOrder);
+    this.computePurchaseOrder(purchaseOrder);
     return null;
   }
 
-  private PurchaseOrderLine createShippingCostLine(
+  @Override
+  public PurchaseOrderLine createShippingCostLine(
       PurchaseOrder purchaseOrder, Product shippingCostProduct) throws AxelorException {
     PurchaseOrderLine shippingCostLine = new PurchaseOrderLine();
     shippingCostLine.setPurchaseOrder(purchaseOrder);
     shippingCostLine.setProduct(shippingCostProduct);
-    PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
     purchaseOrderLineService.fill(shippingCostLine, purchaseOrder);
     purchaseOrderLineService.compute(shippingCostLine, purchaseOrder);
     return shippingCostLine;
   }
 
-  private boolean alreadyHasShippingCostLine(
+  @Override
+  public boolean alreadyHasShippingCostLine(
       PurchaseOrder purchaseOrder, Product shippingCostProduct) {
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     if (purchaseOrderLines == null) {
@@ -427,8 +429,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     return false;
   }
 
+  @Override
   @Transactional(rollbackOn = Exception.class)
-  private String removeShipmentCostLine(PurchaseOrder purchaseOrder) {
+  public String removeShipmentCostLine(PurchaseOrder purchaseOrder) {
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     if (purchaseOrderLines == null) {
       return null;
@@ -452,7 +455,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     return I18n.get("Carriage paid threshold is exceeded, all shipment cost lines are removed");
   }
 
-  private BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder) {
+  @Override
+  public BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder) {
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     if (purchaseOrderLines == null) {
       return BigDecimal.ZERO;

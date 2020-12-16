@@ -22,8 +22,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -72,4 +74,13 @@ public interface PurchaseOrderSupplychainService {
   void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
 
   String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  PurchaseOrderLine createShippingCostLine(PurchaseOrder purchaseOrder, Product shippingCostProduct)
+      throws AxelorException;
+
+  boolean alreadyHasShippingCostLine(PurchaseOrder purchaseOrder, Product shippingCostProduct);
+
+  String removeShipmentCostLine(PurchaseOrder purchaseOrder);
+
+  BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder);
 }

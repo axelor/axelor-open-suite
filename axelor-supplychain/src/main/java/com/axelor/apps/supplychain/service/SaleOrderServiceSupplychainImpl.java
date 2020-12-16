@@ -249,8 +249,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Override
   public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
-    SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
-    SaleOrderMarginService saleOrderMarginService = Beans.get(SaleOrderMarginService.class);
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     Partner client = saleOrder.getClientPartner();
     ShipmentMode shipmentMode = saleOrder.getShipmentMode();
@@ -294,7 +292,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     return null;
   }
 
-  private boolean alreadyHasShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct) {
+  @Override
+  public boolean alreadyHasShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct) {
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     if (saleOrderLines == null) {
       return false;
@@ -307,7 +306,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     return false;
   }
 
-  private SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
+  @Override
+  public SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
       throws AxelorException {
     SaleOrderLine shippingCostLine = new SaleOrderLine();
     shippingCostLine.setSaleOrder(saleOrder);
@@ -318,8 +318,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     return shippingCostLine;
   }
 
+  @Override
   @Transactional(rollbackOn = Exception.class)
-  private String removeShipmentCostLine(SaleOrder saleOrder) {
+  public String removeShipmentCostLine(SaleOrder saleOrder) {
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     if (saleOrderLines == null) {
       return null;
@@ -343,7 +344,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     return I18n.get("Carriage paid threshold is exceeded, all shipment cost lines are removed");
   }
 
-  private BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder) {
+  @Override
+  public BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder) {
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     if (saleOrderLines == null) {
       return BigDecimal.ZERO;
