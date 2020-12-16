@@ -11,6 +11,7 @@
  			<bind node="sequence" to="sequence" />
  			<bind node="image/@name" alias="fileName"/>
  			<bind node="image" alias="imageData" />
+ 			<bind node="modules" to="modules" />
  		</bind>
  		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" create="false" update="true" call="com.axelor.studio.service.ImportService:importAppBuilder">
  			<bind node="code" to="code" />
@@ -79,6 +80,8 @@
  			<bind node="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel" update="true" create="false" />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false" />
  			<bind node="modelAppBuilder" alias="modelAppBuilder" />
+ 			<bind node="selectionText" to="selectionText"/>
+ 			<bind node="isSelectionField" to="isSelectionField"/>
  		</bind>
  		
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel == null"
@@ -123,6 +126,8 @@
  			<bind node="targetJsonModel" to="targetJsonModel" search="self.name = :targetJsonModel" update="true" create="false" />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
  			<bind node="modelAppBuilder" alias="modelAppBuilder" create="false"/>
+ 			<bind node="selectionText" to="selectionText"/>
+ 			<bind node="isSelectionField" to="isSelectionField"/>
  		</bind>
  
  	</input>
