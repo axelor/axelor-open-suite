@@ -12,6 +12,13 @@
     <field name="toConsumeManufOrder" width="120" hidden="true"/>
   </grid>
 
+  <grid name="prod-product-multi-level-manuf-order-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
+    <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
+    <field name="qty" aggregate="sum" required="true" x-scale="2"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
+    <field name="toConsumeManufOrder" width="120" hidden="true"/>
+  </grid>
+
   <grid name="prod-product-diff-manuf-order-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
     <field name="product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" required="true"/>
     <field name="plannedQty" x-scale="2"/>

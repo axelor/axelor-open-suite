@@ -337,7 +337,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   /**
    * Trier une liste de ligne de règle de template
    *
-   * @param templateRuleLine
+   * @param prodProcessLineList
    */
   public List<ProdProcessLine> _sortProdProcessLineByPriority(
       List<ProdProcessLine> prodProcessLineList) {
@@ -823,5 +823,51 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       statusList = StringTool.getIntegerList(status);
     }
     return statusList;
+  }
+
+  /**
+   * Called by generateMultiLevelManufOrder controller to generate all manuf order for a given bill
+   * of material list from a given manuf order.
+   *
+   * @param billOfMaterialList
+   * @param manufOrder
+   * @throws AxelorException
+   * @return
+   */
+  public List<ManufOrder> generateAllSubManufOrder(
+      List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException {
+    List<ManufOrder> moList = new ArrayList<>();
+    List<BillOfMaterial> childBomList = new ArrayList<>(billOfMaterialList);
+    // prevent infinite loop
+    int depth = 0;
+    while (!childBomList.isEmpty()) {
+      if (depth >= 100) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
+      }
+      List<BillOfMaterial> tempChildBomList = new ArrayList<>();
+      for (BillOfMaterial childBom : childBomList) {
+        moList.add(
+            generateManufOrder(
+                childBom.getProduct(),
+                childBom.getQty(),
+                childBom.getPriority(),
+                IS_TO_INVOICE,
+                childBom,
+                null,
+                manufOrder.getPlannedStartDateT(),
+                ORIGIN_TYPE_OTHER));
+        tempChildBomList.addAll(
+            childBom.getBillOfMaterialSet().stream()
+                .filter(BillOfMaterial::getDefineSubBillOfMaterial)
+                .collect(Collectors.toList()));
+      }
+      childBomList.clear();
+      childBomList.addAll(tempChildBomList);
+      tempChildBomList.clear();
+      depth++;
+    }
+    return moList;
   }
 }
