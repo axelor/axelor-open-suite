@@ -32,9 +32,11 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockRulesService;
@@ -235,7 +237,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     mrp,
                     prodProduct.getProduct(),
                     manufOrderNeedMrpLineType,
-                    prodProduct.getQty(),
+                    computeQtyLeftToConsume(operationOrder, prodProduct),
                     maturityDate,
                     BigDecimal.ZERO,
                     stockLocation,
@@ -268,7 +270,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                   mrp,
                   product,
                   manufOrderNeedMrpLineType,
-                  prodProduct.getQty(),
+                  computeQtyLeftToConsume(manufOrder, prodProduct),
                   maturityDate,
                   BigDecimal.ZERO,
                   stockLocation,
@@ -279,6 +281,31 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     }
+  }
+
+  protected BigDecimal computeQtyLeftToConsume(ManufOrder manufOrder, ProdProduct prodProduct) {
+    return computeQtyLeftToConsume(manufOrder.getConsumedStockMoveLineList(), prodProduct);
+  }
+
+  protected BigDecimal computeQtyLeftToConsume(
+      OperationOrder operationOrder, ProdProduct prodProduct) {
+    return computeQtyLeftToConsume(operationOrder.getConsumedStockMoveLineList(), prodProduct);
+  }
+
+  protected BigDecimal computeQtyLeftToConsume(
+      List<StockMoveLine> consumedStockMoveLineList, ProdProduct prodProduct) {
+    BigDecimal qtyToConsume = prodProduct.getQty();
+    BigDecimal consumedQty =
+        consumedStockMoveLineList.stream()
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getStockMove().getStatusSelect()
+                            == StockMoveRepository.STATUS_REALIZED
+                        && stockMoveLine.getProduct().equals(prodProduct.getProduct()))
+            .map(StockMoveLine::getQty)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    return qtyToConsume.subtract(consumedQty);
   }
 
   protected void createMPSLines() throws AxelorException {

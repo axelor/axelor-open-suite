@@ -54,8 +54,7 @@ public class AppBuilderService {
       app.setDependsOnSet(depends);
     }
     app.setSequence(appBuilder.getSequence());
-    app.setInitDataLoaded(true);
-    app.setDemoDataLoaded(true);
+    app.setModules(appBuilder.getModules());
 
     appBuilder.setGeneratedApp(appRepo.save(app));
 
