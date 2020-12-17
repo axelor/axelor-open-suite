@@ -137,6 +137,7 @@ public class EmployeeController {
         ReportFactory.createReport(IReport.EMPLOYEE, name + "-${date}")
             .addParam("EmployeeId", employee.getId())
             .addParam("Timezone", getTimezone(employee.getUser()))
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .generate()
             .getFileLink();
 

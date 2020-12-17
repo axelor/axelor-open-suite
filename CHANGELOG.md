@@ -1,3 +1,67 @@
+## [5.4.4] (2020-12-04)
+
+#### Changes
+
+* Reconcile: change amount field title.
+* EMPLOYEE: add french translations for employee resume printing.
+* DebtRecovery: Sorting grid based on date, company and partner.
+
+#### Fixed
+
+* Timesheet, Expense: Fix filter after clicking "Show timesheets/expenses to be validated".
+* Project grid view has been improved and displays now project progress and status.
+* Company: Prevent having twice the same active bank details.
+* Reconcile Group: add missing translation.
+* Fix opportunity in demo data missing sequence value.
+* INVOICE: Add product name translation in printing.
+* App Production: add missing translations.
+* PRODUCT: fix wrong quantity display in production information "Where-used list", in product form.
+* Campaign Reminder: Add missing translation.
+* Team Task: Cannot chose a closed project from task project view anymore.
+* Stock Move: Generate line for each 'Purchase Qty by tracking' without considering boolean 'Generate new purchase auto tracking Nbr'.
+* Configurator: link the generated bill of materials to the generated sale order line even if we do not generate a product.
+- Frequency: fix the years of a frequency.
+* Configurator Creator: correctly show only the name and the button on a new configurator creator form.
+* Demo data: do not set products cost price to 0 when importing bill of materials components.
+* INVOICE REPORT: Fixing period format.
+* Campaign: Add missing translation.
+* Configurator: add missing special variables in script.
+* Cost Sheet Line: fix error if the product has no prices configured and is not purchasable.
+* Product Company: fix missing values in demo data.
+* Campaign: Hide tool button if all child items are hidden.
+* Leave request report: Manage the case where there are multiple leave requests for a single day.
+
+## [5.4.3] (2020-11-17)
+
+#### Changes
+
+* MRP: add error log panel.
+* USER: Add boolean to display the electronic signature on quotations.
+
+#### Fixed
+
+* Invoice and Purchase Order: Set project to invoice and purchase order lines when generated from sale order.
+* PurchaseOrder: Fix error on requesting due to missing production module field in report.
+* App: prevent user from deleting or adding an app from interface.
+* Invoice: changed error message when ventilating an invoice anterior to the last ventilated invoice.
+* FORECAST RECAP LINE TYPE: when the type is changed, the operation type field become empty.
+* FORECAST RECAP LINE TYPE: the title Operaton Type is replaced by Operation type and its french translation has been added.
+* CONVERT LEAD WIZARD FORM: Add partner information translation.
+* ADVANCED EXPORT: Extended selections are not exported.
+* Bank Statement Lines: line color is now accurate when importing a bank statement.
+* Inventory: Add missing fields in demo data.
+* PAYMENT: Fix error message when multi bank details is enabled.
+* FORECAST GENERATOR: Copying a forecast generator keeps only the values of fields filled at its creation and resets the other fields.
+* Opportunity : Fix sequence on demo data
+* Partner: Hide the generate project button in partner contact form view.
+* Inventory: Add missing translations, fix header display and add inventory sequence on each report page.
+* Stock Move Line: fixed conversion issue when changing values in editable-grid and form view.
+* Stock Move: fix location planned quantity not updating on some cases on real quantity change in planned stock moves.
+* Prevent NPE on current user when some services were called from a scheduler.
+* Analytic Move Line: Change project depending on the state of the parent order or invoice.
+* EMPLOYMENT CONTRACT: fixed EmploymentContractTemplate doesn't exist error when printing
+* AppCrm: Change french translation of the configuration to display customer description in opportunity.
+
 ## [5.4.2] (2020-10-23)
 
 #### Features
@@ -147,6 +211,8 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.4]: https://github.com/axelor/axelor-open-suite/compare/v5.4.3...v5.4.4
+[5.4.3]: https://github.com/axelor/axelor-open-suite/compare/v5.4.2...v5.4.3
 [5.4.2]: https://github.com/axelor/axelor-open-suite/compare/v5.4.1...v5.4.2
 [5.4.1]: https://github.com/axelor/axelor-open-suite/compare/v5.4.0...v5.4.1
 [5.4.0]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...v5.4.0

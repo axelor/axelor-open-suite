@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
@@ -209,7 +208,8 @@ public class LeaveController {
 
       String domain =
           "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
-      long nbLeaveRequests = Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
+      long nbLeaveRequests =
+          Query.of(LeaveRequest.class).filter(domain).bind("_user", user).count();
 
       if (nbLeaveRequests == 0) {
         response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));

@@ -408,8 +408,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
   @Override
   @Transactional
-  public void authorizeUser(ConfiguratorCreator creator, User user) {
-    creator.addAuthorizedUserSetItem(user);
+  public void init(ConfiguratorCreator creator) {
+    creator.addAuthorizedUserSetItem(AuthUtils.getUser());
+    addRequiredFormulas(creator);
   }
 
   @Override
@@ -425,7 +426,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         creator.addConfiguratorSOLineFormulaListItem(createSOLineFormula(field.getName()));
       }
     }
-    configuratorCreatorRepo.save(creator);
   }
 
   /**

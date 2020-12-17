@@ -24,4 +24,6 @@ import com.axelor.team.db.TeamTask;
 
 public interface TeamTaskProjectService extends TeamTaskService {
   TeamTask create(String subject, Project project, User assignedTo);
+
+  void deleteTeamTask(TeamTask teamTask);
 }

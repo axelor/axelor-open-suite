@@ -1,5 +1,0 @@
----
-title: "PurchaseOrder : Error on requesting"
-type: fix
-description : |
-   PurchaseOrder : Fix error on requesting due to missing production module field in report

@@ -17,10 +17,11 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.businessproject.service.PurchaseOrderServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,12 +31,13 @@ import com.google.inject.Singleton;
 public class PurchaseOrderProjectController {
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-
-    for (PurchaseOrderLine orderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      orderLine.setProject(purchaseOrder.getProject());
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      purchaseOrder = Beans.get(PurchaseOrderServiceProjectImpl.class).updateLines(purchaseOrder);
+      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
   }
 }
