@@ -379,6 +379,7 @@
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
+		<field name="team" if="teamId" expr="#{__repo__(Team).find(teamId)}"/>
 		<field name="name" expr="eval: _value" if="_value"/>
 		<field name="assignedTo" expr="eval:__user__" />
 		<field name="priority" expr="normal" />
