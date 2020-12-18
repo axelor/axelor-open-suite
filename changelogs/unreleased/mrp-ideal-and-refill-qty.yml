@@ -1,0 +1,5 @@
+---
+title: "MRP : ideal and refill quantity"
+type: feature
+description : |
+  "Added two new informations in mrp views, idealQty and reOrderQty of stockRules."

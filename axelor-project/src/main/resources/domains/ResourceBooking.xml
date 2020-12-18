@@ -9,7 +9,7 @@
 		<string name="name"/>
 		<many-to-one name="resource" ref="Resource" title="Resource" column="project_resource" required="true"/>
 		<many-to-one name="project" ref="Project" title="Project" required="true"/>
-		<many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="Task" />
+        <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Task"/>
 		<boolean name="updateTaskFromPeriod" title="Update period according to task" />
 		<many-to-one name="user" ref="com.axelor.auth.db.User" column="user_id"/>
 		<datetime name="fromDate" title="From date"/>

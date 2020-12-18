@@ -170,8 +170,8 @@
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
 	</selection>
-    
-    <selection name="base.price.list.line.anomaly.select">  
+
+    <selection name="base.price.list.line.anomaly.select">
         <option value="1">Product unavailable for sale</option>
         <option value="2">Product not renewed</option>
     </selection>
@@ -534,6 +534,8 @@
     <selection name="line.type.select">
         <option value="0">Standard</option>
         <option value="1">Title</option>
+        <option value="2">Start of pack</option>
+        <option value="3">End of pack</option>
     </selection>
 
     <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >

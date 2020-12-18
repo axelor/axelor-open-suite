@@ -50,7 +50,7 @@ public class ProductStockRepository extends ProductBaseRepository {
   public Product save(Product product) {
 
     Set<MetaField> specificProductFieldSet =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsList();
+        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
     if (!specificProductFieldSet.isEmpty() && appBaseService.getAppBase().getEnableMultiCompany()) {
       ArrayList<Company> productCompanyList = new ArrayList<>();
       if (product.getProductCompanyList() != null) {

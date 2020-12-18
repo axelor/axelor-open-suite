@@ -35,6 +35,7 @@ import java.util.zip.Inflater;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -195,6 +196,7 @@ public class EbicsUtils {
 
     try {
       factory = DocumentBuilderFactory.newInstance();
+      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
       factory.setNamespaceAware(true);
       factory.setValidating(true);
       builder = factory.newDocumentBuilder();

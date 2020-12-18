@@ -507,6 +507,8 @@
 "Please fill printing settings on following stock moves: %s",,,
 "Please fill the conformity for the product(s) : %s",,,
 "Please fill the tracking number for the product(s) : %s",,,
+"Please fill unit for the stock location line in %s for the product %s.",,,
+"Please fill unit for the stock location line with tracking number %s in %s for the product %s.",,,
 "Please filled supplier shipment date and supplier shipment reference.",,,
 "Please select lines to split",,,
 "Please select the Stock Location(s) to print.",,,

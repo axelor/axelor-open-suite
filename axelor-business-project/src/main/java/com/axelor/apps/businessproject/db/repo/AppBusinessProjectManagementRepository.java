@@ -20,22 +20,22 @@ package com.axelor.apps.businessproject.db.repo;
 import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class AppBusinessProjectManagementRepository extends AppBusinessProjectRepository {
 
-  @Inject private TeamTaskRepository teamTaskRepo;
+  @Inject private ProjectTaskRepository projectTaskRepo;
 
   @Override
   public AppBusinessProject save(AppBusinessProject entity) {
     try {
       if (!Strings.isNullOrEmpty(entity.getExculdeTaskInvoicing())) {
-        teamTaskRepo.all().filter(entity.getExculdeTaskInvoicing()).count();
+        projectTaskRepo.all().filter(entity.getExculdeTaskInvoicing()).count();
       }
       return super.save(entity);
     } catch (Exception e) {

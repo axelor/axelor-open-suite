@@ -10,7 +10,7 @@
 	</menubar>
     <field name="invoice" width="120"/>
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
-		<field name="deadlineDate"/>
+		<field name="deadlineDate" massUpdate="true"/>
 		<field name="createdOn"/>
 		<field name="comments"/>
 	</grid>
@@ -55,7 +55,7 @@
 				<panel-related title="Time spent" field="logTimesSet"
 							   colSpan="12" canNew="false" canEdit="false"
 							   canSelect="false"
-							   grid-view="timesheet-line-project-grid"
+							   grid-view="timesheet-line-invoicing-project-grid"
 							   form-view="timesheet-line-project-form"
 							   showIf="logTimesSet &amp;&amp; logTimesSet.length &gt; 0"
 							   readonlyIf="invoice"
@@ -63,7 +63,7 @@
 				<panel-related title="Expenses" field="expenseLineSet"
 							   colSpan="12" canNew="false" canEdit="false"
 							   canSelect="false" form-view="expense-line-form"
-							   grid-view="expense-line-grid"
+							   grid-view="expense-line-invoicing-project-grid"
 							   showIf="expenseLineSet &amp;&amp; expenseLineSet.length &gt; 0"
 							   readonlyIf="invoice"
 							   name="expenseLineSetPanel"/>
@@ -86,12 +86,12 @@
 							   if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()"
 							   name="manufOrderSetPanel"/>
 				
-				<panel-related field="teamTaskSet" colSpan="12" canNew="false"
+				<panel-related field="projectTaskSet" colSpan="12" canNew="false"
 							   canEdit="false" canSelect="false"
-							   form-view="team-task-form" grid-view="business-project-team-task-grid"
-							   showIf="teamTaskSet &amp;&amp; teamTaskSet.length &gt; 0"
+							   form-view="project-task-form" grid-view="project-task-invoicing-project-grid"
+							   showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0"
 							   readonlyIf="invoice" 
-							   name="teamTaskSetPanel"/>
+							   name="ProjectTaskSetPanel"/>
 			</panel>
 
 			<panel name="configurationsPanel" title="Configurations" readonlyIf="invoice">
@@ -100,7 +100,7 @@
                 <field name="logTimesSetPrioritySelect"/>
                 <field name="expenseLineSetPrioritySelect"/>
                 <field name="projectSetPrioritySelect"/>
-                <field name="teamTaskSetPrioritySelect"/>
+                <field name="projectTaskSetPrioritySelect"/>
             </panel>
         </panel-tabs>
 

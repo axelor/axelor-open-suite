@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.cash.management.service;
 
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -51,7 +52,9 @@ public class ForecastService {
               forecastGenerator.getCompany(),
               forecastGenerator.getBankDetails(),
               forecastGenerator.getTypeSelect(),
-              forecastGenerator.getAmount(),
+              forecastGenerator.getTypeSelect() == PaymentModeRepository.IN
+                  ? forecastGenerator.getAmount().abs()
+                  : forecastGenerator.getAmount().negate(),
               itDate,
               forecastGenerator.getForecastReason(),
               forecastGenerator.getComments());

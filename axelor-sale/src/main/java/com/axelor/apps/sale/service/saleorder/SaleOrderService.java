@@ -99,4 +99,13 @@ public interface SaleOrderService {
    * @throws AxelorException if the sale order is in anomaly
    */
   void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException;
+
+  /**
+   * To update product quantity with pack header quantity.
+   *
+   * @param saleOrder
+   * @return {@link SaleOrder}
+   * @throws AxelorException
+   */
+  public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException;
 }

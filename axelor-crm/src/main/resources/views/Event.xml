@@ -508,7 +508,7 @@
 		<filter title="My Upcoming Tasks">
 			<domain>self.user = :__user__ and self.startDateTime &lt; :_newDate and (self.statusSelect = 11 or self.statusSelect = 12)</domain>
 		</filter>
-		<filter title="My Team Tasks">
+		<filter title="My Project Tasks">
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
 	</search-filters>

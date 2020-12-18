@@ -28,6 +28,7 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 
@@ -69,9 +70,11 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
       throw new PersistenceException(e);
     }
 
-    for (OperationOrder operationOrder : entity.getOperationOrderList()) {
-      if (operationOrder.getBarCode() == null) {
-        operationOrderService.createBarcode(operationOrder);
+    if (CollectionUtils.isNotEmpty(entity.getOperationOrderList())) {
+      for (OperationOrder operationOrder : entity.getOperationOrderList()) {
+        if (operationOrder.getBarCode() == null) {
+          operationOrderService.createBarcode(operationOrder);
+        }
       }
     }
     return super.save(entity);

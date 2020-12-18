@@ -24,7 +24,7 @@
 	  
 	  <many-to-one name="projectPlanningTime" ref="com.axelor.apps.project.db.ProjectPlanningTime" />
 	  
-	  <many-to-one name="teamTask" ref="com.axelor.team.db.TeamTask" title="Task" />
+      <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Task" />
 	  
 	  <unique-constraint columns="timesheet,project,product,date,enableEditor"/>
   </entity>

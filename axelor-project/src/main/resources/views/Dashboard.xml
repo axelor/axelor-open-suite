@@ -16,24 +16,24 @@
 		<dashlet action="chart:chart.average.daily.planned.charge.in.month.per.employee" colSpan="12"/>
 	</dashboard>
 	
-	<action-view name="action-project-db-my-tasks-to-do" title="My tasks to do" model="com.axelor.team.db.TeamTask">
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
+	<action-view name="action-project-db-my-tasks-to-do" title="My tasks to do" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="grid" name="project-task-grid" />
+		<view type="form" name="project-task-form" />
 		<domain><![CDATA[
       (self.assignedTo = :__user__ AND self.status NOT IN :closed_status) AND
       (self.taskDeadline <= current_date OR self.taskDate <= current_date)
     ]]></domain>
-    <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+    <context name="closed_status" expr="#{[3, 4]}"/>
 	</action-view>
 	
-	<action-view name="action-project-db-my-tasks-due" title="My tasks due" model="com.axelor.team.db.TeamTask">
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
+	<action-view name="action-project-db-my-tasks-due" title="My tasks due" model="com.axelor.apps.project.db.ProjectTask">
+		<view type="grid" name="project-task-grid" />
+		<view type="form" name="project-task-form" />
 		<domain><![CDATA[
       (self.assignedTo = :__user__  AND self.status NOT IN :closed_status) AND
       (self.taskDeadline <= current_date)
     ]]></domain>
-    <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+    <context name="closed_status" expr="#{[3, 4]}"/>
 	</action-view>
 	
 	<action-view name="action-project-db-my-today-planning" title="My today planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
