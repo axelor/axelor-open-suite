@@ -331,6 +331,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     return targetClassName.equals(fromClassName)
         || (targetClassName.equals("BigDecimal") && fromClassName.equals("Integer"))
         || (targetClassName.equals("BigDecimal") && fromClassName.equals("String"))
+        || (targetClassName.equals("String") && fromClassName.equals("GStringImpl"))
         || "ArrayList".equals(fromClassName);
   }
 

@@ -132,6 +132,11 @@
 
 			</panel>
 		</panel-tabs>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers />
+		</panel-mail>
 	</form>
 
 	<form name="invoice-line-client-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"

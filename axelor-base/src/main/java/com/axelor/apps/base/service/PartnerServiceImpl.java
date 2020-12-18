@@ -86,7 +86,8 @@ public class PartnerServiceImpl implements PartnerService {
       EmailAddress emailAddress,
       Currency currency,
       Address deliveryAddress,
-      Address mainInvoicingAddress) {
+      Address mainInvoicingAddress,
+      boolean createContact) {
     Partner partner = new Partner();
 
     partner.setName(name);
@@ -99,14 +100,18 @@ public class PartnerServiceImpl implements PartnerService {
     partner.setCurrency(currency);
     this.setPartnerFullName(partner);
 
-    Partner contact = new Partner();
-    contact.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
-    contact.setIsContact(true);
-    contact.setName(name);
-    contact.setFirstName(firstName);
-    contact.setMainPartner(partner);
-    partner.addContactPartnerSetItem(contact);
-    this.setPartnerFullName(contact);
+    if (createContact) {
+      Partner contact =
+          this.createContact(
+              partner,
+              name,
+              firstName,
+              fixedPhone,
+              mobilePhone,
+              emailAddress != null ? new EmailAddress(emailAddress.getAddress()) : null,
+              mainInvoicingAddress);
+      partner.addContactPartnerSetItem(contact);
+    }
 
     if (deliveryAddress == mainInvoicingAddress) {
       addPartnerAddress(partner, mainInvoicingAddress, true, true, true);
@@ -114,6 +119,28 @@ public class PartnerServiceImpl implements PartnerService {
       addPartnerAddress(partner, deliveryAddress, true, false, true);
       addPartnerAddress(partner, mainInvoicingAddress, true, true, false);
     }
+
+    return partner;
+  }
+
+  public Partner createContact(
+      Partner partner,
+      String name,
+      String firstName,
+      String fixedPhone,
+      String mobilePhone,
+      EmailAddress emailAddress,
+      Address mainAddress) {
+
+    Partner contact = new Partner();
+    contact.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
+    contact.setIsContact(true);
+    contact.setName(name);
+    contact.setFirstName(firstName);
+    contact.setMainPartner(partner);
+    contact.setEmailAddress(emailAddress);
+    contact.setMainAddress(mainAddress);
+    this.setPartnerFullName(contact);
 
     return partner;
   }

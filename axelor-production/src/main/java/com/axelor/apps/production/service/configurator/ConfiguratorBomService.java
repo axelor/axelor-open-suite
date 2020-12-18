@@ -22,6 +22,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
+import java.util.Optional;
 
 public interface ConfiguratorBomService {
 
@@ -33,8 +34,9 @@ public interface ConfiguratorBomService {
    * @param attributes
    * @param level
    * @param generatedProduct
+   * @return
    */
-  BillOfMaterial generateBillOfMaterial(
+  Optional<BillOfMaterial> generateBillOfMaterial(
       ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
       throws AxelorException;
 }

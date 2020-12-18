@@ -824,9 +824,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional
-  public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
+  public boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
 
-    Boolean selected = false;
+    boolean selected = false;
 
     for (StockMoveLine moveLine : stockMoveLines) {
       if (moveLine.isSelected()) {

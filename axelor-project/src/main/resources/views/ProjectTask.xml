@@ -503,7 +503,11 @@
   <action-method name="action-project-task-method-onchange-category">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="onChangeCategory"/>
   </action-method>
-  
+
+  <action-method name="action-project-task-method-delete-project-task">
+      <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTask"/>
+  </action-method>
+
   <action-attrs name="action-project-task-attrs-invoice-type-on-change">
     <attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1 || invoicingType == 2"/>
     <attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType == 3"/>

@@ -171,4 +171,10 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     newProjectTask.setProgressSelect(0);
     newProjectTask.setTaskEndDate(date);
   }
+
+  @Override
+  @Transactional
+  public void deleteProjectTask(ProjectTask projectTask) {
+    projectTaskRepo.remove(projectTask);
+  }
 }

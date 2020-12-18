@@ -21,6 +21,8 @@ import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -95,6 +97,18 @@ public class ProjectTaskController {
     try {
       ProjectTask task = request.getContext().asType(ProjectTask.class);
       Beans.get(TimerProjectTaskService.class).cancel(task);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void deleteProjectTask(ActionRequest request, ActionResponse response) {
+    try {
+
+      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+      projectTask = Beans.get(ProjectTaskRepository.class).find(projectTask.getId());
+      Beans.get(ProjectTaskService.class).deleteProjectTask(projectTask);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -474,7 +474,7 @@
 			  <field name="fullName"/>
 	</calendar>
 	
-	<action-view name="action-view-show-project-task-tree" title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">	
+	<action-view name="action-view-show-project-task-tree" title="Project Task Tree" model="com.axelor.apps.project.db.ProjectTask">
 		<view type="tree" name="project-project-task-tree"/>
     	<view type="form" name="project-task-form"/>
     	<domain>self.project.id = :_id AND self.parentTask = null</domain>
@@ -484,10 +484,11 @@
 	<tree name="project-project-task-tree" title="Tasks">
     	
     	<column name="name" type="string"/>
-			<column name="taskDate" type="date"/>
+        <column name="taskDate" type="date"/>
     	<column name="assignedTo" type="reference"/>
     	<column name="progress" type="integer"/>
 		<column name="openTask" type="button"/>
+        <column name="deleteTaskBtn" type="button"/>
 
 		<node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id" onClick="action-project-task-view-task" orderBy="taskDate">
 			<field name="name" as="name"/>
@@ -495,6 +496,7 @@
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+            <button name="deleteTaskBtn" icon="fa-times-circle" onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
 		</node>
 
 		<node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true" onClick="action-project-task-view-task" orderBy="taskDate">
@@ -503,6 +505,7 @@
 			<field name="assignedTo" as="assignedTo"/>
 			<field name="progressSelect" as="progress"/>
 			<button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+            <button name="deleteTaskBtn" icon="fa-times-circle" onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
 		</node>
     
 	</tree>

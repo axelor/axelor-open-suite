@@ -536,10 +536,6 @@
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
 	</action-method>
 
-	<action-method name="action-employee-method-print-employee-report" >
-		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
-	</action-method>
-
 	<action-condition name="action-employee-validate-dates">
 		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
 	</action-condition>

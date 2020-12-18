@@ -390,6 +390,8 @@
 "AccountingReportType2001.totalPerAnalyticAccount","Total per analytic account",,
 "AccountingReportType2001.totalPerAnalyticAxis","Total per analytic axis",,
 "AccountingReportType2001.totalPerAnalyticJournal","Total per analytic journal",,
+"AccountingReportType2001.origin","Origin",,
+"AccountingReportType2001.description","Description",,
 "AccountingReportType3.balance","Balance",,
 "AccountingReportType3.company","COMPANY :",,
 "AccountingReportType3.credit","Credit",,

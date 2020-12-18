@@ -293,13 +293,8 @@ public class AddressServiceImpl implements AddressService {
     }
     Country country = address.getAddressL7Country();
 
-    List<City> cities =
-        cityRepository
-            .all()
-            .filter("self.zip = :zip AND self.country = :country")
-            .bind("zip", zip)
-            .bind("country", country)
-            .fetch();
+    List<City> cities = cityRepository.findByZipAndCountry(zip, country).fetch();
+
     City city = cities.size() == 1 ? cities.get(0) : null;
     address.setCity(city);
     address.setAddressL6(city != null ? zip + " " + city.getName() : null);

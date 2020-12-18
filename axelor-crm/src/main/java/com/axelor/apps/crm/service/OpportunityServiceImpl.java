@@ -88,7 +88,8 @@ public class OpportunityServiceImpl implements OpportunityService {
                 email,
                 opportunity.getCurrency(),
                 address,
-                address);
+                address,
+                true);
 
     opportunity.setPartner(partner);
     opportunityRepo.save(opportunity);
