@@ -350,8 +350,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       }
     }
 
-    if (((String) productCompanyService.get(product, "procurementMethodSelect", company))
-        .equals(ProductRepository.PROCUREMENT_METHOD_BUY)) {
+    if (ProductRepository.PROCUREMENT_METHOD_BUY.equals(
+        (String) productCompanyService.get(product, "procurementMethodSelect", company))) {
       return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
     } else {
       return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
