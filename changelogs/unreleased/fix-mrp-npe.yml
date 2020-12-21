@@ -1,0 +1,3 @@
+---
+title: "MRP : fix Null pointer exception on run calculation."
+type: fix
