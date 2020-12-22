@@ -49,8 +49,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
+import javax.inject.Singleton;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 

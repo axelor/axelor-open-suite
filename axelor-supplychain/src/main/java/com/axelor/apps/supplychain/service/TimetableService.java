@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;

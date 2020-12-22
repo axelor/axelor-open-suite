@@ -19,7 +19,7 @@ package com.axelor.apps.production.service.print;
 
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class PurchaseOrderPrintServiceProductionImpl extends PurchaseOrderPrintServiceImpl {
 

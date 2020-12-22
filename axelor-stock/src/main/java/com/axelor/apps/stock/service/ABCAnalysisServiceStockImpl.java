@@ -35,7 +35,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;

@@ -21,7 +21,7 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 

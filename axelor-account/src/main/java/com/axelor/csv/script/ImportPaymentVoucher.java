@@ -30,7 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 

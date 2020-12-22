@@ -28,7 +28,7 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;

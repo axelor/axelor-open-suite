@@ -26,7 +26,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.project.db.Project;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.util.List;
 
 public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {

@@ -20,7 +20,7 @@ package com.axelor.studio.db.repo;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.service.wkf.WkfService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class StudioWkfRepository extends WkfRepository {
 

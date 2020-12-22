@@ -23,8 +23,8 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 
 public class BankReconciliationLoadService {

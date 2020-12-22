@@ -32,7 +32,7 @@ import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.MetaJsonModelRepo;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.service.StudioMetaService;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 public class MetaJsonModelController {

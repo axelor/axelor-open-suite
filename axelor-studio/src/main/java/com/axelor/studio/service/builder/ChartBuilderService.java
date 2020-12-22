@@ -37,7 +37,7 @@ import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterCommonService;
 import com.axelor.studio.service.filter.FilterSqlService;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;

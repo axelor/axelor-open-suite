@@ -29,7 +29,7 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;

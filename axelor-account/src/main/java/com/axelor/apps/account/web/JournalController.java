@@ -21,8 +21,8 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 

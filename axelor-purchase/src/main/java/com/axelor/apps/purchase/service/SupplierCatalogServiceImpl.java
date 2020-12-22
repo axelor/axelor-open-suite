@@ -29,7 +29,7 @@ import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

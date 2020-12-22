@@ -20,8 +20,8 @@ package com.axelor.studio.service;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.studio.service.builder.SelectionBuilderService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class JsonFieldService {
 

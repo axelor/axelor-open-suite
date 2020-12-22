@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 
 public class PackLineServiceImpl implements PackLineService {

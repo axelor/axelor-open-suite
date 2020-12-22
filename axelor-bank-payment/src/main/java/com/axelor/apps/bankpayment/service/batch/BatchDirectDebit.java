@@ -24,7 +24,7 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public abstract class BatchDirectDebit extends com.axelor.apps.account.service.batch.BatchStrategy {
   protected boolean generateBankOrderFlag;

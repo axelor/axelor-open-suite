@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 

@@ -22,8 +22,8 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowService {
 

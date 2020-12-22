@@ -19,7 +19,7 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.service.BankService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class BankBaseRepository extends BankRepository {
 

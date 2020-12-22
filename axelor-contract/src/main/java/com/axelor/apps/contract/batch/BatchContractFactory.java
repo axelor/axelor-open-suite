@@ -24,7 +24,7 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 abstract class BatchContractFactory {
   ContractRepository repository;

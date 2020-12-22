@@ -26,7 +26,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.util.List;
 
 public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProcessService {

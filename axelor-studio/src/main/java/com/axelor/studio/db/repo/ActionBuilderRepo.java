@@ -21,7 +21,7 @@ import com.axelor.meta.MetaStore;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.builder.ActionBuilderService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class ActionBuilderRepo extends ActionBuilderRepository {
 

@@ -20,7 +20,7 @@ package com.axelor.apps.talent.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.talent.db.JobPosition;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class JobPositionTalentRepository extends JobPositionRepository {
 

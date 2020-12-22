@@ -23,7 +23,7 @@ import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.inject.Beans;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.util.List;
 
 public class StockLocationSaveService {

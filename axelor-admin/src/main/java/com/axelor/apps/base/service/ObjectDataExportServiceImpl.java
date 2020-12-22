@@ -36,7 +36,7 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import com.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileInputStream;

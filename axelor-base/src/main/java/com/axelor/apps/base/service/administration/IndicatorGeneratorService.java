@@ -23,8 +23,8 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.math.BigInteger;
 import javax.persistence.Query;
 

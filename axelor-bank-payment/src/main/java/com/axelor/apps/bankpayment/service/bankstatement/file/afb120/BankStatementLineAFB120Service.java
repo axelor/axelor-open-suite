@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.db.mapper.Mapper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

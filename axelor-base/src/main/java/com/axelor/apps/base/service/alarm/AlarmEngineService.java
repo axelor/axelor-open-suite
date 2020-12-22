@@ -27,7 +27,7 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.service.MetaModelService;
 import com.axelor.text.Templates;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;

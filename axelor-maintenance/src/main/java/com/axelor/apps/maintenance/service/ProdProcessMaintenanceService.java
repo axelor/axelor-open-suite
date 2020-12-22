@@ -8,7 +8,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class ProdProcessMaintenanceService extends ProdProcessService {
 

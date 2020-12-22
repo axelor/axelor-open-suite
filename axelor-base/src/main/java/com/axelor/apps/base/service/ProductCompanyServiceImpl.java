@@ -28,7 +28,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaField;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.util.Set;
 
 public class ProductCompanyServiceImpl implements ProductCompanyService {

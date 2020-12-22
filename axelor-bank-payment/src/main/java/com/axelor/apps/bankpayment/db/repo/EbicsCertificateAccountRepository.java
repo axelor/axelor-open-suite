@@ -19,7 +19,7 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class EbicsCertificateAccountRepository extends EbicsCertificateRepository {
 

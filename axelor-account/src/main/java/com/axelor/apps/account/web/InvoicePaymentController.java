@@ -41,7 +41,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;

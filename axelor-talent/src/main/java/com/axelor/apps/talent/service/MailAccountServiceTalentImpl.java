@@ -24,8 +24,8 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.mail.MailParser;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.Date;
 import javax.mail.MessagingException;
 

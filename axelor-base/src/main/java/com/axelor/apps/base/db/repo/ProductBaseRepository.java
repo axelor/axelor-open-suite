@@ -27,7 +27,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.persistence.PersistenceException;

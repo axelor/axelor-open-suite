@@ -26,7 +26,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 
 @RequestScoped

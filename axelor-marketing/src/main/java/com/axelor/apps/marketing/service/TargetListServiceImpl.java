@@ -27,7 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.service.filter.FilterJpqlService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 

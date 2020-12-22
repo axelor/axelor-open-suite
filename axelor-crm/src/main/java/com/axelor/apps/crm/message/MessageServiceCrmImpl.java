@@ -31,8 +31,8 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {

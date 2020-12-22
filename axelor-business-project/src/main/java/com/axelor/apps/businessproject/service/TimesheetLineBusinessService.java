@@ -19,7 +19,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 
 public interface TimesheetLineBusinessService {
 

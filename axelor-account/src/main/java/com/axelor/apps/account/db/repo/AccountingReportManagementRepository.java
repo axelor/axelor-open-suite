@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 

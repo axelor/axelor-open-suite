@@ -25,7 +25,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.service.JsonFieldService;
 import com.axelor.studio.service.StudioMetaService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class MetaJsonFieldRepo extends MetaJsonFieldRepository {
 

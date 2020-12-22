@@ -20,7 +20,7 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.service.StockLocationLineService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 

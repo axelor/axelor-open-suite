@@ -20,7 +20,7 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 
 public interface OpportunitySaleOrderService {
 

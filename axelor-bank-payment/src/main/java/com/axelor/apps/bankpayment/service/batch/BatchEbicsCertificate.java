@@ -31,7 +31,7 @@ import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;

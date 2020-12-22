@@ -30,7 +30,7 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 import java.util.Iterator;
 import java.util.Map;
 

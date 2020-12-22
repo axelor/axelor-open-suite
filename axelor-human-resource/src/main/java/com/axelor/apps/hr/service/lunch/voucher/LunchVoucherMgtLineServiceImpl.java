@@ -30,7 +30,7 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.RoundingMode;
 import java.util.List;
 

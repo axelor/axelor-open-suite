@@ -23,7 +23,7 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.util.List;
 
 public class DocuSignEnvelopeSettingServiceImpl implements DocuSignEnvelopeSettingService {

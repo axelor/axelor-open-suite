@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;

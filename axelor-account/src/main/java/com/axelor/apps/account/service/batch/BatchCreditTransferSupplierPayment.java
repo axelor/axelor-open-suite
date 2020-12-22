@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class BatchCreditTransferSupplierPayment extends BatchCreditTransferInvoice {
 

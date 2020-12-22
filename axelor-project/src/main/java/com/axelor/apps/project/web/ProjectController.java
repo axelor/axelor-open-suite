@@ -20,7 +20,7 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 
 @Singleton
 public class ProjectController {

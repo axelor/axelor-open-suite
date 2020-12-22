@@ -28,7 +28,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;

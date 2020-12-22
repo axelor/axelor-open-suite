@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton

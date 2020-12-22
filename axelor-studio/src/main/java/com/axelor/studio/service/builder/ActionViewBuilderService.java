@@ -24,7 +24,7 @@ import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.service.StudioMetaService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
 

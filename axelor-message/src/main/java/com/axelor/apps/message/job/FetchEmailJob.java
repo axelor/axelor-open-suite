@@ -21,7 +21,7 @@ import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.exception.service.TraceBackService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 import javax.mail.MessagingException;

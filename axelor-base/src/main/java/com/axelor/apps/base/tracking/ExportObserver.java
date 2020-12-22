@@ -19,7 +19,6 @@ package com.axelor.apps.base.tracking;
 
 import com.axelor.apps.base.db.GlobalTrackingConfigurationLine;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.event.Observes;
 import com.axelor.events.PostRequest;
 import com.axelor.events.RequestEvent;
 import com.axelor.inject.Beans;
@@ -32,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.event.Observes;
 import javax.inject.Named;
 import org.apache.commons.collections.CollectionUtils;
 

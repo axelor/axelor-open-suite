@@ -32,7 +32,7 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

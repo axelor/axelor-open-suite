@@ -21,8 +21,8 @@ import com.axelor.apps.base.db.AdjustHistory;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.AdjustHistoryRepository;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 public class AdjustHistoryService {

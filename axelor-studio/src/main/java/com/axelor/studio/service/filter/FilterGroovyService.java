@@ -26,7 +26,7 @@ import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.Filter;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import org.slf4j.Logger;

@@ -32,8 +32,8 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.schema.actions.ActionView;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class CalendarConfigurationService {
 

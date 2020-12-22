@@ -22,7 +22,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 
 public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdProcessLineService {

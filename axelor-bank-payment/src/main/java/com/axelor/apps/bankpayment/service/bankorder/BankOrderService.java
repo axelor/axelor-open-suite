@@ -23,7 +23,7 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;

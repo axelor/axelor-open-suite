@@ -19,7 +19,7 @@ package com.axelor.apps.helpdesk.db.repo;
 
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class TicketManagementRepository extends TicketRepository {
 

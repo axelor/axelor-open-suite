@@ -25,7 +25,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class MailBatchService extends AbstractBatchService {
 

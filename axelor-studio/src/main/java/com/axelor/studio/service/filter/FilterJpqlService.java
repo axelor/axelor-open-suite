@@ -20,7 +20,7 @@ package com.axelor.studio.service.filter;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.studio.db.Filter;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import org.slf4j.Logger;

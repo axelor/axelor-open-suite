@@ -36,7 +36,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;

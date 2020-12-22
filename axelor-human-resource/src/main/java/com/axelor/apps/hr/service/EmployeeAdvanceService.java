@@ -26,8 +26,8 @@ import com.axelor.apps.hr.db.repo.EmployeeAdvanceUsageRepository;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 

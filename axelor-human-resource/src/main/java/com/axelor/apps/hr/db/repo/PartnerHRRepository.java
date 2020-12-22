@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class PartnerHRRepository extends PartnerAccountRepository {

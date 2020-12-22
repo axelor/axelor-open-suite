@@ -34,7 +34,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.text.Templates;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

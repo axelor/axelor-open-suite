@@ -19,7 +19,7 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.AddressService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class AddressBaseRepository extends AddressRepository {

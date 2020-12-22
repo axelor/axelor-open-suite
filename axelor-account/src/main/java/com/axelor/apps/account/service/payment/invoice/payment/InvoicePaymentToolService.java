@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.util.List;
 
 public interface InvoicePaymentToolService {

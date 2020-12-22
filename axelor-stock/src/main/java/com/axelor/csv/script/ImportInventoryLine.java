@@ -25,8 +25,8 @@ import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
 

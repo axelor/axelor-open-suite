@@ -31,8 +31,8 @@ import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 

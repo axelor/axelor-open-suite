@@ -20,7 +20,7 @@ package com.axelor.apps.maintenance.db.repo;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.maintenance.db.EquipementMaintenance;
 import com.axelor.apps.maintenance.db.Imaintenance;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class EquipementMaintenanceRepo extends EquipementMaintenanceRepository {
 

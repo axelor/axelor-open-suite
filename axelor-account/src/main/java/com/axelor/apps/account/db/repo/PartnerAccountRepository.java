@@ -24,8 +24,8 @@ import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 

@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 

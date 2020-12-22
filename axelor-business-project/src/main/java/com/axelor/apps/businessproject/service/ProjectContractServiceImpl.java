@@ -29,7 +29,7 @@ import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class ProjectContractServiceImpl extends ContractServiceImpl {
 

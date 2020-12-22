@@ -27,7 +27,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

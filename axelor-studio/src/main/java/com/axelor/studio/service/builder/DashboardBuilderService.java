@@ -27,7 +27,7 @@ import com.axelor.meta.schema.views.Dashlet;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.DashletBuilder;
 import com.axelor.studio.service.StudioMetaService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;

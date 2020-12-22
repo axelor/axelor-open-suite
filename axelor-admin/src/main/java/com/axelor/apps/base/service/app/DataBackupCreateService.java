@@ -42,7 +42,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
 import java.io.BufferedInputStream;

@@ -24,7 +24,7 @@ import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.apps.message.service.MailAccountService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 

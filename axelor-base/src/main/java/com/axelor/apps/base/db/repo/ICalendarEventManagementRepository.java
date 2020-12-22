@@ -25,7 +25,7 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class ICalendarEventManagementRepository extends ICalendarEventRepository {
 

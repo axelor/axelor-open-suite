@@ -51,7 +51,7 @@ import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
 import java.io.ByteArrayInputStream;

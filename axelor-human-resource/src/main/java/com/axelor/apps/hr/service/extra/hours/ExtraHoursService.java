@@ -20,7 +20,7 @@ package com.axelor.apps.hr.service.extra.hours;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import javax.mail.MessagingException;
 

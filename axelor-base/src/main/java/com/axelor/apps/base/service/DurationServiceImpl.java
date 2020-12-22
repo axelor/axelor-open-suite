@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;

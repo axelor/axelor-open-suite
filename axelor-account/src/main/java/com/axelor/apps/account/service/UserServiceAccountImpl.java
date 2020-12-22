@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 
 public class UserServiceAccountImpl extends UserServiceImpl {
 

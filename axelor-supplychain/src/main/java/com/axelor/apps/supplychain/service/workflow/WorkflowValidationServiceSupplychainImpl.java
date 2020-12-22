@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class WorkflowValidationServiceSupplychainImpl extends WorkflowValidationServiceImpl {
 

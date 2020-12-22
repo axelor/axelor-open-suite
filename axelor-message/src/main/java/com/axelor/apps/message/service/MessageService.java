@@ -23,7 +23,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import javax.mail.MessagingException;

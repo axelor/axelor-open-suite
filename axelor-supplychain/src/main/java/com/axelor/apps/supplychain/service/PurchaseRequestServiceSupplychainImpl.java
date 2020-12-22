@@ -25,7 +25,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {
 

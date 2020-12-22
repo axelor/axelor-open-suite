@@ -59,7 +59,7 @@ import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

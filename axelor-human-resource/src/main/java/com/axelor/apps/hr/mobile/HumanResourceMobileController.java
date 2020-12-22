@@ -63,7 +63,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.math.BigDecimal;

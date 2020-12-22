@@ -23,7 +23,7 @@ import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;

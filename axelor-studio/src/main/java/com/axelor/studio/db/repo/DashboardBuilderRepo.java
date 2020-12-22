@@ -21,7 +21,7 @@ import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.service.builder.DashboardBuilderService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class DashboardBuilderRepo extends DashboardBuilderRepository {
 

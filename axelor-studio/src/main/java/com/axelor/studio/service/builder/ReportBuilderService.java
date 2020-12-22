@@ -38,7 +38,7 @@ import com.axelor.meta.schema.views.PanelField;
 import com.axelor.meta.schema.views.PanelRelated;
 import com.axelor.meta.schema.views.PanelTabs;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;

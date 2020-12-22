@@ -35,7 +35,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class ValidateState extends WorkflowInvoice {
 

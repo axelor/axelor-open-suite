@@ -19,7 +19,7 @@ package com.axelor.apps.base.job;
 
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import java.lang.invoke.MethodHandles;

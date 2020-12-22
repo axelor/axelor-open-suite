@@ -25,7 +25,7 @@ import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.WkfNodeRepository;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 
 public class WkfNodeController {
 

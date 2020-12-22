@@ -20,8 +20,8 @@ package com.axelor.apps.tool.service;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.HashSet;
 

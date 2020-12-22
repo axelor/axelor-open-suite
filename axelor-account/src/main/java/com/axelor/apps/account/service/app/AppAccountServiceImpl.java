@@ -28,9 +28,9 @@ import com.axelor.apps.base.db.repo.AppBudgetRepository;
 import com.axelor.apps.base.db.repo.AppInvoiceRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Singleton

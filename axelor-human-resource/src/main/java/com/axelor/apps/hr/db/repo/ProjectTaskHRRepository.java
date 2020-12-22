@@ -23,7 +23,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
 

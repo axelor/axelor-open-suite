@@ -24,7 +24,7 @@ import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

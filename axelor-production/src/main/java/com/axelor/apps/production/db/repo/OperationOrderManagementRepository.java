@@ -19,7 +19,7 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class OperationOrderManagementRepository extends OperationOrderRepository {
 

@@ -24,8 +24,8 @@ import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
+import javax.inject.Singleton;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Singleton

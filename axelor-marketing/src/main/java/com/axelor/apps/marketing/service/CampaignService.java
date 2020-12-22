@@ -22,7 +22,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 
 public interface CampaignService {
 

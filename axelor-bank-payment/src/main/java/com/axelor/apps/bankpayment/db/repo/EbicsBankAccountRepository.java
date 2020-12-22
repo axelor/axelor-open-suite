@@ -19,7 +19,7 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.EbicsBank;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class EbicsBankAccountRepository extends EbicsBankRepository {
 

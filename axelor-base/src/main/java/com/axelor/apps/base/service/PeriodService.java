@@ -20,7 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 
 public interface PeriodService {

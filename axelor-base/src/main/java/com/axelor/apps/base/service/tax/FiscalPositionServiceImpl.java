@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
-import com.google.inject.Singleton;
+import javax.inject.Singleton;
 
 @Singleton
 public class FiscalPositionServiceImpl implements FiscalPositionService {

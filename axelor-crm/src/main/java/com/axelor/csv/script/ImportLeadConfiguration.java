@@ -19,7 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.meta.MetaFiles;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;

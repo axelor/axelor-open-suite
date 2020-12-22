@@ -24,7 +24,7 @@ import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.builder.MenuBuilderService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class MenuBuilderRepo extends MenuBuilderRepository {
 

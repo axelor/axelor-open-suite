@@ -20,7 +20,7 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.EmploymentContract;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class EmploymentContractHRRepository extends EmploymentContractRepository {
 

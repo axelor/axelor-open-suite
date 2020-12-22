@@ -25,7 +25,7 @@ import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.exception.IExceptionMessage;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.util.List;
 import javax.validation.ValidationException;
 

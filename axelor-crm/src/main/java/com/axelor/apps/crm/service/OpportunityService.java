@@ -20,7 +20,7 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 
 public interface OpportunityService {
 

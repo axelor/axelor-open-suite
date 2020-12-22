@@ -20,7 +20,7 @@ package com.axelor.studio.db.repo;
 import com.axelor.exception.AxelorException;
 import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.service.builder.AppBuilderService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import javax.validation.ValidationException;
 
 public class AppBuilderRepo extends AppBuilderRepository {

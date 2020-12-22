@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class InvoiceSupplychainRepository extends InvoiceManagementRepository {

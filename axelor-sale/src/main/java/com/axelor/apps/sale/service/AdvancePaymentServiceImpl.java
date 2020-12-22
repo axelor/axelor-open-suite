@@ -19,8 +19,8 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class AdvancePaymentServiceImpl implements AdvancePaymentService {
 

@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.quality.db.QualityAlert;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class QualityAlertManagementRepository extends QualityAlertRepository {
 

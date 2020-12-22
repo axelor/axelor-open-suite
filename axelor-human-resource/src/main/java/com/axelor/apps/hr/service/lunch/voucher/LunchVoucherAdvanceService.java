@@ -19,7 +19,7 @@ package com.axelor.apps.hr.service.lunch.voucher;
 
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import javax.transaction.Transactional;
 
 public interface LunchVoucherAdvanceService {
 

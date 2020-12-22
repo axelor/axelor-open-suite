@@ -28,7 +28,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class AccountingReportBankPaymentServiceImpl extends AccountingReportServiceImpl
     implements AccountingReportBankPaymentService {

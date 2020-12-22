@@ -19,7 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveToolService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import java.util.Map;
 
 public class ImportStockMove {

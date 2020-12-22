@@ -24,8 +24,8 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.exception.IExceptionMessage;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 

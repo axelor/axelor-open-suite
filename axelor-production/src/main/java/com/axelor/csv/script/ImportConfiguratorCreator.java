@@ -21,8 +21,8 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServic
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.MetaScanner;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

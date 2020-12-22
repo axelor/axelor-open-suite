@@ -22,7 +22,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImpl {
 

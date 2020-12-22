@@ -30,8 +30,8 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class UserHrServiceImpl implements UserHrService {
 
