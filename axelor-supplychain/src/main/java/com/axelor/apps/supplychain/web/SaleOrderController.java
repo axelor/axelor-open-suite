@@ -60,7 +60,7 @@ import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -72,7 +72,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Singleton
+@ApplicationScoped
 public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";

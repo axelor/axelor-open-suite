@@ -25,10 +25,10 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 /** Controller called from multiple forms, */
-@Singleton
+@ApplicationScoped
 public class CompanyBankDetailsController {
 
   /**

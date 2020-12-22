@@ -24,11 +24,11 @@ import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Singleton
+@ApplicationScoped
 public class TaxService {
 
   /**

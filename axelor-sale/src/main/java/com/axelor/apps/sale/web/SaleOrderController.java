@@ -65,7 +65,7 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -78,7 +78,7 @@ import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class SaleOrderController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

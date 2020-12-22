@@ -40,7 +40,7 @@ import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.google.common.base.Strings;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ThreadSafe
-@Singleton
+@ApplicationScoped
 public class SequenceService {
 
   private static final String DRAFT_PREFIX = "#";

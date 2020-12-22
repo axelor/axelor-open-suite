@@ -22,7 +22,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -39,7 +39,7 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

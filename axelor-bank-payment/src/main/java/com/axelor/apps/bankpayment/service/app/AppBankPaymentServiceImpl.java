@@ -25,11 +25,11 @@ import com.axelor.apps.base.db.repo.AppBankPaymentRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements AppBankPaymentService {
 
   protected AppBankPaymentRepository appBankPaymentRepo;

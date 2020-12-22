@@ -25,10 +25,10 @@ import com.axelor.meta.db.repo.MetaGroupMenuAssistantRepository;
 import com.axelor.meta.service.MetaGroupMenuAssistantService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
 
-@Singleton
+@ApplicationScoped
 public class MetaGroupMenuAssistantController {
 
   public void createGroupMenuFile(ActionRequest request, ActionResponse response) {

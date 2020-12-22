@@ -26,11 +26,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.nio.file.Path;
 import org.apache.commons.lang3.tuple.Pair;
 
-@Singleton
+@ApplicationScoped
 public class DeclarationOfExchangesController {
 
   public void export(ActionRequest request, ActionResponse response) {

@@ -27,12 +27,12 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 
-@Singleton
+@ApplicationScoped
 public class ImportConfigurationController {
 
   public void run(ActionRequest request, ActionResponse response) {

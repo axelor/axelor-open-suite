@@ -30,11 +30,11 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.Iterator;
 import java.util.Map;
 
-@Singleton
+@ApplicationScoped
 public class TemplateService {
 
   public void checkTargetReceptor(Template template) throws AxelorException {

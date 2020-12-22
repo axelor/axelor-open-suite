@@ -37,7 +37,7 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import com.opencsv.CSVWriter;
 import java.io.IOException;
@@ -55,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 
-@Singleton
+@ApplicationScoped
 public class AddressServiceImpl implements AddressService {
 
   @Inject protected AddressRepository addressRepo;

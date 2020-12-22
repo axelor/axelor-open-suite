@@ -39,14 +39,14 @@ import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import javax.validation.ValidationException;
 
-@Singleton
+@ApplicationScoped
 public class UserController {
   protected static final Map<String, String> UNIQUE_MESSAGES =
       ImmutableMap.of("code", IExceptionMessage.USER_CODE_ALREADY_EXISTS);

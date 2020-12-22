@@ -19,9 +19,9 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.exception.AxelorException;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class AdvancedExportGeneratorFactory {
 
   public AdvancedExportGenerator getAdvancedExportGenerator(

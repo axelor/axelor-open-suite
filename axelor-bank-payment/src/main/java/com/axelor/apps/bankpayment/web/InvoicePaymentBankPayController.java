@@ -30,11 +30,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 import javax.annotation.Nullable;
 
-@Singleton
+@ApplicationScoped
 public class InvoicePaymentBankPayController extends InvoicePaymentController {
 
   @Override

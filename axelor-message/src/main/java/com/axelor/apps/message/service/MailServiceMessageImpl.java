@@ -52,7 +52,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -60,7 +60,7 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class MailServiceMessageImpl extends MailServiceImpl {
 
   private Logger log = LoggerFactory.getLogger(MailService.class);

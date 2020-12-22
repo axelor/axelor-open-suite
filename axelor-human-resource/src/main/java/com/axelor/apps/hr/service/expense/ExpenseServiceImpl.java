@@ -84,7 +84,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -97,7 +97,7 @@ import java.util.Set;
 import javax.mail.MessagingException;
 import org.apache.commons.collections.CollectionUtils;
 
-@Singleton
+@ApplicationScoped
 public class ExpenseServiceImpl implements ExpenseService {
 
   protected MoveService moveService;

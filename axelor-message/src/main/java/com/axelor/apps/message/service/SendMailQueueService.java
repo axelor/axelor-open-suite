@@ -21,12 +21,12 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JpaSupport;
-import com.axelor.event.Observes;
+import javax.enterprise.event.Observes;
 import com.axelor.events.ShutdownEvent;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.mail.MailBuilder;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
@@ -37,7 +37,7 @@ import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class SendMailQueueService extends JpaSupport {
 
   private static final int ENTITY_FIND_TIMEOUT = 10000;

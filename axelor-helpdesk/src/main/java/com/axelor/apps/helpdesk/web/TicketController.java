@@ -33,13 +33,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class TicketController {
 
   private static final String HIDDEN_ATTR = "hidden";

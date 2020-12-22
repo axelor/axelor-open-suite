@@ -77,7 +77,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -88,7 +88,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** @author axelor */
-@Singleton
+@ApplicationScoped
 public class ExpenseController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

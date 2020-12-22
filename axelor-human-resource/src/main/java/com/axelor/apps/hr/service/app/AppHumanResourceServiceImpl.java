@@ -31,13 +31,13 @@ import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Singleton
+@ApplicationScoped
 public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
     implements AppHumanResourceService {
 

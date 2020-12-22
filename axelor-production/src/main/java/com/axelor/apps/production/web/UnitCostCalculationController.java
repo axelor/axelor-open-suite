@@ -32,13 +32,13 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 
-@Singleton
+@ApplicationScoped
 public class UnitCostCalculationController {
 
   public void runUnitCostCalc(ActionRequest request, ActionResponse response)

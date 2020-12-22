@@ -27,11 +27,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import javax.mail.MessagingException;
 
-@Singleton
+@ApplicationScoped
 public class MailAccountController {
 
   public void validateSmtpAccount(ActionRequest request, ActionResponse response) {

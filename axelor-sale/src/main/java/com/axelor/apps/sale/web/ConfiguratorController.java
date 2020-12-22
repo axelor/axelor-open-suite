@@ -31,9 +31,9 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.JsonContext;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class ConfiguratorController {
 
   /**

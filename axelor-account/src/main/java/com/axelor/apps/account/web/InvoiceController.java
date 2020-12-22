@@ -61,7 +61,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,7 +73,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class InvoiceController {
 
   @SuppressWarnings("unused")

@@ -23,9 +23,9 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class PriceListController {
 
   public void historizePriceList(ActionRequest request, ActionResponse response) {

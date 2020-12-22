@@ -34,9 +34,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
 
   protected static String DEFAULT_LOCALE = "en";

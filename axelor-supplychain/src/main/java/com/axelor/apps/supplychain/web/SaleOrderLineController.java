@@ -42,12 +42,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Singleton
+@ApplicationScoped
 public class SaleOrderLineController {
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)

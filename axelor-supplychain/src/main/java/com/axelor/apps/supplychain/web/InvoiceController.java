@@ -42,13 +42,13 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
-@Singleton
+@ApplicationScoped
 public class InvoiceController {
 
   public void fillInLines(ActionRequest request, ActionResponse response) {

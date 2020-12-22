@@ -33,7 +33,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -43,7 +43,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class MoveTemplateController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

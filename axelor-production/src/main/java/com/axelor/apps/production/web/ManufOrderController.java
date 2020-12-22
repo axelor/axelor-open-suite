@@ -46,7 +46,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -59,7 +59,7 @@ import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class ManufOrderController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

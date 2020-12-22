@@ -25,11 +25,11 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleService {
 
   @Inject private AppSaleRepository appSaleRepo;

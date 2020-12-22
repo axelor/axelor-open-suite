@@ -28,9 +28,9 @@ import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class PeriodServiceAccountImpl extends PeriodServiceImpl implements PeriodServiceAccount {
 
   protected MoveValidateService moveValidateService;

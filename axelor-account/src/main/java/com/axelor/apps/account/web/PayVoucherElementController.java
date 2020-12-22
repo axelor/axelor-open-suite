@@ -25,11 +25,11 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
-@Singleton
+@ApplicationScoped
 public class PayVoucherElementController {
 
   @Transactional

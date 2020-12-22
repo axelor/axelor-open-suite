@@ -42,7 +42,7 @@ import com.axelor.rpc.filter.Filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -56,7 +56,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class AdvancedExportController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

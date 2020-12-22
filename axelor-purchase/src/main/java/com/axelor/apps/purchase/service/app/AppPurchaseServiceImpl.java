@@ -25,11 +25,11 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPurchaseService {
 
   @Inject private AppPurchaseRepository appPurchaseRepo;

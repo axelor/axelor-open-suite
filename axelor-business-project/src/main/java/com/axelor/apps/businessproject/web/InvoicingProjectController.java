@@ -33,13 +33,13 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
-@Singleton
+@ApplicationScoped
 public class InvoicingProjectController {
 
   @Inject private InvoicingProjectRepository invoicingProjectRepository;

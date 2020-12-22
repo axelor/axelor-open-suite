@@ -21,9 +21,9 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class AppPurchaseController {
 
   public void generatePurchaseConfigurations(ActionRequest request, ActionResponse response) {

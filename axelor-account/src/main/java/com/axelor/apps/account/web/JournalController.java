@@ -22,11 +22,11 @@ import com.axelor.apps.account.service.JournalService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.Map;
 
-@Singleton
+@ApplicationScoped
 public class JournalController {
 
   @Inject JournalService journalService;

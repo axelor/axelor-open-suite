@@ -32,12 +32,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-@Singleton
+@ApplicationScoped
 public class TrainingRegisterController {
 
   @Inject private EventRepository eventRepository;

@@ -27,12 +27,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
 import org.iban4j.UnsupportedCountryException;
 
-@Singleton
+@ApplicationScoped
 public class BankDetailsController {
 
   public void validateIban(ActionRequest request, ActionResponse response) {

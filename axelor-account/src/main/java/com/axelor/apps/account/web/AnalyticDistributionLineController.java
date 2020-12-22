@@ -23,9 +23,9 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class AnalyticDistributionLineController {
 
   public void computeAmount(ActionRequest request, ActionResponse response) {

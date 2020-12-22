@@ -39,7 +39,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Optional;
 
 /** Implementation of the service printing invoices. */
-@Singleton
+@ApplicationScoped
 public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   protected InvoiceRepository invoiceRepo;

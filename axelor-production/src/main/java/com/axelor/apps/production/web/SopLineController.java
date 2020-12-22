@@ -30,7 +30,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-@Singleton
+@ApplicationScoped
 public class SopLineController {
 
   @Inject MrpForecastRepository mrpForecastRepo;

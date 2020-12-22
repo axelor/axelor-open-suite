@@ -20,9 +20,9 @@ package com.axelor.apps.base.service.tax;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class FiscalPositionServiceImpl implements FiscalPositionService {
 
   @Override

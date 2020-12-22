@@ -35,7 +35,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
-@Singleton
+@ApplicationScoped
 public class EmployeeController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

@@ -35,10 +35,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDate;
 
-@Singleton
+@ApplicationScoped
 public class ContractVersionController {
 
   public void newDraft(ActionRequest request, ActionResponse response) {

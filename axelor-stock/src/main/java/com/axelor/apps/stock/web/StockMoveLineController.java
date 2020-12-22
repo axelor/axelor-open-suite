@@ -39,7 +39,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -50,7 +50,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-@Singleton
+@ApplicationScoped
 public class StockMoveLineController {
 
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {

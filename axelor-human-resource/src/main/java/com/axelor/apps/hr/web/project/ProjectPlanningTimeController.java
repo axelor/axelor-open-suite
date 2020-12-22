@@ -29,13 +29,13 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@Singleton
+@ApplicationScoped
 public class ProjectPlanningTimeController {
 
   public void showPlanning(ActionRequest request, ActionResponse response) {

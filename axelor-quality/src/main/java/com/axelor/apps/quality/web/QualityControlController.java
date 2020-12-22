@@ -37,7 +37,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 
-@Singleton
+@ApplicationScoped
 public class QualityControlController {
 
   /**

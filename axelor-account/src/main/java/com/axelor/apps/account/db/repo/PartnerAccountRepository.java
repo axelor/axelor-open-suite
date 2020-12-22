@@ -25,11 +25,11 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.inject.Beans;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
-@Singleton
+@ApplicationScoped
 public class PartnerAccountRepository extends PartnerBaseRepository {
 
   private AppService appService;

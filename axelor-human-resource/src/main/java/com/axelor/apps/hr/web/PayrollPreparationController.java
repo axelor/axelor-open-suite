@@ -27,11 +27,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class PayrollPreparationController {
 
   public void generateFromEmploymentContract(ActionRequest request, ActionResponse response) {

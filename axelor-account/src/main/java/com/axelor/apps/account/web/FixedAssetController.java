@@ -28,13 +28,13 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Singleton
+@ApplicationScoped
 public class FixedAssetController {
 
   public void computeDepreciation(ActionRequest request, ActionResponse response) {

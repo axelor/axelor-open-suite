@@ -21,13 +21,13 @@ import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-@Singleton
+@ApplicationScoped
 public class DurationServiceImpl implements DurationService {
 
   @Override

@@ -24,11 +24,11 @@ import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppProductionService {
 
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;

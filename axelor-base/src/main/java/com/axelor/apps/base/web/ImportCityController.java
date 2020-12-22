@@ -27,12 +27,12 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class ImportCityController {
 
   @Inject private ImportCityService importCityService;

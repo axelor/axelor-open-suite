@@ -36,12 +36,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Singleton
+@ApplicationScoped
 public class PurchaseOrderLineController {
 
   public void compute(ActionRequest request, ActionResponse response) {

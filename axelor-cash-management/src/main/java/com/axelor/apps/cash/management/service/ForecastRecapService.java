@@ -55,7 +55,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -70,7 +70,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class ForecastRecapService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

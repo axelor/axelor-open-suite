@@ -38,7 +38,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,7 +58,7 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class AppServiceImpl implements AppService {
 
   private final Logger log = LoggerFactory.getLogger(AppService.class);

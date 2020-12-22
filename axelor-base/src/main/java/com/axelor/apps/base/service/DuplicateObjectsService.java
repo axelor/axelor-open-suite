@@ -31,7 +31,7 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.filter.Filter;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +40,7 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
+@ApplicationScoped
 public class DuplicateObjectsService {
 
   private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);

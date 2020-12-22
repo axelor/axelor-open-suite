@@ -30,11 +30,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class AccountController {
 
   public void computeBalance(ActionRequest request, ActionResponse response) {

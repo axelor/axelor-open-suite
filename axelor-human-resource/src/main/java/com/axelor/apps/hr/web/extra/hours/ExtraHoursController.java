@@ -41,12 +41,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Singleton
+@ApplicationScoped
 public class ExtraHoursController {
 
   public void editExtraHours(ActionRequest request, ActionResponse response) {

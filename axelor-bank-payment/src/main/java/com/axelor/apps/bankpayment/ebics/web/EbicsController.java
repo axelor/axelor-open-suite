@@ -49,7 +49,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -66,7 +66,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 
-@Singleton
+@ApplicationScoped
 public class EbicsController {
 
   @Transactional

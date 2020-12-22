@@ -37,13 +37,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 
-@Singleton
+@ApplicationScoped
 public class SaleOrderProjectController {
 
   private static final String CONTEXT_SHOW_RECORD = "_showRecord";

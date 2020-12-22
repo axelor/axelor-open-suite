@@ -22,9 +22,9 @@ import com.axelor.apps.production.service.MpsWeeklyScheduleService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class MpsWeeklyScheduleController {
 
   public void countTotalHours(ActionRequest request, ActionResponse response) {

@@ -36,12 +36,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class TimetableController {
 
   @Inject TimetableService timetableService;

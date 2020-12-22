@@ -35,12 +35,12 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class MoveLineController {
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {

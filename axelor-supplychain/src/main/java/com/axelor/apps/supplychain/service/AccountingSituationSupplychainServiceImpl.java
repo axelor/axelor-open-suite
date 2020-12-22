@@ -38,13 +38,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl
     implements AccountingSituationSupplychainService {
 

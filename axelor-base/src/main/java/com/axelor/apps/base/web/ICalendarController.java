@@ -33,7 +33,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +42,7 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import net.fortuna.ical4j.data.ParserException;
 
-@Singleton
+@ApplicationScoped
 public class ICalendarController {
 
   public void exportCalendar(ActionRequest request, ActionResponse response)

@@ -23,9 +23,9 @@ import com.axelor.apps.talent.service.TrainingSessionService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class TrainingSessionController {
 
   public void completeSession(ActionRequest request, ActionResponse response) {

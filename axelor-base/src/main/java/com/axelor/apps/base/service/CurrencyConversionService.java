@@ -30,7 +30,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -55,7 +55,7 @@ import wslite.json.JSONArray;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
-@Singleton
+@ApplicationScoped
 public class CurrencyConversionService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

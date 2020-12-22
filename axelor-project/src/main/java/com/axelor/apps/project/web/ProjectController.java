@@ -20,9 +20,9 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class ProjectController {
 
   public void importMembers(ActionRequest request, ActionResponse response) {

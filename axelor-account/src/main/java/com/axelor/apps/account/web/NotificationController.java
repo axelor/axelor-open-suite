@@ -29,11 +29,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class NotificationController {
 
   public void populateNotificationItemList(ActionRequest request, ActionResponse response) {

@@ -29,11 +29,11 @@ import com.axelor.apps.base.db.repo.AppInvoiceRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAccountService {
 
   @Inject private AppAccountRepository appAccountRepo;

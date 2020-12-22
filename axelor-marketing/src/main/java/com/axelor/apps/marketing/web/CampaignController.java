@@ -31,9 +31,9 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class CampaignController {
 
   public void sendEmail(ActionRequest request, ActionResponse response) {

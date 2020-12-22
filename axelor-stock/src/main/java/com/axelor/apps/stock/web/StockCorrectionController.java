@@ -31,10 +31,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.Map;
 
-@Singleton
+@ApplicationScoped
 public class StockCorrectionController {
 
   public void setDefaultDetails(ActionRequest request, ActionResponse response) {

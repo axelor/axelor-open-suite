@@ -21,9 +21,9 @@ import com.axelor.apps.base.db.AppProject;
 import com.axelor.apps.base.db.repo.AppProjectRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProjectService {
 
   @Inject private AppProjectRepository appProjectRepo;

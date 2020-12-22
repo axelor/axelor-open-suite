@@ -29,10 +29,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 
-@Singleton
+@ApplicationScoped
 public class MessageController {
 
   public void sendMessage(ActionRequest request, ActionResponse response) {
