@@ -68,7 +68,6 @@
 		<field name="isOrderAccepted" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="isOrderProposed" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="assignment" hidden="true" if="!__config__.app.isApp('business-support')"/>
-		<field name="taskDeadline" hidden="true" if="__config__.app.isApp('business-support')"/>
 		<field name="internalDescription" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
 		<field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>
