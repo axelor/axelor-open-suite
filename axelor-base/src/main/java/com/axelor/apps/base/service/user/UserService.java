@@ -179,4 +179,14 @@ public interface UserService {
 
   @Transactional
   public void generateRandomPasswordForUsers(List<Long> userIds);
+
+  /**
+   * Setting user's partner
+   *
+   * @param partner
+   * @param user
+   * @return
+   */
+  @Transactional
+  public Partner setUserPartner(Partner partner, User user);
 }

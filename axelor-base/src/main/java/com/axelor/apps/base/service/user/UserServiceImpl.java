@@ -423,4 +423,14 @@ public class UserServiceImpl implements UserService {
       session.setAttribute("loginDate", todayDateTime);
     }
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Partner setUserPartner(Partner partner, User user) {
+    partner.setUser(user);
+    partner.setTeam(user.getActiveTeam());
+    user.setPartner(partner);
+    userRepo.save(user);
+    return partner;
+  }
 }
