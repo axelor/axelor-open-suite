@@ -572,5 +572,11 @@
 		<option value="2">Completed</option>
 		<option value="3">Error</option>
 	</selection>
+	
+	<selection name="user.partner.type.select">
+		<option value="1">Employee</option>
+		<option value="2">Contact</option>
+		<option value="3">Partner</option>
+	</selection>
 
 </object-views>
