@@ -19,6 +19,7 @@ package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.maintenance.module.MaintenanceModule;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -32,6 +33,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -42,6 +45,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
+@Alternative
+@Priority(MaintenanceModule.PRIORITY)
 public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowService {
 
   @Inject

@@ -17,33 +17,11 @@
  */
 package com.axelor.apps.maintenance.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.maintenance.db.repo.EquipementMaintenanceRepo;
-import com.axelor.apps.maintenance.db.repo.EquipementMaintenanceRepository;
-import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepo;
-import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
-import com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl;
-import com.axelor.apps.maintenance.service.MaintenanceRequestService;
-import com.axelor.apps.maintenance.service.MaintenanceRequestServiceImpl;
-import com.axelor.apps.maintenance.service.ManufOrderPrintServiceMaintenanceImpl;
-import com.axelor.apps.maintenance.service.ManufOrderWorkFlowMaintenanceService;
-import com.axelor.apps.maintenance.service.ProdProcessMaintenanceService;
-import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
-import com.axelor.apps.production.service.ProdProcessService;
-import com.axelor.apps.production.service.manuforder.ManufOrderPrintServiceImpl;
-import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import javax.interceptor.Interceptor;
 
-public class MaintenanceModule extends AxelorModule {
-
-  @Override
-  protected void configure() {
-
-    bind(EquipementMaintenanceRepository.class).to(EquipementMaintenanceRepo.class);
-    bind(MaintenanceRequestService.class).to(MaintenanceRequestServiceImpl.class);
-    bind(MaintenanceRequestRepository.class).to(MaintenanceRequestRepo.class);
-    bind(BillOfMaterialServiceImpl.class).to(BillOfMaterialServiceMaintenanceImpl.class);
-    bind(ManufOrderWorkflowService.class).to(ManufOrderWorkFlowMaintenanceService.class);
-    bind(ManufOrderPrintServiceImpl.class).to(ManufOrderPrintServiceMaintenanceImpl.class);
-    bind(ProdProcessService.class).to(ProdProcessMaintenanceService.class);
-  }
+public class MaintenanceModule {
+  
+  public MaintenanceModule() {}
+  
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 2700;
 }

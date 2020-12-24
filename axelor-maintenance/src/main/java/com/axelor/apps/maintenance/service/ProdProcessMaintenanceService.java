@@ -1,6 +1,7 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.maintenance.module.MaintenanceModule;
 import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -8,8 +9,12 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(MaintenanceModule.PRIORITY)
 public class ProdProcessMaintenanceService extends ProdProcessService {
 
   @Inject

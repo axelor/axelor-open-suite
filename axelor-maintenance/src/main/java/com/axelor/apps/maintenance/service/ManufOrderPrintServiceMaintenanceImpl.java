@@ -1,7 +1,10 @@
 package com.axelor.apps.maintenance.service;
 
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.maintenance.module.MaintenanceModule;
 import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -9,6 +12,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderPrintServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.inject.Beans;
 
+@Alternative
+@Priority(MaintenanceModule.PRIORITY)
 public class ManufOrderPrintServiceMaintenanceImpl extends ManufOrderPrintServiceImpl {
 
   @Override
