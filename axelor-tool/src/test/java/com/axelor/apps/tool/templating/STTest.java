@@ -46,7 +46,7 @@ public class STTest {
           + "<p><strong>Title: $contact.title$</p>"
           + "<p><strong>First Name:</strong> $contact.firstName$</p>"
           + "<p><strong>Last Name:</strong> $contact.lastName;format=\"upper\"$</p>"
-          + "<p><strong>DateOfBirth:</strong> $contact.dateOfBirth;format=\"dd/MM/YYYY\"$</p>"
+          + "<p><strong>DateOfBirth:</strong> $contact.dateOfBirth;format=\"dd/MM/yyyy\"$</p>"
           + "<p>&nbsp;</p>"
           + "<p><em>Contact me:</em>&nbsp;<a href='mailto:$contact.email$' target='_blank'>$contact.fullName$</a></p>"
           + "<hr />$__time__;format=\"HH\"$"
