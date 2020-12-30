@@ -7,17 +7,18 @@
     		<insert position="after">
 		    	<panel-related field="stockLocationList"  name="stockLocationListPanel" form-view="stock-location-form" grid-view="stock-location-light-grid" colSpan="12"/>
 		    	<panel name="locationsPanel" colSpan="12">
-		    		<field name="workshopDefaultStockLocation" onSelect="action-sd-attrs-locations-domain"/>
-		    		<field name="receiptDefaultStockLocation" onSelect="action-sd-attrs-locations-domain"/>
-		    		<field name="wasteDefaultStockLocation" onSelect="action-sd-attrs-locations-domain"/>
-		    		<field name="parkingStockLocation" onSelect="action-sd-attrs-locations-domain"/>
+		    		<field name="workshopDefaultStockLocation" onSelect="action-stock-attrs-stock-locations-domain"/>
+		    		<field name="receiptDefaultStockLocation" onSelect="action-stock-attrs-stock-locations-domain"/>
+		    		<field name="wasteDefaultStockLocation" onSelect="action-stock-attrs-stock-locations-domain"/>
+		    		<field name="shippingDefaultStockLocation" onSelect="action-stock-attrs-stock-locations-domain"/>
+		    		<field name="parkingStockLocation" onSelect="action-stock-attrs-stock-locations-domain"/>
 		    		<field name="analyticCode"/>
 		    	</panel>
     		</insert>
     	</extend>
     </form>
     
-    <action-attrs name="action-sd-attrs-locations-domain">
+    <action-attrs name="action-stock-attrs-stock-locations-domain">
 		<attribute name="domain" expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;" 
 			for="parkingStockLocation" if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()" />
 		
@@ -41,6 +42,11 @@
 		
 		<attribute name="domain" expr="eval: &quot;self.id IS NULL &quot;"
 			for="parkingStockLocation" if="!stockLocationList || stockLocationList?.isEmpty()" />
+		
+		<attribute name="domain" for="shippingDefaultStockLocation" if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()" 
+			 expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;" />
+		<attribute name="domain" for="shippingDefaultStockLocation" if="!stockLocationList || stockLocationList?.isEmpty()"
+			 expr="eval: &quot;self.id IS NULL &quot;" />
 	</action-attrs>
     
     
