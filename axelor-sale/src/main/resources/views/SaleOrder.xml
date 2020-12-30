@@ -274,7 +274,7 @@
 	  	<field name="company.tradingNameSet" hidden="true"/>
 	    <panel name="generalInfoPanel" colSpan="12">
 	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
-	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"
+	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values,action-sale-order-record-set-stock-location" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"
 	      		 requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
 	      <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
 	      <field name="currency" required="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
@@ -967,7 +967,7 @@
 
     <action-group name="action-sale-group-onchange-company">
     	<action name="action-sale-order-record-company-configuration"/>
-    	<action name="action-supplychain-sale-order-method-get-stock-location" />
+    	<action name="action-supplychain-sale-order-method-get-stock-location" if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
         <action name="action-sale-order-method-fill-company-bank-details"/>
 		<action name="action-sale-record-update-info-company"/>
         <action name="action-sale-order-record-compute-end-of-validity-date"/>
@@ -1060,7 +1060,7 @@
 		<action name="action-sale-order-record-partner-supplychain" 
 				if="__config__.app.isApp('supplychain')"/>
 		<action name="action-supplychain-sale-order-method-get-stock-location"
-				if="__config__.app.isApp('supplychain') &amp;&amp; stockLocation == null"/>
+				if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.shippingDefaultStockLocation == null || stockLocation == null)"/>
 		<action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-method-change-sale-order-line-tax" if="template"/>
 		<action name="action-sale-order-method-compute" if="template"/>
@@ -1234,6 +1234,7 @@
     	<field name="template" expr="eval:_template" />
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
 		<field name="tradingName" expr="eval: __user__?.tradingName"/>
+		<field name="stockLocation" expr="eval: __user__?.tradingName?.shippingDefaultStockLocation"/>
     </action-record>
 
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1595,6 +1596,9 @@
       expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
                  || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
     </action-attrs>
-
+	
+	<action-record name="action-sale-order-record-set-stock-location" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="stockLocation" expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
+	</action-record>
 	
 </object-views>

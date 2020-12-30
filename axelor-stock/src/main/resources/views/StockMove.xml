@@ -1081,7 +1081,8 @@
     </action-method>
 	
 	<action-record name="action-stock-move-record-set-trading-name-stock-locations-default" model="com.axelor.apps.stock.db.StockMove">
-		<field name="toStockLocation" expr="eval: tradingName?.receiptDefaultStockLocation != null ? tradingName?.receiptDefaultStockLocation : stockLocation"/>
+		<field name="toStockLocation" expr="eval: tradingName?.receiptDefaultStockLocation != null ? tradingName?.receiptDefaultStockLocation : toStockLocation" if="typeSelect == 3"/>
+		<field name="fromStockLocation" expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : fromStockLocation" if="typeSelect == 2"/>
 	</action-record>
 	
 </object-views>

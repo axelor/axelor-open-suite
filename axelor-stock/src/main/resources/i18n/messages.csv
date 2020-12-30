@@ -623,6 +623,7 @@
 "Shipment mode",,,
 "Shipped date",,,
 "Shipped qty",,,
+"Shipping default stock location",,,
 "Show Generated Stock Move",,,
 "Show detailed stock",,,
 "Show stock move lines",,,

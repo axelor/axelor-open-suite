@@ -13,6 +13,7 @@
 		<many-to-one name="wasteDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Waste default stock location"/>
 		<string name="analyticCode"  title="Analytic code"/>
 		<many-to-one name="parkingStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Parking location"/>
+   		<many-to-one name="shippingDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Shipping default stock location"/>
    		
     </entity>
 
