@@ -413,4 +413,8 @@ public interface IExceptionMessage {
       "Error in print template line with sequence %s and title %s." /*)*/;
   public static final String PRINT_TEMPLATE_LINE_TEST_REFRESH = /*$$(*/
       "Refresh page to reflect changes in selection" /*)*/;
+
+  /* Scheduler */
+  public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
+      "The scheduler service is enabled." /*)*/;
 }
