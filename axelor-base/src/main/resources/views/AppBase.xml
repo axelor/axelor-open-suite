@@ -67,7 +67,7 @@
 					<field name="hasQasValidation" widget="boolean-switch"/>
 				</panel>
 				<panel name="wsPanel" title="Webservices"  colSpan="12">
-					<field name="currencyWsURL" colSpan="12"/>
+					<field name="currencyWsURL" colSpan="12" onChange="action-app-base-method-currency-ws-onchange-check-quartz-scheduler"/>
 				</panel>
 				
 				<panel name="geonamesPanel" title="GeoNames"  colSpan="12">
@@ -109,6 +109,10 @@
 	<action-method name="action-method-general-remind-timesheet">
 		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
 	</action-method>
+	
+	<action-method name="action-app-base-method-currency-ws-onchange-check-quartz-scheduler">
+      <call class="com.axelor.apps.base.web.AppBaseController" method="checkQuartzScheduler"/>
+   </action-method>
 	
 	<!-- ACTION VALIDATE -->
 	<action-validate name="action-base-validate-multi-company-boolean">

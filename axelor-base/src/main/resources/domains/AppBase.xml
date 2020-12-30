@@ -24,7 +24,8 @@
 		<string name="googleMapsApiKey" title="Google Maps API key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
-		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"/>
+		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"
+		 default="com.axelor.apps.base.service.currency.ECBCurrencyConversionService"/>
 
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
 		

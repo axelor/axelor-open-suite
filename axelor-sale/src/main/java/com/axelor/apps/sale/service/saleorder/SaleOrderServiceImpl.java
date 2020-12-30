@@ -20,8 +20,8 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -161,7 +161,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         && !pack.getCurrency().getCode().equals(saleOrder.getCurrency().getCode())) {
       try {
         ConversionRate =
-            Beans.get(CurrencyConversionService.class)
+            Beans.get(CurrencyConversionFactory.class)
+                .getCurrencyConversionService()
                 .convert(pack.getCurrency(), saleOrder.getCurrency());
       } catch (MalformedURLException | JSONException | AxelorException e) {
         TraceBackService.trace(e);
