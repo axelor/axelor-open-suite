@@ -16,7 +16,6 @@
     <string name="mobilePhone" title="Mobile N°"/>
     <string name="fixedPhone" title="Fixed Phone"/>
   	<string name="department" title="Dep./Div."/>
-  	<string name="fax" title="Fax"/>
   	<string name="webSite" title="Website"/>
   	
 <!--   Primary address group -->

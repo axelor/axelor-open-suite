@@ -202,7 +202,6 @@ public class ConvertLeadWizardController {
     response.setAttr("industrySector", "value", lead.getIndustrySector());
     response.setAttr("titleSelect", "value", lead.getTitleSelect());
     response.setAttr("emailAddress", "value", lead.getEmailAddress());
-    response.setAttr("fax", "value", lead.getFax());
     response.setAttr("mobilePhone", "value", lead.getMobilePhone());
     response.setAttr("fixedPhone", "value", lead.getFixedPhone());
     response.setAttr("webSite", "value", lead.getWebSite());
@@ -251,7 +250,6 @@ public class ConvertLeadWizardController {
     response.setAttr("name", "value", lead.getName());
     response.setAttr("titleSelect", "value", lead.getTitleSelect());
     response.setAttr("emailAddress", "value", lead.getEmailAddress());
-    response.setAttr("fax", "value", lead.getFax());
     response.setAttr("mobilePhone", "value", lead.getMobilePhone());
     response.setAttr("fixedPhone", "value", lead.getFixedPhone());
     response.setAttr("user", "value", lead.getUser());
