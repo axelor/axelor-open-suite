@@ -175,8 +175,7 @@ public class ECBCurrencyConversionService implements CurrencyConversionService {
         Map<String, Object> headers = new HashMap<>();
         headers.put("Accept", "application/json");
         request.setHeaders(headers);
-        URL url =
-            new URL(String.format(WSURL, currencyFrom.getCode(), currencyTo.getCode(), date, date));
+        URL url = new URL(this.getUrlString(date, currencyFrom.getCode(), currencyTo.getCode()));
         // URL url = new URL(String.format(WSURL,currencyFrom.getCode()));
         LOG.trace("Currency conversion webservice URL: {}", new Object[] {url.toString()});
         request.setUrl(url);
@@ -310,5 +309,9 @@ public class ECBCurrencyConversionService implements CurrencyConversionService {
   @Transactional
   public void saveCurrencyConversionLine(CurrencyConversionLine ccl) {
     cclRepo.save(ccl);
+  }
+
+  protected String getUrlString(LocalDate date, String currencyFromCode, String currencyToCode) {
+    return String.format(WSURL, currencyFromCode, currencyToCode, date, date);
   }
 }
