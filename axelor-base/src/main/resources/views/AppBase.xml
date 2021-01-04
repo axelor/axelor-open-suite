@@ -67,7 +67,8 @@
 					<field name="hasQasValidation" widget="boolean-switch"/>
 				</panel>
 				<panel name="wsPanel" title="Webservices"  colSpan="12">
-					<field name="currencyWsURL" colSpan="12" onChange="action-app-base-method-currency-ws-onchange-check-quartz-scheduler"/>
+					<field name="currencyWsURL" colSpan="6" onChange="action-app-base-method-currency-ws-onchange-check-quartz-scheduler"/>
+					<field name="fixerApiKey" colSpan="6" requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'" showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
 				</panel>
 				
 				<panel name="geonamesPanel" title="GeoNames"  colSpan="12">
