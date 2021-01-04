@@ -281,6 +281,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             plannedEndDateT,
             ManufOrderRepository.STATUS_DRAFT,
             prodProcess.getOutsourcing());
+    manufOrder = manufOrderRepo.save(manufOrder);
 
     if (appProductionService.getAppProduction().getManageWorkshop()) {
       manufOrder.setWorkshopStockLocation(billOfMaterial.getWorkshopStockLocation());
@@ -333,6 +334,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
 
     manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  @Transactional
+  public void updateOperationsName(ManufOrder manufOrder) {
+    for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+      operationOrder.setName(
+          operationOrderService.computeName(
+              manufOrder, operationOrder.getPriority(), operationOrder.getOperationName()));
+    }
   }
 
   /**
