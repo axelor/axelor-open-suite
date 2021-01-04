@@ -97,6 +97,8 @@ public interface ManufOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
+  public void updateOperationsName(ManufOrder manufOrder);
+
   public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException;
 
   public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial);

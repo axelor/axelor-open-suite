@@ -98,6 +98,8 @@ public class ManufOrderWorkflowService {
 
     if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
       manufOrderService.preFillOperations(manufOrder);
+    } else {
+      manufOrderService.updateOperationsName(manufOrder);
     }
     if (!manufOrder.getIsConsProOnOperation()
         && CollectionUtils.isEmpty(manufOrder.getToConsumeProdProductList())) {
