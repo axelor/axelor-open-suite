@@ -201,7 +201,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             company,
             supplierPartner,
             startLocation,
-            company.getStockConfig().getQualityControlDefaultStockLocation(),
+            appBaseService.getAppBase().getEnableTradingNamesManagement()
+                ? purchaseOrder.getTradingName().getQualityControlDefaultStockLocation()
+                : company.getStockConfig().getQualityControlDefaultStockLocation(),
             null,
             estimatedDeliveryDate,
             purchaseOrder.getNotes(),

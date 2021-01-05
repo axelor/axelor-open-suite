@@ -14,7 +14,8 @@
 		<string name="analyticCode"  title="Analytic code"/>
 		<many-to-one name="parkingStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Parking location"/>
    		<many-to-one name="shippingDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Shipping default stock location"/>
-   		
+   		<many-to-one name="qualityControlDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location" />
+    
     </entity>
 
 </domain-models>
