@@ -90,13 +90,12 @@ public final class ObjectTool {
   }
 
   /**
-   * Methode permettant d'utiliser une méthode distinct plus précise lorque l'on travaille avec des
-   * listes.
+   * Usefull to remove all duplicates on a list. Here we can choose on which key we want to check for duplicate
    *
-   * <p>Exemples si l'on veut enlever les doublons sur les ids: List<Person> distinctElements =
-   * list.stream() .filter( distinctByKey(p -> p.getId()) ) .collect( Collectors.toList() );
+   * <p>ex:  If we want to check on ids List<Person> distinctElements =
+   * list.stream().filter( distinctByKey(p -> p.getId()) ).collect( Collectors.toList() );
    *
-   * @param keyExtractor Méthodes d'extraction utilisée
+   * @param keyExtractor Extract method use
    * @return
    */
   public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
