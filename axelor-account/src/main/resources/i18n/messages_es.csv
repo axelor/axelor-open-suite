@@ -10,7 +10,7 @@
 "%d moves couldn't be deleted or archived, please check the logs.","No se pudieron eliminar ni archivar %d movimientos, compruebe los registros.",,
 "%d reimbursement created successfully,","%d reembolso creado con éxito,",,
 "%d reimbursements created successfully,","%d reembolsos creados con éxito,",,
-"%s - Invoice date can't be in the future.","La fecha de la factura no puede ser en el futuro.",,
+"%s - Invoice date can't be in the future.","%s - La fecha de la factura no puede ser en el futuro.",,
 "%s : A customer account is missing for the company %s","%s : falta una cuenta de cliente para la empresa %s",,
 "%s : A header record is missing in the file %s","%s : falta un registro de encabezado en el archivo %s",,
 "%s : A record is missing in the file %s","%s : falta un registro en el archivo %s",,
