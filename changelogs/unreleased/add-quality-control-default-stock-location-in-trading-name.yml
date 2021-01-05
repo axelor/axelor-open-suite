@@ -1,0 +1,5 @@
+---
+title: "Adding new quality control default stock location in trading name"
+type: feature
+description: |
+	New field is to used as default quality control stock location when trading name management is enabled
