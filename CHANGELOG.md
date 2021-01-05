@@ -1,3 +1,46 @@
+## [6.0.4] (2021-01-05)
+
+#### Features
+
+* AppBase: Add currency conversion web service using fixer api.
+
+#### Changes
+
+* Stock Location Line: improve error when updating a line without unit.
+* INVOICING PROJECT: Add mass update for deadline date field.
+* Project: Add a button to delete team task from task tree.
+* Configurator: check the condition before generating sub bill of materials.
+* ACCOUNTING REPORT: add new filters for analytic reports.
+* USER: Allow to select partner type when generating partner linked to the user.
+* ACCOUNTING REPORT: add in analytic general ledger origin and description to analytic lines.
+* INVOICING PROJECT: Add total lines for logtimes, expense lines, and team tasks.
+* INVOICE LINE: add changes tracking in invoice line.
+
+#### Fixed
+
+* Configurator: allow groovy string interpolation in scripts.
+* Global tracking: fix script in demo data to avoid NPE.
+* Production Config: Workshop sequence is now only managed when 'Manage workshop' configuration is enabled.
+* Followers: When selecting followers in any form view, correctly filter out followers using permissions.
+* TEAMTASK: Fix type default value.
+* TeamTask: Fix display issue for task dead line.
+* FORECAST RECAP: In the forecast recap view, the type of forecast displayed is correct now (before it was always ingoing transaction).
+* Refund: on ventilation, fix the printing file name to correctly indicate a refund.
+* Move Template: fix french demo data.
+* Fix import issues from geonames and new field added for geonames url.
+* TEAMTASK: Fix team not filled by default when the task is created from subscribed team's menu.
+* MRP: Fix english typo and add missing french translation.
+* MRP PRINTING: fix empty unit column.
+* MRP: fix null pointer exception when running calculation on missing procurement method.
+* Manuf Order: fix operation order name.
+
+Fix issue where the operation order name starts with null when generated from a production order.
+Update operation order name with manufacturing order sequence when the manufacturing order is planned.
+
+* Stock Move Line: fix stock move line split.
+* Reconcile: Display code of reconcile group.
+* Leave request: manage the case of multiple leave requests for a single day.
+
 ## [6.0.3] (2020-12-03)
 
 #### Changes
@@ -244,6 +287,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.4]: https://github.com/axelor/axelor-open-suite/compare/v6.0.3...v6.0.4
 [6.0.3]: https://github.com/axelor/axelor-open-suite/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/axelor/axelor-open-suite/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/axelor/axelor-open-suite/compare/v6.0.0...v6.0.1
