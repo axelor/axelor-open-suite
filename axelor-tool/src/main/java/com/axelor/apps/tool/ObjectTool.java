@@ -22,6 +22,10 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,5 +87,20 @@ public final class ObjectTool {
     }
     LOG.debug("Objet récupéré", obj);
     return obj;
+  }
+
+  /**
+   * Methode permettant d'utiliser une méthode distinct plus précise lorque l'on travaille avec des
+   * listes.
+   *
+   * <p>Exemples si l'on veut enlever les doublons sur les ids: List<Person> distinctElements =
+   * list.stream() .filter( distinctByKey(p -> p.getId()) ) .collect( Collectors.toList() );
+   *
+   * @param keyExtractor Méthodes d'extraction utilisée
+   * @return
+   */
+  public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+    Map<Object, Boolean> map = new ConcurrentHashMap<>();
+    return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
   }
 }
