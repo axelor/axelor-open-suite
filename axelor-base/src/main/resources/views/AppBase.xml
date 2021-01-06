@@ -68,7 +68,8 @@
 				</panel>
 				<panel name="wsPanel" title="Webservices"  colSpan="12">
 					<field name="currencyWsURL" colSpan="6" onChange="action-app-base-method-currency-ws-onchange-check-quartz-scheduler"/>
-					<field name="fixerApiKey" colSpan="6" requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'" showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
+					<field name="fixerApiKey" colSpan="4" requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'" showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
+					<field name="isFixerAPIPaid" colSpan="2" requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'" showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
 				</panel>
 				
 				<panel name="geonamesPanel" title="GeoNames"  colSpan="12">
@@ -77,7 +78,7 @@
 				
 		    </panel>
 		    <panel name="currencyConversionPanel" title="Currency conversion" colSpan="12">
-				<button name="updateCurrencyConversionBtn" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion"/>
+				<button name="updateCurrencyConversionBtn" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion" readonlyIf="!currencyConversionLineList"/>
 				<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
 			</panel>
 			<panel name="globalTrackingConfigurationPanel" title="Global tracking configuration" colSpan="12" >

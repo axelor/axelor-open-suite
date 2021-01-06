@@ -27,6 +27,7 @@
 		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"
 		 default="com.axelor.apps.base.service.currency.ECBCurrencyConversionService"/>
 		 <string name="fixerApiKey" title="Fixer Api key"/>
+		<boolean name="isFixerAPIPaid" title="Paid fixer API"/>
 
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
 		

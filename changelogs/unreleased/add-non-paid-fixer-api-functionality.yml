@@ -1,0 +1,5 @@
+---
+title: "AppBase : Adding Paid fixer API boolean"
+type: change
+description: |
+  Adding currency conversion functionality for non paid FIXER APIs. 
