@@ -22,6 +22,10 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,5 +87,19 @@ public final class ObjectTool {
     }
     LOG.debug("Objet récupéré", obj);
     return obj;
+  }
+
+  /**
+   * Usefull to remove all duplicates on a list. Here we can choose on which key we want to check for duplicate
+   *
+   * <p>ex:  If we want to check on ids List<Person> distinctElements =
+   * list.stream().filter( distinctByKey(p -> p.getId()) ).collect( Collectors.toList() );
+   *
+   * @param keyExtractor Extract method use
+   * @return
+   */
+  public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+    Map<Object, Boolean> map = new ConcurrentHashMap<>();
+    return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
   }
 }
