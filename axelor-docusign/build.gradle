@@ -38,8 +38,8 @@ dependencies {
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 task shadowDocusignDeps(type: ShadowJar) {    
-    destinationDir = file(docusignJarDir)
-    archiveName = docusignJarName
+    destinationDirectory = file(docusignJarDir)
+    archiveFileName = docusignJarName
     zip64 true    
     configurations = [project.configurations.docusignDeps]
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'    
