@@ -30,7 +30,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -55,22 +54,18 @@ import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 @Singleton
-public class ECBCurrencyConversionService implements CurrencyConversionService {
+public class ECBCurrencyConversionService extends CurrencyConversionService {
+
+  @Inject
+  public ECBCurrencyConversionService(
+      AppBaseService appBaseService, CurrencyConversionLineRepository cclRepo) {
+    super(appBaseService, cclRepo);
+  }
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final String WSURL =
       "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&endPeriod=%s";
-
-  protected AppBaseService appBaseService;
-  protected CurrencyConversionLineRepository cclRepo;
-
-  @Inject
-  public ECBCurrencyConversionService(
-      AppBaseService appBaseService, CurrencyConversionLineRepository cclRepo) {
-    this.appBaseService = appBaseService;
-    this.cclRepo = cclRepo;
-  }
 
   @Override
   public void updateCurrencyConverion() throws AxelorException {
@@ -123,7 +118,7 @@ public class ECBCurrencyConversionService implements CurrencyConversionService {
         ccl = cclRepo.find(ccl.getId());
         BigDecimal previousRate = ccl.getExchangeRate();
         if (currentRate.compareTo(previousRate) != 0) {
-          ccl.setToDate(today.minusDays(1));
+          ccl.setToDate(today.minusDays(1).isAfter(ccl.getFromDate()) ? today.minusDays(1) : today);
           this.saveCurrencyConversionLine(ccl);
           String variations = this.getVariations(currentRate, previousRate);
           this.createCurrencyConversionLine(
@@ -262,56 +257,7 @@ public class ECBCurrencyConversionService implements CurrencyConversionService {
   }
 
   @Override
-  public String getVariations(BigDecimal currentRate, BigDecimal previousRate) {
-    String variations = "0";
-    LOG.trace(
-        "Currency rate variation calculation for CurrentRate: {} PreviousRate: {}",
-        new Object[] {currentRate, previousRate});
-
-    if (currentRate != null
-        && previousRate != null
-        && previousRate.compareTo(BigDecimal.ZERO) != 0) {
-      BigDecimal diffRate = currentRate.subtract(previousRate);
-      BigDecimal variation =
-          diffRate.multiply(new BigDecimal(100)).divide(previousRate, RoundingMode.HALF_EVEN);
-      variation =
-          variation.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
-      variations = variation.toString() + "%";
-    }
-
-    LOG.trace("Currency rate variation result: {}", new Object[] {variations});
-    return variations;
-  }
-
-  @Override
-  @Transactional
-  public void createCurrencyConversionLine(
-      Currency currencyFrom,
-      Currency currencyTo,
-      LocalDate fromDate,
-      BigDecimal rate,
-      AppBase appBase,
-      String variations) {
-    LOG.trace(
-        "Create new currency conversion line CurrencyFrom: {}, CurrencyTo: {},FromDate: {},ConversionRate: {}, AppBase: {}, Variations: {}",
-        new Object[] {currencyFrom, currencyTo, fromDate, rate, appBase, variations});
-
-    CurrencyConversionLine ccl = new CurrencyConversionLine();
-    ccl.setStartCurrency(currencyFrom);
-    ccl.setEndCurrency(currencyTo);
-    ccl.setFromDate(fromDate);
-    ccl.setExchangeRate(rate);
-    ccl.setAppBase(appBase);
-    ccl.setVariations(variations);
-    cclRepo.save(ccl);
-  }
-
-  @Transactional
-  public void saveCurrencyConversionLine(CurrencyConversionLine ccl) {
-    cclRepo.save(ccl);
-  }
-
-  protected String getUrlString(LocalDate date, String currencyFromCode, String currencyToCode) {
+  public String getUrlString(LocalDate date, String currencyFromCode, String currencyToCode) {
     return String.format(WSURL, currencyFromCode, currencyToCode, date, date);
   }
 }
