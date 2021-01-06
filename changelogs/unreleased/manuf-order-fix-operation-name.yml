@@ -1,5 +1,5 @@
 ---
-title: "Manuf Order: fix operation order name"
+title: "Manuf Order: fix operation order name."
 type: fix
 description: |
   Fix issue where the operation order name starts with null when generated from a production order.
