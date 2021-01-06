@@ -32,6 +32,8 @@ dependencies {
  
 	docusignDeps "com.docusign:docusign-esign-java:${docusignVersion}"	                      
 	implementation files("${docusignJarDir}/${docusignJarName}")	
+
+  implementation libs.commons_io
 }
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
