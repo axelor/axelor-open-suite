@@ -40,6 +40,7 @@ public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
   }
 
   @Override
+  @Transactional
   public TeamTask create(String subject, Project project, User assignedTo) {
     TeamTask task = new TeamTask();
     task.setName(subject);
@@ -48,6 +49,7 @@ public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
     task.setStatus("new");
     task.setPriority("normal");
     project.addTeamTaskListItem(task);
+    teamTaskRepo.save(task);
     return task;
   }
 

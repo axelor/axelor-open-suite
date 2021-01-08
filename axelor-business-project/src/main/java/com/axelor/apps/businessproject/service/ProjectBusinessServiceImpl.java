@@ -43,6 +43,7 @@ import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Set;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
@@ -238,8 +239,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
-  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
-    TeamTask task = super.createTask(taskTemplate, project);
+  public TeamTask createTask(
+      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
+    TeamTask task = super.createTask(taskTemplate, project, taskTemplateSet);
     return task;
   }
 }
