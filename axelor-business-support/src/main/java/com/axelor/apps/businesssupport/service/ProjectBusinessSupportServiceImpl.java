@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
+import java.util.Set;
 
 public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImpl {
 
@@ -32,10 +33,13 @@ public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImp
   }
 
   @Override
-  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
+  public TeamTask createTask(
+      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
 
-    TeamTask task = super.createTask(taskTemplate, project);
-    task.setInternalDescription(taskTemplate.getInternalDescription());
+    TeamTask task = super.createTask(taskTemplate, project, taskTemplateSet);
+    if (task != null) {
+      task.setInternalDescription(taskTemplate.getInternalDescription());
+    }
 
     return task;
   }

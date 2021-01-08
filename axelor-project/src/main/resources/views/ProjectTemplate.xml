@@ -32,7 +32,7 @@
 
 		<panel-tabs name="mainPanelTab">
 			<panel title="Task template" name="taskPanel">
-				<field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
+				<field name="taskTemplateSet" widget="TagSelect" canNew="false" canEdit="false" colSpan="12" onChange="action-project-template-method-add-parent-task-template,save"/>
 			</panel>
 
 			<panel title="Members" name="membersPanel">
@@ -91,6 +91,10 @@
 	<action-method name="action-project-template-method-generate-project-from-wizard">
 		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="createProjectFromWizard"/>
 	</action-method>
+  
+    <action-method name="action-project-template-method-add-parent-task-template">
+        <call class="com.axelor.apps.project.web.ProjectTemplateController" method="addParentTaskTemplate"/>
+    </action-method>
 
 	<action-attrs name="action-attrs-project-template-set-wizard-hidden">
 	  <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
