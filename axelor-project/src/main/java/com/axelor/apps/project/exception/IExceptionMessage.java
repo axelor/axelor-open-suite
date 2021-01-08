@@ -37,4 +37,7 @@ public interface IExceptionMessage {
       "Frequency end date cannot be before task date." /*)*/;
 
   static final String PROJECT_TASK_FILL_TASK_DATE = /*$$(*/ "Please fill in task date." /*)*/;
+
+  static final String TASK_TEMPLATE_PARENT_TASK_CREATED_LOOP = /*$$(*/
+      "The parent task creates a loop in the task tree." /*)*/;
 }

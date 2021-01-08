@@ -57,9 +57,7 @@ public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImp
       TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
 
     ProjectTask task = super.createTask(taskTemplate, project, taskTemplateSet);
-    if (task != null) {
-      task.setInternalDescription(taskTemplate.getInternalDescription());
-    }
+    task.setInternalDescription(taskTemplate.getInternalDescription());
 
     return task;
   }
