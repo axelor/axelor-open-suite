@@ -90,10 +90,11 @@ public final class ObjectTool {
   }
 
   /**
-   * Usefull to remove all duplicates on a list. Here we can choose on which key we want to check for duplicate
+   * Usefull to remove all duplicates on a list. Here we can choose on which key we want to check
+   * for duplicate
    *
-   * <p>ex:  If we want to check on ids List<Person> distinctElements =
-   * list.stream().filter( distinctByKey(p -> p.getId()) ).collect( Collectors.toList() );
+   * <p>ex: If we want to check on ids List<Person> distinctElements = list.stream().filter(
+   * distinctByKey(p -> p.getId()) ).collect( Collectors.toList() );
    *
    * @param keyExtractor Extract method use
    * @return
