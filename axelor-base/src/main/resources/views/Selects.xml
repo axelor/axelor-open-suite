@@ -138,7 +138,8 @@
 	</selection>
 	
 	<selection name="base.app.base.currency.api.select">
-		<option value="https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&amp;endPeriod=%s">ECB</option>
+		<option value="com.axelor.apps.base.service.currency.ECBCurrencyConversionService">ECB</option>
+		<option value="com.axelor.apps.base.service.currency.FixerCurrencyConversionService">Fixer</option>
 	</selection>
 
 	<selection name="base.price.list.type.select">
@@ -579,6 +580,12 @@
 		<option value="1">In Progress</option>
 		<option value="2">Completed</option>
 		<option value="3">Error</option>
+	</selection>
+	
+	<selection name="user.partner.type.select">
+		<option value="1">Employee</option>
+		<option value="2">Contact</option>
+		<option value="3">Partner</option>
 	</selection>
 
 	<selection name='import.export.interface'>

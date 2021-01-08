@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,8 +22,9 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
+import com.axelor.apps.base.service.currency.CurrencyConversionService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -134,8 +135,10 @@ public class CurrencyConversionLineController {
       fromCurrency = currencyRepository.find(fromCurrency.getId());
       toCurrency = currencyRepository.find(toCurrency.getId());
       try {
-        BigDecimal rate =
-            Beans.get(CurrencyConversionService.class).convert(fromCurrency, toCurrency);
+        CurrencyConversionService currencyConversionService =
+            Beans.get(CurrencyConversionFactory.class).getCurrencyConversionService();
+
+        BigDecimal rate = currencyConversionService.convert(fromCurrency, toCurrency);
         if (rate.compareTo(new BigDecimal(-1)) == 0)
           response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
         else {
@@ -147,8 +150,7 @@ public class CurrencyConversionLineController {
           if (prevLine != null)
             response.setValue(
                 "variations",
-                Beans.get(CurrencyConversionService.class)
-                    .getVariations(rate, prevLine.getExchangeRate()));
+                currencyConversionService.getVariations(rate, prevLine.getExchangeRate()));
         }
       } catch (AxelorException axelorException) {
         response.setFlash(axelorException.getMessage());

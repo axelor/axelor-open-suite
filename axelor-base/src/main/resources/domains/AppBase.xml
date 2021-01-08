@@ -24,7 +24,9 @@
 		<string name="googleMapsApiKey" title="Google Maps API key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
-		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"/>
+		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"
+		 default="com.axelor.apps.base.service.currency.ECBCurrencyConversionService"/>
+		 <string name="fixerApiKey" title="Fixer Api key"/>
 
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
 		
@@ -82,6 +84,8 @@
 	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template for notifications" ref="com.axelor.apps.message.db.Template"/>
 
 	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
+	   	<string name="geoNamesUrl" title="GeoNames URL"/>
+	   	
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

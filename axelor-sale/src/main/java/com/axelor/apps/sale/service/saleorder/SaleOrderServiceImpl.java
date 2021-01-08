@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,9 +20,9 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -189,7 +189,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         && !pack.getCurrency().getCode().equals(saleOrder.getCurrency().getCode())) {
       try {
         conversionRate =
-            Beans.get(CurrencyConversionService.class)
+            Beans.get(CurrencyConversionFactory.class)
+                .getCurrencyConversionService()
                 .convert(pack.getCurrency(), saleOrder.getCurrency());
       } catch (MalformedURLException | JSONException | AxelorException e) {
         TraceBackService.trace(e);

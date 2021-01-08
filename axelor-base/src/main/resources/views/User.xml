@@ -57,7 +57,7 @@
 			</panel>
 			<panel name="stepContactPanel" showIf="stepStatusSelect == 2" colSpan="12">
 				<panel name="contactInformationPanel" title="Contact Information" showIf="id &amp;&amp; [2,5].indexOf(stepStatusSelect) > -1" colSpan="12">
-	      			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-record-form-partner-contact,action-user-attrs"/>
+	      			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-view-user-partner-type-wizard,action-user-attrs"/>
 	      			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)" form-view="partner-employee-form" grid-view="partner-employee-grid">
 	        			<editor x-viewer="true">
 	          				<field name="fullName" readonly="true"/>
@@ -144,7 +144,7 @@
 
         <panel-tabs name="mainPanelTab" showIf="stepStatusSelect == 5">
     		<panel name="contactInformationPanel" title="Contact Information" showIf="id &amp;&amp; [2,5].indexOf(stepStatusSelect) > -1">
-      			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-record-form-partner-contact,action-user-attrs"/>
+      			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-view-user-partner-type-wizard,action-user-attrs"/>
       			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)" form-view="partner-employee-form" grid-view="partner-employee-grid">
         			<editor x-viewer="true">
           				<field name="fullName" readonly="true"/>
@@ -238,7 +238,14 @@
 			<button name="generateRandomPasswordsBtn" title="Generate random passwords" readonlyIf="!currentUserPassword" onClick="action-user-method-generate-random-passwords"/>
 		</panel>
 	</form>
-
+	
+	<form model="com.axelor.apps.base.db.Wizard" title="Partner type" name="user-partner-type-wizard-form">
+		<panel name="mainPanel">
+			<field name="$partnerType" title="Partner type" type="integer" selection="user.partner.type.select"/>
+			<button onClick="action-user-record-form-partner-contact" name="createBtn" title="Create Partner" showIf="$partnerType"/>
+		</panel>
+	</form>
+	
     <action-attrs name="action-user-attrs-domain-followers">
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
     	(${__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;"
@@ -293,14 +300,25 @@
 		<action name="com.axelor.apps.hr.web.UserHrController:createEmployee"/>
 		<action name="action-employee-user-show-employee" if="partner != null"/>
     </action-group>
-    
-	<action-view name="action-user-record-form-partner-contact" title="Partner" model="com.axelor.apps.base.db.Partner">
- 		<view type="form" name="partner-employee-form" />
- 		  <view-param name="show-toolbar" value="false"/>
- 		  <view-param name="popup" value="reload"/>
- 		  <context name="user_id" expr="eval:__this__.id"/>
- 	</action-view>
 
+	<action-view name="action-user-view-user-partner-type-wizard" title="Partner" model="com.axelor.apps.base.db.Wizard">
+ 		<view type="form" name="user-partner-type-wizard-form"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<context name="user_id" expr="eval:__this__.id"/>
+ 	</action-view>
+	
+	<action-view name="action-user-record-form-partner-contact" title="Partner" model="com.axelor.apps.base.db.Partner">
+		<view type="form" name="partner-employee-form" if="partnerType == 1"/>
+		<view type="form" name="partner-contact-form" if="partnerType == 2"/>
+		<view type="form" name="partner-form" if="partnerType == 3"/>
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="popup" value="true"/>
+		<context name="user_id" expr="eval: user_id"/>
+	</action-view>
+	
 	<action-method name="action-user-apply-applicaton-mode">
 		<call class="com.axelor.apps.base.web.UserController" method="applyApplicationMode"/>
 	</action-method>
