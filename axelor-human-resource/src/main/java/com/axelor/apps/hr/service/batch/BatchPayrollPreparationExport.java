@@ -110,6 +110,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         }
         break;
+      case HrBatchRepository.EXPORT_TYPE_SILAE:
+        try {
+          batch.setMetaFile(silaeExport(payrollPreparationList));
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
+        }
+        break;
       default:
         break;
     }
@@ -201,5 +209,37 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
     addComment(comment);
     super.stop();
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public MetaFile silaeExport(List<PayrollPreparation> payrollPreparationList)
+      throws IOException, AxelorException {
+
+    List<String[]> list = new ArrayList<>();
+
+    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+      payrollPreparation.addBatchListItem(batch);
+      payrollPreparationService.exportSilae(payrollPreparation, list);
+      total++;
+      incrementDone();
+    }
+
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
+    String filePath = AppSettings.get().get("file.upload.dir");
+
+    MetaFile metaFile = new MetaFile();
+    metaFile.setFileName(fileName);
+    metaFile.setFilePath(fileName);
+    metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
+
+    new File(filePath).mkdirs();
+    CsvTool.csvWriter(
+        filePath,
+        fileName,
+        ';',
+        payrollPreparationService.getPayrollPreparationSilaeExportHeader(),
+        list);
+
+    return metaFile;
   }
 }
