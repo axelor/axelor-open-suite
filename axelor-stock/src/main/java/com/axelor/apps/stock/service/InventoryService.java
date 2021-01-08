@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
@@ -58,7 +57,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -704,12 +702,10 @@ public class InventoryService {
           }
         });
 
-    String fileName = I18n.get("Inventory") + "_" + inventory.getInventorySeq() + ".csv";
-    String filePath = AppSettings.get().get("file.upload.dir");
-    Path path = Paths.get(filePath, fileName);
-    File file = path.toFile();
+    String fileName = I18n.get("Inventory") + "_" + inventory.getInventorySeq();
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    log.debug("File Located at: {}", path);
+    log.debug("File Located at: {}", file.getPath());
 
     String[] headers = {
       I18n.get("Product Name"),
@@ -722,10 +718,10 @@ public class InventoryService {
       I18n.get("Description"),
       I18n.get("Last Inventory date")
     };
-    CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
+    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
-      return Beans.get(MetaFiles.class).upload(is, fileName);
+      return Beans.get(MetaFiles.class).upload(is, file.getName());
     }
   }
 
