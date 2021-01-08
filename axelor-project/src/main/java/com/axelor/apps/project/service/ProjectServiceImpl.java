@@ -45,6 +45,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -149,18 +151,20 @@ public class ProjectServiceImpl implements ProjectService {
     projectRepository.save(project);
 
     Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
-    if (ObjectUtils.notEmpty(taskTemplateSet)) {
-      taskTemplateSet.forEach(template -> createTask(template, project));
+    if (ObjectUtils.isEmpty(taskTemplateSet)) {
+      return project;
     }
+    List<TaskTemplate> taskTemplateList = new ArrayList<>(taskTemplateSet);
+
+    Collections.sort(
+        taskTemplateList,
+        (taskTemplatet1, taskTemplate2) ->
+            taskTemplatet1.getParentTaskTemplate() == null || taskTemplate2 == null
+                ? 1
+                : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1);
+
+    taskTemplateList.forEach(taskTemplate -> createTask(taskTemplate, project, taskTemplateSet));
     return project;
-  }
-
-  public ProjectTask createTask(TaskTemplate taskTemplate, Project project) {
-    ProjectTask task =
-        projectTaskService.create(taskTemplate.getName(), project, taskTemplate.getAssignedTo());
-    task.setDescription(taskTemplate.getDescription());
-
-    return task;
   }
 
   @Override
