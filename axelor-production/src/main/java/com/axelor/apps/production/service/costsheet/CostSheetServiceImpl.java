@@ -457,9 +457,8 @@ public class CostSheetServiceImpl implements CostSheetService {
               .divide(
                   new BigDecimal(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN)
+                  RoundingMode.HALF_UP)
               .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
-      qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_EVEN);
       BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
