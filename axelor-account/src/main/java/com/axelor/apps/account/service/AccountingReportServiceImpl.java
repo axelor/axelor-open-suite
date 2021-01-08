@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -40,6 +39,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -526,13 +526,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   @Override
   public String getReportFileLink(AccountingReport accountingReport, String name)
       throws AxelorException {
-    String file;
+    String file = "";
     if (accountingReport.getReportType().getTemplate() != null) {
       file =
           String.format(
               "%s/%s",
-              AppSettings.get().getPath("file.upload.dir", ""),
+              AppService.getFileUploadDir(),
               accountingReport.getReportType().getTemplate().getFilePath());
+
     } else {
       file =
           String.format(

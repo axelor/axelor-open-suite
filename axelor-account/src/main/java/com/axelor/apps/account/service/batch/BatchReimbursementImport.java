@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -98,7 +99,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 
       try {
 
-        String dataImportDir = appBaseService.getFileUploadDir();
+        String dataImportDir = AppService.getFileUploadDir();
 
         String reimbursementImportFolderPathCFONB =
             accountConfig.getReimbursementImportFolderPathCFONB() == null

@@ -577,17 +577,4 @@ public class AppServiceImpl implements AppService {
         ? appSettingsPath + File.separator
         : appSettingsPath;
   }
-
-  @Override
-  public String getFileUploadDir() throws AxelorException {
-    String appSettingsPath = AppSettings.get().get("file.upload.dir");
-    if (appSettingsPath == null || appSettingsPath.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.FILE_UPLOAD_DIR_ERROR));
-    }
-    return !appSettingsPath.endsWith(File.separator)
-        ? appSettingsPath + File.separator
-        : appSettingsPath;
-  }
 }
