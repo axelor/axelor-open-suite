@@ -43,9 +43,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -387,5 +389,86 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     newBom.setFullName(name);
 
     return newBom;
+  }
+
+  @Transactional
+  @Override
+  public TempBomTree createProductBomTree(BillOfMaterial bom) {
+
+    Map<Long, List<Long[]>> newTempBomDetails = new HashMap<>();
+    List<BillOfMaterial> alreadyAddedBom = new ArrayList<>();
+
+    this.createTreeFromSubBom(bom, newTempBomDetails, alreadyAddedBom);
+
+    TempBomTree tempBomTree = this.generateTree(bom);
+
+    this.clearTempBoms(newTempBomDetails);
+
+    return tempBomTree;
+  }
+
+  public void createTreeFromSubBom(
+      BillOfMaterial bom,
+      Map<Long, List<Long[]>> newTempBomDetails,
+      List<BillOfMaterial> alreadyAddedBom) {
+
+    if (alreadyAddedBom.contains(bom)) {
+      return;
+    } else {
+      alreadyAddedBom.add(bom);
+    }
+
+    List<BillOfMaterial> childBillOfMaterialList = new ArrayList<>(bom.getBillOfMaterialSet());
+
+    for (BillOfMaterial childBillOfMaterial : childBillOfMaterialList) {
+
+      if (childBillOfMaterial.getProduct().getDefaultBillOfMaterial() != null
+          && !childBillOfMaterial.getDefineSubBillOfMaterial()) {
+
+        BillOfMaterial tempChildBillOfMaterial = billOfMaterialRepo.copy(childBillOfMaterial, true);
+        tempChildBillOfMaterial.setDefineSubBillOfMaterial(true);
+        tempChildBillOfMaterial.setBillOfMaterialSet(
+            new HashSet<>(
+                childBillOfMaterial
+                    .getProduct()
+                    .getDefaultBillOfMaterial()
+                    .getBillOfMaterialSet()));
+        billOfMaterialRepo.save(tempChildBillOfMaterial);
+        bom.getBillOfMaterialSet().add(tempChildBillOfMaterial);
+        bom.getBillOfMaterialSet().remove(childBillOfMaterial);
+        Long newOldBomIds[] = new Long[2];
+        newOldBomIds[0] = childBillOfMaterial.getId();
+        newOldBomIds[1] = tempChildBillOfMaterial.getId();
+
+        if (newTempBomDetails.get(bom.getId()) != null) {
+          newTempBomDetails.get(bom.getId()).add(newOldBomIds);
+        } else {
+          newTempBomDetails.put(bom.getId(), new ArrayList<>());
+          newTempBomDetails.get(bom.getId()).add(newOldBomIds);
+        }
+
+        this.createTreeFromSubBom(tempChildBillOfMaterial, newTempBomDetails, alreadyAddedBom);
+
+      } else if (childBillOfMaterial.getBillOfMaterialSet() != null
+          && !childBillOfMaterial.getBillOfMaterialSet().isEmpty()) {
+        this.createTreeFromSubBom(childBillOfMaterial, newTempBomDetails, alreadyAddedBom);
+      }
+    }
+  }
+
+  public void clearTempBoms(Map<Long, List<Long[]>> newTempBomDetails) {
+    for (Long parentBomId : newTempBomDetails.keySet()) {
+      BillOfMaterial parentBom = billOfMaterialRepo.find(parentBomId);
+
+      List<Long[]> childBomDetails = newTempBomDetails.get(parentBomId);
+      for (Long childList[] : childBomDetails) {
+        BillOfMaterial childBomAdd = billOfMaterialRepo.find(childList[0]);
+        BillOfMaterial childBomRemove = billOfMaterialRepo.find(childList[1]);
+        parentBom.addBillOfMaterialSetItem(childBomAdd);
+        parentBom.getBillOfMaterialSet().remove(childBomRemove);
+        billOfMaterialRepo.remove(childBomRemove);
+      }
+      billOfMaterialRepo.save(parentBom);
+    }
   }
 }

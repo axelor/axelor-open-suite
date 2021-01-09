@@ -66,4 +66,7 @@ public interface BillOfMaterialService {
 
   void addRawMaterials(long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException;
+
+  @Transactional
+  public TempBomTree createProductBomTree(BillOfMaterial bom);
 }
