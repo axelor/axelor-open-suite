@@ -1106,6 +1106,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           trackingNumber.setPerishableExpirationDate(
               LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
         }
+        if (trackingNumberItem.get("origin") != null) {
+          trackingNumber.setOrigin(trackingNumberItem.get("origin").toString());
+        }
+        if (trackingNumberItem.get("note") != null) {
+          trackingNumber.setNote(trackingNumberItem.get("note").toString());
+        }
         trackingNumber.setProduct(stockMoveLine.getProduct());
       }
 

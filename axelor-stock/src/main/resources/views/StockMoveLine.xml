@@ -356,6 +356,8 @@
 				<field name="counter" title="Quantity" readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
 				<field name="warrantyExpirationDate" title="Warranty expiration date" readonly="false"/>
 				<field name="perishableExpirationDate" title="Perishable expiration date" readonly="false"/>
+				<field name="origin" title="Origin"/>
+			    <field name="note" title="Note" colSpan="12"/>
 			</panel-related>
 			<button name="availableTranckingNumberBtn" title="Display available tracking numbers" onClick="action-stock-move-line-method-display-available-tracking-number" />
 			<button name="validateBtn" title="Validate" onClick="action-stock-move-line-method-update-lines"/>
