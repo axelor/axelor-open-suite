@@ -548,7 +548,8 @@ InvoiceSet.length > 0))"
 			</panel>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true" collapseIf="true">
 				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
-				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
+				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
+				<field name="paymentCondition.isFree" hidden="true"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" colSpan="12"/>
 			</panel>
 		</panel-stack>
@@ -655,7 +656,8 @@ InvoiceSet.length > 0))"
 			</panel>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
 				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" />
-				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date"/>
+				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
+				<field name="paymentCondition.isFree" hidden="true"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
 		</panel-stack>
