@@ -12,6 +12,7 @@
         <field name="warrantyExpirationDate"/>
         <field name="perishableExpirationDate"/>
         <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
+        <field name="origin"/>
     </grid>
     
     <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber"
@@ -22,6 +23,8 @@
 	        <field name="warrantyExpirationDate"/>
 	        <field name="perishableExpirationDate"/>
 	        <field name="counter"/>
+	        <field name="origin"/>
+			<field name="note" colSpan="12"/>
         </panel>
     </form>
 
@@ -33,6 +36,8 @@
 			<field name="warrantyExpirationDate" readonly="false"/>
 			<field name="perishableExpirationDate" readonly="false"/>
 			<field name="counter" hidden="true"/>
+			<field name="origin"/>
+			<field name="note" colSpan="12"/>
 		</panel>
 	</form>
 
