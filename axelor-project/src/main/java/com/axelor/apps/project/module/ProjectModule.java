@@ -27,6 +27,13 @@ import com.axelor.apps.project.db.repo.ProjectTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.db.repo.ResourceBookingRepository;
 import com.axelor.apps.project.db.repo.TeamProjectRepository;
+import com.axelor.apps.project.observer.ProjectActivityObserver;
+import com.axelor.apps.project.service.MetaJsonFieldProjectService;
+import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectActivityService;
+import com.axelor.apps.project.service.ProjectActivityServiceImpl;
+import com.axelor.apps.project.service.ProjectMenuService;
+import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -50,5 +57,9 @@ public class ProjectModule extends AxelorModule {
     bind(TeamRepository.class).to(TeamProjectRepository.class);
     bind(TimerProjectTaskService.class).to(TimerProjectTaskServiceImpl.class);
     bind(AbstractResourceBookingRepository.class).to(ResourceBookingRepository.class);
+    bind(ProjectActivityService.class).to(ProjectActivityServiceImpl.class);
+    bind(ProjectActivityObserver.class);
+    bind(MetaJsonFieldProjectService.class).to(MetaJsonFieldProjectServiceImpl.class);
+    bind(ProjectMenuService.class).to(ProjectMenuServiceImpl.class);
   }
 }
