@@ -405,6 +405,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     invoiceRepository.save(invoice);
     invoice = toPositivePriceInvoice(invoice);
+    if (invoice.getExTaxTotal().signum() == 0
+        && stockMoveList.stream().allMatch(StockMove::getIsReversion)) {
+      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+    }
     stockMoveList.forEach(invoice::addStockMoveSetItem);
     return Optional.of(invoice);
   }
@@ -494,6 +498,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     invoiceRepository.save(invoice);
     invoice = toPositivePriceInvoice(invoice);
+    if (invoice.getExTaxTotal().signum() == 0
+        && stockMoveList.stream().allMatch(StockMove::getIsReversion)) {
+      invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+    }
     stockMoveList.forEach(invoice::addStockMoveSetItem);
     return Optional.of(invoice);
   }
@@ -544,7 +552,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     refund.setTaxTotal(refund.getTaxTotal().negate());
     refund.setAmountRemaining(refund.getAmountRemaining().negate());
     refund.setCompanyTaxTotal(refund.getCompanyTaxTotal().negate());
-    refund.setPaymentMode(Beans.get(InvoiceToolService.class).getPaymentMode(refund));
+    refund.setPaymentMode(InvoiceToolService.getPaymentMode(refund));
     return invoiceRepository.save(refund);
   }
 
