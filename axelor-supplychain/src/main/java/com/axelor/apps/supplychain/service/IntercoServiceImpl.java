@@ -110,8 +110,6 @@ public class IntercoServiceImpl implements IntercoService {
 
     // copy delivery info
     saleOrder.setDeliveryDate(purchaseOrder.getDeliveryDate());
-    saleOrder.setShipmentMode(purchaseOrder.getShipmentMode());
-    saleOrder.setFreightCarrierMode(purchaseOrder.getFreightCarrierMode());
 
     // get stock location
     saleOrder.setStockLocation(
@@ -162,7 +160,6 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setOrderDate(saleOrder.getCreationDate());
     purchaseOrder.setPriceList(saleOrder.getPriceList());
-    purchaseOrder.setTradingName(saleOrder.getTradingName());
     purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
 
     purchaseOrder.setPrintingSettings(
@@ -170,7 +167,6 @@ public class IntercoServiceImpl implements IntercoService {
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(saleOrder.getCompany().getPartner());
-    purchaseOrder.setTradingName(saleOrder.getTradingName());
 
     // in ati
     purchaseOrder.setInAti(saleOrder.getInAti());
@@ -185,8 +181,6 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setStockLocation(
         Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(intercoCompany));
-    purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
-    purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 
     // copy timetable info
     purchaseOrder.setExpectedRealisationDate(saleOrder.getExpectedRealisationDate());

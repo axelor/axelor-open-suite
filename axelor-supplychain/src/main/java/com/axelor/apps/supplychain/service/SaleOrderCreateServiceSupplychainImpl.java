@@ -22,8 +22,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -63,9 +63,16 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
       AccountConfigService accountConfigService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      TradingNameService tradingNameService) {
 
-    super(partnerService, saleOrderRepo, appSaleService, saleOrderService, saleOrderComputeService);
+    super(
+        partnerService,
+        saleOrderRepo,
+        appSaleService,
+        saleOrderService,
+        saleOrderComputeService,
+        tradingNameService);
 
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
@@ -84,8 +91,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team,
-      TradingName tradingName)
+      Team team)
       throws AxelorException {
 
     if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
@@ -100,8 +106,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           orderDate,
           priceList,
           clientPartner,
-          team,
-          tradingName);
+          team);
     }
     return createSaleOrder(
         salespersonUser,
@@ -115,8 +120,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         orderDate,
         priceList,
         clientPartner,
-        team,
-        tradingName);
+        team);
   }
 
   public SaleOrder createSaleOrder(
@@ -131,8 +135,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team,
-      TradingName tradingName)
+      Team team)
       throws AxelorException {
 
     logger.debug(
@@ -153,8 +156,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             orderDate,
             priceList,
             clientPartner,
-            team,
-            tradingName);
+            team);
 
     if (stockLocation == null) {
       stockLocation = Beans.get(StockLocationService.class).getPickupDefaultStockLocation(company);
@@ -174,9 +176,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       saleOrder.setPaymentCondition(
           this.accountConfigService.getAccountConfig(company).getDefPaymentCondition());
     }
-
-    saleOrder.setShipmentMode(clientPartner.getShipmentMode());
-    saleOrder.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
 
     return saleOrder;
   }
@@ -221,8 +220,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             appBaseService.getTodayDate(company),
             priceList,
             clientPartner,
-            team,
-            null);
+            team);
 
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 

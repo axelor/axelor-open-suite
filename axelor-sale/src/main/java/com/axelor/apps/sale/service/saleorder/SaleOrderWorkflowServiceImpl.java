@@ -142,8 +142,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       }
     }
 
-    if (saleOrder.getVersionNumber() == 1
-        && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
+    if (sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
       saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
     }
 
@@ -225,9 +224,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       fileNamePrefix = "Sale order";
     }
 
-    return I18n.get(fileNamePrefix)
-        + " "
-        + saleOrder.getSaleOrderSeq()
-        + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");
+    return I18n.get(fileNamePrefix) + " " + saleOrder.getSaleOrderSeq();
   }
 }

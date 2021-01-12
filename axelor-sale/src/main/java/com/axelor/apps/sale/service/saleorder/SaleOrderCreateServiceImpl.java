@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -53,6 +52,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected AppSaleService appSaleService;
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
+  protected TradingNameService tradingNameService;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -60,13 +60,15 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       SaleOrderService saleOrderService,
-      SaleOrderComputeService saleOrderComputeService) {
+      SaleOrderComputeService saleOrderComputeService,
+      TradingNameService tradingNameService) {
 
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
+    this.tradingNameService = tradingNameService;
   }
 
   @Override
@@ -96,8 +98,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team,
-      TradingName tradingName)
+      Team team)
       throws AxelorException {
 
     logger.debug(
@@ -115,9 +116,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setDeliveryDate(deliveryDate);
     saleOrder.setOrderDate(orderDate);
 
-    saleOrder.setPrintingSettings(
-        Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
-
     if (salespersonUser == null) {
       salespersonUser = AuthUtils.getUser();
     }
@@ -132,6 +130,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       company = salespersonUser.getActiveCompany();
     }
     saleOrder.setCompany(company);
+    saleOrder.setPrintingSettings(tradingNameService.getDefaultPrintingSettings(null, company));
 
     saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
     saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));

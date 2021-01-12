@@ -153,7 +153,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     StockMove stockMove =
         this.createStockMove(saleOrder, saleOrder.getCompany(), estimatedDeliveryDate);
-    stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null) {
@@ -175,14 +174,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                     && stockMoveLine.getSaleOrderLine().getTypeSelect()
                         == SaleOrderLineRepository.TYPE_NORMAL)) {
       stockMove.setFullySpreadOverLogisticalFormsFlag(true);
-    }
-
-    boolean isNeedingConformityCertificate = saleOrder.getIsNeedingConformityCertificate();
-    stockMove.setIsNeedingConformityCertificate(isNeedingConformityCertificate);
-
-    if (isNeedingConformityCertificate) {
-      stockMove.setSignatoryUser(
-          stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
     }
 
     SupplyChainConfig supplychainConfig =
@@ -259,12 +250,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   public StockMove createStockMove(
       SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate)
       throws AxelorException {
-    StockLocation toStockLocation = saleOrder.getToStockLocation();
-    if (toStockLocation == null) {
-      toStockLocation =
-          partnerStockSettingsService.getDefaultExternalStockLocation(
-              saleOrder.getClientPartner(), company);
-    }
+    StockLocation toStockLocation =
+        partnerStockSettingsService.getDefaultExternalStockLocation(
+            saleOrder.getClientPartner(), company);
     if (toStockLocation == null) {
       toStockLocation =
           stockConfigService.getCustomerVirtualStockLocation(
@@ -282,11 +270,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             null,
             estimatedDeliveryDate,
             saleOrder.getDescription(),
-            saleOrder.getShipmentMode(),
-            saleOrder.getFreightCarrierMode(),
-            saleOrder.getCarrierPartner(),
-            saleOrder.getForwarderPartner(),
-            saleOrder.getIncoterm(),
+            null,
+            null,
+            null,
+            null,
+            null,
             StockMoveRepository.TYPE_OUTGOING);
 
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
@@ -294,7 +282,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_SALE_ORDER);
     stockMove.setOrigin(saleOrder.getSaleOrderSeq());
     stockMove.setStockMoveLineList(new ArrayList<>());
-    stockMove.setTradingName(saleOrder.getTradingName());
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
     stockMove.setNote(saleOrder.getDeliveryComments());
     stockMove.setPickingOrderComments(saleOrder.getPickingOrderComments());

@@ -19,7 +19,6 @@
 	  <field name="saleOrderSeq" width="120"/>
 	  <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 	  <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 	  <field name="externalReference"/>
 	  <field name="creationDate"/>
@@ -46,7 +45,6 @@
 		<field name="saleOrderSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="externalReference" />
 		<field name="confirmationDateTime" />
@@ -72,7 +70,6 @@
     </menubar>
 		<field name="saleOrderSeq" width="120" />
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
     <field name="exTaxTotal" aggregate="sum"/>
@@ -268,15 +265,11 @@
 	      </field>
 	  	</panel>
 	    <panel name="generalInfoPanel" colSpan="12">
-	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
-	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
-	      <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
-	      <field name="currency" required="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
-	      <field name="priceList" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" canEdit="false" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
+	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="4"/>
+	      <field name="currency" required="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="4"/>
+	      <field name="priceList" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" canEdit="false" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="4"/>
 	       <field name="clientPartner" required="true"  hideIf="company == null" readonlyIf="statusSelect > 1" onChange="action-sale-order-group-client-partner-change,action-sale-order-record-compute-end-of-validity-date" onSelect="action-sale-order-method-set-client-partner-domain" form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
 	      <field name="contactPartner" colSpan="3" hideIf="company == null" onChange="action-record-so-contact-partner-change" onSelect="action-sale-order-domain-on-contact-partner" domain="self.isContact = true" canEdit="false" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	      <field if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="versionNumber" colSpan="3"/>
-	      <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" colSpan="3" name="directOrderLocation" onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
 	      <panel name="otherInfoPanel" colSpan="3">
 	        <field name="inAti" hidden="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect &gt;= 2" onChange="action-sale-order-attrs-in-ati" widget="boolean-switch"/>
 	        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" hidden="true" colSpan="6" name="interco" widget="boolean-switch"/>
@@ -291,7 +284,7 @@
 	        </field>
 	      </panel>
 	      <panel name="deliveryAddressPanel" stacked="true">
-	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" canEdit="false" onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
+	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" canEdit="false" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	        <field name="deliveryAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.deliveryAddressStr}}]]></viewer>
 	        </field>
@@ -301,6 +294,7 @@
 	  </panel>
 	  <panel-tabs name="mainPanelTab" hideIf="clientPartner == null">
 	    <panel name="contentPanel" title="Content">
+          <button name="addPackBtn" title="Add a pack" onClick="save,action-sale-order-view-add-pack" if="__config__.app.getApp('sale')?.enablePackManagement" hideIf="clientPartner == null || [2,4,5].indexOf(statusSelect) != -1 || (statusSelect == 3 &amp;&amp; !orderBeingEdited)"/>
 	      <panel-related name="detailLinesPanel" canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" 
                      canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
                      title="Details Lines" readonlyIf="clientPartner == null" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true" height="30"/>
@@ -314,16 +308,7 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-				<field name="toStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true" form-view="stock-location-form" grid-view="stock-location-grid"/>
-				<field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
-	      <field name="deliveryCondition" colSpan="12"/>
-	      <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
-	      <field name="freightCarrierMode" canEdit="false" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
-	      <field name="carrierPartner" canEdit="false" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid"/>
-	      <field name="forwarderPartner" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-	      <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
-	      <field name="isNeedingConformityCertificate" colSpan="3"/>
-	      <field name="isIspmRequired" readonly="true" colSpan="3"/>
+		  <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
 	      <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
 	      <panel name="deliveryCommentsPanel" title="Comment to display on delivery" colSpan="12">
@@ -388,10 +373,8 @@
 	    <field name="attrs" colSpan="12"/>
 	  </panel>
 	  <panel name="actionsPanel" hideIf="clientPartner == null" sidebar="true" stacked="true">
-	    <button name="addPackBtn" title="Add a pack" onClick="save,action-sale-order-view-add-pack" if="__config__.app.getApp('sale')?.enablePackManagement" hideIf="clientPartner == null || [2,4,5].indexOf(statusSelect) != -1 || (statusSelect == 3 &amp;&amp; !orderBeingEdited)"/>
 	    <button name="finalizeBtn" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="action-group-sale-order-finalize-quotation"/>
 	    <button if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" name="completeManuallySaleOrderBtn" title="Complete manually sale order" showIf="statusSelect == 3" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
-	    <button if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="newVersionBtn" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
 	    <button if="__config__.app.getApp('sale').allowPendingOrderModification" name="editOrderBtn" title="Edit order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
 	    <button name="validateChangesBtn" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-group-sale-order-validate-changes"/>
 	    <button if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto" name="generateCustomerStockMoveBtn" title="Generate customer deliveries" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" readonlyIf="!saleOrderLineList || !saleOrderLineList.length" colSpan="12" onClick="save, action-supplychain-sale-order-create-stock-move"/>
@@ -755,7 +738,6 @@
 		<field name="amountInvoiced" />
         <field name="orderBeingEdited" />
         <field name="company"/>
-        <field name="tradingName"/>
         <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
@@ -800,8 +782,7 @@
 			  </div>
 			</div>
 			<div class="span12" style="margin-left:0px;">
-			  <span class="label label-default" ng-show="!record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
-			  <span class="label label-default" ng-show="record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ tradingName.name }}</span>
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
 			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
 			</div>
 		]]>
@@ -829,7 +810,6 @@
 		<field name="deliveryState"/>
 		<field name="amountInvoiced" />
 		<field name="company"/>
-		<field name="tradingName"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
 		<template><![CDATA[
 		    <div class="span12">
@@ -871,8 +851,7 @@
 			  </div>
 			</div>
 			<div class="span12" style="margin-left:0px;">
-			  <span class="label label-default" ng-show="!record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
-			  <span class="label label-default" ng-show="record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ tradingName.name }}</span>
+			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
 			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
 			</div>
 		]]>
@@ -915,14 +894,6 @@
 		<action name="action-sale-record-update-info-company"/>
         <action name="action-sale-order-record-compute-end-of-validity-date"/>
     </action-group>
-
-	<action-group name="action-sale-group-onchange-client-partner">
-		<action name="action-sale-order-record-partner"/>
-		<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-		<action name="action-partner-attrs-hide-contact-partner"/>
-		<action name="action-sale-order-method-fill-company-bank-details"/>
-		<action name="action-sale-method-printing-settings-default-values"/>
-	</action-group>
 
     <action-group name="action-group-sale-saleorder-onnew">
     	<action name="action-sale-order-record-default"/>
@@ -998,8 +969,6 @@
 		<action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-method-change-sale-order-line-tax" if="template"/>
 		<action name="action-sale-order-method-compute" if="template"/>
-		<action name="action-sale-order-attrs-set-is-ispm-required"
-				if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1097,12 +1066,6 @@
 	<action-method name="action-sale-order-method-notify-stock-move-created">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="notifyStockMoveCreated"/>
 	</action-method>
-	
-    <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="deliveryState" expr="eval: 1"/>
-    	<field name="versionNumber" expr="eval: versionNumber + 1"/>
-    </action-record>
 
     <action-view name="action-open-sale-order-merge-form" title="Merge sale orders" model="com.axelor.apps.base.db.Wizard">
 	    <view type="form" name="sale-order-merge-form"/>
@@ -1173,7 +1136,6 @@
 		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(clientPartner)" if="clientPartner != null"/>
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 		<field name="companyBankDetails" expr="call: com.axelor.apps.account.service.AccountingSituationService:getCompanySalesBankDetails(company, clientPartner)"/>
-			<field name="isNeedingConformityCertificate" expr="eval: clientPartner?.isNeedingConformityCertificate"/>
 		<field name="salespersonUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
 		<field name="salespersonUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
 		<field name="invoiceComments" expr="eval: clientPartner?.invoiceComments"/>
@@ -1233,9 +1195,7 @@
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
 		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="saleOrderTypeSelect" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder())"/>
-		<field name="versionNumber" hidden="true" if="!__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
 		<field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
         <field name="toInvoiceViaTask" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
         <field name="timetableTemplate" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
@@ -1251,22 +1211,12 @@
 	    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 	    <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
 	    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-		<field name="toStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="deliveryState" hidden="true" if="!__config__.app.isApp('supplychain')" />
-		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')" />
 		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 	    <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 	    <field name="specificPackage" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 	    <field name="deliveryDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-	    <field name="deliveryCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-	    <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-	    <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-	    <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-	    <field name="forwarderPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-	    <field name="incoterm" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-	    <field name="isNeedingConformityCertificate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-	    <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 	    <field name="deliveryComments" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 	    <field name="pickingOrderComments" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 	    <field name="productionNote" hidden="true" if="!__config__.app.isApp('production')"/>
@@ -1418,18 +1368,12 @@
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="filterPrintingSettings"/>
 	</action-method>
 
-	<action-method name="action-sale-method-printing-settings-default-values">
-		<call class="com.axelor.apps.sale.web.SaleOrderController" method="fillDefaultPrintingSettings"/>
-	</action-method>
-
 	<action-validate name="action-sale-order-validate-check-on-confirm">
 		<alert message="The total amount of quotation is zero. Do you want to proceed ?" if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
 	</action-validate>
 
 	<action-record name="action-sale-record-update-info-company" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
-		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
         <field name="creationDate" expr="eval:__config__.app.getTodayDate(company)" if="company"/>
 	</action-record>
 

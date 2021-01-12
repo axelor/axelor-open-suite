@@ -613,8 +613,7 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       List<PrintingSettings> printingSettingsList =
-          Beans.get(TradingNameService.class)
-              .getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
+          Beans.get(TradingNameService.class).getPrintingSettingsList(null, saleOrder.getCompany());
       String domain =
           String.format(
               "self.id IN (%s)",
@@ -622,24 +621,6 @@ public class SaleOrderController {
                   ? StringTool.getIdListString(printingSettingsList)
                   : "0");
       response.setAttr("printingSettings", "domain", domain);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Called on trading name change. Set the default value for {@link SaleOrder#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void fillDefaultPrintingSettings(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      response.setValue(
-          "printingSettings",
-          Beans.get(TradingNameService.class)
-              .getDefaultPrintingSettings(saleOrder.getTradingName(), saleOrder.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

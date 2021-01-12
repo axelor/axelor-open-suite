@@ -177,11 +177,9 @@ public class SaleOrderController {
 
         Partner supplierPartner = null;
         List<Long> saleOrderLineIdSelected = new ArrayList<>();
-        Boolean isDirectOrderLocation = false;
         Map<String, Object> values = getSelectedId(request, response, saleOrder);
         supplierPartner = (Partner) values.get("supplierPartner");
         saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
-        isDirectOrderLocation = (Boolean) values.get("isDirectOrderLocation");
 
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
@@ -234,9 +232,7 @@ public class SaleOrderController {
                   .context("_showRecord", String.valueOf(purchaseOrder.getId()))
                   .map());
 
-          if (isDirectOrderLocation == false) {
-            response.setCanClose(true);
-          }
+          response.setCanClose(true);
         }
       }
     } catch (Exception e) {
@@ -250,10 +246,8 @@ public class SaleOrderController {
     Partner supplierPartner = null;
     List<Long> saleOrderLineIdSelected = new ArrayList<>();
     Map<String, Object> values = new HashMap<String, Object>();
-    Boolean isDirectOrderLocation = false;
 
-    if (saleOrder.getDirectOrderLocation()
-        && saleOrder.getStockLocation() != null
+    if (saleOrder.getStockLocation() != null
         && saleOrder.getStockLocation().getPartner() != null
         && saleOrder.getStockLocation().getPartner().getIsSupplier()) {
       values.put("supplierPartner", saleOrder.getStockLocation().getPartner());
@@ -264,8 +258,6 @@ public class SaleOrderController {
         }
       }
       values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
-      isDirectOrderLocation = true;
-      values.put("isDirectOrderLocation", isDirectOrderLocation);
 
       if (saleOrderLineIdSelected.isEmpty()) {
         throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
@@ -286,7 +278,6 @@ public class SaleOrderController {
         saleOrderLineIdSelected.add(new Long(saleOrderId));
       }
       values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
-      values.put("isDirectOrderLocation", isDirectOrderLocation);
     }
 
     return values;

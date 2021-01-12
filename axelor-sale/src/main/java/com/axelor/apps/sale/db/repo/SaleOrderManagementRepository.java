@@ -50,7 +50,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setConfirmedByUser(null);
     copy.setOrderDate(null);
     copy.setOrderNumber(null);
-    copy.setVersionNumber(1);
     copy.setTotalCostPrice(null);
     copy.setTotalGrossMargin(null);
     copy.setMarginRate(null);

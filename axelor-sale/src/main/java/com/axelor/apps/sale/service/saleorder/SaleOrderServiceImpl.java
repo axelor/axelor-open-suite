@@ -32,7 +32,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
@@ -85,13 +84,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
       prefixFileName = I18n.get("Sale quotation");
     }
-    return prefixFileName
-        + " "
-        + saleOrder.getSaleOrderSeq()
-        + ((Beans.get(AppSaleService.class).getAppSale().getManageSaleOrderVersion()
-                && saleOrder.getVersionNumber() > 1)
-            ? "-V" + saleOrder.getVersionNumber()
-            : "");
+    return prefixFileName + " " + saleOrder.getSaleOrderSeq();
   }
 
   @Override

@@ -573,7 +573,6 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setCurrency(saleOrder.getCurrency());
       dummyInvoice.setPartner(saleOrder.getClientPartner());
       dummyInvoice.setCompany(saleOrder.getCompany());
-      dummyInvoice.setTradingName(saleOrder.getTradingName());
       dummyInvoice.setPaymentCondition(saleOrder.getPaymentCondition());
       dummyInvoice.setPaymentMode(saleOrder.getPaymentMode());
       dummyInvoice.setAddress(saleOrder.getMainInvoicingAddress());
