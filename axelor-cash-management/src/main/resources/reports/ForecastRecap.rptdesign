@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1424,7 +1424,7 @@ where ForecastRecap.id = ?
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">['ForecastOpportunitiesType.no','ForecastOpportunitiesType.base','ForecastOpportunitiesType.worst','ForecastOpportunitiesType.best'][row["opportunitiestypeselect"]-1]</value>
+                                    <value type="javascript">['ForecastOpportunitiesType.no','ForecastOpportunitiesType.base'][row["opportunitiestypeselect"]-1]</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2791,7 +2791,7 @@ else -row[&quot;sum&quot;]</Definition>
                         </list-property>
                         <column id="5408"/>
                         <column id="5409"/>
-                        <column id="5426"/>
+                        <column id="5431"/>
                         <column id="5410"/>
                         <column id="5411"/>
                         <column id="5412"/>
@@ -2871,7 +2871,7 @@ else -row[&quot;sum&quot;]</Definition>
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5423">
+                                <cell id="5432">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3077,7 +3077,7 @@ else -row[&quot;sum&quot;]</Definition>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5424">
+                                <cell id="5433">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3169,7 +3169,7 @@ else -row[&quot;sum&quot;]</Definition>
                             <row id="5402">
                                 <cell id="5403"/>
                                 <cell id="5404"/>
-                                <cell id="5425"/>
+                                <cell id="5434"/>
                                 <cell id="5405"/>
                                 <cell id="5406"/>
                                 <cell id="5407"/>
