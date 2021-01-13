@@ -31,6 +31,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -55,11 +56,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected PartnerService partnerService;
   protected AddressService addressService;
   protected AppBusinessProjectService appBusinessProjectService;
+  protected ProjectTemplateRepository projTemplateRepo;
 
   @Inject
   public ProjectBusinessServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
+      ProjectTemplateRepository projTemplateRepo,
       AppProjectService appProjectService,
       PartnerService partnerService,
       AddressService addressService,
@@ -68,6 +71,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.projTemplateRepo = projTemplateRepo;
   }
 
   @Override
@@ -251,6 +255,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       throws AxelorException {
     if (appBusinessProjectService.getAppBusinessProject().getGenerateProjectSequence()
         && !projectTemplate.getIsBusinessProject()) {
+      projectTemplate = projTemplateRepo.find(projectTemplate.getId());
       Project project =
           Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
       return ActionView.define(I18n.get("Project"))
