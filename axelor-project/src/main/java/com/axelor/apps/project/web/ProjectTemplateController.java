@@ -50,6 +50,7 @@ public class ProjectTemplateController {
 
       Project project;
       try {
+        projectTemplate = Beans.get(ProjectTemplateRepository.class).find(projectTemplate.getId());
         project =
             Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
         response.setView(
