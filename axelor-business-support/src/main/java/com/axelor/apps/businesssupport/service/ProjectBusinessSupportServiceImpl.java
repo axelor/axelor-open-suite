@@ -26,6 +26,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.google.inject.Inject;
 
@@ -35,6 +36,7 @@ public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImp
   public ProjectBusinessSupportServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
+      ProjectTemplateRepository projTemplateRepo,
       AppProjectService appProjectService,
       PartnerService partnerService,
       AddressService addressService,
@@ -42,6 +44,7 @@ public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImp
     super(
         projectRepository,
         projectStatusRepository,
+        projTemplateRepo,
         appProjectService,
         partnerService,
         addressService,
