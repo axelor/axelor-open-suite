@@ -21,6 +21,8 @@
 			<field name="company" required="true"/>
 		</panel>
 		<panel name="overridePanel" title="Company-specific information">
+			<field name="sellable"/>
+			<field name="purchasable"/>
 			<field name="procurementMethodSelect"/>
 			<spacer/>	
 			<field name="salePrice"/>
