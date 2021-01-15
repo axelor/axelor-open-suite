@@ -1,4 +1,38 @@
 # Changelog
+## [5.2.17] - 2021-01-15
+## Improvements
+* Accounting report: improved and change VAT logic in vat reports, now collected vat and deductible vat depend of the invoice or the return and not only from the move.
+* ACCOUNTING MOVE: change the debit and credit field positions in total calculation form view.
+* SALE ORDER: Make visible some fields on sale order finished in date panel.
+
+## Bug Fixes
+* Timesheet, Expense: Fix filter after clicking "Show timesheets/expenses to be validated".
+* Fix Employees and expenses issues.
+  - On kilometric log, the total distance travelled is now updated only if the expense line is added.
+  - The kilometric log now has an unique constraint on employee and year.
+  - Error message when missing year has been improved to display the year's type.
+* Reconcile Group: add missing translation.
+* Demo data: fix ICalendar permission that were not working.
+* Invoice: Set due date readonly when selected payment condition is not free.
+* ADVANCED EXPORT: Extended selections are not exported.
+* TEAMTASK: Fix type default value.
+* Inventory: Add missing fields in demo data.
+* PARTNER: corrected "employee field doesn't exist" after loading a partner if human-resource module is not installed.
+* Partner: Hide the generate project button in partner contact form view.
+* YEAR: corrected sql error and hibernate error when closing a fiscal year.
+* Copy analytic move lines when generating invoice from sale order and purchase order.
+* Inventory: Add missing translations, fix header display and add inventory sequence on each report page.
+* Stock Move Line: fixed conversion issue when changing values in editable-grid and form view.
+* EMPLOYMENT CONTRACT: fixed EmploymentContractTemplate doesn't exist error when printing.
+* Manuf Order: fix operation order name.
+
+Fix issue where the operation order name starts with null when generated from a production order.
+Update operation order name with manufacturing order sequence when the manufacturing order is planned.
+
+* AppCrm: Change french translation of the configuration to display customer description in opportunity.
+* LogisticalFormLine: Fix stock move line domain.
+* Leave request: manage the case of multiple leave requests for a single day.
+
 ## [5.2.16] - 2020-10-08
 ## Improvements
 - Declaration Of Exchanges: corrected wrong translation for product type.
@@ -722,6 +756,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[5.2.17]: https://github.com/axelor/axelor-open-suite/compare/v5.2.16...v5.2.17
 [5.2.16]: https://github.com/axelor/axelor-open-suite/compare/v5.2.15...v5.2.16
 [5.2.15]: https://github.com/axelor/axelor-open-suite/compare/v5.2.14...v5.2.15
 [5.2.14]: https://github.com/axelor/axelor-open-suite/compare/v5.2.13...v5.2.14
