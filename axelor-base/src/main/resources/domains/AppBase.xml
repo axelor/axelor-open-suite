@@ -80,7 +80,7 @@
 
 		<many-to-many name="companySpecificProductFieldsSet" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
 
-	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
+	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase"/>
 
 	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template for notifications" ref="com.axelor.apps.message.db.Template"/>
 
