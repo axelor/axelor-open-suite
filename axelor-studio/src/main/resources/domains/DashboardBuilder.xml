@@ -11,7 +11,7 @@
     <string name="model" title="Model" />
     <one-to-many name="dashletBuilderList" ref="com.axelor.studio.db.DashletBuilder" mappedBy="dashboardBuilder" orderBy="sequence"/>
     <many-to-one name="metaViewGenerated" title="View generated" ref="com.axelor.meta.db.MetaView" />
-    <one-to-many name="generatedActions" ref="com.axelor.meta.db.MetaAction" title="Generated Actions" orphanRemoval="true" />
+    <one-to-many name="generatedActions" ref="com.axelor.meta.db.MetaAction" title="Generated Actions"/>
   	<many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
   </entity>
     

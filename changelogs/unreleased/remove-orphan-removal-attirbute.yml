@@ -1,0 +1,3 @@
+---
+title: "Remove orphanRemoval=true attribute for o2m fields"
+type: fix
