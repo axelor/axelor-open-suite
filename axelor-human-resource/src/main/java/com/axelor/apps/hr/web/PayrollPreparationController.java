@@ -92,7 +92,8 @@ public class PayrollPreparationController {
 
     String file = payrollPreparationService.exportPayrollPreparation(payrollPreparation);
     if (file != null) {
-      response.setExportFile(file);
+      String[] filePath = file.split("/");
+      response.setExportFile(filePath[filePath.length - 1]);
     }
     payrollPreparationService.closePayPeriodIfExported(payrollPreparation);
 
