@@ -12,13 +12,9 @@
   			<![CDATA[
 	    	SELECT    
 				COUNT(self.id) AS _passed,
-				_team.name AS _team_name,
 				_meta._select_title AS _status
 			FROM
 				quality_control_point AS self
-			LEFT JOIN
-				team_team AS _team
-				ON self.team = _team.id
 						
 			JOIN
 				(SELECT 
@@ -34,21 +30,15 @@
 			ON
 				_meta._select_value = self.status_select
 			WHERE
-				(
-					self.status_select = 2 
-					OR
-					self.status_select = 3
-				)
-			AND
 				DATE(self.created_on) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)	
 			GROUP BY
-				_team_name, _status
+				_status
 			ORDER BY
-				_team_name, _passed ASC
+			   _passed ASC
     		]]>
     	</dataset>
-  		<category key="_team_name" type="text" title="Team"/>
-  		<series key="_passed" type="bar" groupBy="_status" title="Result" />
+      <category key="_status" type="text" title="Status"/>
+      <series key="_passed" type="bar" title="Result" />
 	</chart>
 
 	<chart onInit="action.quality.chart.set.date" name="chart.quality.controls.total.numbers" title="Number of quality controls">
