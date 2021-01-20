@@ -79,7 +79,6 @@
 		<panel name="productPanel" showIf="typeSelect == 1">
 			<field name="productName" colSpan="9" title="Title"/>
 			<field name="typeSelect" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
-            <field name="qty"/>
 			<field name="isShowTotal" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3"/>
 			<field name="isHideUnitAmounts" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3"/>
 		</panel>
