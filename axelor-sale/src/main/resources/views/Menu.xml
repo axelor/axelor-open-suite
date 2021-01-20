@@ -320,16 +320,6 @@
     	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>	
 	
-	<menuitem name="menu-sale-dashboard-1" parent="sc-root-sale-report"  
-		title="Sales Details"  action="sale.dashboard.1" />	
-		
-	<action-view name="sale.dashboard.1" title="Sales Details">
-		<view type="dashboard" name="sale.dashboard.view.1" />	 
-		<context name="_user" expr="eval:__user__"/>
-    	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
-	</action-view>
-	
 	<menuitem name="menu-sale-dashboard-2" parent="sc-root-sale-report"  
 		title="Turnover Study"  action="sale.dashboard.2" />	
 		
