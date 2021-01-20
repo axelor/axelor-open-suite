@@ -1,0 +1,5 @@
+---
+title: "ACCOUNT REVERSE MOVE : Analytic movelines"
+type: fix
+description : |
+  Manage reference of analytic move lines in reverse movelines.
