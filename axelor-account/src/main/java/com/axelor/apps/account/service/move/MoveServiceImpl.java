@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -484,7 +485,10 @@ public class MoveServiceImpl implements MoveService {
                     newMoveLine.getDebit().add(newMoveLine.getCredit()),
                     AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
                     move.getDate());
-        newMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
+        if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
+          analyticMoveLineList.forEach(
+              analyticMoveLine -> newMoveLine.addAnalyticMoveLineListItem(analyticMoveLine));
+        }
       }
 
       newMove.addMoveLineListItem(newMoveLine);
