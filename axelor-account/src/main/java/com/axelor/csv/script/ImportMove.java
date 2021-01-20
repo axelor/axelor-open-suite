@@ -38,12 +38,12 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
-import javax.transaction.Transactional;
 
 public class ImportMove {
 
@@ -51,7 +51,7 @@ public class ImportMove {
   @Inject private MoveLineRepository moveLineRepo;
   @Inject private MoveValidateService moveValidateService;
 
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
