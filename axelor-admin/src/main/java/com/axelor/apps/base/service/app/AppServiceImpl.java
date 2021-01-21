@@ -473,14 +473,9 @@ public class AppServiceImpl implements AppService {
   }
 
   private void copyStream(InputStream stream, File file) throws IOException {
-
     if (stream != null) {
-      FileOutputStream out = new FileOutputStream(file);
-      try {
+      try (FileOutputStream out = new FileOutputStream(file)) {
         ByteStreams.copy(stream, out);
-        out.close();
-      } finally {
-        out.close();
       }
     }
   }
