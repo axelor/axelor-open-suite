@@ -49,7 +49,6 @@
 		<dashlet action="dashlet.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<dashlet action="dashlet.sales.turnover.ytd.vs.past.year" height="350"/>  	
 		<dashlet action="dashlet.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
-		<dashlet action="dashlet.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
 		<dashlet action="dashlet.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
 		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team" height="350"/>
 		<dashlet action="dashlet.sales.manager.dashboard.sales.distribution.per.family" height="350" />
@@ -57,9 +56,6 @@
 		<dashlet action="dashlet.sales.manager.dashboard.sales.per.country" height="350" />
 		<dashlet action="dashlet.turnover.sales.by.month.by.category" height="350" />    
    	    <dashlet action="dashlet.units.sold.on.cust.sales.by.category" height="350" />
-   	    <dashlet action="dashlet.stockMove.nbr.delivery.by.country" height="350" if-module="axelor-stock"  if="__config__.app.isApp('stock')" />
-   	    <dashlet action="dashlet.stockMoveLine.product.delivery.by.country" height="350" if-module="axelor-stock" if="__config__.app.isApp('stock')" />
-   	    <dashlet action="dashlet.stockMoveLine.product.delivery.by.country.by.family" height="350" if-module="axelor-stock" if="__config__.app.isApp('stock')" />
    	    <dashlet action="dashlet.stockMove.deliveries.time.delay.in.nbr" height="350" if-module="axelor-stock" if="__config__.app.isApp('stock')" />
    	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350" if-module="axelor-stock" if="__config__.app.isApp('stock')" />
 	</dashboard>
@@ -104,7 +100,7 @@
 
 	</action-view>
 	
-	<action-view name="dashlet.sales.manager.dashboard.sales.orders.per.salesman" title="Sales Orders per salesman">
+	<action-view name="dashlet.sales.manager.dashboard.sales.orders.per.salesman" title="Total order amount per salesman">
 	  <view type="chart" name="chart.sale.manager.dashboard.sales.orders.per.saleman"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
