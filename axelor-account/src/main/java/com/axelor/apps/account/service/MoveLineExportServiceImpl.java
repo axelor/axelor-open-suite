@@ -537,8 +537,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<>();
-    allDates = dateQuery.getResultList();
+    List<LocalDate> allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
@@ -728,8 +727,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<>();
-    allDates = dateQuery.getResultList();
+    List<LocalDate> allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
@@ -918,8 +916,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<>();
-    allDates = dateQuery.getResultList();
+    List<LocalDate> allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
@@ -1331,8 +1328,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + moveLineQueryStr
                     + " group by self.date ORDER BY self.date");
 
-    List<LocalDate> dates = new ArrayList<>();
-    dates = queryDate.getResultList();
+    List<LocalDate> dates = queryDate.getResultList();
 
     log.debug("dates : {}", dates);
 
@@ -1348,8 +1344,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + localDate.toString()
                       + "'"
                       + moveLineQueryStr);
-      List<String> exportRefs = new ArrayList<>();
-      exportRefs = queryExportRef.getResultList();
+      List<String> exportRefs = queryExportRef.getResultList();
       for (String exportRef : exportRefs) {
 
         if (exportRef != null && !exportRef.isEmpty()) {
@@ -1368,8 +1363,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                           + moveLineQueryStr
                           + " group by self.account.id");
 
-          List<Long> accountIds = new ArrayList<>();
-          accountIds = query.getResultList();
+          List<Long> accountIds = query.getResultList();
 
           log.debug("accountIds : {}", accountIds);
 
