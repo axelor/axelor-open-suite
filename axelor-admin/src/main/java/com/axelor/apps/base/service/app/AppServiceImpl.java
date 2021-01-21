@@ -219,7 +219,6 @@ public class AppServiceImpl implements AppService {
           break;
         }
       }
-      scanner.close();
 
       if (importer != null) {
         importer.run();
