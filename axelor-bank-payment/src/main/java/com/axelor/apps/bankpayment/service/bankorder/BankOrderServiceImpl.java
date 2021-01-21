@@ -819,13 +819,11 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public ActionViewBuilder buildBankOrderLineView(
       String gridViewName, String formViewName, String viewDomain) {
-    ActionViewBuilder actionViewBuilder =
-        ActionView.define(I18n.get("Bank Order Lines"))
-            .model(BankOrderLine.class.getName())
-            .add("grid", gridViewName)
-            .add("form", formViewName)
-            .domain(viewDomain);
-    return actionViewBuilder;
+    return ActionView.define(I18n.get("Bank Order Lines"))
+        .model(BankOrderLine.class.getName())
+        .add("grid", gridViewName)
+        .add("form", formViewName)
+        .domain(viewDomain);
   }
 
   @Transactional
