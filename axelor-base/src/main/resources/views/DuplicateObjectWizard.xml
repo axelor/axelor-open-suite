@@ -64,7 +64,7 @@
 	</action-validate>
 	
 	<action-validate name="action-validate-replace-object-message">
-		<alert message="Are you sure wants to replace ?"  />
+		<alert message="Are you sure to replace ?"  />
 	</action-validate>
 	
 </object-views>
