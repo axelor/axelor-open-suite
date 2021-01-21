@@ -351,7 +351,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     log.debug("allDates : {}", allDates);
 
-    List<String[]> allMoveData = new ArrayList<String[]>();
+    List<String[]> allMoveData = new ArrayList<>();
     String companyCode = "";
 
     String reference = "";
@@ -400,7 +400,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .fetch();
 
       if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<Journal>();
+        journalList = new ArrayList<>();
         journalList.add(accountingReport.getJournal());
       }
 
@@ -537,12 +537,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<LocalDate>();
+    List<LocalDate> allDates = new ArrayList<>();
     allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
-    List<String[]> allMoveData = new ArrayList<String[]>();
+    List<String[]> allMoveData = new ArrayList<>();
     String companyCode = "";
 
     String reference = "";
@@ -592,7 +592,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .fetch();
 
       if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<Journal>();
+        journalList = new ArrayList<>();
         journalList.add(accountingReport.getJournal());
       }
 
@@ -728,12 +728,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<LocalDate>();
+    List<LocalDate> allDates = new ArrayList<>();
     allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
-    List<String[]> allMoveData = new ArrayList<String[]>();
+    List<String[]> allMoveData = new ArrayList<>();
     String companyCode = "";
 
     String reference = "";
@@ -782,7 +782,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .fetch();
 
       if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<Journal>();
+        journalList = new ArrayList<>();
         journalList.add(accountingReport.getJournal());
       }
 
@@ -918,12 +918,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + dateQueryStr
                     + "group by self.date order by self.date");
 
-    List<LocalDate> allDates = new ArrayList<LocalDate>();
+    List<LocalDate> allDates = new ArrayList<>();
     allDates = dateQuery.getResultList();
 
     log.debug("allDates : {}", allDates);
 
-    List<String[]> allMoveData = new ArrayList<String[]>();
+    List<String[]> allMoveData = new ArrayList<>();
     String companyCode = "";
 
     String reference = "";
@@ -972,7 +972,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .fetch();
 
       if (accountingReport.getJournal() != null) {
-        journalList = new ArrayList<Journal>();
+        journalList = new ArrayList<>();
         journalList.add(accountingReport.getJournal());
       }
 
@@ -1331,12 +1331,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     + moveLineQueryStr
                     + " group by self.date ORDER BY self.date");
 
-    List<LocalDate> dates = new ArrayList<LocalDate>();
+    List<LocalDate> dates = new ArrayList<>();
     dates = queryDate.getResultList();
 
     log.debug("dates : {}", dates);
 
-    List<String[]> allMoveLineData = new ArrayList<String[]>();
+    List<String[]> allMoveLineData = new ArrayList<>();
 
     for (LocalDate localDate : dates) {
 
@@ -1348,7 +1348,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + localDate.toString()
                       + "'"
                       + moveLineQueryStr);
-      List<String> exportRefs = new ArrayList<String>();
+      List<String> exportRefs = new ArrayList<>();
       exportRefs = queryExportRef.getResultList();
       for (String exportRef : exportRefs) {
 
@@ -1368,7 +1368,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                           + moveLineQueryStr
                           + " group by self.account.id");
 
-          List<Long> accountIds = new ArrayList<Long>();
+          List<Long> accountIds = new ArrayList<>();
           accountIds = query.getResultList();
 
           log.debug("accountIds : {}", accountIds);
@@ -1506,9 +1506,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @return
    */
   public List<MoveLine> sortMoveLineByDebitCredit(List<MoveLine> moveLineList) {
-    List<MoveLine> sortMoveLineList = new ArrayList<MoveLine>();
-    List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
-    List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
+    List<MoveLine> sortMoveLineList = new ArrayList<>();
+    List<MoveLine> debitMoveLineList = new ArrayList<>();
+    List<MoveLine> creditMoveLineList = new ArrayList<>();
     for (MoveLine moveLine : moveLineList) {
       if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
         debitMoveLineList.add(moveLine);
