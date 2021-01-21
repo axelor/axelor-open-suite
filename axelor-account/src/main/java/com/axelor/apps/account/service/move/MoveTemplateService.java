@@ -310,7 +310,7 @@ public class MoveTemplateService {
       }
     }
 
-    LOG.debug("Debit percent: {}, Credit percent: {}", new Object[] {debitPercent, creditPercent});
+    LOG.debug("Debit percent: {}, Credit percent: {}", debitPercent, creditPercent);
     if (debitPercent.compareTo(BigDecimal.ZERO) != 0
         && creditPercent.compareTo(BigDecimal.ZERO) != 0
         && debitPercent.compareTo(creditPercent) == 0) {
@@ -329,7 +329,7 @@ public class MoveTemplateService {
       credit = credit.add(line.getCredit());
     }
 
-    LOG.debug("Debit : {}, Credit : {}", new Object[] {debit, credit});
+    LOG.debug("Debit : {}, Credit : {}", debit, credit);
     if (debit.compareTo(BigDecimal.ZERO) != 0
         && credit.compareTo(BigDecimal.ZERO) != 0
         && debit.compareTo(credit) == 0) {
