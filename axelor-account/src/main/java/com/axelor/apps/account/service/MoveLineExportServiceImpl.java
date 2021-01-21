@@ -1596,7 +1596,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 + "Période de l'écriture;";
         return header.split(";");
       default:
-        return null;
+        return new String[0];
     }
   }
 

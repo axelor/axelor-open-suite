@@ -33,6 +33,7 @@ import com.axelor.rpc.filter.Filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -123,8 +124,7 @@ public class DuplicateObjectsService {
     Query originalObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id = :ids");
     originalObj.setParameter("ids", selectedIds.get(0));
-    Object originalObjct = originalObj.getSingleResult();
-    return originalObjct;
+    return originalObj.getSingleResult();
   }
 
   @Transactional
@@ -162,8 +162,7 @@ public class DuplicateObjectsService {
                       + " self WHERE self.id = :id");
     }
     selectedObj.setParameter("id", id);
-    Object selectedObject = selectedObj.getSingleResult();
-    return selectedObject;
+    return selectedObj.getSingleResult();
   }
 
   public Filter getJpaSecurityFilter(Class<? extends Model> beanClass) {
@@ -180,7 +179,7 @@ public class DuplicateObjectsService {
       Set<String> fieldSet, Class<? extends Model> modelClass, String filter)
       throws AxelorException {
     if (fieldSet == null || fieldSet.isEmpty()) {
-      return null;
+      return Collections.emptyList();
     }
 
     String concatedFields = concatFields(modelClass, fieldSet);
@@ -273,7 +272,6 @@ public class DuplicateObjectsService {
     }
 
     String query = queryBuilder.toString();
-    ;
 
     log.debug("Final query prepared: {}", query);
 
