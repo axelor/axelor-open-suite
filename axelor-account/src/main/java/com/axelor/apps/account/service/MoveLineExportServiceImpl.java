@@ -418,7 +418,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
         String journalCode = journal.getExportCode();
 
-        if (moveList.size() > 0) {
+        if (!moveList.isEmpty()) {
 
           BigDecimal sumDebit =
               this.getSumDebit(
@@ -610,7 +610,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
         String journalCode = journal.getExportCode();
 
-        if (moveList.size() > 0) {
+        if (!moveList.isEmpty()) {
 
           BigDecimal sumCredit =
               this.getSumCredit(
@@ -800,7 +800,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
         String journalCode = journal.getExportCode();
 
-        if (moveList.size() > 0) {
+        if (!moveList.isEmpty()) {
 
           long moveLineListSize =
               moveLineRepo
@@ -1007,7 +1007,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                         moveList)
                     .fetch();
 
-            if (moveLineList.size() > 0) {
+            if (!moveLineList.isEmpty()) {
 
               String exportNumber = this.getPurchaseExportNumber(company);
 
@@ -1391,7 +1391,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
               log.debug("movelines  : {} ", moveLines);
 
-              if (moveLines.size() > 0) {
+              if (!moveLines.isEmpty()) {
 
                 List<MoveLine> moveLineList = moveLineService.consolidateMoveLines(moveLines);
 
