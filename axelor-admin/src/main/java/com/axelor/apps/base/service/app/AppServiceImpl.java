@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class AppServiceImpl implements AppService {
 
-  private final Logger log = LoggerFactory.getLogger(AppService.class);
+  private final Logger log = LoggerFactory.getLogger(AppServiceImpl.class);
 
   private static final String DIR_DEMO = "demo";
 
