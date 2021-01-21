@@ -165,10 +165,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
     for (com.axelor.apps.bankpayment.db.EbicsPartnerService ebicsPartnerService :
         ebicsPartnerServiceSet) {
       allowOrderCurrDiffFromBankDetails =
-          allowOrderCurrDiffFromBankDetails
-              || ebicsPartnerService
-                  .getBankOrderFileFormat()
-                  .getAllowOrderCurrDiffFromBankDetails();
+          ebicsPartnerService.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails();
       if (allowOrderCurrDiffFromBankDetails) {
         break;
       }

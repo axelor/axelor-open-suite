@@ -466,9 +466,7 @@ public class AppServiceImpl implements AppService {
 
     if (!csvConfig.getInputs().isEmpty()) {
       CSVImporter importer = new CSVImporter(csvConfig, dataDir.getAbsolutePath());
-      if (importer != null) {
-        importer.run();
-      }
+      importer.run();
     }
   }
 
