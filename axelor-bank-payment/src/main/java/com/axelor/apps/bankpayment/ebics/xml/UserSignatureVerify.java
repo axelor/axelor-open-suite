@@ -69,12 +69,12 @@ public class UserSignatureVerify {
                   "Computed digest (SHA256) of the bank order file doesn't match with the digest extract from the signature")
               + " \n";
       message +=
-          I18n.get("Computed digest (SHA256) of the bank order file :")
+          I18n.get("Computed digest (SHA256) of the bank order file:")
               + " "
               + comptedSha256Digest
               + "\n";
       message +=
-          I18n.get("Original digest extracted from the signature :")
+          I18n.get("Original digest extracted from the signature:")
               + " "
               + originalDigestFromSignature;
       throw new AxelorException(message, TraceBackRepository.CATEGORY_INCONSISTENCY);
