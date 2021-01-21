@@ -77,7 +77,7 @@ public class UserSignatureVerify {
           I18n.get("Original digest extracted from the signature:")
               + " "
               + originalDigestFromSignature;
-      throw new AxelorException(message, TraceBackRepository.CATEGORY_INCONSISTENCY);
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
     }
   }
 

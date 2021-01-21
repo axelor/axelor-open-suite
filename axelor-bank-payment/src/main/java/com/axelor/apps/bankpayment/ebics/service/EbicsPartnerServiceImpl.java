@@ -200,12 +200,12 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
           };
 
       throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
               I18n.get(IExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
               "<ul>"
                   + Joiner.on("").join(Iterables.transform(bankDetailsWithoutCurrency, addLi))
                   + "<ul>"),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           ebicsPartner);
     }
   }

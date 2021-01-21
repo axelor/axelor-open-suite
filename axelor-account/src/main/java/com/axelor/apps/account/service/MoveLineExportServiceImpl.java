@@ -1753,8 +1753,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
               .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
     } else {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL),
-          TraceBackRepository.CATEGORY_NO_VALUE);
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.MOVE_LINE_EXPORT_YEAR_OR_PERIOD_OR_DATE_IS_NULL));
     }
     fileName += ".csv";
 
