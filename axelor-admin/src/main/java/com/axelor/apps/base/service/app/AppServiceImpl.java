@@ -232,7 +232,7 @@ public class AppServiceImpl implements AppService {
 
   private File extract(String module, String dirName, String lang, String code) {
     String dirNamePattern = dirName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
-    List<URL> files = new ArrayList<URL>();
+    List<URL> files = new ArrayList<>();
     files.addAll(MetaScanner.findAll(module, dirNamePattern, code + "(-+.*)?" + CONFIG_PATTERN));
     if (files.isEmpty()) {
       return null;
@@ -312,7 +312,7 @@ public class AppServiceImpl implements AppService {
 
   private List<App> getDepends(App app, Boolean active) {
 
-    List<App> apps = new ArrayList<App>();
+    List<App> apps = new ArrayList<>();
     app = appRepo.find(app.getId());
 
     for (App depend : app.getDependsOnSet()) {
@@ -326,7 +326,7 @@ public class AppServiceImpl implements AppService {
 
   private List<String> getNames(List<App> apps) {
 
-    List<String> names = new ArrayList<String>();
+    List<String> names = new ArrayList<>();
 
     for (App app : apps) {
       names.add(app.getName());
@@ -386,7 +386,7 @@ public class AppServiceImpl implements AppService {
 
   private List<App> sortApps(Collection<App> apps) {
 
-    List<App> appsList = new ArrayList<App>();
+    List<App> appsList = new ArrayList<>();
 
     appsList.addAll(apps);
 
@@ -420,7 +420,7 @@ public class AppServiceImpl implements AppService {
     imgDir.mkdir();
 
     CSVConfig csvConfig = new CSVConfig();
-    csvConfig.setInputs(new ArrayList<CSVInput>());
+    csvConfig.setInputs(new ArrayList<>());
 
     List<MetaModel> metaModels =
         metaModelRepo

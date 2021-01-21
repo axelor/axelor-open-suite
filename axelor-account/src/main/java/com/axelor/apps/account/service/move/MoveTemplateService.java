@@ -109,7 +109,7 @@ public class MoveTemplateService {
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(MoveTemplate moveTemplate, List<HashMap<String, Object>> dataList)
       throws AxelorException {
-    List<Long> moveList = new ArrayList<Long>();
+    List<Long> moveList = new ArrayList<>();
     BigDecimal hundred = new BigDecimal(100);
     for (HashMap<String, Object> data : dataList) {
       LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
@@ -213,7 +213,7 @@ public class MoveTemplateService {
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(LocalDate moveDate, List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
-    List<Long> moveList = new ArrayList<Long>();
+    List<Long> moveList = new ArrayList<>();
 
     for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
 
