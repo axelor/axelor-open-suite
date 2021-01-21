@@ -390,8 +390,8 @@ public class BankOrderServiceImpl implements BankOrderService {
         == EbicsPartnerRepository.EBICS_TYPE_TS) {
       if (bankOrder.getSignedMetaFile() == null) {
         throw new AxelorException(
-            I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
-            TraceBackRepository.CATEGORY_NO_VALUE);
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED));
       }
 
       signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
@@ -576,8 +576,8 @@ public class BankOrderServiceImpl implements BankOrderService {
         && bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
         && bankDetails.getCurrency() == null) {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY),
-          TraceBackRepository.CATEGORY_MISSING_FIELD);
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY));
     }
   }
 
