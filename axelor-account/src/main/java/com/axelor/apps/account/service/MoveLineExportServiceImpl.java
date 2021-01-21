@@ -1313,7 +1313,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
     }
     if (typeSelect != 8) {
-      moveLineQueryStr += String.format(" AND self.account.useForPartnerBalance = false ");
+      moveLineQueryStr += " AND self.account.useForPartnerBalance = false ";
     }
     moveLineQueryStr +=
         String.format(
