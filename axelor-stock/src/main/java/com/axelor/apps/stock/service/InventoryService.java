@@ -235,7 +235,7 @@ public class InventoryService {
         List<Product> productList =
             productRepo
                 .all()
-                .filter("self.code = :code AND dtype = 'Product'")
+                .filter("self.code = :code AND self.dtype = 'Product'")
                 .bind("code", code)
                 .fetch();
         if (productList != null && !productList.isEmpty()) {

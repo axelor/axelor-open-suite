@@ -642,8 +642,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'" if="!__config__.app.getApp('sale').enableSalesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"/>
-		<attribute name="domain" for="product" expr="eval: &quot;self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true AND ${_parent?.tradingName?.id} member of self.tradingNameSellerSet and dtype = 'Product'&quot;" if="__config__.app.getApp('sale')?.enableSalesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty()"/>
+		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and self.dtype = 'Product'" if="!__config__.app.getApp('sale').enableSalesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"/>
+		<attribute name="domain" for="product" expr="eval: &quot;self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true AND ${_parent?.tradingName?.id} member of self.tradingNameSellerSet and self.dtype = 'Product'&quot;" if="__config__.app.getApp('sale')?.enableSalesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty()"/>
 	</action-attrs>
 	
   	<action-attrs name="action-sale-order-line-attrs-scale-and-precision">
