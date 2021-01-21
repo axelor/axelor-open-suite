@@ -469,7 +469,7 @@ public class EbicsService {
     return file;
   }
 
-  private boolean isTest(EbicsUser user) throws AxelorException {
+  private boolean isTest(EbicsUser user) {
 
     EbicsPartner partner = user.getEbicsPartner();
 
