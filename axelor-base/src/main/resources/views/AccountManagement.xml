@@ -55,7 +55,7 @@
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
 				<field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
-							 hidden="true" domain="dtype = 'Product'"/>
+							 hidden="true" domain="self.dtype = 'Product'"/>
 				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
 							 hidden="true"/>
 			</panel>
@@ -130,7 +130,7 @@
 					form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="bankDetails" form-view="bank-details-form"
 					grid-view="bank-details-grid" onSelect="action-account-management-attrs-bank-details-domain" onChange="action-account-management-attrs-bank-details-on-change"/>
-				<field name="sequence" domain="self.company = :company  AND self.code='paymentVoucher'" 
+				<field name="sequence" domain="self.company = :company  AND self.code='paymentVoucher'"
 					canNew="true" form-view="sequence-form" grid-view="sequence-grid" />
 			</panel>
 
@@ -199,13 +199,13 @@
 		<field name="fixedAssetCategory" hidden="true" if="!__config__.app.isApp('account')"/>
 		<field name="purchFixedAssetsAccount" hidden="true" if="!__config__.app.isApp('account')"/>
 	</search-filters>
-	
+
 	<action-group name="action-account-management-group-onNew">
 		<action name="action-account-management-record-default"/>
 		<action name="action-account-management-attrs-type"/>
 		<action name="action-account-management-attrs-onLoad"/>
 	</action-group>
-	
+
 	<action-attrs name="action-account-management-attrs-onLoad">
 		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.Product' || typeSelect != 1"
 							 for="productFamily"/>

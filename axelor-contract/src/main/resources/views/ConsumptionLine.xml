@@ -22,7 +22,7 @@
         <panel readonlyIf="isInvoiced" name="mainPanel">
             <field name="product" required="true" canEdit="false"
                    onChange="action-consumption-line-method-change-product"
-                   domain="dtype = 'Product'"/>
+                   domain="self.dtype = 'Product'"/>
             <field name="lineDate" required="true"/>
             <field name="reference"/>
             <field name="unit" canEdit="false"/>
