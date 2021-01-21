@@ -207,12 +207,12 @@
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field name="monthSelect" selection="base.year.period.duration.select" title="Historical Period" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
 			  to_char(_order.validation_date,'yyyy-MM') AS _month,
-			  SUM(_order.ex_tax_total) AS _turn_over
+			  SUM(_order.ex_tax_total) AS _amount
 			FROM
 			  purchase_purchase_order AS _order
 			JOIN
@@ -220,8 +220,7 @@
 			  ON _user.id = :__user__
 			  AND _order.company = _user.active_company
 			WHERE
-			  _order.validation_date &gt;= DATE(:fromDate) 
-			  AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+			  _order.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			  AND _order.status_select IN (4,5)
 			GROUP BY
 			   _month  
@@ -229,7 +228,7 @@
 				 _month
 		</dataset>
 		<category key="_month" type="month" title="Month"/>
-		<series key="_turn_over" type="bar" title="Turn Over"/>
+		<series key="_amount" type="bar" title="Amount"/>
 		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
@@ -268,7 +267,7 @@
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field name="monthSelect" selection="base.year.period.duration.select" title="Historical Period" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -281,8 +280,7 @@
 			  ON _user.id = :__user__
 			  AND _order.company = _user.active_company
 			WHERE
-			  _order.validation_date &gt;= DATE(:fromDate) 
-			  AND _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+			  _order.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			  AND _order.status_select IN (4,5)
 			GROUP BY 
 			  _month
@@ -290,7 +288,7 @@
 				_month
 		</dataset>
 		<category key="_month" type="month" title="Month"/>
-		<series key="_orders" type="bar" title="Sale orders"/>
+		<series key="_orders" type="bar" title="ChartPO.saleOrder"/>
 		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
