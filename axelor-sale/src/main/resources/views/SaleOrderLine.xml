@@ -449,7 +449,7 @@
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
     </action-group>
-    
+
     <action-attrs name="action-sale-order-attrs-hide-ati">
 		<attribute name="hidden" for="exTaxTotal" expr="eval: __parent__.inAti || typeSelect == 2" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
 		<attribute name="hidden" for="inTaxTotal" expr="eval: !__parent__.inAti || typeSelect == 2" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
@@ -508,7 +508,7 @@
     <action-record name="action-sale-order-line-record-progress" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="progress" expr="eval: project?.progress"/>
     </action-record>
-    
+
    	<!-- ACTION METHOD -->
 	
 	<action-method name="action-sale-order-line-method-compute">
@@ -572,7 +572,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'"/>
+		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and self.dtype = 'Product'"/>
 	</action-attrs>
 	
   	<action-attrs name="action-sale-order-line-attrs-scale-and-precision">

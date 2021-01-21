@@ -145,7 +145,10 @@ public class ProductServiceImpl implements ProductService {
   private void updateSalePriceOfVariant(Product product) throws AxelorException {
 
     List<? extends Product> productVariantList =
-        productRepo.all().filter("self.parentProduct = ?1 AND dtype = 'Product'", product).fetch();
+        productRepo
+            .all()
+            .filter("self.parentProduct = ?1 AND self.dtype = 'Product'", product)
+            .fetch();
 
     for (Product productVariant : productVariantList) {
 
