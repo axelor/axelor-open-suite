@@ -191,13 +191,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
     }
 
     if (!bankDetailsWithoutCurrency.isEmpty()) {
-      Function<String, String> addLi =
-          new Function<String, String>() {
-            @Override
-            public String apply(String s) {
-              return "<li>".concat(s).concat("</li>").toString();
-            }
-          };
+      Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

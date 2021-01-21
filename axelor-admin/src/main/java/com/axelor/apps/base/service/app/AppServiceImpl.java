@@ -50,7 +50,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -142,11 +141,8 @@ public class AppServiceImpl implements AppService {
     try {
       File[] configs =
           dataDir.listFiles(
-              new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                  return name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN);
-                }
-              });
+              (FilenameFilter)
+                  (dir, name) -> name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN));
 
       if (configs.length == 0) {
         log.debug("No config file found for the app: {}", appCode);
@@ -394,29 +390,26 @@ public class AppServiceImpl implements AppService {
 
     appsList.addAll(apps);
 
-    appsList.sort(
-        new Comparator<App>() {
-
-          @Override
-          public int compare(App app1, App app2) {
-
-            Integer order1 = app1.getInstallOrder();
-            Integer order2 = app2.getInstallOrder();
-
-            if (order1 < order2) {
-              return -1;
-            }
-            if (order1 > order2) {
-              return 1;
-            }
-
-            return 0;
-          }
-        });
+    appsList.sort(this::compare);
 
     log.debug("Apps sorted: {}", getNames(appsList));
 
     return appsList;
+  }
+
+  private int compare(App app1, App app2) {
+    Integer order1 = app1.getInstallOrder();
+    Integer order2 = app2.getInstallOrder();
+
+    if (order1 < order2) {
+      return -1;
+    }
+
+    if (order1 > order2) {
+      return 1;
+    }
+
+    return 0;
   }
 
   @Override
