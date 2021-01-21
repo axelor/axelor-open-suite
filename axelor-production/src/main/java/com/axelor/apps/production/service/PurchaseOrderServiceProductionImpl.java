@@ -59,7 +59,6 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
         budgetSupplychainService);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   @Transactional
   public PurchaseOrder mergePurchaseOrders(

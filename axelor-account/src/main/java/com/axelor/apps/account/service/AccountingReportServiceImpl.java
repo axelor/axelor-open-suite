@@ -83,7 +83,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.appBaseService = appBaseService;
   }
 
-  @SuppressWarnings("unchecked")
   public String getMoveLineList(AccountingReport accountingReport) throws AxelorException {
 
     this.buildQuery(accountingReport);

@@ -89,7 +89,6 @@ public class MoveTemplateService {
     moveTemplateRepo.save(moveTemplate);
   }
 
-  @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(
       MoveTemplateType moveTemplateType,

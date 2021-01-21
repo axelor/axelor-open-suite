@@ -27,7 +27,6 @@ import com.axelor.rpc.ActionResponse;
 
 public class DocuSignEnvelopeSettingController {
 
-  @SuppressWarnings("unchecked")
   public void addItemToReferenceSelection(ActionRequest request, ActionResponse response) {
     try {
       MetaModel metaModel = (MetaModel) request.getContext().get("metaModel");
