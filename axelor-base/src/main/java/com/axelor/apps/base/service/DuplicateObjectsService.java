@@ -132,7 +132,7 @@ public class DuplicateObjectsService {
     Query duplicateObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
     duplicateObj.setParameter("ids", selectedIds.subList(1, selectedIds.size()));
-    return (List<Object>) duplicateObj.getResultList();
+    return duplicateObj.getResultList();
   }
 
   @Transactional
@@ -140,7 +140,7 @@ public class DuplicateObjectsService {
     Query duplicateObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
     duplicateObj.setParameter("ids", selectedIds);
-    return (List<Object>) duplicateObj.getResultList();
+    return duplicateObj.getResultList();
   }
 
   @Transactional

@@ -43,7 +43,6 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -141,8 +140,7 @@ public class AppServiceImpl implements AppService {
     try {
       File[] configs =
           dataDir.listFiles(
-              (FilenameFilter)
-                  (dir, name) -> name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN));
+              (dir, name) -> name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN));
 
       if (configs.length == 0) {
         log.debug("No config file found for the app: {}", appCode);
