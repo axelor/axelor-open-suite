@@ -10,7 +10,7 @@
 "Apps installed successfully","Успешно установленные приложения",,
 "Apps management","Управление приложениями",,
 "Apps refreshed successfully","Приложения успешно обновились",,
-"Are you sure to anonymize data ?.","Вы уверены, что хотите обезличить данные?",,
+"Are you sure to anonymize data?","Вы уверены, что хотите обезличить данные?",,
 "Are you sure to import demo data for '${name}'?","Вы уверены, что хотите импортировать демо-данные для '${имя}'?",,
 "Are you sure to install '${name}'?","Ты уверен, что хочешь установить '${имя}'?",,
 "Are you sure to uninstall '${name}'?","Ты уверен, что хочешь удалить '${имя}'?",,
