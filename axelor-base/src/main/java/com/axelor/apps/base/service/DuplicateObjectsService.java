@@ -166,7 +166,6 @@ public class DuplicateObjectsService {
     return selectedObject;
   }
 
-  @SuppressWarnings("unchecked")
   public Filter getJpaSecurityFilter(Class<? extends Model> beanClass) {
 
     JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
