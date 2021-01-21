@@ -715,7 +715,7 @@
 "The receiver bank details is inactive.","Банковские реквизиты получателя неактивны.",,
 "The receiver bank details type is not compatible with the accepted types in file format.","Тип банковских реквизитов приемника несовместим с принятыми типами в формате файла.",,
 "The sender bank details currency is not compatible with the currency in bank order.","Валюта банковских реквизитов отправителя несовместима с валютой, указанной в банковском поручении.",,
-"There is at least one incomplete bank reconciliation. Are you sure you want to continue ?",,,
+"There is at least one incomplete bank reconciliation. Are you sure you want to continue?",,,
 "This action is irreversible, do you want to continue ?",,,
 "This move line %s can not be archived because its bank reconciliation amount is superior to 0.",,,
 "To Date","На свидание",,

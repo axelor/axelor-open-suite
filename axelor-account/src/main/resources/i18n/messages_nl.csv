@@ -1846,7 +1846,7 @@
 "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s","De rekening van een product kon niet worden vastgesteld of is niet gevuld. Vul de ontbrekende rekening op de factuurregel in %s",,
 "The accounting move line on the account %s can't have an amount equals to zero",,,
 "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled","De aan deze factuur gekoppelde bankopdracht is reeds uitgevoerd/afgewezen en kan dus niet worden geannuleerd.",,
-"The batch to close the annual accounts has already ran. Are you sure you want to continue ?","De batch om de jaarrekening te sluiten is al uitgevoerd. Weet je zeker dat je door wilt gaan ?",,
+"The batch to close the annual accounts has already ran. Are you sure you want to continue?","De batch om de jaarrekening te sluiten is al uitgevoerd. Weet je zeker dat je door wilt gaan ?",,
 "The chart of account has been loaded successfully","Het rekeningoverzicht is met succes geladen",,
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.",,,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book","De afsluiting van een boekjaar brengt onherroepelijke integratie van een verhuizing in Moves boek",,

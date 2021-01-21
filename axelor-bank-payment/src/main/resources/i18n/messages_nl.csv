@@ -715,7 +715,7 @@
 "The receiver bank details is inactive.","De bankgegevens van de ontvanger zijn inactief.",,
 "The receiver bank details type is not compatible with the accepted types in file format.","Het type bankgegevens van de ontvanger is niet compatibel met de geaccepteerde typen in bestandsformaat.",,
 "The sender bank details currency is not compatible with the currency in bank order.","De valuta van de afzender is niet compatibel met de valuta van de bankopdracht.",,
-"There is at least one incomplete bank reconciliation. Are you sure you want to continue ?",,,
+"There is at least one incomplete bank reconciliation. Are you sure you want to continue?",,,
 "This action is irreversible, do you want to continue ?",,,
 "This move line %s can not be archived because its bank reconciliation amount is superior to 0.",,,
 "To Date","Tot op heden",,
