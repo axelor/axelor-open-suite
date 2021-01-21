@@ -724,7 +724,7 @@
 "The receiver bank details is inactive.","Los detalles del banco receptor están inactivos.",,
 "The receiver bank details type is not compatible with the accepted types in file format.","El tipo de detalles del banco receptor no es compatible con los tipos aceptados en formato de archivo.",,
 "The sender bank details currency is not compatible with the currency in bank order.","La moneda de los datos bancarios del remitente no es compatible con la moneda del pedido bancario.",,
-"There is at least one incomplete bank reconciliation. Are you sure you want to continue ?","Hay al menos una conciliación bancaria incompleta. Estás seguro de que quieres continuar ?",,
+"There is at least one incomplete bank reconciliation. Are you sure you want to continue?","Hay al menos una conciliación bancaria incompleta. Estás seguro de que quieres continuar ?",,
 "This action is irreversible, do you want to continue ?","Esta acción es irreversible, ¿quieres continuar?",,
 "This move line %s can not be archived because its bank reconciliation amount is superior to 0.","Esta línea de movimiento %s no se puede archivar porque su monto de conciliación bancaria es superior a 0.",,
 "To Date","Hasta la fecha",,

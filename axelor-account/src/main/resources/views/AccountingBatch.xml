@@ -160,7 +160,7 @@
 	
 	<!-- ACTION VALIDATE -->
 	<action-validate name="action-accounting-batch-validate-batchlist-not-empty">
-   		<alert message="The batch to close the annual accounts has already ran. Are you sure you want to continue ?" if="eval: batchList &amp;&amp; !batchList?.empty" />
+   		<alert message="The batch to close the annual accounts has already ran. Are you sure you want to continue?" if="eval: batchList &amp;&amp; !batchList?.empty" />
    	</action-validate>
    	
 	<action-validate name="action-accounting-batch-validate-realized-fixed-date">

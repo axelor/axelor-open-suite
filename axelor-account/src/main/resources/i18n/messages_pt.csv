@@ -1846,7 +1846,7 @@
 "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s","A conta de um produto não pode ser determinada ou não é preenchida. Por favor preencha a conta em falta na linha de facturação %s",,
 "The accounting move line on the account %s can't have an amount equals to zero",,,
 "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled","A ordem bancária ligada a este pagamento já foi executada/rejeitada e, portanto, não pode ser cancelada.",,
-"The batch to close the annual accounts has already ran. Are you sure you want to continue ?","O lote para fechar as contas anuais já foi executado. Você tem certeza que quer continuar ?",,
+"The batch to close the annual accounts has already ran. Are you sure you want to continue?","O lote para fechar as contas anuais já foi executado. Você tem certeza que quer continuar ?",,
 "The chart of account has been loaded successfully","O plano de contas foi carregado com êxito",,
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.",,,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book","O encerramento de um exercício traz integração irrevogável de um movimento no livro Moves",,
