@@ -426,7 +426,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + moveLineQueryStr,
                   moveList);
 
-          if (sumDebit.compareTo(BigDecimal.ZERO) == 1) {
+          if (sumDebit.compareTo(BigDecimal.ZERO) > 0) {
 
             String exportNumber = this.getSaleExportNumber(company);
 
@@ -618,7 +618,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + moveLineQueryStr,
                   moveList);
 
-          if (sumCredit.compareTo(BigDecimal.ZERO) == 1) {
+          if (sumCredit.compareTo(BigDecimal.ZERO) > 0) {
 
             String exportNumber = this.getRefundExportNumber(company);
 
@@ -1418,7 +1418,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
                   BigDecimal totAmt = moveLine3.getCredit().subtract(moveLine3.getDebit());
                   String moveLineSign = "C";
-                  if (totAmt.compareTo(BigDecimal.ZERO) == -1) {
+                  if (totAmt.compareTo(BigDecimal.ZERO) < 0) {
                     moveLineSign = "D";
                     totAmt = totAmt.negate();
                   }
@@ -1510,7 +1510,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<MoveLine> debitMoveLineList = new ArrayList<>();
     List<MoveLine> creditMoveLineList = new ArrayList<>();
     for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
+      if (moveLine.getDebit().compareTo(moveLine.getCredit()) > 0) {
         debitMoveLineList.add(moveLine);
       } else {
         creditMoveLineList.add(moveLine);

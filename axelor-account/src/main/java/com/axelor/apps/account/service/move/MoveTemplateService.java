@@ -244,7 +244,7 @@ public class MoveTemplateService {
                   moveTemplateLine.getPartner(),
                   moveTemplateLine.getAccount(),
                   amount,
-                  moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) == 1,
+                  moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
                   moveDate,
                   moveDate,
                   counter,
