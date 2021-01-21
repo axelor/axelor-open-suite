@@ -193,12 +193,4 @@
 		<dashlet action="dashlet.purchase.order.amount.distribution.by.family" canSearch="true" height="350" />
 	</dashboard>
 	
-	<dashboard name="purchase.dashboard.3" title="Purchase orders Details">
-		<dashlet action="dashlet.my.purchase.orders.to.execute" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.ongoing.purchase.orders" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.my.ongoing.purchase.orders" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.closed.purchase.orders" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.my.closed.purchase.orders" canSearch="true" height="350" colSpan="12"/>
-	</dashboard>
-	
 </object-views>
