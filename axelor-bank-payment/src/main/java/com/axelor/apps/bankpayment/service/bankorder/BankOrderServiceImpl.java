@@ -404,8 +404,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
-
     if (!bankPaymentConfigService
         .getBankPaymentConfig(bankOrder.getSenderCompany())
         .getGenerateMoveOnBankOrderValidation()) {
