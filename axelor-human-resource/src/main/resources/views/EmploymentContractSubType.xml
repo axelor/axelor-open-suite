@@ -10,7 +10,7 @@
     <form name="employment-contract-sub-type-form" title="Contract sub type" model="com.axelor.apps.hr.db.EmploymentContractSubType">
 		<panel name="mainPanel">
 			<field name="code"/>
-			<field name="description"/>
+			<field name="description" widget="string"/>
 		</panel>
     </form>
 
