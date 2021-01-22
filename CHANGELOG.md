@@ -1,3 +1,44 @@
+## [6.0.5] (2021-01-22)
+
+#### Changes
+
+* Update spanish translation.
+* AppBase: Add configuration to use free fixer API.
+
+Add currency conversion functionality for non paid fixer API.
+
+* Change dashlet title from 'Bad stock locations line' to 'Products whose future quantity is less than the minimum quantity allowed'.
+* TIMESHEET REPORT: Hide blocked user in user list.
+* PURCHASE MENU: Moving suppliers map under the new Maps menu.
+* TeamTask: Add parent task template and team task category field on task template. Improve task tree creation for project generated from project template.
+* Human Resource: change Dashboard name to 'Reportings'.
+* Quality Dashboard: Fix titles and remove 'Control Points' dashlet.
+* HR dashboards: Update titles french translations.
+* TEAM TASK CATEGORY: Change translation for form view tab.
+
+#### Fixed
+
+* Quality: Fix control point dashboard sql error.
+* ACCOUNT REVERSE MOVE: When generating a reverse move, keep references to analytic move lines.
+* User: Change the french translation of 'All permissions'.
+* Cost Sheet Line: Fix rounding issue happening during computation.
+* Add process for export type 'Silae' in Payroll export batch.
+* Configurator Creator: prevent the creation of duplicate attribute name.
+* Invoice: Set due date readonly when selected payment condition is not free.
+* AppBase DATA INIT: Fix axelor-tool dependency module name.
+* EVENT: Hide past date warning after record is saved.
+* StockConfig: all stock locations are now filtered per their company in the form view.
+* ProjectTemplate: Fix error happening when generating project with users.
+* INVOICE: In printing, hide qty for title invoice lines.
+* Fix english messages in App view.
+* EMPLOYMENT CONTRACT SUB TYPE: Use string widget for description field.
+* Stock move mass invoicing: correctly generate a refund when the price is 0.
+* Cancel Reason: Add missing french translation for 'free text'.
+
+#### Removed
+
+* Menu: Remove purchase orders entry menu under reportings.
+
 ## [6.0.4] (2021-01-05)
 
 #### Features
@@ -287,6 +328,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.5]: https://github.com/axelor/axelor-open-suite/compare/v6.0.4...v6.0.5
 [6.0.4]: https://github.com/axelor/axelor-open-suite/compare/v6.0.3...v6.0.4
 [6.0.3]: https://github.com/axelor/axelor-open-suite/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/axelor/axelor-open-suite/compare/v6.0.1...v6.0.2
