@@ -426,7 +426,7 @@
 		<view-param name="search-filters" value="hr-batch-filters"/>
 	</action-view>
 
-	<menuitem name="hr-report-root" parent="hr-root" title="Dashboards" order="300" icon="fa-bar-chart"/>
+	<menuitem name="hr-report-root" parent="hr-root" title="Reportings" order="300" icon="fa-bar-chart"/>
 
     <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager"
     	action="hr.manager.dashboard.view"/>

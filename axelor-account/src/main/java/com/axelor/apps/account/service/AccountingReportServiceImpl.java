@@ -71,7 +71,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected AccountRepository accountRepo;
 
-  protected List<Object> params = new ArrayList<Object>();
+  protected List<Object> params = new ArrayList<>();
   protected int paramNumber = 1;
 
   @Inject
@@ -89,7 +89,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect() == type;
   }
 
-  @SuppressWarnings("unchecked")
   public String getMoveLineList(AccountingReport accountingReport) throws AxelorException {
 
     this.buildQuery(accountingReport);
@@ -273,7 +272,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   protected void initQuery() {
     query = "";
     paramNumber = 1;
-    params = new ArrayList<Object>();
+    params = new ArrayList<>();
 
     this.query = "";
     this.params.clear();

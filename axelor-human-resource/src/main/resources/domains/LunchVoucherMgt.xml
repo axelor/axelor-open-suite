@@ -22,7 +22,7 @@
 		<decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20" readonly="true" />
 		<decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20" readonly="true" />
 
-		<one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch Voucher Lines" mappedBy="lunchVoucherMgt" orphanRemoval="true" />
+		<one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch Voucher Lines" mappedBy="lunchVoucherMgt"/>
 
 		<integer name="stockQuantityStatus" title="Stock quantity status" readonly="true" />
 		<integer name="stockLineQuantity" title="Quantity" min="0"/>

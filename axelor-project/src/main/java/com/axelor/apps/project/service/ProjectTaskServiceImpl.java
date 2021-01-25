@@ -150,6 +150,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
+  @Transactional
   public ProjectTask create(String subject, Project project, User assignedTo) {
     ProjectTask task = new ProjectTask();
     task.setName(subject);
@@ -158,6 +159,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     task.setStatus(getStatus(project));
     task.setPriority(getPriority(project));
     project.addProjectTaskListItem(task);
+    projectTaskRepo.save(task);
     return task;
   }
 

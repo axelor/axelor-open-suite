@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
@@ -257,6 +258,34 @@ public class ProjectServiceImpl implements ProjectService {
       context.forEach(builder::context);
     }
     return builder.map();
+  }
+
+  public ProjectTask createTask(
+      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
+
+    if (!ObjectUtils.isEmpty(project.getProjectTaskList())) {
+      for (ProjectTask projectTask : project.getProjectTaskList()) {
+        if (projectTask.getName().equals(taskTemplate.getName())) {
+          return projectTask;
+        }
+      }
+    }
+    ProjectTask task =
+        projectTaskService.create(taskTemplate.getName(), project, taskTemplate.getAssignedTo());
+    task.setDescription(taskTemplate.getDescription());
+    ProjectTaskCategory projectTaskCategory = taskTemplate.getProjectTaskCategory();
+    if (projectTaskCategory != null) {
+      task.setProjectTaskCategory(projectTaskCategory);
+      project.addProjectTaskCategorySetItem(projectTaskCategory);
+    }
+
+    TaskTemplate parentTaskTemplate = taskTemplate.getParentTaskTemplate();
+
+    if (parentTaskTemplate != null && taskTemplateSet.contains(parentTaskTemplate)) {
+      task.setParentTask(this.createTask(parentTaskTemplate, project, taskTemplateSet));
+      return task;
+    }
+    return task;
   }
 
   protected String getStatusColumnsTobeExcluded(Project project) {

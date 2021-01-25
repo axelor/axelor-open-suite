@@ -38,6 +38,10 @@ import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
+import com.axelor.apps.project.service.ProjectTemplateService;
+import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
+import com.axelor.apps.project.service.TaskTemplateService;
+import com.axelor.apps.project.service.TaskTemplateServiceImpl;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.TimerProjectTaskServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -61,5 +65,7 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectActivityObserver.class);
     bind(MetaJsonFieldProjectService.class).to(MetaJsonFieldProjectServiceImpl.class);
     bind(ProjectMenuService.class).to(ProjectMenuServiceImpl.class);
+    bind(TaskTemplateService.class).to(TaskTemplateServiceImpl.class);
+    bind(ProjectTemplateService.class).to(ProjectTemplateServiceImpl.class);
   }
 }

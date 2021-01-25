@@ -210,13 +210,13 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (!debitMoveLineCompany.equals(reconcileCompany)
         && !creditMoveLineCompany.equals(reconcileCompany)) {
       throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
               I18n.get(IExceptionMessage.RECONCILE_7),
               I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
               debitMoveLineCompany,
               creditMoveLineCompany,
-              reconcileCompany),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+              reconcileCompany));
     }
 
     // Check if move lines accounts are the same (debit and credit)

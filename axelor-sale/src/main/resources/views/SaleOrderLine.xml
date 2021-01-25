@@ -79,8 +79,7 @@
 		<panel name="productPanel" showIf="typeSelect != 0">
 			<field name="productName" colSpan="9" title="Title"/>
 			<field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
-            <field name="qty" />
-			<field name="isShowTotal" colSpan="3" onChange="action-sale-order-line-record-reset-is-hide-unit-amounts" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3"/>
+            <field name="isShowTotal" colSpan="3" onChange="action-sale-order-line-record-reset-is-hide-unit-amounts" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3"/>
 			<field name="isHideUnitAmounts" colSpan="3" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3 &amp;&amp; isShowTotal"/>
 		</panel>
  
@@ -510,7 +509,7 @@
     <action-record name="action-sale-order-line-record-project" model="com.axelor.apps.sale.db.SaleOrderLine" if-module="axelor-business-project">
 		<field name="project" expr="eval: __parent__?.project" if="__config__.app.isApp('business-project')" />
 	</action-record>
-  
+
     <action-record name="action-sale-order-line-record-reset-is-hide-unit-amounts" model="com.axelor.apps.sale.db.SaleOrderLine">
        <field name="isHideUnitAmounts" expr="eval: false" />
     </action-record>

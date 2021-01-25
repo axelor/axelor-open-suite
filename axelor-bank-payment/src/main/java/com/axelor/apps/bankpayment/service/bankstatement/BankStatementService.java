@@ -51,14 +51,14 @@ public class BankStatementService {
 
     if (bankStatement.getBankStatementFile() == null) {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE),
-          TraceBackRepository.CATEGORY_MISSING_FIELD);
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE));
     }
 
     if (bankStatement.getBankStatementFileFormat() == null) {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT),
-          TraceBackRepository.CATEGORY_MISSING_FIELD);
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT));
     }
 
     BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
@@ -73,8 +73,8 @@ public class BankStatementService {
       default:
         if (alertIfFormatNotSupported) {
           throw new AxelorException(
-              I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-              TraceBackRepository.CATEGORY_INCONSISTENCY);
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
         }
     }
   }
@@ -103,8 +103,8 @@ public class BankStatementService {
         break;
       default:
         throw new AxelorException(
-            I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-            TraceBackRepository.CATEGORY_INCONSISTENCY);
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
     }
 
     return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")

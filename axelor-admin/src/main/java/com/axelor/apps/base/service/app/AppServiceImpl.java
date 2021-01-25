@@ -43,14 +43,12 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -61,7 +59,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class AppServiceImpl implements AppService {
 
-  private final Logger log = LoggerFactory.getLogger(AppService.class);
+  private final Logger log = LoggerFactory.getLogger(AppServiceImpl.class);
 
   private static final String DIR_DEMO = "demo";
 
@@ -142,11 +140,7 @@ public class AppServiceImpl implements AppService {
     try {
       File[] configs =
           dataDir.listFiles(
-              new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                  return name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN);
-                }
-              });
+              (dir, name) -> name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN));
 
       if (configs.length == 0) {
         log.debug("No config file found for the app: {}", appCode);
@@ -223,7 +217,6 @@ public class AppServiceImpl implements AppService {
           break;
         }
       }
-      scanner.close();
 
       if (importer != null) {
         importer.run();
@@ -236,7 +229,7 @@ public class AppServiceImpl implements AppService {
 
   private File extract(String module, String dirName, String lang, String code) {
     String dirNamePattern = dirName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
-    List<URL> files = new ArrayList<URL>();
+    List<URL> files = new ArrayList<>();
     files.addAll(MetaScanner.findAll(module, dirNamePattern, code + "(-+.*)?" + CONFIG_PATTERN));
     if (files.isEmpty()) {
       return null;
@@ -316,7 +309,7 @@ public class AppServiceImpl implements AppService {
 
   private List<App> getDepends(App app, Boolean active) {
 
-    List<App> apps = new ArrayList<App>();
+    List<App> apps = new ArrayList<>();
     app = appRepo.find(app.getId());
 
     for (App depend : app.getDependsOnSet()) {
@@ -330,7 +323,7 @@ public class AppServiceImpl implements AppService {
 
   private List<String> getNames(List<App> apps) {
 
-    List<String> names = new ArrayList<String>();
+    List<String> names = new ArrayList<>();
 
     for (App app : apps) {
       names.add(app.getName());
@@ -390,33 +383,30 @@ public class AppServiceImpl implements AppService {
 
   private List<App> sortApps(Collection<App> apps) {
 
-    List<App> appsList = new ArrayList<App>();
+    List<App> appsList = new ArrayList<>();
 
     appsList.addAll(apps);
 
-    appsList.sort(
-        new Comparator<App>() {
-
-          @Override
-          public int compare(App app1, App app2) {
-
-            Integer order1 = app1.getInstallOrder();
-            Integer order2 = app2.getInstallOrder();
-
-            if (order1 < order2) {
-              return -1;
-            }
-            if (order1 > order2) {
-              return 1;
-            }
-
-            return 0;
-          }
-        });
+    appsList.sort(this::compare);
 
     log.debug("Apps sorted: {}", getNames(appsList));
 
     return appsList;
+  }
+
+  private int compare(App app1, App app2) {
+    Integer order1 = app1.getInstallOrder();
+    Integer order2 = app2.getInstallOrder();
+
+    if (order1 < order2) {
+      return -1;
+    }
+
+    if (order1 > order2) {
+      return 1;
+    }
+
+    return 0;
   }
 
   @Override
@@ -427,7 +417,7 @@ public class AppServiceImpl implements AppService {
     imgDir.mkdir();
 
     CSVConfig csvConfig = new CSVConfig();
-    csvConfig.setInputs(new ArrayList<CSVInput>());
+    csvConfig.setInputs(new ArrayList<>());
 
     List<MetaModel> metaModels =
         metaModelRepo
@@ -476,21 +466,14 @@ public class AppServiceImpl implements AppService {
 
     if (!csvConfig.getInputs().isEmpty()) {
       CSVImporter importer = new CSVImporter(csvConfig, dataDir.getAbsolutePath());
-      if (importer != null) {
-        importer.run();
-      }
+      importer.run();
     }
   }
 
   private void copyStream(InputStream stream, File file) throws IOException {
-
     if (stream != null) {
-      FileOutputStream out = new FileOutputStream(file);
-      try {
+      try (FileOutputStream out = new FileOutputStream(file)) {
         ByteStreams.copy(stream, out);
-        out.close();
-      } finally {
-        out.close();
       }
     }
   }

@@ -52,10 +52,10 @@ public class ContractRepository extends AbstractContractRepository {
                   type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE, company);
       if (seq == null) {
         throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
                 I18n.get("The company %s doesn't have any configured sequence for contracts"),
-                company.getName()),
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+                company.getName()));
       }
       return seq;
     } catch (Exception e) {
