@@ -66,7 +66,7 @@
   	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350"/>
 	</dashboard>
 
-	<action-view name="dashlet.stock.location.line.bad.futur.stock.mini" title="Bad stock location lines"
+	<action-view name="dashlet.stock.location.line.bad.futur.stock.mini" title="Products whose future quantity is less than the minimum quantity allowed"
 				 model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-bad-line-grid"/>
 		<view type="form" name="stock-location-line-bad-line-form"/>

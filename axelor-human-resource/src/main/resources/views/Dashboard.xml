@@ -5,12 +5,12 @@
 	
 	
 	<!-- Dashboard Manager -->
-	<dashboard title="Dashboard" name="hr.manager.dashboard.sample"  >
+	<dashboard title="Reportings" name="hr.manager.dashboard.sample"  >
 		<dashlet action="timesheet.validate" height="450" canSearch="true" if="__config__.app.isApp('timesheet')"/>
 		<dashlet action="extra.hours.validate" height="450" canSearch="true" if="__config__.app.isApp('exthrs')"/>
 		<dashlet action="expense.validate" height="450" canSearch="true" if="__config__.app.isApp('expense')"/>
 		<dashlet action="leave.validate" height="450" canSearch="true" if="__config__.app.isApp('leave')"/>
-		<dashlet action="hr.dashboard.leave.per.employee" colSpan="12" height="450" canSearch="true" if="__config__.app.isApp('leave')"/>
+      <!-- 		<dashlet action="hr.dashboard.leave.per.employee" colSpan="12" height="450" canSearch="true" if="__config__.app.isApp('leave')"/> -->
 		<dashlet action="hr.dashboard.show.employee.expenses" colSpan="12" height="450" canSearch="true"  if="__config__.app.isApp('expense')"/>
 	</dashboard>
 
@@ -26,7 +26,7 @@
 	</action-view>
 
 	<!-- Dashboard User -->
-	<dashboard title="Dashboard" name="hr.user.dashboard.sample"  >
+	<dashboard title="Reportings" name="hr.user.dashboard.sample"  >
 		<dashlet action="hr.dashboard.my.timesheets" height="350" canSearch="true" if="__config__.app.isApp('timesheet')"/>
 		<dashlet action="hr.dashboard.my.extrahours" height="350" canSearch="true" if="__config__.app.isApp('exthrs')"/>
 		<dashlet action="hr.dashboard.my.expenses" height="350" canSearch="true" if="__config__.app.isApp('expense')"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,12 +22,14 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.TeamTaskCategory;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,8 +40,10 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -168,12 +172,22 @@ public class ProjectServiceImpl implements ProjectService {
       projectRepository.save(project);
 
       Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
+      List<TaskTemplate> taskTemplateList = new ArrayList<TaskTemplate>(taskTemplateSet);
+      Collections.sort(
+          taskTemplateList,
+          new Comparator<TaskTemplate>() {
 
-      if (taskTemplateSet != null) {
-        Iterator<TaskTemplate> taskTemplateItr = taskTemplateSet.iterator();
+            @Override
+            public int compare(TaskTemplate taskTemplatet1, TaskTemplate taskTemplate2) {
+              return taskTemplatet1.getParentTaskTemplate() == null || taskTemplate2 == null
+                  ? 1
+                  : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1;
+            }
+          });
 
-        while (taskTemplateItr.hasNext()) {
-          createTask(taskTemplateItr.next(), project);
+      if (taskTemplateList != null) {
+        for (TaskTemplate taskTemplate : taskTemplateList) {
+          createTask(taskTemplate, project, taskTemplateSet);
         }
       }
 
@@ -181,13 +195,32 @@ public class ProjectServiceImpl implements ProjectService {
     }
   }
 
-  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
+  public TeamTask createTask(
+      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
 
+    if (!ObjectUtils.isEmpty(project.getTeamTaskList())) {
+      for (TeamTask teamTask : project.getTeamTaskList()) {
+        if (teamTask.getName().equals(taskTemplate.getName())) {
+          return teamTask;
+        }
+      }
+    }
     TeamTask task =
         teamTaskProjectService.create(
             taskTemplate.getName(), project, taskTemplate.getAssignedTo());
     task.setDescription(taskTemplate.getDescription());
+    TeamTaskCategory teamTaskCategory = taskTemplate.getTeamTaskCategory();
+    if (teamTaskCategory != null) {
+      task.setTeamTaskCategory(teamTaskCategory);
+      project.addTeamTaskCategorySetItem(teamTaskCategory);
+    }
 
+    TaskTemplate parentTaskTemplate = taskTemplate.getParentTaskTemplate();
+
+    if (parentTaskTemplate != null && taskTemplateSet.contains(parentTaskTemplate)) {
+      task.setParentTask(this.createTask(parentTaskTemplate, project, taskTemplateSet));
+      return task;
+    }
     return task;
   }
 }

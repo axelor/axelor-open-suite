@@ -4,11 +4,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <action-attrs id="action-supplychain-stock-config-attrs-customer-stocklocation-domain" name="action-stock-config-attrs-customer-stocklocation-domain" model="com.axelor.apps.stock.db.StockConfig">
-        <attribute name="domain" for="customerVirtualStockLocation" expr="eval: &quot; self.usableOnSaleOrder = True AND self.typeSelect = 3 &quot;"/>
+        <attribute name="domain" for="customerVirtualStockLocation" expr="eval: &quot; self.usableOnSaleOrder = True AND self.company = :company and self.typeSelect = 3 &quot;"/>
     </action-attrs>
 
     <action-attrs id="action-supplychain-stock-config-attrs-supplier-stocklocation-domain" name="action-stock-config-attrs-supplier-stocklocation-domain" model="com.axelor.apps.stock.db.StockConfig">
-        <attribute name="domain" for="supplierVirtualStockLocation" expr="eval: &quot; self.usableOnPurchaseOrder = True AND self.typeSelect = 3 &quot;"/>
+        <attribute name="domain" for="supplierVirtualStockLocation" expr="eval: &quot; self.usableOnPurchaseOrder = True AND self.company = :company and self.typeSelect = 3 &quot;"/>
     </action-attrs>
 
     <action-attrs id="action-supplychain-stock-config-attrs-receipt-stocklocation-domain" name="action-stock-config-attrs-receipt-stocklocation-domain" model="com.axelor.apps.stock.db.StockConfig">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,7 +46,7 @@ public class STTest {
           + "<p><strong>Title: $contact.title$</p>"
           + "<p><strong>First Name:</strong> $contact.firstName$</p>"
           + "<p><strong>Last Name:</strong> $contact.lastName;format=\"upper\"$</p>"
-          + "<p><strong>DateOfBirth:</strong> $contact.dateOfBirth;format=\"dd/MM/YYYY\"$</p>"
+          + "<p><strong>DateOfBirth:</strong> $contact.dateOfBirth;format=\"dd/MM/yyyy\"$</p>"
           + "<p>&nbsp;</p>"
           + "<p><em>Contact me:</em>&nbsp;<a href='mailto:$contact.email$' target='_blank'>$contact.fullName$</a></p>"
           + "<hr />$__time__;format=\"HH\"$"

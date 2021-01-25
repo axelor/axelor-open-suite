@@ -1,3 +1,30 @@
+## [5.4.5] (2021-01-11)
+
+#### Changes
+
+* Project: Add a button to delete team task from task tree.
+* Configurator: check the condition before generating sub bill of materials
+* ACCOUNTING REPORT: add new filters for analytic reports.
+* ACCOUNTING REPORT: add in analytic general ledger origin and description to analytic lines.
+* Update spanish translation.
+
+#### Fixed
+
+* Configurator: allow groovy string interpolation in scripts.
+* Global tracking: fix script in demo data to avoid NPE.
+* Invoice: Set due date readonly when selected payment condition is not free.
+* TEAMTASK: Fix type default value.
+* FORECAST RECAP: In the forecast recap view, the type of forecast displayed is correct now (before it was always ingoing transaction).
+* Move Template: fix french demo data.
+* MRP: Fix english typo and add missing french translation.
+* MRP PRINTING: fix empty unit column.
+* MRP: fix null pointer exception when running calculation on missing procurement method.
+* Manuf Order: fix operation order name.
+
+Fix issue where the operation order name starts with null when generated from a production order.
+Update operation order name with manufacturing order sequence when the manufacturing order is planned.
+
+
 ## [5.4.4] (2020-12-04)
 
 #### Changes
@@ -211,6 +238,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.5]: https://github.com/axelor/axelor-open-suite/compare/v5.4.4...v5.4.5
 [5.4.4]: https://github.com/axelor/axelor-open-suite/compare/v5.4.3...v5.4.4
 [5.4.3]: https://github.com/axelor/axelor-open-suite/compare/v5.4.2...v5.4.3
 [5.4.2]: https://github.com/axelor/axelor-open-suite/compare/v5.4.1...v5.4.2

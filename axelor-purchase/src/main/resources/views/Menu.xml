@@ -119,9 +119,14 @@
 	
 	<menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings" order="200" icon="fa-bar-chart"/>
 
-	<menuitem name="purchase-maps-partner-suppliers" parent="sc-root-purchase-report" 
-		title="Suppliers Map" action="action-show-suppliers-on-map-page" order="10"/>		
-		
+	<menuitem name="purchase-report-maps" parent="sc-root-purchase-report" title="Maps" order="10"/>
+
+	<menuitem name="purchase-maps-partner-suppliers" parent="purchase-report-maps"
+		title="Suppliers" action="action-purchase-method-show-suppliers-on-map-page"/>
+	
+	<action-method name="action-purchase-method-show-suppliers-on-map-page">
+	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+	</action-method>		
 	
 	<!-- demandeur menus -->
 	
@@ -269,13 +274,6 @@
 		
 	<action-view name="purchase.dashboard.2" title="Purchase Manager">
 		<view type="dashboard" name="purchase.dashboard.2" />	    
-	</action-view>
-	
-	<menuitem name="menu-purchase-dashboard-3" parent="sc-root-purchase-report"  
-		title="Purchase orders"  action="purchase.purchase.dashboard.3" />
-		
-	<action-view name="purchase.purchase.dashboard.3" title="Purchase orders Details">
-		<view type="dashboard" name="purchase.dashboard.3" />	    
 	</action-view>
 	
 	

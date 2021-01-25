@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,6 +43,7 @@ import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Set;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
@@ -238,8 +239,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
-  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
-    TeamTask task = super.createTask(taskTemplate, project);
+  public TeamTask createTask(
+      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
+    TeamTask task = super.createTask(taskTemplate, project, taskTemplateSet);
     return task;
   }
 }

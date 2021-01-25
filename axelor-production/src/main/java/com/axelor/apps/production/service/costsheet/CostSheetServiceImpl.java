@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -461,9 +461,8 @@ public class CostSheetServiceImpl implements CostSheetService {
               .divide(
                   new BigDecimal(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN)
+                  RoundingMode.HALF_UP)
               .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
-      qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_EVEN);
       BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
