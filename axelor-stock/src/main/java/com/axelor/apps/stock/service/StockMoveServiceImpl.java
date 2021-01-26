@@ -824,7 +824,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional
-  public boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
+  public boolean splitStockMoveLines(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
 
     boolean selected = false;
 
@@ -851,40 +852,12 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMoveLineRepo.save(newLine);
           LOG.debug("New line created: {}", newLine);
         }
+        stockMove.removeStockMoveLineListItem(line);
         stockMoveLineRepo.remove(line);
       }
     }
 
     return selected;
-  }
-
-  @Override
-  @Transactional
-  public void splitStockMoveLinesSpecial(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
-
-    LOG.debug("SplitQty: {}", splitQty);
-
-    for (StockMoveLine moveLine : stockMoveLines) {
-      LOG.debug("Move line: {}", moveLine);
-      BigDecimal totalQty = moveLine.getQty();
-      while (splitQty.compareTo(totalQty) < 0) {
-        totalQty = totalQty.subtract(splitQty);
-        StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
-        newLine.setQty(splitQty);
-        newLine.setRealQty(splitQty);
-        stockMove.addStockMoveLineListItem(newLine);
-      }
-      LOG.debug("Qty remains: {}", totalQty);
-      if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
-        StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
-        newLine.setQty(totalQty);
-        newLine.setRealQty(totalQty);
-        stockMove.addStockMoveLineListItem(newLine);
-        LOG.debug("New line created: {}", newLine);
-      }
-      stockMove.removeStockMoveLineListItem(moveLine);
-    }
   }
 
   @Override
