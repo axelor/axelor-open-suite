@@ -1,0 +1,5 @@
+---
+title: "Stock move: fix split into 2"
+type: fix
+description: |
+  "A stock move generated from split feature now correctly keeps the link to the order that generated it."
