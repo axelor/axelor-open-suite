@@ -379,6 +379,40 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public StockMove splitInto2(
+      StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
+      throws AxelorException {
+    StockMove newStockMove = super.splitInto2(originalStockMove, modifiedStockMoveLines);
+    newStockMove.setOrigin(originalStockMove.getOrigin());
+    newStockMove.setOriginTypeSelect(originalStockMove.getOriginTypeSelect());
+    newStockMove.setOriginId(originalStockMove.getOriginId());
+    return newStockMove;
+  }
+
+  @Override
+  protected StockMoveLine createSplitStockMoveLine(
+      StockMove originalStockMove,
+      StockMoveLine originalStockMoveLine,
+      StockMoveLine modifiedStockMoveLine) {
+
+    StockMoveLine newStockMoveLine =
+        super.createSplitStockMoveLine(
+            originalStockMove, originalStockMoveLine, modifiedStockMoveLine);
+
+    if (originalStockMoveLine.getQty().compareTo(originalStockMoveLine.getRequestedReservedQty())
+        < 0) {
+      newStockMoveLine.setRequestedReservedQty(
+          originalStockMoveLine.getRequestedReservedQty().subtract(originalStockMoveLine.getQty()));
+      originalStockMoveLine.setRequestedReservedQty(originalStockMoveLine.getQty());
+    }
+    newStockMoveLine.setPurchaseOrderLine(originalStockMoveLine.getPurchaseOrderLine());
+    newStockMoveLine.setSaleOrderLine(originalStockMoveLine.getSaleOrderLine());
+
+    return newStockMoveLine;
+  }
+
+  @Override
   public void verifyProductStock(StockMove stockMove) throws AxelorException {
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
     if (stockMove.getAvailabilityRequest()
