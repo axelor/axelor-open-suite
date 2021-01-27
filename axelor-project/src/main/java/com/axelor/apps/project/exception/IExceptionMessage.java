@@ -33,4 +33,6 @@ public interface IExceptionMessage {
   static final String PROJECT_NO_TEAM = /*$$(*/ "You have selected no team for this project" /*)*/;
   static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for Project" /*)*/;
+  static final String TASK_TEMPLATE_PARENT_TASK_CREATED_LOOP = /*$$(*/
+      "The parent task creates a loop in the task tree." /*)*/;
 }
