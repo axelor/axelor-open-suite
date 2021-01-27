@@ -97,6 +97,8 @@
 		<boolean name="costPriceByTradingName" title="Cost price by tradingname" default="false"/>
 
         <boolean name="automaticCostPriceComputing" title="Automatic cost price computing" default="false"/>
+        
+        <boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners" default="false"/>
 
 		<extra-code>
 	   		<![CDATA[

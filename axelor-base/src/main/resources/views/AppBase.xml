@@ -32,6 +32,7 @@
     	    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
     	    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
     	    	<field name="teamManagement" widget="boolean-switch"/>
+    	    	<field name="manageSubsidiaryPartner" widget="boolean-switch"/>
     	    	<panel name="productBarCodePanel" title="Product BarCode">
     	    		<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
     	    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>

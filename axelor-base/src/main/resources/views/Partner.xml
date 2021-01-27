@@ -143,6 +143,26 @@
 		<field name="user" form-view="user-form" grid-view="user-grid" />
 	</grid>
 
+	<grid name="subsidiary-partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
+		<field name="partnerSeq" width="120" />
+		<field name="simpleFullName" />
+		<field name="fixedPhone" />
+		<field name="emailAddress.address" title="Email" />
+		<field name="partnerCategory" grid-view="partner-category-grid"
+			form-view="partner-category-form" />
+		<field name="fiscalPosition.code" title="Fiscal position" />
+		<field name="registrationCode" />
+		<field name="mainAddress" />
+		<field name="companyStr"
+			if="__config__.app.getApp('base').getEnableMultiCompany()" />
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+			onClick="action-partner-view-schedule-event" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+			onClick="action-send-by-email-with-template" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
+	</grid>
+
 	<form name="partner-customer-form" title="Customer"
 		model="com.axelor.apps.base.db.Partner" onNew="action-group-base-partner-onnew"
 		onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
@@ -354,7 +374,7 @@
 				<field name="taxNbr" hideIf="partnerTypeSelect== 2" />
 				<field name="paymentDelay" if-module="axelor-cash-management"
 					if="__config__.app.isApp('cash-management')" />
-				<field name="parentPartner" hideIf="partnerTypeSelect != 1"
+				<field name="parentPartner" hideIf="partnerTypeSelect != 1" if="__config__.app.getApp('base').getManageSubsidiaryPartner()"
 					domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
 					form-view="partner-form" grid-view="partner-grid" />
 				<field name="sellerCode" showIf="isFactor"
@@ -362,7 +382,7 @@
 			</panel>
 		</panel>
 		<panel-dashlet action="action-partner-view-subsidiary-partners"
-			name="subsidiaryPartners" />
+			name="subsidiaryPartners" showIf="partnerTypeSelect == 1" if="__config__.app.getApp('base').getManageSubsidiaryPartner()"/>
 		<panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
 			hideIf="!id || isContact || partnerTypeSelect == 2"
 			domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
@@ -1439,7 +1459,7 @@
 
 	<action-view name="action-partner-view-subsidiary-partners"
 		title="Subsidiaries" model="com.axelor.apps.base.db.Partner">
-		<view type="grid" name="partner-grid" />
+		<view type="grid" name="subsidiary-partner-grid" />
 		<view type="form" name="partner-form" />
 		<domain>self.id in (select p.id from Partner p where p.parentPartner = :id)</domain>
 	</action-view>
