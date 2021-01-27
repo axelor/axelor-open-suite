@@ -1266,11 +1266,9 @@ public class StockMoveServiceImpl implements StockMoveService {
       return;
     }
     List<StockMoveLine> savedStockMoveLineList =
-        Optional.ofNullable(stockMove.getPlannedStockMoveLineList())
-            .orElse(new ArrayList<StockMoveLine>());
+        Optional.ofNullable(stockMove.getPlannedStockMoveLineList()).orElse(new ArrayList<>());
     List<StockMoveLine> stockMoveLineList =
-        Optional.ofNullable(stockMove.getStockMoveLineList())
-            .orElse(new ArrayList<StockMoveLine>());
+        Optional.ofNullable(stockMove.getStockMoveLineList()).orElse(new ArrayList<>());
 
     stockMoveLineService.updateLocations(
         stockMove.getFromStockLocation(),
@@ -1292,9 +1290,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMove.clearPlannedStockMoveLineList();
     stockMoveLineList.forEach(
-        stockMoveLine ->
-            stockMove.addPlannedStockMoveLineListItem(
-                stockMoveLineRepo.copy(stockMoveLine, false)));
+        stockMoveLine -> {
+          StockMoveLine stockMoveLineCopy = stockMoveLineRepo.copy(stockMoveLine, false);
+          stockMoveLineCopy.setArchived(true);
+          stockMove.addPlannedStockMoveLineListItem(stockMoveLineCopy);
+        });
   }
 
   @Override
