@@ -15,8 +15,7 @@
 	<form name="resource-booking-form" title="Resource booking" model="com.axelor.apps.project.db.ResourceBooking" width="large" onNew="action-resource-booking-defaults">
 		<panel name="mainPanel">
 			<panel name="namePanel" colSpan="12">
-				<field name="name" colSpan="12" css="label-bold bold large"/>
-				<static name="nameLabel" hideIf="id" colSpan="12"><![CDATA[<span class='label label-info'>Computed automatically if left empty</span>]]></static>
+				<field name="name" colSpan="12" css="label-bold bold large" required="true"/>
 			</panel>
 			<field name="resource" canEdit="false"/>
 			<field name="user" canEdit="false"/>
