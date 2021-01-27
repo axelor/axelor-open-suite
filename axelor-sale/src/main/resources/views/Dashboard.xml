@@ -154,25 +154,18 @@
 		<dashlet action="dashlet.sales.turnover.ytd.vs.past.year" height="350" />
 		<dashlet action="dashlet.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
 		<dashlet action="dashlet.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
-		<dashlet action="dashlet.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>
-	    <dashlet action="dashlet.turnover.per.month.per.salesman.over.4mth" canSearch="true" height="350"/>
+		<dashlet action="dashlet.turnover.per.month.per.salesman" canSearch="true" height="350" colSpan="12"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.type" canSearch="true" height="350"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.category" canSearch="true" height="350"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.sector" canSearch="true" height="350"/>
 	</dashboard>
 	
-    <action-view title="Turnover per month per saleman (6 month)" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman.over.6mth">
-		  <view type="chart" name="chart.turnover.per.month.per.saleman.over.6mth"/>
+    <action-view title="Turnover per month per salesman" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman">
+		  <view type="chart" name="chart.turnover.per.month.per.salesman"/>
 		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
-	
-	<action-view title="Turnover per month per saleman (4 month)" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman.over.4mth">
-		  <view type="chart" name="chart.turnover.per.month.per.saleman.over.4mth"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
-	</action-view>
-	
+		
 	<action-view title="Turnover per customer type" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.per.customer.type">
 		  <view type="chart" name="chart.sale.turnover.per.customer.type"/>
 		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
