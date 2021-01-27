@@ -31,6 +31,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TimerTeamTaskServiceImpl extends AbstractTimerService implements TimerTeamTaskService {
 
@@ -46,11 +47,11 @@ public class TimerTeamTaskServiceImpl extends AbstractTimerService implements Ti
   public Timer find(Model model) {
     User user = userService.getUser();
     TeamTask task = (TeamTask) model;
+    List<Timer> timers = task.getTimerList();
 
-    return task.getTimerList().stream()
-        .filter(t -> t.getAssignedToUser() == user)
-        .findFirst()
-        .orElse(null);
+    return timers != null && !timers.isEmpty()
+        ? timers.stream().filter(t -> t.getAssignedToUser() == user).findFirst().orElse(null)
+        : null;
   }
 
   @Override
