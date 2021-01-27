@@ -246,6 +246,7 @@
 "Teamtask.Package","Package",,
 "Template",,,
 "The company %s doesn't have any configured sequence for Project",,,
+"The parent task creates a loop in the task tree.",,,
 "Ticket",,,
 "Tickets",,,
 "Time Spent",,,
