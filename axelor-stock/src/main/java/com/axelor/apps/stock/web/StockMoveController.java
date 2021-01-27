@@ -309,7 +309,8 @@ public class StockMoveController {
       List<StockMoveLine> stockMoveLineList = new ArrayList<>();
       StockMoveLineRepository stockMoveLineRepo = Beans.get(StockMoveLineRepository.class);
       for (StockMoveLine stockMoveLineContext :
-          stockMoveLineContextList.stream()
+          stockMoveLineContextList
+              .stream()
               .filter(StockMoveLine::isSelected)
               .collect(Collectors.toList())) {
         StockMoveLine stockMoveLine = stockMoveLineRepo.find(stockMoveLineContext.getId());
