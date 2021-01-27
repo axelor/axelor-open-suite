@@ -48,6 +48,30 @@
 		<field name="typeSelect"/>
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
+	
+	<grid name="my-event-grouped-by-team-grid" orderBy="-startDateTime" groupBy="team" title="Events" model="com.axelor.apps.crm.db.Event">
+    	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+    	<hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+    	<hilite color="success" if="statusSelect == 2"/>
+    	<hilite color="danger" if="statusSelect == 3"/>
+		<field name="startDateTime"/>
+		<field name="subject"/>
+		<field name="typeSelect"/>
+		<field name="duration" widget="duration" x-big="true"/>
+		<field name="team" hidden="true"/>
+	</grid>
+	
+	<grid name="my-event-grouped-by-user-grid" orderBy="-startDateTime" groupBy="user" title="Events" model="com.axelor.apps.crm.db.Event">
+    	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+    	<hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+    	<hilite color="success" if="statusSelect == 2"/>
+    	<hilite color="danger" if="statusSelect == 3"/>
+		<field name="startDateTime"/>
+		<field name="subject"/>
+		<field name="typeSelect"/>
+		<field name="duration" widget="duration" x-big="true"/>
+		<field name="user" hidden="true"/>
+	</grid>
 
     <grid name="lead-event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
