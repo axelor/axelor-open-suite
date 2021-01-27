@@ -59,4 +59,6 @@ public interface IExceptionMessage {
       "The email template model (%s) is different than the entity generating the email (%s)" /*)*/;
 
   String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
+  static final String TEMPORARY_EMAIL_MEDIA_TYPE_ERROR = /*$$(*/
+      "Temporary email service only support Email media type." /*)*/;
 }
