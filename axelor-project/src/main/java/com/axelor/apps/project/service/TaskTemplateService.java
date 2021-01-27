@@ -24,4 +24,7 @@ public interface TaskTemplateService {
 
   public Set<TaskTemplate> getParentTaskTemplateFromTaskTemplate(
       TaskTemplate taskTemplate, Set<TaskTemplate> taskTemplateSet);
+
+  public boolean isParentTaskTemplateCreatedLoop(
+      TaskTemplate taskTemplate, TaskTemplate parentTaskTemplate);
 }
