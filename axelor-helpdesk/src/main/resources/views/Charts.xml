@@ -168,7 +168,6 @@
 	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Percentage of tickets per SLA &amp; per team">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
-	    <field name="team" title="Team" type="reference" target="com.axelor.team.db.Team" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
 		SELECT
@@ -191,7 +190,7 @@
 		WHERE 
 			_ticket1.is_sla_completed = true
 			AND _sla.id = :sla
-			AND _team.id = :team
+			AND _team.id = _sla.team
 		UNION ALL
 		SELECT
 			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
@@ -213,7 +212,7 @@
 		WHERE 
 			_ticket1.is_sla_completed = false
 			AND _sla.id = :sla
-			AND _team.id = :team
+			AND _team.id = _sla.team
 	</dataset>
 	  <category key="_status" type="text" title="Status"/>
 	  <series key="_percentage" type="pie" title="Percentage"/>
@@ -223,7 +222,7 @@
 	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Percentage of tickets per SLA &amp; per user">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
-	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true"/>
+	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true" domain="self IN (SELECT u FROM User u JOIN u.teamSet tset JOIN Sla sla ON sla.team In tset WHERE sla.id=:sla)"/>
 	  </search-fields>
 	  <dataset type="sql">
 		SELECT
@@ -270,7 +269,6 @@
 	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Number of tickets per SLA &amp; per team">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
-	    <field name="team" title="Team" type="reference" target="com.axelor.team.db.Team" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
 		SELECT
@@ -293,7 +291,7 @@
 		WHERE 
 			_ticket1.is_sla_completed = true
 			AND _sla.id = :sla
-			AND _team.id = :team
+			AND _team.id = _sla.team
 		UNION ALL
 		SELECT
 			COUNT(*) AS _total,
@@ -315,7 +313,7 @@
 		WHERE 
 			_ticket1.is_sla_completed = false
 			AND _sla.id = :sla
-			AND _team.id = :team
+			AND _team.id = _sla.team
 	</dataset>
 	  <category key="_status" type="text" title="Status"/>
 	  <series key="_total" type="bar" title="Total tickets"/>
@@ -324,7 +322,7 @@
 	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.user" title="Number of tickets per SLA &amp; per user">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
-	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true"/>
+	    <field name="user" title="User" type="reference" target="com.axelor.auth.db.User" x-required="true" domain="self IN (SELECT u FROM User u JOIN u.teamSet tset JOIN Sla sla ON sla.team In tset WHERE sla.id=:sla)"/>
 	  </search-fields>
 	  <dataset type="sql">
 		SELECT
