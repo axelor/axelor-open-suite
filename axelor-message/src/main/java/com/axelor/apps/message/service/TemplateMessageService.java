@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public interface TemplateMessageService {
 
@@ -42,7 +43,7 @@ public interface TemplateMessageService {
 
   public Message generateAndSendMessage(Model model, Template template)
       throws MessagingException, IOException, AxelorException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException;
+          InstantiationException, IllegalAccessException, JSONException;
 
   public Set<MetaFile> getMetaFiles(
       Template template, Templates templates, Map<String, Object> templatesContext)

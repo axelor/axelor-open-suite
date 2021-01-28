@@ -59,4 +59,7 @@ public interface IExceptionMessage {
       "The email template model (%s) is different than the entity generating the email (%s)" /*)*/;
 
   String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
+
+  static final String SMS_ERROR_MISSING_MOBILE_NUMBER = /*$$(*/
+      "Please fill mobile phone number." /*)*/;
 }

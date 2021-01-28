@@ -60,6 +60,7 @@ import java.util.Set;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 public class TemplateMessageServiceImpl implements TemplateMessageService {
 
@@ -221,7 +222,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   @Override
   public Message generateAndSendMessage(Model model, Template template)
       throws MessagingException, IOException, AxelorException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException {
+          InstantiationException, IllegalAccessException, JSONException {
 
     Message message = this.generateMessage(model, template);
     messageService.sendMessage(message);

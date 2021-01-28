@@ -24,9 +24,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public interface MessageService {
 
@@ -47,21 +49,24 @@ public interface MessageService {
       EmailAccount emailAccount,
       String signature);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles);
 
   public Set<MetaAttachment> getMetaAttachments(Message message);
 
-  public Message sendMessage(Message message) throws AxelorException;
+  public Message sendMessage(Message message) throws AxelorException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public Message sendByEmail(Message message) throws MessagingException, AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendToUser(Message message);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendByMail(Message message);
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendSMS(Message message) throws AxelorException, IOException, JSONException;
 
   public String printMessage(Message message) throws AxelorException;
 

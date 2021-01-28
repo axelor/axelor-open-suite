@@ -56,6 +56,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public class LeaveServiceImpl implements LeaveService {
 
@@ -274,8 +275,8 @@ public class LeaveServiceImpl implements LeaveService {
   /**
    * Computes the duration in hours of a leave, according to the weekly and the holiday plannings.
    *
-   * @param weeklyPlanning
-   * @param holidayPlanning
+   * @param leave
+   * @param employee
    * @param fromDateT
    * @param toDateT
    * @return
@@ -712,7 +713,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -741,7 +742,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -782,7 +783,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   public Message sendValidationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -811,7 +812,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 

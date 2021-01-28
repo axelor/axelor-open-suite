@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.message.service;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -47,18 +48,28 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import javax.mail.MessagingException;
 import javax.persistence.LockModeType;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
 public class MessageServiceImpl extends JpaSupport implements MessageService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final String CONFIG_SENDINGBLUE_URL_SENDSMS = "bondici.sendinblue.url.sendsms";
 
   private MetaAttachmentRepository metaAttachmentRepository;
   protected MessageRepository messageRepository;
@@ -211,14 +222,18 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return message;
   }
 
-  public Message sendMessage(Message message) throws AxelorException {
+  @Override
+  public Message sendMessage(Message message) throws AxelorException, IOException, JSONException {
     try {
-      if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
-        return sendByMail(message);
-      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {
-        return sendByEmail(message);
-      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
-        return sendToUser(message);
+      switch (message.getMediaTypeSelect()) {
+        case MessageRepository.MEDIA_TYPE_MAIL:
+          return sendByMail(message);
+        case MessageRepository.MEDIA_TYPE_EMAIL:
+          return sendByEmail(message);
+        case MessageRepository.MEDIA_TYPE_CHAT:
+          return sendToUser(message);
+        case MessageRepository.MEDIA_TYPE_SMS:
+          return sendSMS(message);
       }
     } catch (MessagingException e) {
       TraceBackService.trace(e);
@@ -226,7 +241,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return message;
   }
 
-  @Transactional
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendToUser(Message message) {
 
     if (message.getRecipientUser() == null) {
@@ -242,7 +258,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendByMail(Message message) {
 
     log.debug("Sent mail");
@@ -252,6 +269,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return messageRepository.save(message);
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendByEmail(Message message) throws MessagingException, AxelorException {
 
@@ -310,7 +328,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     if (replytoRecipients != null && !replytoRecipients.isEmpty()) {
       mailBuilder.replyTo(Joiner.on(",").join(replytoRecipients));
     }
-    if (toRecipients != null && !toRecipients.isEmpty()) {
+    if (!toRecipients.isEmpty()) {
       mailBuilder.to(Joiner.on(",").join(toRecipients));
     }
     if (ccRecipients != null && !ccRecipients.isEmpty()) {
@@ -334,6 +352,62 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     sendMailQueueService.submitMailJob(mailBuilder, message);
 
     return message;
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendSMS(Message message) throws AxelorException, IOException, JSONException {
+
+    if (message.getMailAccount() == null
+        || Strings.isNullOrEmpty(message.getMailAccount().getSendingblueApiKey())) {
+      return message;
+    }
+    if (Strings.isNullOrEmpty(message.getToMobilePhone())) {
+      throw new AxelorException(
+          message,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          IExceptionMessage.SMS_ERROR_MISSING_MOBILE_NUMBER);
+    }
+
+    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+    builder.connectTimeout(30, TimeUnit.SECONDS);
+    builder.readTimeout(30, TimeUnit.SECONDS);
+    builder.writeTimeout(30, TimeUnit.SECONDS);
+    OkHttpClient client = new OkHttpClient(builder);
+    MediaType mediaType = MediaType.parse("application/json");
+    String datas =
+        new JSONObject()
+            .put("sender", getSender(message))
+            .put("recipient", message.getToMobilePhone())
+            .put("content", message.getContent().replaceAll("<\\/*\\w+>", ""))
+            .put("type", "transactional")
+            .toString();
+    RequestBody body = RequestBody.create(mediaType, datas);
+    Request request =
+        new Request.Builder()
+            .url(AppSettings.get().get(CONFIG_SENDINGBLUE_URL_SENDSMS))
+            .header("api-key", message.getMailAccount().getSendingblueApiKey())
+            .post(body)
+            .build();
+    Response response = client.newCall(request).execute();
+
+    if (!response.isSuccessful() || response.code() != 201) {
+      throw new AxelorException(
+          message,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format("%d %s", response.code(), response.message()));
+    }
+
+    message.setStatusSelect(MessageRepository.STATUS_SENT);
+    message.setSentDateT(LocalDateTime.now());
+
+    message.setSentByEmail(false);
+    return message;
+  }
+
+  protected String getSender(Message message) {
+    return message.getSenderUser().getCode();
   }
 
   public Set<MetaAttachment> getMetaAttachments(Message message) {
