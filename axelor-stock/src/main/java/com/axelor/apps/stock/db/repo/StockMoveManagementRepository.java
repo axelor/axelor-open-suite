@@ -103,10 +103,14 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
     int available = 0, availableForProduct = 0, missing = 0;
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      if (stockMoveLine
-          .getProduct()
-          .getProductTypeSelect()
-          .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
+
+      if (stockMoveLine != null
+          && stockMoveLine.getProduct() != null
+          && stockMoveLine.getProduct().getProductTypeSelect() != null
+          && stockMoveLine
+              .getProduct()
+              .getProductTypeSelect()
+              .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
         continue;
       }
       Beans.get(StockMoveLineService.class)
