@@ -20,4 +20,5 @@ package com.axelor.apps.helpdesk.translation;
 public interface ITranslation {
 
   public static final String HELPDESK_APP_NAME = /*$$(*/ "value:Helpdesk"; /*)*/
+  public static final String TICKET_ALL = /*$$(*/ "ALL"; /*)*/
 }
