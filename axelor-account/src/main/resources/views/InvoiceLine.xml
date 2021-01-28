@@ -43,14 +43,14 @@
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large" readonlyIf="$isReadOnly"
 		  onNew="action-account-invoice-line-onnew-group"
 		  onLoad="action-group-account-invoice-line-onload">
-		<panel name="titlePanel" hideIf="typeSelect == 0">
+		<panel name="titlePanel" showIf="typeSelect > 0">
 			<field name="productName"  title="Title" requiredIf="typeSelect != 0"  colSpan="9"/>
 			<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" />
             <field name="qty" colSpan="6" />
             <field name="isShowTotal" colSpan="3" if="__config__.app.getApp('sale')?.enablePackManagement" onChange="action-invoice-line-record-reset-is-hide-unit-amounts" showIf="typeSelect == 3"/>
             <field name="isHideUnitAmounts" colSpan="3" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3 &amp;&amp; isShowTotal"/>
 		</panel>
-		<panel-tabs name="mainPanelTab" hideIf="typeSelect != 0">
+		<panel-tabs name="mainPanelTab" hideIf="typeSelect > 0">
 			<panel name="informationsPanel" title="Information">
 			    <panel name="customerInvoicePanel" colSpan="12">
 			      <field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect" form-view="product-form" grid-view="product-grid"/>
