@@ -45,6 +45,7 @@
 				<item name="ganttItem" title="Gantt" showIf="id &amp;&amp; isShowGantt" action="save,action-project-open-gantt"/>
 				<item name="bookResourceItem" title="Book resource" if=" __config__.app.getApp('project')?.resourceManagement"
 					action="save,action-project-book-resource"/>
+			    <item name="taskEditorItem" action="save,action-project-open-task-editor" title="Task editor"/>		
 				<item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
 				<item name="topic" title="Topic" action="save,project.topic.all" showIf="id &amp;&amp; isShowTopic"/>
 				<item name="perStatusKanban" title="Per status kanban" action="save,action-project-method-view-per-status-kanban" showIf="id &amp;&amp; isShowKanbanPerStatus"/>	
@@ -651,6 +652,11 @@
 		<domain>self.assignedTo.id IN (:_userIds) </domain>
 		 <context name="_userIds" expr="eval: userSet.collect{it.id}"/>
 	 	</action-view>
+	 	
+	<action-view name="action-project-open-task-editor" title="Task editor">
+	  <view name="project/task-editor?id={{id}}" type="html"/>
+	  <context name="id" expr="eval:id"/>
+	</action-view>	
 	
 	<action-record name="action-project-record-bind-customer-project" model="com.axelor.apps.project.db.Project">
 		<field name="clientPartner" expr="eval: project?.clientPartner"/>
