@@ -77,7 +77,7 @@
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
 		  onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
 		  onNew="action-group-sale-saleorderline-onnew" width="large">
-		<panel name="productPanel" showIf="typeSelect != 0">
+		<panel name="productPanel" showIf="typeSelect > 0">
 			<field name="productName" colSpan="9" title="Title"/>
 			<field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
             <field name="qty" />
@@ -85,7 +85,7 @@
 			<field name="isHideUnitAmounts" colSpan="3" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3 &amp;&amp; isShowTotal"/>
 		</panel>
  
-		<panel-tabs name="mainPanelTab" hideIf="typeSelect != 0">
+		<panel-tabs name="mainPanelTab" hideIf="typeSelect > 0">
 			<panel name="informationsPanel" title="Information">
        <!-- The condition $isReadOnly !== false is used to manage the case where isReadOnly is null. -->
 			<panel name="productInfoPanel" colSpan="12" readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0">

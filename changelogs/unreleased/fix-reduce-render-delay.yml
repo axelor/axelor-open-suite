@@ -1,0 +1,3 @@
+---
+title: "SaleOrderLine, InvoiceLine : Reduce render delay while opening the view"
+type: fix
