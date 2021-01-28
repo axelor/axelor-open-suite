@@ -492,11 +492,11 @@
     </action-view>
     
     <menuitem name="admin-root-organisation-territory-citizenship"
-      parent="admin-root-organisation-territory" title="Citizenship"
+      parent="admin-root-organisation-territory" title="menu.citizenship"
       action="admin.root.organisation.territory.citizenship" />
   
     <action-view name="admin.root.organisation.territory.citizenship"
-      title="Citizenship" model="com.axelor.apps.base.db.Citizenship">
+      title="menu.citizenship" model="com.axelor.apps.base.db.Citizenship">
       <view type="grid" name="citizenship-grid"/>
       <view type="form" name="citizenship-form"/>
     </action-view>
