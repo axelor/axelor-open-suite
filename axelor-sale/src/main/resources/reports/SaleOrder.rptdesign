@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -2395,6 +2395,12 @@ from base_app_base]]></xml-property>
                 <property name="borderBottomStyle">solid</property>
                 <property name="borderBottomWidth">thin</property>
                 <property name="height">1.5cm</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">xlsx</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
                 <cell id="3350">
                     <property name="colSpan">8</property>
                     <property name="rowSpan">1</property>
@@ -7006,6 +7012,7 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                     <property name="textAlign">right</property>
                     <image id="4328">
                         <property name="height">50px</property>
+                        <expression name="altText">""</expression>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
@@ -7014,7 +7021,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                         </list-property>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["salesperson_signature_path"]</expression>
-                        <expression name="altText">""</expression>
                     </image>
                     <text-data id="4329">
                         <expression name="valueExpr">row["SalemanName"]</expression>
