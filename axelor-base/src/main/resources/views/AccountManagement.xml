@@ -215,14 +215,14 @@
 	
 	<action-condition name="action-account-management-condition-avoid-company-duplicates">
 		<check field="company" error="You can't add an Account Management which has the same Company than a previous one."
-			if="eval: __parent__?._model == 'com.axelor.apps.base.db.ProductFamily'
-				&amp;&amp; __repo__(AccountManagement).all().filter('self.company = :company AND self.id =! :ownId AND self.productFamily.id = :productFamilyId')
-				.bind('company', company).bind('ownId', id?:0).bind('productFamilyId', __parent__.id).count >= 1"
+			if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.ProductFamily'
+				&amp;&amp; __repo__(AccountManagement).all().filter('self.company = :company AND self.id != :ownId AND self.productFamily.id = :productFamilyId')
+				.bind('company', company).bind('ownId', id?:0).bind('productFamilyId', __parent__.id).count() >= 1"
 		/>
 		<check field="company" error="You can't add an Account Management which has the same Company than a previous one."
-			if="eval: __parent__?._model == 'com.axelor.apps.base.db.Product'
-				&amp;&amp; __repo__(AccountManagement).all().filter('self.company = :company AND self.id =! :ownId AND self.product.id = :productId')
-				.bind('company', company).bind('ownId', id?:0).bind('productId', __parent__.id).count >= 1"
+			if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Product'
+				&amp;&amp; __repo__(AccountManagement).all().filter('self.company = :company AND self.id != :ownId AND self.product.id = :productId')
+				.bind('company', company).bind('ownId', id?:0).bind('productId', __parent__.id).count() >= 1"
 		/>
 	</action-condition>
 </object-views>
