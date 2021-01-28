@@ -11,22 +11,42 @@
 	  	<dataset type="sql">
 			SELECT 
 				COUNT(*) AS total_row, 
-				'ALL' as _status
+				(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		        	'ALL'
+		    	ELSE  
+					translation.message_value
+				END) as _status
 			FROM 
 				helpdesk_ticket
+			LEFT JOIN
+		         meta_translation as translation
+		    ON
+		         translation.message_key = 'ALL' AND translation.language = :_language
 			WHERE
 				DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-				AND assigned_to_user = :_user_id 
+				AND assigned_to_user = :_user_id
+			GROUP BY
+				translation.message_value
        		UNION ALL
       		SELECT 
       			COUNT(*) AS total_row, 
-      			'Resolved' as _status
+      			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		        	'Resolved'
+		    	ELSE  
+					translation.message_value
+				END) as _status
       		FROM 
-      			helpdesk_ticket 
+      			helpdesk_ticket
+      		LEFT JOIN
+		         meta_translation as translation
+		    ON
+		         translation.message_key = 'Resolved' AND translation.language = :_language 
       		WHERE 
       			DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
       			AND assigned_to_user = :_user_id
-      			AND status_select = 2 
+      			AND status_select = 2
+      		GROUP BY
+				translation.message_value
 		</dataset>
   	<category key="_status" type="text" title="Status"/>
 	<series key="total_row" type="bar" title="Total tickets"/>
@@ -40,7 +60,11 @@
   		<dataset type="sql">
 			SELECT 
 				COUNT(*) AS total_row, 
-				'ALL' as _status
+				(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		        	'ALL'
+		    	ELSE  
+					translation.message_value
+				END) as _status
 			FROM 
 				helpdesk_ticket AS self
 			JOIN
@@ -51,13 +75,23 @@
 				team_team AS _team
 			ON
 				_user.active_team = _team.id
+			LEFT JOIN
+		         meta_translation as translation
+		    ON
+		         translation.message_key = 'ALL' AND translation.language = :_language
 			WHERE
 				DATE(self.created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND _team.id = :_myActiveTeam
+			GROUP BY
+				translation.message_value
      		UNION ALL
     		SELECT 
     			COUNT(*) AS total_row, 
-    			'Resolved' as _status
+    			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		        	'Resolved'
+		    	ELSE  
+					translation.message_value
+				END) as _status
     		FROM 
     			helpdesk_ticket AS _ticket
     		JOIN
@@ -68,10 +102,16 @@
 				team_team AS _team
 			ON
 				_user.active_team = _team.id
+			LEFT JOIN
+		         meta_translation as translation
+		    ON
+		         translation.message_key = 'Resolved' AND translation.language = :_language
     		WHERE 
     			DATE(_ticket.created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
     			AND _team.id = :_myActiveTeam
     			AND _ticket.status_select = 2
+    		GROUP BY
+				translation.message_value
 		</dataset>
 		<category key="_status" type="text" title="Status"/>
 		<series key="total_row" type="bar" title="Total tickets"/>
@@ -86,23 +126,43 @@
 		<dataset type="sql">
 			SELECT 
 				COUNT(*) AS total_row, 
-				'ALL' as _status 
+				(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		        	'ALL'
+		    	ELSE  
+					translation.message_value
+				END) as _status 
 			FROM 
 				helpdesk_ticket
+			LEFT JOIN
+		         meta_translation as translation
+		    ON
+		         translation.message_key = 'ALL' AND translation.language = :_language
 			WHERE
 				DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			GROUP BY
+				translation.message_value
        		UNION ALL
       		SELECT 
       			COUNT(*) AS total_row, 
-      			'Resolved' as _status
+      			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		        	'Resolved'
+		    	ELSE  
+					translation.message_value
+				END) as _status
       		FROM 
-      			helpdesk_ticket 
+      			helpdesk_ticket
+      		LEFT JOIN
+		         meta_translation as translation
+		    ON
+		         translation.message_key = 'Resolved' AND translation.language = :_language 
       		WHERE 
       			DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      			AND status_select = 2 
+      			AND status_select = 2
+      		GROUP BY
+				translation.message_value 
 		</dataset>
 		<category key="_status" type="text" title="Status"/>
-		<series key="total_row" type="bar" title="Tickets"/>
+		<series key="total_row" type="bar" title="Total tickets"/>
 	</chart>
 	
 	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Percentage of tickets per SLA &amp; per team">
