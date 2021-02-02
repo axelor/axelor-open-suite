@@ -591,7 +591,7 @@
 		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'"/>
 		<attribute name="domain" for="product"
 			expr="eval: &quot;self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and dtype = 'Product' and (SELECT sellable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = ${__parent__ ? __parent__.company.id : saleOrder.company.id}) IS TRUE&quot;"
-			if="__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.find({it.name == 'sellable'})"/>
+			if="__config__.app.getApp('base')?.getCompanySpecificProductFieldsList()?.find({it.name == 'sellable'})"/>
 	</action-attrs>
 	
   	<action-attrs name="action-sale-order-line-attrs-scale-and-precision">
