@@ -94,6 +94,7 @@
 	
 	<action-view name="helpdesk.report.sla" title="SLA">
 	  <view name="helpdesk.sla.dashboard" type="dashboard"/>
+	  <context name="_language" expr="eval: __user__.getLanguage()"/>
 	  <context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	

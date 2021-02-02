@@ -22,4 +22,7 @@ public interface ITranslation {
   public static final String HELPDESK_APP_NAME = /*$$(*/ "value:Helpdesk"; /*)*/
   public static final String TICKET_ALL = /*$$(*/ "ALL"; /*)*/
   public static final String CHART_TICKET_RESOLVED = /*$$(*/ "chart.resolved"; /*)*/
+  public static final String CHART_TICKET_SOLVED = /*$$(*/ "Solved"; /*)*/
+  public static final String CHART_TICKET_UNSOLVED = /*$$(*/ "Unsolved"; /*)*/
+  
 }
