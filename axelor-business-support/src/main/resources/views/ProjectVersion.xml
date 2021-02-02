@@ -4,7 +4,6 @@
 
 	<grid name="project-version-grid" title="Project.version" model="com.axelor.apps.businesssupport.db.ProjectVersion">
 		<field name="title"/>
-		<field name="project"/>
 		<field name="statusSelect"/>
 		<field name="testingServerDate"/>
 	</grid>
