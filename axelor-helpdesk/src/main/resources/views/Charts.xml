@@ -168,11 +168,16 @@
 	<chart name="chart.SLA.percentage.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Percentage of tickets per SLA &amp; per team">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
+	    <field name="sla.team.name" title="Team"/>
 	  </search-fields>
 	  <dataset type="sql">
 		SELECT
 			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
-			'Solved' AS _status
+			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		    	'Solved'
+		    ELSE  
+				translation.message_value
+			END) AS _status
 		FROM 
 			helpdesk_ticket AS _ticket1
 		JOIN
@@ -187,14 +192,24 @@
 			helpdesk_sla AS _sla
 		ON
 			_sla.id = _ticket1.sla_policy
+		LEFT JOIN
+		    meta_translation as translation
+		ON
+		    translation.message_key = 'Solved' AND translation.language = :_language
 		WHERE 
 			_ticket1.is_sla_completed = true
 			AND _sla.id = :sla
 			AND _team.id = _sla.team
+		GROUP BY
+			translation.message_value
 		UNION ALL
 		SELECT
 			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
-			'Unsolved' AS _status
+			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		    	'Unsolved'
+		    ELSE  
+				translation.message_value
+			END) AS _status
 		FROM
 			helpdesk_ticket AS _ticket1
 		JOIN
@@ -209,10 +224,16 @@
 			helpdesk_sla AS _sla
 		ON
 			_sla.id = _ticket1.sla_policy
+		LEFT JOIN
+		    meta_translation as translation
+		ON
+			translation.message_key = 'Unsolved' AND translation.language = :_language
 		WHERE 
 			_ticket1.is_sla_completed = false
 			AND _sla.id = :sla
 			AND _team.id = _sla.team
+		GROUP BY
+			translation.message_value
 	</dataset>
 	  <category key="_status" type="text" title="Status"/>
 	  <series key="_percentage" type="pie" title="Percentage"/>
@@ -227,7 +248,11 @@
 	  <dataset type="sql">
 		SELECT
 			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
-			'Solved' AS _status
+			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		    	'Solved'
+		    ELSE  
+				translation.message_value
+			END) AS _status
 		FROM 
 			helpdesk_ticket AS _ticket1
 		JOIN
@@ -238,14 +263,24 @@
 			helpdesk_sla AS _sla
 		ON
 			_sla.id = _ticket1.sla_policy
+		LEFT JOIN
+		    meta_translation as translation
+		ON
+		    translation.message_key = 'Solved' AND translation.language = :_language
 		WHERE 
 			_ticket1.is_sla_completed = true
 			AND _sla.id = :sla
 			AND _user.id = :user
+		GROUP BY
+			translation.message_value
 		UNION ALL
 		SELECT
 			COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
-			'Unsolved' AS _status
+			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		    	'Unsolved'
+		    ELSE  
+				translation.message_value
+			END) AS _status
 		FROM
 			helpdesk_ticket AS _ticket1
 		JOIN
@@ -256,10 +291,16 @@
 			helpdesk_sla AS _sla
 		ON
 			_sla.id = _ticket1.sla_policy
+		LEFT JOIN
+		    meta_translation as translation
+		ON
+			translation.message_key = 'Unsolved' AND translation.language = :_language
 		WHERE 
 			_ticket1.is_sla_completed = false
 			AND _sla.id = :sla
 			AND _user.id = :user
+		GROUP BY
+			translation.message_value
 	</dataset>
 	  <category key="_status" type="text" title="Status"/>
 	  <series key="_percentage" type="pie" title="Percentage"/>
@@ -269,11 +310,16 @@
 	<chart name="chart.SLA.number.of.ticket.solved.not.solved.in.time.per.SLA.per.team" title="Number of tickets per SLA &amp; per team">
 	  <search-fields>
 	    <field name="sla" title="SLA" type="reference" target="com.axelor.apps.helpdesk.db.Sla" x-required="true"/>
+	    <field name="sla.team.name" title="Team"/>
 	  </search-fields>
 	  <dataset type="sql">
 		SELECT
 			COUNT(*) AS _total,
-			'Solved' AS _status
+			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		    	'Solved'
+		    ELSE  
+				translation.message_value
+			END) AS _status
 		FROM 
 			helpdesk_ticket AS _ticket1
 		JOIN
@@ -288,14 +334,24 @@
 			helpdesk_sla AS _sla
 		ON
 			_sla.id = _ticket1.sla_policy
+		LEFT JOIN
+		    meta_translation as translation
+		ON
+		    translation.message_key = 'Solved' AND translation.language = :_language
 		WHERE 
 			_ticket1.is_sla_completed = true
 			AND _sla.id = :sla
 			AND _team.id = _sla.team
+		GROUP BY
+			translation.message_value
 		UNION ALL
 		SELECT
 			COUNT(*) AS _total,
-			'Unsolved' AS _status
+			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		    	'Unsolved'
+		    ELSE  
+				translation.message_value
+			END) AS _status
 		FROM
 			helpdesk_ticket AS _ticket1
 		JOIN
@@ -310,10 +366,16 @@
 			helpdesk_sla AS _sla
 		ON
 			_sla.id = _ticket1.sla_policy
+		LEFT JOIN
+		    meta_translation as translation
+		ON
+			translation.message_key = 'Unsolved' AND translation.language = :_language
 		WHERE 
 			_ticket1.is_sla_completed = false
 			AND _sla.id = :sla
 			AND _team.id = _sla.team
+		GROUP BY
+			translation.message_value
 	</dataset>
 	  <category key="_status" type="text" title="Status"/>
 	  <series key="_total" type="bar" title="Total tickets"/>
@@ -327,7 +389,11 @@
 	  <dataset type="sql">
 		SELECT
 			COUNT(*) AS _total,
-			'Solved' AS _status
+			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		    	'Solved'
+		    ELSE  
+				translation.message_value
+			END) AS _status
 		FROM 
 			helpdesk_ticket AS _ticket1
 		JOIN
@@ -338,14 +404,24 @@
 			helpdesk_sla AS _sla
 		ON
 			_sla.id = _ticket1.sla_policy
+		LEFT JOIN
+		    meta_translation as translation
+		ON
+		    translation.message_key = 'Solved' AND translation.language = :_language
 		WHERE 
 			_ticket1.is_sla_completed = true
 			AND _sla.id = :sla
 			AND _user.id = :user
+		GROUP BY
+			translation.message_value
 		UNION ALL
 		SELECT
 			COUNT(*) AS _total,
-			'Unsolved' AS _status
+			(CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+		    	'Unsolved'
+		    ELSE  
+				translation.message_value
+			END) AS _status
 		FROM
 			helpdesk_ticket AS _ticket1
 		JOIN
@@ -356,10 +432,16 @@
 			helpdesk_sla AS _sla
 		ON
 			_sla.id = _ticket1.sla_policy
+		LEFT JOIN
+		    meta_translation as translation
+		ON
+			translation.message_key = 'Unsolved' AND translation.language = :_language
 		WHERE 
 			_ticket1.is_sla_completed = false
 			AND _sla.id = :sla
 			AND _user.id = :user
+		GROUP BY
+			translation.message_value
 	</dataset>
 	  <category key="_status" type="text" title="Status"/>
 	  <series key="_total" type="bar" title="Total tickets"/>
