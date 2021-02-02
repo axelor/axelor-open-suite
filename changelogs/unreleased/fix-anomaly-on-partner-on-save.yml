@@ -1,0 +1,4 @@
+---
+title: "Partner : Anomaly while saving partner"
+type: fix
+description: 'java.lang.ClassCastException : java.lang.Integer cannot be cast to java.lang.Long'
