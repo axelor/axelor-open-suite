@@ -40,7 +40,7 @@
       		LEFT JOIN
 		         meta_translation as translation
 		    ON
-		         translation.message_key = 'Resolved' AND translation.language = :_language 
+		         translation.message_key = 'chart.resolved' AND translation.language = :_language 
       		WHERE 
       			DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
       			AND assigned_to_user = :_user_id
@@ -105,7 +105,7 @@
 			LEFT JOIN
 		         meta_translation as translation
 		    ON
-		         translation.message_key = 'Resolved' AND translation.language = :_language
+		         translation.message_key = 'chart.resolved' AND translation.language = :_language
     		WHERE 
     			DATE(_ticket.created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
     			AND _team.id = :_myActiveTeam
@@ -154,7 +154,7 @@
       		LEFT JOIN
 		         meta_translation as translation
 		    ON
-		         translation.message_key = 'Resolved' AND translation.language = :_language 
+		         translation.message_key = 'chart.resolved' AND translation.language = :_language 
       		WHERE 
       			DATE(created_on) BETWEEN DATE(:fromDate) AND DATE(:toDate)
       			AND status_select = 2
