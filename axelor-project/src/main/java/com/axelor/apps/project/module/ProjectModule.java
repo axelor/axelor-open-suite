@@ -42,6 +42,8 @@ import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTemplateService;
 import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
+import com.axelor.apps.project.service.ResourceBookingService;
+import com.axelor.apps.project.service.ResourceBookingServiceImpl;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.TaskTemplateServiceImpl;
 import com.axelor.apps.project.service.TimerProjectTaskService;
@@ -70,5 +72,6 @@ public class ProjectModule extends AxelorModule {
     bind(TaskTemplateService.class).to(TaskTemplateServiceImpl.class);
     bind(ProjectTemplateService.class).to(ProjectTemplateServiceImpl.class);
     bind(TaskTemplateRepository.class).to(TaskTemplateManagementRepository.class);
+    bind(ResourceBookingService.class).to(ResourceBookingServiceImpl.class);
   }
 }

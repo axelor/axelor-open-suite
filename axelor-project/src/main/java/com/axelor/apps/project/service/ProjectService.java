@@ -60,4 +60,6 @@ public interface ProjectService {
   public String getTimeZone(Project project);
 
   public ProjectStatus getDefaultProjectStatus();
+
+  boolean checkIfResourceBooked(Project project);
 }
