@@ -485,7 +485,7 @@
 				</panel>
 			</panel>
 			<panel name="namePanel" colSpan="9">
-				<field name="fullName" css="bold" showTitle="false" colSpan="12">
+				<field name="simpleFullName" css="bold" showTitle="false" colSpan="12">
 					<editor x-show-titles="false">
 						<field name="titleSelect" placeholder="Civility" colSpan="2"/>
 						<field name="name" css="highlight" placeholder="Name"   onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
