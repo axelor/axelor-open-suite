@@ -25,10 +25,12 @@ import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ResourceBookingRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.translation.ITranslation;
@@ -73,6 +75,8 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Inject WikiRepository wikiRepo;
   @Inject ProjectTaskService projectTaskService;
+  @Inject ResourceBookingRepository resourceBookingRepository;
+  @Inject ResourceBookingService resourceBookingService;
 
   @Override
   public Project generateProject(
@@ -315,5 +319,37 @@ public class ProjectServiceImpl implements ProjectService {
         .filter("self.relatedToSelect = ?1", ProjectStatusRepository.PROJECT_STATUS_PROJECT)
         .order("sequence")
         .fetchOne();
+  }
+
+  public boolean checkIfResourceBooked(Project project) {
+
+    List<ResourceBooking> resourceBookingList = project.getResourceBookingList();
+    if (resourceBookingList != null) {
+      for (ResourceBooking resourceBooking : resourceBookingList) {
+        if (resourceBooking.getFromDate() != null
+            && resourceBooking.getToDate() != null
+            && (resourceBookingService.checkIfResourceBooked(resourceBooking)
+                || checkIfResourceBookedInList(resourceBookingList, resourceBooking))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean checkIfResourceBookedInList(
+      List<ResourceBooking> resourceBookingList, ResourceBooking resourceBooking) {
+
+    return resourceBookingList.stream()
+        .anyMatch(
+            x ->
+                !x.equals(resourceBooking)
+                    && x.getResource().equals(resourceBooking.getResource())
+                    && x.getFromDate() != null
+                    && x.getToDate() != null
+                    && ((resourceBooking.getFromDate().compareTo(x.getFromDate()) >= 0
+                            && resourceBooking.getFromDate().compareTo(x.getToDate()) <= 0)
+                        || (resourceBooking.getToDate().compareTo(x.getFromDate()) >= 0)
+                            && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
   }
 }
