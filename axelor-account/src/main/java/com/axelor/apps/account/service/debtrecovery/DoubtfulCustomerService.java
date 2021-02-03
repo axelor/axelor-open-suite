@@ -357,7 +357,6 @@ public class DoubtfulCustomerService {
     Invoice invoice = moveLine.getInvoiceReject();
 
     invoice.setRejectMoveLine(moveLine);
-    //			invoice.setPartnerAccount(doubtfulCustomerAccount);
     invoice.setDoubtfulCustomerOk(true);
 
     return invoice;
