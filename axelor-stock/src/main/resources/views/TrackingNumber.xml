@@ -11,6 +11,7 @@
     	<field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="warrantyExpirationDate"/>
         <field name="perishableExpirationDate"/>
+        <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
     </grid>
     
     <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber"

@@ -29,6 +29,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -438,5 +439,21 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     detailLocationLine.setTrackingNumber(trackingNumber);
 
     return detailLocationLine;
+  }
+
+  @Override
+  public BigDecimal getTrackingNumberAvailableQty(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+
+    StockLocationLine detailStockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (detailStockLocationLine != null) {
+      availableQty = detailStockLocationLine.getCurrentQty();
+    }
+    return availableQty;
   }
 }
