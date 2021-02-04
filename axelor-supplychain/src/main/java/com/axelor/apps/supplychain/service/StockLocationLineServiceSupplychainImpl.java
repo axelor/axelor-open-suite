@@ -20,20 +20,25 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RequestScoped
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
+
+  @Inject AppSupplychainService appSupplychainService;
 
   @Override
   public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine)
@@ -132,5 +137,29 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
             stockLocationLine.getProduct().getCode());
       }
     }
+  }
+
+  @Override
+  public BigDecimal getTrackingNumberAvailableQty(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+
+    if (!appSupplychainService.isApp("supplychain")
+        || !appSupplychainService.getAppSupplychain().getManageStockReservation()) {
+      return super.getTrackingNumberAvailableQty(stockLocation, trackingNumber);
+    }
+
+    StockLocationLine detailStockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (detailStockLocationLine != null) {
+      availableQty =
+          detailStockLocationLine
+              .getCurrentQty()
+              .subtract(detailStockLocationLine.getReservedQty());
+    }
+    return availableQty;
   }
 }
