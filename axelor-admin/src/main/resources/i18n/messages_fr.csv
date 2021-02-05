@@ -103,7 +103,7 @@
 "Object not found: %s","Objet(s) inconnu(s) : %s",,
 "Objects","Objets",,
 "Path","Chemin",,
-"Path Field",,,
+"Path Field","Champ de cheminement",,
 "Permission Assistant","Assistant gestion des permissions",,
 "Query","Requête",,
 "Query/path","Requête/chemin",,
