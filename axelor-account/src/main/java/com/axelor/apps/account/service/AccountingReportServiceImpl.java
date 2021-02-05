@@ -180,7 +180,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_AGED_BALANCE) {
-      this.addParams("self.account is null or self.account.reconcileOk = 'true'");
+      this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
       this.addParams("self.amountRemaining > 0 AND self.debit > 0");
     }
 
@@ -190,13 +190,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_BALANCE) {
-      this.addParams("self.account is null or self.account.reconcileOk = 'true'");
+      this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
     }
 
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_CASH_PAYMENTS) {
       this.addParams("self.move.paymentMode.typeSelect = ?%d", PaymentModeRepository.TYPE_CASH);
       this.addParams("self.credit > 0");
-      this.addParams("self.account is null or self.account.reconcileOk = 'true'");
+      this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
     }
 
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES) {
