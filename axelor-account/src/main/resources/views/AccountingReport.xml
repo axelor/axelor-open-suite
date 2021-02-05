@@ -113,7 +113,7 @@
 			<field name="ref" readonly="true"/>
 			<field name="date" title="Export Date fixed to" readonlyIf="statusSelect == 2"/>
 			<field name="reportType" onChange="action-group-account-accounting-report-reporttype-onchange"
-						 domain="reportExportTypeSelect = 2"/>
+						 domain="self.reportExportTypeSelect = 2 AND self.company = :company"/>
 			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-group-account-accounting-report-company-onchange" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="!$contains([1000, 1010], reportType.typeSelect)" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="$contains([1000, 1010], reportType.typeSelect)" grid-view="year-account-grid" form-view="year-account-form" />
 			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" requiredIf="!$contains([1000, 1010], reportType.typeSelect)" form-view="period-form" grid-view="period-grid" canView="false"/>
