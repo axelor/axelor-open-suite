@@ -22,8 +22,6 @@
     <decimal name="costAmount" title="Cost (W.T.)"/>
     
     <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="workCenter" title="Human resources"/>
-
-    <many-to-one name="parentWorkCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
     
     <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
     
@@ -58,7 +56,6 @@
     	<field name="product"/>
     	<field name="costTypeSelect"/>
     	<field name="costAmount"/>
-    	<field name="parentWorkCenter"/>
     	<field name="operationOrder"/>
     	<field name="costSheetGroup"/>
     </track>
