@@ -136,6 +136,70 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
+  public Message createMessage(
+      String model,
+      long id,
+      String subject,
+      String content,
+      EmailAddress fromEmailAddress,
+      List<EmailAddress> replyToEmailAddressList,
+      List<EmailAddress> toEmailAddressList,
+      List<EmailAddress> ccEmailAddressList,
+      List<EmailAddress> bccEmailAddressList,
+      Set<MetaFile> metaFiles,
+      String addressBlock,
+      int mediaTypeSelect,
+      EmailAccount emailAccount,
+      String signature,
+      Boolean isForTemporaryMessage) {
+
+    if (!isForTemporaryMessage) {
+      return createMessage(
+          model,
+          id,
+          subject,
+          content,
+          fromEmailAddress,
+          replyToEmailAddressList,
+          toEmailAddressList,
+          ccEmailAddressList,
+          bccEmailAddressList,
+          metaFiles,
+          addressBlock,
+          mediaTypeSelect,
+          emailAccount,
+          signature);
+    }
+
+    emailAccount =
+        emailAccount != null
+            ? Beans.get(EmailAccountRepository.class).find(emailAccount.getId())
+            : emailAccount;
+    Message message =
+        createMessage(
+            content,
+            fromEmailAddress,
+            model,
+            id,
+            null,
+            0,
+            false,
+            MessageRepository.STATUS_DRAFT,
+            subject,
+            MessageRepository.TYPE_SENT,
+            replyToEmailAddressList,
+            toEmailAddressList,
+            ccEmailAddressList,
+            bccEmailAddressList,
+            addressBlock,
+            mediaTypeSelect,
+            emailAccount,
+            signature);
+
+    return message;
+  }
+
+  @Override
   @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles) {
 
@@ -223,21 +287,38 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  public Message sendMessage(Message message) throws AxelorException, IOException, JSONException {
+  public Message sendMessage(Message message) throws AxelorException, JSONException, IOException {
     try {
-      switch (message.getMediaTypeSelect()) {
-        case MessageRepository.MEDIA_TYPE_MAIL:
-          return sendByMail(message);
-        case MessageRepository.MEDIA_TYPE_EMAIL:
-          return sendByEmail(message);
-        case MessageRepository.MEDIA_TYPE_CHAT:
-          return sendToUser(message);
-        case MessageRepository.MEDIA_TYPE_SMS:
-          return sendSMS(message);
-      }
+      sendMessage(message, false);
     } catch (MessagingException e) {
       TraceBackService.trace(e);
     }
+    return message;
+  }
+
+  @Override
+  public Message sendMessage(Message message, Boolean isTemporaryEmail)
+      throws AxelorException, MessagingException, JSONException, IOException {
+
+    if (!isTemporaryEmail) {
+      if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
+        message = sendByMail(message);
+      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {
+        message = sendByEmail(message);
+      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
+        message = sendToUser(message);
+      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_SMS) {
+        message = sendSMS(message);
+      }
+    } else {
+      if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_EMAIL) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.TEMPORARY_EMAIL_MEDIA_TYPE_ERROR));
+      }
+      message = sendByEmail(message, isTemporaryEmail);
+    }
+
     return message;
   }
 
@@ -270,8 +351,14 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public Message sendByEmail(Message message) throws MessagingException, AxelorException {
+    return sendByEmail(message, false);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendByEmail(Message message, Boolean isTemporaryEmail)
+      throws MessagingException, AxelorException {
 
     EmailAccount mailAccount = message.getMailAccount();
 
@@ -341,15 +428,30 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       mailBuilder.html(message.getContent());
     }
 
-    for (MetaAttachment metaAttachment : getMetaAttachments(message)) {
-      MetaFile metaFile = metaAttachment.getMetaFile();
-      mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
-    }
+    if (!isTemporaryEmail) {
+      for (MetaAttachment metaAttachment : getMetaAttachments(message)) {
+        MetaFile metaFile = metaAttachment.getMetaFile();
+        mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
+      }
 
-    getEntityManager().flush();
-    getEntityManager().lock(message, LockModeType.PESSIMISTIC_WRITE);
-    // send email using a separate process to avoid thread blocking
-    sendMailQueueService.submitMailJob(mailBuilder, message);
+      getEntityManager().flush();
+      getEntityManager().lock(message, LockModeType.PESSIMISTIC_WRITE);
+      // send email using a separate process to avoid thread blocking
+      sendMailQueueService.submitMailJob(mailBuilder, message);
+
+    } else {
+
+      // Sending email(message) which is not saved.
+      // No separate thread or JPA persistence lock required
+      try {
+        mailBuilder.send();
+      } catch (IOException e) {
+        log.debug("Exception when sending email", e);
+        TraceBackService.trace(e);
+      }
+
+      log.debug("Email sent.");
+    }
 
     return message;
   }

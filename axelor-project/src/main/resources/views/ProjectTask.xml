@@ -102,7 +102,8 @@
 				<field name="taskDate" colSpan="4" onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-project-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
-				<field name="progressSelect" widget="SelectProgress" onChange="action-project-task-update-planned-progress" showIf="project.isShowProgress"/>
+				<field name="projectTaskTagSet" widget="TagSelect" form-view="project-task-tag-form" grid-view="project-task-tag-grid" colSpan="4"/>
+				<field name="progressSelect" widget="SelectProgress" onChange="action-project-task-update-planned-progress" showIf="project.isShowProgress" colSpan="4"/>
 				<field name="project.isShowProgress" hidden="true"/>
 				<field name="project.isShowSection" hidden="true"/>
 				<field name="project.isShowStatus" hidden="true"/>

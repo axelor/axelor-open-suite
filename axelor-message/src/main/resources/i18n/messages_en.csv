@@ -111,6 +111,7 @@
 "Template Rules",,,
 "Template engine",,,
 "Templates",,,
+"Temporary email service only support Email media type.",,,
 "Test connection",,,
 "The email template model (%s) is different than the entity generating the email (%s)",,,
 "There is already a default account",,,

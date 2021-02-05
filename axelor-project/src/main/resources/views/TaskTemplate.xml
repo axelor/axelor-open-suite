@@ -22,7 +22,7 @@
 			<field name="assignedTo" canEdit="false"/>
 			<field name="team" canEdit="false"/>
 			<field name="isUniqueTaskForMultipleQuantity" widget="boolean-switch"/>
-            <field name="teamTaskCategory"/>
+            <field name="projectTaskCategory"/>
             <field name="parentTaskTemplate" domain=":id IS NULL OR self.id != :id"/>
 		</panel>
 		<panel name="contentPanel" title="Description" colSpan="12">

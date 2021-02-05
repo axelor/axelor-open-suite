@@ -62,4 +62,7 @@ public interface IExceptionMessage {
 
   static final String SMS_ERROR_MISSING_MOBILE_NUMBER = /*$$(*/
       "Please fill mobile phone number." /*)*/;
+
+  static final String TEMPORARY_EMAIL_MEDIA_TYPE_ERROR = /*$$(*/
+      "Temporary email service only support Email media type." /*)*/;
 }

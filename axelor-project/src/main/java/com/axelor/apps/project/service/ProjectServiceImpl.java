@@ -25,10 +25,12 @@ import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ResourceBookingRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.translation.ITranslation;
@@ -45,6 +47,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +75,8 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Inject WikiRepository wikiRepo;
   @Inject ProjectTaskService projectTaskService;
+  @Inject ResourceBookingRepository resourceBookingRepository;
+  @Inject ResourceBookingService resourceBookingService;
 
   @Override
   public Project generateProject(
@@ -149,18 +155,20 @@ public class ProjectServiceImpl implements ProjectService {
     projectRepository.save(project);
 
     Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
-    if (ObjectUtils.notEmpty(taskTemplateSet)) {
-      taskTemplateSet.forEach(template -> createTask(template, project));
+    if (ObjectUtils.isEmpty(taskTemplateSet)) {
+      return project;
     }
+    List<TaskTemplate> taskTemplateList = new ArrayList<>(taskTemplateSet);
+
+    Collections.sort(
+        taskTemplateList,
+        (taskTemplatet1, taskTemplate2) ->
+            taskTemplatet1.getParentTaskTemplate() == null || taskTemplate2 == null
+                ? 1
+                : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1);
+
+    taskTemplateList.forEach(taskTemplate -> createTask(taskTemplate, project, taskTemplateSet));
     return project;
-  }
-
-  public ProjectTask createTask(TaskTemplate taskTemplate, Project project) {
-    ProjectTask task =
-        projectTaskService.create(taskTemplate.getName(), project, taskTemplate.getAssignedTo());
-    task.setDescription(taskTemplate.getDescription());
-
-    return task;
   }
 
   @Override
@@ -311,5 +319,37 @@ public class ProjectServiceImpl implements ProjectService {
         .filter("self.relatedToSelect = ?1", ProjectStatusRepository.PROJECT_STATUS_PROJECT)
         .order("sequence")
         .fetchOne();
+  }
+
+  public boolean checkIfResourceBooked(Project project) {
+
+    List<ResourceBooking> resourceBookingList = project.getResourceBookingList();
+    if (resourceBookingList != null) {
+      for (ResourceBooking resourceBooking : resourceBookingList) {
+        if (resourceBooking.getFromDate() != null
+            && resourceBooking.getToDate() != null
+            && (resourceBookingService.checkIfResourceBooked(resourceBooking)
+                || checkIfResourceBookedInList(resourceBookingList, resourceBooking))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean checkIfResourceBookedInList(
+      List<ResourceBooking> resourceBookingList, ResourceBooking resourceBooking) {
+
+    return resourceBookingList.stream()
+        .anyMatch(
+            x ->
+                !x.equals(resourceBooking)
+                    && x.getResource().equals(resourceBooking.getResource())
+                    && x.getFromDate() != null
+                    && x.getToDate() != null
+                    && ((resourceBooking.getFromDate().compareTo(x.getFromDate()) >= 0
+                            && resourceBooking.getFromDate().compareTo(x.getToDate()) <= 0)
+                        || (resourceBooking.getToDate().compareTo(x.getFromDate()) >= 0)
+                            && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
   }
 }
