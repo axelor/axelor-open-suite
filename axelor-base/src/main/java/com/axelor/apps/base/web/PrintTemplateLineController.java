@@ -53,6 +53,7 @@ public class PrintTemplateLineController {
               metaModel,
               printTemplateLineTest.getPrintTemplateLine());
     } catch (NumberFormatException | ClassNotFoundException | AxelorException | IOException e) {
+      printTemplateLineTest.getPrintTemplateLine().setErrorHasBeenCatched(true);
       TraceBackService.trace(response, e);
     }
 

@@ -39,11 +39,16 @@
                 <field name="footerTextAlignment" colSpan="4"/>
             	<field name="footerFontSize" colSpan="4"/>
                 <field name="footerFontColor" colSpan="4"/>
-                 <field name="isFooterUnderLine" colSpan="4"/>
+                <field name="isFooterUnderLine" colSpan="4"/>
+                <field name="displayPageNumberInFooter" colSpan="4"/>
             </panel>
             <panel-related name="printTemplateLineListPanel" field="printTemplateLineList" grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12" orderBy="sequence" canMove="true"/>
             <field name="birtTemplateSet" widget="TagSelect" grid-view="birt-template-grid" form-view="birt-template-form" colSpan="12"/>
             <panel-related name="printTemplateSetPanel" field="printTemplateSet" grid-view="print-template-grid" form-view="print-template-form" colSpan="12"/>
+
+            <panel-related name="linesWithError" field="printTemplateLineList" readonly="true" domain="self.errorHasBeenCatched" title="The following lines contains an error" colSpan="12" grid-view="print-template-line-grid"/>
+
+            <field name="notes" colSpan="12"/>
         </panel>
     </form>
 
