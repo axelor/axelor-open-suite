@@ -18,7 +18,7 @@
         </toolbar>
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="save,action-abc-analysis-reports-wizard"/>
+                <item title="Print" action="save,action-abc-analysis-validate-abc-analysis-seq,action-abc-analysis-reports-wizard"/>
             </menu>
         </menubar>
         <panel name="statusPanel" hidden="true">
@@ -129,5 +129,9 @@
     <action-method name="action-abc-analysis-method-print-report">
         <call class="com.axelor.apps.base.web.ABCAnalysisController" method="printReport"/>
     </action-method>
-
+	
+	<action-validate name="action-abc-analysis-validate-abc-analysis-seq">
+		<alert message="To display the classification number, please set up a sequence" if="!abcAnalysisSeq"/>
+	</action-validate>
+	
 </object-views>
