@@ -1,5 +1,0 @@
----
-title: "FEC Import : change filter for account and journal"
-type: change
-description: |
-  "Account and journal will be fetched with code and move's company"

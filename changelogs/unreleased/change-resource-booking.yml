@@ -1,7 +1,0 @@
----
-title: "ResourceBooking : Changes"
-type: change
-description: |
-  Removed 'Computed automatically if left empty' tag.
-  Name is required.
-  Added missing translation.

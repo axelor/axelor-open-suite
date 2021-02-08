@@ -1,3 +1,68 @@
+## [6.0.6] (2021-02-08)
+
+#### Changes
+
+* ResourceBooking: form view change.
+  * Removed 'Computed automatically if left empty' tag.
+  * Name is now required.
+  * Added missing translation.
+* FEC Import: fetch account and journal from the company and code instead of only from the code.
+* Helpdesk SLA dashboards: add translation and improve filters.
+* Helpdesk Ticket dashboards: improve menu, tab and dashboard titles.
+* MRP: Filter out canceled or archived sale order in sale order lines selection.
+* Stock Deliveries dashboard changes:
+  * Display country code instead of country alpha code.
+  * Change legend name and series name in 'Customer average delivery delay'.
+  * Add missing translations.
+  * Add Date Range feature in some dashboards.
+* Company: add missing translations in company form.
+* Sync Contact: Change title to Contact synchronisation.
+* MANUF ORDER: add qty and unit field on grid view.
+* Citizenship: change french translation of 'citizenship' menu.
+* CRM: CRM Dashboards improvements.
+* Departments: change departments entry menu french translation.
+
+#### Fixed
+
+* OPPORTUNITY: filter out lost opportunities in best open deals dashlet.
+* Menu: Add french translation of 'Partner price lists'.
+* StockMove: add french translation of 'Please select the stock move(s) to print'.
+* Project: add missing translations in project planning user select wizard form.
+* Message: update french translations.
+* TeamTask: Fix timer buttons never displaying.
+* Production batch: add production batch tab french translation.
+* Partner: Add missing french translation for 'Customer catalog lines'.
+* Stock move: fix split into 2.
+
+ A stock move generated from split feature now correctly keeps the link to the order that generated it.
+
+* Global tracking log: add missing translations in wizard form.
+* Stock Move: fix server error in grid view when sorting by date.
+* Machine: Fix NullPointerException on machine creation.
+* Project DMS : Add missing translation
+* TICKET: Fix SLA policy viewer.
+* DATA CONFIG LINE: add missing translations.
+* Stock Move Line: fix duplicate stock move lines appearing in sale order line delivery dashlet.
+* Move: fix wrong form view opened on reversing a move.
+* COST SHEET REPORT: Hide cost sheet group column in printings when it is disabled in configuration.
+* AccountingReport: fix detailed customer balance printing being empty.
+* Fix Event calendar tab name's translation.
+* ADVANCE IMPORT: add missing translations in advanced import form.
+* Team task: Hide 'book resource' button if resource management is not activated.
+* StockRules: Filter message template configuration so we can only select stock rules template.
+* Stock Move: fix split by unit duplicating stock move lines.
+* Convert demo file: add missing translation in wizard form.
+* Move: Fix NullPointException error while creating move for doubtful customer.
+* SaleOrder: Fix excel report.
+* PRODUCT CATEGORY: Add translation for tree view.
+* Partner: Fix java.lang.ClassCastException error on saving partner.
+* Purchase Manager Dashboard: fix accounting family not displayed in 'Pos volume by buyer by accounting family'.
+* PROJECT PLANNING TIME: Add translations for editor view.
+* Fix Inventory file import.
+* Printing settings: add missing translations in form view.
+* Add 'Project/Business (Project)', 'Job Application' and 'Job applications' french translations.
+* Data Backup: update missing translations.
+
 ## [6.0.5] (2021-01-22)
 
 #### Changes
@@ -328,6 +393,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.6]: https://github.com/axelor/axelor-open-suite/compare/v6.0.5...v6.0.6
 [6.0.5]: https://github.com/axelor/axelor-open-suite/compare/v6.0.4...v6.0.5
 [6.0.4]: https://github.com/axelor/axelor-open-suite/compare/v6.0.3...v6.0.4
 [6.0.3]: https://github.com/axelor/axelor-open-suite/compare/v6.0.2...v6.0.3
