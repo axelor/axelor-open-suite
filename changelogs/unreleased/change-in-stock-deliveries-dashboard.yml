@@ -1,8 +1,0 @@
----
-title: "Stock Deliveries dashboard changes"
-type: change
-description: |
-  Showed Country code instead of Country alpha code.
-  Changed legend name and series name in 'Customer average delivery delay'.
-  Added missing translations.
-  Added Date Range feature in some dashboards.

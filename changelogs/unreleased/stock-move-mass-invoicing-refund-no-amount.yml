@@ -1,3 +1,0 @@
----
-title: "Stock move mass invoicing: correctly generate a refund when the price is 0."
-type: fix
