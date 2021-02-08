@@ -23,7 +23,7 @@
     	<field name="manufOrder" width="120" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
-        <field name="prodProcessLine.outsourcing"/>
+        <field name="outsourcing"/>
         <field name="machine" grid-view="machine-grid" form-view="machine-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
