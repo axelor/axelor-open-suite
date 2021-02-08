@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -943,6 +943,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
     </page-setup>
     <body>
         <grid id="491">
+            <property name="height">3.0140845070422535in</property>
             <property name="width">11.1in</property>
             <property name="dataSet">AccountingReportDS</property>
             <list-property name="visibility"/>
@@ -1072,7 +1073,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="553"/>
             </row>
             <row id="496">
-                <property name="height">0.2604166666666667in</property>
                 <cell id="497">
                     <text id="4192">
                         <property name="fontSize">10pt</property>
