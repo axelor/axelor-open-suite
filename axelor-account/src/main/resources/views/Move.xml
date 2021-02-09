@@ -18,7 +18,7 @@
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" width="140" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="invoice"  form-view="invoice-form" grid-view="invoice-grid" width="140"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" width="140"></field>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
 		<field name="statusSelect" width="90"/>
 	</grid>
 	<grid name="move-grid-period" orderBy="date,id" title="Account moves to validate" model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">

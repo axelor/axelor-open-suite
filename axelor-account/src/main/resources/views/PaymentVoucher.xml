@@ -27,7 +27,7 @@
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
 			 <field name="company" canEdit="false" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-method-fill-bank-details"/>
-			 <field name="tradingName" colSpan="4" form-view="trading-name-form" grid-view="trading-name-grid" onSelect="action-payment-voucher-set-trading-name-domain" onChange="action-group-payment-voucher-reset-imputation"></field>
+			 <field name="tradingName" colSpan="4" form-view="trading-name-form" grid-view="trading-name-grid" onSelect="action-payment-voucher-set-trading-name-domain" onChange="action-group-payment-voucher-reset-imputation"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		

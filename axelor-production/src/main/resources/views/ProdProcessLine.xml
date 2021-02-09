@@ -19,13 +19,13 @@
 		<panel name="mainPanel">
 			<field name="name" />
 			<field name="priority" colSpan="3" />
-			<field name="workCenterTypeSelect"></field>
+			<field name="workCenterTypeSelect"/>
 			<button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
 				onClick="save,action-production-view-work-center-group-wizard" />
 			<field name="workCenterGroup" colSpan="12" showIf="workCenterGroup">
 				<editor>
 					<panel colSpan="12" itemSpan="12">
-						<field name="name" readonly="true"></field>
+						<field name="name" readonly="true"/>
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid"
 							form-view="work-center-form" canEdit="true" canNew="true" showIf="workCenterTypeSelect == 3"  />
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid-small"
@@ -73,16 +73,16 @@
 		name="prod-process-line-work-center-group-wizard-form">
 		<panel name="mainPanel">
 			<field canNew="false" canEdit="false" canSelect="true"
-				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"></field>
+				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"/>
 			<button name="workCenterGroupWizerdSave" title="Save"
 				onClick="save,action-production-method-set-work-center-group" />
 
 		</panel>
 		<panel name="attrsPanel">
-			<field name="composantNomenclature" hidden="true"></field>
-			<field name="allWorkshops" hidden="true"></field>
-			<field name="ateliers" hidden="true"></field>
-			<field name="multipleQty" hidden="true"></field>
+			<field name="composantNomenclature" hidden="true"/>
+			<field name="allWorkshops" hidden="true"/>
+			<field name="ateliers" hidden="true"/>
+			<field name="multipleQty" hidden="true"/>
 		</panel>
 
 	</form>

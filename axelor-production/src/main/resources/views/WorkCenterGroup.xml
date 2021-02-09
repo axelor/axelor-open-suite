@@ -5,30 +5,30 @@
 
 	<grid model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center groups"
 		name="work-center-group-grid">
-		<field name="name"></field>
-		<field name="workCenterTypeSelect"></field>
-		<field name="template"></field>
+		<field name="name"/>
+		<field name="workCenterTypeSelect"/>
+		<field name="template"/>
 	</grid>
 	
 	<grid model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center groups"
 		name="work-center-group-grid-small">
-		<field name="name"></field>
-		<field name="template"></field>
+		<field name="name"/>
+		<field name="template"/>
 	</grid>
 	
 	<grid model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group models"
 		name="work-center-group-model-grid">
-		<field name="name"></field>
-		<field name="workCenterTypeSelect"></field>
-		<field name="template"></field>
+		<field name="name"/>
+		<field name="workCenterTypeSelect"/>
+		<field name="template"/>
 	</grid>
 
 	<form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"
 		name="work-center-group-form">
 
 		<panel colSpan="12" itemSpan="6">
-			<field name="name"></field>
-			<field name="workCenterTypeSelect"></field>
+			<field name="name"/>
+			<field name="workCenterTypeSelect"/>
 		</panel>
 		<!-- If workCenterTypeSelect = Machine or Human + Machine -->
 		<panel-related name="detailLinesPanel" field="workCenterSet"
@@ -50,8 +50,8 @@
 		name="work-center-group-form-from-menu" onNew="action-production-work-center-group-on-new">
 
 		<panel colSpan="12" itemSpan="6">
-			<field name="name"></field>
-			<field name="workCenterTypeSelect"></field>
+			<field name="name"/>
+			<field name="workCenterTypeSelect"/>
 		</panel>
 		<!-- If workCenterTypeSelect = Machine or Human + Machine -->
 		<panel-related name="detailLinesPanel" field="workCenterSet"

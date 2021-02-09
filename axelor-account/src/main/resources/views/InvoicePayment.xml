@@ -39,7 +39,7 @@
             <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
             <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
-            <field name="invoice.tradingName"></field>
+            <field name="invoice.tradingName"/>
             <field name="invoice" hidden="true" />
 		</panel>
 		<panel name="otherDetailsPanel" showIf="id">

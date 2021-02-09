@@ -13,7 +13,7 @@
     </grid>
     
     <grid name="price-list-hist-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
-    	<field name="createdOn" title="Date"></field>
+    	<field name="createdOn" title="Date"/>
     	<field name="title"/>
     	<field name="typeSelect"/>
     	<field name="isActive"/>

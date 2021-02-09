@@ -197,8 +197,8 @@
 		onNew="action-group-purchase-purchase-orderline-onnew"
 		onLoad="action-group-purchase-purchase-orderline-onload" width="large">
 		<panel name="mainPanel" >
-			<field name="purchaseOrder.contactPartner"></field>
-    		<field name="purchaseOrder.purchaseOrderSeq"></field>
+			<field name="purchaseOrder.contactPartner"/>
+    		<field name="purchaseOrder.purchaseOrderSeq"/>
 		</panel>
 		<panel-include view="purchase-order-line-form"/>
 	</form>
