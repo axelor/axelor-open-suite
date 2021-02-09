@@ -323,7 +323,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
   @Override
   public void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException {
-    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {

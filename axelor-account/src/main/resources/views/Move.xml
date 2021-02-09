@@ -368,11 +368,11 @@
 	</action-view>
 	
 	<action-attrs name="action-move-set-trading-name-domain">
-		<attribute name="domain" for="tradingName" expr="eval: &quot;self.id IN (${company?.tradingNameSet?.collect{it.id}.join(',')})"/>
+		<attribute name="domain" for="tradingName" expr="eval: &quot;self.id IN (${(company?.tradingNameSet?.collect{it.id}+[0]).join(',')})&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-move-hide-trading-name" model="com.axelor.apps.account.db.Move">
-		<attribute name="hidden" for="trading-name"  expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+		<attribute name="hidden" for="tradingName"  expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
 	</action-attrs>
 
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
