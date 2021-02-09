@@ -47,7 +47,7 @@
 	</form>
 
 	<form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"
-		name="work-center-group-form-from-menu" onNew="action-production-work-center-group-on-new">
+		name="work-center-group-form-from-menu" onNew="action-production-work-center-record-on-new">
 
 		<panel colSpan="12" itemSpan="6">
 			<field name="name"/>
@@ -66,12 +66,12 @@
 			form-view="work-center-form" showIf="workCenterTypeSelect == 1" />
 
 		<panel-dashlet name="prodProcessLinesPanel" title="ProdProcess.phases"
-			colSpan="12" action="action-work-center-group-view-prod-process-lines" showIf="template == false"/>
+			colSpan="12" action="action-work-center-group-view-prod-process-lines" showIf="!template"/>
 
 	</form>
 	
 	<form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group model"
-		name="work-center-group-model-form-from-menu" onNew="action-production-work-center-group-on-new">
+		name="work-center-group-model-form-from-menu" onNew="action-production-work-center-record-on-new">
 		<panel-include view="work-center-group-form-from-menu"/>
 	</form>
 
@@ -83,7 +83,7 @@
 		<context name="workCenterGroup" expr="eval: __self__?.id" />
 	</action-view>
 
-	<action-record name="action-production-work-center-group-on-new"
+	<action-record name="action-production-work-center-record-on-new"
 		model="com.axelor.apps.production.db.WorkCenterGroup">
 		<field name="template" expr="eval: _template" />
 		<field name="workCenterTypeSelect" expr="eval: 1" />

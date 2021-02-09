@@ -25,10 +25,10 @@
 			<field name="workCenterGroup" colSpan="12" showIf="workCenterGroup">
 				<editor>
 					<panel colSpan="12" itemSpan="12">
-						<field name="name" readonly="true"/>
-						<field name="workCenterSet" readonly="true" grid-view="work-center-grid"
+						<field name="name" showTitle="false" readonly="true"/>
+						<field name="workCenterSet" readonly="true" showTitle="false" grid-view="work-center-grid"
 							form-view="work-center-form" canEdit="true" canNew="true" showIf="workCenterTypeSelect == 3"  />
-						<field name="workCenterSet" readonly="true" grid-view="work-center-grid-small"
+						<field name="workCenterSet" readonly="true" showTitle="false" grid-view="work-center-grid-small"
 							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect != 3" />
 					</panel>
 
@@ -69,12 +69,12 @@
 		</panel-mail>
 	</form>
 
-	<form model="com.axelor.apps.production.db.ProdProcessLine" title="Work center group wizard"
+	<form model="com.axelor.apps.production.db.ProdProcessLine" title="Work center group selection"
 		name="prod-process-line-work-center-group-wizard-form">
 		<panel name="mainPanel">
 			<field canNew="false" canEdit="false" canSelect="true"
 				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"/>
-			<button name="workCenterGroupWizerdSave" title="Save"
+			<button name="workCenterGroupWizardSave" title="Save"
 				onClick="save,action-production-method-set-work-center-group" />
 
 		</panel>
