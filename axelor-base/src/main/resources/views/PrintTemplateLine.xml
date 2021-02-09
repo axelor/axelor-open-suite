@@ -4,7 +4,7 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <grid name="print-template-line-grid" title="Print template lines" model="com.axelor.apps.base.db.PrintTemplateLine" x-row-height="80">
-        <field name="sequence" width="100"/>
+        <field name="sequence" width="80"/>
         <field name="title" widget="html"/>
         <field name="ignoreTheLine" width="150"/>
         <field name="conditions"/>
@@ -14,8 +14,8 @@
 
     <form name="print-template-line-form" title="Print template line" model="com.axelor.apps.base.db.PrintTemplateLine" width="large">
         <panel>
-            <field name="sequence"/>
             <label name="infoLabel" title="Specific Tag" colSpan="12"/>
+            <field name="sequence"/>
             <field name="isEditable" colSpan="2"/>
             <field name="ignoreTheLine" colSpan="2"/>
             <field name="isWithPageBreakAfter" colSpan="2"/>
