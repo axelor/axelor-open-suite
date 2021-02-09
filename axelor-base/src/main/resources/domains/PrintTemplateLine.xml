@@ -8,18 +8,18 @@
     <entity name="PrintTemplateLine">
 
         <string name="title" title="Title" namecolumn="true" large="true"/>
-        <string name="content" title="Content" large="true" help="String template"/>
+        <string name="content" title="Content" large="true"/>
         <one-to-many name="templateContextList" title="Context" ref="com.axelor.apps.message.db.TemplateContext" mappedBy="printTemplateLine"/>
         <many-to-one name="printTemplate" title="Print template" ref="com.axelor.apps.base.db.PrintTemplate"/>
         <integer name="sequence" title="Seq."/>        
-        <string name="conditions" title="Conditions" large="true" help="Groovy conditions"/>
+        <string name="conditions" title="Conditions" large="true"/>
         <boolean name="isEditable" title="Editable"/>        
         <many-to-one name="parent" title="Parent" ref="com.axelor.apps.base.db.PrintTemplateLine"/>
         <one-to-many name="printTemplateLineList" title="Content lines" ref="com.axelor.apps.base.db.PrintTemplateLine" mappedBy="parent" orderBy="sequence"/>
         <boolean name="ignoreTheLine" title="Ignore the line"/>
         <one-to-one name="printTemplateLineTest" ref="com.axelor.apps.base.db.PrintTemplateLineTest" title="Print template line test"/>
         <boolean name="isWithPageBreakAfter" title="With page break"/>
-
+        <string name="notes" large="true" multiline="true" title="Notes"/>
     </entity>
 
 </domain-models>
