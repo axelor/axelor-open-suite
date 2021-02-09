@@ -8,6 +8,8 @@
   <entity name="DebtRecovery" lang="java">
   
     <one-to-one name="accountingSituation" ref="com.axelor.apps.account.db.AccountingSituation"/> 
+  	<many-to-one name="tradingNameAccountingSituation" ref="com.axelor.apps.account.db.AccountingSituation"/>
+  	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
   	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
 	<many-to-one name="debtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="Active level" />
 	<date name="debtRecoveryDate" title="Last debt recovery date"/>
@@ -23,6 +25,7 @@
   	<boolean name="deceasedPartnerOk" title="Owner deceased"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="Trading Name"/>
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <string name="name" namecolumn="true" search="referenceDate,id" title="Name">

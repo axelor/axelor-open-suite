@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="sale" package="com.axelor.apps.sale.db" />
+
+	<entity name="ComplementaryProductSelected" lang="java">
+    	<boolean name="isSelected" title="Selected"/>
+    	
+    	<many-to-one name="saleOrderLine" title="Sale order line" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+	
+	  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+	  	<decimal name="qty" title="Quantity" precision="20" scale="10"/>
+    	<boolean name="optional" title="Optional"/>
+	</entity>
+
+</domain-models>

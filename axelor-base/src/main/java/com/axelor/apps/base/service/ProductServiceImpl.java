@@ -19,15 +19,17 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -42,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -81,8 +84,35 @@ public class ProductServiceImpl implements ProductService {
     productRepo.save(product);
   }
 
-  public String getSequence() throws AxelorException {
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PRODUCT);
+  public String getSequence(Product product) throws AxelorException {
+    String seq = null;
+    if (appBaseService
+        .getAppBase()
+        .getProductSequenceTypeSelect()
+        .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT_CATEGORY)) {
+      ProductCategory productCategory = product.getProductCategory();
+      if (productCategory.getSequence() != null) {
+        seq = sequenceService.getSequenceNumber(productCategory.getSequence());
+      }
+      if (seq == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CATEGORY_NO_SEQUENCE));
+      }
+    } else if (appBaseService
+        .getAppBase()
+        .getProductSequenceTypeSelect()
+        .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT)) {
+      Sequence productSequence = appBaseService.getAppBase().getProductSequence();
+      if (productSequence != null) {
+        seq = sequenceService.getSequenceNumber(productSequence);
+      }
+      if (seq == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.APP_BASE_NO_SEQUENCE));
+      }
+    }
 
     if (seq == null) {
       throw new AxelorException(
@@ -145,7 +175,10 @@ public class ProductServiceImpl implements ProductService {
   private void updateSalePriceOfVariant(Product product) throws AxelorException {
 
     List<? extends Product> productVariantList =
-        productRepo.all().filter("self.parentProduct = ?1 AND dtype = 'Product'", product).fetch();
+        productRepo
+            .all()
+            .filter("self.parentProduct = ?1 AND self.dtype = 'Product'", product)
+            .fetch();
 
     for (Product productVariant : productVariantList) {
 
@@ -156,6 +189,16 @@ public class ProductServiceImpl implements ProductService {
       productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
       this.updateSalePrice(productVariant, null);
+    }
+  }
+
+  public boolean hasActivePriceList(Product product) {
+    if (product.getPriceListLineList() == null) return false;
+    else {
+      return !product.getPriceListLineList().stream()
+          .filter(priceListLine -> priceListLine.getPriceList().getIsActive())
+          .collect(Collectors.toList())
+          .isEmpty();
     }
   }
 

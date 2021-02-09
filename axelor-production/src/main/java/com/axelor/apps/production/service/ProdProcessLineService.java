@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import java.math.BigDecimal;
 
 public interface ProdProcessLineService {
@@ -27,4 +29,6 @@ public interface ProdProcessLineService {
   public BigDecimal getProdProcessLineMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
 
   public BigDecimal getProdProcessLineMaxCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
+
+  public void copyWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup);
 }

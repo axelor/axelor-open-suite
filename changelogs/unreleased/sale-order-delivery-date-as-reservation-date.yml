@@ -1,0 +1,7 @@
+---
+title: Sale Order: new config to use delivery date for reservation.
+type: feature
+description: |
+  It is now possible to choose if the date used to decide reservation priority
+  is delivery date or confirmation date with a new configuration in
+  supplychain.

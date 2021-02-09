@@ -18,9 +18,11 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -87,6 +89,28 @@ public class StockMoveController {
             .isAllocatedStockMoveLineRemoved(stockMove)) {
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
       response.setFlash(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
+    }
+  }
+
+  /**
+   * Called from stock move form view, on delivered partner select. Call {@link
+   * PartnerSupplychainLinkService#computePartnerFilter}
+   *
+   * @param request
+   * @param response
+   */
+  public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  stockMove.getPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+
+      response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

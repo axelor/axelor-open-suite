@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.PartnerTurnoverService;
+import com.axelor.apps.account.service.YearServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -71,6 +73,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
+      PartnerTurnoverService partnerTurnoverService,
+      YearServiceAccount yearServiceAccount,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo) {
     super(
@@ -83,6 +87,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         partnerService,
         invoiceLineService,
         accountConfigService,
+        partnerTurnoverService,
+        yearServiceAccount,
         moveToolService);
     this.invoiceLineRepo = invoiceLineRepo;
   }

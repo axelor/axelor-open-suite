@@ -73,4 +73,7 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_EDIT_ORDER_NOTIFY = /*$$(*/
       "At least one sale order line has a stock move with availability request." /*)*/;
+
+  String SALE_ORDER_DISCOUNT_TOO_HIGH = /*$$(*/
+      "There are lines with a discount superior to the maximal authorized discount." /*)*/;
 }

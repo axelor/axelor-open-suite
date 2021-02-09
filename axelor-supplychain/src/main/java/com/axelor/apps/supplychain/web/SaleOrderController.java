@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -36,8 +37,10 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
@@ -906,6 +909,71 @@ public class SaleOrderController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view, on invoiced partner select. Call {@link
+   * PartnerSupplychainLinkService#computePartnerFilter}
+   *
+   * @param request
+   * @param response
+   */
+  public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  saleOrder.getClientPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+
+      response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view, on delivered partner select. Call {@link
+   * PartnerSupplychainLinkService#computePartnerFilter}
+   *
+   * @param request
+   * @param response
+   */
+  public void setDeliveredPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  saleOrder.getClientPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+
+      response.setAttr("deliveredPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order view, on delivery date change. <br>
+   * Update stock reservation date for each sale order line by calling {@link
+   * SaleOrderLineServiceSupplyChain#updateStockMoveReservationDateTime(SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateStockReservationDate(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .updateStockMoveReservationDateTime(saleOrderLine);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

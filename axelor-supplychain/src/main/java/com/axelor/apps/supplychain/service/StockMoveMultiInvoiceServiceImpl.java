@@ -364,7 +364,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             dummyInvoice.getExternalReference(),
             dummyInvoice.getInAti(),
             null,
-            dummyInvoice.getTradingName()) {
+            dummyInvoice.getTradingName(),
+            dummyInvoice.getGroupProductsOnPrintings()) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -470,7 +471,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             dummyInvoice.getExternalReference(),
             dummyInvoice.getInAti(),
             null,
-            dummyInvoice.getTradingName()) {
+            dummyInvoice.getTradingName(),
+            null) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -589,6 +591,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setContactPartner(saleOrder.getContactPartner());
       dummyInvoice.setPriceList(saleOrder.getPriceList());
       dummyInvoice.setInAti(saleOrder.getInAti());
+      dummyInvoice.setGroupProductsOnPrintings(saleOrder.getGroupProductsOnPrintings());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -596,6 +599,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getToAddress());
       dummyInvoice.setAddressStr(stockMove.getToAddressStr());
+      dummyInvoice.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
     }
     return dummyInvoice;
   }

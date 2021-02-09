@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+    <grid name="complementary-product-grid" title="Complementary product(s)" editable="true" model="com.axelor.apps.sale.db.ComplementaryProduct">
+        <field name="product"/>
+        <field name="qty" x-scale="2"/>
+        <field name="optional"/>
+    </grid>
+    
+    <form name="complementary-product-form" title="Complementary product" model="com.axelor.apps.sale.db.ComplementaryProduct"
+    	  onLoad="action-complementary-product-line-attrs-scale-and-precision">
+    	<panel name="mainPanel">
+        	<field name="product"/>
+        	<field name="qty"/>
+        	<field name="optional"/>
+        </panel>
+    </form>
+    
+   	<action-attrs name="action-complementary-product-line-attrs-scale-and-precision">
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
+    
+    
+</object-views>
+
+

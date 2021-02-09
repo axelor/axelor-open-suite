@@ -29,17 +29,21 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.sale.db.ComplementaryProduct;
+import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
@@ -53,10 +57,12 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +97,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.saleOrderLineRepo = saleOrderLineRepo;
   }
 
+  @Inject protected ProductCategoryService productCategoryService;
+
   @Inject protected ProductCompanyService productCompanyService;
 
   @Override
@@ -106,6 +114,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
     fillPrice(saleOrderLine, saleOrder);
+    fillComplementaryProductList(saleOrderLine);
   }
 
   @Override
@@ -128,6 +137,29 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
             convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
+      }
+    }
+  }
+
+  @Override
+  public void fillComplementaryProductList(SaleOrderLine saleOrderLine) {
+    if (saleOrderLine.getProduct() != null
+        && saleOrderLine.getProduct().getComplementaryProductList() != null) {
+      if (saleOrderLine.getSelectedComplementaryProductList() == null) {
+        saleOrderLine.setSelectedComplementaryProductList(new ArrayList<>());
+      }
+      saleOrderLine.clearSelectedComplementaryProductList();
+      for (ComplementaryProduct complProduct :
+          saleOrderLine.getProduct().getComplementaryProductList()) {
+        ComplementaryProductSelected newComplProductLine = new ComplementaryProductSelected();
+
+        newComplProductLine.setProduct(complProduct.getProduct());
+        newComplProductLine.setQty(complProduct.getQty());
+        newComplProductLine.setOptional(complProduct.getOptional());
+
+        newComplProductLine.setIsSelected(!complProduct.getOptional());
+        newComplProductLine.setSaleOrderLine(saleOrderLine);
+        saleOrderLine.addSelectedComplementaryProductListItem(newComplProductLine);
       }
     }
   }
@@ -204,6 +236,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
+    line.setSelectedComplementaryProductList(null);
     return line;
   }
 
@@ -642,6 +675,41 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       return soLine;
     }
     return null;
+  }
+
+  @Override
+  public BigDecimal computeMaxDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    Optional<BigDecimal> maxDiscount = Optional.empty();
+    Product product = saleOrderLine.getProduct();
+    if (product != null && product.getProductCategory() != null) {
+      maxDiscount = productCategoryService.computeMaxDiscount(product.getProductCategory());
+    }
+    if (!maxDiscount.isPresent()
+        || saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_NONE
+        || saleOrder == null
+        || (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION
+            && (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
+                || !saleOrder.getOrderBeingEdited()))) {
+      return null;
+    } else {
+      return maxDiscount.get();
+    }
+  }
+
+  @Override
+  public boolean isSaleOrderLineDiscountGreaterThanMaxDiscount(
+      SaleOrderLine saleOrderLine, BigDecimal maxDiscount) {
+    return (saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_PERCENT
+            && saleOrderLine.getDiscountAmount().compareTo(maxDiscount) > 0)
+        || (saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED
+            && saleOrderLine.getPrice().signum() != 0
+            && saleOrderLine
+                    .getDiscountAmount()
+                    .multiply(BigDecimal.valueOf(100))
+                    .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP)
+                    .compareTo(maxDiscount)
+                > 0);
   }
 
   @Override

@@ -1191,7 +1191,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               + stockMove.getFromStockLocation().getId()
               + " AND sll.currentQty > 0)";
     }
-    return domain + " AND dtype = 'Product'";
+    return domain + " AND self.dtype = 'Product'";
   }
 
   @Override

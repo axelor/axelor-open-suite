@@ -1,0 +1,6 @@
+---
+title: "Product: Fix prod process and bill of material creation"
+type: fix
+description: |
+	Fix Prod process creation from product
+	Fix Bill of material creation from product

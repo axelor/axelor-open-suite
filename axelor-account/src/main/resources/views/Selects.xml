@@ -488,4 +488,15 @@
 		<option value="reportedBalance">Reported balance</option>
 	</selection>
 
+    <selection name="partner.turnover.type.partner.select">
+        <option value="1">Supplier</option>
+        <option value="2">Customer</option>
+    </selection>
+
+    <selection name="account.deposit.type.select">
+        <option value="1">Cheque</option>
+        <option value="2">Cash</option>
+        <option value="3">Bill of Exchange</option>
+    </selection>
+
 </object-views>

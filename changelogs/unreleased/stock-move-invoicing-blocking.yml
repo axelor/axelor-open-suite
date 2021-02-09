@@ -1,0 +1,6 @@
+---
+title: "Stock Move: New fields to block invoicing."
+type: feature
+description: |
+    In stock move form, add fields to configure a temporary or definitive
+    blocking of invoice generation for the stock move.

@@ -77,7 +77,4 @@ public interface ProductionOrderService {
       SaleOrder saleOrder,
       int originType)
       throws AxelorException;
-
-  @Transactional(rollbackOn = {Exception.class})
-  public ProductionOrder updateStatus(ProductionOrder productionOrder);
 }

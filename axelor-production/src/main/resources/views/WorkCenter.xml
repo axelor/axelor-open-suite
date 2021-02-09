@@ -10,6 +10,11 @@
         <field name="workCenterTypeSelect"/>
     </grid>
     
+    <grid name="work-center-grid-small" title="Work centers" model="com.axelor.apps.production.db.WorkCenter">
+        <field name="name"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    </grid>
+    
 	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
 	  <panel name="mainPanel" >
 	    <field name="name"/>
@@ -26,7 +31,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service' AND dtype = 'Product'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
+	          <field name="product" domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
   		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
@@ -62,7 +67,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service' AND dtype = 'Product'" canEdit="false"/>
+	          <field name="product" domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
    		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
@@ -90,7 +95,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service' AND dtype = 'Product'" canEdit="false"/>
+	          <field name="product" domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
    		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
