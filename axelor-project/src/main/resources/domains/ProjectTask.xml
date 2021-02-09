@@ -21,7 +21,7 @@
     <boolean name="doApplyToAllNextTasks" title="Apply modifications to next tasks" default="false"/>
     <boolean name="hasDateOrFrequencyChanged" title="Date or frequency changed" readonly="true" default="false"/>
 
-    <integer name="typeSelect" title="Type" selection="project.task.type.select" />
+    <string name="typeSelect" title="Type" selection="project.task.type.select" default="task"/>
   
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
@@ -74,8 +74,8 @@
       public static final Integer PRIORITY_URGENT = 4;
       
       // TYPE SELECT
-      public static final Integer TYPE_TASK = 0;
-      public static final Integer TYPE_TICKET = 1;
+      public static final String TYPE_TASK = "task";
+      public static final String TYPE_TICKET = "ticket";
     </extra-code>
     
     <track replace="true">

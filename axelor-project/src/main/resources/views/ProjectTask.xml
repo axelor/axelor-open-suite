@@ -42,7 +42,7 @@
          <field name="status" widget="NavSelect" showTitle="false" showIf="project.isShowStatus" x-order="sequence"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
-          <field name="$viewerTags" showTitle="false" readonly="true" showIf="typeSelect == 1 &amp;&amp; $readonly()" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" hidden="true">
+          <field name="$viewerTags" showTitle="false" readonly="true" showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" hidden="true">
             <viewer>
               <![CDATA[
                    <h4 class="text-right">
@@ -76,15 +76,15 @@
 					<field name="project" colSpan="6" onChange="action-project-task-group-project-onchange" domain="self.projectStatus.isCompleted = false" required="true"/>
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-project-task-attrs-project-parent-task-configurations"/>
 					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
-					<field name="customerReferral" onSelect="action-project-task-attrs-customer-referral-domain" hidden="true" showIf="typeSelect == 1" if="__config__.app.isApp('business-project')"/>
-					<field name="isPrivate" hidden="true" showIf="typeSelect == 1" colSpan="6"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-					<field name="isOrderAccepted" colSpan="3" hidden="true" showIf="typeSelect == 1" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="customerReferral" onSelect="action-project-task-attrs-customer-referral-domain" hidden="true" showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
+					<field name="isPrivate" hidden="true" showIf="typeSelect == 'ticket'" colSpan="6"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<field name="isOrderAccepted" colSpan="3" hidden="true" showIf="typeSelect == 'ticket'" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<field name="isOrderProposed" hidden="true" colSpan="3" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				</panel>
 				<panel name="actionPanel" colSpan="4">
-					<button name="acceptOrderBtn" title="Accept Order" hidden="true" hideIf="invoicingType != 1  || isOrderAccepted || typeSelect != 1" onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" hidden="true" onClick="action-project-task-attrs-assginment-provider,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 1 &amp;&amp; typeSelect == 1"/>
-					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" hidden="true" onClick="action-project-task-attrs-assginment-customer,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 2 &amp;&amp; typeSelect == 1"/>
+					<button name="acceptOrderBtn" title="Accept Order" hidden="true" hideIf="invoicingType != 1  || isOrderAccepted || typeSelect != 'ticket'" onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" hidden="true" onClick="action-project-task-attrs-assginment-provider,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 1 &amp;&amp; typeSelect == 'ticket'"/>
+					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" hidden="true" onClick="action-project-task-attrs-assginment-customer,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
 				</panel>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
@@ -98,7 +98,7 @@
 				  <field name="priority" colSpan="12" onSelect="action-project-task-atts-priority-on-select" requiredIf="project.isShowPriority" canView="false"/>
 				</panel>
 				<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet" colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
-				<field name="assignment" hidden="true" showIf="typeSelect == 1" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" colSpan="4"/>
+				<field name="assignment" hidden="true" showIf="typeSelect == 'ticket'" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" colSpan="4"/>
 				<field name="taskDate" colSpan="4" onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-project-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
