@@ -343,4 +343,24 @@ public class SaleOrderLineController {
                 .compareTo(saleOrder.getInAti() ? orderLine.getInTaxPrice() : orderLine.getPrice())
             == 0);
   }
+
+  /**
+   * Called from sale order line form view, on product selection. Call {@link
+   * SaleOrderLineService#computeProductDomain(SaleOrderLine, SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void computeProductDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      response.setAttr(
+          "product", "domain", saleOrderLineService.computeProductDomain(saleOrderLine, saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

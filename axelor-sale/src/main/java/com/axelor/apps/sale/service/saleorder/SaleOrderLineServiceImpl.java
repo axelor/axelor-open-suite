@@ -51,6 +51,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.loader.ModuleManager;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
@@ -858,7 +859,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   /**
-   * A function used to get the unit price of a sale order line from pack line, either in ati or wt
+   * A method used to get the unit price of a sale order line from pack line, either in ati or wt
    *
    * @param saleOrder the sale order containing the sale order line
    * @param saleOrderLine
@@ -867,7 +868,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
    * @return the unit price of the sale order line
    * @throws AxelorException
    */
-  private BigDecimal getUnitPriceFromPackLine(
+  protected BigDecimal getUnitPriceFromPackLine(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine, boolean resultInAti)
       throws AxelorException {
 
@@ -893,7 +894,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
   @Override
   public Set<Integer> getPackLineTypes(List<PackLine> packLineList) {
-    Set<Integer> packLineTypeSet = new HashSet<Integer>();
+    Set<Integer> packLineTypeSet = new HashSet<>();
     packLineList.stream()
         .forEach(
             packLine -> {
@@ -904,5 +905,48 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               }
             });
     return packLineTypeSet;
+  }
+
+  @Override
+  public String computeProductDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    String domain =
+        "self.isModel = false"
+            + " and (self.endDate = null or self.endDate > :__date__)"
+            + " and self.dtype = 'Product'";
+
+    if (appBaseService.getAppBase().getCompanySpecificProductFieldsSet() != null
+        && appBaseService.getAppBase().getCompanySpecificProductFieldsSet().stream()
+            .anyMatch(it -> "sellable".equals(it.getName()))
+        && saleOrder != null
+        && saleOrder.getCompany() != null) {
+      domain +=
+          " and (SELECT sellable "
+              + "FROM ProductCompany productCompany "
+              + "WHERE productCompany.product.id = self.id "
+              + "AND productCompany.company.id = "
+              + saleOrder.getCompany().getId()
+              + ") IS TRUE ";
+    } else {
+      domain += " and self.sellable = true ";
+    }
+
+    if (appSaleService.getAppSale().getEnableSalesProductByTradName()
+        && saleOrder != null
+        && saleOrder.getTradingName() != null
+        && saleOrder.getCompany() != null
+        && saleOrder.getCompany().getTradingNameSet() != null
+        && !saleOrder.getCompany().getTradingNameSet().isEmpty()) {
+      domain +=
+          " AND " + saleOrder.getTradingName().getId() + " member of self.tradingNameSellerSet";
+    }
+
+    // The standard way to do this would be to override the method in HR module.
+    // But here, we have to do this because overriding a sale service in hr module will prevent the
+    // override in supplychain, business-project, and business production module.
+    if (ModuleManager.isInstalled("axelor-human-resource")) {
+      domain += " AND self.expense = false ";
+    }
+
+    return domain;
   }
 }

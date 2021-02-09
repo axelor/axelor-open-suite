@@ -286,4 +286,13 @@ public interface SaleOrderLineService {
    */
   public BigDecimal getInTaxUnitPriceFromPackLine(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+
+  /**
+   * Compute product domain from configurations and sale order.
+   *
+   * @param saleOrderLine a sale order line
+   * @param saleOrder a sale order (can be a sale order from context and not from database)
+   * @return a String with the JPQL expression used to filter product selection
+   */
+  String computeProductDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 }
