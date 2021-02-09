@@ -38,7 +38,8 @@
         	<field name="useCaseSelect" colSpan="3" onChange="action-stock-rules-record-useCaseSelect-change"/>
         	<field name="typeSelect" showIf="useCaseSelect == 2" colSpan="3" requiredIf="useCaseSelect == 2"/>
 	    	<field name="orderAlertSelect" selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]" colSpan="3"/>
-            <field name="stockRuleMessageTemplate" colSpan="3" showIf="(useCaseSelect == 2 &amp;&amp; orderAlertSelect == 1) || alert"/>
+         <field name="stockRuleMessageTemplate" colSpan="3" showIf="(useCaseSelect == 2 &amp;&amp; orderAlertSelect == 1) || alert"
+            domain="self.metaModel.name = 'StockRules'"/>
 	    	<field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid" showIf="orderAlertSelect == 1" colSpan="3"/>
 	    	<field name="team" canEdit="false" form-view="team-form" grid-view="team-grid" showIf="orderAlertSelect == 1" colSpan="3"/>
         	<panel name="quantitiesPanel" title="Quantities" colSpan="6">

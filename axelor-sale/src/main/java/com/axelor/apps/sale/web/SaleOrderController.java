@@ -137,7 +137,7 @@ public class SaleOrderController {
   public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLS);
+    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
   public void exportSaleOrderWord(ActionRequest request, ActionResponse response)

@@ -18,14 +18,12 @@
 package com.axelor.apps.project.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.project.db.repo.AbstractResourceBookingRepository;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
-import com.axelor.apps.project.db.repo.ResourceBookingRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateRepository;
 import com.axelor.apps.project.db.repo.TeamProjectRepository;
@@ -64,7 +62,6 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectTaskService.class).to(ProjectTaskServiceImpl.class);
     bind(TeamRepository.class).to(TeamProjectRepository.class);
     bind(TimerProjectTaskService.class).to(TimerProjectTaskServiceImpl.class);
-    bind(AbstractResourceBookingRepository.class).to(ResourceBookingRepository.class);
     bind(ProjectActivityService.class).to(ProjectActivityServiceImpl.class);
     bind(ProjectActivityObserver.class);
     bind(MetaJsonFieldProjectService.class).to(MetaJsonFieldProjectServiceImpl.class);

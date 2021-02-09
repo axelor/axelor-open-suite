@@ -207,6 +207,7 @@
 	
 	<action-record name="action-accounting-report-record-year" model="com.axelor.apps.account.db.AccountingReport">
 		<field name="year" expr="eval: period.year" if="eval : period != null"/>
+		<field name="year" expr="eval: null" if="!(typeSelect in [12,15,16,17])"/>
 	</action-record>
 	
 	<action-record name="action-accounting-report-record-period-dates" model="com.axelor.apps.account.db.AccountingReport">

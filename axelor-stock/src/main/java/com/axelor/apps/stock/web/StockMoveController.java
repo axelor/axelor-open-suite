@@ -330,32 +330,44 @@ public class StockMoveController {
   @SuppressWarnings("unchecked")
   public void splitStockMoveLinesUnit(ActionRequest request, ActionResponse response) {
     try {
-      List<StockMoveLine> stockMoveLines =
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      List<StockMoveLine> stockMoveLineContextList =
           (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
-      if (stockMoveLines == null) {
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      if (stockMoveLineContextList == null) {
         response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
         return;
       }
+      List<StockMoveLine> stockMoveLineList = new ArrayList<>();
+      StockMoveLineRepository stockMoveLineRepo = Beans.get(StockMoveLineRepository.class);
+      for (StockMoveLine stockMoveLineContext :
+          stockMoveLineContextList.stream()
+              .filter(StockMoveLine::isSelected)
+              .collect(Collectors.toList())) {
+        StockMoveLine stockMoveLine = stockMoveLineRepo.find(stockMoveLineContext.getId());
+        stockMoveLine.setSelected(true);
+        stockMoveLineList.add(stockMoveLine);
+      }
       boolean selected =
           Beans.get(StockMoveService.class)
-              .splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
+              .splitStockMoveLines(stockMove, stockMoveLineList, BigDecimal.ONE);
 
       if (!selected) {
         response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
       }
       response.setReload(true);
-      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressWarnings("unchecked")
   public void splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
     try {
-      List<HashMap> selectedStockMoveLineMapList =
-          (List<HashMap>) request.getContext().get("stockMoveLineList");
-      Map stockMoveMap = (Map<String, Object>) request.getContext().get("stockMove");
+      List<HashMap<String, Object>> selectedStockMoveLineMapList =
+          (List<HashMap<String, Object>>) request.getContext().get("stockMoveLineList");
+      Map<String, Object> stockMoveMap =
+          (Map<String, Object>) request.getContext().get("stockMove");
       if (selectedStockMoveLineMapList == null) {
         response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
         return;
@@ -363,9 +375,11 @@ public class StockMoveController {
 
       List<StockMoveLine> stockMoveLineList = new ArrayList<>();
       StockMoveLineRepository stockMoveLineRepo = Beans.get(StockMoveLineRepository.class);
-      for (HashMap map : selectedStockMoveLineMapList) {
+      for (HashMap<String, Object> map : selectedStockMoveLineMapList) {
         StockMoveLine stockMoveLine = Mapper.toBean(StockMoveLine.class, map);
-        stockMoveLineList.add(stockMoveLineRepo.find(stockMoveLine.getId()));
+        stockMoveLine = stockMoveLineRepo.find(stockMoveLine.getId());
+        stockMoveLine.setSelected(true);
+        stockMoveLineList.add(stockMoveLine);
       }
 
       if (stockMoveLineList.isEmpty()) {
@@ -384,8 +398,7 @@ public class StockMoveController {
 
       StockMove stockMove = Mapper.toBean(StockMove.class, stockMoveMap);
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
-      Beans.get(StockMoveService.class)
-          .splitStockMoveLinesSpecial(stockMove, stockMoveLineList, splitQty);
+      Beans.get(StockMoveService.class).splitStockMoveLines(stockMove, stockMoveLineList, splitQty);
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

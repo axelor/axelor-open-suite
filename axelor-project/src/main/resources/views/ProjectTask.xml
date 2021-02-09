@@ -28,7 +28,7 @@
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-record-change-status,save" showIf="project.isShowStatus"/>
     </toolbar>
     <menubar>
-          <menu name="projectTaskMenu" title="Tools">   
+          <menu name="projectTaskMenu" title="Tools" if="__config__.app.getApp('project')?.resourceManagement">
               <item name="bookResourceItem" title="Book resource" action="save,action-project-task-book-resource"/>
           </menu>
     </menubar>
@@ -528,7 +528,7 @@
 
 	<action-group name="action-project-task-group-timer-process">
 		<action name="action-project-task-attrs-project-filter-status" if="project?.isShowStatus"/>
-		<action name="action-project-task-method-manage-timer-buttons" if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
+		<action name="action-project-task-method-manage-timer-buttons"/>
 		<action name="action-project-task-method-compute-total-timer-duration" if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
 		<action name="action-project-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-project-task-business-support-provider" if="__config__.app.isApp('business-support')"/>

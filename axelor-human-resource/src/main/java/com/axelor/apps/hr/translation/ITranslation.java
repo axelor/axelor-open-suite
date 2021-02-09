@@ -61,4 +61,7 @@ public interface ITranslation {
   public static final String EMPLOYEE_COMPANY = /*$$(*/ "Employee.company"; /*)*/
   public static final String EMPLOYEE_POSITION = /*$$(*/ "Employee.position"; /*)*/
   public static final String EMPLOYEE_CONTRACT_TYPE = /*$$(*/ "Employee.contractType"; /*)*/
+
+  public static final String EDITOR_TEAM_TASK = /*$$(*/ "TeamTask"; /*)*/
+  public static final String EDITOR_ADD_A_LINE = /*$$(*/ "ADD A LINE"; /*)*/
 }

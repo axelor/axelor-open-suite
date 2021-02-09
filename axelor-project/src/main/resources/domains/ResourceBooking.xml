@@ -5,7 +5,7 @@
 
 	<module name="project" package="com.axelor.apps.project.db"/>
 
-	<entity name="ResourceBooking" repository="abstract">
+	<entity name="ResourceBooking">
 		<string name="name"/>
 		<many-to-one name="resource" ref="Resource" title="Resource" column="project_resource" required="true"/>
 		<many-to-one name="project" ref="Project" title="Project" required="true"/>
