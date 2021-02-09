@@ -18,9 +18,9 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;

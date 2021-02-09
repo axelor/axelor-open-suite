@@ -201,7 +201,7 @@
 		action="supplychain.referential.conf.partner" />
 
 	<action-view name="supplychain.referential.conf.partner"
-		title="Partner relations types" model="com.axelor.apps.base.db.PartnerSupplychainLinkType">
+		title="Partner relations types" model="com.axelor.apps.supplychain.db.PartnerSupplychainLinkType">
 		<view type="grid" name="partner-supplychain-link-type-grid" />
 		<view type="form" name="partner-supplychain-link-type-form" />
 	</action-view>
