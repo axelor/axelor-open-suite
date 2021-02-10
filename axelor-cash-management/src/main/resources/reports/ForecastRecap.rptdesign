@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -152,22 +152,19 @@
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ForecastRecapLines" id="210">
             <list-property name="columnHints">
                 <structure>
+                    <property name="columnName">sum</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">sum</text-property>
+                    <text-property name="heading">sum</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">estimated_date</property>
-                    <property name="alias">estimated_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">estimated_date</text-property>
                     <text-property name="heading">estimated_date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">balance</property>
-                    <property name="alias">balance</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">balance</text-property>
-                    <text-property name="heading">balance</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">title</property>
-                    <property name="alias">title</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">title</text-property>
                     <text-property name="heading">title</text-property>
@@ -190,13 +187,13 @@
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">estimated_date</property>
-                        <property name="dataType">date</property>
+                        <property name="name">sum</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">balance</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">estimated_date</property>
+                        <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -209,17 +206,17 @@
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
+                    <property name="name">sum</property>
+                    <property name="nativeName">sum</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
                     <property name="name">estimated_date</property>
                     <property name="nativeName">estimated_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">balance</property>
-                    <property name="nativeName">balance</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
@@ -229,24 +226,25 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select _date estimated_date, 
-  ABS(_forcaseRecapLine.balance) balance,
-  (CASE
-  	WHEN balance >= 0 THEN 'In'
-	ELSE 'Out'
-  END) as title
-from(
-	SELECT ForecastRecapLine.estimated_date _date, 
-	MAX(ForecastRecapLineType.sequence) as _max,
-	MAX(ForecastRecapLine.id) as _id
+            <xml-property name="queryText"><![CDATA[WITH forecastRecapLine
+AS
+(
+	SELECT ForecastRecapLine.estimated_date, MetaSelectItem.title, SUM(ForecastRecapLine.amount) as amount
 	FROM management_forecast_recap_line as ForecastRecapLine
 	left outer join management_forecast_recap as ForecastRecap on (ForecastRecapLine.forecast_recap = ForecastRecap.id)
-	left join management_forecast_recap_line_type as ForecastRecapLineType on ForecastRecapLine.forecast_recap_line_type = ForecastRecapLineType.id 
-	where ForecastRecap.id = ? 
-	group by ForecastRecapLine.estimated_date
-) situtation
-JOIN management_forecast_recap_line _forcaseRecapLine ON _forcaseRecapLine.id = _id
-order by estimated_date;]]></xml-property>
+	left join management_forecast_recap_line_type as ForecastRecapLineType on ForecastRecapLine.forecast_recap_line_type = ForecastRecapLineType.id
+	left outer join meta_select as MetaSelect on (MetaSelect.name = 'iaccount.payment.mode.in.out.select')
+	left outer join meta_select_item as MetaSelectItem on (MetaSelectItem.select_id = MetaSelect.id)
+	where ForecastRecap.id = ? AND MetaSelectItem.value = cast(ForecastRecapLine.type_select as varchar(10))
+	group by ForecastRecapLine.estimated_date, MetaSelectItem.title
+), forecastRecapLineTotal AS
+(
+   SELECT amount, estimated_date, title, ROW_NUMBER() OVER(ORDER BY estimated_date) rownum
+   FROM forecastRecapLine
+) 
+SELECT (SELECT SUM(amount) FROM forecastRecapLineTotal c2 WHERE c2.rownum <= c1.rownum),
+  estimated_date, title
+FROM forecastRecapLineTotal c1]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
             <list-property name="columnHints">
@@ -1141,18 +1139,6 @@ where ForecastRecap.id = ?
                     <expression name="expression" type="javascript">dataSetRow["endingbalance"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
-                <structure>
-                    <property name="name">logopath</property>
-                    <text-property name="displayName">logopath</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logopath"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">sequence</property>
-                    <text-property name="displayName">sequence</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
             </list-property>
             <column id="3901"/>
             <column id="3894"/>
@@ -1942,9 +1928,9 @@ where ForecastRecap.id = ?
           </Entries>
           <Entries xsi:type="attribute:ColorDefinition">
             <Transparency>255</Transparency>
-            <Red>235</Red>
-            <Green>64</Green>
-            <Blue>52</Blue>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
           </Entries>
           <Entries xsi:type="attribute:ColorDefinition">
             <Transparency>255</Transparency>
@@ -2114,6 +2100,12 @@ where ForecastRecap.id = ?
             <Green>255</Green>
             <Blue>255</Blue>
           </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>128</Green>
+            <Blue>0</Blue>
+          </Entries>
         </SeriesPalette>
         <Series xsi:type="type:BarSeries">
           <Visible>true</Visible>
@@ -2150,13 +2142,13 @@ where ForecastRecap.id = ?
             <Visible>false</Visible>
           </Label>
           <DataDefinition>
-            <Definition>row[&quot;balance&quot;]</Definition>
+            <Definition>row[&quot;sum&quot;]</Definition>
             <Grouping>
               <GroupType>Text</GroupType>
               <AggregateExpression>Sum</AggregateExpression>
             </Grouping>
           </DataDefinition>
-          <SeriesIdentifier></SeriesIdentifier>
+          <SeriesIdentifier>Series 1</SeriesIdentifier>
           <DataPoint>
             <Components>
               <Type>Orthogonal_Value</Type>
@@ -2175,7 +2167,6 @@ where ForecastRecap.id = ?
               </Value>
             </Action>
           </Triggers>
-          <Translucent>false</Translucent>
           <Riser>Rectangle</Riser>
         </Series>
         <Grouping>
@@ -2279,7 +2270,6 @@ where ForecastRecap.id = ?
       </MinorGrid>
       <Scale>
         <MinorGridsPerUnit>5</MinorGridsPerUnit>
-        <AutoExpand>true</AutoExpand>
       </Scale>
       <Origin>
         <Type>Min</Type>
@@ -2394,12 +2384,6 @@ where ForecastRecap.id = ?
         <Entries xsi:type="attribute:ColorDefinition">
           <Transparency>255</Transparency>
           <Red>0</Red>
-          <Green>128</Green>
-          <Blue>192</Blue>
-        </Entries>
-        <Entries xsi:type="attribute:ColorDefinition">
-          <Transparency>255</Transparency>
-          <Red>128</Red>
           <Green>128</Green>
           <Blue>192</Blue>
         </Entries>
@@ -2677,14 +2661,12 @@ where ForecastRecap.id = ?
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">estimated_date</property>
-                                <text-property name="displayName">estimated_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["estimated_date"]</expression>
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">balance</property>
-                                <text-property name="displayName">balance</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["balance"]</expression>
+                                <property name="name">sum</property>
+                                <expression name="expression" type="javascript">dataSetRow["sum"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -3164,11 +3146,14 @@ where ForecastRecap.id = ?
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5436">
+                                    <data id="5399">
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["amount"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <property name="resultSetColumn">amount</property>
+                                    </data>
                                 </cell>
                                 <cell id="5400">
                                     <property name="borderBottomStyle">solid</property>
@@ -3180,11 +3165,13 @@ where ForecastRecap.id = ?
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">right</property>
-                                    <text id="5437">
-                                        <property name="textAlign">right</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["balance"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="5401">
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        </structure>
+                                        <property name="resultSetColumn">balance</property>
+                                    </data>
                                 </cell>
                             </row>
                         </detail>
