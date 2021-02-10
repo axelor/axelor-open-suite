@@ -11,18 +11,13 @@
 		    		<field name="receiptDefaultStockLocation" onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
 		    		<field name="wasteDefaultStockLocation" onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
 		    		<field name="shippingDefaultStockLocation" onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-		    		<field name="parkingStockLocation" onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
 		    		<field name="qualityControlDefaultStockLocation" onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-		    		<field name="analyticCode"/>
 		    	</panel>
     		</insert>
     	</extend>
     </form>
     
     <action-attrs name="action-stock-attrs-stock-locations-domain">
-		<attribute name="domain" expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;" 
-			for="parkingStockLocation" if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()" />
-		
 		<attribute name="domain" expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;"
 			for="receiptDefaultStockLocation" if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()" />
 		
@@ -40,9 +35,6 @@
 		
 		<attribute name="domain" expr="eval: &quot;self.id IS NULL &quot;"
 			for="wasteDefaultStockLocation" if="!stockLocationList || stockLocationList?.isEmpty()" />
-		
-		<attribute name="domain" expr="eval: &quot;self.id IS NULL &quot;"
-			for="parkingStockLocation" if="!stockLocationList || stockLocationList?.isEmpty()" />
 		
 		<attribute name="domain" for="shippingDefaultStockLocation" if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()" 
 			 expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;" />
