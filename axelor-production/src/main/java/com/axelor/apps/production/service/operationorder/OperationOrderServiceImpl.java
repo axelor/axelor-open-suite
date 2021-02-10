@@ -83,31 +83,30 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
     WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
-    WorkCenter workCenter = null;
+    Optional<WorkCenter> workCenter = Optional.empty();
     if (workCenterGroup != null
         && workCenterGroup.getWorkCenterSet() != null
         && !workCenterGroup.getWorkCenterSet().isEmpty()) {
       workCenter =
           workCenterGroup.getWorkCenterSet().stream()
-              .min(Comparator.comparing(WorkCenter::getSequence))
-              .get();
+              .min(Comparator.comparing(WorkCenter::getSequence));
     }
-    if (workCenter != null) {
+    if (workCenter.isPresent()) {
       OperationOrder operationOrder =
           this.createOperationOrder(
               manufOrder,
               prodProcessLine.getPriority(),
-              workCenter,
-              workCenter.getMachine(),
+              workCenter.get(),
+              workCenter.get().getMachine(),
               prodProcessLine.getMachineTool(),
               prodProcessLine);
 
       return Beans.get(OperationOrderRepository.class).save(operationOrder);
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.NO_WORK_CENTER_GROUP));
     }
-
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.NO_WORK_CENTER_GROUP));
   }
 
   @Transactional(rollbackOn = {Exception.class})

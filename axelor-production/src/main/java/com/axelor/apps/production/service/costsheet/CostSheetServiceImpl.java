@@ -61,6 +61,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -360,18 +361,18 @@ public class CostSheetServiceImpl implements CostSheetService {
 
         WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
 
-        WorkCenter workCenter = null;
+        Optional<WorkCenter> workCenterOpt = Optional.empty();
 
         if (workCenterGroup != null
             && workCenterGroup.getWorkCenterSet() != null
             && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-          workCenter =
+          workCenterOpt =
               workCenterGroup.getWorkCenterSet().stream()
-                  .min(Comparator.comparing(WorkCenter::getSequence))
-                  .get();
+                  .min(Comparator.comparing(WorkCenter::getSequence));
         }
 
-        if (workCenter != null) {
+        if (workCenterOpt.isPresent()) {
+          WorkCenter workCenter = workCenterOpt.get();
 
           int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
@@ -454,18 +455,18 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
 
-    WorkCenter workCenter = null;
+    Optional<WorkCenter> workCenterOpt = Optional.empty();
 
     if (workCenterGroup != null
         && workCenterGroup.getWorkCenterSet() != null
         && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenter =
+      workCenterOpt =
           workCenterGroup.getWorkCenterSet().stream()
-              .min(Comparator.comparing(WorkCenter::getSequence))
-              .get();
+              .min(Comparator.comparing(WorkCenter::getSequence));
     }
 
-    if (workCenter != null) {
+    if (workCenterOpt.isPresent()) {
+      WorkCenter workCenter = workCenterOpt.get();
       int costType = workCenter.getCostTypeSelect();
 
       if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
@@ -854,18 +855,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       Long realDuration)
       throws AxelorException {
-    BigDecimal costPerHour = BigDecimal.ZERO;
-    // if (prodHumanResource.getProduct() != null) {
-    // Product product = prodHumanResource.getProduct();
-    // costPerHour =
-    // unitConversionService.convert(
-    // hourUnit,
-    // product.getUnit(),
-    // product.getCostPrice(),
-    // appProductionService.getNbDecimalDigitForUnitPrice(),
-    // product);
-    // }
-    costPerHour = workCenter.getCostAmount();
+    BigDecimal costPerHour = workCenter.getCostAmount();
     BigDecimal durationHours =
         new BigDecimal(realDuration)
             .divide(

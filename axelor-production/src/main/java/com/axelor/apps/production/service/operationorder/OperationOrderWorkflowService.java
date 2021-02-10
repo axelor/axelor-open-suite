@@ -58,6 +58,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class OperationOrderWorkflowService {
@@ -278,20 +279,20 @@ public class OperationOrderWorkflowService {
 
     WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
 
-    WorkCenter workCenter = null;
+    Optional<WorkCenter> workCenterOpt = Optional.empty();
 
     if (workCenterGroup != null
         && workCenterGroup.getWorkCenterSet() != null
         && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenter =
+      workCenterOpt =
           workCenterGroup.getWorkCenterSet().stream()
-              .min(Comparator.comparing(WorkCenter::getSequence))
-              .get();
+              .min(Comparator.comparing(WorkCenter::getSequence));
     }
 
-    if (workCenter == null) {
+    if (!workCenterOpt.isPresent()) {
       return 0;
     }
+    WorkCenter workCenter = workCenterOpt.get();
 
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
