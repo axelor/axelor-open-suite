@@ -614,10 +614,6 @@
 		<option value="3">Partner</option>
 	</selection>
 
-	<selection name='import.export.interface'>
-		<option value="1">EDIFACT</option>
-	</selection>
-
 	<selection name="import.export.interface.origin.select">
 		<option value="com.axelor.apps.base.db.Unit" data-grid="unit-grid" data-form="unit-form">Unit</option>
 		<option value="com.axelor.apps.account.db.Tax" data-grid="tax-grid" data-form="tax-form">Tax</option>

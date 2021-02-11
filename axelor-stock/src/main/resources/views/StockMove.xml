@@ -472,10 +472,6 @@
 		</panel-mail>
     </form>
 
-  <action-method name="action-invoice-method-show-invoice">
-    <call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
-  </action-method>
-
 	<form name="popup-stock-move-backorder-form" title="Manage backorder?" model="com.axelor.apps.stock.db.StockMove" width="large">
 		<panel name="mainPanel" colSpan="12">
 			<field name="$msg" showTitle="false" colOffset="3" colSpan="6" readonly="true">
