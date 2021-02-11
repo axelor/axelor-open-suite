@@ -7,7 +7,7 @@
 
     <entity name="TradingName">
    		
-		<one-to-many name="stockLocationList" ref="com.axelor.apps.stock.db.StockLocation" title="Stock locations" />
+		<one-to-many name="stockLocationList" ref="com.axelor.apps.stock.db.StockLocation" mappedBy="tradingName" title="Stock locations" />
 		<many-to-one name="workshopDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop default stock location"/>
 		<many-to-one name="receiptDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
 		<many-to-one name="wasteDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Waste default stock location"/>
