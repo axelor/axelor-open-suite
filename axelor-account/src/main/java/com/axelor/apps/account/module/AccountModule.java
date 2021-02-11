@@ -80,8 +80,6 @@ import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
 import com.axelor.apps.account.service.NotificationServiceImpl;
-import com.axelor.apps.account.service.PartnerTurnoverService;
-import com.axelor.apps.account.service.PartnerTurnoverServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
@@ -100,8 +98,6 @@ import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineServiceImpl;
 import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
-import com.axelor.apps.account.service.YearServiceAccount;
-import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
@@ -272,10 +268,6 @@ public class AccountModule extends AxelorModule {
     bind(PaymentService.class).to(PaymentServiceImpl.class);
 
     bind(MoveLineService.class).to(MoveLineServiceImpl.class);
-
-    bind(PartnerTurnoverService.class).to(PartnerTurnoverServiceImpl.class);
-
-    bind(YearServiceAccount.class).to(YearServiceAccountImpl.class);
 
     bind(DebtRecoveryRepository.class).to(DebtRecoveryAccountRepository.class);
   }

@@ -35,7 +35,6 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.YearServiceImpl;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -52,7 +51,7 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class YearServiceAccountImpl extends YearServiceImpl implements YearServiceAccount {
+public class YearServiceAccountImpl extends YearServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -60,7 +59,6 @@ public class YearServiceAccountImpl extends YearServiceImpl implements YearServi
   protected AdjustHistoryService adjustHistoryService;
   protected PartnerRepository partnerRepository;
   protected PeriodServiceAccountImpl periodServiceAccountImpl;
-  protected AppBaseService appBaseService;
 
   @Inject
   public YearServiceAccountImpl(
@@ -68,14 +66,12 @@ public class YearServiceAccountImpl extends YearServiceImpl implements YearServi
       ReportedBalanceLineRepository reportedBalanceLineRepo,
       YearRepository yearRepository,
       AdjustHistoryService adjustHistoryService,
-      PeriodServiceAccountImpl periodServiceAccountImpl,
-      AppBaseService appBaseService) {
+      PeriodServiceAccountImpl periodServiceAccountImpl) {
     super(yearRepository);
     this.partnerRepository = partnerRepository;
     this.reportedBalanceLineRepo = reportedBalanceLineRepo;
     this.adjustHistoryService = adjustHistoryService;
     this.periodServiceAccountImpl = periodServiceAccountImpl;
-    this.appBaseService = appBaseService;
   }
 
   /**
@@ -252,27 +248,5 @@ public class YearServiceAccountImpl extends YearServiceImpl implements YearServi
       log.debug("Solde rapporté : {}", reportedBalanceAmount);
     }
     return reportedBalanceAmount;
-  }
-
-  /**
-   * function which retrieve Year Object for the Calendar year current and the type of Year
-   *
-   * @return
-   */
-  public Year getYear(int intTypeSelect) {
-
-    Year year =
-        (Year)
-            JPA.em()
-                .createQuery(
-                    "SELECT self FROM Year self "
-                        + "WHERE self.fromDate <= ?1 and "
-                        + "self.toDate > ?1 and "
-                        + "self.typeSelect = ?2 ")
-                .setParameter(1, appBaseService.getTodayDate())
-                .setParameter(2, intTypeSelect)
-                .getSingleResult();
-
-    return year;
   }
 }
