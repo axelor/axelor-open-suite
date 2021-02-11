@@ -24,10 +24,12 @@
 		<option value="com.axelor.apps.cash.management.db.ForecastReason" data-grid="forecast-reason-grid" data-form="forecast-reason-form">Forecast reason</option>
 		<option value="com.axelor.apps.hr.db.Employee" data-grid="employee-grid" data-form="employee-form">Employee</option>
 		<option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid" data-form="opportunity-form">Opportunity</option>
+		<option value="com.axelor.apps.cash.management.db.Forecast" data-grid="forecast-grid" data-form="forecast-form">Manual Forecast</option>
 	</selection>
 	
 	<selection name="sequence.generic.code.select" id="cash.management.sequence.generic.code.select">
 		<option value="forecastRecap">Forecast Recap</option>
+		<option value="forecast">Manual Forecast</option>
 	</selection>
   
 	<selection name="forecast.recap.report.type.select">
@@ -41,7 +43,7 @@
         <option value="2">Sale Order</option>
         <option value="3">Purchase Order</option>
         <option value="4">Expense</option>
-        <option value="5">Forecast</option>
+        <option value="5">Manual forecast</option>
         <option value="6">Opportunity</option>
         <option value="7">Salary</option>
     </selection>

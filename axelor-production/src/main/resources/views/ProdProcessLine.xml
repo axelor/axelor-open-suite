@@ -22,18 +22,22 @@
 			<field name="workCenterTypeSelect"/>
 			<button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
 				onClick="save,action-production-view-work-center-group-wizard" />
-			<field name="workCenterGroup" colSpan="12" showIf="workCenterGroup">
-				<editor>
+			<field name="workCenterGroup" colSpan="12" canSelect="false" hideIf="workCenterTypeSelect != 3">
+				<editor x-viewer="true">
 					<panel colSpan="12" itemSpan="12">
-						<field name="name" showTitle="false" readonly="true"/>
-						<field name="workCenterSet" readonly="true" showTitle="false" grid-view="work-center-grid"
-							form-view="work-center-form" canEdit="true" canNew="true" showIf="workCenterTypeSelect == 3"  />
-						<field name="workCenterSet" readonly="true" showTitle="false" grid-view="work-center-grid-small"
-							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect != 3" />
+						<field name="name"/>
+						<field name="workCenterSet" grid-view="work-center-prod-process-line-grid" form-view="work-center-form" showTitle="false"/>
 					</panel>
-
 				</editor>
 			</field>
+			<field name="workCenterGroup" colSpan="12" canSelect="false" showIf="workCenterTypeSelect != 3" hidden="true">
+            <editor x-viewer="true">
+               <panel colSpan="12" itemSpan="12">
+                  <field name="name"/>
+                  <field name="workCenterSet" grid-view="work-center-grid-small" form-view="work-center-form" showTitle="false"/>
+               </panel>
+            </editor>
+         </field>
 			<field name="outsourcing" />
 			<field name="optional" />
 			<field name="useLineInGeneratedPurchaseOrder"/>
@@ -72,7 +76,7 @@
 	<form model="com.axelor.apps.production.db.ProdProcessLine" title="Work center group selection"
 		name="prod-process-line-work-center-group-wizard-form">
 		<panel name="mainPanel">
-			<field canNew="false" canEdit="false" canSelect="true"
+			<field canNew="true" canEdit="false" canSelect="true"
 				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"/>
 			<button name="workCenterGroupWizardSave" title="Save"
 				onClick="save,action-production-method-set-work-center-group" />
@@ -132,7 +136,7 @@
 	</action-method>
 
 	<action-attrs name="action-attrs-production-set-work-center-group-domain" model="com.axelor.apps.production.db.ProdProcessLine">
-		<attribute name="domain" for="workCenterGroup" expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+		<attribute name="domain" for="workCenterGroup" expr="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
 	</action-attrs>
 
 	<action-group name="action-prod-process-line-group-work-center-onchange">

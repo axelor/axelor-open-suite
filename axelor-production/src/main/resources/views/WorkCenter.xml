@@ -10,11 +10,17 @@
         <field name="workCenterTypeSelect"/>
     </grid>
     
-    <grid name="work-center-grid-small" title="Work centers" model="com.axelor.apps.production.db.WorkCenter">
+    <grid name="work-center-grid-small" title="Work centers" model="com.axelor.apps.production.db.WorkCenter" canMove="true">
         <field name="name"/>
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
-    
+
+   <grid name="work-center-prod-process-line-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter" canMove="true">
+      <field name="name"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+		<field name="machine" form-view="machine-form" grid-view="machine-grid"/>
+   </grid>
+
 	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
 	  <panel name="mainPanel" >
 	    <field name="name"/>
@@ -106,6 +112,7 @@
      <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
 		     <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
 		     <field name="product" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null" />
+		     <field name="workCenterTypeSelect" expr="#{__parent__.workCenterTypeSelect}" if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>    
     </action-record>
 
 	<action-record name="action-work-center-record-type-select-onchange" model="com.axelor.apps.production.db.WorkCenter">

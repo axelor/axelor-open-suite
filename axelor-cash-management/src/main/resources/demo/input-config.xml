@@ -5,5 +5,7 @@
   	
   	<input file="base_appCashManagement.csv" separator=";" type="com.axelor.apps.base.db.AppCashManagement" search="self.code = :code" update="true" />
   	
+  	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId"/>
+    
 </csv-inputs>
 	
