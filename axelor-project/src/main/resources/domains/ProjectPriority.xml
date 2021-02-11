@@ -6,7 +6,7 @@
 	<module name="project" package="com.axelor.apps.project.db"/>
 	
 	<entity name="ProjectPriority">
-  		<string name="name"/> 
+  		<string name="name" translatable="true"/> 
   		<integer name="technicalTypeSelect" title="Technical type" selection="project.priority.technical.type.select" default="2"/>
 	
 	<extra-code>

@@ -32,4 +32,9 @@ public interface ITranslation {
   public static final String PROJECT_STATUS_DONE = /*$$(*/ "value:Done"; /*)*/
 
   public static final String PROJECT_STATUS_CANCELED = /*$$(*/ "value:Canceled"; /*)*/
+
+  // Project Priority
+  public static final String PROJECT_PRIORITY_LOW = /*$$(*/ "value:Low"; /*)*/
+
+  public static final String PROJECT_PRIORITY_HIGH = /*$$(*/ "value:High"; /*)*/
 }
