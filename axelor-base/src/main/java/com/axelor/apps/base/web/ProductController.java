@@ -61,23 +61,30 @@ public class ProductController {
     }
   }
 
-  public void checkPriceList(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Product newProduct = request.getContext().asType(Product.class);
+  public void checkPriceList(ActionRequest request, ActionResponse response) {
+    try {
 
-    if ((!newProduct.getSellable() || newProduct.getIsUnrenewed())
-        && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
-      response.setAlert(I18n.get("Warning, this product is present in at least one price list"));
+      Product newProduct = request.getContext().asType(Product.class);
+
+      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed())
+          && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
+        response.setAlert(I18n.get("Warning, this product is present in at least one price list"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
-  public void setPriceListLineAnomaly(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Product newProduct = request.getContext().asType(Product.class);
-    // Set anomaly when a product exists in list Price
-    if (newProduct.getId() != null) {
-      Product product = Beans.get(ProductRepository.class).find(newProduct.getId());
-      Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+  public void setPriceListLineAnomaly(ActionRequest request, ActionResponse response) {
+    try {
+
+      Product newProduct = request.getContext().asType(Product.class);
+      // Set anomaly when a product exists in list Price
+      if (newProduct.getId() != null) {
+        Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

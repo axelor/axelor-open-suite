@@ -18,6 +18,8 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductVariant;
@@ -44,7 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -193,13 +195,11 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public boolean hasActivePriceList(Product product) {
-    if (product.getPriceListLineList() == null) return false;
-    else {
-      return !product.getPriceListLineList().stream()
-          .filter(priceListLine -> priceListLine.getPriceList().getIsActive())
-          .collect(Collectors.toList())
-          .isEmpty();
-    }
+    return product.getPriceListLineList() != null
+        && product.getPriceListLineList().stream()
+            .map(PriceListLine::getPriceList)
+            .filter(Objects::nonNull)
+            .anyMatch(PriceList::getIsActive);
   }
 
   @Override
