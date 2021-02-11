@@ -31,18 +31,6 @@
 			showIf="id != null &amp;&amp; (isSupplier || isCarrier)" />
 	</form>
 
-	<form id="supplychain-partner-form" name="partner-form" title="Partner"
-		model="com.axelor.apps.base.db.Partner" onNew="action-group-base-partner-onnew"
-		onLoad="action-group-partner-onload" onSave="action-partner-iban-check-on-save"
-		width="large" extension="true">
-		<extend target="panel[@name='partnerDetailsPanel']">
-			<insert position="after">
-
-			</insert>
-		</extend>
-	</form>
-
-
 	<action-view name="action-partner-view-sales-orders" title="Sales orders"
 		model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sale-order-partner-grid" />
