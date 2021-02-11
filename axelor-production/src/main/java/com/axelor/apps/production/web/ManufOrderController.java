@@ -513,7 +513,7 @@ public class ManufOrderController {
           if (ids.size() < 2) {
             response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
           } else {
-            boolean canMerge = Beans.get(ManufOrderWorkflowService.class).canMerge(ids);
+            boolean canMerge = Beans.get(ManufOrderService.class).canMerge(ids);
             if (canMerge) {
               response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
             } else {
@@ -532,9 +532,8 @@ public class ManufOrderController {
 
   public void generateMergeManufOrder(ActionRequest request, ActionResponse response) {
     try {
-      Object _ids = request.getContext().get("_ids");
-      List<Long> ids = (List<Long>) _ids;
-      Beans.get(ManufOrderWorkflowService.class).merge(ids);
+      List<Long> ids = (List<Long>) request.getContext().get("_ids");
+      Beans.get(ManufOrderService.class).merge(ids);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

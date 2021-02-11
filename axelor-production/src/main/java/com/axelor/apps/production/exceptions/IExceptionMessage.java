@@ -82,7 +82,7 @@ public interface IExceptionMessage {
       "Please select the Manufacturing order(s) to print." /*)*/;
 
   static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
-      "Please select more than one OF" /*)*/;
+      "Please select more than one manufacturing order." /*)*/;
 
   static final String MANUF_ORDER_MERGE_VALIDATION = /*$$(*/
       "Are you sure you want to merge those manufacturing orders?" /*)*/;
@@ -91,7 +91,7 @@ public interface IExceptionMessage {
       "Please select something to merge" /*)*/;
 
   static final String MANUF_ORDER_MERGE_ERROR = /*$$(*/
-      "The merge must concern only manuf order with Draft or Planned status, with the same products and same workshop stock location and will all bill of material compatibles." /*)*/;
+      "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and same workshop stock location and with all bill of materials compatibles." /*)*/;
 
   /** Operation Order Controller */
   static final String OPERATION_ORDER_1 = /*$$(*/
