@@ -17,7 +17,7 @@
       </panel>
        <panel name="mainPanel">
      		<field name="name" hidden="true"/>
-     		<field name="vehicle" title="Vehicle" onChange="action-fleet-record-fill-contract-name">
+     		<field name="vehicle" title="Vehicle" onChange="action-fleet-record-fill-contract-name" hideIf="$popup()">
 		      <editor>
 		        <field name="name" colSpan="12"/>
 		        <field name="vehicleOdometer"/>
