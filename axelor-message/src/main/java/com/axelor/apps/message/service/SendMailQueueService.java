@@ -107,6 +107,7 @@ public class SendMailQueueService extends JpaSupport {
   protected void onApplicationShutdown(@Observes ShutdownEvent event) {
     log.debug("Shutting down mail executor..");
     executor.shutdown();
+    log.debug("Mail executor stopped.");
   }
 
   private Message findMessage(Long messageId) {

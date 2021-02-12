@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -127,6 +127,8 @@
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
+ 	
+ 	<finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
 
     <extra-code>
    		<![CDATA[

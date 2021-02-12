@@ -154,9 +154,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       case "boolean":
         return true;
       case "datetime":
-        return appBaseService.getTodayDateTime(AuthUtils.getUser().getActiveCompany());
+        return appBaseService.getTodayDateTime(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
       case "date":
-        return appBaseService.getTodayDate(AuthUtils.getUser().getActiveCompany());
+        return appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
       case "time":
         return LocalTime.now();
       case "panel":
@@ -406,8 +408,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
   @Override
   @Transactional
-  public void authorizeUser(ConfiguratorCreator creator, User user) {
-    creator.addAuthorizedUserSetItem(user);
+  public void init(ConfiguratorCreator creator) {
+    creator.addAuthorizedUserSetItem(AuthUtils.getUser());
+    addRequiredFormulas(creator);
   }
 
   @Override
@@ -423,7 +426,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         creator.addConfiguratorSOLineFormulaListItem(createSOLineFormula(field.getName()));
       }
     }
-    configuratorCreatorRepo.save(creator);
   }
 
   /**

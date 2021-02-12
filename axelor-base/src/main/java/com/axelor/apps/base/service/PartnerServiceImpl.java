@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -53,6 +54,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.inject.Singleton;
@@ -84,7 +86,8 @@ public class PartnerServiceImpl implements PartnerService {
       EmailAddress emailAddress,
       Currency currency,
       Address deliveryAddress,
-      Address mainInvoicingAddress) {
+      Address mainInvoicingAddress,
+      boolean createContact) {
     Partner partner = new Partner();
 
     partner.setName(name);
@@ -97,14 +100,18 @@ public class PartnerServiceImpl implements PartnerService {
     partner.setCurrency(currency);
     this.setPartnerFullName(partner);
 
-    Partner contact = new Partner();
-    contact.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
-    contact.setIsContact(true);
-    contact.setName(name);
-    contact.setFirstName(firstName);
-    contact.setMainPartner(partner);
-    partner.addContactPartnerSetItem(contact);
-    this.setPartnerFullName(contact);
+    if (createContact) {
+      Partner contact =
+          this.createContact(
+              partner,
+              name,
+              firstName,
+              fixedPhone,
+              mobilePhone,
+              emailAddress != null ? new EmailAddress(emailAddress.getAddress()) : null,
+              mainInvoicingAddress);
+      partner.addContactPartnerSetItem(contact);
+    }
 
     if (deliveryAddress == mainInvoicingAddress) {
       addPartnerAddress(partner, mainInvoicingAddress, true, true, true);
@@ -112,6 +119,28 @@ public class PartnerServiceImpl implements PartnerService {
       addPartnerAddress(partner, deliveryAddress, true, false, true);
       addPartnerAddress(partner, mainInvoicingAddress, true, true, false);
     }
+
+    return partner;
+  }
+
+  public Partner createContact(
+      Partner partner,
+      String name,
+      String firstName,
+      String fixedPhone,
+      String mobilePhone,
+      EmailAddress emailAddress,
+      Address mainAddress) {
+
+    Partner contact = new Partner();
+    contact.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
+    contact.setIsContact(true);
+    contact.setName(name);
+    contact.setFirstName(firstName);
+    contact.setMainPartner(partner);
+    contact.setEmailAddress(emailAddress);
+    contact.setMainAddress(mainAddress);
+    this.setPartnerFullName(contact);
 
     return partner;
   }
@@ -552,7 +581,9 @@ public class PartnerServiceImpl implements PartnerService {
       return null;
     }
     LocalDate today =
-        Beans.get(AppBaseService.class).getTodayDate(AuthUtils.getUser().getActiveCompany());
+        Beans.get(AppBaseService.class)
+            .getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
     List<PriceList> candidatePriceListList = new ArrayList<>();
     for (PriceList priceList : priceListSet) {
       LocalDate beginDate =
@@ -675,21 +706,33 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String getTaxNbrFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
     String taxNbr = "";
 
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
+      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
+      String regCode = partner.getRegistrationCode();
 
-      if (regCode.length() == 14) {
-        int siren = Integer.parseInt(regCode.substring(0, 9));
-        siren = Math.floorMod(siren, 97);
-        siren = Math.floorMod(12 + 3 * siren, 97);
-        taxNbr = Integer.toString(siren);
+      if (regCode != null) {
+        regCode = regCode.replaceAll(" ", "");
+
+        if (regCode.length() == 14) {
+          String siren = regCode.substring(0, 9);
+          String taxKey = getTaxKeyFromSIREN(siren);
+
+          taxNbr = String.format("%s%s%s", countryCode, taxKey, siren);
+        }
       }
     }
 
     return taxNbr;
+  }
+
+  protected String getTaxKeyFromSIREN(String sirenStr) {
+    int siren = Integer.parseInt(sirenStr);
+    int taxKey = Math.floorMod(siren, 97);
+    taxKey = Math.floorMod(12 + 3 * taxKey, 97);
+    return Integer.toString(taxKey);
   }
 
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {

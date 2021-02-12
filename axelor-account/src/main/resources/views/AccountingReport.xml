@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
 <!--     ACCOUNTING REPORT -->
 
@@ -52,9 +52,12 @@
 				<field name="journal" hideIf="!reportType?.typeSelect || [0,1,2,3,4,5,10,12,13,14,15,16,17,18].indexOf(reportType?.typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="journalSet" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" widget="TagSelect" canNew="false" showIf="reportType?.typeSelect == 18" colSpan="12" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!reportType?.typeSelect || [1,2,3,4,5,10,12,13,14,15,16,17,18].indexOf(reportType?.typeSelect) != -1"/>
-				<field name="accountSet" requiredIf="reportType?.typeSelect == 18" hideIf="reportType?.typeSelect == 3000 || reportType?.typeSelect == 2000 || reportType?.typeSelect == 2001 || reportType?.typeSelect == 16 || reportType?.typeSelect == 12" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" domain="self.company = :company AND ((:reportType?.typeSelect = 18 AND self.accountType.technicalTypeSelect = 'cash') OR (:reportType?.typeSelect &lt;&gt; 18  AND(:reportType?.typeSelect &lt;&gt;  6 OR self.useForPartnerBalance = true)))"/>
+				<field name="accountSet" requiredIf="reportType?.typeSelect == 18" hideIf="reportType?.typeSelect == 3000 || reportType?.typeSelect == 2000 || reportType?.typeSelect == 2001 || reportType?.typeSelect == 16 || reportType?.typeSelect == 12" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" onSelect="action-accounting-report-attrs-accountset-domain"/>
 				<field name="partnerSet" hideIf="reportType?.typeSelect == 2000 || reportType?.typeSelect == 2001 || reportType?.typeSelect == 16 || reportType?.typeSelect == 17 || reportType?.typeSelect == 12 || reportType?.typeSelect == 18" colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect" canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
-				<field name="analyticJournal" showIf="reportType?.typeSelect == 2000 || reportType?.typeSelect == 2001"  domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
+				<field name="analyticJournal" showIf="reportType?.typeSelect == 2000 || reportType?.typeSelect == 2001" canNew="false" domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
+				<field name="analyticAxisSet" showIf="typeSelect == 2000 || typeSelect == 2001" colSpan="12" widget="TagSelect" canNew="false" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+				<field name="analyticAccountSet" showIf="typeSelect == 2000 || typeSelect == 2001" colSpan="12" widget="TagSelect" canNew="false" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+				<field name="accountTypeSet" showIf="typeSelect == 2000 || typeSelect == 2001" colSpan="12" widget="TagSelect" canNew="false" form-view="account-type-form" grid-view="account-type-grid"/>
 				<field name="bankDetailsSet"   if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="reportType?.typeSelect == 18" showIf="reportType?.typeSelect == 18" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid" widget="TagSelect" canNew="false" onSelect="action-accounting-report-method-set-bank-details-domain"/>
 				<field name="analyticDistributionTemplate" showIf="reportType?.typeSelect == 17" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>
 				<field name="subtotalByAnalyticDistribution" showIf="reportType?.typeSelect == 17" widget="boolean-switch"/>
@@ -292,7 +295,7 @@
    </action-method>
 
    <action-validate name="action-accounting-report-date-change-validate">
-   		<info message="The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report." if="date &lt; __date__"/>
+   		<info message="The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report." if="date &lt; __config__.date"/>
    </action-validate>
 
     <action-validate name="action-account-report-alert-typeselect">

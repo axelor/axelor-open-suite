@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<chart onInit="action.quality.chart.set.date" name="chart.quality.control.points" title="Control Points">
   		<search-fields> 	        
@@ -126,8 +126,8 @@
 	</chart>
 			  
 	<action-record model="com.axelor.apps.quality.db.ControlPoint" name="action.quality.chart.set.date">
-	  <field name="toDateT" expr="eval: __date__"/>
-	  <field name="fromDateT" expr="eval:__date__.withDayOfMonth(1).withMonth(1)"/>
+	  <field name="toDateT" expr="eval: __config__.date"/>
+	  <field name="fromDateT" expr="eval:__config__.date.withDayOfMonth(1).withMonth(1)"/>
 	</action-record>
 	 	
 </object-views>

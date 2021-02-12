@@ -1,0 +1,4 @@
+title: PARTNERSUPPLYCHAINLINK - merge partnerSupplychainLinkType fields and viewers into grid views
+type: change
+description: |
+  Merge fields and viewers in order to have a relationnal field with a target-name in editable views.

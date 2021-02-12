@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" order="-106"  if="__config__.app.isApp('sale')"
@@ -56,7 +56,7 @@
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false AND dtype = 'Product'</domain>
+		<domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false AND self.dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_fromSale" expr="eval:true" />
 	</action-view>
@@ -179,7 +179,7 @@
 		<view type="grid" name="product-grid"/>
 		<view type="form" name="product-form"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isShippingCostsProduct = true AND dtype = 'Product'</domain>
+		<domain>self.isShippingCostsProduct = true AND self.dtype = 'Product'</domain>
 		<context name="_isShippingCostsProduct" expr="true"/>
 	</action-view>
 
@@ -309,7 +309,7 @@
 		<view type="dashboard" name="sale.saleman.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 		
 	<menuitem name="menu-sale-manager-dashboard-sample" parent="sc-root-sale-report" order="-200"
@@ -317,7 +317,7 @@
 
 	<action-view name="sale.manager.dashboard.view.sample" title="Sales Manager Details">
 		<view type="dashboard" name="sale.manager.dashboard.sample" />
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>	
 	
 	<menuitem name="menu-sale-dashboard-1" parent="sc-root-sale-report"  
@@ -327,7 +327,7 @@
 		<view type="dashboard" name="sale.dashboard.view.1" />	 
 		<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 	
 	<menuitem name="menu-sale-dashboard-2" parent="sc-root-sale-report"  
@@ -335,7 +335,7 @@
 		
 	<action-view name="sale.dashboard.2" title="Turnover Study">
 		<view type="dashboard" name="sale.dashboard.view.2" />	 
-		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
+		<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"

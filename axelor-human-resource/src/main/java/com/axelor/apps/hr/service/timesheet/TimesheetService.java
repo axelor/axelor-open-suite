@@ -163,7 +163,7 @@ public interface TimesheetService {
 
   public void prefillLines(Timesheet timesheet) throws AxelorException;
 
-  public void setTeamTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
+  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
 
   public void removeAfterToDateTimesheetLines(Timesheet timesheet);
 }

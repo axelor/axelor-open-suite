@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
 		<hilite if="$moment(paymentDate).diff(invoice.dueDate,'days') &gt; 0" color="warning"/>
@@ -94,7 +94,7 @@
 	
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
     	<field name="currency" expr="eval: _invoice?.currency"/>
-    	<field name="paymentDate" expr="eval: __date__"/>
+    	<field name="paymentDate" expr="eval: __config__.app.getTodayDate(__repo__(Company).find(_invoice.company.id))"/>
   		<field name="amount" expr="eval: _invoice?.amountRemaining"/>
 		<field name="paymentMode" expr="eval: __repo__(PaymentMode).find(_invoice?.paymentMode.id)" if="_invoice?.paymentMode != null"/>
 		<field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
@@ -104,7 +104,7 @@
     
 	<action-record name="action-invoice-payment-record-mass-payment-new" model="com.axelor.apps.account.db.InvoicePayment">
 	  <field name="currency" expr="eval: __repo__(Invoice).find(_invoices[0])?.currency"/>
-	  <field name="paymentDate" expr="eval: __date__"/>
+	  <field name="paymentDate" expr="eval: __config__.date"/>
 	  <field name="amount" expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) &quot;,_invoices).fetch()?.sum{it.amountRemaining}"/>
 	  <field name="paymentMode" expr="eval: __repo__(Invoice).find(_invoices[0])?.paymentMode"/>
 	  <field name="companyBankDetails" expr="eval: __repo__(Invoice).find(_invoices[0])?.companyBankDetails"/>

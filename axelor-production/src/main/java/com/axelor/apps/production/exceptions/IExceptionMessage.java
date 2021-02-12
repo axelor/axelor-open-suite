@@ -39,6 +39,9 @@ public interface IExceptionMessage {
   static final String CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES = /*$$(*/
       "You cannot delete realized stock move lines." /*)*/;
 
+  static final String CHECK_BOM_AND_PROD_PROCESS = /*$$(*/
+      "The production process and the bill of material must be applicable" /*)*/;
+
   /** Batch Compute work in progress valuation */
   static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
 
@@ -174,6 +177,11 @@ public interface IExceptionMessage {
 
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  static final String NO_PRODUCT_SELECTED = /*$$(*/
+      "Please select at least one product in the list." /*)*/;
+
+  static final String MO_CREATED = /*$$(*/ "%d MO created." /*)*/;
 
   // CostSheetLine service
   static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/

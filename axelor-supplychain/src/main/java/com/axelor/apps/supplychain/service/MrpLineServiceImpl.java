@@ -30,6 +30,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -69,7 +70,8 @@ public class MrpLineServiceImpl implements MrpLineService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
-  protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderService purchaseOrderService;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected StockRulesService stockRulesService;
@@ -80,7 +82,8 @@ public class MrpLineServiceImpl implements MrpLineService {
   @Inject
   public MrpLineServiceImpl(
       AppBaseService appBaseService,
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
       StockRulesService stockRulesService,
@@ -89,7 +92,8 @@ public class MrpLineServiceImpl implements MrpLineService {
       MrpForecastRepository mrpForecastRepo) {
 
     this.appBaseService = appBaseService;
-    this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
+    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.stockRulesService = stockRulesService;
@@ -164,7 +168,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     if (purchaseOrder == null) {
       purchaseOrder =
           purchaseOrderRepo.save(
-              purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+              purchaseOrderSupplychainService.createPurchaseOrder(
                   AuthUtils.getUser(),
                   company,
                   null,
@@ -216,7 +220,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     poLine.setDesiredDelivDate(maturityDate);
     purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
-    purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     linkToOrder(mrpLine, purchaseOrder);
   }
@@ -289,7 +293,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     mrpLine.setCumulativeQty(cumulativeQty);
     mrpLine.setStockLocation(stockLocation);
 
-    mrpLine.setMinQty(this.getMinQty(product, stockLocation));
+    mrpLine = this.setMrpLineQty(mrpLine, product, stockLocation);
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
       mrpLine.setSupplierPartner(product.getDefaultSupplierPartner());
@@ -313,7 +317,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     return mrpLine;
   }
 
-  protected BigDecimal getMinQty(Product product, StockLocation stockLocation) {
+  protected MrpLine setMrpLineQty(MrpLine mrpLine, Product product, StockLocation stockLocation) {
 
     StockRules stockRules =
         stockRulesService.getStockRules(
@@ -323,9 +327,11 @@ public class MrpLineServiceImpl implements MrpLineService {
             StockRulesRepository.USE_CASE_USED_FOR_MRP);
 
     if (stockRules != null) {
-      return stockRules.getMinQty();
+      mrpLine.setMinQty(stockRules.getMinQty());
+      mrpLine.setIdealQty(stockRules.getIdealQty());
+      mrpLine.setReOrderQty(stockRules.getReOrderQty());
     }
-    return BigDecimal.ZERO;
+    return mrpLine;
   }
 
   protected void createMrpLineOrigins(MrpLine mrpLine, Model model) {

@@ -1,0 +1,5 @@
+---
+title: "Studio: Add modules field on app builder"
+type: fix
+description: |
+  Just like the string field 'modules' on app, adding modules field on app builder allows to create real app properly.

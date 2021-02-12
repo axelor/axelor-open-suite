@@ -42,9 +42,9 @@ public class ResourceBookingRepository extends AbstractResourceBookingRepository
       list.add(resourceBooking.getProject().getFullName());
     }
 
-    if (resourceBooking.getTask() != null
-        && !Strings.isNullOrEmpty(resourceBooking.getTask().getFullName())) {
-      list.add(resourceBooking.getTask().getFullName());
+    if (resourceBooking.getProjectTask() != null
+        && !Strings.isNullOrEmpty(resourceBooking.getProjectTask().getFullName())) {
+      list.add(resourceBooking.getProjectTask().getFullName());
     }
 
     return String.join(" - ", list);

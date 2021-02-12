@@ -36,6 +36,7 @@ import com.axelor.apps.stock.db.repo.WapHistoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -49,6 +50,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,18 +69,22 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   protected WapHistoryRepository wapHistoryRepo;
 
+  protected UnitConversionService unitConversionService;
+
   @Inject
   public StockLocationLineServiceImpl(
       StockLocationLineRepository stockLocationLineRepo,
       StockRulesService stockRulesService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      WapHistoryRepository wapHistoryRepo) {
+      WapHistoryRepository wapHistoryRepo,
+      UnitConversionService unitConversionService) {
     this.stockLocationLineRepo = stockLocationLineRepo;
     this.stockRulesService = stockRulesService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.wapHistoryRepo = wapHistoryRepo;
+    this.unitConversionService = unitConversionService;
   }
 
   @Override
@@ -138,10 +144,15 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       return;
     }
 
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     Unit stockLocationLineUnit = stockLocationLine.getUnit();
-
-    if (stockLocationLineUnit != null && !stockLocationLineUnit.equals(stockMoveLineUnit)) {
+    if (stockLocationLineUnit == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.LOCATION_LINE_MISSING_UNIT),
+          stockLocation.getName(),
+          product.getFullName());
+    }
+    if (!stockLocationLineUnit.equals(stockMoveLineUnit)) {
       qty =
           unitConversionService.convert(
               stockMoveLineUnit, stockLocationLineUnit, qty, qty.scale(), product);
@@ -272,10 +283,17 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       return;
     }
 
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     Unit stockLocationLineUnit = detailLocationLine.getUnit();
 
-    if (stockLocationLineUnit != null && !stockLocationLineUnit.equals(stockMoveLineUnit)) {
+    if (stockLocationLineUnit == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.DETAIL_LOCATION_LINE_MISSING_UNIT),
+          trackingNumber.getTrackingNumberSeq(),
+          stockLocation.getName(),
+          product.getFullName());
+    }
+    if (!stockLocationLineUnit.equals(stockMoveLineUnit)) {
       qty =
           unitConversionService.convert(
               stockMoveLineUnit, stockLocationLineUnit, qty, qty.scale(), product);
@@ -543,8 +561,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   public BigDecimal getTrackingNumberAvailableQty(
       StockLocation stockLocation, TrackingNumber trackingNumber) {
     StockLocationLine detailStockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
+        getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
 
     BigDecimal availableQty = BigDecimal.ZERO;
 
@@ -570,12 +587,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     Unit stockLocationUnit = stockLocationLine.getUnit();
 
     if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
-      AppBaseService appBaseService = Beans.get(AppBaseService.class);
       int scale = appBaseService.getNbDecimalDigitForUnitPrice();
       int qtyScale = appBaseService.getNbDecimalDigitForQty();
       BigDecimal oldQty = stockLocationLine.getCurrentQty();
       BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
-      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
       BigDecimal currentQty =
           unitConversionService.convert(
@@ -609,7 +624,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     // future quantity is current quantity minus planned outgoing stock move lines plus planned
     // incoming stock move lines.
 
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     Product product = stockLocationLine.getProduct();
 
     BigDecimal futureQty = stockLocationLine.getCurrentQty();
@@ -618,6 +632,14 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         findIncomingPlannedStockMoveLines(stockLocationLine);
     List<StockMoveLine> outgoingStockMoveLineList =
         findOutgoingPlannedStockMoveLines(stockLocationLine);
+
+    if (stockLocationLine.getUnit() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.LOCATION_LINE_MISSING_UNIT),
+          stockLocationLine.getStockLocation().getName(),
+          product.getFullName());
+    }
 
     for (StockMoveLine incomingStockMoveLine : incomingStockMoveLineList) {
       BigDecimal qtyToAdd =
@@ -756,7 +778,9 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
             appBaseService.getTodayDate(
                 stockLocationLine.getStockLocation() != null
                     ? stockLocationLine.getStockLocation().getCompany()
-                    : AuthUtils.getUser().getActiveCompany()),
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)),
             wap,
             stockLocationLine.getCurrentQty(),
             stockLocationLine.getUnit(),

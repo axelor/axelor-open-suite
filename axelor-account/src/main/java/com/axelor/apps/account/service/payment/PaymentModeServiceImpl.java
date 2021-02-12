@@ -32,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,13 @@ import org.slf4j.LoggerFactory;
 public class PaymentModeServiceImpl implements PaymentModeService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected AppAccountService appAccountService;
+
+  @Inject
+  public PaymentModeServiceImpl(AppAccountService appAccountService) {
+    this.appAccountService = appAccountService;
+  }
 
   @Override
   public Account getPaymentModeAccount(
@@ -78,7 +86,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       return null;
     }
 
-    if (!Beans.get(AppAccountService.class).getAppBase().getManageMultiBanks()) {
+    if (!appAccountService.getAppBase().getManageMultiBanks()) {
       return getAccountManagement(paymentMode, company);
     }
 
@@ -113,7 +121,15 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     AccountManagement accountManagement =
         this.getAccountManagement(paymentMode, company, bankDetails);
 
-    if (accountManagement == null || accountManagement.getSequence() == null) {
+    if (accountManagement == null && appAccountService.getAppBase().getManageMultiBanks()) {
+      throw new AxelorException(
+          paymentMode,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYMENT_MODE_4),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          company.getName(),
+          paymentMode.getName());
+    } else if (accountManagement == null || accountManagement.getSequence() == null) {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -133,7 +149,15 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     AccountManagement accountManagement =
         this.getAccountManagement(paymentMode, company, bankDetails);
 
-    if (accountManagement == null || accountManagement.getJournal() == null) {
+    if (accountManagement == null && appAccountService.getAppBase().getManageMultiBanks()) {
+      throw new AxelorException(
+          paymentMode,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PAYMENT_MODE_4),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          company.getName(),
+          paymentMode.getName());
+    } else if (accountManagement == null || accountManagement.getJournal() == null) {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -37,8 +37,8 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PartnerHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
+import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
-import com.axelor.apps.hr.db.repo.TeamTaskHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -83,7 +83,7 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
-import com.axelor.apps.project.db.repo.TeamTaskProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 
 public class HumanResourceModule extends AxelorModule {
 
@@ -116,7 +116,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ProjectPlanningTimeRepository.class).to(ProjectPlanningTimeHRRepository.class);
     bind(ProjectPlanningTimeService.class).to(ProjectPlanningTimeServiceImpl.class);
     bind(ProjectManagementRepository.class).to(ProjectHRRepository.class);
-    bind(TeamTaskProjectRepository.class).to(TeamTaskHRRepository.class);
+    bind(ProjectTaskProjectRepository.class).to(ProjectTaskHRRepository.class);
     bind(UserBaseRepository.class).to(UserHRRepository.class);
     bind(PartnerAccountRepository.class).to(PartnerHRRepository.class);
     bind(BankOrderMergeServiceImpl.class).to(BankOrderMergeHRServiceImpl.class);

@@ -52,7 +52,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected boolean stop = false;
+  protected boolean end = false;
 
   protected BigDecimal totalAmount = BigDecimal.ZERO;
 
@@ -95,7 +95,7 @@ public class BatchReimbursementExport extends BatchStrategy {
               ExceptionOriginRepository.REIMBURSEMENT,
               batch.getId());
           incrementAnomaly();
-          stop = true;
+          end = true;
         }
         break;
 
@@ -110,7 +110,7 @@ public class BatchReimbursementExport extends BatchStrategy {
               ExceptionOriginRepository.REIMBURSEMENT,
               batch.getId());
           incrementAnomaly();
-          stop = true;
+          end = true;
         }
         break;
 
@@ -123,7 +123,7 @@ public class BatchReimbursementExport extends BatchStrategy {
             ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
         incrementAnomaly();
-        stop = true;
+        end = true;
     }
 
     checkPoint();
@@ -131,7 +131,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 
   @Override
   protected void process() {
-    if (!stop) {
+    if (!end) {
       Company company = batch.getAccountingBatch().getCompany();
 
       switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
@@ -197,7 +197,7 @@ public class BatchReimbursementExport extends BatchStrategy {
                         + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
                         + "self.reimbursementStatusSelect = ?5 ",
                     MoveRepository.STATUS_VALIDATED,
-                    MoveRepository.STATUS_DAYBOOK,
+                    MoveRepository.STATUS_ACCOUNTED,
                     partnerRepository.find(partner.getId()),
                     companyRepo.find(company.getId()),
                     MoveLineRepository.REIMBURSEMENT_STATUS_NULL)

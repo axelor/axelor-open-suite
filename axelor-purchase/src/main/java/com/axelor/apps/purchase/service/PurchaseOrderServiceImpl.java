@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
@@ -45,6 +46,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -60,6 +62,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -276,6 +279,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
         .addParam("PurchaseOrderId", purchaseOrder.getId())
+        .addParam(
+            "PurchaseOrderLineQuery",
+            Beans.get(PurchaseOrderPrintService.class)
+                .getPurchaseOrderLineDataSetQuery(purchaseOrder.getId()))
         .addParam("Locale", language)
         .addParam(
             "Timezone",
@@ -418,6 +425,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
           productCompanyService.set(
               product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
+
+          LocalDate lastPurchaseDate =
+              Beans.get(AppBaseService.class)
+                  .getTodayDate(
+                      Optional.ofNullable(AuthUtils.getUser())
+                          .map(User::getActiveCompany)
+                          .orElse(null));
+          productCompanyService.set(
+              product, "lastPurchaseDate", lastPurchaseDate, purchaseOrder.getCompany());
+
           if ((Boolean)
               productCompanyService.get(
                   product, "defShipCoefByPartner", purchaseOrder.getCompany())) {
@@ -463,41 +480,5 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       }
       purchaseOrderRepo.save(purchaseOrder);
     }
-  }
-
-  @Override
-  @Transactional
-  public void draftPurchaseOrder(PurchaseOrder purchaseOrder) {
-
-    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
-    purchaseOrderRepo.save(purchaseOrder);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-    computePurchaseOrder(purchaseOrder);
-
-    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
-    purchaseOrder.setValidationDate(appPurchaseService.getTodayDate(purchaseOrder.getCompany()));
-    purchaseOrder.setValidatedByUser(AuthUtils.getUser());
-
-    purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
-
-    updateCostPrice(purchaseOrder);
-  }
-
-  @Override
-  @Transactional
-  public void finishPurchaseOrder(PurchaseOrder purchaseOrder) {
-    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
-    purchaseOrderRepo.save(purchaseOrder);
-  }
-
-  @Override
-  @Transactional
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
-    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_CANCELED);
-    purchaseOrderRepo.save(purchaseOrder);
   }
 }

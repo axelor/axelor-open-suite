@@ -1,0 +1,3 @@
+---
+title: "AppSale: Hide enableSalesProductByTradName when enableTradingNamesManagement of base app is disable."
+type: fix

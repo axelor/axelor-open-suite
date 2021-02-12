@@ -333,7 +333,7 @@ public class HumanResourceMobileController {
       List<Product> productList =
           Beans.get(ProductRepository.class)
               .all()
-              .filter("self.isActivity = true AND dtype = 'Product'")
+              .filter("self.isActivity = true AND self.dtype = 'Product'")
               .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();
@@ -501,7 +501,7 @@ public class HumanResourceMobileController {
             employee.getName(),
             leaveReason.getName());
       }
-      leave.setLeaveLine(leaveLine);
+      leave.setLeaveReason(leaveReason);
       leave.setRequestDate(appBaseService.getTodayDate(company));
       if (requestData.get("fromDateT") != null) {
         leave.setFromDateT(
@@ -616,7 +616,7 @@ public class HumanResourceMobileController {
           Beans.get(ProductRepository.class)
               .all()
               .filter(
-                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND dtype = 'Product'")
+                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND self.dtype = 'Product'")
               .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();

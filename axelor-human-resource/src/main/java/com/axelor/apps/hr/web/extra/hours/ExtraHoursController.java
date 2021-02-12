@@ -44,6 +44,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ExtraHoursController {
@@ -55,7 +56,7 @@ public class ExtraHoursController {
             .filter(
                 "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
                 AuthUtils.getUser(),
-                AuthUtils.getUser().getActiveCompany())
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
     if (extraHoursList.isEmpty()) {
       response.setView(

@@ -1,0 +1,5 @@
+---
+title: "ACCOUNTING REPORT : manage typeSelect field reference"
+type: fix
+description: |
+  replace type_select field with ReportType.type_select in accounting reports.

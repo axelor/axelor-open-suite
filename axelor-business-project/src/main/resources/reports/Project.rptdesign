@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -2273,7 +2273,7 @@ case
 	else
 		task.ex_tax_total
 end as turnover
-from team_task as task
+from project_project_task as task
 left join project_project as project on (project.id = task.project)
 left join project_project as parent_project on (parent_project.id = project.parent_project)
 where (task.to_invoice = true and task.invoiced = false )
@@ -3243,7 +3243,7 @@ group by emp.name,emp.hourly_rate]]></xml-property>
 		else
 			task.ex_tax_total
 	end as task_amount
-from team_task as task
+from project_project_task as task
 left join project_project as project on (project.id = task.project)
 left join project_project as parent_project on (parent_project.id = project.parent_project)
 where (task.to_invoice = true and task.invoiced = false )

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="studio" package="com.axelor.studio.db" />
   
@@ -13,6 +13,7 @@
 		<many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
 		<integer name="sequence" title="Sequence" />
 		<many-to-one name="generatedApp" ref="com.axelor.apps.base.db.App" />
+		<string name="modules" title="Modules" />
 	</entity>
 
 </domain-models>

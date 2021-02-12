@@ -220,19 +220,20 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   protected StockMoveLine convertUnitPrice(StockMoveLine stockMoveLine, Unit fromUnit, Unit toUnit)
       throws AxelorException {
-    // convert units
+    // convert unit price, meaning the conversion is reversed : Box of 12 pieces => 12 pieces but
+    // 1/12 the price
     if (toUnit != null && fromUnit != null) {
       BigDecimal unitPriceUntaxed =
           unitConversionService.convert(
-              fromUnit,
               toUnit,
+              fromUnit,
               stockMoveLine.getUnitPriceUntaxed(),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               null);
       BigDecimal unitPriceTaxed =
           unitConversionService.convert(
-              fromUnit,
               toUnit,
+              fromUnit,
               stockMoveLine.getUnitPriceTaxed(),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               null);

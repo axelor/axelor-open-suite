@@ -178,6 +178,7 @@ public class MrpServiceImpl implements MrpService {
         .update("maturityDate", today);
 
     mrp.setStatusSelect(MrpRepository.STATUS_DRAFT);
+    mrp.setErrorLog(null);
 
     mrpRepository.save(mrp);
   }
@@ -972,7 +973,7 @@ public class MrpServiceImpl implements MrpService {
                       + "AND self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
@@ -991,7 +992,7 @@ public class MrpServiceImpl implements MrpService {
                       + "self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
@@ -1183,5 +1184,12 @@ public class MrpServiceImpl implements MrpService {
   @Transactional(rollbackOn = {Exception.class})
   public void undoManualChanges(Mrp mrp) {
     mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).update("isEditedByUser", false);
+  }
+
+  @Override
+  @Transactional
+  public void onError(Mrp mrp, Exception e) {
+    reset(mrp);
+    mrp.setErrorLog(e.getMessage());
   }
 }

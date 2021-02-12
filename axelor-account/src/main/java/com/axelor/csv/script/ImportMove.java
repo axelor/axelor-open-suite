@@ -32,7 +32,9 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -40,6 +42,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 import javax.transaction.Transactional;
 
 public class ImportMove {
@@ -53,6 +56,7 @@ public class ImportMove {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
     try {
+      moveLine.setCounter(1);
 
       if (values.get("EcritureNum") == null) {
         return null;
@@ -82,11 +86,13 @@ public class ImportMove {
         move = new Move();
         move.setReference(moveReference);
 
-        if (values.get("validationDate") != null) {
+        if (values.get("ValidDate") != null) {
           move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
-          move.setValidationDate(LocalDate.parse(values.get("ValidDate").toString()));
+          move.setValidationDate(
+              LocalDate.parse(
+                  values.get("ValidDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
         } else {
-          move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
+          move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
         }
 
         move.setCompany(getCompany(values));
@@ -124,9 +130,9 @@ public class ImportMove {
         moveRepository.save(move);
       }
       moveLine.setMove(move);
-
     } catch (Exception e) {
       TraceBackService.trace(e);
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
     return moveLine;
   }
@@ -144,8 +150,9 @@ public class ImportMove {
 
     if (company != null) {
       return company;
-    } else if (AuthUtils.getUser().getActiveCompany() != null) {
-      return AuthUtils.getUser().getActiveCompany();
+    } else if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)
+        != null) {
+      return Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
     } else {
       return Beans.get(CompanyRepository.class).all().fetchOne();
     }
@@ -156,7 +163,7 @@ public class ImportMove {
     assert bean instanceof Move;
     Move move = (Move) bean;
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
           || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED) {
         moveValidateService.validate(move);
       }

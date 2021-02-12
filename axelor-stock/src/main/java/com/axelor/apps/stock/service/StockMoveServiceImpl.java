@@ -825,9 +825,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional
-  public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
+  public boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
 
-    Boolean selected = false;
+    boolean selected = false;
 
     for (StockMoveLine moveLine : stockMoveLines) {
       if (moveLine.isSelected()) {
@@ -848,6 +848,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
           newLine.setQty(totalQty);
           newLine.setRealQty(totalQty);
+          newLine.setStockMove(line.getStockMove());
           stockMoveLineRepo.save(newLine);
           LOG.debug("New line created: {}", newLine);
         }

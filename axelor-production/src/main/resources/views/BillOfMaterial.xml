@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
   <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
 		<field name="fullName"/>
@@ -9,6 +9,17 @@
     <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
 		<field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
 		<field name="qty" aggregate="sum" x-scale="2"/>
+		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+		<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+		<field name="statusSelect"/>
+  </grid>
+  
+  <grid name="product-bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+		<field name="fullName"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    	<field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
+		<field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
+		<field name="billOfMaterialSet.qty" aggregate="sum" x-scale="2"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
 		<field name="statusSelect"/>
@@ -70,7 +81,7 @@
 			</field>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="workshopStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
-			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND self.dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"/>
             <field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid" canEdit="false" required="true"/>
@@ -133,14 +144,13 @@
         <field name="prodProcess" readonlyIf="!defineSubBillOfMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
 
-
 	<form name="bill-of-material-line-form" title="Bill of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial"
 		onNew="action-bill-of-material-line-default-record,action-bill-of-material-attrs-price-and-qty-digits" 
 		onLoad="action-bill-of-material-attrs-product-def-sub-bom,action-bill-of-material-attrs-price-and-qty-digits"
 		onSave="save,action-bill-of-material-method-name" width="large">
 		<panel name="mainPanel">
-			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="defineSubBillOfMaterial" colSpan="3" hidden="true"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
@@ -176,7 +186,6 @@
 		<action name="action-bill-of-material-default-record"/>
 		<action name="action-bill-of-material-attrs-price-and-qty-digits"/>
 		<action name="action-bill-of-material-record-count-number-of-components"/>
-		<action name="action-bill-of-material-group-product" if="_product"/>
 	</action-group>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -187,6 +196,7 @@
     	<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
     	<field name="product" expr="eval:_product"/>
     	<field name="name" expr="eval:_product?.name"/>
+      <field name="unit" expr="eval: _product?.unit"/>
     </action-record>
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">

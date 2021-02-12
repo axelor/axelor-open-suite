@@ -10,6 +10,7 @@
  	<integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
    	<boolean name="template" title="Template"></boolean>
    	<many-to-many name="workCenterSet"  ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+   	<many-to-one name="workCenterGroupModel"  ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group model"/>
     
   </entity>
 </domain-models>

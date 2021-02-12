@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="sop-line-grid" title="Sales and Operations Planning Line" model="com.axelor.apps.production.db.SopLine">
 		<hilite if="status == 1" color="primary" />
@@ -78,7 +78,7 @@
 
 	<action-group name="action-sop-line-group-confirm-forecasts-onclick">
 		<action name="action-mrp-forecast-method-compute-total-forecast" />
-		<action name="action-mrp-forecast-validate-check-difference" if="new BigDecimal($difference).compareTo(BigDecimal.ZERO) != 0" />
+		<action name="action-mrp-forecast-validate-check-difference" if="difference != 0" />
 		<action name="action-mrp-forecast-method-generate-mrp-forecasts" />
 	</action-group>
 
@@ -132,7 +132,7 @@
 	</action-method>
 
 	<action-validate name="action-mrp-forecast-validate-check-difference">
-		<alert message="There currently is a ${$difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?" />
+		<alert message="There currently is a ${difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?" />
 	</action-validate>
 
 </object-views>

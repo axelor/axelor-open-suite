@@ -22,7 +22,6 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
-import com.axelor.apps.production.db.repo.WorkCenterGroupRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -85,8 +84,8 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
   public void copyWorkCenterGroup(
       ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup) {
     WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
+    workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
     workCenterGroupCopy.setTemplate(false);
-    Beans.get(WorkCenterGroupRepository.class).save(workCenterGroupCopy);
     workCenterGroup
         .getWorkCenterSet()
         .forEach(
@@ -94,7 +93,6 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
               workCenterGroupCopy.addWorkCenterSetItem(k);
             }));
 
-    Beans.get(WorkCenterGroupRepository.class).save(workCenterGroupCopy);
     prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
     Beans.get(ProdProcessLineRepository.class).save(prodProcessLine);
   }

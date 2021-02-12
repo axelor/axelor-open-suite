@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -170,8 +170,8 @@
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
 	</selection>
-    
-    <selection name="base.price.list.line.anomaly.select">  
+
+    <selection name="base.price.list.line.anomaly.select">
         <option value="1">Product unavailable for sale</option>
         <option value="2">Product not renewed</option>
     </selection>
@@ -260,7 +260,7 @@
 		<option value="1">Customer</option>
 		<option value="2">Supplier</option>
 	</selection>
-	
+
 	<selection name="company.partner.type.select">
 		<option value="1">Company</option>
 		<option value="2">Individual</option>
@@ -534,27 +534,29 @@
     <selection name="line.type.select">
         <option value="0">Standard</option>
         <option value="1">Title</option>
-    </selection>    
-    
+        <option value="2">Start of pack</option>
+        <option value="3">End of pack</option>
+    </selection>
+
     <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >
     	<option value="import">Importing</option>
     </selection>
-    
+
     <selection name="base.print.template.format.select">
        <option value="PDF">PDF</option>
        <option value="WORD">WORD</option>
        <option value="ODT">ODT</option>
     </selection>
-    
+
     <selection name="base.print.display.type.select">
        <option value="1">Portrait</option>
        <option value="2">Landscape</option>
     </selection>
-    
+
     <selection name="print.template.line.test.reference.select">
     	<option value="Default" order="0" hidden="true">Default</option>
     </selection>
-    
+
     <selection name="base.print.settings.footer.font.select">
     	<option value="Courier">Courier</option>
     	<option value="Courier-Bold">Courier-Bold</option>
@@ -572,13 +574,13 @@
     	<option value="Times-BoldItalic">Times-BoldItalic</option>
     	<option value="ZapfDingbats">ZapfDingbats</option>
     </selection>
-    
+
     <selection name="base.print.settings.footer.text.alignment.select">
     	<option value="left">Left</option>
     	<option value="right">Right</option>
     	<option value="center">Center</option>
     </selection>
-    
+
     <selection name="base.print.settings.footer.font.color.select">
     	<option value="blue">blue</option>
     	<option value="cyan">cyan</option>
@@ -598,12 +600,23 @@
 		<option value="Europe/Paris">Europe/Paris</option>
 		<option value="America/New_York">America/New_York</option>
 	</selection>
-	
+
 	<selection name="base.import.configuration.status.select">
 		<option value="0">Draft</option>
 		<option value="1">In Progress</option>
 		<option value="2">Completed</option>
 		<option value="3">Error</option>
+	</selection>
+
+	<selection name='import.export.interface'>
+		<option value="1">EDIFACT</option>
+	</selection>
+
+	<selection name="import.export.interface.origin.select">
+		<option value="com.axelor.apps.base.db.Unit" data-grid="unit-grid" data-form="unit-form">Unit</option>
+		<option value="com.axelor.apps.account.db.Tax" data-grid="tax-grid" data-form="tax-form">Tax</option>
+		<option value="com.axelor.apps.account.db.PaymentMode" data-grid="payment-mode-grid" data-form="payment-mode-form">Payment mode</option>
+		<option value="com.axelor.apps.account.db.PaymentCondition" data-grid="payment-condition-grid" data-form="payment-condition-form">Payment condition</option>
 	</selection>
 
 </object-views>

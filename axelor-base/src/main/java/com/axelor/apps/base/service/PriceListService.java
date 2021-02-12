@@ -160,6 +160,8 @@ public class PriceListService {
               BigDecimal.ONE.add(priceListLine.getAmount().divide(new BigDecimal(100))));
         }
 
+        return unitPrice;
+
       case PriceListLineRepository.TYPE_DISCOUNT:
         if (priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
           return unitPrice.subtract(priceListLine.getAmount());
@@ -168,6 +170,8 @@ public class PriceListService {
           return unitPrice.multiply(
               BigDecimal.ONE.subtract(priceListLine.getAmount().divide(new BigDecimal(100))));
         }
+
+        return unitPrice;
 
       case PriceListLineRepository.TYPE_REPLACE:
         return priceListLine.getAmount();
