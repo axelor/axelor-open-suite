@@ -17,9 +17,7 @@
 		<panel-tabs name="mainPanelTab">
 			<panel name="configurationPanel" title="Configuration" colSpan="12">
     	    	<field name="defaultPartnerLanguage" />
-    		    <field name="enableTradingNamesManagement" widget="boolean-switch" colSpan="3"/>
-    		    <field name="automaticCostPriceComputing" widget="boolean-switch" colSpan="3"/>
-                <field name="costPriceByTradingName" showIf="enableTradingNamesManagement" widget="boolean-switch" colOffset="6" colSpan="3"/>
+    		    <field name="enableTradingNamesManagement" widget="boolean-switch"/>
     	    	<field name="activateSendingEmail" widget="boolean-switch"/>
     	    	<field name="emailAccountByUser" widget="boolean-switch"/>
     	    	<field name="productInAtiSelect"/>
