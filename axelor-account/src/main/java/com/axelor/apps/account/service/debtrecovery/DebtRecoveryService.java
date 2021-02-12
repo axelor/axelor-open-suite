@@ -63,6 +63,7 @@ import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 public class DebtRecoveryService {
 
@@ -497,7 +498,7 @@ public class DebtRecoveryService {
   @Transactional(rollbackOn = {Exception.class})
   public boolean debtRecoveryGenerate(Partner partner, Company company, TradingName tradingName)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+          IllegalAccessException, IOException, JSONException {
     boolean remindedOk = false;
 
     DebtRecovery debtRecovery =

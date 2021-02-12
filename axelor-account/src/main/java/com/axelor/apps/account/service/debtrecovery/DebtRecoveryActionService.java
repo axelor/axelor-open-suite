@@ -46,6 +46,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 public class DebtRecoveryActionService {
 
@@ -178,7 +179,7 @@ public class DebtRecoveryActionService {
   @Transactional(rollbackOn = {Exception.class})
   public void runManualAction(DebtRecovery debtRecovery)
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
-          IllegalAccessException {
+          IllegalAccessException, JSONException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
@@ -247,7 +248,7 @@ public class DebtRecoveryActionService {
   @Transactional(rollbackOn = {Exception.class})
   public void runMessage(DebtRecovery debtRecovery)
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
-          IllegalAccessException {
+          IllegalAccessException, JSONException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
 
     for (Message message : messageSet) {
