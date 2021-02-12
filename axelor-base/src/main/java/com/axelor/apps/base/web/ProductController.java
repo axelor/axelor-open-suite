@@ -28,6 +28,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.JpaSecurity;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -36,10 +38,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Criteria;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +108,6 @@ public class ProductController {
   @SuppressWarnings("unchecked")
   public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
-
     User user = Beans.get(UserService.class).getUser();
 
     int currentYear = Beans.get(AppBaseService.class).getTodayDateTime().getYear();
@@ -113,6 +117,11 @@ public class ProductController {
 
     if (lstSelectedProduct != null) {
       productIds = Joiner.on(",").join(lstSelectedProduct);
+    } else {
+      List<Long> displayedProductIdList = getDisplayedProductIdList(request);
+      if (ObjectUtils.notEmpty(displayedProductIdList)) {
+        productIds = Joiner.on(",").join(displayedProductIdList);
+      }
     }
 
     String name = I18n.get("Product Catalog");
@@ -165,5 +174,24 @@ public class ProductController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<Long> getDisplayedProductIdList(ActionRequest request) {
+    JpaSecurity security = Beans.get(JpaSecurity.class);
+    List<Long> displayedProductIdList = new ArrayList<>();
+    Criteria criteria = Criteria.parse(request);
+    List<?> products =
+        criteria
+            .createQuery(Product.class, security.getFilter(JpaSecurity.CAN_READ, Product.class))
+            .select("id")
+            .fetch(-1, -1);
+    for (Object product : products) {
+      if (product instanceof Map) {
+        Long id = (Long) ((Map<String, Object>) product).get("id");
+        displayedProductIdList.add(id);
+      }
+    }
+    return displayedProductIdList;
   }
 }
