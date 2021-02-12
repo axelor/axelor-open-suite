@@ -10,6 +10,17 @@
         <field name="workCenterTypeSelect"/>
     </grid>
     
+    <grid name="work-center-grid-small" title="Work centers" model="com.axelor.apps.production.db.WorkCenter" canMove="true">
+        <field name="name"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    </grid>
+
+   <grid name="work-center-prod-process-line-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter" canMove="true">
+      <field name="name"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+		<field name="machine" form-view="machine-form" grid-view="machine-grid"/>
+   </grid>
+
 	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
 	  <panel name="mainPanel" >
 	    <field name="name"/>
@@ -26,7 +37,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service' AND dtype = 'Product'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
+	          <field name="product" domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
   		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
@@ -61,7 +72,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service' AND dtype = 'Product'" canEdit="false"/>
+	          <field name="product" domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
    		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
@@ -72,6 +83,7 @@
      <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
 		     <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
 		     <field name="product" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null" />
+		     <field name="workCenterTypeSelect" expr="#{__parent__.workCenterTypeSelect}" if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>    
     </action-record>
 
 	<action-record name="action-work-center-record-type-select-onchange" model="com.axelor.apps.production.db.WorkCenter">

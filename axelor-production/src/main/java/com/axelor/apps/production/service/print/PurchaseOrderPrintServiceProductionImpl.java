@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.print;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
 import com.google.inject.Inject;
@@ -24,8 +25,9 @@ import com.google.inject.Inject;
 public class PurchaseOrderPrintServiceProductionImpl extends PurchaseOrderPrintServiceImpl {
 
   @Inject
-  public PurchaseOrderPrintServiceProductionImpl(AppPurchaseService appPurchaseService) {
-    super(appPurchaseService);
+  public PurchaseOrderPrintServiceProductionImpl(
+      AppPurchaseService appPurchaseService, AppBaseService appBaseService) {
+    super(appPurchaseService, appBaseService);
   }
 
   @Override

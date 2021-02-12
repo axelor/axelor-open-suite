@@ -50,7 +50,7 @@ public class ProductBaseRepository extends ProductRepository {
     try {
       if (appBaseService.getAppBase().getGenerateProductSequence()
           && Strings.isNullOrEmpty(product.getCode())) {
-        product.setCode(Beans.get(ProductService.class).getSequence());
+        product.setCode(Beans.get(ProductService.class).getSequence(product));
       }
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
@@ -105,7 +105,7 @@ public class ProductBaseRepository extends ProductRepository {
 
     try {
       if (appBaseService.getAppBase().getGenerateProductSequence()) {
-        copy.setCode(Beans.get(ProductService.class).getSequence());
+        copy.setCode(Beans.get(ProductService.class).getSequence(product));
       }
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());

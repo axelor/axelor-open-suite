@@ -91,7 +91,8 @@
 	  
 	  select
 	    sum(_line.qty) as qty,
-	    buyer.full_name buyer_name  
+	    buyer.full_name buyer_name,
+	    family.name as family_name  
 	  FROM
 	    purchase_purchase_order_line _line
 	  JOIN
@@ -104,14 +105,20 @@
 	  JOIN
 	    auth_user buyer
 	    ON buyer.id=self.buyer_user
+	  JOIN
+	    base_product product
+	    ON product.id=_line.product 
+	  JOIN
+	    base_product_family family
+	    ON product.product_family=family.id  
 	  where
 	    self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
 	    AND self.status_select in(4,5)
-	  group by buyer_name
+	  group by buyer_name, family_name
 	  
 	  </dataset>
 	  <category key="buyer_name" type="text" title="Buyer"/>
-	  <series key="qty" type="bar" title="Quantity"/>
+	  <series key="qty" type="bar" title="Quantity" groupBy="family_name"/>
 	</chart>
 	  
 	  

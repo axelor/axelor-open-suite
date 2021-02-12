@@ -18,10 +18,15 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
+import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,5 +78,22 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     } else {
       return new BigDecimal(1);
     }
+  }
+
+  @Transactional
+  public void copyWorkCenterGroup(
+      ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup) {
+    WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
+    workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
+    workCenterGroupCopy.setTemplate(false);
+    workCenterGroup
+        .getWorkCenterSet()
+        .forEach(
+            (k -> {
+              workCenterGroupCopy.addWorkCenterSetItem(k);
+            }));
+
+    prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
+    Beans.get(ProdProcessLineRepository.class).save(prodProcessLine);
   }
 }

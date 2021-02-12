@@ -766,6 +766,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setOrigin(stockMove.getOrigin());
     newStockMove.setOriginId(stockMove.getOriginId());
     newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
+    newStockMove.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
 
     return Optional.of(stockMoveRepo.save(newStockMove));
   }
@@ -824,7 +825,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional
-  public boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
+  public boolean splitStockMoveLines(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
 
     boolean selected = false;
 
@@ -851,6 +853,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMoveLineRepo.save(newLine);
           LOG.debug("New line created: {}", newLine);
         }
+        stockMove.removeStockMoveLineListItem(line);
         stockMoveLineRepo.remove(line);
       }
     }
@@ -859,39 +862,17 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional
-  public void splitStockMoveLinesSpecial(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
-
-    LOG.debug("SplitQty: {}", splitQty);
-
-    for (StockMoveLine moveLine : stockMoveLines) {
-      LOG.debug("Move line: {}", moveLine);
-      BigDecimal totalQty = moveLine.getQty();
-      while (splitQty.compareTo(totalQty) < 0) {
-        totalQty = totalQty.subtract(splitQty);
-        StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
-        newLine.setQty(splitQty);
-        newLine.setRealQty(splitQty);
-        stockMove.addStockMoveLineListItem(newLine);
-      }
-      LOG.debug("Qty remains: {}", totalQty);
-      if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
-        StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
-        newLine.setQty(totalQty);
-        newLine.setRealQty(totalQty);
-        stockMove.addStockMoveLineListItem(newLine);
-        LOG.debug("New line created: {}", newLine);
-      }
-      stockMove.removeStockMoveLineListItem(moveLine);
-    }
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public StockMove splitInto2(
       StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
       throws AxelorException {
+
+    int originalStatusSelect = originalStockMove.getStatusSelect();
+
+    if (originalStatusSelect == StockMoveRepository.STATUS_PLANNED) {
+      cancel(originalStockMove);
+      goBackToDraft(originalStockMove);
+    }
 
     // Copy this stock move
     StockMove newStockMove = stockMoveRepo.copy(originalStockMove, false);
@@ -902,15 +883,6 @@ public class StockMoveServiceImpl implements StockMoveService {
             .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
             .collect(Collectors.toList());
     for (StockMoveLine moveLine : modifiedStockMoveLines) {
-      StockMoveLine newStockMoveLine;
-
-      // Set quantity in new stock move line
-      newStockMoveLine = stockMoveLineRepo.copy(moveLine, false);
-      newStockMoveLine.setQty(moveLine.getQty());
-      newStockMoveLine.setRealQty(moveLine.getQty());
-
-      // add stock move line
-      newStockMove.addStockMoveLineListItem(newStockMoveLine);
 
       // find the original move line to update it
       Optional<StockMoveLine> correspondingMoveLine =
@@ -927,26 +899,57 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
 
       if (correspondingMoveLine.isPresent()) {
-        // Update quantity in original stock move.
-        // If the remaining quantity is 0, remove the stock move line
-        BigDecimal remainingQty = correspondingMoveLine.get().getQty().subtract(moveLine.getQty());
-        if (BigDecimal.ZERO.compareTo(remainingQty) == 0) {
-          // Remove the stock move line
-          originalStockMove.removeStockMoveLineListItem(correspondingMoveLine.get());
-        } else {
-          correspondingMoveLine.get().setQty(remainingQty);
-          correspondingMoveLine.get().setRealQty(remainingQty);
-        }
+        newStockMove.addStockMoveLineListItem(
+            createSplitStockMoveLine(originalStockMove, correspondingMoveLine.get(), moveLine));
       }
     }
 
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
       originalStockMove.setExTaxTotal(stockMoveToolService.compute(originalStockMove));
-      return stockMoveRepo.save(newStockMove);
+      newStockMove = stockMoveRepo.save(newStockMove);
+      if (originalStatusSelect == StockMoveRepository.STATUS_PLANNED) {
+        plan(originalStockMove);
+        plan(newStockMove);
+      }
+      return newStockMove;
     } else {
       return null;
     }
+  }
+
+  /**
+   * Create the stock move line for the stock move generated by {@link this#splitInto2(StockMove,
+   * List)}.
+   *
+   * @param originalStockMove the original stock move
+   * @param originalStockMoveLine the original stock move line
+   * @param modifiedStockMoveLine the modified stock move line corresponding to the original stock
+   *     move line
+   * @return the unsaved generated stock move line
+   */
+  protected StockMoveLine createSplitStockMoveLine(
+      StockMove originalStockMove,
+      StockMoveLine originalStockMoveLine,
+      StockMoveLine modifiedStockMoveLine) {
+
+    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(modifiedStockMoveLine, false);
+    newStockMoveLine.setQty(modifiedStockMoveLine.getQty());
+    newStockMoveLine.setRealQty(modifiedStockMoveLine.getQty());
+
+    // Update quantity in original stock move.
+    // If the remaining quantity is 0, remove the stock move line
+    BigDecimal remainingQty =
+        originalStockMoveLine.getQty().subtract(modifiedStockMoveLine.getQty());
+    if (BigDecimal.ZERO.compareTo(remainingQty) == 0) {
+      // Remove the stock move line
+      originalStockMove.removeStockMoveLineListItem(originalStockMoveLine);
+    } else {
+      originalStockMoveLine.setQty(remainingQty);
+      originalStockMoveLine.setRealQty(remainingQty);
+    }
+
+    return newStockMoveLine;
   }
 
   @Override
@@ -1266,11 +1269,9 @@ public class StockMoveServiceImpl implements StockMoveService {
       return;
     }
     List<StockMoveLine> savedStockMoveLineList =
-        Optional.ofNullable(stockMove.getPlannedStockMoveLineList())
-            .orElse(new ArrayList<StockMoveLine>());
+        Optional.ofNullable(stockMove.getPlannedStockMoveLineList()).orElse(new ArrayList<>());
     List<StockMoveLine> stockMoveLineList =
-        Optional.ofNullable(stockMove.getStockMoveLineList())
-            .orElse(new ArrayList<StockMoveLine>());
+        Optional.ofNullable(stockMove.getStockMoveLineList()).orElse(new ArrayList<>());
 
     stockMoveLineService.updateLocations(
         stockMove.getFromStockLocation(),
@@ -1292,9 +1293,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMove.clearPlannedStockMoveLineList();
     stockMoveLineList.forEach(
-        stockMoveLine ->
-            stockMove.addPlannedStockMoveLineListItem(
-                stockMoveLineRepo.copy(stockMoveLine, false)));
+        stockMoveLine -> {
+          StockMoveLine stockMoveLineCopy = stockMoveLineRepo.copy(stockMoveLine, false);
+          stockMoveLineCopy.setArchived(true);
+          stockMove.addPlannedStockMoveLineListItem(stockMoveLineCopy);
+        });
   }
 
   @Override

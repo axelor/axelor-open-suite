@@ -1,0 +1,6 @@
+---
+title: "Fix ABC Analysis missing translation"
+type: fix
+description: |
+  Adding missing translations.
+  Adding an alert for missing sequence before print popup.

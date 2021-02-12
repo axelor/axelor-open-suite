@@ -97,6 +97,35 @@ public class PriceListService {
     return priceListLine;
   }
 
+  @Transactional
+  public void setPriceListLineAnomaly(Product product) {
+    if (!product.getSellable()) {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE);
+                priceListLineRepo.persist(line);
+              });
+    } else if (product.getIsUnrenewed()) {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(PriceListLineRepository.ANOMALY_NOT_RENEWED);
+                priceListLineRepo.persist(line);
+              });
+    } else {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(null);
+                priceListLineRepo.persist(line);
+              });
+    }
+  }
+
   public int getDiscountTypeSelect(PriceListLine priceListLine) {
 
     return priceListLine.getAmountTypeSelect();

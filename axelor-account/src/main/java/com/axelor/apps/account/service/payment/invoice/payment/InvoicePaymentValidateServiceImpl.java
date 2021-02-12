@@ -200,6 +200,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                 paymentMode,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
+    move.setTradingName(invoice.getTradingName());
+
     move.addMoveLineListItem(
         moveLineService.createMoveLine(
             move,

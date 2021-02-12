@@ -64,6 +64,7 @@
 		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 		<field name="expectedCloseDate"/>
 		<field name="amount"/>
+		<field name="salesStageSelect"/>
   </grid>
 	
 	<grid name="opportunity-top-deal-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-amount" >

@@ -52,8 +52,8 @@
 	</selection>
   
     <selection name="project.task.type.select">
-        <option value="0">Task</option>
-        <option value="1">Ticket</option>
+        <option value="task">Task</option>
+        <option value="ticket">Ticket</option>
     </selection>
 
 </object-views>

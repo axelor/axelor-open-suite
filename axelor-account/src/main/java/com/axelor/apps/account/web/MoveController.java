@@ -106,6 +106,8 @@ public class MoveController {
         response.setView(
             ActionView.define(I18n.get("Account move"))
                 .model("com.axelor.apps.account.db.Move")
+                .add("grid", "move-grid")
+                .add("form", "move-form")
                 .param("forceEdit", "true")
                 .context("_showRecord", newMove.getId().toString())
                 .map());

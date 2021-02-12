@@ -1,0 +1,3 @@
+---
+title: "Create new model: WorkCenterGroup that will have a workCenter list. Possibility to create model to reuse them at anytime. They will be used on ProductionProdProcessLine. On each WorkCenterGroup, we will have all the linked ProductionProdProcessLine"
+type: feature

@@ -17,9 +17,11 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -112,12 +114,17 @@ public class ImportMove {
           move.setCurrencyCode(values.get("Idevise").toString());
         }
 
-        Journal journal =
-            Beans.get(JournalRepository.class)
-                .all()
-                .filter("self.code = ?", values.get("JournalCode").toString())
-                .fetchOne();
-        move.setJournal(journal);
+        if (values.get("JournalCode") != null) {
+          Journal journal =
+              Beans.get(JournalRepository.class)
+                  .all()
+                  .filter(
+                      "self.code = ?1 AND self.company.id = ?2",
+                      values.get("JournalCode").toString(),
+                      move.getCompany().getId())
+                  .fetchOne();
+          move.setJournal(journal);
+        }
 
         if (values.get("CompAuxNum") != null) {
           Partner partner =
@@ -128,6 +135,17 @@ public class ImportMove {
           move.setPartner(partner);
         }
         moveRepository.save(move);
+      }
+      if (values.get("CompteNum") != null) {
+        Account account =
+            Beans.get(AccountRepository.class)
+                .all()
+                .filter(
+                    "self.code = ?1 AND self.company.id = ?2",
+                    values.get("CompteNum").toString(),
+                    move.getCompany().getId())
+                .fetchOne();
+        moveLine.setAccount(account);
       }
       moveLine.setMove(move);
     } catch (Exception e) {

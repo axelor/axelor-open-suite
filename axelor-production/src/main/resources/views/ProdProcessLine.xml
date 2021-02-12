@@ -11,47 +11,112 @@
 		<field name="optional"/>
 		<field name="description"/>
 	</grid>
-    
-    <form name="prod-process-line-form" title="Phase" model="com.axelor.apps.production.db.ProdProcessLine"
-    onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default"
-    onLoad="action-prod-process-line-attrs-default" width="large">
-    	<panel name="mainPanel"> 
-			<field name="name"/>
-			<field name="priority" colSpan="3"/>
-			<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canEdit="true" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
-			<field name="outsourcing"/>
-			<field name="optional"/>
+
+	<form name="prod-process-line-form" title="Phase"
+		model="com.axelor.apps.production.db.ProdProcessLine"
+		onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default"
+		onLoad="action-prod-process-line-attrs-default" width="large">
+		<panel name="mainPanel">
+			<field name="name" />
+			<field name="priority" colSpan="3" />
+			<field name="workCenterTypeSelect"/>
+			<button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
+				onClick="save,action-production-view-work-center-group-wizard" />
+			<field name="workCenterGroup" colSpan="12" canSelect="false" hideIf="workCenterTypeSelect != 3">
+				<editor x-viewer="true">
+					<panel colSpan="12" itemSpan="12">
+						<field name="name"/>
+						<field name="workCenterSet" grid-view="work-center-prod-process-line-grid" form-view="work-center-form" showTitle="false"/>
+					</panel>
+				</editor>
+			</field>
+			<field name="workCenterGroup" colSpan="12" canSelect="false" showIf="workCenterTypeSelect != 3" hidden="true">
+            <editor x-viewer="true">
+               <panel colSpan="12" itemSpan="12">
+                  <field name="name"/>
+                  <field name="workCenterSet" grid-view="work-center-grid-small" form-view="work-center-form" showTitle="false"/>
+               </panel>
+            </editor>
+         </field>
+			<field name="outsourcing" />
+			<field name="optional" />
 			<field name="useLineInGeneratedPurchaseOrder"/>
-			<field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain" if="__config__.app.getApp('production').getEnableToolManagement()"/>
-			<field name="stockLocation"/>
-			<panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
-				<field name="minCapacityPerCycle" colSpan="3"/>
-				<field name="maxCapacityPerCycle" colSpan="3"/>
-				<field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
-	        </panel>
+			<field name="machineTool"
+				onSelect="action-prod-process-line-attrs-machine-tool-domain"
+				if="__config__.app.getApp('production').getEnableToolManagement()" />
+			<field name="stockLocation" />
 			<panel name="descriptionPanel" title="Description" colSpan="12">
-    			<field name="description" showTitle="false" height="5" colSpan="12"/>
-    		</panel>
-    	</panel>
-    	<panel-tabs name="mainPanelTab">
-			<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" title="To consume products" editable="true" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
-				<panel name="descriptionPanel" title="Descriptions">
-					<field name="objectDescriptionList" colSpan="12">
-						<editor x-layout="table" x-show-on-new="false" x-viewer="true">
-							<panel name="mainPanel" colSpan="12">
-								<field name="image" colSpan="3" canNew="true" widget="Image"/>
-								<field name="description" widget="html" colSpan="9"/>
-							</panel>
-						</editor>
-					</field>
-				</panel>
-    	</panel-tabs>
-    	        
-    	<panel-mail name="mailPanel">
-			<mail-messages limit="4"/>
-			<mail-followers/>
-		</panel-mail>        
-    </form>
+				<field name="description" showTitle="false" height="5"
+					colSpan="12" />
+			</panel>
+		</panel>
+		<panel-tabs name="mainPanelTab">
+			<panel-related name="toConsumeProdProductListPanel"
+				field="toConsumeProdProductList" title="To consume products"
+				editable="true" colSpan="12" form-view="prod-product-form"
+				grid-view="prod-product-grid" />
+			<panel name="descriptionPanel" title="Descriptions">
+				<field name="objectDescriptionList" colSpan="12">
+					<editor x-layout="table" x-show-on-new="false" x-viewer="true">
+						<panel name="mainPanel" colSpan="12">
+							<field name="image" colSpan="3" canNew="true" widget="Image" />
+							<field name="description" widget="html" colSpan="9" />
+						</panel>
+					</editor>
+				</field>
+			</panel>
+		</panel-tabs>
+
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
+	</form>
+
+	<form model="com.axelor.apps.production.db.ProdProcessLine" title="Work center group selection"
+		name="prod-process-line-work-center-group-wizard-form">
+		<panel name="mainPanel">
+			<field canNew="true" canEdit="false" canSelect="true"
+				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"/>
+			<button name="workCenterGroupWizardSave" title="Save"
+				onClick="save,action-production-method-set-work-center-group" />
+
+		</panel>
+		<panel name="attrsPanel">
+			<field name="composantNomenclature" hidden="true"/>
+			<field name="allWorkshops" hidden="true"/>
+			<field name="ateliers" hidden="true"/>
+			<field name="multipleQty" hidden="true"/>
+		</panel>
+
+	</form>
+
+	<action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
+		<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10" />
+		<field name="stockLocation" expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()" />
+		<field name="workCenterTypeSelect" expr="eval: 1" />
+	</action-record>
+
+	<action-view name="action-production-view-work-center-group-wizard"
+		title="Work center group" model="com.axelor.apps.production.db.ProdProcessLine">
+		<view type="form" name="prod-process-line-work-center-group-wizard-form" />
+		<view-param name="popup" value="reload" />
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false" />
+		<view-param name="forceEdit" value="true" />
+		<context name="_showRecord" expr="eval: __this__.id" />
+		<context name="workCenterTypeSelect" expr="eval: __this__.workCenterTypeSelect" />
+	</action-view>
+
+	<action-method name="action-production-method-set-work-center-group">
+		<call class="com.axelor.apps.production.web.ProdProcessLineController"
+			method="copyWorkCenterGroup" />
+	</action-method>
+
+	<action-attrs name="action-attrs-production-set-work-center-group-domain" model="com.axelor.apps.production.db.ProdProcessLine">
+		<attribute name="domain" for="workCenterGroup" expr="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+	</action-attrs>
 
 	<action-group name="action-prod-process-line-group-work-center-onchange">
 		<action name="action-prod-process-line-method-duration"/>
@@ -66,12 +131,7 @@
     	<call class="com.axelor.apps.production.web.ProdProcessLineController" method="updateCapacitySettings"/>
     </action-method>
     
-    <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
-    	<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10"/>
-    	<field name="stockLocation" expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()"/>
-    </action-record>
-    
-    <action-attrs name="action-prod-process-line-attrs-default">
+	<action-attrs name="action-prod-process-line-attrs-default">
     	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
 		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
 		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
