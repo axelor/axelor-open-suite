@@ -37,6 +37,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -495,6 +496,44 @@ public class ManufOrderController {
               .context("_showRecord", String.valueOf(costSheet.getId()))
               .map());
 
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkMergeValues(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().get("id") != null) {
+        response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
+      } else {
+        Object _ids = request.getContext().get("_ids");
+        if (!ObjectUtils.isEmpty(_ids)) {
+          List<Long> ids = (List<Long>) _ids;
+          if (ids.size() < 2) {
+            response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
+          } else {
+            boolean canMerge = Beans.get(ManufOrderService.class).canMerge(ids);
+            if (canMerge) {
+              response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
+            } else {
+              response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR));
+            }
+          }
+        } else {
+          response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_ONE_SELECTED));
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateMergeManufOrder(ActionRequest request, ActionResponse response) {
+    try {
+      List<Long> ids = (List<Long>) request.getContext().get("_ids");
+      Beans.get(ManufOrderService.class).merge(ids);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

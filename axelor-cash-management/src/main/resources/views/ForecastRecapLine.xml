@@ -8,8 +8,8 @@
        	<hilite background="warning" if="typeSelect==2"/>
        	<field name="estimatedDate"/>
        	<field name="typeSelect" hidden="true"/>
+       	<field name="relatedToSelect"/>
        	<field name="forecastRecapLineType.name" title="Forecast Recap Line Type" />
-	   	<field name="relatedToSelect"/>
 	   	<field name="relatedToSelectName"/>
 	   	<field name="amount" aggregate="sum"/>
 	   	<field name="balance"/>

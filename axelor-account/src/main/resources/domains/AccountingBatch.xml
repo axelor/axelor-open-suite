@@ -24,8 +24,8 @@
     
     <!-- DEBT RECOVERY -->
     <integer name="debtRecoveryTypeSelect" title="Debt recovery batch type" selection="idebt.recovery.batch.type.select"/>
-
-
+	<boolean name="isDebtRecoveryByTradingName" title="Manage debt recovery by trading name" help="Enable debt recoveries being handled by trading name. If enabled with no trading name selected, all trading names will be considered selected."/>
+	<many-to-many name="tradingNameSet" title="Selected trading names" ref="com.axelor.apps.base.db.TradingName"/>
     
     <!--  CUSTOMER ACCOUNT -->
     <boolean name="updateCustAccountOk" title="Customer balance"/>

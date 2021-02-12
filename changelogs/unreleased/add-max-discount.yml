@@ -1,0 +1,6 @@
+title: Add max discount in product category
+type: feature
+description: |
+  Add a new field in product category allowing to force a maximum amount of
+  discount. In sale order line, the user cannot fill a discount superior to
+  this maximum except if the line is explicitly allowed to do so.

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -57,6 +58,33 @@ public class ProductController {
 
       response.setFlash(I18n.get(IExceptionMessage.PRODUCT_1));
       response.setReload(true);
+    }
+  }
+
+  public void checkPriceList(ActionRequest request, ActionResponse response) {
+    try {
+
+      Product newProduct = request.getContext().asType(Product.class);
+
+      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed())
+          && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
+        response.setAlert(I18n.get("Warning, this product is present in at least one price list"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPriceListLineAnomaly(ActionRequest request, ActionResponse response) {
+    try {
+
+      Product newProduct = request.getContext().asType(Product.class);
+      // Set anomaly when a product exists in list Price
+      if (newProduct.getId() != null) {
+        Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

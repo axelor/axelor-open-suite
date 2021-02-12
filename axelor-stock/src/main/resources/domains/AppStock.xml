@@ -10,6 +10,7 @@
 		<boolean name="isSeparateShipmentOperations" title="Separate the shipment operations"/>
 		<boolean name="isRequiredShipmentSupplierDetails" title="Require to fill the shipment information"/>
         <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
+        <many-to-one name="stockUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"></many-to-one>
 
         <track>
         	<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>

@@ -1,0 +1,5 @@
+---
+title: Mrp: add warning when supplier delay will cause an delivery issue.
+type: change
+description: |
+  In MRP purchase proposal lines, displays a warning if the purchase date would be too late due to supplier delay.

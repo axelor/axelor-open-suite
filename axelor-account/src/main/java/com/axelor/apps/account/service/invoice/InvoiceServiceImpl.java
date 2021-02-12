@@ -510,6 +510,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             externalRef,
             null,
             company.getDefaultBankDetails(),
+            null,
             null) {
 
           @Override

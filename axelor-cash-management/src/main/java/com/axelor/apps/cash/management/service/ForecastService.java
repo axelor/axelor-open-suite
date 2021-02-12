@@ -81,6 +81,7 @@ public class ForecastService {
     forecast.setEstimatedDate(estimatedDate);
     forecast.setForecastReason(reason);
     forecast.setComments(comments);
+    forecast.setTypeSelect(typeSelect);
 
     return forecast;
   }

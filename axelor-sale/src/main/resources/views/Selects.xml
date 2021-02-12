@@ -72,4 +72,16 @@
 	<selection name="abc.analysis.type.select" id="sale.abc.analysis.type.select">
 		<option value="com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl">Sale</option>
 	</selection>
+
+  <!-- REPORTS -->
+  <selection name="sale.order.report.type">
+    <option value="1">Original sale order</option>
+    <option value="2">Proforma invoice</option>
+  </selection>
+
+  <selection name="sale.order.report.format">
+    <option value="xls">Excel</option>
+    <option value="doc">Word</option>
+    <option value="pdf">PDF</option>
+  </selection>
 </object-views>

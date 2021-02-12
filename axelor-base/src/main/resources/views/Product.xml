@@ -62,6 +62,7 @@
 
 	<form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
 	onNew="action-group-base-product-onnew"
+	onSave="action-group-product-onsave"
 	onLoad="action-group-product-onload" width="large">
  		<toolbar>
     		<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -149,6 +150,7 @@
   			<panel name="salePanel" title="Sale" showTitle="false">
 				<panel name="subSalePanel" title="Sales" colSpan="6">
 					<field name="sellable" colSpan="6"/>
+					<field name="tradingNameSellerSet" colSpan="12" showIf="sellable" canNew="false" canSelect="true"/>
 					<field name="productSynchronizedInPrestashop" colSpan="6" if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
 					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
@@ -192,7 +194,8 @@
 	    	<panel name="purchaseCostsPanel" title="Purchase/Costs" showTitle="false">
 		      	<panel name="purchasePanel" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
-			        <field name="purchasePrice" showIf="purchasable" colSpan="3"/>
+					<field name="tradingNameBuyerSet" colSpan="12" showIf="purchasable" canSelect="true" canNew="false"/>
+			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <spacer colSpan="3"/>
 			        <field name="lastPurchaseDate" showIf="purchasable" colSpan="3" readonly="true"/>
@@ -408,6 +411,7 @@
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
+		<action name="action-product-attrs-set-required-productCategory"/>
 		<action name="action-product-attrs-enable-product-company-list"/>
 		<action name="action-product-record-service-stock-managed"/>
     </action-group>
@@ -442,8 +446,7 @@
         <action name="action-product-set-stock"/>
         <action name="action-product-set-total-variants"/>
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
-        <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
-		<action name="action-product-attrs-cost-price-variant"/>
+		<action name="action-product-attrs-set-required-productCategory"/>
 		<action name="action-product-attrs-enable-product-company-list"/>
     </action-group>
 
@@ -529,6 +532,9 @@
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
     	<field name="isShippingCostsProduct" expr="eval: _isShippingCostsProduct"/>
+    	<field name="salesUnit" expr="eval: __config__.app.getApp('sale')?.getSaleUnit()" if="__config__.app.isApp('sale')"/>
+    	<field name="purchasesUnit" expr="eval: __config__.app.getApp('purchase')?.getPurchaseUnit()" if="__config__.app.isApp('purchase')"/>
+    	<field name="unit" expr="eval: __config__.app.getApp('stock')?.getStockUnit()" if="__config__.app.isApp('stock')"/>
     </action-record>
     
     <action-record name="action-product-record-product-sub-type-select-onchange" model="com.axelor.apps.base.db.Product">
@@ -693,4 +699,21 @@
 		<context name="productId" expr="eval: id"/>
 	</action-view>
 	
+	<action-attrs name="action-product-attrs-set-required-productCategory">
+		<attribute name="required" for="productCategory" expr="eval: __config__.app.getApp('base').getGenerateProductSequence() &amp;&amp; __config__.app.getApp('base').getProductSequenceTypeSelect() == 'Per product category'"/>
+	</action-attrs>
+
+    <action-group name="action-group-product-onsave"> 
+        <action name="action-product-method-check-anomaly"/>
+        <action name="action-product-method-set-anomaly"/>
+    </action-group>
+
+    <action-method name="action-product-method-check-anomaly">
+        <call class="com.axelor.apps.base.web.ProductController" method="checkPriceList"/>
+    </action-method>
+
+    <action-method name="action-product-method-set-anomaly">
+        <call class="com.axelor.apps.base.web.ProductController" method="setPriceListLineAnomaly"/>
+    </action-method>
+
 </object-views>

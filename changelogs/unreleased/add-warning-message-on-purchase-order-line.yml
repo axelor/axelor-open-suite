@@ -1,0 +1,6 @@
+---
+title: "Purchase order line:  add warning message"
+type: feature
+description: |
+	In purchase order line, if the supplier by default of the product is different from the supplier on the order, add a warning message to the user.
+	This message will just inform the user.

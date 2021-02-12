@@ -27,6 +27,8 @@ import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.DebtRecoveryAccountRepository;
+import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
 import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
@@ -266,5 +268,7 @@ public class AccountModule extends AxelorModule {
     bind(PaymentService.class).to(PaymentServiceImpl.class);
 
     bind(MoveLineService.class).to(MoveLineServiceImpl.class);
+
+    bind(DebtRecoveryRepository.class).to(DebtRecoveryAccountRepository.class);
   }
 }

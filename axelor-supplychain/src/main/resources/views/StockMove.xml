@@ -40,7 +40,12 @@
     </grid>
 
 	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" >
-		<panel-related name="$customerStockMoveToInvoicePanel" field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND ((self.typeSelect = 2 AND self.isReversion = false) OR (self.typeSelect = 3 AND self.isReversion = true)) AND self.invoicingStatusSelect = 0 AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != 4 AND invoice MEMBER OF self.invoiceSet) = 0" canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-out-grid" form-view="stock-move-form"/>
+		<panel-related name="$customerStockMoveToInvoicePanel" field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" 
+			domain="self.statusSelect = 3 
+			AND ((self.typeSelect = 2 AND self.isReversion = false) OR (self.typeSelect = 3 AND self.isReversion = true)) 
+			AND (self.invoicingStatusSelect = 0 or self.invoicingStatusSelect = 3 )
+			AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != 4 AND invoice MEMBER OF self.invoiceSet) = 0" 
+			canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-out-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
 			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-cust-invoice-check-fields"/>
 			<button name="generateMultiInvoiceBtn" title="Generate one invoice per outgoing stockMove" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-customer-invoice"/>
@@ -48,7 +53,13 @@
     </form>
     
     <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
-		<panel-related name="$supplierStockMoveToInvoicePanel" field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND ((self.typeSelect = 3 AND self.isReversion = false) OR (self.typeSelect = 2 AND self.isReversion = true)) AND self.invoicingStatusSelect = 0 AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != 4 AND invoice MEMBER OF self.invoiceSet) = 0" canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-in-grid" form-view="stock-move-form"/>
+		<panel-related name="$supplierStockMoveToInvoicePanel" field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" 
+		height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" 
+		domain="self.statusSelect = 3 AND 
+				((self.typeSelect = 3 AND self.isReversion = false) OR (self.typeSelect = 2 AND self.isReversion = true)) AND 
+				self.invoicingStatusSelect = 0 AND 
+				(SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != 4 AND invoice MEMBER OF self.invoiceSet) = 0" 
+		canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-in-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
 			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-suppl-invoice-check-fields"/>
 			<button name="generateMultiInvoiceBtn" title="Generate one invoice per incoming stockMove" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-supplier-invoice"/>
@@ -95,7 +106,7 @@
             <button name="createInvoiceBtn" title="Generate the invoice" onClick="action-supplychain-stock-move-method-generate-invoice" showIf="operationSelect &lt; 3"/>
 	    </panel>
     </form>
-    
+
     <action-method name="action-supplychain-stock-move-method-invoicing-wizard">
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="openInvoicingWizard"/>
 	</action-method>
@@ -130,6 +141,10 @@
 
 	<action-method name="action-supplychain-stock-move-method-generate-concat-suppl-invoice-check-fields">
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatInStockMoveCheckMissingFields"/>
+	</action-method>
+
+	<action-method name="action-stock-move-supplychain-method-set-invoiced-partner-domain">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="setInvoicedPartnerDomain"/>
 	</action-method>
 	
 	<action-validate name="action-validate-supplychain-outgoing-stock-move-check-selection">
@@ -181,5 +196,40 @@
       <attribute name="readonly" for="typeSelect" expr="true"/>
       <attribute name="readonly" for="company" expr="true"/>
     </action-attrs>
+
+	<action-record name="action-stock-move-status-select-invoiced-delayed" model="com.axelor.apps.stock.db.StockMove">
+	  <field name="invoicingStatusSelect" expr="3"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-status-select-invoiced-validated" model="com.axelor.apps.stock.db.StockMove">
+	  <field name="invoicingStatusSelect" expr="4"/>
+	</action-record>
+
+	<action-record name="action-supplychain-stock-move-record-invoice-blocking-onchange" model="com.axelor.apps.stock.db.StockMove">
+		<field name="invoiceBlockedByUser" expr="eval: invoiceBlocking ? __user__ : null"/>
+	</action-record>
+
+	<action-validate name="action-supplychain-stock-move-validate-invoicing-block">
+		<error message="Invoicing of this stock move is blocked." if="invoiceBlocking &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"/>
+	</action-validate>
+
+
+	<search-filters id="supplychain-customer-deliveries-filter" name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
+		<filter title="Deliveries to prepare">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Late Deliveries">
+			<domain>self.estimatedDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Deliveries History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Deliveries Cancelled">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+		<filter title="Invoicing Blocking">
+			<domain>self.invoiceBlocking IS TRUE AND (self.invoiceBlockedToDate IS NULL OR self.invoiceBlockedToDate &gt; CURRENT_DATE)</domain>
+		</filter>
+	</search-filters>
 
 </object-views>
