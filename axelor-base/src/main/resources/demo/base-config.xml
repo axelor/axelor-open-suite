@@ -224,6 +224,8 @@
 		<bind column="Condition" to="trackingCondition" />
 		<bind to="appBase" search="self.id = '1'" />
 	</input>
+	
+	<input file="base_mailBatch.csv" separator=";" type="com.axelor.apps.base.db.MailBatch" search="self.code = :code"/>
 
 </csv-inputs>
 
