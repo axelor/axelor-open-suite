@@ -14,17 +14,15 @@
 	<grid model="com.axelor.apps.supplychain.db.PartnerSupplychainLink"
 		title="Supply chain links" editable="true"
 		name="partner-supplychain-link-partner-1-grid">
+		<field name="partnerSupplychainLinkType" form-view="partner-supplychain-link-type-form" grid-view="partner-supplychain-link-type-grid" target-name="link2Name"/>
 		<field name="partner2" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
-    <field name="partnerSupplychainLinkType" form-view="partner-supplychain-link-type-form"
-           grid-view="partner-supplychain-link-type-grid" target-name="link2Name"/>
 	</grid>
 
 	<grid model="com.axelor.apps.supplychain.db.PartnerSupplychainLink"
 		title="Supply chain links" editable="true"
 		name="partner-supplychain-link-partner-2-grid">
+		<field name="partnerSupplychainLinkType" form-view="partner-supplychain-link-type-form" grid-view="partner-supplychain-link-type-grid" target-name="link1Name"/>
 		<field name="partner1" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
-    <field name="partnerSupplychainLinkType" form-view="partner-supplychain-link-type-form"
-           grid-view="partner-supplychain-link-type-grid" target-name="link1Name"/>
 	</grid>
 
 	<form model="com.axelor.apps.supplychain.db.PartnerSupplychainLink"
