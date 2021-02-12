@@ -2,5 +2,5 @@
 title: "Adding new shipping default stock location in trading name and its sale order defaults"
 type: feature
 description: |
-	Adding new shipping default stock location in trading name
-	This new field is used as default value for stock location in Sale order if trading name is filled
+  Adding new shipping default stock location in trading name
+  This new field is used as default value for stock location in Sale order if trading name is filled
