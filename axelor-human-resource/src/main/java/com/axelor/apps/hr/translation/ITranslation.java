@@ -38,6 +38,7 @@ public interface ITranslation {
   public static final String NO_ROUTE = /*$$(*/ "No Route Found"; /*)*/
 
   public static final String EMPLOYEE_CONTRACT = /*$$(*/ "Employee.contract"; /*)*/
+  public static final String EMPLOYEE_RESUME = /*$$(*/ "Employee.resume"; /*)*/
   public static final String EMPLOYEE_PERSONAL_INFORMATIONS = /*$$(*/
       "Employee.personalInformations"; /*)*/
   public static final String EMPLOYEE_POSITION_LIST = /*$$(*/ "Employee.positionList"; /*)*/
