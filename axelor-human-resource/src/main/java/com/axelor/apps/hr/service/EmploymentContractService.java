@@ -117,7 +117,11 @@ public class EmploymentContractService {
         item[6] = mainAddress.getAddressL4();
         item[7] = mainAddress.getAddressL2();
         item[8] = mainAddress.getZip();
-        item[9] = mainAddress.getCity().getName();
+        if (mainAddress.getCity() != null) {
+          item[9] = mainAddress.getCity().getName();
+        } else {
+          item[9] = "";
+        }
       }
 
       item[10] = contactPartner.getMobilePhone();
