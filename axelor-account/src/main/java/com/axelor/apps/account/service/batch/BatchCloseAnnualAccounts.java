@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,7 +49,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected YearRepository yearRepository;
   protected AccountRepository accountRepository;
   protected AccountingCloseAnnualService accountingCloseAnnualService;
-  protected boolean stop = false;
+  protected boolean end = false;
 
   @Inject
   public BatchCloseAnnualAccounts(
@@ -76,7 +76,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           ExceptionOriginRepository.REPORTED_BALANCE,
           batch.getId());
       incrementAnomaly();
-      stop = true;
+      end = true;
     }
   }
 
@@ -99,7 +99,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   protected void process() {
-    if (!stop) {
+    if (!end) {
       AccountingBatch accountingBatch = batch.getAccountingBatch();
       boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
       boolean closeYear = accountingBatch.getCloseYear();

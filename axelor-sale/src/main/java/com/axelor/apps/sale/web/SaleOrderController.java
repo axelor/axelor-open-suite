@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,8 +38,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -135,7 +137,7 @@ public class SaleOrderController {
   public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLS);
+    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
   public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
@@ -755,5 +757,20 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    if (Boolean.FALSE.equals(Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())
+        || !Beans.get(SaleOrderLineService.class)
+            .isStartOfPackTypeLineQtyChanged(saleOrder.getSaleOrderLineList())) {
+      return;
+    }
+    try {
+      Beans.get(SaleOrderService.class).updateProductQtyWithPackHeaderQty(saleOrder);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+    response.setReload(true);
   }
 }

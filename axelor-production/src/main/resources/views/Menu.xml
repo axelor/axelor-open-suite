@@ -17,7 +17,7 @@
 		<view type="form" name="product-form" />
 		<view type="cards" name="product-cards" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false and self.productTypeSelect = 'storable' AND dtype = 'Product'</domain>
+		<domain>self.isModel = false and self.productTypeSelect = 'storable' AND self.dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_fromProduction" expr="eval:true" />
 	</action-view>
@@ -529,7 +529,7 @@
 
 
 	<menuitem name="manufacturing-conf-work-center-group-model"
-		parent="manufacturing-conf" title="Work center group model" action="manufacturing.conf.work.center.group.model"/>
+		parent="manufacturing-conf" title="Work center model" action="manufacturing.conf.work.center.group.model"/>
 
 
 	<action-view name="manufacturing.conf.work.center.group.model" title="Work center model"

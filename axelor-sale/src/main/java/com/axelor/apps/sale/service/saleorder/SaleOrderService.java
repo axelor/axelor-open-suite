@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -99,4 +99,13 @@ public interface SaleOrderService {
    * @throws AxelorException if the sale order is in anomaly
    */
   void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException;
+
+  /**
+   * To update product quantity with pack header quantity.
+   *
+   * @param saleOrder
+   * @return {@link SaleOrder}
+   * @throws AxelorException
+   */
+  public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException;
 }

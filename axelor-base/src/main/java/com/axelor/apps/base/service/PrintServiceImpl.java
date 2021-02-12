@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -69,16 +69,10 @@ public class PrintServiceImpl implements PrintService {
   protected String attachmentPath;
 
   @Inject
-  PrintServiceImpl(PrintRepository printRepo, MetaFiles metaFiles) {
+  PrintServiceImpl(PrintRepository printRepo, MetaFiles metaFiles) throws AxelorException {
     this.printRepo = printRepo;
     this.metaFiles = metaFiles;
-    this.attachmentPath = AppSettings.get().getPath("file.upload.dir", "");
-    if (attachmentPath != null) {
-      attachmentPath =
-          attachmentPath.endsWith(File.separator)
-              ? attachmentPath
-              : attachmentPath + File.separator;
-    }
+    this.attachmentPath = AppService.getFileUploadDir();
   }
 
   @Override

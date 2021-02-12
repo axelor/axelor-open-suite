@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,29 +21,26 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.service.ProdProcessLineService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ProdProcessLineController {
-  protected ProdProcessLineService prodProcessLineService;
-
-  @Inject
-  public ProdProcessLineController(ProdProcessLineService prodProcessLineService) {
-    this.prodProcessLineService = prodProcessLineService;
-  }
 
   public void copyWorkCenterGroup(ActionRequest request, ActionResponse response) {
-
-    Long prodProcessId = request.getContext().asType(ProdProcessLine.class).getId();
-    ProdProcessLine prodProcess = Beans.get(ProdProcessLineRepository.class).find(prodProcessId);
-    WorkCenterGroup workCenterGroup = prodProcess.getWorkCenterGroup();
-    if (workCenterGroup != null) {
-      prodProcessLineService.copyWorkCenterGroup(prodProcess, workCenterGroup);
+    try {
+      Long prodProcessId = request.getContext().asType(ProdProcessLine.class).getId();
+      ProdProcessLine prodProcess = Beans.get(ProdProcessLineRepository.class).find(prodProcessId);
+      WorkCenterGroup workCenterGroup = prodProcess.getWorkCenterGroup();
+      if (workCenterGroup != null) {
+        Beans.get(ProdProcessLineService.class).copyWorkCenterGroup(prodProcess, workCenterGroup);
+      }
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setCanClose(true);
   }
 }

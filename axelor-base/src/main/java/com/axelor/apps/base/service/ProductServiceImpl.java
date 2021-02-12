@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,8 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductVariant;
@@ -44,7 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -175,7 +177,10 @@ public class ProductServiceImpl implements ProductService {
   private void updateSalePriceOfVariant(Product product) throws AxelorException {
 
     List<? extends Product> productVariantList =
-        productRepo.all().filter("self.parentProduct = ?1 AND dtype = 'Product'", product).fetch();
+        productRepo
+            .all()
+            .filter("self.parentProduct = ?1 AND self.dtype = 'Product'", product)
+            .fetch();
 
     for (Product productVariant : productVariantList) {
 
@@ -190,13 +195,11 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public boolean hasActivePriceList(Product product) {
-    if (product.getPriceListLineList() == null) return false;
-    else {
-      return !product.getPriceListLineList().stream()
-          .filter(priceListLine -> priceListLine.getPriceList().getIsActive())
-          .collect(Collectors.toList())
-          .isEmpty();
-    }
+    return product.getPriceListLineList() != null
+        && product.getPriceListLineList().stream()
+            .map(PriceListLine::getPriceList)
+            .filter(Objects::nonNull)
+            .anyMatch(PriceList::getIsActive);
   }
 
   @Override

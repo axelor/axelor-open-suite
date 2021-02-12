@@ -197,8 +197,8 @@
 		onNew="action-group-purchase-purchase-orderline-onnew"
 		onLoad="action-group-purchase-purchase-orderline-onload" width="large">
 		<panel name="mainPanel" >
-			<field name="purchaseOrder.contactPartner"></field>
-    		<field name="purchaseOrder.purchaseOrderSeq"></field>
+			<field name="purchaseOrder.contactPartner"/>
+    		<field name="purchaseOrder.purchaseOrderSeq"/>
 		</panel>
 		<panel-include view="purchase-order-line-form"/>
 	</form>
@@ -400,14 +400,10 @@
 	
 	<action-attrs name="action-purchase-order-line-attrs-product-domain">
 		<attribute name="domain" for="product" if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"
-		expr="eval: isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()
-		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id}) and dtype = 'Product'&quot;
-		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and dtype = 'Product'&quot;" />
-
-		<attribute name="domain" for="product" if="__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty()"
-		expr="eval: isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()
-		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true AND ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) and dtype = 'Product'&quot;
-		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true AND ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet and dtype = 'Product'&quot;" />
+			expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and dtype = 'Product'&quot;
+			+ (isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog() ? &quot; and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id})&quot; : &quot;&quot;)
+      + (__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.find({it.name == 'purchasable'}) ? &quot; and (SELECT purchasable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = ${__parent__ ? __parent__.company.id : purchaseOrder.company.id}) IS TRUE&quot; : &quot;&quot;)
+			+ (__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty() ? &quot; and ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet &quot; : &quot;&quot;)"/>
 	</action-attrs>
 	
     <action-attrs name="action-purchase-order-line-attrs-discountamount-title">

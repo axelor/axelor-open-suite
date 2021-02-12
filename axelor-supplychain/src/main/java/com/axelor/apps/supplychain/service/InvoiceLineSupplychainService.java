@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -58,15 +59,18 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
       PurchaseProductService purchaseProductService,
-      ProductCompanyService productCompanyService) {
-
+      ProductCompanyService productCompanyService,
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService) {
     super(
         currencyService,
         priceListService,
         appAccountService,
         analyticMoveLineService,
         accountManagementAccountService,
-        productCompanyService);
+        productCompanyService,
+        invoiceLineRepo,
+        appBaseService);
     this.purchaseProductService = purchaseProductService;
   }
 

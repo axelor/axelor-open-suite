@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,18 +22,16 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -43,23 +41,24 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     implements TimesheetLineBusinessService {
 
   protected ProjectRepository projectRepo;
-  protected TeamTaskRepository teamTaskaRepo;
+  protected ProjectTaskRepository projectTaskRepo;
   protected TimesheetLineRepository timesheetLineRepo;
+  protected TimesheetRepository timesheetRepo;
 
   @Inject
   public TimesheetLineProjectServiceImpl(
       TimesheetService timesheetService,
-      TimesheetHRRepository timesheetHRRepository,
-      TimesheetRepository timesheetRepository,
+      TimesheetRepository timesheetRepo,
       EmployeeRepository employeeRepository,
       ProjectRepository projectRepo,
-      TeamTaskRepository teamTaskaRepo,
+      ProjectTaskRepository projectTaskaRepo,
       TimesheetLineRepository timesheetLineRepo) {
-    super(timesheetService, timesheetHRRepository, timesheetRepository, employeeRepository);
+    super(timesheetService, employeeRepository);
 
     this.projectRepo = projectRepo;
-    this.teamTaskaRepo = teamTaskaRepo;
+    this.projectTaskRepo = projectTaskaRepo;
     this.timesheetLineRepo = timesheetLineRepo;
+    this.timesheetRepo = timesheetRepo;
   }
 
   @Override
@@ -90,21 +89,21 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
         timesheetLine.getProject() != null
             ? projectRepo.find(timesheetLine.getProject().getId())
             : null;
-    TeamTask teamTask =
-        timesheetLine.getTeamTask() != null
-            ? teamTaskaRepo.find(timesheetLine.getTeamTask().getId())
+    ProjectTask projectTask =
+        timesheetLine.getProjectTask() != null
+            ? projectTaskRepo.find(timesheetLine.getProjectTask().getId())
             : null;
 
     boolean toInvoice;
 
-    if (teamTask == null && project != null) {
+    if (projectTask == null && project != null) {
       toInvoice = project.getIsInvoicingTimesheet();
-    } else if (teamTask != null) {
-      toInvoice = teamTask.getToInvoice();
-      if (teamTask.getParentTask() != null) {
+    } else if (projectTask != null) {
+      toInvoice = projectTask.getToInvoice();
+      if (projectTask.getParentTask() != null) {
         toInvoice =
-            teamTask.getParentTask().getInvoicingType()
-                == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT;
+            projectTask.getParentTask().getInvoicingType()
+                == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT;
       }
     } else {
       toInvoice = false;
@@ -114,10 +113,45 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     return timesheetLine;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine) {
     timesheetLine = getDefaultToInvoice(timesheetLine);
     return timesheetLineRepo.save(timesheetLine);
+  }
+
+  @Transactional
+  public TimesheetLine setTimesheet(TimesheetLine timesheetLine) {
+    Timesheet timesheet =
+        timesheetRepo
+            .all()
+            .filter(
+                "self.user = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
+                timesheetLine.getUser(),
+                timesheetLine.getProject().getCompany(),
+                timesheetLine.getDate())
+            .order("id")
+            .fetchOne();
+    if (timesheet == null) {
+      Timesheet lastTimesheet =
+          timesheetRepo
+              .all()
+              .filter(
+                  "self.user = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
+                  timesheetLine.getUser(),
+                  TimesheetRepository.STATUS_CANCELED)
+              .order("-toDate")
+              .fetchOne();
+      timesheet =
+          timesheetService.createTimesheet(
+              timesheetLine.getUser(),
+              lastTimesheet != null && lastTimesheet.getToDate() != null
+                  ? lastTimesheet.getToDate().plusDays(1)
+                  : timesheetLine.getDate(),
+              null);
+      timesheet = timesheetRepo.save(timesheet);
+    }
+    timesheetLine.setTimesheet(timesheet);
+    return timesheetLine;
   }
 }

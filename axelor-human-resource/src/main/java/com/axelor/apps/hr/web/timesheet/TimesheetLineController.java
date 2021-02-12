@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,6 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -111,11 +110,5 @@ public class TimesheetLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void setTimesheet(ActionRequest request, ActionResponse response) {
-    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-    timesheetLine = Beans.get(TimesheetLineServiceImpl.class).setTimesheet(timesheetLine);
-    response.setValues(timesheetLine);
   }
 }

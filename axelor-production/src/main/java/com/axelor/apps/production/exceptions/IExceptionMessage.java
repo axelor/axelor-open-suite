@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -82,7 +82,7 @@ public interface IExceptionMessage {
       "Please select the Manufacturing order(s) to print." /*)*/;
 
   static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
-      "Please select more than one OF" /*)*/;
+      "Please select more than one manufacturing order." /*)*/;
 
   static final String MANUF_ORDER_MERGE_VALIDATION = /*$$(*/
       "Are you sure you want to merge those manufacturing orders?" /*)*/;
@@ -91,7 +91,7 @@ public interface IExceptionMessage {
       "Please select something to merge" /*)*/;
 
   static final String MANUF_ORDER_MERGE_ERROR = /*$$(*/
-      "The merge must concern only manuf order with Draft or Planned status, with the same products and same workshop stock location and will all bill of material compatibles." /*)*/;
+      "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and same workshop stock location and with all bill of materials compatibles." /*)*/;
 
   /** Operation Order Controller */
   static final String OPERATION_ORDER_1 = /*$$(*/
@@ -177,6 +177,11 @@ public interface IExceptionMessage {
 
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  static final String NO_PRODUCT_SELECTED = /*$$(*/
+      "Please select at least one product in the list." /*)*/;
+
+  static final String MO_CREATED = /*$$(*/ "%d MO created." /*)*/;
 
   // CostSheetLine service
   static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/

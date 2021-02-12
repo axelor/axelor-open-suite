@@ -139,8 +139,8 @@
 	</selection>
 
 	<selection name="base.app.base.currency.api.select">
-		<option
-			value="https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&amp;endPeriod=%s">ECB</option>
+		<option value="com.axelor.apps.base.service.currency.ECBCurrencyConversionService">ECB</option>
+		<option value="com.axelor.apps.base.service.currency.FixerCurrencyConversionService">Fixer</option>
 	</selection>
 
 	<selection name="base.app.base.regroup.products.type.select">
@@ -170,8 +170,8 @@
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
 	</selection>
-    
-    <selection name="base.price.list.line.anomaly.select">  
+
+    <selection name="base.price.list.line.anomaly.select">
         <option value="1">Product unavailable for sale</option>
         <option value="2">Product not renewed</option>
     </selection>
@@ -534,6 +534,8 @@
     <selection name="line.type.select">
         <option value="0">Standard</option>
         <option value="1">Title</option>
+        <option value="2">Start of pack</option>
+        <option value="3">End of pack</option>
     </selection>
 
     <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >
@@ -606,8 +608,10 @@
 		<option value="3">Error</option>
 	</selection>
 
-	<selection name='import.export.interface'>
-		<option value="1">EDIFACT</option>
+	<selection name="user.partner.type.select">
+		<option value="1">Employee</option>
+		<option value="2">Contact</option>
+		<option value="3">Partner</option>
 	</selection>
 
 	<selection name="import.export.interface.origin.select">

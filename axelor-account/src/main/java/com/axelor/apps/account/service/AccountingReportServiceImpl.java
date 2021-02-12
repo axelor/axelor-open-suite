@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -40,6 +39,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -71,7 +71,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected AccountRepository accountRepo;
 
-  protected List<Object> params = new ArrayList<Object>();
+  protected List<Object> params = new ArrayList<>();
   protected int paramNumber = 1;
 
   @Inject
@@ -89,7 +89,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect() == type;
   }
 
-  @SuppressWarnings("unchecked")
   public String getMoveLineList(AccountingReport accountingReport) throws AxelorException {
 
     this.buildQuery(accountingReport);
@@ -190,7 +189,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
       if (accountingReport.getReportType().getTypeSelect()
           == AccountingReportRepository.REPORT_AGED_BALANCE) {
-        this.addParams("self.account is null or self.account.reconcileOk = 'true'");
+        this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
         this.addParams("self.amountRemaining > 0 AND self.debit > 0");
       }
 
@@ -201,14 +200,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
       if (accountingReport.getReportType().getTypeSelect()
           == AccountingReportRepository.REPORT_BALANCE) {
-        this.addParams("self.account is null or self.account.reconcileOk = 'true'");
+        this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
       }
 
       if (accountingReport.getReportType().getTypeSelect()
           == AccountingReportRepository.REPORT_CASH_PAYMENTS) {
         this.addParams("self.move.paymentMode.typeSelect = ?%d", PaymentModeRepository.TYPE_CASH);
         this.addParams("self.credit > 0");
-        this.addParams("self.account is null or self.account.reconcileOk = 'true'");
+        this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
       }
     }
 
@@ -273,7 +272,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   protected void initQuery() {
     query = "";
     paramNumber = 1;
-    params = new ArrayList<Object>();
+    params = new ArrayList<>();
 
     this.query = "";
     this.params.clear();
@@ -526,13 +525,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   @Override
   public String getReportFileLink(AccountingReport accountingReport, String name)
       throws AxelorException {
-    String file;
+    String file = "";
     if (accountingReport.getReportType().getTemplate() != null) {
       file =
           String.format(
               "%s/%s",
-              AppSettings.get().getPath("file.upload.dir", ""),
+              AppService.getFileUploadDir(),
               accountingReport.getReportType().getTemplate().getFilePath());
+
     } else {
       file =
           String.format(

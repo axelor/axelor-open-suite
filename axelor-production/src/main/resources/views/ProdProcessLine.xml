@@ -19,21 +19,25 @@
 		<panel name="mainPanel">
 			<field name="name" />
 			<field name="priority" colSpan="3" />
-			<field name="workCenterTypeSelect"></field>
+			<field name="workCenterTypeSelect"/>
 			<button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
 				onClick="save,action-production-view-work-center-group-wizard" />
-			<field name="workCenterGroup" colSpan="12" showIf="workCenterGroup">
-				<editor>
+			<field name="workCenterGroup" colSpan="12" canSelect="false" hideIf="workCenterTypeSelect != 3">
+				<editor x-viewer="true">
 					<panel colSpan="12" itemSpan="12">
-						<field name="name" readonly="true"></field>
-						<field name="workCenterSet" readonly="true" grid-view="work-center-grid"
-							form-view="work-center-form" canEdit="true" canNew="true" showIf="workCenterTypeSelect == 3"  />
-						<field name="workCenterSet" readonly="true" grid-view="work-center-grid-small"
-							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect != 3" />
+						<field name="name"/>
+						<field name="workCenterSet" grid-view="work-center-prod-process-line-grid" form-view="work-center-form" showTitle="false"/>
 					</panel>
-
 				</editor>
 			</field>
+			<field name="workCenterGroup" colSpan="12" canSelect="false" showIf="workCenterTypeSelect != 3" hidden="true">
+            <editor x-viewer="true">
+               <panel colSpan="12" itemSpan="12">
+                  <field name="name"/>
+                  <field name="workCenterSet" grid-view="work-center-grid-small" form-view="work-center-form" showTitle="false"/>
+               </panel>
+            </editor>
+         </field>
 			<field name="outsourcing" />
 			<field name="optional" />
 			<field name="useLineInGeneratedPurchaseOrder"/>
@@ -69,50 +73,29 @@
 		</panel-mail>
 	</form>
 
-	<form model="com.axelor.apps.production.db.ProdProcessLine" title="Work center group wizard"
+	<form model="com.axelor.apps.production.db.ProdProcessLine" title="Work center group selection"
 		name="prod-process-line-work-center-group-wizard-form">
 		<panel name="mainPanel">
-			<field canNew="false" canEdit="false" canSelect="true"
-				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"></field>
-			<button name="workCenterGroupWizerdSave" title="Save"
+			<field canNew="true" canEdit="false" canSelect="true"
+				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"/>
+			<button name="workCenterGroupWizardSave" title="Save"
 				onClick="save,action-production-method-set-work-center-group" />
 
 		</panel>
 		<panel name="attrsPanel">
-			<field name="composantNomenclature" hidden="true"></field>
-			<field name="allWorkshops" hidden="true"></field>
-			<field name="ateliers" hidden="true"></field>
-			<field name="multipleQty" hidden="true"></field>
+			<field name="composantNomenclature" hidden="true"/>
+			<field name="allWorkshops" hidden="true"/>
+			<field name="ateliers" hidden="true"/>
+			<field name="multipleQty" hidden="true"/>
 		</panel>
 
 	</form>
 
-	<action-record name="action-prod-process-line-record-default"
-		model="com.axelor.apps.production.db.ProdProcessLine">
-		<field name="priority"
-			expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10" />
-		<field name="stockLocation"
-			expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()" />
+	<action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
+		<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10" />
+		<field name="stockLocation" expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()" />
 		<field name="workCenterTypeSelect" expr="eval: 1" />
 	</action-record>
-
-	<action-attrs name="action-prod-process-line-attrs-default">
-		<attribute name="hidden" for="toConsumeProdProductList"
-			expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation" />
-		<attribute name="hidden" for="stockLocation"
-			expr="eval: !__parent__.isConsProOnOperation" />
-		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing"
-			if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'" />
-		<attribute name="hidden" for="useLineInGeneratedPurchaseOrder"
-			expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)"
-			if="__parent__ != null"/>
-	</action-attrs>
-
-	<action-attrs name="action-prod-process-line-attrs-machine-tool-domain">
-		<attribute name="domain"
-			expr="eval: &quot; self.machine.id in (SELECT machine.id FROM WorkCenter where id = ${workCenter?.id}) &quot;"
-			for="machineTool" />
-	</action-attrs>
 
 	<action-view name="action-production-view-work-center-group-wizard"
 		title="Work center group" model="com.axelor.apps.production.db.ProdProcessLine">
@@ -132,7 +115,7 @@
 	</action-method>
 
 	<action-attrs name="action-attrs-production-set-work-center-group-domain" model="com.axelor.apps.production.db.ProdProcessLine">
-		<attribute name="domain" for="workCenterGroup" expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+		<attribute name="domain" for="workCenterGroup" expr="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
 	</action-attrs>
 
 	<action-group name="action-prod-process-line-group-work-center-onchange">
@@ -148,12 +131,7 @@
     	<call class="com.axelor.apps.production.web.ProdProcessLineController" method="updateCapacitySettings"/>
     </action-method>
     
-    <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
-    	<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10"/>
-    	<field name="stockLocation" expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()"/>
-    </action-record>
-    
-    <action-attrs name="action-prod-process-line-attrs-default">
+	<action-attrs name="action-prod-process-line-attrs-default">
     	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
 		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
 		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>

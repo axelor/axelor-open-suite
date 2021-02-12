@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,9 +27,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -288,6 +290,9 @@ public class SaleOrderLineController {
       newSaleOrderLine.put("id", saleOrderLine.getId());
       newSaleOrderLine.put("version", saleOrderLine.getVersion());
       newSaleOrderLine.put("typeSelect", saleOrderLine.getTypeSelect());
+      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
+        newSaleOrderLine.put("productName", I18n.get(ITranslation.SALE_ORDER_LINE_END_OF_PACK));
+      }
       response.setValues(newSaleOrderLine);
     }
   }
@@ -337,5 +342,25 @@ public class SaleOrderLineController {
         map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
                 .compareTo(saleOrder.getInAti() ? orderLine.getInTaxPrice() : orderLine.getPrice())
             == 0);
+  }
+
+  /**
+   * Called from sale order line form view, on product selection. Call {@link
+   * SaleOrderLineService#computeProductDomain(SaleOrderLine, SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void computeProductDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      response.setAttr(
+          "product", "domain", saleOrderLineService.computeProductDomain(saleOrderLine, saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

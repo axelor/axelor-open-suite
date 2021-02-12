@@ -1,7 +1,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerSupplychainLink;
+import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;

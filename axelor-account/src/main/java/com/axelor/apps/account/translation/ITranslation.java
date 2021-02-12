@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,4 +24,10 @@ public interface ITranslation {
   public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
   public static final String ACCOUNT_DEBIT_BALANCE = /*$$(*/ "Debit balance" /*)*/;
   public static final String ACCOUNT_CREDIT_BALANCE = /*$$(*/ "Credit balance" /*)*/;
+  public static final String INVOICE_LINE_END_OF_PACK = /*$$(*/ "InvoiceLine.endOfPack" /*)*/;
+  public static final String INVOICE_LINE_TOTAL = /*$$(*/ "InvoiceLine.total" /*)*/;
+  public static final String INVOICE_PURCHASE_SITUTATION_INVOICED_AMOUNT = /*$$(*/
+      "Invoiced Amount" /*)*/;
+  public static final String INVOICE_PURCHASE_SITUTATION_UNPAID_INVOICE_AMOUNT = /*$$(*/
+      "Unpaid Inv. due" /*)*/;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,4 +59,6 @@ public interface IExceptionMessage {
       "The email template model (%s) is different than the entity generating the email (%s)" /*)*/;
 
   String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
+  static final String TEMPORARY_EMAIL_MEDIA_TYPE_ERROR = /*$$(*/
+      "Temporary email service only support Email media type." /*)*/;
 }

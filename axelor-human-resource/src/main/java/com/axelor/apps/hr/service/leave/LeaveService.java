@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.mail.MessagingException;
 
 public interface LeaveService {
@@ -115,11 +116,11 @@ public interface LeaveService {
   public boolean isLeaveDay(User user, LocalDate date);
 
   /**
-   * Gets the leave for the given user for the given date.
+   * Gets the leaves for the given user for the given date.
    *
    * @param user
    * @param date
    * @return
    */
-  public LeaveRequest getLeave(User user, LocalDate date);
+  public List<LeaveRequest> getLeaves(User user, LocalDate date);
 }

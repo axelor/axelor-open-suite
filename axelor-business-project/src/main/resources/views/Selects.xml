@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
-	<selection name="business.team.task.invoicing.type.select">
-		<option value="1">Time spent</option>
-		<option value="2">Teamtask.Package</option>
-		<option value="3">No invoicing</option>
-	</selection>
+    <selection name="business.project.task.invoicing.type.select">
+       <option value="1">Time spent</option>
+       <option value="2">ProjectTask.Package</option>
+       <option value="3">No invoicing</option>
+    </selection>
 	
 	<selection name="business.project.invoicing.sequence.select">
 		<option value="0">Empty</option>
@@ -58,6 +58,10 @@
 		<option value="1">Consolidate all</option>
 		<option value="2">Don't consolidate</option>
 		<option value="3">Default value</option>
+	</selection>
+	
+	<selection id="business.project.sequence.generic.code.select" name="sequence.generic.code.select">
+		<option value="project">Project</option>
 	</selection>
 
 </object-views>

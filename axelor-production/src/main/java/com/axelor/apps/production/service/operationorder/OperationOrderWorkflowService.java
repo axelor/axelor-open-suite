@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -58,6 +58,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class OperationOrderWorkflowService {
@@ -66,7 +67,7 @@ public class OperationOrderWorkflowService {
   protected OperationOrderDurationRepository operationOrderDurationRepo;
   protected AppProductionService appProductionService;
   protected MachineToolRepository machineToolRepo;
-  @Inject protected WeeklyPlanningService weeklyPlanningService;
+  protected WeeklyPlanningService weeklyPlanningService;
 
   @Inject
   public OperationOrderWorkflowService(
@@ -74,12 +75,14 @@ public class OperationOrderWorkflowService {
       OperationOrderRepository operationOrderRepo,
       OperationOrderDurationRepository operationOrderDurationRepo,
       AppProductionService appProductionService,
-      MachineToolRepository machineToolRepo) {
+      MachineToolRepository machineToolRepo,
+      WeeklyPlanningService weeklyPlanningService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
     this.appProductionService = appProductionService;
     this.machineToolRepo = machineToolRepo;
+    this.weeklyPlanningService = weeklyPlanningService;
   }
 
   @Transactional
@@ -98,7 +101,7 @@ public class OperationOrderWorkflowService {
       LocalTime startDateTime = startDate.toLocalTime();
       LocalTime endDateTime = endDate.toLocalTime();
 
-      /**
+      /*
        * If operation begins inside one period of the machine but finished after that period, then
        * we split the operation
        */
@@ -143,7 +146,7 @@ public class OperationOrderWorkflowService {
       LocalTime secondPeriodTo = dayPlanning.getAfternoonTo();
       LocalTime startDateTime = startDate.toLocalTime();
 
-      /**
+      /*
        * If the start date is before the start time of the machine (or equal, then the operation
        * order will begins at the same time than the machine Example: Machine begins at 8am. We set
        * the date to 6am. Then the planned start date will be set to 8am.
@@ -152,7 +155,7 @@ public class OperationOrderWorkflowService {
           && (startDateTime.isBefore(firstPeriodFrom) || startDateTime.equals(firstPeriodFrom))) {
         operationOrder.setPlannedStartDateT(startDate.toLocalDate().atTime(firstPeriodFrom));
       }
-      /**
+      /*
        * If the machine has two periods, with a break between them, and the operation is planned
        * inside this period of time, then we will start the operation at the beginning of the
        * machine second period. Example: Machine hours is 8am to 12 am. 2pm to 6pm. We try to begins
@@ -164,7 +167,7 @@ public class OperationOrderWorkflowService {
           && (startDateTime.isBefore(secondPeriodFrom) || startDateTime.equals(secondPeriodFrom))) {
         operationOrder.setPlannedStartDateT(startDate.toLocalDate().atTime(secondPeriodFrom));
       }
-      /**
+      /*
        * If the start date is planned after working hours, or during a day off, then we will search
        * for the first period of the machine available. Example: Machine on Friday is 6am to 8 pm.
        * We set the date to 9pm. The next working day is Monday 8am. Then the planned start date
@@ -184,8 +187,8 @@ public class OperationOrderWorkflowService {
   public void searchForNextWorkingDay(
       OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, LocalDateTime startDate) {
     int daysToAddNbr = 0;
-    DayPlanning nextDayPlanning = null;
-    /** We will find the next DayPlanning with at least one working period. */
+    DayPlanning nextDayPlanning;
+    /* We will find the next DayPlanning with at least one working period. */
     do {
 
       daysToAddNbr++;
@@ -195,7 +198,7 @@ public class OperationOrderWorkflowService {
     } while (nextDayPlanning.getAfternoonFrom() == null
         && nextDayPlanning.getMorningFrom() == null);
 
-    /**
+    /*
      * We will add the nbr of days to retrieve the working day, and set the time to either the first
      * morning period or the first afternoon period.
      */
@@ -278,20 +281,20 @@ public class OperationOrderWorkflowService {
 
     WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
 
-    WorkCenter workCenter = null;
+    Optional<WorkCenter> workCenterOpt = Optional.empty();
 
     if (workCenterGroup != null
         && workCenterGroup.getWorkCenterSet() != null
         && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenter =
+      workCenterOpt =
           workCenterGroup.getWorkCenterSet().stream()
-              .min(Comparator.comparing(WorkCenter::getSequence))
-              .get();
+              .min(Comparator.comparing(WorkCenter::getSequence));
     }
 
-    if (workCenter == null) {
+    if (!workCenterOpt.isPresent()) {
       return 0;
     }
+    WorkCenter workCenter = workCenterOpt.get();
 
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
@@ -368,7 +371,7 @@ public class OperationOrderWorkflowService {
             .fetchOne();
 
     if (lastOperationOrder != null) {
-      if (lastOperationOrder.getPriority() == operationOrder.getPriority()) {
+      if (lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
         if (lastOperationOrder.getPlannedStartDateT() != null
             && lastOperationOrder
                 .getPlannedStartDateT()
@@ -719,17 +722,17 @@ public class OperationOrderWorkflowService {
       return;
     }
 
-    Double hoursOfUse =
+    long hoursOfUse =
         operationOrderRepo
             .all()
             .filter("self.machineTool.id = :id AND self.statusSelect = 6")
             .bind("id", operationOrder.getMachineTool().getId())
             .fetchStream()
-            .mapToDouble(list -> list.getRealDuration())
+            .mapToLong(OperationOrder::getRealDuration)
             .sum();
 
     MachineTool machineTool = machineToolRepo.find(operationOrder.getMachineTool().getId());
-    machineTool.setHoursOfUse(Double.valueOf(hoursOfUse).longValue());
+    machineTool.setHoursOfUse(hoursOfUse);
     machineToolRepo.save(machineTool);
   }
 }

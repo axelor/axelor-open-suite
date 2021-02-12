@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,11 +19,14 @@ package com.axelor.apps.portal.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -34,8 +37,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -51,8 +52,9 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected ProjectRepository projectRepo;
   protected TicketRepository ticketRepo;
   protected InvoiceRepository invoiceRepo;
-  protected TeamTaskRepository teamTaskRepo;
+  protected ProjectTaskRepository projectTaskRepo;
   protected JpaSecurity security;
+  protected AppService appService;
 
   protected static final DateTimeFormatter DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -66,15 +68,17 @@ public class ClientViewServiceImpl implements ClientViewService {
       ProjectRepository projectRepo,
       TicketRepository ticketRepo,
       InvoiceRepository invoiceRepo,
-      TeamTaskRepository teamTaskRepo,
-      JpaSecurity jpaSecurity) {
+      ProjectTaskRepository projectTaskRepo,
+      JpaSecurity jpaSecurity,
+      AppService appService) {
     this.saleOrderRepo = saleOrderRepo;
     this.stockMoveRepo = stockMoveRepo;
     this.projectRepo = projectRepo;
     this.ticketRepo = ticketRepo;
     this.invoiceRepo = invoiceRepo;
-    this.teamTaskRepo = teamTaskRepo;
+    this.projectTaskRepo = projectTaskRepo;
     this.security = jpaSecurity;
+    this.appService = appService;
   }
 
   @Override
@@ -107,8 +111,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     map.put("$lateTickets", getLateTicketsIndicator(user));
     /* Project */
     map.put("$totalProjects", getTotalProjectsIndicator(user));
-    map.put("$newTasks", getNewTasksIndicator(user));
-    map.put("$tasksInProgress", getTasksInProgressIndicator(user));
+    map.put("$tasksInCompleted", getTasksInCompletedIndicator(user));
     map.put("$tasksDue", getTasksDueIndicator(user));
     return map;
   }
@@ -239,22 +242,16 @@ public class ClientViewServiceImpl implements ClientViewService {
     return !projectList.isEmpty() ? projectList.size() : 0;
   }
 
-  protected Integer getNewTasksIndicator(User user) {
-    List<Filter> filters = getNewTasksOfUser(user);
-    List<TeamTask> teamTaskList = Filter.and(filters).build(TeamTask.class).fetch();
-    return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
-  }
-
-  protected Integer getTasksInProgressIndicator(User user) {
-    List<Filter> filters = getTasksInProgressOfUser(user);
-    List<TeamTask> teamTaskList = Filter.and(filters).build(TeamTask.class).fetch();
-    return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
+  protected Integer getTasksInCompletedIndicator(User user) {
+    List<Filter> filters = getTasksInCompletedOfUser(user);
+    List<ProjectTask> projectTaskList = Filter.and(filters).build(ProjectTask.class).fetch();
+    return !projectTaskList.isEmpty() ? projectTaskList.size() : 0;
   }
 
   protected Integer getTasksDueIndicator(User user) {
-    List<Filter> filters = getTasksDueOfUser(user);
-    List<TeamTask> teamTaskList = Filter.and(filters).build(TeamTask.class).fetch();
-    return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
+    List<Filter> filters = getTasksInCompletedOfUser(user);
+    List<ProjectTask> projectTaskList = Filter.and(filters).build(ProjectTask.class).fetch();
+    return !projectTaskList.isEmpty() ? projectTaskList.size() : 0;
   }
 
   /* SaleOrder Query */
@@ -598,12 +595,10 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Project.class);
     Filter filter =
         new JPQLFilter(
-            "self.isProject = true AND self.clientPartner.id = "
+            "self.clientPartner.id = "
                 + user.getPartner().getId()
-                + " AND self.statusSelect != "
-                + ProjectRepository.STATE_CANCELED);
-
-    if (user.getActiveCompany() != null) {
+                + " AND self.projectStatus.isCompleted = false");
+    if (user.getActiveCompany() != null && appService.isApp("business-project")) {
       filter =
           Filter.and(
               filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
@@ -615,40 +610,18 @@ public class ClientViewServiceImpl implements ClientViewService {
   }
 
   @Override
-  public List<Filter> getNewTasksOfUser(User user) {
+  public List<Filter> getTasksInCompletedOfUser(User user) {
     List<Filter> filters = new ArrayList<>();
-    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, TeamTask.class);
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, ProjectTask.class);
+
     Filter filter =
         new JPQLFilter(
-            "self.status = 'new' "
+            "self.status.isCompleted = false"
                 + " AND self.typeSelect = '"
-                + TeamTaskRepository.TYPE_TASK
+                + ProjectTaskRepository.TYPE_TASK
                 + "' AND self.project.clientPartner.id = "
                 + user.getPartner().getId());
-
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter,
-              new JPQLFilter(" self.project.company.id = " + user.getActiveCompany().getId()));
-    }
-    filters.add(filter);
-    addPermissionFilter(filters, filterFromPermission);
-    return filters;
-  }
-
-  @Override
-  public List<Filter> getTasksInProgressOfUser(User user) {
-    List<Filter> filters = new ArrayList<>();
-    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, TeamTask.class);
-    Filter filter =
-        new JPQLFilter(
-            "self.status = 'in-progress'"
-                + " AND self.typeSelect = '"
-                + TeamTaskRepository.TYPE_TASK
-                + "' AND self.project.clientPartner.id = "
-                + user.getPartner().getId());
-    if (user.getActiveCompany() != null) {
+    if (user.getActiveCompany() != null && appService.isApp("business-project")) {
       filter =
           Filter.and(
               filter,
@@ -662,24 +635,8 @@ public class ClientViewServiceImpl implements ClientViewService {
   @Override
   public List<Filter> getTasksDueOfUser(User user) {
     List<Filter> filters = new ArrayList<>();
-    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, TeamTask.class);
-    Filter filter =
-        new JPQLFilter(
-            "self.status IN ('in-progress','new')"
-                + " AND self.project.clientPartner.id = "
-                + user.getPartner().getId()
-                + " AND self.typeSelect = '"
-                + TeamTaskRepository.TYPE_TASK
-                + "' AND self.taskEndDate  < current_date() ");
-
-    if (user.getActiveCompany() != null) {
-      filter =
-          Filter.and(
-              filter,
-              new JPQLFilter(" self.project.company.id = " + user.getActiveCompany().getId()));
-    }
-    filters.add(filter);
-    addPermissionFilter(filters, filterFromPermission);
+    Filter dateFilter = new JPQLFilter("self.taskEndDate  < current_date()");
+    filters.add(Filter.and(getTasksInCompletedOfUser(user).get(0), dateFilter));
     return filters;
   }
 }

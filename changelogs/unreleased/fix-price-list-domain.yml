@@ -2,4 +2,4 @@
 title: "Price list: exclude price list that are defined on exclusive partner price list"
 type: fix
 description: |
-	In price list, we fix the display to exclude list that are defined on an axclusive partner price list
+  In price list, we fix the display to exclude list that are defined on an axclusive partner price list

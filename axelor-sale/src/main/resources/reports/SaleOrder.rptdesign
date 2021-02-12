@@ -2669,6 +2669,12 @@ from base_app_base]]></xml-property>
                 <property name="borderBottomStyle">solid</property>
                 <property name="borderBottomWidth">thin</property>
                 <property name="height">1.5cm</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">xlsx</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
                 <cell id="3350">
                     <property name="colSpan">8</property>
                     <property name="rowSpan">1</property>

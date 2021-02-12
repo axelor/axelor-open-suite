@@ -280,6 +280,7 @@
 
 			<panel name="internalMovePanel" showIf="typeSelect == 1" colSpan="12" itemSpan="3">
 				<field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+				<field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
                 <field name="fromStockLocation"  canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
                 <field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
                 <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
@@ -309,7 +310,7 @@
 
 			<panel name="outgoingMovePanel" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
 				<field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
-				<field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-stock-move-method-printing-settings-default-value" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
+				<field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
 				<field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
 				<field name="invoicedPartner" canEdit="false" readonlyIf="statusSelect != 1" onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain" grid-view="partner-grid" form-view="partner-form"/>
 				<field name="fromStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
@@ -347,6 +348,7 @@
 				<field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
             	<field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
                 <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+            	<field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
             	<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited" />
             	<field name="supplierShipmentDate" showIf="!isReversion" />
            		<field name="supplierShipmentRef" showIf="!isReversion" />
@@ -470,10 +472,6 @@
 		</panel-mail>
     </form>
 
-  <action-method name="action-invoice-method-show-invoice">
-    <call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
-  </action-method>
-
 	<form name="popup-stock-move-backorder-form" title="Manage backorder?" model="com.axelor.apps.stock.db.StockMove" width="large">
 		<panel name="mainPanel" colSpan="12">
 			<field name="$msg" showTitle="false" colOffset="3" colSpan="6" readonly="true">
@@ -521,7 +519,7 @@
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>
     		<field name="stockToDate" title="To Date" type="date" required="true"/>
 	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true" />
-	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false" domain="dtype = 'Product'"/>
+	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false" domain="self.dtype = 'Product'"/>
         </panel>
     </form>
     
@@ -1085,5 +1083,10 @@
     <action-method name="action-stock-move-method-is-allocated-stock-move-line-removed">
        <call class="com.axelor.apps.supplychain.web.StockMoveController" method="isAllocatedStockMoveLineRemoved"/>
     </action-method>
-
+	
+	<action-record name="action-stock-move-record-set-trading-name-stock-locations-default" model="com.axelor.apps.stock.db.StockMove">
+		<field name="toStockLocation" expr="eval: tradingName?.receiptDefaultStockLocation != null ? tradingName?.receiptDefaultStockLocation : toStockLocation" if="typeSelect == 3"/>
+		<field name="fromStockLocation" expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : fromStockLocation" if="typeSelect == 2"/>
+	</action-record>
+	
 </object-views>

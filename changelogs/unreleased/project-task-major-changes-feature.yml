@@ -1,0 +1,9 @@
+---
+title: Project and task major changes
+type: feature
+description: |
+  Track task,wiki,topic activity
+  Improve timsheet workflow validation
+  Add support to create custom status for project and task
+  Add ability to create custom field for project and per project
+  Can see kanban view per status, per section and calendar view per status, per user

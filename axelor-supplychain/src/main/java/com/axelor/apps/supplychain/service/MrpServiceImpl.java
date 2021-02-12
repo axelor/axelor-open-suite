@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -973,7 +973,7 @@ public class MrpServiceImpl implements MrpService {
                       + "AND self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
@@ -992,7 +992,7 @@ public class MrpServiceImpl implements MrpService {
                       + "self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,

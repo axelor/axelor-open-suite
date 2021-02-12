@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,23 +20,27 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerSupplychainLink;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
@@ -63,17 +67,26 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   protected AppSupplychain appSupplychain;
   protected SaleOrderStockService saleOrderStockService;
-  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
+      SaleOrderLineService saleOrderLineService,
+      AppBaseService appBaseService,
+      SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderRepository saleOrderRepo,
+      SaleOrderComputeService saleOrderComputeService,
+      SaleOrderMarginService saleOrderMarginService,
       AppSupplychainService appSupplychainService,
-      SaleOrderStockService saleOrderStockService,
-      SaleOrderRepository saleOrderRepository) {
-
+      SaleOrderStockService saleOrderStockService) {
+    super(
+        saleOrderLineService,
+        appBaseService,
+        saleOrderLineRepo,
+        saleOrderRepo,
+        saleOrderComputeService,
+        saleOrderMarginService);
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.saleOrderStockService = saleOrderStockService;
-    this.saleOrderRepository = saleOrderRepository;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -224,7 +237,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Transactional
   public void updateToConfirmedStatus(SaleOrder saleOrder) {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    saleOrderRepository.save(saleOrder);
+    saleOrderRepo.save(saleOrder);
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -191,16 +191,6 @@ public interface ITranslation {
       "InvoicingProjectAnnex.name"; /*)*/
   public static final String INVOICING_PROJECT_ANNEX_PARENT_PROJECT = /*$$(*/
       "InvoicingProjectAnnex.parentProject"; /*)*/
-  public static final String INVOICING_PROJECT_ANNEX_CUSTOMER = /*$$(*/
-      "InvoicingProjectAnnex.customer"; /*)*/
-  public static final String INVOICING_PROJECT_ANNEX_ASSIGNED_TO = /*$$(*/
-      "InvoicingProjectAnnex.assignedTo"; /*)*/
-  public static final String INVOICING_PROJECT_ANNEX_FROM_DATE = /*$$(*/
-      "InvoicingProjectAnnex.fromDate"; /*)*/
-  public static final String INVOICING_PROJECT_ANNEX_TO_DATE = /*$$(*/
-      "InvoicingProjectAnnex.toDate"; /*)*/
-  public static final String INVOICING_PROJECT_ANNEX_DUE_DATE = /*$$(*/
-      "InvoicingProjectAnnex.dueDate"; /*)*/
   // InvoicingProject - Tasks
   public static final String INVOICING_PROJECT_ANNEX_TASK_DATE = /*$$(*/
       "InvoicingProjectAnnex.taskDate"; /*)*/

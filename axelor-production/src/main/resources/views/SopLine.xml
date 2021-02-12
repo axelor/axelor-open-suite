@@ -78,7 +78,7 @@
 
 	<action-group name="action-sop-line-group-confirm-forecasts-onclick">
 		<action name="action-mrp-forecast-method-compute-total-forecast" />
-		<action name="action-mrp-forecast-validate-check-difference" if="new BigDecimal($difference).compareTo(BigDecimal.ZERO) != 0" />
+		<action name="action-mrp-forecast-validate-check-difference"/>
 		<action name="action-mrp-forecast-method-generate-mrp-forecasts" />
 	</action-group>
 
@@ -132,7 +132,7 @@
 	</action-method>
 
 	<action-validate name="action-mrp-forecast-validate-check-difference">
-		<alert message="There currently is a ${$difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?" />
+		<alert message="There currently is a ${difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?" if="difference != 0"/>
 	</action-validate>
 
 </object-views>

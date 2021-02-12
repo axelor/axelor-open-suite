@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1019,10 +1019,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <column id="2602">
-                <property name="width">1.1cm</property>
+                <property name="width">1.7171830985915493cm</property>
             </column>
             <column id="491">
-                <property name="width">5cm</property>
+                <property name="width">5.4377464788732395cm</property>
             </column>
             <column id="4606">
                 <property name="width">3cm</property>

@@ -151,15 +151,15 @@
 	 </action-attrs>
 	 
 	 <action-validate name="action-app-alert-install">
-	 	<alert message="Are you sure wants to install '${name}'?"/>
+	 	<alert message="Are you sure to install '${name}'?"/>
 	 </action-validate>
 	 
 	 <action-validate name="action-app-alert-un-install">
-	 	<alert message="Are you sure wants to uninstall '${name}'?"/>
+	 	<alert message="Are you sure to uninstall '${name}'?"/>
 	 </action-validate>
 	 
 	 <action-validate name="action-app-alert-demo-import">
-	 	<alert message="Are you sure wants to import demo data for '${name}'?"/>
+	 	<alert message="Are you sure to import demo data for '${name}'?"/>
 	 </action-validate>
        
 </object-views>

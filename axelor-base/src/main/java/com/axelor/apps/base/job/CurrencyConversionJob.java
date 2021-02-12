@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.job;
 
-import com.axelor.apps.base.service.CurrencyConversionService;
+import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import org.quartz.Job;
@@ -26,12 +26,12 @@ import org.quartz.JobExecutionException;
 
 public class CurrencyConversionJob implements Job {
 
-  @Inject private CurrencyConversionService currencyConversionService;
+  @Inject protected CurrencyConversionFactory currencyConversionFactory;
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     try {
-      currencyConversionService.updateCurrencyConverion();
+      currencyConversionFactory.getCurrencyConversionService().updateCurrencyConverion();
     } catch (AxelorException e) {
       throw new JobExecutionException(e);
     }

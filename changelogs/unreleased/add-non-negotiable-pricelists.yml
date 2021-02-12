@@ -2,4 +2,4 @@
 title: "PRICELIST: Add non-negotiable field"
 type: feature
 description: |
-	This boolean prevent editing price, unit and discount in sale order lines.
+  This boolean prevent editing price, unit and discount in sale order lines.

@@ -35,17 +35,15 @@ public class MrpLineManagementRepository extends MrpLineRepository {
     if (PurchaseOrder.class.getName().equals(mrpLine.getProposalSelect())) {
       PurchaseOrder purchaseOrder =
           Beans.get(PurchaseOrderRepository.class).find(mrpLine.getProposalSelectId());
-      if (purchaseOrder.getDeliveryDate() == null
-          || mrpLine.getProduct().getMrpFamily() == null
-          || Math.abs(
-                  mrpLine.getMaturityDate().toEpochDay()
-                      - purchaseOrder.getDeliveryDate().toEpochDay())
-              > mrpLine.getProduct().getMrpFamily().getDayNbBetweenPurchaseAndProposal()) {
-
-        mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(true);
-      } else {
-        mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(false);
-      }
+      mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(
+          mrpLine.getProduct() != null
+              && mrpLine.getMaturityDate() != null
+              && (purchaseOrder.getDeliveryDate() == null
+                  || mrpLine.getProduct().getMrpFamily() == null
+                  || Math.abs(
+                          mrpLine.getMaturityDate().toEpochDay()
+                              - purchaseOrder.getDeliveryDate().toEpochDay())
+                      > mrpLine.getProduct().getMrpFamily().getDayNbBetweenPurchaseAndProposal()));
       json.put(
           "isOutDayNbBetweenPurchaseAndProposal",
           mrpLine.getIsOutDayNbBetweenPurchaseAndProposal());

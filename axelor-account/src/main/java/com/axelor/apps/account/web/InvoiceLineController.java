@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,10 +31,12 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Product;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -308,6 +310,9 @@ public class InvoiceLineController {
       newInvoiceLine.put("id", invoiceLine.getId());
       newInvoiceLine.put("version", invoiceLine.getVersion());
       newInvoiceLine.put("typeSelect", invoiceLine.getTypeSelect());
+      if (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_END_OF_PACK) {
+        newInvoiceLine.put("productName", I18n.get(ITranslation.INVOICE_LINE_END_OF_PACK));
+      }
       response.setValues(newInvoiceLine);
     }
   }

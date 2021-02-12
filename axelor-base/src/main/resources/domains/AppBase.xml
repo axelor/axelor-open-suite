@@ -24,7 +24,10 @@
 		<string name="googleMapsApiKey" title="Google Maps API key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
-		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"/>
+		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"
+		 default="com.axelor.apps.base.service.currency.ECBCurrencyConversionService"/>
+		 <string name="fixerApiKey" title="Fixer Api key"/>
+		<boolean name="isFixerAPIPaid" title="Paid fixer API"/>
 
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
 		
@@ -86,17 +89,15 @@
 
     	<many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence" title="Product sequence"/>
 
-		<many-to-many name="companySpecificProductFieldsList" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
+		<many-to-many name="companySpecificProductFieldsSet" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
 
-	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
+	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase"/>
 
-	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template" ref="com.axelor.apps.message.db.Template"/>
+	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template for notifications" ref="com.axelor.apps.message.db.Template"/>
 
 	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
 
-		<boolean name="costPriceByTradingName" title="Cost price by tradingname" default="false"/>
-
-        <boolean name="automaticCostPriceComputing" title="Automatic cost price computing" default="false"/>
+	   	<string name="geoNamesUrl" title="GeoNames URL"/>
 
 		<extra-code>
 	   		<![CDATA[

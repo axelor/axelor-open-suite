@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.portal.service.ClientViewService;
 import com.axelor.apps.portal.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -34,7 +35,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.filter.Filter;
-import com.axelor.team.db.TeamTask;
 import java.util.Map;
 
 public class ClientViewController {
@@ -157,45 +157,21 @@ public class ClientViewController {
     }
   }
 
-  public void showClientMyNewTasks(ActionRequest request, ActionResponse response) {
+  public void showClientMyTasksInCompleted(ActionRequest request, ActionResponse response) {
     try {
       ClientViewService clientViewService = Beans.get(ClientViewService.class);
       User clientUser = clientViewService.getClientUser();
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        Filter filter = clientViewService.getNewTasksOfUser(clientUser).get(0);
+        Filter filter = clientViewService.getTasksInCompletedOfUser(clientUser).get(0);
         if (filter != null) {
           response.setView(
-              ActionView.define(I18n.get("New tasks"))
-                  .model(TeamTask.class.getName())
-                  .add("grid", "team-task-grid")
-                  .add("form", "team-task-form")
-                  .param("search-filters", "team-task-filters")
-                  .domain(filter.getQuery())
-                  .map());
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void showClientMyTasksInProgress(ActionRequest request, ActionResponse response) {
-    try {
-      ClientViewService clientViewService = Beans.get(ClientViewService.class);
-      User clientUser = clientViewService.getClientUser();
-      if (clientUser.getPartner() == null) {
-        response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
-      } else {
-        Filter filter = clientViewService.getTasksInProgressOfUser(clientUser).get(0);
-        if (filter != null) {
-          response.setView(
-              ActionView.define(I18n.get("Tasks in progress"))
-                  .model(TeamTask.class.getName())
-                  .add("grid", "team-task-grid")
-                  .add("form", "team-task-form")
-                  .param("search-filters", "team-task-filters")
+              ActionView.define(I18n.get("Tasks incompleted"))
+                  .model(ProjectTask.class.getName())
+                  .add("grid", "project-task-grid")
+                  .add("form", "project-task-form")
+                  .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -212,14 +188,14 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        Filter filter = clientViewService.getTasksDueOfUser(clientUser).get(0);
+        Filter filter = Filter.and(clientViewService.getTasksDueOfUser(clientUser));
         if (filter != null) {
           response.setView(
               ActionView.define(I18n.get("Tasks due"))
-                  .model(TeamTask.class.getName())
-                  .add("grid", "team-task-grid")
-                  .add("form", "team-task-form")
-                  .param("search-filters", "team-task-filters")
+                  .model(ProjectTask.class.getName())
+                  .add("grid", "project-task-grid")
+                  .add("form", "project-task-form")
+                  .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
                   .map());
         }

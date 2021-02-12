@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,7 +40,7 @@ public class BatchMoveLineExport extends BatchStrategy {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected boolean stop = false;
+  protected boolean end = false;
 
   protected long moveLineDone = 0;
   protected long moveDone = 0;
@@ -76,7 +76,7 @@ public class BatchMoveLineExport extends BatchStrategy {
           ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN,
           batch.getId());
       incrementAnomaly();
-      stop = true;
+      end = true;
     }
 
     checkPoint();
@@ -85,7 +85,7 @@ public class BatchMoveLineExport extends BatchStrategy {
   @Override
   protected void process() {
 
-    if (!stop) {
+    if (!end) {
       try {
         Company company = batch.getAccountingBatch().getCompany();
         LocalDate startDate = batch.getAccountingBatch().getStartDate();

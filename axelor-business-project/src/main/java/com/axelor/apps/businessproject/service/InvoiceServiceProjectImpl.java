@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,10 +22,9 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.PartnerTurnoverService;
-import com.axelor.apps.account.service.YearServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -64,9 +63,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      PartnerTurnoverService partnerTurnoverService,
-      YearServiceAccount yearServiceAccount,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      InvoiceLineRepository invoiceLineRepo) {
     super(
         validateFactory,
         ventilateFactory,
@@ -77,9 +75,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         partnerService,
         invoiceLineService,
         accountConfigService,
-        partnerTurnoverService,
-        yearServiceAccount,
-        moveToolService);
+        moveToolService,
+        invoiceLineRepo);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)

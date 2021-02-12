@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -83,7 +83,8 @@ public class DebtRecoveryActionService {
 
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
     Partner partner =
-        (debtRecovery.getTradingName() == null)
+        (debtRecovery.getTradingName() == null
+                || debtRecovery.getTradingNameAccountingSituation() == null)
             ? debtRecovery.getAccountingSituation().getPartner()
             : debtRecovery.getTradingNameAccountingSituation().getPartner();
 
@@ -182,7 +183,8 @@ public class DebtRecoveryActionService {
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
     Partner partner =
-        (debtRecovery.getTradingName() == null)
+        (debtRecovery.getTradingName() == null
+                || debtRecovery.getTradingNameAccountingSituation() == null)
             ? debtRecovery.getAccountingSituation().getPartner()
             : debtRecovery.getTradingNameAccountingSituation().getPartner();
 

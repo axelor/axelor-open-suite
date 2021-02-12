@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerSupplychainLink;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -41,6 +39,8 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
@@ -375,6 +375,40 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           stockMoveLine, stockMoveLine.getReservedQty());
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
+    return newStockMoveLine;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public StockMove splitInto2(
+      StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
+      throws AxelorException {
+    StockMove newStockMove = super.splitInto2(originalStockMove, modifiedStockMoveLines);
+    newStockMove.setOrigin(originalStockMove.getOrigin());
+    newStockMove.setOriginTypeSelect(originalStockMove.getOriginTypeSelect());
+    newStockMove.setOriginId(originalStockMove.getOriginId());
+    return newStockMove;
+  }
+
+  @Override
+  protected StockMoveLine createSplitStockMoveLine(
+      StockMove originalStockMove,
+      StockMoveLine originalStockMoveLine,
+      StockMoveLine modifiedStockMoveLine) {
+
+    StockMoveLine newStockMoveLine =
+        super.createSplitStockMoveLine(
+            originalStockMove, originalStockMoveLine, modifiedStockMoveLine);
+
+    if (originalStockMoveLine.getQty().compareTo(originalStockMoveLine.getRequestedReservedQty())
+        < 0) {
+      newStockMoveLine.setRequestedReservedQty(
+          originalStockMoveLine.getRequestedReservedQty().subtract(originalStockMoveLine.getQty()));
+      originalStockMoveLine.setRequestedReservedQty(originalStockMoveLine.getQty());
+    }
+    newStockMoveLine.setPurchaseOrderLine(originalStockMoveLine.getPurchaseOrderLine());
+    newStockMoveLine.setSaleOrderLine(originalStockMoveLine.getSaleOrderLine());
+
     return newStockMoveLine;
   }
 
