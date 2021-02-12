@@ -529,7 +529,7 @@
 
 
 	<menuitem name="manufacturing-conf-work-center-group-model"
-		parent="manufacturing-conf" title="Work center group model" action="manufacturing.conf.work.center.group.model"/>
+		parent="manufacturing-conf" title="Work center model" action="manufacturing.conf.work.center.group.model"/>
 
 
 	<action-view name="manufacturing.conf.work.center.group.model" title="Work center model"
