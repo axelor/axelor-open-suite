@@ -24,7 +24,7 @@
 			<spacer name="jobTitleSpacer"/>
 			<field name="company" />
 			<field name="location" />
-			<field name="companyDepartment" />
+			<field name="companyDepartment" title="jobposition.companyDepartment"/>
 			<field name="employee" />
 			<field name="nbOpenJob" />
 			<field name="nbPeopleHired" />
