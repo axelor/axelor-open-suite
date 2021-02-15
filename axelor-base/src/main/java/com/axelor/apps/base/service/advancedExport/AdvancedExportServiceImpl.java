@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.tool.NamingTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
@@ -612,5 +613,22 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       }
       return " " + Joiner.on(" ").join(joinItems);
     }
+  }
+
+  @Override
+  public boolean checkAdvancedExportExist(String metaModelName) {
+
+    long total =
+        Beans.get(AdvancedExportRepository.class)
+            .all()
+            .filter("self.metaModel.fullName = :metaModelName")
+            .bind("metaModelName", metaModelName)
+            .count();
+
+    if (total == 0) {
+      return false;
+    }
+
+    return true;
   }
 }
