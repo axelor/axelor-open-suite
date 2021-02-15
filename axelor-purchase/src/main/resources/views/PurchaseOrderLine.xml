@@ -150,7 +150,7 @@
 					</viewer>
 				</field>
 				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
-				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" domain="self.statusSelect = 2"/>
+				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
 				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" form-view="purchase-order-budget-distribution-form" grid-view="purchase-order-budget-distribution-grid" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-purchase-order-method-compute-budget-distribution-sum-amount"/>
 				<field name="$currencySymbol" hidden="true"/>
 			</panel>
