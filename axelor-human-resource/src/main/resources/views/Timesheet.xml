@@ -331,6 +331,7 @@
 	
 	<action-attrs name="action-timesheet-attrs-generate-lines-panel-hidden-false">
 		<attribute name="hidden" for="generateLinesPanel" expr="false"/>
+		<attribute name="value" for="$product" expr="eval:user?.employee?.product"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-attrs-from-date-on-new">
