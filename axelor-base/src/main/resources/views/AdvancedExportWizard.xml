@@ -14,8 +14,7 @@
 	      	<field name="_xAdvancedExport" title="Advanced export" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.AdvancedExport"
 				   form-view="advanced-export-form" grid-view="advanced-export-grid" onSelect="action-advanced-export-wizard-attr-change-domain-from-model" />
 	      	<field name="exportFormatSelect" type="string" title="Export format" requiredIf="_xAdvancedExport != null" selection="base.advanced.export.wizard.export.format.select"/>
-			<spacer name="exportFormatSelectSpacer"/>
-	      	<button name="generateExportBtn" title="Export" onClick="action-advanced-export-wizard-method-generate-file,close"/>
+			<button name="generateExportBtn" title="Export" showIf="_xAdvancedExport != null" onClick="action-advanced-export-wizard-method-generate-file,close"/>
 	      	<button name="personalisedExportBtn" title="Personalised export" onClick="action-advanced-export-view-open-form,close"/>
       	</panel>
 	</form>
