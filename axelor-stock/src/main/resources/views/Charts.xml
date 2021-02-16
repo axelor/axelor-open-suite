@@ -29,7 +29,7 @@
 				country.name   
 		</dataset>
 		<category key="_country" type="text" title="Country"/>
-		<series key="_moves" type="bar" title="Stock Moves"/>
+		<series key="_moves" type="bar" title="Quantity"/>
 	</chart>	
 	
 	<chart onInit="action.base.chart.set.date.6m" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
