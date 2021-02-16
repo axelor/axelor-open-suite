@@ -1,4 +1,35 @@
 # Changelog
+## [5.3.15] - 2021-02-16
+
+#### Fixed
+
+- TEAM TASK CATEGORY: Fix wrong french translation for form view tab.
+- MRP: Filter out canceled or archived sale order in sale order lines selection.
+- OPPORTUNITY: filter out lost opportunities in best open deals dashlet.
+- ACCOUNT REVERSE MOVE: When generating a reverse move, keep references to analytic move lines.
+- User: Change the french translation of 'All permissions'.
+- Stock move: fix split into 2.
+
+A stock move generated from split feature now correctly keeps the link to the order that generated it.
+
+- Stock Move: fix server error in grid view when sorting by date.
+- Cost Sheet Line: Fix rounding issue happening during computation.
+- Configurator Creator: prevent the creation of duplicate attribute name.
+- Invoice: Set due date readonly when selected payment condition is not free.
+- TEAMTASK: Fix type default value.
+- Stock Move Line: fix duplicate stock move lines appearing in sale order line delivery dashlet.
+- StockConfig: all stock locations are now filtered per their company in the form view.
+- COST SHEET REPORT: Hide cost sheet group column in printings when it is disabled in configuration.
+- FORECAST RECAP: In the forecast recap view, the type of forecast displayed is correct now (before it was always ingoing transaction).
+- Stock Move: fix split by unit duplicating stock move lines.
+- Manuf Order: fix operation order name.
+
+Fix issue where the operation order name starts with null when generated from a production order.
+Update operation order name with manufacturing order sequence when the manufacturing order is planned.
+
+- Stock Move Line: fix stock move line split.
+- Leave request report: Manage the case where there are multiple leave requests for a single day.
+
 ## [5.3.14] - 2020-12-02
 
 #### Changes
@@ -543,6 +574,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
+[5.3.15]: https://github.com/axelor/axelor-open-suite/compare/v5.3.14...v5.3.15
 [5.3.14]: https://github.com/axelor/axelor-open-suite/compare/v5.3.13...v5.3.14
 [5.3.13]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...v5.3.13
 [5.3.12]: https://github.com/axelor/axelor-open-suite/compare/v5.3.11...v5.3.12
