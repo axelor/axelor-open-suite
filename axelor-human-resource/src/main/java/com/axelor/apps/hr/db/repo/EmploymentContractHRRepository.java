@@ -25,6 +25,8 @@ import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class EmploymentContractHRRepository extends EmploymentContractRepository {
 
   @Inject protected SequenceService sequenceService;

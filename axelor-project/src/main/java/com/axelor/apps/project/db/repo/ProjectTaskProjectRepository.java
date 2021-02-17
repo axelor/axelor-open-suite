@@ -36,6 +36,8 @@ import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

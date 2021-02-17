@@ -38,6 +38,8 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(CashManagementModule.PRIORITY)
 public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
 
   @Inject
@@ -46,7 +48,6 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
       AlarmEngineService<Invoice> alarmEngineService,
-      InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
@@ -58,7 +59,6 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         ventilateFactory,
         cancelFactory,
         alarmEngineService,
-        invoiceRepo,
         appAccountService,
         partnerService,
         invoiceLineService,

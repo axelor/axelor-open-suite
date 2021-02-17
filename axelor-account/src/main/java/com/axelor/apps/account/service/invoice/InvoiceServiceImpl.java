@@ -89,8 +89,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturation. */
-@Alternative
-@Priority(AccountModule.PRIORITY)
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -112,7 +110,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
       AlarmEngineService<Invoice> alarmEngineService,
-      InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
@@ -123,7 +120,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.ventilateFactory = ventilateFactory;
     this.cancelFactory = cancelFactory;
     this.alarmEngineService = alarmEngineService;
-    this.invoiceRepo = invoiceRepo;
+    this.invoiceRepo = this;
     this.appAccountService = appAccountService;
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
@@ -770,17 +767,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public Pair<Integer, Integer> massValidate(Collection<? extends Number> invoiceIds) {
-    return massProcess(invoiceIds, this::validate, STATUS_DRAFT);
+    return massProcess(invoiceIds, this::validate, InvoiceRepository.STATUS_DRAFT);
   }
 
   @Override
   public Pair<Integer, Integer> massValidateAndVentilate(Collection<? extends Number> invoiceIds) {
-    return massProcess(invoiceIds, this::validateAndVentilate, STATUS_DRAFT);
+    return massProcess(invoiceIds, this::validateAndVentilate, InvoiceRepository.STATUS_DRAFT);
   }
 
   @Override
   public Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds) {
-    return massProcess(invoiceIds, this::ventilate, STATUS_VALIDATED);
+    return massProcess(invoiceIds, this::ventilate, InvoiceRepository.STATUS_VALIDATED);
   }
 
   private Pair<Integer, Integer> massProcess(

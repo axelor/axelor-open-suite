@@ -29,6 +29,8 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
 
   @Inject InvoiceServiceSupplychain invoiceServiceSupplychain;
