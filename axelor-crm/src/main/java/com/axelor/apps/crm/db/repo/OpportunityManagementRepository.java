@@ -28,6 +28,7 @@ public class OpportunityManagementRepository extends OpportunityRepository {
     Opportunity copy = super.copy(entity, deep);
     copy.setSalesStageSelect(OpportunityRepository.SALES_STAGE_NEW);
     copy.setLostReason(null);
+    copy.setOpportunitySeq(null);
     return copy;
   }
 
