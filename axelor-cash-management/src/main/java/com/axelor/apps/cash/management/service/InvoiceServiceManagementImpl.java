@@ -19,7 +19,6 @@ package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -31,10 +30,13 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.apps.cash.management.module.CashManagementModule;
 import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 
 public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
 

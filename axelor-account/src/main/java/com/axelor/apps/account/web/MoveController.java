@@ -38,11 +38,11 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 import org.apache.commons.collections4.ListUtils;
 
 @ApplicationScoped

@@ -37,8 +37,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
-import javax.inject.Inject;
-import javax.enterprise.context.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -46,6 +44,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.Query;
 
 @RequestScoped

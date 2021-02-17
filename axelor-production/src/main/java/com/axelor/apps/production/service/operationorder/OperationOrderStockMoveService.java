@@ -35,8 +35,6 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

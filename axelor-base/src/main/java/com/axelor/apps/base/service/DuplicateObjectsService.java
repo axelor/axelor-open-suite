@@ -30,13 +30,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.filter.Filter;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

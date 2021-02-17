@@ -19,11 +19,11 @@ package com.axelor.apps.base.job;
 
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
-import javax.transaction.Transactional;
 import com.axelor.inject.servlet.RequestScoper;
 import com.axelor.inject.servlet.ServletScopes;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
+import javax.transaction.Transactional;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

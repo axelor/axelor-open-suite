@@ -26,7 +26,6 @@ import com.axelor.rpc.ActionResponse;
 import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.util.Map;
 
 @RequestScoped
 public class DmsImportWizardController {

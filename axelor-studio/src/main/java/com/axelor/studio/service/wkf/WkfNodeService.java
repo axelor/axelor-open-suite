@@ -28,8 +28,6 @@ import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.studio.db.WkfNode;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +37,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

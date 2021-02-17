@@ -29,11 +29,11 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class ProjectPlanningTimeController {

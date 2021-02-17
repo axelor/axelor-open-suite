@@ -36,8 +36,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.common.collect.Lists;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;

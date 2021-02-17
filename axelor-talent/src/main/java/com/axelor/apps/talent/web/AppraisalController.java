@@ -28,11 +28,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class AppraisalController {

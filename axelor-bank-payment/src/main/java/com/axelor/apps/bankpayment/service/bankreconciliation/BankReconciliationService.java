@@ -36,8 +36,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -29,9 +29,9 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
-import javax.inject.Inject;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 @Alternative

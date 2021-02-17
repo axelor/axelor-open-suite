@@ -31,7 +31,6 @@ import java.util.List;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import java.util.List;
 
 @Alternative
 @Priority(BusinessProjectModule.PRIORITY)

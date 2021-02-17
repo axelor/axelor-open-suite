@@ -24,10 +24,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import javax.transaction.Transactional;
 
 public interface StockMoveInvoiceService {
 

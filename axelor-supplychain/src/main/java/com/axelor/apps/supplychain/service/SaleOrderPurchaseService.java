@@ -22,9 +22,9 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import javax.transaction.Transactional;
 
 public interface SaleOrderPurchaseService {
 

@@ -21,9 +21,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.transaction.Transactional;
 
 public interface ReconcileService {
 

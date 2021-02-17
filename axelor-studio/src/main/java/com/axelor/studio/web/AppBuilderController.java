@@ -27,7 +27,6 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

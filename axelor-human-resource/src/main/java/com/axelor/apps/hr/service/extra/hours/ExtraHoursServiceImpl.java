@@ -27,14 +27,13 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 @RequestScoped
 public class ExtraHoursServiceImpl implements ExtraHoursService {

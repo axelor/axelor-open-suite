@@ -22,9 +22,9 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import java.util.List;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
 
 public class AppTimesheetServiceImpl implements AppTimesheetService {
   protected TimesheetRepository timesheetRepo;

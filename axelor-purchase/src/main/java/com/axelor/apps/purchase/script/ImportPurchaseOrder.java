@@ -22,7 +22,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import java.util.Map;
 import javax.inject.Inject;
-import java.util.Map;
 
 public class ImportPurchaseOrder {
 

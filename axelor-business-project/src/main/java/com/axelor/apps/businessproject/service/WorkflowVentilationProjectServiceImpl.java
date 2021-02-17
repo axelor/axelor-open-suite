@@ -46,7 +46,6 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;

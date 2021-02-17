@@ -26,10 +26,10 @@ import com.axelor.apps.talent.exception.IExceptionMessage;
 import com.axelor.apps.talent.module.TalentModule;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.i18n.I18n;
+import java.util.List;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import java.util.List;
 import javax.validation.ValidationException;
 
 @Alternative

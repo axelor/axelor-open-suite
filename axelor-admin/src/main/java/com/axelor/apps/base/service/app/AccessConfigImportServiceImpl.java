@@ -32,8 +32,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;

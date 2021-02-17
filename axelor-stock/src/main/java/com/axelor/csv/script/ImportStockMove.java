@@ -21,7 +21,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import java.util.Map;
 import javax.inject.Inject;
-import java.util.Map;
 
 public class ImportStockMove {
 

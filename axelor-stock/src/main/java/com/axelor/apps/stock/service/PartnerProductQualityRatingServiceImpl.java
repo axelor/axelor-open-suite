@@ -25,8 +25,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.PartnerProductQualityRatingRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;

@@ -29,12 +29,12 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.enterprise.context.RequestScoped;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 @RequestScoped
 public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceService {

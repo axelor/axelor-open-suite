@@ -45,8 +45,8 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 @RequestScoped
 public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {

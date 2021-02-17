@@ -42,7 +42,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
-import javax.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
 import java.io.BufferedInputStream;
@@ -70,9 +69,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.naming.NamingException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

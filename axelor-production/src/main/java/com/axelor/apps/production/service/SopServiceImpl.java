@@ -18,13 +18,13 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class SopServiceImpl implements SopService {
 

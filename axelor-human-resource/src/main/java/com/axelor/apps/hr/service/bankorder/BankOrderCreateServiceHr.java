@@ -33,7 +33,6 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -28,7 +28,6 @@ import com.axelor.i18n.I18n;
 import java.lang.invoke.MethodHandles;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

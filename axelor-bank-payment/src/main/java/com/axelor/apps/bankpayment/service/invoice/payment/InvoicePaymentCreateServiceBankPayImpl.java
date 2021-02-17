@@ -37,14 +37,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 @Alternative
 @Priority(BankPaymentModule.PRIORITY)

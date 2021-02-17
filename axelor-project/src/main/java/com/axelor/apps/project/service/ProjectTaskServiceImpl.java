@@ -25,11 +25,11 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 

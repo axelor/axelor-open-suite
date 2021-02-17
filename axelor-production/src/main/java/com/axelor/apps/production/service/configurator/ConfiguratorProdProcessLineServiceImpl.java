@@ -25,7 +25,6 @@ import com.axelor.rpc.JsonContext;
 import java.math.BigDecimal;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.math.BigDecimal;
 
 @RequestScoped
 public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdProcessLineService {

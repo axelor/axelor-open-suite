@@ -40,7 +40,6 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;

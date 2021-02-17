@@ -21,10 +21,10 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import javax.transaction.Transactional;
 
 public interface TimetableService {
 

@@ -46,8 +46,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -56,6 +54,7 @@ import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 @Alternative
 @Priority(SupplychainModule.PRIORITY)

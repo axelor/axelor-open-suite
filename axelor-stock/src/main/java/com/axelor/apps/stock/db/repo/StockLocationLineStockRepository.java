@@ -22,9 +22,9 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.inject.Beans;
-import javax.persistence.PersistenceException;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
+import javax.persistence.PersistenceException;
 
 @Alternative
 @Priority(StockModule.PRIORITY)

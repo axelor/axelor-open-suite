@@ -25,8 +25,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import javax.annotation.Priority;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;

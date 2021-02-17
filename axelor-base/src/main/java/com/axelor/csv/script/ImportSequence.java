@@ -23,10 +23,10 @@ import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Map;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class ImportSequence {
 

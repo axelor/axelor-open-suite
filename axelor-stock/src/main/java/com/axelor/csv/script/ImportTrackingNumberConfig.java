@@ -22,7 +22,6 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.exception.AxelorException;
 import java.util.Map;
 import javax.transaction.Transactional;
-import java.util.Map;
 
 public class ImportTrackingNumberConfig {
 

@@ -29,8 +29,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -39,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class SopLineController {

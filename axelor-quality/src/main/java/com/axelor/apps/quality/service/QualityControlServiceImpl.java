@@ -32,13 +32,12 @@ import com.axelor.apps.quality.db.repo.QualityMeasuringPointRepository;
 import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 @RequestScoped
 public class QualityControlServiceImpl implements QualityControlService {

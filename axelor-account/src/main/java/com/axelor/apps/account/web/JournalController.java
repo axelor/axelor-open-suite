@@ -21,10 +21,10 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class JournalController {

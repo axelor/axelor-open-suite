@@ -24,12 +24,12 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.SelectionBuilder;
 import com.google.common.base.Joiner;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class SelectionBuilderService {
 

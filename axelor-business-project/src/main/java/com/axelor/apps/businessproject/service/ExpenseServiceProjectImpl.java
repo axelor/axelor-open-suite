@@ -35,7 +35,6 @@ import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Priority;

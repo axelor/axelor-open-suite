@@ -24,8 +24,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.HashSet;
 
 public class TranslationServiceImpl implements TranslationService {
   protected MetaTranslationRepository metaTranslationRepo;

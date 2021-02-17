@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ShippingCoef;
 import com.axelor.apps.base.db.repo.ShippingCoefRepository;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;

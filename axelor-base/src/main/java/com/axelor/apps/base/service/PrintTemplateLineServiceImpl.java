@@ -43,11 +43,11 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.Context;
 import com.axelor.tool.template.TemplateMaker;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
 

@@ -47,8 +47,6 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -70,6 +68,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 
 @RequestScoped

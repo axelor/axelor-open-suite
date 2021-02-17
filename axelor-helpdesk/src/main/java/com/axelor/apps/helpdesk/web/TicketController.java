@@ -33,11 +33,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class TicketController {

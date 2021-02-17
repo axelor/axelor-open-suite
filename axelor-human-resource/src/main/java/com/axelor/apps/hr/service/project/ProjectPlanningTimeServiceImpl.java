@@ -31,8 +31,6 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -51,7 +51,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -60,7 +59,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 public class InvoiceLineServiceImpl implements InvoiceLineService {

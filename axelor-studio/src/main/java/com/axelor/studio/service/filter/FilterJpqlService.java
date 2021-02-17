@@ -20,9 +20,9 @@ package com.axelor.studio.service.filter;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.studio.db.Filter;
-import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

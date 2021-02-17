@@ -26,7 +26,6 @@ import com.axelor.inject.Beans;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RequestScoped
 public class StockLocationSaveService {

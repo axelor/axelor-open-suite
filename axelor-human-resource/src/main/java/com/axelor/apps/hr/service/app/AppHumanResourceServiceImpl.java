@@ -30,12 +30,12 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class AppHumanResourceServiceImpl extends AppBaseServiceImpl

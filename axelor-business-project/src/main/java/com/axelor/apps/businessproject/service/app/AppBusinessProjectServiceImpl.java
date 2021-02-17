@@ -20,8 +20,8 @@ package com.axelor.apps.businessproject.service.app;
 import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import javax.inject.Inject;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl

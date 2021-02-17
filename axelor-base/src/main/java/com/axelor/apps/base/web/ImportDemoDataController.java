@@ -28,13 +28,13 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
-import javax.enterprise.context.ApplicationScoped;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ImportDemoDataController {

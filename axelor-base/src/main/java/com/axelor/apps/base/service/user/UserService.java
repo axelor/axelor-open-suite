@@ -25,12 +25,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 /** UserService is a class that implement all methods for user information */
 public interface UserService {

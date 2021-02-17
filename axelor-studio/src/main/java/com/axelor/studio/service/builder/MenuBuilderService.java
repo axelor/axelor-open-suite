@@ -37,8 +37,6 @@ import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

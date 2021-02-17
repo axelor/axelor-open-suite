@@ -40,8 +40,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Preconditions;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

@@ -67,8 +67,6 @@ import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;

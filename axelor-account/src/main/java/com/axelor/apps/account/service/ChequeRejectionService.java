@@ -41,8 +41,6 @@ import java.time.LocalDate;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @RequestScoped
 public class ChequeRejectionService {

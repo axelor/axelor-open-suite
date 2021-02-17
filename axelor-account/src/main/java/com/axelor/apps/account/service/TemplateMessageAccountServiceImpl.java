@@ -27,7 +27,6 @@ import java.io.IOException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.io.IOException;
 
 @RequestScoped
 public class TemplateMessageAccountServiceImpl implements TemplateMessageAccountService {

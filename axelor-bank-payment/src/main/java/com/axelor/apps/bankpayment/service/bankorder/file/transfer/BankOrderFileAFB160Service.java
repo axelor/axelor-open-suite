@@ -30,7 +30,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;

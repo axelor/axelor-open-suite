@@ -25,8 +25,6 @@ import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;

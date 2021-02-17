@@ -27,9 +27,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.service.filter.FilterJpqlService;
-import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
+import javax.inject.Inject;
 
 /**
  * This service class use to get filtered Partners and Leads.

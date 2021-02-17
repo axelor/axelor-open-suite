@@ -33,8 +33,6 @@ import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.db.repo.WkfTransitionRepository;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.web.WkfController;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.invoke.MethodHandles;

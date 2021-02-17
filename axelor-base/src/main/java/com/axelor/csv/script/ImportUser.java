@@ -20,7 +20,6 @@ package com.axelor.csv.script;
 import com.axelor.auth.AuthService;
 import com.axelor.auth.db.User;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -24,9 +24,9 @@ import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import java.util.List;
 
 @ApplicationScoped
 public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppProductionService {

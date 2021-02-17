@@ -42,7 +42,6 @@ import com.axelor.rpc.filter.Filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import javax.enterprise.context.ApplicationScoped;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -53,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

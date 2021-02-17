@@ -28,8 +28,6 @@ import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -83,9 +83,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -94,7 +91,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
 @ApplicationScoped

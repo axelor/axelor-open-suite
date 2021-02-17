@@ -29,7 +29,6 @@ import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.google.common.io.ByteStreams;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

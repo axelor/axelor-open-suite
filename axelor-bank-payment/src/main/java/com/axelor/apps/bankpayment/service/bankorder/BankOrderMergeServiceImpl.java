@@ -40,8 +40,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;

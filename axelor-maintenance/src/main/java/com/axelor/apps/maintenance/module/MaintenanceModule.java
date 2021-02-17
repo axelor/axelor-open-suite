@@ -20,8 +20,8 @@ package com.axelor.apps.maintenance.module;
 import javax.interceptor.Interceptor;
 
 public class MaintenanceModule {
-  
+
   public MaintenanceModule() {}
-  
+
   public static final int PRIORITY = Interceptor.Priority.APPLICATION + 2700;
 }

@@ -39,7 +39,6 @@ import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;

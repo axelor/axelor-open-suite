@@ -28,12 +28,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class ContractVersionServiceImpl extends ContractVersionRepository
     implements ContractVersionService {

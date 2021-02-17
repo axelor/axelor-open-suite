@@ -32,8 +32,6 @@ import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.List;
 
 public class JobPositionServiceImpl implements JobPositionService {
 

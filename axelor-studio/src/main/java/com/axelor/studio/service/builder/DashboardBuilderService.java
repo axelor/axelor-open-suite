@@ -27,10 +27,10 @@ import com.axelor.meta.schema.views.Dashlet;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.DashletBuilder;
 import com.axelor.studio.service.StudioMetaService;
-import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

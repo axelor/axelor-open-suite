@@ -36,8 +36,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;

@@ -25,9 +25,9 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.math.BigDecimal;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 
 @ApplicationScoped
 public class PayVoucherElementController {

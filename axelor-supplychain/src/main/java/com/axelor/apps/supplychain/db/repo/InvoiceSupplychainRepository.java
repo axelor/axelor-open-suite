@@ -21,8 +21,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 

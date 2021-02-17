@@ -21,8 +21,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LostReason;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.util.Map;
+import javax.transaction.Transactional;
 
 public interface LeadService {
 

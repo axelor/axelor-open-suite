@@ -23,9 +23,9 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.transaction.Transactional;
 
 public interface PurchaseOrderInvoiceService {
 

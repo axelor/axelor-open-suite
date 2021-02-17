@@ -22,10 +22,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface AccountingCloseAnnualService {

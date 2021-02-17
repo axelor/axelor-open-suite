@@ -32,7 +32,6 @@ import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
 
 @Alternative
 @Priority(AccountModule.PRIORITY)

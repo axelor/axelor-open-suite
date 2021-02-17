@@ -29,7 +29,6 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

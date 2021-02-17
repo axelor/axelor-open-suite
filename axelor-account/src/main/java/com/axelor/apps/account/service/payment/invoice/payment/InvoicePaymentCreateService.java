@@ -24,10 +24,10 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import javax.inject.Inject;
 
 public interface InvoicePaymentCreateService {
 

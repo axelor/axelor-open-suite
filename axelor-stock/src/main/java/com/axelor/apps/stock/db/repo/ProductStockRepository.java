@@ -30,7 +30,6 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

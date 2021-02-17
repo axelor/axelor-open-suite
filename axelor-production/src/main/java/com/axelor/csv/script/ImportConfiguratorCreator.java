@@ -21,15 +21,12 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServic
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.MetaScanner;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Map;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class ImportConfiguratorCreator {
 

@@ -45,8 +45,6 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -62,7 +60,6 @@ import javax.transaction.Transactional;
 
 @Alternative
 @Priority(SupplychainModule.PRIORITY)
-
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
 

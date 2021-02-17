@@ -26,9 +26,8 @@ import com.axelor.i18n.I18n;
 import java.math.BigInteger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.math.BigInteger;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 @RequestScoped
 public class IndicatorGeneratorService {

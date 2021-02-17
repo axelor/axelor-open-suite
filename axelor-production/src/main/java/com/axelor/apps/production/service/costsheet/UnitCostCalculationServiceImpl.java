@@ -49,8 +49,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

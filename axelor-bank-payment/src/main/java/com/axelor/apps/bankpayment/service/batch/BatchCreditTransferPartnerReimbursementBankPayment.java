@@ -37,8 +37,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;

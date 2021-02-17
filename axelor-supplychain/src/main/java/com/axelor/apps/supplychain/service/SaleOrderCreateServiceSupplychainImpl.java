@@ -39,8 +39,6 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;

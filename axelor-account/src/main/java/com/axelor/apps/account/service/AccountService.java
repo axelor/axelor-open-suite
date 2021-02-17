@@ -20,7 +20,6 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.db.JPA;
-import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -113,8 +112,12 @@ public class AccountService {
 
   public List<Long> getSubAccounts(Long accountId) {
 
-    return accountRepository.all().filter("self.parentAccount.id = ?1", accountId).select("id")
-        .fetch(0, 0).stream()
+    return accountRepository
+        .all()
+        .filter("self.parentAccount.id = ?1", accountId)
+        .select("id")
+        .fetch(0, 0)
+        .stream()
         .map(m -> (Long) m.get("id"))
         .collect(Collectors.toList());
   }

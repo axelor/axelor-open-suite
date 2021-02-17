@@ -25,8 +25,8 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class BudgetController {

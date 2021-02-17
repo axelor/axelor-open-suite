@@ -31,8 +31,6 @@ import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.mail.db.repo.MailFollowerRepository;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
@@ -41,6 +39,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 @RequestScoped
 public class AppraisalServiceImpl implements AppraisalService {

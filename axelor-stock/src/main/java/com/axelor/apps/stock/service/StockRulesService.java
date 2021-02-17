@@ -22,8 +22,8 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import javax.transaction.Transactional;
 
 public interface StockRulesService {
   void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)

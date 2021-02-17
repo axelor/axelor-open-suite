@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import javax.transaction.Transactional;
 
 public interface ProductService {
 

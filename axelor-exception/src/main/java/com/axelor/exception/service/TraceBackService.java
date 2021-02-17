@@ -18,7 +18,6 @@
 package com.axelor.exception.service;
 
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;

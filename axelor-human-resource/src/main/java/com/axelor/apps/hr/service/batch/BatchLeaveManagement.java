@@ -41,15 +41,12 @@ import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.validation.constraints.Digits;
 
 @RequestScoped

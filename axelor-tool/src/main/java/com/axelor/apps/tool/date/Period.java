@@ -19,8 +19,8 @@ package com.axelor.apps.tool.date;
 
 import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
-import javax.inject.Inject;
 import java.time.LocalDate;
+import javax.inject.Inject;
 
 /**
  * A period is composed of a start date, an end date and a boolean attribute to determine if the

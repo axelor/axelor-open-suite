@@ -25,9 +25,9 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import javax.transaction.Transactional;
 
 public interface PurchaseOrderService {
 

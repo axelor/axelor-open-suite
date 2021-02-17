@@ -35,10 +35,10 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

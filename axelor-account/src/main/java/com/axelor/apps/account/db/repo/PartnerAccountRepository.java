@@ -29,7 +29,6 @@ import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 

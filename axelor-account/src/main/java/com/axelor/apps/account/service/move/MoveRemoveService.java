@@ -37,8 +37,6 @@ import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Map;
 
 @RequestScoped
 public class MoveRemoveService {

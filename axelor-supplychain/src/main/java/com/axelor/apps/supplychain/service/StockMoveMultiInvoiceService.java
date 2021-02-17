@@ -23,11 +23,11 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import javax.transaction.Transactional;
 
 public interface StockMoveMultiInvoiceService {
 

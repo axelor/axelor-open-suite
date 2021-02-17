@@ -38,7 +38,6 @@ import com.axelor.studio.service.StudioMetaService;
 import java.io.IOException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.io.IOException;
 import javax.mail.MessagingException;
 
 @RequestScoped

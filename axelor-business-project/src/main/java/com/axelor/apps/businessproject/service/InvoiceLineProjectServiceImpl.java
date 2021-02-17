@@ -27,9 +27,6 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.purchase.service.PurchaseProductService;
-import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.PurchaseProductService;
@@ -39,7 +36,6 @@ import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Alternative
 @Priority(BusinessProjectModule.PRIORITY)

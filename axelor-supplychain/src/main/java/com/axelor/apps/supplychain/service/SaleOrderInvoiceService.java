@@ -31,10 +31,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import javax.transaction.Transactional;
 
 public interface SaleOrderInvoiceService {
 

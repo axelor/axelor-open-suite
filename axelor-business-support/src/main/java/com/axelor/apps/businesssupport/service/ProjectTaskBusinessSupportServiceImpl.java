@@ -29,10 +29,10 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import javax.inject.Inject;
 
 public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessProjectServiceImpl {
 

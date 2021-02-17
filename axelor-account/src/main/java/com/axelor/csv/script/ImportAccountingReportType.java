@@ -5,11 +5,11 @@ import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class ImportAccountingReportType {
 

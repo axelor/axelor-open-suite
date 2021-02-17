@@ -28,7 +28,6 @@ import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;

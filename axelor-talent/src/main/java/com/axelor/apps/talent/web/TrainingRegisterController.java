@@ -31,11 +31,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class TrainingRegisterController {

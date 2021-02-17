@@ -35,11 +35,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
 import java.math.BigDecimal;
+import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @RequestScoped
 public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {

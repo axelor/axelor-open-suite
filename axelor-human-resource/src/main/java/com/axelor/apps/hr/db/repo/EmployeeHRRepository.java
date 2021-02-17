@@ -23,14 +23,12 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.Objects;
-import com.axelor.apps.hr.module.HumanResourceModule;
-import com.axelor.auth.db.User;
-import com.axelor.inject.Beans;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 

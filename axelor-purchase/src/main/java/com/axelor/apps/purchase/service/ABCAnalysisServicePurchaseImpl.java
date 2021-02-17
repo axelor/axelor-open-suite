@@ -35,7 +35,6 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;

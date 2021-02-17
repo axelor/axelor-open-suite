@@ -33,7 +33,6 @@ import com.axelor.studio.service.filter.FilterSqlService;
 import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;

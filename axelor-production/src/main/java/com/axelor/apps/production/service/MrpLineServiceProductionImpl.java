@@ -24,7 +24,6 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -52,8 +51,6 @@ import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Alternative

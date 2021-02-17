@@ -38,14 +38,14 @@ import com.axelor.studio.db.repo.WkfTrackingLineRepository;
 import com.axelor.studio.db.repo.WkfTrackingRepository;
 import com.axelor.studio.db.repo.WkfTrackingTimeRepository;
 import com.axelor.studio.db.repo.WkfTrackingTotalRepository;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import javax.inject.Inject;
 import javax.script.SimpleBindings;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

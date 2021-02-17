@@ -28,8 +28,6 @@ import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

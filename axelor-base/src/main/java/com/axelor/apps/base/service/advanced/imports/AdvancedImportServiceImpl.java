@@ -42,8 +42,6 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;

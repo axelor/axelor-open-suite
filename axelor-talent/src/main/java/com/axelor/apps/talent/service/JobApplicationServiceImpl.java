@@ -29,8 +29,6 @@ import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;

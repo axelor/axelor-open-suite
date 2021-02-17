@@ -45,8 +45,6 @@ import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;

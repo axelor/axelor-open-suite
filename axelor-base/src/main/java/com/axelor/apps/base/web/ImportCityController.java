@@ -26,11 +26,11 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class ImportCityController {

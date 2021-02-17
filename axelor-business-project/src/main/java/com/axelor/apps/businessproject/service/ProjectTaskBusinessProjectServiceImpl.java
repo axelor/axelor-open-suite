@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
@@ -47,8 +48,6 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -57,6 +56,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {

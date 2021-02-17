@@ -59,8 +59,6 @@ import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

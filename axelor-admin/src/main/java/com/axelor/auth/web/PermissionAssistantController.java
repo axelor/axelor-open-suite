@@ -29,11 +29,11 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class PermissionAssistantController {

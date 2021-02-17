@@ -30,9 +30,9 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import javax.enterprise.context.ApplicationScoped;
 import java.util.Iterator;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class TemplateService {

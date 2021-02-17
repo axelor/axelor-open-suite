@@ -37,11 +37,9 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
-import java.util.List;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import java.math.BigDecimal;
 
 @Alternative
 @Priority(BusinessProjectModule.PRIORITY)

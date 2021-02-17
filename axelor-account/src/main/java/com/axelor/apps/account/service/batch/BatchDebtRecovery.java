@@ -40,7 +40,6 @@ import com.axelor.inject.Beans;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.util.List;
 import javax.persistence.Table;
 
 @RequestScoped

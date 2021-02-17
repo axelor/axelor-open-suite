@@ -36,9 +36,9 @@ import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.util.List;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
 
 public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupplychainImpl {
 

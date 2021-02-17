@@ -26,9 +26,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.Team;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import javax.transaction.Transactional;
 
 public interface SaleOrderCreateService {
 

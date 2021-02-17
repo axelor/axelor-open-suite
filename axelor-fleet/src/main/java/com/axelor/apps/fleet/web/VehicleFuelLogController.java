@@ -22,8 +22,8 @@ import com.axelor.apps.fleet.service.VehicleFuelLogService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class VehicleFuelLogController {

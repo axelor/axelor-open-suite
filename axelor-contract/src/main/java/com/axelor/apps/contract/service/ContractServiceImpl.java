@@ -56,8 +56,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

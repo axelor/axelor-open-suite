@@ -33,7 +33,6 @@ import java.math.BigDecimal;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 @Alternative

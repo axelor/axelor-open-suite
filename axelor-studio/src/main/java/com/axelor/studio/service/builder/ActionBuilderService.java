@@ -22,8 +22,6 @@ import com.axelor.meta.db.MetaAction;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;

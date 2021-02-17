@@ -38,8 +38,6 @@ import com.axelor.mail.Pop3Account;
 import com.axelor.mail.SmtpAccount;
 import com.axelor.meta.MetaFiles;
 import com.google.common.collect.Lists;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -61,6 +59,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.search.FlagTerm;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

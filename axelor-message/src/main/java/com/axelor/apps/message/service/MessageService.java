@@ -23,10 +23,10 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 public interface MessageService {
 

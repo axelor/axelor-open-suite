@@ -36,7 +36,6 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import javax.annotation.Priority;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;

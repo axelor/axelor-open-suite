@@ -40,14 +40,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /** This is the main implementation for {@link ReservedQtyService}. */
 public class ReservedQtyServiceImpl implements ReservedQtyService {

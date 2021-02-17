@@ -27,7 +27,6 @@ import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
-import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import javax.annotation.Priority;

@@ -29,9 +29,8 @@ import java.util.Date;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.Date;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 @Alternative
 @Priority(TalentModule.PRIORITY)

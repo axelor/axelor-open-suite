@@ -38,7 +38,6 @@ import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;

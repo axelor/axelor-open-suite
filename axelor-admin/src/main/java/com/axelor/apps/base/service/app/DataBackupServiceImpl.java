@@ -30,8 +30,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

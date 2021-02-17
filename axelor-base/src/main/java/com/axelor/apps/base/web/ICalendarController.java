@@ -33,13 +33,13 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.enterprise.context.ApplicationScoped;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.text.ParseException;
+import javax.enterprise.context.ApplicationScoped;
 import net.fortuna.ical4j.data.ParserException;
 
 @ApplicationScoped

@@ -26,7 +26,6 @@ import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.RequestScoped;

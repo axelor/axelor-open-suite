@@ -24,7 +24,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

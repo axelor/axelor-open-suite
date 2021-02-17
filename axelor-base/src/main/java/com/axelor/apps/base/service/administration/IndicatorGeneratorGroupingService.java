@@ -25,8 +25,6 @@ import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

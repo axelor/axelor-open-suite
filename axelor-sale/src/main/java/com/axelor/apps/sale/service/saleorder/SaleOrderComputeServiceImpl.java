@@ -24,7 +24,6 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import java.util.Comparator;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

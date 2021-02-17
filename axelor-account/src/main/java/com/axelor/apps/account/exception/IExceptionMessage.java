@@ -56,7 +56,7 @@ public interface IExceptionMessage {
   static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
-      "The move lines %s are reconciled and should not have been removed." /*)*/;;
+      "The move lines %s are reconciled and should not have been removed." /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
@@ -819,7 +819,7 @@ public interface IExceptionMessage {
       "Please set a reported balance date on fiscal year" /*)*/;
 
   static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
-      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid Analytic moveLines, some axes percentage values are higher than 100%." /*)*/;

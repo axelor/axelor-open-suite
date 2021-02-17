@@ -46,8 +46,6 @@ import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Preconditions;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -58,6 +56,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

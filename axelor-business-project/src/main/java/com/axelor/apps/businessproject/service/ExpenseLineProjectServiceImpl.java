@@ -24,7 +24,6 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RequestScoped
 public class ExpenseLineProjectServiceImpl implements ExpenseLineProjectService {

@@ -44,8 +44,6 @@ import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.repo.MailAddressRepository;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;

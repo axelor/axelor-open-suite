@@ -44,13 +44,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class StockMoveInvoiceController {

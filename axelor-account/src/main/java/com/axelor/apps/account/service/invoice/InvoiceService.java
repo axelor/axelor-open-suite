@@ -33,11 +33,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */

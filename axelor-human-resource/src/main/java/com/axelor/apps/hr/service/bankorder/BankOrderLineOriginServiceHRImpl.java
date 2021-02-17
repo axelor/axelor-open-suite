@@ -26,7 +26,6 @@ import java.time.LocalDate;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import java.time.LocalDate;
 
 @Alternative
 @Priority(HumanResourceModule.PRIORITY)

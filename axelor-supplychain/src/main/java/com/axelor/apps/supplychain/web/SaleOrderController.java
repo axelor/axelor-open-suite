@@ -60,7 +60,6 @@ import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -71,6 +70,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class SaleOrderController {

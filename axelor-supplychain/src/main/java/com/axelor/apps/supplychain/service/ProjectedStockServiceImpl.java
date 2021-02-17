@@ -30,8 +30,6 @@ import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

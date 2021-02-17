@@ -21,8 +21,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.auth.db.User;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

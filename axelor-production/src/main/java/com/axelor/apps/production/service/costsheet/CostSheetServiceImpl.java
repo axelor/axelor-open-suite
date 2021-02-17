@@ -46,8 +46,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

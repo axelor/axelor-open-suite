@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.maintenance.service;
 
-import javax.annotation.Priority;
-import javax.enterprise.inject.Alternative;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.maintenance.module.MaintenanceModule;
 import com.axelor.apps.maintenance.report.IReport;
@@ -26,6 +24,8 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.exception.AxelorException;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
 @Alternative
 @Priority(MaintenanceModule.PRIORITY)

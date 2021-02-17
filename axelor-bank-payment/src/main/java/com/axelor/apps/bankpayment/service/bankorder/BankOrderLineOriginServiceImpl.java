@@ -28,7 +28,6 @@ import com.axelor.db.Model;
 import java.time.LocalDate;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.time.LocalDate;
 
 @RequestScoped
 public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginService {

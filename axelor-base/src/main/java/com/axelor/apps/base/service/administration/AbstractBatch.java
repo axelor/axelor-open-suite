@@ -28,12 +28,12 @@ import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

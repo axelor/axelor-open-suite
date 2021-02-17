@@ -36,8 +36,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.math.BigDecimal;

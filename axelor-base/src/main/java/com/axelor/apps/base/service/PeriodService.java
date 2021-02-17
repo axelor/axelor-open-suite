@@ -20,8 +20,8 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
+import javax.transaction.Transactional;
 
 public interface PeriodService {
 

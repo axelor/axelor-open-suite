@@ -27,10 +27,10 @@ import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.transaction.Transactional;
 
 public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 

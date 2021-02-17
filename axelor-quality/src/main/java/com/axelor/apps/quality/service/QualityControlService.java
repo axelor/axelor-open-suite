@@ -21,10 +21,10 @@ import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.db.QualityProcess;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 
 public interface QualityControlService {
 

@@ -26,7 +26,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.exception.AxelorException;
 import java.util.Map;
 import javax.inject.Inject;
-import java.util.Map;
 
 public class ImportSaleOrder {
 

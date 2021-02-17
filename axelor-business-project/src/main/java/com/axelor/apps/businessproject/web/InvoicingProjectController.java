@@ -32,11 +32,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 @ApplicationScoped

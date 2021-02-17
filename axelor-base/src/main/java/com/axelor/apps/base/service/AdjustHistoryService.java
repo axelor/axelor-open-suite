@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 
 @RequestScoped
 public class AdjustHistoryService {

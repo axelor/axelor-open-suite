@@ -35,8 +35,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -44,7 +42,6 @@ import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 @RequestScoped

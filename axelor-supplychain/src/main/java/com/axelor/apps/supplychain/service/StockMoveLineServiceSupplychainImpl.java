@@ -52,8 +52,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.enterprise.context.RequestScoped;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.annotation.Priority;

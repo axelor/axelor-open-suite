@@ -27,7 +27,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import javax.inject.Inject;
 import groovy.util.XmlSlurper;
 import groovy.util.slurpersupport.GPathResult;
 import groovy.util.slurpersupport.Node;

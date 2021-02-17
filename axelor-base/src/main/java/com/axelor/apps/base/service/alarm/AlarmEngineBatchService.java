@@ -27,8 +27,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.Map;

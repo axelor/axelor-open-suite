@@ -23,8 +23,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

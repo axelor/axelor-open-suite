@@ -27,10 +27,10 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class TimerProjectTaskServiceImpl extends AbstractTimerService
     implements TimerProjectTaskService {

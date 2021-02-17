@@ -75,8 +75,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -100,6 +98,7 @@ import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
+import javax.transaction.Transactional;
 import org.apache.commons.collections4.ListUtils;
 
 /** @author axelor */

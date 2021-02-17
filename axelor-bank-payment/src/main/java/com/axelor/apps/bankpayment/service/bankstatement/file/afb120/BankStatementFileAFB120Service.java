@@ -36,8 +36,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;

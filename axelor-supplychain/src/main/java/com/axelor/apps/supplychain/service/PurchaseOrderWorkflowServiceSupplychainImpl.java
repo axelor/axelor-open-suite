@@ -23,9 +23,12 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 

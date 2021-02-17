@@ -36,10 +36,10 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
 import java.math.BigDecimal;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class SaleOrderLineController {

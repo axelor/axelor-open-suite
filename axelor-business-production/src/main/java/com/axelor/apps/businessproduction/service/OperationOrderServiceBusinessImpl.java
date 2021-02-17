@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
-import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -34,7 +34,6 @@ import java.lang.invoke.MethodHandles;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.transaction.Transactional;
-import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

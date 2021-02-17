@@ -35,16 +35,12 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Alternative
 @Priority(BusinessProjectModule.PRIORITY)

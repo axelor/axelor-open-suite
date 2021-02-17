@@ -37,13 +37,13 @@ import com.axelor.studio.db.WkfTransition;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

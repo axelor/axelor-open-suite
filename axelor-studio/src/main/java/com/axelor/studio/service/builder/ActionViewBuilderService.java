@@ -27,7 +27,6 @@ import com.axelor.studio.service.StudioMetaService;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 @RequestScoped

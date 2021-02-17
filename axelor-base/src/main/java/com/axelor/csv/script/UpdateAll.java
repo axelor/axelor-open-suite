@@ -22,8 +22,6 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;

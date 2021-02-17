@@ -20,8 +20,8 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.util.Collection;
+import javax.transaction.Transactional;
 
 public interface BankOrderMergeService {
 

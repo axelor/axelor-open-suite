@@ -24,7 +24,6 @@ import com.axelor.exception.AxelorException;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Map;
 
 public class ImportInventory {
 

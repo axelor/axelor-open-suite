@@ -43,7 +43,6 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;

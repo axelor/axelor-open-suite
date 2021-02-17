@@ -44,8 +44,6 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalTime;

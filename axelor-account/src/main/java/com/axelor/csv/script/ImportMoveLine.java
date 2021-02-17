@@ -27,10 +27,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class ImportMoveLine {
   private MoveLineRepository moveLineRepository;

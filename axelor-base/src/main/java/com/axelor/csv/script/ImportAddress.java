@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.AddressService;
 import java.util.Map;
 import javax.inject.Inject;
-import java.util.Map;
 
 public class ImportAddress {
 

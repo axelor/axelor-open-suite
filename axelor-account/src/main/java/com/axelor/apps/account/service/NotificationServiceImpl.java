@@ -35,8 +35,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -46,6 +44,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 @RequestScoped
 public class NotificationServiceImpl implements NotificationService {

@@ -29,8 +29,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;

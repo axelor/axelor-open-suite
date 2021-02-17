@@ -33,16 +33,16 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
-import javax.annotation.Priority;
-import javax.enterprise.inject.Alternative;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
 @Alternative

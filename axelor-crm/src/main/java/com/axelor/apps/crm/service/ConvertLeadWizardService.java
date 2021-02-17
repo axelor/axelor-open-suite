@@ -35,10 +35,9 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.util.Map;
-import java.util.Optional;
 
 @RequestScoped
 public class ConvertLeadWizardService {

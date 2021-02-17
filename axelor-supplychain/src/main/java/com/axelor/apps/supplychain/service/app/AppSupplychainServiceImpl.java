@@ -24,10 +24,10 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
-import javax.inject.Inject;
-import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements AppSupplychainService {

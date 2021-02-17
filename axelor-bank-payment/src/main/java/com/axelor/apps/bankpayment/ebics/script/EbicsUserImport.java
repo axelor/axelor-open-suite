@@ -24,7 +24,6 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.service.BankService;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

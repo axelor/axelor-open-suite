@@ -50,8 +50,6 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import groovy.lang.MissingPropertyException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -60,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 @RequestScoped

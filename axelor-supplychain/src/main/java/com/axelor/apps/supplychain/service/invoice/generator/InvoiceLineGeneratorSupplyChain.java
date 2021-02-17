@@ -43,9 +43,9 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.inject.Inject;
 
 /** Classe de création de ligne de facture abstraite. */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {

@@ -40,8 +40,6 @@ import javax.annotation.Priority;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.enterprise.context.RequestScoped;
-import java.math.BigDecimal;
 
 @Alternative
 @Priority(SupplychainModule.PRIORITY)

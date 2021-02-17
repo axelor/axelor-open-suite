@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.inject.Inject;

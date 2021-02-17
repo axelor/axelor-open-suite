@@ -40,8 +40,6 @@ import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
 import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;

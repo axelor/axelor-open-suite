@@ -34,8 +34,6 @@ import com.axelor.meta.db.repo.MetaGroupMenuAssistantRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;

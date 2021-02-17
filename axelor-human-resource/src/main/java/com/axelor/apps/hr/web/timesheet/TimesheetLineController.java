@@ -30,7 +30,6 @@ import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 
 @RequestScoped
 public class TimesheetLineController {

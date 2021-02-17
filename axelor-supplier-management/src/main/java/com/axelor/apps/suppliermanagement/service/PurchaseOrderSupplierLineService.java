@@ -34,7 +34,6 @@ import java.math.BigDecimal;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 
 @RequestScoped
 public class PurchaseOrderSupplierLineService {

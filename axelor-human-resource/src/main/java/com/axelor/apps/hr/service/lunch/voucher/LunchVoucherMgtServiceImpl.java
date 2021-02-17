@@ -31,8 +31,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;

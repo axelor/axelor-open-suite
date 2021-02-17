@@ -21,8 +21,8 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
-import javax.transaction.Transactional;
 import java.time.LocalDate;
+import javax.transaction.Transactional;
 
 public interface ContractVersionService {
 

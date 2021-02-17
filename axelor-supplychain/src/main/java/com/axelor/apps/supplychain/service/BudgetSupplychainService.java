@@ -34,8 +34,6 @@ import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;

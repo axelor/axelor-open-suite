@@ -22,9 +22,9 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.exception.AxelorException;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Map;
 
 public class ImportBank {
 

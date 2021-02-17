@@ -41,13 +41,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

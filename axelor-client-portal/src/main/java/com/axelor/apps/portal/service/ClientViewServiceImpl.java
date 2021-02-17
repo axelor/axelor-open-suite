@@ -36,7 +36,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

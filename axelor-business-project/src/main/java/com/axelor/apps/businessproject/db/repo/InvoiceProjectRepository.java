@@ -26,7 +26,7 @@ import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 
 @Alternative
-@Priority(BusinessProjectModule.PRIORITY + 10)
+@Priority(BusinessProjectModule.PRIORITY)
 public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
 
   @Override

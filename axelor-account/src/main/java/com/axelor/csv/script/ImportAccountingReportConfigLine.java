@@ -7,12 +7,12 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class ImportAccountingReportConfigLine {
   private AccountRepository accountRepo;

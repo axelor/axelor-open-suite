@@ -29,7 +29,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.inject.Beans;
-import javax.inject.Inject;
 import java.time.Duration;
 import java.util.List;
 import javax.annotation.Priority;
