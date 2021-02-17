@@ -330,6 +330,10 @@ public class MrpLineServiceImpl implements MrpLineService {
       mrpLine.setMinQty(stockRules.getMinQty());
       mrpLine.setIdealQty(stockRules.getIdealQty());
       mrpLine.setReOrderQty(stockRules.getReOrderQty());
+    } else {
+      mrpLine.setMinQty(BigDecimal.ZERO);
+      mrpLine.setIdealQty(BigDecimal.ZERO);
+      mrpLine.setReOrderQty(BigDecimal.ZERO);
     }
     return mrpLine;
   }
