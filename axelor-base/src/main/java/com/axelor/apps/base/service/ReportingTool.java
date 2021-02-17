@@ -30,7 +30,7 @@ public class ReportingTool {
   /** Finds locale from user company. Defaults to user locale. */
   public static Locale getCompanyLocale() {
     // manage NPE using optional
-    return Optional.of(AuthUtils.getUser())
+    return Optional.ofNullable(AuthUtils.getUser())
         .map(User::getActiveCompany)
         .map(Company::getLanguage)
         .map(Language::getCode)
