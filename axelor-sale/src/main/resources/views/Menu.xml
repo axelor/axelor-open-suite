@@ -328,6 +328,11 @@
 	</action-view>
 
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"
-    	title="Customers" action="customer.list.dashboard.view"/>
+    	title="Customers / prospects" action="sale.customer.list.dashboard.view"/>
+    	
+    <!-- Add new action-view for change tab color. -->
+    <action-view name="sale.customer.list.dashboard.view" title="Customers / prospects">
+		<view type="dashboard" name="base.partner.list.dashboard" />
+	</action-view>
 
 </object-views>
