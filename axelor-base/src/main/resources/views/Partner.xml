@@ -1283,7 +1283,7 @@
 		<field name="isSupplier" expr="true" if="_isSupplier || (__user__?.activeCompany?.defaultPartnerCategorySelect == 2 &amp;&amp; !_isCustomer &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
 		<field name="isCarrier" expr="true" if="_isCarrier"/>
 		<field name="isSubcontractor" expr="true" if="_isSubcontractor"/>
-		<field name="partnerTypeSelect" expr="#{2}" if="user_id"/>
+		<field name="partnerTypeSelect" expr="#{2}" if="created_from_user_id"/>
 	</action-record>
 
 	<action-record name="action-partner-contact-record-default"
