@@ -412,10 +412,10 @@
 	<menuitem name="referential-report" parent="referential-root" order="90" title="Reportings" icon="fa-bar-chart"/>
 
 	<menuitem name="referential-report-dashboards-customers"
-		parent="referential-report" title="Customers" icon="fa-bar-chart"
+		parent="referential-report" title="Customers / prospects" icon="fa-bar-chart"
 		action="customer.list.dashboard.view" />
 
-	<action-view name="customer.list.dashboard.view" title="Customers">
+	<action-view name="customer.list.dashboard.view" title="Customers / prospects">
 		<view type="dashboard" name="base.partner.list.dashboard" />
 	</action-view>
 
