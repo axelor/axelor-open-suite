@@ -354,7 +354,7 @@
 				<field name="taxNbr" hideIf="partnerTypeSelect== 2" />
 				<field name="paymentDelay" if-module="axelor-cash-management"
 					if="__config__.app.isApp('cash-management')" />
-				<field name="parentPartner" hideIf="partnerTypeSelect != 1"
+				<field name="parentPartner" hideIf="partnerTypeSelect != 1" if="__config__.app.getApp('base').getManageSubsidiaryPartner()"
 					domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
 					form-view="partner-form" grid-view="partner-grid" />
 				<field name="sellerCode" showIf="isFactor"
@@ -371,7 +371,7 @@
 				colSpan="6"/>
 		</panel>
 		<panel-dashlet action="action-partner-view-subsidiary-partners"
-			name="subsidiaryPartners" />
+			name="subsidiaryPartners"  showIf="partnerTypeSelect == 1" if="__config__.app.getApp('base').getManageSubsidiaryPartner()"/>
 		<panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
 			hideIf="!id || isContact || partnerTypeSelect == 2"
 			domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
