@@ -17,9 +17,14 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
+import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BusinessProjectModule.PRIORITY)
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
 
   @Override

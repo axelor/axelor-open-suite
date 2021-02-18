@@ -20,8 +20,13 @@ package com.axelor.apps.maintenance.db.repo;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.maintenance.db.EquipementMaintenance;
 import com.axelor.apps.maintenance.db.Imaintenance;
+import com.axelor.apps.maintenance.module.MaintenanceModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(MaintenanceModule.PRIORITY)
 public class EquipementMaintenanceRepo extends EquipementMaintenanceRepository {
 
   @Inject private SequenceService sequenceService;

@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.stock.db.StockLocation;
@@ -37,9 +38,13 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupplychainImpl {
 
   @Inject

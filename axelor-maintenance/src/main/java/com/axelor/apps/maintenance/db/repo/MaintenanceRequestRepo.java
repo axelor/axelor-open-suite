@@ -18,8 +18,13 @@
 package com.axelor.apps.maintenance.db.repo;
 
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
+import com.axelor.apps.maintenance.module.MaintenanceModule;
 import java.time.LocalDate;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(MaintenanceModule.PRIORITY)
 public class MaintenanceRequestRepo extends MaintenanceRequestRepository {
 
   @Override

@@ -18,8 +18,13 @@
 package com.axelor.apps.cash.management.db.repo;
 
 import com.axelor.apps.cash.management.db.ForecastGenerator;
+import com.axelor.apps.cash.management.module.CashManagementModule;
 import com.axelor.apps.cash.management.service.ForecastGeneratorToolService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(CashManagementModule.PRIORITY)
 public class CashManagementForecastGeneratorRepository extends ForecastGeneratorRepository {
 
   @Override

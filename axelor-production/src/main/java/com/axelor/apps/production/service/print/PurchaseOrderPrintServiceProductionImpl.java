@@ -17,10 +17,15 @@
  */
 package com.axelor.apps.production.service.print;
 
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class PurchaseOrderPrintServiceProductionImpl extends PurchaseOrderPrintServiceImpl {
 
   @Inject

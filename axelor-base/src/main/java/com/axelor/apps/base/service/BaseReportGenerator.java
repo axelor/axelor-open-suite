@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -42,6 +43,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import org.eclipse.birt.core.exception.BirtException;
 import org.eclipse.birt.report.data.oda.jdbc.IConnectionFactory;
@@ -57,6 +60,8 @@ import org.eclipse.birt.report.engine.emitter.pdf.PDFPageDevice;
 import org.eclipse.birt.report.model.api.IResourceLocator;
 
 /** The report generator service. */
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class BaseReportGenerator extends ReportGenerator {
 
   @Inject private IReportEngine engine;

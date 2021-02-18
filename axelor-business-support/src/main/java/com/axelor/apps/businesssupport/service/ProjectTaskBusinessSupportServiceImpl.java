@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businesssupport.module.BusinessSupportModule;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -32,8 +33,12 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(BusinessSupportModule.PRIORITY)
 public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessProjectServiceImpl {
 
   @Inject

@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
@@ -45,7 +46,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class DeclarationOfExchangesExporterServices extends DeclarationOfExchangesExporter {
   private static final String NAME_SERVICES = /*$$(*/ "European declaration of services" /*)*/;
 

@@ -24,14 +24,19 @@ import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.timer.AbstractTimerService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.module.ProjectModule;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class TimerProjectTaskServiceImpl extends AbstractTimerService
     implements TimerProjectTaskService {
 

@@ -22,6 +22,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.apps.contract.module.ContractModule;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -32,9 +33,13 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(ContractModule.PRIORITY)
 public class ContractVersionServiceImpl extends ContractVersionRepository
     implements ContractVersionService {
 

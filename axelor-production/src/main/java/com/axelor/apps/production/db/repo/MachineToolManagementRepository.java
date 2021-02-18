@@ -20,8 +20,13 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.base.db.repo.AppProductionRepository;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
+import com.axelor.apps.production.module.ProductionModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class MachineToolManagementRepository extends MachineRepository {
 
   @Inject MachineToolRepository machineToolRepository;
