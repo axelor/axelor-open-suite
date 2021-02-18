@@ -29,7 +29,7 @@
 	
 	<selection name="sequence.generic.code.select" id="cash.management.sequence.generic.code.select">
 		<option value="forecastRecap">Forecast Recap</option>
-		<option value="forecast">Manual Forecast</option>
+		<option value="forecast">Forecast</option>
 	</selection>
   
 	<selection name="forecast.recap.report.type.select">
@@ -43,7 +43,7 @@
         <option value="2">Sale Order</option>
         <option value="3">Purchase Order</option>
         <option value="4">Expense</option>
-        <option value="5">Manual forecast</option>
+        <option value="5">Forecast</option>
         <option value="6">Opportunity</option>
         <option value="7">Salary</option>
     </selection>

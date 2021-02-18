@@ -25,5 +25,5 @@ public interface IExceptionMessage {
   static final String FORECAST_RECAP_MISSING_FORECAST_RECAP_LINE_TYPE = /*$$(*/
       "No move type found for element : %s" /*)*/;
   static final String FORCAST_SEQUENCE_ERROR = /*$$(*/
-      "The company %s doesn't have any configured sequence for Manual Forcast" /*)*/;
+      "The company %s doesn't have any configured sequence for Forecast" /*)*/;
 }
