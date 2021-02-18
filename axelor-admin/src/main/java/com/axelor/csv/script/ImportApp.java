@@ -19,6 +19,8 @@ package com.axelor.csv.script;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
+import com.axelor.db.JPA;
+import com.axelor.db.internal.DBHelper;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -38,6 +40,11 @@ public class ImportApp {
   public Object importApp(Object bean, Map<String, Object> values) {
 
     assert bean instanceof App;
+
+    // XXX: RM-18840
+    if (DBHelper.isPostgreSQL()) {
+      JPA.jdbcWork(conn -> conn.prepareStatement("analyze").execute());
+    }
 
     App app = (App) bean;
 
