@@ -59,23 +59,19 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       projectTask.setIsFirst(true);
     }
 
-    if (projectTask.getProject().getIsShowFrequency()) {
-      Frequency frequency = projectTask.getFrequency();
-      if (frequency != null
-          && projectTask.getIsFirst()
-          && projectTask.getNextProjectTask() == null) {
-        if (projectTask.getTaskDate() != null) {
-          if (frequency.getEndDate().isBefore(projectTask.getTaskDate())) {
-            throw new PersistenceException(
-                I18n.get(
-                    IExceptionMessage.PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE));
-          }
-        } else {
-          throw new PersistenceException(I18n.get(IExceptionMessage.PROJECT_TASK_FILL_TASK_DATE));
+    Frequency frequency = projectTask.getFrequency();
+    if (frequency != null && projectTask.getIsFirst() && projectTask.getNextProjectTask() == null) {
+      if (projectTask.getTaskDate() != null) {
+        if (frequency.getEndDate().isBefore(projectTask.getTaskDate())) {
+          throw new PersistenceException(
+              I18n.get(
+                  IExceptionMessage.PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE));
         }
-
-        projectTaskService.generateTasks(projectTask, frequency);
+      } else {
+        throw new PersistenceException(I18n.get(IExceptionMessage.PROJECT_TASK_FILL_TASK_DATE));
       }
+
+      projectTaskService.generateTasks(projectTask, frequency);
     }
 
     if (projectTask.getDoApplyToAllNextTasks()) {

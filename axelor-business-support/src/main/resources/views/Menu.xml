@@ -32,6 +32,7 @@
 
   <action-view name="project.task.customer.new" title="New tasks" model="com.axelor.apps.project.db.ProjectTask">
 	<view type="form" name="project-task-client-form"/>
+	<domain>self.typeSelect = :_typeSelect</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
   </action-view>
 
@@ -40,9 +41,11 @@
 
   <action-view name="project.task.customer.treated.by.customer" title="Tasks to be treated by customer" model="com.axelor.apps.project.db.ProjectTask">
 	<view type="grid" name="project-task-client-grid"/>
-	<view type="form" name="project-task-client-form"/> 
-    <domain>self.status.isCompleted = false AND self.isPrivate = false AND self.assignment = 1 AND self.typeSelect = :_typeSelect</domain>
+	<view type="form" name="project-task-client-form"/>
+	<domain>self.status IN (:_statusNew, :_statusInProgress) AND self.isPrivate = false AND self.assignment = 1 AND self.typeSelect = :_typeSelect</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="_statusNew" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.STATUS_NEW"/>
+    <context name="_statusInProgress" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.STATUS_IN_PROGRESS"/>
   </action-view>
 
   <menuitem name="project-task-customer-treated-by-provider" title="Tasks to be treated by provider" parent="project-task-customer"
@@ -51,8 +54,10 @@
   <action-view name="project.task.customer.treated.by.provider" title="Tasks to be treated by provider" model="com.axelor.apps.project.db.ProjectTask">
 	<view type="grid" name="project-task-client-grid"/>
 	<view type="form" name="project-task-client-form"/>
-	<domain>self.status.isCompleted = false AND self.isPrivate = false AND self.assignment = 2 AND self.typeSelect = :_typeSelect</domain>
+	<domain>self.status IN (:_statusNew, :_statusInProgress) AND self.isPrivate = false AND self.assignment = 2 AND self.typeSelect = :_typeSelect</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="_statusNew" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.STATUS_NEW"/>
+    <context name="_statusInProgress" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.STATUS_IN_PROGRESS"/>
   </action-view>
 
   <menuitem name="project-task-customer-open-all" title="All open ticket" parent="project-task-customer"
@@ -61,8 +66,10 @@
   <action-view name="project.task.customer.open.all" title="All open ticket" model="com.axelor.apps.project.db.ProjectTask">
 	<view type="grid" name="project-task-client-grid"/>
 	<view type="form" name="project-task-client-form"/>
-	<domain>self.status.isCompleted = false AND self.isPrivate = false AND self.typeSelect = :_typeSelect</domain>
+	<domain>self.status IN (:_statusNew, :_statusInProgress) AND self.isPrivate = false AND self.typeSelect = :_typeSelect</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="_statusNew" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.STATUS_NEW"/>
+    <context name="_statusInProgress" expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.STATUS_IN_PROGRESS"/>
   </action-view>
 
   <menuitem name="project-task-customer-all" title="All tickets" parent="project-task-customer"

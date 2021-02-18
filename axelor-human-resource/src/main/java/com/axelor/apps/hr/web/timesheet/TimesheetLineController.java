@@ -21,6 +21,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -110,5 +111,11 @@ public class TimesheetLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setTimesheet(ActionRequest request, ActionResponse response) {
+    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+    timesheetLine = Beans.get(TimesheetLineServiceImpl.class).setTimesheet(timesheetLine);
+    response.setValues(timesheetLine);
   }
 }

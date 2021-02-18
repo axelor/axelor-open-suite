@@ -2,6 +2,3 @@
 "perm.businessproject.InvoicingProject.r";"com.axelor.apps.businessproject.db.InvoicingProject";"x";;;;;;;"Business Project Read"
 "perm.businessproject.InvoicingProject.rwc";"com.axelor.apps.businessproject.db.InvoicingProject";"x";"x";"x";;;;;"Business Project User"
 "perm.businessproject.InvoicingProject.rwcde";"com.axelor.apps.businessproject.db.InvoicingProject";"x";"x";"x";"x";"x";;;"Business Project Manager"
-"perm.businessproject.ProjectFolder.r";"com.axelor.apps.businessproject.db.ProjectFolder";"x";;;;;;;"Project Read"
-"perm.businessproject.ProjectFolder.rwc";"com.axelor.apps.businessproject.db.ProjectFolder";"x";"x";"x";;;;;"Project User"
-"perm.businessproject.ProjectFolder.rwcde";"com.axelor.apps.businessproject.db.ProjectFolder";"x";"x";"x";"x";"x";;;"Project Manager"
