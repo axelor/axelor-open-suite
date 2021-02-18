@@ -9,10 +9,7 @@
 		<boolean name="resourceManagement" title="Resource management" />
 		<boolean name="checkResourceAvailibility" title="Check availability of resources" />
 		<boolean name="isEnableSignature" title="Enable task signature" />
-		<one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField" title="Task fields" orphanRemoval="true"/>
-		<one-to-many name="projectCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField" title="Project fields" orphanRemoval="true"/>
-		<many-to-many name="defaultTaskStatusSet" title="Default task status" ref="com.axelor.apps.project.db.ProjectStatus"/>
-		<many-to-many name="defaultPrioritySet" title="Default priorities" ref="com.axelor.apps.project.db.ProjectPriority"/>
+		<boolean name="generateProjectSequence" title="Generate sequence for project"/>
 
 		<track>
 			<field name="projectLabel" on="UPDATE"/>

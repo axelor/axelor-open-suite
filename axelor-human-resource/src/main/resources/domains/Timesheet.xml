@@ -22,7 +22,6 @@
 	  <decimal name="periodTotal" title="Total on period (hours)"/>
 	  <boolean name="showEditor" title="Show editor" />
       <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select"/>
-      <boolean name="isCompleted" title="Completed"/>
 
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
@@ -51,7 +50,7 @@
 	  ]]>
       </extra-code>
       <track>
-          <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
+          <field name="statusSelect"/>
       </track>
   </entity>
   

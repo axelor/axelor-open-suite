@@ -241,7 +241,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional
   public void validate(Timesheet timesheet) {
-    timesheet.setIsCompleted(true);
+
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
     timesheet.setValidationDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
@@ -958,8 +958,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             .filter(
                 "self.membersUserSet.id = ?1 and "
                     + "self.imputable = true "
-                    + "and self.projectStatus.isCompleted = false "
-                    + "and self.isShowTimeSpent = true",
+                    + "and self.statusSelect != 3",
                 user.getId())
             .fetch();
 
@@ -1091,7 +1090,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
     for (ProjectPlanningTime projectPlanningTime : planningList) {
       TimesheetLine timesheetLine = new TimesheetLine();
-      Project project = projectPlanningTime.getProject();
       timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
       timesheetLine.setDuration(
           timesheetLineService.computeHoursDuration(
@@ -1099,10 +1097,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setTimesheet(timesheet);
       timesheetLine.setUser(user);
       timesheetLine.setProduct(projectPlanningTime.getProduct());
-      if (project.getIsShowTimeSpent()) {
-        timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
-        timesheetLine.setProject(project);
-      }
+      timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
+      timesheetLine.setProject(projectPlanningTime.getProject());
       timesheetLine.setDate(projectPlanningTime.getDate());
       timesheetLine.setProjectPlanningTime(projectPlanningTime);
       timesheet.addTimesheetLineListItem(timesheetLine);
