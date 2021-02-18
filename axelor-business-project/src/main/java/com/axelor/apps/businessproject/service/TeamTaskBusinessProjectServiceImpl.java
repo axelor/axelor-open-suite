@@ -336,7 +336,11 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     teamTask.setUnit(
         salesUnit != null ? salesUnit : (Unit) productCompanyService.get(product, "unit", company));
     teamTask.setCurrency((Currency) productCompanyService.get(product, "saleCurrency", company));
-    teamTask.setQuantity(teamTask.getBudgetedTime());
+    teamTask.setQuantity(
+        teamTask.getBudgetedTime() == null
+                || teamTask.getBudgetedTime().compareTo(BigDecimal.ZERO) == 0
+            ? new BigDecimal(1)
+            : teamTask.getBudgetedTime());
 
     teamTask = this.updateDiscount(teamTask);
     teamTask = this.compute(teamTask);
