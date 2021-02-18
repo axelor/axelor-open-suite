@@ -95,27 +95,27 @@ public class WkfService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected Wkf workflow = null;
+  private Wkf workflow = null;
 
-  protected String wkfCode = null;
+  private String wkfCode = null;
 
-  protected Inflector inflector;
+  private Inflector inflector;
 
-  protected Integer wkfSequence = 0;
+  private Integer wkfSequence = 0;
 
-  protected Integer wkfSequencePreview = 0;
+  private Integer wkfSequencePreview = 0;
 
-  protected String applyCondition = null;
+  private String applyCondition = null;
 
-  protected String trackingAction = null;
+  private String trackingAction = null;
 
-  protected String trackingActionPreview = null;
+  private String trackingActionPreview = null;
 
-  protected String simpleModelName = null;
+  private String simpleModelName = null;
 
-  protected String viewName = null;
+  private String viewName = null;
 
-  protected String actionName = null;
+  private String actionName = null;
 
   @Inject protected RoleRepository roleRepo;
   @Inject private WkfNodeService nodeService;
@@ -129,6 +129,50 @@ public class WkfService {
   @Inject private MetaViewRepository metaViewRepo;
   @Inject private MetaActionRepository metaActionRepo;
   @Inject Resource<MetaView> resource;
+
+  protected Wkf getWorkflow() {
+    return workflow;
+  }
+
+  protected String getWkfCode() {
+    return wkfCode;
+  }
+
+  protected Inflector getInflector() {
+    return inflector;
+  }
+
+  protected Integer getWkfSequence() {
+    return wkfSequence;
+  }
+
+  protected Integer getWkfSequencePreview() {
+    return wkfSequencePreview;
+  }
+
+  protected String getApplyCondition() {
+    return applyCondition;
+  }
+
+  protected String getTrackingAction() {
+    return trackingAction;
+  }
+
+  protected String getTrackingActionPreview() {
+    return trackingActionPreview;
+  }
+
+  protected String getSimpleModelName() {
+    return simpleModelName;
+  }
+
+  protected String getViewName() {
+    return viewName;
+  }
+
+  protected String getActionName() {
+    return actionName;
+  }
 
   /**
    * Method to process workflow. It calls node and transition service for nodes and transitions

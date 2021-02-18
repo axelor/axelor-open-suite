@@ -103,7 +103,7 @@ class WkfNodeService {
     if (metaSelect == null) {
       metaSelect = new MetaSelect(selectName);
       metaSelect.setIsCustom(true);
-      metaSelect.setAppBuilder(wkfService.workflow.getAppBuilder());
+      metaSelect.setAppBuilder(wkfService.getWorkflow().getAppBuilder());
       metaSelect = metaSelectRepo.save(metaSelect);
     }
 
@@ -159,11 +159,11 @@ class WkfNodeService {
    */
   private String processNodes(MetaSelect metaSelect) throws AxelorException {
 
-    String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.workflow);
+    String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.getWorkflow());
     String wkfFieldName = wkfFieldInfo[0];
     String wkfFieldType = wkfFieldInfo[1];
 
-    List<WkfNode> nodeList = wkfService.workflow.getNodes();
+    List<WkfNode> nodeList = wkfService.getWorkflow().getNodes();
 
     String defaultValue = null;
     removeOldOptions(metaSelect, nodeList);
@@ -216,9 +216,9 @@ class WkfNodeService {
 
   public String getActionName(String node) {
 
-    String name = wkfService.inflector.simplify(node);
+    String name = wkfService.getInflector().simplify(node);
     name = name.toLowerCase().replace(" ", "-");
-    name = "action-group-" + wkfService.wkfCode + "-" + name;
+    name = "action-group-" + wkfService.getWkfCode() + "-" + name;
 
     return name;
   }

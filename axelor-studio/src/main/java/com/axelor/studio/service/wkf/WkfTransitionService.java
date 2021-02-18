@@ -86,11 +86,11 @@ class WkfTransitionService {
     log.debug("Processing transitions");
     List<String[]> actions = new ArrayList<String[]>();
 
-    String action = "action-" + wkfService.wkfCode;
+    String action = "action-" + wkfService.getWkfCode();
     String model =
-        (wkfService.workflow.getIsJson() || wkfService.workflow.getJsonField() != null)
+        (wkfService.getWorkflow().getIsJson() || wkfService.getWorkflow().getJsonField() != null)
             ? "com.axelor.meta.db.MetaJsonRecord"
-            : wkfService.workflow.getModel();
+            : wkfService.getWorkflow().getModel();
     wkfButtonNames = new ArrayList<String>();
 
     List<ActionRecord.RecordField> fields = proccessTransitions();
@@ -121,16 +121,17 @@ class WkfTransitionService {
 
     List<ActionRecord.RecordField> fields = new ArrayList<ActionRecord.RecordField>();
 
-    Integer buttonSeq = wkfService.wkfSequence - 46;
-    Integer buttonSeqPreview = wkfService.wkfSequencePreview - 46;
+    Integer buttonSeq = wkfService.getWkfSequence() - 46;
+    Integer buttonSeqPreview = wkfService.getWkfSequencePreview() - 46;
 
-    for (WkfTransition transition : wkfService.workflow.getTransitions()) {
+    for (WkfTransition transition : wkfService.getWorkflow().getTransitions()) {
 
-      String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.workflow);
+      String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.getWorkflow());
       String wkfFieldName = wkfFieldInfo[0];
       String wkfFieldType = wkfFieldInfo[1];
 
-      MetaJsonField statusPreview = jsonFieldRepo.findByName(wkfService.wkfCode + wkfFieldName);
+      MetaJsonField statusPreview =
+          jsonFieldRepo.findByName(wkfService.getWkfCode() + wkfFieldName);
 
       String condition =
           wkfFieldName + " == " + getTyped(transition.getSource().getSequence(), wkfFieldType);
@@ -157,7 +158,7 @@ class WkfTransitionService {
 
       String applyCondition =
           getFilters(
-              wkfService.workflow.getConditions(),
+              wkfService.getWorkflow().getConditions(),
               transition.getIsButton(),
               !transition.getIsButton());
       if (applyCondition != null) {
@@ -189,7 +190,7 @@ class WkfTransitionService {
       throws AxelorException {
 
     String jsonField =
-        wkfService.workflow.getIsJson() ? null : "$" + wkfService.workflow.getJsonField();
+        wkfService.getWorkflow().getIsJson() ? null : "$" + wkfService.getWorkflow().getJsonField();
     if (jsonField != null && jsonField.equals("$null")) {
       jsonField = null;
     }
@@ -230,7 +231,7 @@ class WkfTransitionService {
     String title = transition.getButtonTitle();
     //    String name = wkfService.inflector.camelize(source + "-" + title, true);
     // FIXME:Have to check if its working with import export of workflow.
-    String name = wkfService.wkfCode + "Transition" + transition.getId();
+    String name = wkfService.getWkfCode() + "Transition" + transition.getId();
     if (name.equals("save") || name.equals("cancel") || name.equals("back")) {
       name = "wkf" + name;
     }
@@ -239,7 +240,7 @@ class WkfTransitionService {
     MetaJsonField button = wkfService.getJsonField(name + "Button", "button");
     button.setTitle(title);
     button.setShowIf(
-        (!wkfService.workflow.getIsJson() && wkfService.workflow.getJsonField() == null
+        (!wkfService.getWorkflow().getIsJson() && wkfService.getWorkflow().getJsonField() == null
                 ? "$record."
                 : "")
             + condition);
@@ -259,8 +260,8 @@ class WkfTransitionService {
     wkfService.saveJsonField(button);
 
     String buttonPreviewName =
-        wkfService.wkfCode
-            + wkfService.workflow.getCode()
+        wkfService.getWkfCode()
+            + wkfService.getWorkflow().getCode()
             + "Transition"
             + transition.getId()
             + "Button";
@@ -276,10 +277,10 @@ class WkfTransitionService {
       buttonPreview.setShowIf(
           conditionPreview
               + " && $record.code == '"
-              + wkfService.workflow.getCode()
+              + wkfService.getWorkflow().getCode()
               + "' && $record.id != null");
       buttonPreview.setOnClick(
-          addButtonActions(transition, name + wkfService.workflow.getCode() + "button", true));
+          addButtonActions(transition, name + wkfService.getWorkflow().getCode() + "button", true));
 
     } else {
       buttonPreview.setTitle(title);
@@ -305,11 +306,11 @@ class WkfTransitionService {
       WkfTransition transition, String buttonName, boolean isPreviewButton) throws AxelorException {
 
     String actionName = buttonName.toLowerCase().replace(" ", "-");
-    actionName = "action-" + wkfService.wkfCode + "-" + actionName;
+    actionName = "action-" + wkfService.getWkfCode() + "-" + actionName;
     String model =
-        (wkfService.workflow.getIsJson() || wkfService.workflow.getJsonField() != null)
+        (wkfService.getWorkflow().getIsJson() || wkfService.getWorkflow().getJsonField() != null)
             ? "com.axelor.meta.db.MetaJsonRecord"
-            : wkfService.workflow.getModel();
+            : wkfService.getWorkflow().getModel();
     List<String> actions = new ArrayList<String>();
     String xml = "";
     Integer alterType = transition.getAlertTypeSelect();
@@ -328,12 +329,12 @@ class WkfTransitionService {
     actions.add("save");
     List<RecordField> recordFields = new ArrayList<RecordField>();
     RecordField recordField = new RecordField();
-    String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.workflow);
+    String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.getWorkflow());
     String wkfFieldName = wkfFieldInfo[0];
     String wkfFieldType = wkfFieldInfo[1];
 
     if (isPreviewButton) {
-      MetaJsonField wkfField = jsonFieldRepo.findByName(wkfService.wkfCode + wkfFieldName);
+      MetaJsonField wkfField = jsonFieldRepo.findByName(wkfService.getWkfCode() + wkfFieldName);
       wkfFieldName = wkfField.getName();
       wkfFieldType = wkfField.getType();
     }
@@ -357,9 +358,9 @@ class WkfTransitionService {
     actions.add("save");
 
     if (isPreviewButton) {
-      actions.add("action-group-" + wkfService.workflow.getCode());
+      actions.add("action-group-" + wkfService.getWorkflow().getCode());
     } else {
-      actions.add("action-group-" + wkfService.wkfCode);
+      actions.add("action-group-" + wkfService.getWkfCode());
     }
 
     //    actions.add("save");
@@ -446,7 +447,7 @@ class WkfTransitionService {
     MetaPermission permission = metaPermissionRepo.findByName(name);
     if (permission == null) {
       permission = new MetaPermission(name);
-      permission.setObject(wkfService.workflow.getModel());
+      permission.setObject(wkfService.getWorkflow().getModel());
       MetaPermissionRule rule = new MetaPermissionRule();
       rule.setCanRead(false);
       rule.setField(buttonName);
