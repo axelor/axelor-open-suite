@@ -157,17 +157,41 @@ public class ClientViewController {
     }
   }
 
-  public void showClientMyTasksInCompleted(ActionRequest request, ActionResponse response) {
+  public void showClientMyNewTasks(ActionRequest request, ActionResponse response) {
     try {
       ClientViewService clientViewService = Beans.get(ClientViewService.class);
       User clientUser = clientViewService.getClientUser();
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        Filter filter = clientViewService.getTasksInCompletedOfUser(clientUser).get(0);
+        Filter filter = clientViewService.getNewTasksOfUser(clientUser).get(0);
         if (filter != null) {
           response.setView(
-              ActionView.define(I18n.get("Tasks incompleted"))
+              ActionView.define(I18n.get("New tasks"))
+                  .model(ProjectTask.class.getName())
+                  .add("grid", "project-task-grid")
+                  .add("form", "project-task-form")
+                  .param("search-filters", "project-task-filters")
+                  .domain(filter.getQuery())
+                  .map());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showClientMyTasksInProgress(ActionRequest request, ActionResponse response) {
+    try {
+      ClientViewService clientViewService = Beans.get(ClientViewService.class);
+      User clientUser = clientViewService.getClientUser();
+      if (clientUser.getPartner() == null) {
+        response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
+      } else {
+        Filter filter = clientViewService.getTasksInProgressOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Tasks in progress"))
                   .model(ProjectTask.class.getName())
                   .add("grid", "project-task-grid")
                   .add("form", "project-task-form")
@@ -188,7 +212,7 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        Filter filter = Filter.and(clientViewService.getTasksDueOfUser(clientUser));
+        Filter filter = clientViewService.getTasksDueOfUser(clientUser).get(0);
         if (filter != null) {
           response.setView(
               ActionView.define(I18n.get("Tasks due"))

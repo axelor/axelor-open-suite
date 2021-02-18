@@ -17,7 +17,7 @@
 	width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
 		<panel name="startAndStopPanel" title="Start&amp;Stop Timer">
 			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-			<field name="project" form-view="project-form" grid-view="project-grid" domain="self.imputable = true AND self.isShowTimeSpent = true" onChange="action-hr-ts-timer-record-empty-product"/>
+			<field name="project" form-view="project-form" grid-view="project-grid" domain="self.imputable = true" onChange="action-hr-ts-timer-record-empty-product"/>
 			<field name="startDateTime"/>
 			<field name="product" canEdit="false" onSelect="action-hr-timesheet-timer-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" widget="duration" colSpan="2"/>

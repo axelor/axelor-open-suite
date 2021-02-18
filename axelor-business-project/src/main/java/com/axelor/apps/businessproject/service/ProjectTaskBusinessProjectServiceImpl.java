@@ -36,7 +36,6 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -46,8 +45,8 @@ import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -56,7 +55,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
@@ -129,13 +129,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
     task.setTotalPlannedHrs(plannedHrs);
 
-    return task;
-  }
-
-  @Override
-  public ProjectTask create(String subject, Project project, User assignedTo) {
-    ProjectTask task = super.create(subject, project, assignedTo);
-    task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
 
@@ -290,19 +283,27 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     if (projectTask.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_PACKAGE
         && !projectTask.getIsTaskRefused()) {
 
+      Pattern pattern = Pattern.compile(", ");
+
       switch (projectTask.getProject().getInvoicingSequenceSelect()) {
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
-          Set<ProjectStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
           projectTask.setToInvoice(
-              ObjectUtils.notEmpty(preTaskStatusSet)
-                  && preTaskStatusSet.contains(projectTask.getStatus()));
+              !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
+                  && pattern
+                      .splitAsStream(appBusinessProject.getPreTaskStatusSet())
+                      .map(Integer::valueOf)
+                      .collect(Collectors.toList())
+                      .contains(projectTask.getStatus()));
           break;
 
         case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
-          Set<ProjectStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
           projectTask.setToInvoice(
-              ObjectUtils.notEmpty(postTaskStatusSet)
-                  && postTaskStatusSet.contains(projectTask.getStatus()));
+              !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
+                  && pattern
+                      .splitAsStream(appBusinessProject.getPostTaskStatusSet())
+                      .map(Integer::valueOf)
+                      .collect(Collectors.toList())
+                      .contains(projectTask.getStatus()));
           break;
       }
     } else {

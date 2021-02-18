@@ -67,7 +67,6 @@
 		<context name="_projectTask" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
 		<context name="_project" expr="eval:__self__.project" if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
 		<context name="_project" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.Project'"/>
-		<context name="_user" expr="eval:assignedTo" if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
 	</action-view>
 	
 	<action-view name="action-project-dashlet-project-planning-time" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
@@ -96,7 +95,7 @@
 	<action-attrs name="action-project-planning-time-attrs-project-domain">
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).find(project.id).membersUserSet.collect{it->it.id}).join(',')})&quot;" 
 	   for="userSet,user" if="project != null"/>
-	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.projectStatus.isCompleted = false').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" 
+	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" 
 	   for="userSet" if="project == null"/>
 	</action-attrs>
 	
@@ -112,7 +111,7 @@
 		<attribute name="value" for="product" expr="eval: __user__.employee.product" if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet &amp;&amp; __user__.employee"/>
 		
 		<attribute name="value" for="date" expr="#{__config__.date}"/>
-		<attribute name="value" for="user" expr="eval: _user" if="_user"/>
+		<attribute name="value" for="user" expr="eval:__user__" if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet"/>
 		<attribute name="value" for="project" expr="eval:__parent__?.project" if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
 		<attribute name="value" for="projectTask" expr="eval:__parent__" if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
 		<attribute name="readonly" for="projectTask" expr="eval:true" if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' || _projectTask"/>

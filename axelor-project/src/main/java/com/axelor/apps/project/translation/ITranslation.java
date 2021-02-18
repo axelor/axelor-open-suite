@@ -23,18 +23,4 @@ public interface ITranslation {
 
   public static final String PROJECT_CODE_ERROR =
       /* $$( */ "Project code is already used. Please provide unique code"; /* ) */
-
-  // Project Status
-  public static final String PROJECT_STATUS_NEW = /*$$(*/ "value:New"; /*)*/
-
-  public static final String PROJECT_STATUS_IN_PROGRESS = /*$$(*/ "value:In progress"; /*)*/
-
-  public static final String PROJECT_STATUS_DONE = /*$$(*/ "value:Done"; /*)*/
-
-  public static final String PROJECT_STATUS_CANCELED = /*$$(*/ "value:Canceled"; /*)*/
-
-  // Project Priority
-  public static final String PROJECT_PRIORITY_LOW = /*$$(*/ "value:Low"; /*)*/
-
-  public static final String PROJECT_PRIORITY_HIGH = /*$$(*/ "value:High"; /*)*/
 }

@@ -329,7 +329,7 @@
 		<context name="user_id" expr="eval:__user__" />
 	</action-view>
 
-	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" order="3" tag-style="default" tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()" if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getNeedValidation()"/>
+	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" order="3" tag-style="default" tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()"/>
 
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>

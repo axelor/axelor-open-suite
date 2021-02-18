@@ -22,18 +22,13 @@ import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPriority;
-import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
@@ -95,6 +90,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
   protected void updateModuleFields(ProjectTask projectTask, ProjectTask nextProjectTask) {
     nextProjectTask.setName(projectTask.getName());
+    nextProjectTask.setTeam(projectTask.getTeam());
     nextProjectTask.setPriority(projectTask.getPriority());
     nextProjectTask.setStatus(projectTask.getStatus());
     nextProjectTask.setTaskDuration(projectTask.getTaskDuration());
@@ -155,9 +151,9 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     ProjectTask task = new ProjectTask();
     task.setName(subject);
     task.setAssignedTo(assignedTo);
-    task.setTaskDate(appBaseService.getTodayDate(null));
-    task.setStatus(getStatus(project));
-    task.setPriority(getPriority(project));
+    task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
+    task.setStatus(ProjectTaskRepository.STATUS_NEW);
+    task.setPriority(ProjectTaskRepository.PRIORITY_NORMAL);
     project.addProjectTaskListItem(task);
     projectTaskRepo.save(task);
     return task;
@@ -179,37 +175,6 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public ProjectStatus getDefaultCompletedStatus(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
-        ? null
-        : project.getProjectTaskStatusSet().stream()
-            .filter(ProjectStatus::getIsDefaultCompleted)
-            .findAny()
-            .orElse(null);
-  }
-
-  @Override
-  public ProjectStatus getStatus(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
-        ? null
-        : project.getProjectTaskStatusSet().stream()
-            .min(Comparator.comparingInt(ProjectStatus::getSequence))
-            .orElse(null);
-  }
-
-  @Override
-  public ProjectPriority getPriority(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskPrioritySet())
-        ? null
-        : project.getProjectTaskPrioritySet().stream()
-            .filter(
-                priority ->
-                    priority.getTechnicalTypeSelect()
-                        == ProjectPriorityRepository.PROJECT_PRIORITY_NORMAL)
-            .findAny()
-            .orElse(null);
-  }
-
   @Transactional
   public void deleteProjectTask(ProjectTask projectTask) {
     projectTaskRepo.remove(projectTask);

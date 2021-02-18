@@ -20,6 +20,4 @@ package com.axelor.apps.businessproject.translation;
 public interface ITranslation {
 
   public static final String JOB_COSTING_APP_NAME = /*$$(*/ "value:Job costing"; /*)*/
-
-  public static final String PROJECT_STATUS_CANCELED = /*$$(*/ "value:Canceled"; /*)*/
 }
