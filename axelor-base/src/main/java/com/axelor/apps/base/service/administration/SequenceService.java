@@ -197,17 +197,21 @@ public class SequenceService {
       Future<String> newSeq =
           executor.submit(
               () -> {
-                Sequence seq = sequenceRepo.find(sequence.getId());
-                SequenceVersion sequenceVersion = getVersion(seq, refDate);
-                String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
+                final var result =
+                    new Object() {
+                      String nextSeq;
+                    };
                 JPA.runInTransaction(
                     () -> {
+                      Sequence seq = sequenceRepo.find(sequence.getId());
+                      SequenceVersion sequenceVersion = getVersion(seq, refDate);
+                      result.nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
                       sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
                       if (sequenceVersion.getId() == null) {
                         sequenceVersionRepository.save(sequenceVersion);
                       }
                     });
-                return nextSeq;
+                return result.nextSeq;
               });
       return newSeq.get();
     } catch (Exception e) {
