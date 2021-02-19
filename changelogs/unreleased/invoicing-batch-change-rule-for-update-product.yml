@@ -1,3 +1,3 @@
 ---
-title: "Invoicing Batch : change in rule for update product"
+title: "Team Task invoicing: initialize default invoicing quantity to 1 instead of 0."
 type: change
