@@ -12,6 +12,8 @@
 		<boolean name="isExpenseAppEnable" default="true" title="Expense"/>
 		<boolean name="isTaskAppEnable" default="true" title="Task"/>
 		<boolean name="isQualityAppEnable" default="true" title="Quality"/>
+		<boolean name="isStockAppEnable" default="true" title="Stock"/>
+		<boolean name="isProductionAppEnable" default="true" title="Production"/>
 		<decimal name="offlineRecordLimit" title="Offline record limit"/>
 		
 		<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Customers"/>
@@ -21,6 +23,9 @@
 		<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
 		
 		<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
+		
+		<string name="mOFilterOnStockDetailStatusSelect" title="Statuses to take into account"/>
+		
 		
 		<track>
 			<field name="isSaleAppEnable" on="UPDATE"/>
