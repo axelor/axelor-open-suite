@@ -1451,7 +1451,7 @@
 		title="Subsidiaries" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
-		<domain>self.id in (select p.id from Partner p where p.parentPartner = :id)</domain>
+		<domain>self.parentPartner = :id</domain>
 	</action-view>
 
 	<action-record name="action-record-base-partner-set-business-card"
