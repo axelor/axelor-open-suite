@@ -21,20 +21,26 @@
 			<field name="priority" colSpan="3" />
 			<field name="workCenterTypeSelect"/>
 			<button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
-				onClick="save,action-production-view-work-center-group-wizard" />
-			<field name="workCenterGroup" colSpan="12" canSelect="false" hideIf="workCenterTypeSelect != 3">
+				onClick="save,action-production-view-work-center-group-wizard" readonlyIf="workCenterTypeSelect == 0 || workCenterTypeSelect == null"/>
+			<field name="workCenterGroup" colSpan="12" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
+			   domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect">
 				<editor x-viewer="true">
 					<panel colSpan="12" itemSpan="12">
 						<field name="name"/>
-						<field name="workCenterSet" grid-view="work-center-prod-process-line-grid" form-view="work-center-form" showTitle="false"/>
+						<field name="workCenterSet" grid-view="work-center-prod-process-line-grid" form-view="work-center-form" showTitle="false"
+						   domain="self.workCenterTypeSelect = :workCenterTypeSelect"/>
+						<field name="workCenterTypeSelect" hidden="true"/>
 					</panel>
 				</editor>
 			</field>
-			<field name="workCenterGroup" colSpan="12" canSelect="false" showIf="workCenterTypeSelect != 3" hidden="true">
+			<field name="workCenterGroup" colSpan="12" hideIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
+			   domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect">
             <editor x-viewer="true">
                <panel colSpan="12" itemSpan="12">
                   <field name="name"/>
-                  <field name="workCenterSet" grid-view="work-center-grid-small" form-view="work-center-form" showTitle="false"/>
+                  <field name="workCenterSet" grid-view="work-center-grid-small" form-view="work-center-form" showTitle="false"
+                     domain="self.workCenterTypeSelect = :workCenterTypeSelect"/>
+                  <field name="workCenterTypeSelect" hidden="true"/>
                </panel>
             </editor>
          </field>
@@ -76,7 +82,7 @@
 	<form model="com.axelor.apps.production.db.ProdProcessLine" title="Work center group selection"
 		name="prod-process-line-work-center-group-wizard-form">
 		<panel name="mainPanel">
-			<field canNew="true" canEdit="false" canSelect="true"
+			<field canNew="true" canEdit="false" canSelect="true" form-view="work-center-group-form"
 				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"/>
 			<button name="workCenterGroupWizardSave" title="Save"
 				onClick="save,action-production-method-set-work-center-group" />
@@ -107,6 +113,7 @@
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: __this__.id" />
 		<context name="workCenterTypeSelect" expr="eval: __this__.workCenterTypeSelect" />
+		<context name="_template" expr="true"/>
 	</action-view>
 
 	<action-method name="action-production-method-set-work-center-group">
@@ -115,7 +122,7 @@
 	</action-method>
 
 	<action-attrs name="action-attrs-production-set-work-center-group-domain" model="com.axelor.apps.production.db.ProdProcessLine">
-		<attribute name="domain" for="workCenterGroup" expr="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+		<attribute name="domain" for="workCenterGroup" expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
 	</action-attrs>
 
 	<action-group name="action-prod-process-line-group-work-center-onchange">

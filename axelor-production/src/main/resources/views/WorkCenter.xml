@@ -21,7 +21,8 @@
 		<field name="machine" form-view="machine-form" grid-view="machine-grid"/>
    </grid>
 
-	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
+	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large"
+	  onNew="action-work-center-group-onnew" onLoad="action-work-center-attrs-set-readonly-on-new-load">
 	  <panel name="mainPanel" >
 	    <field name="name"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
@@ -30,7 +31,7 @@
 		<field name="machineTool" domain="self.machine = :machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-tool-form" grid-view="machine-tool-grid" if="__config__.app.getApp('production').getEnableToolManagement()"/>
 	  </panel>
 	  <panel-tabs name="mainPanelTab">
-	    <panel name="defaultMachineSettingsPanel" title="Default Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
+	    <panel name="defaultMachineSettingsPanel" title="Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
 	        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
 	          <field name="minCapacityPerCycle" colSpan="3"/>
 	          <field name="maxCapacityPerCycle" colSpan="3"/>
@@ -80,11 +81,20 @@
 	    </panel>
     </form>
 
+   <action-group name="action-work-center-group-onnew">
+      <action name="action-work-center-record-default"/>
+      <action name="action-work-center-attrs-set-readonly-on-new-load"/>
+   </action-group>
+
      <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
 		     <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
 		     <field name="product" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null" />
 		     <field name="workCenterTypeSelect" expr="#{__parent__.workCenterTypeSelect}" if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>    
     </action-record>
+
+   <action-attrs name="action-work-center-attrs-set-readonly-on-new-load">
+      <attribute name="readonly" for="workCenterTypeSelect" expr="true" if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>
+   </action-attrs>
 
 	<action-record name="action-work-center-record-type-select-onchange" model="com.axelor.apps.production.db.WorkCenter">
 		<field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
