@@ -12,14 +12,19 @@
       		<field name="isExpenseAppEnable" widget="boolean-switch" if="__config__.app.isApp('expense')"/>
       		<field name="isTaskAppEnable" widget="boolean-switch" if="__config__.app.isApp('project')"/>
       		<field name="isQualityAppEnable" widget="boolean-switch" if="__config__.app.isApp('quality')"/>
+      		<field name="isStockAppEnable" widget="boolean-switch" if="__config__.app.isApp('stock')"/>
+      		<field name="isProductionAppEnable" widget="boolean-switch" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			<field name="offlineRecordLimit"/>
 		</panel>
-		<panel-tabs name="mainPanelTab" showIf="isSaleAppEnable || isCrmAppEnable" >
+		<panel-tabs name="mainPanelTab" showIf="isSaleAppEnable || isCrmAppEnable || isProductionAppEnable" >
 			<panel-related name="partnerSetPanel" field="partnerSet" domain="self.isCustomer = 'true' and self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"/>
 			<panel-related name="partnerContactSetPanel" field="partnerContactSet" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<panel-related name="projectSetPanel" field="projectSet" form-view="project-form" grid-view="project-grid"/>
 			<panel-related name="leadSetPanel" field="leadSet"  showIf="isCrmAppEnable"  form-view="lead-form" grid-view="lead-grid"/>
 			<panel-related name="productSetPanel" field="productSet" showIf="isSaleAppEnable" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
+			<panel name="productionPanel" showIf="isProductionAppEnable" title="Production" if-module="axelor-production" if="__config__.app.isApp('production')">
+				<field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect" selection="production.manuf.order.status.select"/>
+			</panel>
 		</panel-tabs>
 				        
         <panel-mail name="mailPanel">
