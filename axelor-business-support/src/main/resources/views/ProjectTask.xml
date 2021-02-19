@@ -13,9 +13,9 @@
 	</grid>
 	
 	<grid name="project-task-client-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" orderBy="taskDate">
-		<hilite if="status == 3" color="success"/>
+		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
-		<hilite if="priority == 4" color="warning"/>
+		<hilite if="priority == 'urgent'" color="warning"/>
 		<field name="name"/>
 		<field name="taskDate"/>
         <field name="priority" hidden="true"/>

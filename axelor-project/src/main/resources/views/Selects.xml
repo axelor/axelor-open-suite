@@ -52,17 +52,17 @@
     </selection>
     
     <selection name="project.task.status">
-         <option value="1">New</option>
-         <option value="2">In Progress</option>
-         <option value="3">Closed</option>
-         <option value="4">Canceled</option>
+         <option value="new">New</option>
+         <option value="in-progress">In Progress</option>
+         <option value="closed">Closed</option>
+         <option value="canceled">Canceled</option>
     </selection>
     
     <selection name="project.task.priority">
-         <option value="1">Low</option>
-         <option value="2">Normal</option>
-         <option value="3">High</option>
-         <option value="4">Urgent</option>
+         <option value="low">Low</option>
+         <option value="normal">Normal</option>
+         <option value="high">High</option>
+         <option value="urgent">Urgent</option>
     </selection>
 
 </object-views>
