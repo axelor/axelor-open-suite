@@ -22,7 +22,7 @@
     <one-to-many name="objectDescriptionList" ref="com.axelor.apps.production.db.ObjectDescription" mappedBy="prodProcessLine" title="Descriptions"/>
     <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools"/>
     <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
-   	<many-to-one name="workCenterGroup" ref="com.axelor.apps.production.db.WorkCenterGroup"/>
+   	<many-to-one name="workCenterGroup" ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center"/>
     
     <boolean name="useLineInGeneratedPurchaseOrder" title="Use this line in the generated purchase order" help="Products associated with the work center will be used"/>
     
