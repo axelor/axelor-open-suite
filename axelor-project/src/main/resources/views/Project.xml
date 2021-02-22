@@ -48,12 +48,6 @@
 				name="financialReportItem" title="Financial Report" showIf="isBusinessProject"
 					action="save,action-project-method-print-project" />		
 			</menu>
-			<menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
-			  <item name="myOpenTasks" title="My open tasks" action="save,action-project-method-my-open-tasks" showIf="id &amp;&amp; isShowStatus"/>
-			  <item name="tasksCreatedByMe" title="Tasks created by me" action="save,action-project-method-my-tasks" showIf="id &amp;&amp; isShowStatus"/>
-			  <item name="allOpenTasks" title="All open tasks" action="save,action-project-method-all-open-tasks" showIf="id"/>
-			  <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks" showIf="id"/>
-			</menu>
 			<menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
 				<item name="ganttItem" title="Gantt" showIf="isProject" action="action-project-open-gantt" />
 				<item name="bookResourceItem" title="Book resource" showIf="isProject" if=" __config__.app.getApp('project')?.resourceManagement"
