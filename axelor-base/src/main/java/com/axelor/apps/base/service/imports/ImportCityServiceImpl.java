@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,13 +17,16 @@
  */
 package com.axelor.apps.base.service.imports;
 
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
@@ -33,12 +36,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -53,9 +62,23 @@ public class ImportCityServiceImpl implements ImportCityService {
 
   @Inject private MetaFiles metaFiles;
 
-  public static String CITYTEXTFILE = "cityTextFile.txt";
+  protected static final String CITYTEXTFILE = "cityTextFile.txt";
 
-  public static String DOWNLOAD_LINK = "http://download.geonames.org/export/zip/";
+  protected static final String FEATURE_CLASS_FOR_CANTON_REGION_DEPARTMENT = "A";
+
+  protected static final String FEATURE_CLASS_FOR_CITY = "P";
+
+  protected static final String FEATURE_CLASS_CODE_FOR_CANTON = "ADM3";
+
+  protected static final String FEATURE_CLASS_CODE_FOR_REGION = "ADM1";
+
+  protected static final String FEATURE_CLASS_CODE_FOR_DEPARTMENT = "ADM2";
+
+  protected static final String FEATURE_CLASS_CODE_FOR_CITY = "ADM4";
+
+  protected static final String CITY_NO_LONGER_EXIST_CODE = "PPLH";
+
+  protected static final String SEPERATOR = "\t";
 
   final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -195,14 +218,16 @@ public class ImportCityServiceImpl implements ImportCityService {
     try {
       tempDir = Files.createTempDir();
       downloadFile = new File(tempDir, downloadFileName);
+      AppBase appBase = Beans.get(AppBaseRepository.class).all().fetchOne();
 
       cityTextFile = new File(tempDir, CITYTEXTFILE);
 
-      URL url = new URL(DOWNLOAD_LINK + downloadFileName);
+      URL url = new URL(appBase.getGeoNamesUrl() + downloadFileName);
 
       FileUtils.copyURLToFile(url, downloadFile);
 
       LOG.debug("path for downloaded zip file : " + downloadFile.getPath());
+
       try (ZipFile zipFile = new ZipFile(downloadFile.getPath());
           FileWriter writer = new FileWriter(cityTextFile)) {
 
@@ -215,12 +240,7 @@ public class ImportCityServiceImpl implements ImportCityService {
             BufferedReader stream =
                 new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
 
-            String line;
-            StringBuffer buffer = new StringBuffer();
-
-            while ((line = stream.readLine()) != null) {
-              buffer.append(line + "\n");
-            }
+            StringBuilder buffer = this.extractDataFromDownloadedFile(stream);
 
             cityTextFile.createNewFile();
 
@@ -277,5 +297,93 @@ public class ImportCityServiceImpl implements ImportCityService {
     FileUtils.forceDelete(txtFile);
 
     return metaFile;
+  }
+
+  private StringBuilder extractDataFromDownloadedFile(BufferedReader downloadedCityFileStream)
+      throws IOException {
+
+    HashMap<String, String> regionMap = new HashMap<>();
+    HashMap<String, String> departmentMap = new HashMap<>();
+    HashMap<String, String> cantonMap = new HashMap<>();
+    List<String> cityList = new ArrayList<>();
+
+    String line;
+
+    while ((line = downloadedCityFileStream.readLine()) != null) {
+      String[] values = line.split(SEPERATOR);
+
+      if (values[6].equals(FEATURE_CLASS_FOR_CANTON_REGION_DEPARTMENT)) {
+        switch (values[7]) {
+          case FEATURE_CLASS_CODE_FOR_REGION:
+            regionMap.put(values[10], values[1]);
+            break;
+
+          case FEATURE_CLASS_CODE_FOR_DEPARTMENT:
+            departmentMap.put(values[11], values[1]);
+            break;
+
+          case FEATURE_CLASS_CODE_FOR_CANTON:
+            cantonMap.put(values[12], values[1]);
+            break;
+
+          default:
+        }
+      }
+
+      if ((values[6].equals(FEATURE_CLASS_FOR_CANTON_REGION_DEPARTMENT)
+              && values[7].equals(FEATURE_CLASS_CODE_FOR_CITY))
+          || (values[6].equals(FEATURE_CLASS_FOR_CITY)
+              && !values[7].equals(CITY_NO_LONGER_EXIST_CODE))) {
+        cityList.add(
+            String.format(
+                "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s",
+                values[8], // country code
+                values[13], // zip code
+                values[1], // city name
+                values[10], // region code
+                values[11], // department code
+                values[12], // canton code
+                values[4], // lattitude
+                values[5], // longitude
+                values[14])); // population
+      }
+    }
+
+    return this.createCityFile(regionMap, departmentMap, cantonMap, cityList);
+  }
+
+  private StringBuilder createCityFile(
+      HashMap<String, String> regionMap,
+      HashMap<String, String> departmentMap,
+      HashMap<String, String> cantonMap,
+      List<String> cityList) {
+
+    StringBuilder buffer = new StringBuilder();
+
+    Set<String> checkDuplicateCitySet = new HashSet<>();
+
+    for (String value : cityList) {
+      String[] values = value.split(SEPERATOR);
+
+      if (checkDuplicateCitySet.add(values[1].toLowerCase().concat(values[2].toLowerCase()))) {
+        buffer.append(
+            String.format(
+                "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
+                values[0],
+                values[1],
+                values[2],
+                regionMap.get(values[3]),
+                values[3],
+                departmentMap.get(values[4]),
+                values[4],
+                cantonMap.get(values[5]),
+                values[5],
+                values[6],
+                values[7],
+                values[8]));
+      }
+    }
+
+    return buffer;
   }
 }

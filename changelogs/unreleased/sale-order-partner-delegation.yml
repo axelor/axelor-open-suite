@@ -1,0 +1,6 @@
+---
+title: "Add partner relations/delegations for invoicing and delivery"
+type: feature
+description: |
+    Add a new config to enable the use of different partners for invoicing and
+    delivery than the main partner.

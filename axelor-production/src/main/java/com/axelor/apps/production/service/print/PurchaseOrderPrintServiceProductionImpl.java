@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.print;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
 import com.google.inject.Inject;
@@ -24,8 +25,9 @@ import com.google.inject.Inject;
 public class PurchaseOrderPrintServiceProductionImpl extends PurchaseOrderPrintServiceImpl {
 
   @Inject
-  public PurchaseOrderPrintServiceProductionImpl(AppPurchaseService appPurchaseService) {
-    super(appPurchaseService);
+  public PurchaseOrderPrintServiceProductionImpl(
+      AppPurchaseService appPurchaseService, AppBaseService appBaseService) {
+    super(appPurchaseService, appBaseService);
   }
 
   @Override

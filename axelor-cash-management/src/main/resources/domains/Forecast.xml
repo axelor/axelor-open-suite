@@ -13,6 +13,9 @@
 	<date name="realizationDate" title="Realization date"/>
 	<string name="comments" title="Comments" large="true"/>
 	<many-to-one name="forecastGenerator" ref="com.axelor.apps.cash.management.db.ForecastGenerator"/>
+  
+    <string name="forecastSeq" title="Reference" namecolumn="true"/>
+    <integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type"/>
 	
 	<extra-code><![CDATA[
 

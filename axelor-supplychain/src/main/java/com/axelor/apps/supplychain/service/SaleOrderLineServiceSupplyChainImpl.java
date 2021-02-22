@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,9 +42,13 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -55,6 +59,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -327,6 +332,36 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     }
 
     return qty;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      return;
+    }
+    if (SupplyChainConfigRepository.SALE_ORDER_SHIPPING_DATE
+        != Beans.get(SupplyChainConfigService.class)
+            .getSupplyChainConfig(saleOrder.getCompany())
+            .getSaleOrderReservationDateSelect()) {
+      return;
+    }
+
+    Beans.get(StockMoveLineRepository.class)
+        .all()
+        .filter("self.saleOrderLine = :saleOrderLineId")
+        .bind("saleOrderLineId", saleOrderLine.getId())
+        .fetchStream()
+        .filter(
+            stockMoveLine ->
+                stockMoveLine.getStockMove() != null
+                    && stockMoveLine.getStockMove().getStatusSelect()
+                        == StockMoveRepository.STATUS_PLANNED)
+        .forEach(
+            stockMoveLine ->
+                stockMoveLine.setReservationDateTime(
+                    saleOrderLine.getEstimatedDelivDate().atStartOfDay()));
   }
 
   @Override

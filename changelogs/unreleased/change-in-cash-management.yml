@@ -1,0 +1,11 @@
+---
+title: "Cash Management : Feature and corrections"
+type: change
+description: |
+  Added sequence for Manual Forecast.
+  View changes in Forecast grid and form.
+  Change Forecast Recap Line Type element from Forecast to Manual Forecast.
+  Added Feature to consider all types of Forecast Recap Line Type of Invoice element while populating.
+  View changes in Forecast Recap form.
+  Fixing translations.
+  Showing Balance instead of Amount in Forecast Recap report.

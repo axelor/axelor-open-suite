@@ -8,6 +8,8 @@
   <entity name="Company" lang="java" cacheable="true">
   
 	<one-to-one name="productionConfig" ref="com.axelor.apps.production.db.ProductionConfig" title="Production config" mappedBy="company"/>
+	
+    <one-to-many name="workshopList" ref="com.axelor.apps.stock.db.StockLocation" mappedBy="company" title="Workshops"/>
   	
   </entity>
   

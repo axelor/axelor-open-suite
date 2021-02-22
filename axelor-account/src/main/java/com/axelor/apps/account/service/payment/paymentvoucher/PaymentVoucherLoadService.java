@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -88,7 +88,8 @@ public class PaymentVoucherLoadService {
             + "and (self.move.statusSelect = ?3 OR self.move.statusSelect = ?4)"
             + "and self.move.ignoreInDebtRecoveryOk = 'f' "
             + "and self.move.company = ?2 "
-            + "and self.move.invoice.pfpValidateStatusSelect != ?5";
+            + "and self.move.invoice.pfpValidateStatusSelect != ?5 "
+            + "and self.move.tradingName = ?6";
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
       query += " and self.debit > 0 ";
@@ -105,7 +106,8 @@ public class PaymentVoucherLoadService {
                 paymentVoucher.getCompany(),
                 MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_ACCOUNTED,
-                InvoiceRepository.PFP_STATUS_LITIGATION)
+                InvoiceRepository.PFP_STATUS_LITIGATION,
+                paymentVoucher.getTradingName())
             .fetch();
 
     return moveLines;

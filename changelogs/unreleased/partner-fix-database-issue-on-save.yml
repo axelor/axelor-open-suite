@@ -1,0 +1,3 @@
+---
+title: "Partner: fix database issue 'More than one row with given identifier was found' on partner save."
+type: fix

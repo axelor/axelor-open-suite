@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,6 +46,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 public class DebtRecoveryActionService {
 
@@ -82,7 +83,11 @@ public class DebtRecoveryActionService {
   public void runAction(DebtRecovery debtRecovery) throws AxelorException {
 
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
-    Partner partner = debtRecovery.getAccountingSituation().getPartner();
+    Partner partner =
+        (debtRecovery.getTradingName() == null
+                || debtRecovery.getTradingNameAccountingSituation() == null)
+            ? debtRecovery.getAccountingSituation().getPartner()
+            : debtRecovery.getTradingNameAccountingSituation().getPartner();
 
     if (debtRecovery.getDebtRecoveryMethod() == null) {
       throw new AxelorException(
@@ -174,11 +179,15 @@ public class DebtRecoveryActionService {
   @Transactional(rollbackOn = {Exception.class})
   public void runManualAction(DebtRecovery debtRecovery)
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
-          IllegalAccessException {
+          IllegalAccessException, JSONException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
-    Partner partner = debtRecovery.getAccountingSituation().getPartner();
+    Partner partner =
+        (debtRecovery.getTradingName() == null
+                || debtRecovery.getTradingNameAccountingSituation() == null)
+            ? debtRecovery.getAccountingSituation().getPartner()
+            : debtRecovery.getTradingNameAccountingSituation().getPartner();
 
     if (debtRecovery.getDebtRecoveryMethod() == null) {
       throw new AxelorException(
@@ -239,7 +248,7 @@ public class DebtRecoveryActionService {
   @Transactional(rollbackOn = {Exception.class})
   public void runMessage(DebtRecovery debtRecovery)
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
-          IllegalAccessException {
+          IllegalAccessException, JSONException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
 
     for (Message message : messageSet) {

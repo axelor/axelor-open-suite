@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.EntityHelper;
+import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
@@ -46,6 +47,7 @@ import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.mail.service.MailService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
+import com.axelor.rpc.filter.Filter;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
@@ -109,7 +111,11 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   @Override
   public List<InternetAddress> findEmails(String matching, List<String> selected, int maxResult) {
 
+    JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
+
     // Users
+    Filter userPermissionFilter = jpaSecurity.getFilter(JpaSecurity.CAN_READ, User.class);
+
     List<String> selectedWithoutNull = new ArrayList<String>(selected);
     for (int i = 0; i < selected.size(); i++) {
       if (Strings.isNullOrEmpty(selected.get(i))) selectedWithoutNull.remove(i);
@@ -117,6 +123,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     final List<String> where = new ArrayList<>();
     final Map<String, Object> params = new HashMap<>();
+
+    if (userPermissionFilter != null) {
+      where.add(userPermissionFilter.getQuery());
+    }
 
     where.add(
         "((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
@@ -135,36 +145,47 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<User> query = Query.of(User.class);
 
     if (!isBlank(filter)) {
-      query.filter(filter);
+      if (userPermissionFilter != null) {
+        query.filter(filter, userPermissionFilter.getParams());
+      } else {
+        query.filter(filter);
+      }
       query.bind(params);
     }
 
     final List<InternetAddress> addresses = new ArrayList<>();
-    for (User user : query.fetch(maxResult)) {
-      try {
-        if (user.getPartner() != null
-            && user.getPartner().getEmailAddress() != null
-            && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
-          final InternetAddress item =
-              new InternetAddress(
-                  user.getPartner().getEmailAddress().getAddress(), user.getFullName());
-          addresses.add(item);
-          selectedWithoutNull.add(user.getPartner().getEmailAddress().getAddress());
-        } else if (!Strings.isNullOrEmpty(user.getEmail())) {
-          final InternetAddress item = new InternetAddress(user.getEmail(), user.getFullName());
-          addresses.add(item);
-          selectedWithoutNull.add(user.getEmail());
-        }
+    if (jpaSecurity.isPermitted(JpaSecurity.CAN_READ, User.class)) {
+      for (User user : query.fetch(maxResult)) {
+        try {
+          if (user.getPartner() != null
+              && user.getPartner().getEmailAddress() != null
+              && !Strings.isNullOrEmpty(user.getPartner().getEmailAddress().getAddress())) {
+            final InternetAddress item =
+                new InternetAddress(
+                    user.getPartner().getEmailAddress().getAddress(), user.getFullName());
+            addresses.add(item);
+            selectedWithoutNull.add(user.getPartner().getEmailAddress().getAddress());
+          } else if (!Strings.isNullOrEmpty(user.getEmail())) {
+            final InternetAddress item = new InternetAddress(user.getEmail(), user.getFullName());
+            addresses.add(item);
+            selectedWithoutNull.add(user.getEmail());
+          }
 
-      } catch (UnsupportedEncodingException e) {
-        TraceBackService.trace(e);
+        } catch (UnsupportedEncodingException e) {
+          TraceBackService.trace(e);
+        }
       }
     }
 
     // Partners
+    Filter partnerPermissionFilter = jpaSecurity.getFilter(JpaSecurity.CAN_READ, Partner.class);
 
     final List<String> where2 = new ArrayList<>();
     final Map<String, Object> params2 = new HashMap<>();
+
+    if (partnerPermissionFilter != null) {
+      where2.add(partnerPermissionFilter.getQuery());
+    }
 
     where2.add("self.emailAddress is not null");
 
@@ -182,20 +203,26 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<Partner> query2 = Query.of(Partner.class);
 
     if (!isBlank(filter2)) {
-      query2.filter(filter2);
+      if (partnerPermissionFilter != null) {
+        query2.filter(filter2, partnerPermissionFilter.getParams());
+      } else {
+        query2.filter(filter2);
+      }
       query2.bind(params2);
     }
 
-    for (Partner partner : query2.fetch(maxResult)) {
-      try {
-        if (partner.getEmailAddress() != null
-            && !Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
-          final InternetAddress item =
-              new InternetAddress(partner.getEmailAddress().getAddress(), partner.getFullName());
-          addresses.add(item);
+    if (jpaSecurity.isPermitted(JpaSecurity.CAN_READ, Partner.class)) {
+      for (Partner partner : query2.fetch(maxResult)) {
+        try {
+          if (partner.getEmailAddress() != null
+              && !Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
+            final InternetAddress item =
+                new InternetAddress(partner.getEmailAddress().getAddress(), partner.getFullName());
+            addresses.add(item);
+          }
+        } catch (UnsupportedEncodingException e) {
+          TraceBackService.trace(e);
         }
-      } catch (UnsupportedEncodingException e) {
-        TraceBackService.trace(e);
       }
     }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -77,6 +78,15 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLine
    */
   public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine);
+
+  /**
+   * Update stock move lines linked to this sale order line by using estimated delivery date as date
+   * used for reservation. Do nothing if the configuration is not set to use estimated delivery
+   * date.
+   *
+   * @param saleOrderLine a sale order line managed by hibernate
+   */
+  void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
 }

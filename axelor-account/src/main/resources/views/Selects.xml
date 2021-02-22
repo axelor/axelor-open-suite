@@ -125,7 +125,7 @@
 		<option value="1">Debit - Credit</option>
 		<option value="2">Credit - Debit</option>
 	</selection>
-	
+
 	<selection name='iaccount.move.status.select'>
 		<option value='1'>New</option>
 		<option value='2'>Accounted</option>
@@ -487,5 +487,11 @@
 		<option value="creditTransfer">Credit transfer</option>
 		<option value="reportedBalance">Reported balance</option>
 	</selection>
+
+    <selection name="account.deposit.type.select">
+        <option value="1">Cheque</option>
+        <option value="2">Cash</option>
+        <option value="3">Bill of Exchange</option>
+    </selection>
 
 </object-views>

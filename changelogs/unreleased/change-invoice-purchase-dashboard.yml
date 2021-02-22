@@ -1,0 +1,8 @@
+---
+title: "Invoice Purchase dashboard changes"
+type: change
+description: |
+  Removed Unpaid Supplier's Invoices dashboard.
+  Removed Unpaid Invoice Bar from Invoice Purchase situation (tax incl.).
+  Added translation to Invoice Purchase situation (tax incl.).
+  Added Date Range feature in some dashboards.

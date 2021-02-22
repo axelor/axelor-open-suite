@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -621,11 +621,11 @@ public class ClientViewServiceImpl implements ClientViewService {
 
     Filter filter =
         new JPQLFilter(
-            "self.status = "
+            "self.status = '"
                 + ProjectTaskRepository.STATUS_NEW
-                + " AND self.typeSelect = "
+                + "' AND self.typeSelect = '"
                 + ProjectTaskRepository.TYPE_TASK
-                + " AND self.project.clientPartner.id = "
+                + "' AND self.project.clientPartner.id = "
                 + user.getPartner().getId());
 
     if (user.getActiveCompany() != null) {
@@ -645,11 +645,11 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, ProjectTask.class);
     Filter filter =
         new JPQLFilter(
-            "self.status = "
+            "self.status = '"
                 + ProjectTaskRepository.STATUS_IN_PROGRESS
-                + " AND self.typeSelect = "
+                + "' AND self.typeSelect = '"
                 + ProjectTaskRepository.TYPE_TASK
-                + " AND self.project.clientPartner.id = "
+                + "' AND self.project.clientPartner.id = "
                 + user.getPartner().getId());
     if (user.getActiveCompany() != null) {
       filter =
@@ -668,15 +668,15 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, ProjectTask.class);
     Filter filter =
         new JPQLFilter(
-            "self.status IN ("
+            "self.status IN ('"
                 + ProjectTaskRepository.STATUS_NEW
-                + ","
+                + "','"
                 + ProjectTaskRepository.STATUS_IN_PROGRESS
-                + ") AND self.project.clientPartner.id = "
+                + "') AND self.project.clientPartner.id = "
                 + user.getPartner().getId()
-                + " AND self.typeSelect = "
+                + " AND self.typeSelect = '"
                 + ProjectTaskRepository.TYPE_TASK
-                + " AND self.taskEndDate  < current_date() ");
+                + "' AND self.taskEndDate  < current_date() ");
 
     if (user.getActiveCompany() != null) {
       filter =

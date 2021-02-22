@@ -2516,7 +2516,7 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">row["unit"]</value>
+                                                    <value type="javascript">'value:'+row["unit"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2535,7 +2535,7 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["unit"]}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -3540,7 +3540,7 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">row["unit"]</value>
+                                                    <value type="javascript">'value:'+row["unit"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3559,7 +3559,7 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["unit"]}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4027">
@@ -4158,7 +4158,7 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">row["unit"]</value>
+                                                    <value type="javascript">'value:'+row["unit"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -4177,7 +4177,7 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["unit"]}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4073">
@@ -4755,7 +4755,7 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">row["unit"]</value>
+                                                    <value type="javascript">'value:'+row["unit"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -4774,7 +4774,7 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["unit"]}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4371">

@@ -30,7 +30,7 @@
      <boolean name="isJson" title="Json" />
 
      <string name="domainCondition" title="Domain" />
-     <one-to-many name="viewParams" title="View params" ref="ActionBuilderLine" orphanRemoval="true" />
+     <one-to-many name="viewParams" title="View params" ref="ActionBuilderLine"/>
      <boolean name="menuAction" />
      
      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />

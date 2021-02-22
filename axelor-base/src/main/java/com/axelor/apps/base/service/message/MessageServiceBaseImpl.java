@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,6 +44,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
@@ -53,6 +54,7 @@ import java.util.Set;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl {
 
@@ -167,6 +169,21 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
       return super.sendByEmail(message);
     }
     return message;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendSMS(Message message) throws AxelorException, IOException, JSONException {
+
+    if (Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+      return super.sendSMS(message);
+    }
+    return message;
+  }
+
+  @Override
+  protected String getSender(Message message) {
+    return message.getCompany().getCode();
   }
 
   public List<String> getEmailAddressNames(Set<EmailAddress> emailAddressSet) {

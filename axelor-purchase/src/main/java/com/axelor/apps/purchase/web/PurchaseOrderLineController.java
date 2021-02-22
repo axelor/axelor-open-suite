@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -393,5 +393,18 @@ public class PurchaseOrderLineController {
     domain += " AND " + company.getId() + " in (SELECT id FROM self.companySet)";
 
     response.setAttr("supplierPartner", "domain", domain);
+  }
+
+  public void checkDifferentSupplier(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
+
+      service.checkDifferentSupplier(purchaseOrder, purchaseOrderLine, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

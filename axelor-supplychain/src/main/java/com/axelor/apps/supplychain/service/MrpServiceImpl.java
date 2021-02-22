@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -438,6 +440,8 @@ public class MrpServiceImpl implements MrpService {
       String relatedToSelectName)
       throws AxelorException {
 
+    LocalDate initialMaturityDate = maturityDate;
+
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
       maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
@@ -469,6 +473,10 @@ public class MrpServiceImpl implements MrpService {
               stockLocation,
               null);
       if (createdmrpLine != null) {
+        createdmrpLine.setWarnDelayFromSupplier(
+            mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+                && DAYS.between(initialMaturityDate, maturityDate)
+                    < product.getSupplierDeliveryTime());
         mrpLine = mrpLineRepository.save(createdmrpLine);
       }
       mrpLine.setRelatedToSelectName(relatedToSelectName);
@@ -668,6 +676,7 @@ public class MrpServiceImpl implements MrpService {
               purchaseOrder.getStockLocation(),
               purchaseOrderLine);
       if (mrpLine != null) {
+        mrpLine.setSupplierPartner(purchaseOrder.getSupplierPartner());
         mrpLineRepository.save(mrpLine);
       }
     }
@@ -964,7 +973,7 @@ public class MrpServiceImpl implements MrpService {
                       + "AND self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
@@ -983,7 +992,7 @@ public class MrpServiceImpl implements MrpService {
                       + "self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,11 +18,13 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.repo.GroupRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;
@@ -89,8 +91,8 @@ public class ExportDbObjectService {
   public MetaFile exportObject() {
     group = Beans.get(GroupRepository.class).all().filter("self.code = 'admins'").fetchOne();
     try {
-      log.debug("Attachment dir: {}", AppSettings.get().get("file.upload.dir"));
-      String uploadDir = AppSettings.get().get("file.upload.dir");
+      log.debug("Attachment dir: {}", AppService.getFileUploadDir());
+      String uploadDir = AppService.getFileUploadDir();
       if (uploadDir == null || !new File(uploadDir).exists()) {
         return null;
       }
@@ -126,7 +128,7 @@ public class ExportDbObjectService {
 
       return metaFile;
 
-    } catch (ParserConfigurationException | SAXException | IOException e) {
+    } catch (ParserConfigurationException | SAXException | IOException | AxelorException e) {
       e.printStackTrace();
     }
     return null;

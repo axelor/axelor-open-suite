@@ -1,0 +1,7 @@
+---
+title: "ProdProcessLine.WorkCenterGroup : Feature and corrections"
+type: change
+description: |
+  Allow to create Work Center Group(not template) from Prod Process Line.
+  Allow to create, edit & remove work centers in Work Center Group from Prod Process Line.
+  Showing machine column for every Work Center Group type.

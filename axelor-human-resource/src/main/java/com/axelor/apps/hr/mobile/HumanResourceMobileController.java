@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -333,7 +333,7 @@ public class HumanResourceMobileController {
       List<Product> productList =
           Beans.get(ProductRepository.class)
               .all()
-              .filter("self.isActivity = true AND dtype = 'Product'")
+              .filter("self.isActivity = true AND self.dtype = 'Product'")
               .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();
@@ -616,7 +616,7 @@ public class HumanResourceMobileController {
           Beans.get(ProductRepository.class)
               .all()
               .filter(
-                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND dtype = 'Product'")
+                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND self.dtype = 'Product'")
               .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();

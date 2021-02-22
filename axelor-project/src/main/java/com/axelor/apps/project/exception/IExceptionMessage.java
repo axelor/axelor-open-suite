@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,4 +38,9 @@ public interface IExceptionMessage {
       "Frequency end date cannot be before task date." /*)*/;
 
   static final String PROJECT_TASK_FILL_TASK_DATE = /*$$(*/ "Please fill in task date." /*)*/;
+
+  static final String TASK_TEMPLATE_PARENT_TASK_CREATED_LOOP = /*$$(*/
+      "The parent task creates a loop in the task tree." /*)*/;
+  static final String RESOURCE_ALREADY_BOOKED_ERROR_MSG = /*$$(*/
+      "This resource is already booked for this period" /*)*/;
 }

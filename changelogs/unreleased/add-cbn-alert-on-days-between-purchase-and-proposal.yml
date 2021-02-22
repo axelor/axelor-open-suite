@@ -1,0 +1,5 @@
+title: Add CBN Alert on days between firm and proposal purchase
+type: feature
+description: |
+  New field on MRP family to define the minimum days between firm and proposal purchase 
+  before showing an alert icon on Mrp lines

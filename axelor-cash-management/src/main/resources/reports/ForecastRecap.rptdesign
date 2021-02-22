@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -152,22 +152,16 @@
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ForecastRecapLines" id="210">
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">estimated_date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">estimated_date</text-property>
-                    <text-property name="heading">estimated_date</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">title</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">title</text-property>
-                    <text-property name="heading">title</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">sum</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">sum</text-property>
                     <text-property name="heading">sum</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">estimated_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">estimated_date</text-property>
+                    <text-property name="heading">estimated_date</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -187,18 +181,13 @@
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">estimated_date</property>
-                        <property name="dataType">date</property>
+                        <property name="name">sum</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">title</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">sum</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">estimated_date</property>
+                        <property name="dataType">date</property>
                     </structure>
                 </list-property>
             </structure>
@@ -206,34 +195,35 @@
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">estimated_date</property>
-                    <property name="nativeName">estimated_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">title</property>
-                    <property name="nativeName">title</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
                     <property name="name">sum</property>
                     <property name="nativeName">sum</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">estimated_date</property>
+                    <property name="nativeName">estimated_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT ForecastRecapLine.estimated_date, MetaSelectItem.title ,SUM(ForecastRecapLine.amount)
-
-FROM management_forecast_recap_line as ForecastRecapLine
-left outer join management_forecast_recap as ForecastRecap on (ForecastRecapLine.forecast_recap = ForecastRecap.id)
-left outer join meta_select as MetaSelect on (MetaSelect.name = 'iaccount.payment.mode.in.out.select')
-left outer join meta_select_item as MetaSelectItem on (MetaSelectItem.select_id = MetaSelect.id)
-where ForecastRecap.id = ? AND MetaSelectItem.value = cast(ForecastRecapLine.type_select as varchar(10))
-group by ForecastRecapLine.estimated_date, MetaSelectItem.title]]></xml-property>
+            <xml-property name="queryText"><![CDATA[WITH forecastRecapLine
+AS
+(
+	SELECT ForecastRecapLine.estimated_date, SUM(ForecastRecapLine.amount) as amount
+	FROM management_forecast_recap_line as ForecastRecapLine
+	left outer join management_forecast_recap as ForecastRecap on (ForecastRecapLine.forecast_recap = ForecastRecap.id)
+	where ForecastRecap.id = ?
+	group by ForecastRecapLine.estimated_date
+), forecastRecapLineTotal AS
+(
+   SELECT amount, estimated_date, ROW_NUMBER() OVER(ORDER BY estimated_date) rownum
+   FROM forecastRecapLine
+) 
+SELECT (SELECT SUM(amount) FROM forecastRecapLineTotal c2 WHERE c2.rownum <= c1.rownum),
+  estimated_date
+FROM forecastRecapLineTotal c1]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
             <list-property name="columnHints">
@@ -1669,7 +1659,7 @@ where ForecastRecap.id = ?
         </Color>
         <Visible>false</Visible>
       </Outline>
-      <Visible>true</Visible>
+      <Visible>false</Visible>
       <ClientArea>
         <Outline>
           <Style>Solid</Style>
@@ -1785,7 +1775,7 @@ where ForecastRecap.id = ?
       <DataSetRepresentation>01/05/2000,02/01/2000,04/12/2000,03/12/2000,02/29/2000</DataSetRepresentation>
     </BaseSampleData>
     <OrthogonalSampleData>
-      <DataSetRepresentation>5,4,12</DataSetRepresentation>
+      <DataSetRepresentation>6,4,12,8,10</DataSetRepresentation>
       <SeriesDefinitionIndex>0</SeriesDefinitionIndex>
     </OrthogonalSampleData>
   </SampleData>
@@ -1905,6 +1895,7 @@ where ForecastRecap.id = ?
         <Query>
           <Definition>row[&quot;title&quot;]</Definition>
           <Grouping>
+            <GroupingUnit>Years</GroupingUnit>
             <GroupType>Text</GroupType>
           </Grouping>
         </Query>
@@ -2131,11 +2122,11 @@ where ForecastRecap.id = ?
             <Visible>false</Visible>
           </Label>
           <DataDefinition>
-            <Definition>if(row[&quot;title&quot;] == 'In')row[&quot;sum&quot;]
-else -row[&quot;sum&quot;]</Definition>
+            <Definition>Math.abs(row[&quot;sum&quot;]);</Definition>
             <Grouping>
+              <Enabled>true</Enabled>
               <GroupType>Text</GroupType>
-              <AggregateExpression>Sum</AggregateExpression>
+              <AggregateExpression>First</AggregateExpression>
             </Grouping>
           </DataDefinition>
           <SeriesIdentifier>Series 1</SeriesIdentifier>
@@ -2662,8 +2653,13 @@ else -row[&quot;sum&quot;]</Definition>
                             <structure>
                                 <property name="name">title</property>
                                 <text-property name="displayName">title</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["title"]</expression>
+                                <expression name="expression" type="javascript">if(row["sum"] >= 0){
+'In';
+}else{
+'Out';
+}</expression>
                                 <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                     </extended-item>
@@ -2791,7 +2787,7 @@ else -row[&quot;sum&quot;]</Definition>
                         </list-property>
                         <column id="5408"/>
                         <column id="5409"/>
-                        <column id="5426"/>
+                        <column id="5431"/>
                         <column id="5410"/>
                         <column id="5411"/>
                         <column id="5412"/>
@@ -2871,7 +2867,7 @@ else -row[&quot;sum&quot;]</Definition>
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5423">
+                                <cell id="5432">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3077,7 +3073,7 @@ else -row[&quot;sum&quot;]</Definition>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5424">
+                                <cell id="5433">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3139,7 +3135,7 @@ else -row[&quot;sum&quot;]</Definition>
                                     <data id="5399">
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">amount</property>
@@ -3158,7 +3154,7 @@ else -row[&quot;sum&quot;]</Definition>
                                     <data id="5401">
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="resultSetColumn">balance</property>
                                     </data>
@@ -3169,7 +3165,7 @@ else -row[&quot;sum&quot;]</Definition>
                             <row id="5402">
                                 <cell id="5403"/>
                                 <cell id="5404"/>
-                                <cell id="5425"/>
+                                <cell id="5434"/>
                                 <cell id="5405"/>
                                 <cell id="5406"/>
                                 <cell id="5407"/>

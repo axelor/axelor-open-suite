@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -25,7 +26,6 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.WapHistoryRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -50,13 +50,15 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       WapHistoryRepository wapHistoryRepo,
+      UnitConversionService unitConversionService,
       AppSupplychainService appSupplychainService) {
     super(
         stockLocationLineRepo,
         stockRulesService,
         stockMoveLineRepository,
         appBaseService,
-        wapHistoryRepo);
+        wapHistoryRepo,
+        unitConversionService);
     this.appSupplychainService = appSupplychainService;
   }
 
@@ -64,8 +66,6 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
   public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
       throws AxelorException {
     super.checkIfEnoughStock(stockLocation, product, qty);
-
-    AppSupplychainService appSupplychainService = Beans.get(AppSupplychainService.class);
 
     if (!appSupplychainService.isApp("supplychain")) {
       return;
@@ -92,7 +92,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
   @Override
   public BigDecimal getAvailableQty(StockLocation stockLocation, Product product) {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return super.getAvailableQty(stockLocation, product);
     }
 
@@ -114,8 +114,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
     }
 
     StockLocationLine detailStockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
+        getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
 
     BigDecimal availableQty = BigDecimal.ZERO;
 
@@ -133,7 +132,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       StockLocationLine stockLocationLine, Product product) throws AxelorException {
     stockLocationLine = super.updateLocationFromProduct(stockLocationLine, product);
 
-    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (appSupplychainService.isApp("supplychain")) {
       Beans.get(ReservedQtyService.class).updateRequestedReservedQty(stockLocationLine);
     }
 
