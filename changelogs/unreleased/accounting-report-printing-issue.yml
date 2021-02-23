@@ -1,3 +1,3 @@
 ---
-title: "Accounting report : printing issue"
+title: "Accounting reports: fix truncated company name if the name is too long."
 type: fix

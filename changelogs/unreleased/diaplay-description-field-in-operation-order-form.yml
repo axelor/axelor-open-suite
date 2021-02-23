@@ -1,5 +1,3 @@
 ---
-title: "OPERATION ORDER : display discription"
-type: feature
-description : |
-  Addition of dotted field prodProcessLine.description & prodProcessLine.objectDescriptionList
+title: "OPERATION ORDER: display related prod process line description in operation order form."
+type: change
