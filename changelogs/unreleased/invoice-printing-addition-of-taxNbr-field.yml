@@ -1,0 +1,6 @@
+--
+title: "Invoice printing : Reordering of partner taxNbr field"
+type: change
+description: |
+    Reording of partnerTaxNbr field in invoice report.
+    Default filling of partnerTaxNbr when invoice generated from mass cust stock move invoicing feature.
