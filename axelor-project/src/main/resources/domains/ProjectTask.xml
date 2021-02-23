@@ -11,6 +11,7 @@
     <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
     <date name="taskDate" title="Task date"/>
     <string name="status" title="Status" selection="project.task.status"/>
+    <string name="statusBeforeComplete" title="Last status" selection="project.task.status"/>
     <string name="priority" title="Priority" selection="project.task.priority"/>
     <date name="taskDeadline" title="Task deadline" />
     <integer name="taskDuration" title="Task duration" />
@@ -57,6 +58,7 @@
     <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile" />
     
     <many-to-many name="projectTaskTagSet" ref="com.axelor.apps.project.db.ProjectTaskTag" title="Tags"/>
+    <many-to-one name="projectTaskSection" ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
    
     <extra-code>
       

@@ -119,6 +119,12 @@
 		<view-param name="search-filters" value="project-task-category-filters"/>
 	</action-view>
 	
+	<menuitem name="project-task-section" parent="project-configurations" title="Section" action="project.task.section"/>
+	<action-view name="project.task.section" title="Project Task Section" model="com.axelor.apps.project.db.ProjectTaskSection">
+		<view type="grid" name="project-task-section-grid"/>
+		<view type="form" name="project-task-section-form"/>
+	</action-view>
+	
 	<menuitem name="project-resource-type" parent="project-configurations" title="Resource types" action="project.resource.types" if="__config__.app.getApp('project').getResourceManagement()" />
 	<action-view name="project.resource.types" title="Resource types" model="com.axelor.apps.project.db.ResourceType">
 		<view type="grid" name="resource-type-grid"/>
