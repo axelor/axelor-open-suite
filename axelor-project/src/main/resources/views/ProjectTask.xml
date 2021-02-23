@@ -95,6 +95,7 @@
         <field name="taskEndDate" colSpan="4" onChange="action-project-task-attrs-set-task-duration"/>
         <field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
        	<field name="projectTaskTagSet"  widget="tagSelect" form-view="project-task-tag-form" grid-view="project-task-tag-grid"/>
+       	 <field name="projectTaskSection" colSpan="6" form-view="project-task-section-form" grid-view="project-task-section-grid"/>
         <field name="progressSelect" widget="SelectProgress" onChange="action-project-task-update-planned-progress"/>
       </panel>
 
@@ -453,10 +454,12 @@
   </action-record>
 
   <action-record name="action-project-task-record-status-closed" model="com.axelor.apps.project.db.ProjectTask">
+  	<field name="statusBeforeComplete" expr="eval: status"/>
     <field name="status" expr="closed"/>
   </action-record>
 
   <action-record name="action-project-task-record-status-canceled" model="com.axelor.apps.project.db.ProjectTask">
+  	<field name="statusBeforeComplete" expr="eval: status"/>
     <field name="status" expr="canceled"/>
   </action-record>
 
