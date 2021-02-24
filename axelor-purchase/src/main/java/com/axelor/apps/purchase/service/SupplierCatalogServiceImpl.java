@@ -113,12 +113,15 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException {
 
+    if (product == null) {
+      return null;
+    }
+
     @SuppressWarnings("unchecked")
     List<SupplierCatalog> supplierCatalogList =
         (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
-        && product != null
         && supplierCatalogList != null) {
       SupplierCatalog resSupplierCatalog = null;
 

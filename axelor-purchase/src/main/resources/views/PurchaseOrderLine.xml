@@ -101,10 +101,10 @@
 				<field name="$isFilterOnSupplier" type="boolean" title="Filter on supplier" widget="boolean-switch" colSpan="2" if="__config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 				<field name="isTitleLine" colSpan="2" onChange="action-purchase-order-line-method-empty-line" widget="boolean-switch"/>
 				<field name="productCode" colSpan="3"/>
-				<field name="productName" colSpan="9"/>
+				<field name="productName" colSpan="9" requiredIf="!isTitleLine"/>
 				<panel name="orderDetailsPanel" colSpan="12">
 					<field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange" colSpan="3" validIf="$qtyValid != false"/>
-					<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+					<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid" requiredIf="!isTitleLine"/>
 					<panel name="pricePanel" colSpan="3">
 		          		<field name="price" hidden="true" colSpan="12" onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
 		            		<hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
@@ -166,7 +166,7 @@
 				<panel-dashlet name="POLineInvoicelinesPanel" action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" title="Business Project" if-module="axelor-business-project">
-				<field name="project" domain="self.isBusinessProject = true" title="Business Project" requiredIf="toInvoice" form-view="project-form" grid-view="project-grid" canEdit="false"/>
+				<field name="project" domain="self.isBusinessProject = true" title="Business Project" requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="project-form" grid-view="project-grid" canEdit="false"/>
                 <field name="toInvoice" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()" colSpan="3" if-module="axelor-business-project"/>
                 <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3" showTitle="false">
                 <viewer><![CDATA[
