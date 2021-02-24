@@ -54,6 +54,10 @@
 
     <string name="lostReasonStr" title="Lost reason" large="true"/>
     <string name="fullName" title="Contact name" namecolumn="true" />
+    
+    <integer name="interactions" title="Interactions"/>
+    <date name="lastContacted" title="Last contacted"/>
+    <integer name="inactiveDays" title="Inactive days"/>
 
     <extra-code>
     <![CDATA[
