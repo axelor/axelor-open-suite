@@ -29,6 +29,8 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
@@ -49,14 +51,18 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
-      BudgetSupplychainService budgetSupplychainService) {
+      BudgetSupplychainService budgetSupplychainService,
+      PurchaseOrderLineRepository purchaseOrderLineRepository,
+      PurchaseOrderLineService purchaseOrderLineService) {
     super(
         appSupplychainService,
         accountConfigService,
         appAccountService,
         appBaseService,
         purchaseOrderStockService,
-        budgetSupplychainService);
+        budgetSupplychainService,
+        purchaseOrderLineRepository,
+        purchaseOrderLineService);
   }
 
   @Override

@@ -177,5 +177,4 @@
      <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showProjectedStock"/>
   </action-method>
 
-
 </object-views>
