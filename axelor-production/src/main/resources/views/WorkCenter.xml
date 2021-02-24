@@ -15,7 +15,7 @@
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
 
-   <grid name="work-center-prod-process-line-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter" canMove="true">
+   <grid name="work-center-work-center-group-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter" canMove="true">
       <field name="name"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="machine" form-view="machine-form" grid-view="machine-grid"/>

@@ -27,7 +27,6 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.MachineToolRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
@@ -56,9 +55,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class OperationOrderWorkflowService {
@@ -279,22 +276,11 @@ public class OperationOrderWorkflowService {
 
     long duration = 0;
 
-    WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
+    WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
-    Optional<WorkCenter> workCenterOpt = Optional.empty();
-
-    if (workCenterGroup != null
-        && workCenterGroup.getWorkCenterSet() != null
-        && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenterOpt =
-          workCenterGroup.getWorkCenterSet().stream()
-              .min(Comparator.comparing(WorkCenter::getSequence));
-    }
-
-    if (!workCenterOpt.isPresent()) {
+    if (workCenter == null) {
       return 0;
     }
-    WorkCenter workCenter = workCenterOpt.get();
 
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
@@ -663,55 +649,43 @@ public class OperationOrderWorkflowService {
   public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-    WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
 
-    WorkCenter workCenter = null;
-
-    if (workCenterGroup != null
-        && workCenterGroup.getWorkCenterSet() != null
-        && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenter =
-          workCenterGroup.getWorkCenterSet().stream()
-              .min(Comparator.comparing(WorkCenter::getSequence))
-              .get();
-    }
+    WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
     long duration = 0;
 
-    if (workCenter != null) {
-      BigDecimal maxCapacityPerCycle = workCenter.getMaxCapacityPerCycle();
+    BigDecimal maxCapacityPerCycle = workCenter.getMaxCapacityPerCycle();
 
-      BigDecimal nbCycles;
-      if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-        nbCycles = qty;
-      } else {
-        nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
-      }
-
-      int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-
-      if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-          || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-        Machine machine = workCenter.getMachine();
-        if (machine == null) {
-          throw new AxelorException(
-              workCenter,
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
-              workCenter.getName());
-        }
-        duration += machine.getStartingDuration();
-        duration += machine.getEndingDuration();
-        duration +=
-            nbCycles
-                .subtract(new BigDecimal(1))
-                .multiply(new BigDecimal(machine.getSetupDuration()))
-                .longValue();
-      }
-
-      BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
-      duration += nbCycles.multiply(durationPerCycle).longValue();
+    BigDecimal nbCycles;
+    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
+      nbCycles = qty;
+    } else {
+      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
     }
+
+    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
+
+    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
+      Machine machine = workCenter.getMachine();
+      if (machine == null) {
+        throw new AxelorException(
+            workCenter,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
+            workCenter.getName());
+      }
+      duration += machine.getStartingDuration();
+      duration += machine.getEndingDuration();
+      duration +=
+          nbCycles
+              .subtract(new BigDecimal(1))
+              .multiply(new BigDecimal(machine.getSetupDuration()))
+              .longValue();
+    }
+
+    BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
+    duration += nbCycles.multiply(durationPerCycle).longValue();
 
     return duration;
   }
