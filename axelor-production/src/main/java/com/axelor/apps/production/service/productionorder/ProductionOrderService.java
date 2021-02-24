@@ -25,6 +25,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public interface ProductionOrderService {
 
@@ -77,4 +78,7 @@ public interface ProductionOrderService {
       SaleOrder saleOrder,
       int originType)
       throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet);
 }
