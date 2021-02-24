@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -56,16 +55,11 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -77,7 +71,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,8 +87,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ManufOrderRepository manufOrderRepo;
   protected ProdProductRepository prodProductRepo;
   protected ProductCompanyService productCompanyService;
-  protected BarcodeGeneratorService barcodeGeneratorService;
-  protected MetaFiles metaFiles;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -107,9 +98,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       AppProductionService appProductionService,
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
-      ProductCompanyService productCompanyService,
-      BarcodeGeneratorService barcodeGeneratorService,
-      MetaFiles metaFiles) {
+      ProductCompanyService productCompanyService) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderWorkflowService = manufOrderWorkflowService;
@@ -119,8 +108,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.manufOrderRepo = manufOrderRepo;
     this.prodProductRepo = prodProductRepo;
     this.productCompanyService = productCompanyService;
-    this.barcodeGeneratorService = barcodeGeneratorService;
-    this.metaFiles = metaFiles;
   }
 
   @Override
@@ -847,26 +834,5 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       statusList = StringTool.getIntegerList(status);
     }
     return statusList;
-  }
-
-  @Override
-  public void createBarcode(ManufOrder manufOrder) {
-    String manufOrderSeq = manufOrder.getManufOrderSeq();
-
-    try (InputStream inStream =
-        barcodeGeneratorService.createBarCode(
-            manufOrderSeq, appProductionService.getAppProduction().getBarcodeTypeConfig(), true)) {
-
-      if (inStream != null) {
-        MetaFile barcodeFile =
-            metaFiles.upload(
-                inStream, String.format("ManufOrderBarcode%d.png", manufOrder.getId()));
-        manufOrder.setBarCode(barcodeFile);
-      }
-    } catch (IOException e) {
-      TraceBackService.trace(e);
-    } catch (AxelorException e) {
-      throw new ValidationException(e.getMessage());
-    }
   }
 }

@@ -241,12 +241,4 @@ public interface ManufOrderService {
    * @return the query.
    */
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
-
-  /**
-   * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
-   * {@link ManufOrder} on the header of every page.
-   *
-   * @return
-   */
-  public void createBarcode(ManufOrder manufOrder);
 }
