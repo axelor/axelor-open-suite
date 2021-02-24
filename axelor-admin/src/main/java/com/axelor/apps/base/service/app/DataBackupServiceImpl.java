@@ -169,21 +169,26 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void updateImportId() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
     String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup'";
+        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
 
     List<MetaModel> metaModelList = metaModelRepo.all().filter(filterStr).fetch();
     metaModelList.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModelList.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
 
     for (MetaModel metaModel : metaModelList) {
-      String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter).toString() + "'";
-      String query =
-          "Update "
-              + metaModel.getName()
-              + " self SET self.importId = CONCAT(CAST(self.id as text),"
-              + currentDateTimeStr
-              + ") WHERE self.importId=null";
-      JPA.execute(query);
+      try {
+        Class.forName(metaModel.getFullName());
+        String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter).toString() + "'";
+        String query =
+            "Update "
+                + metaModel.getName()
+                + " self SET self.importId = CONCAT(CAST(self.id as text),"
+                + currentDateTimeStr
+                + ") WHERE self.importId=null";
+        JPA.execute(query);
+      } catch (ClassNotFoundException e) {
+        TraceBackService.trace(e);
+      }
     }
   }
 }
