@@ -1,3 +1,46 @@
+## [6.0.7] (2021-02-25)
+
+#### Changes
+
+* App Mobile: add production related fields.
+* Timesheet: Auto-fill Activity when using generation assistant.
+* MrpLineType: Add field of application in data init.
+* ACCOUNT CHART: Add 'tax authorized on move line' and 'tax required on move line' values in account demo data.
+* Invoice printing: Move partner tax number under external reference.
+* MANUF ORDER: Add outsourcing field on grid view.
+* Team Task invoicing: initialize default invoicing quantity to 1 instead of 0.
+* CRM - Partner: The partner reference is not displayed next to the partner name in the contact form view anymore.
+
+#### Fixed
+
+* Invoice: Fix issue where the tax number is missing when the invoice is generated from mass stock move invoicing feature.
+* Job position: add missing french translations in form.
+* Invoicing project: add missing french translations in form.
+* ABC Analysis: Add missing translation.
+* ABC Analysis: Add an alert popup for missing sequence before printing.
+* Forcast Recap Form: add missing french translation.
+* AppBase Config: Add missing french translation.
+* AppBase Config: Add timesheet reminder batch in demo data.
+* BUDGET LINE: Fix validation on 'To date' and 'From date' fields.
+* MESSAGE: fix NullPointException while generating message.
+* Employment contract: solve export employment contract NullPointerException issue.
+* PurchaseOrderLine: Fix title line being impossible to save.
+* Contract: Fix NullPointerException on clicking 'terminate' button.
+* Opportunity: Use next sequence code on copy.
+* MoveLine: fix exchange rate not being computed.
+* Employee: add missing french translations of form and report.
+* Accounting reports: fix truncated company name if the name is too long.
+* Mrp line type: add missing french translation.
+* Invoice: a product must be sellable/purchasable in order to be selected in a customer/supplier invoice line.
+* PRINT TEMPLATE: Fix export print template.
+* Job application: add missing french translations in form.
+* LeaveRequest: Block the approval when a leave request is already validated.
+* Import configuration: fix wrong title of import button in form.
+* Product Company: fix weighted average price value when lines are auto generated.
+* Vehicle: fix auto fill vehicle in vehicle service log, cost and contract popup and change french translation.
+* Training: add missing french translations in form.
+* Partner: fix database issue 'More than one row with given identifier was found' on partner save.
+
 ## [6.0.6] (2021-02-08)
 
 #### Changes
@@ -393,6 +436,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.7]: https://github.com/axelor/axelor-open-suite/compare/v6.0.6...v6.0.7
 [6.0.6]: https://github.com/axelor/axelor-open-suite/compare/v6.0.5...v6.0.6
 [6.0.5]: https://github.com/axelor/axelor-open-suite/compare/v6.0.4...v6.0.5
 [6.0.4]: https://github.com/axelor/axelor-open-suite/compare/v6.0.3...v6.0.4
