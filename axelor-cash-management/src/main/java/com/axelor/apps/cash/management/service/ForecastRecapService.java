@@ -386,7 +386,11 @@ public class ForecastRecapService {
       }
       this.createForecastRecapLine(
           invoice.getEstimatedPaymentDate(),
-          invoice.getOperationTypeSelect() == 2 || invoice.getOperationTypeSelect() == 3 ? 1 : 2,
+          invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                  || invoice.getOperationTypeSelect()
+                      == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+              ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+              : InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
           amount,
           invoice.getClass().getName(),
           invoice.getId(),
@@ -437,7 +441,8 @@ public class ForecastRecapService {
               .multiply(invoice.getCompanyExTaxTotal())
               .divide(invoice.getCompanyInTaxTotal(), 2, RoundingMode.HALF_UP);
       BigDecimal amount = invoice.getCompanyExTaxTotal().subtract(amountPaidExTax);
-      if (invoice.getOperationTypeSelect() == 2 || invoice.getOperationTypeSelect() == 3) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         if (mapConfirmed.containsKey(invoice.getEstimatedPaymentDate())) {
           mapConfirmed.put(
               invoice.getEstimatedPaymentDate(),
@@ -784,7 +789,8 @@ public class ForecastRecapService {
                   timetable.getAmount(),
                   appBaseService.getTodayDate(forecastRecap.getCompany()))
               .setScale(2, RoundingMode.HALF_UP);
-      if (timetable.getSaleOrder().getStatusSelect() == 2) {
+      if (timetable.getSaleOrder().getStatusSelect()
+          == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
         if (mapExpected.containsKey(timetable.getEstimatedDate())) {
           mapExpected.put(
               timetable.getEstimatedDate(),
@@ -832,7 +838,7 @@ public class ForecastRecapService {
         BigDecimal amountCompanyCurr =
             saleOrder.getCompanyExTaxTotal().subtract(saleOrder.getAmountInvoiced());
         if (amountCompanyCurr.compareTo(BigDecimal.ZERO) == 0) {
-          if (saleOrder.getStatusSelect() == 2) {
+          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
             if (mapExpected.containsKey(saleOrder.getExpectedRealisationDate())) {
               mapExpected.put(
                   saleOrder.getExpectedRealisationDate(),
