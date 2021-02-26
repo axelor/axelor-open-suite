@@ -1,7 +1,0 @@
----
-title: Separate ProjectTask from TeamTask
-type: change
-description : |
-   ProjectTask: TeamTask rename to ProjectTask.
-   ProjectTaskCategory: TeamTaskCategory rename to ProjectTaskCategory.
-   ProjectTaskTag: TeamTaskTag rename to ProjectTaskTag.

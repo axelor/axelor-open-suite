@@ -1,5 +1,0 @@
----
-title: "WorkCenterGroup: add model"
-type: feature
-description : |
-  When creating a work center group from the work center group model, we need to attach the model.

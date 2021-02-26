@@ -1,7 +1,0 @@
----
-title: "Budget : Addition of budget line computation button"
-type: feature
-description: |
-  Allow to compute budget lines with a click of button.
-  Filtering of those budgets having status validated and budget lines not empty from Invoices and Purchase Orders.
-

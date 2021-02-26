@@ -1,5 +1,0 @@
----
-title: "Add last purchase date to Product"
-type: change
-description: |
-  Add last purchase date to Product which will be set while validating a Purchase Order with this Product. Same logic as last purchase price.
