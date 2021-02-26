@@ -155,7 +155,8 @@ public class PrintServiceImpl implements PrintService {
     }
   }
 
-  protected String generateHtml(Print print) {
+  @Override
+  public String generateHtml(Print print) {
     StringBuilder htmlBuilder = new StringBuilder();
 
     htmlBuilder.append("<!DOCTYPE html>");

@@ -27,4 +27,6 @@ public interface PrintService {
   public Map<String, Object> generatePDF(Print print) throws AxelorException;
 
   public void attachMetaFiles(Print print, Set<MetaFile> metaFiles);
+
+  public String generateHtml(Print print);
 }

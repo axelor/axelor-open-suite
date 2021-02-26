@@ -23,7 +23,10 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PrintTemplateRepository;
 import com.axelor.apps.base.service.PrintService;
 import com.axelor.apps.base.service.PrintTemplateService;
+import com.axelor.apps.base.service.excelreport.ExcelReportService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
+import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -39,11 +42,15 @@ import com.axelor.rpc.Context;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +66,11 @@ public class PrintTemplateController {
     LOG.debug("Print template wizard call for model : {}", model);
 
     Query<PrintTemplate> printTemplateQuery =
-        Beans.get(PrintTemplateRepository.class).all().filter("self.metaModel.fullName = ?", model);
+        Beans.get(PrintTemplateRepository.class)
+            .all()
+            .filter(
+                "self.metaModel.fullName = ? AND (self.archived is null OR self.archived = false)",
+                model);
 
     try {
       long templatesCount = printTemplateQuery.count();
@@ -69,11 +80,19 @@ public class PrintTemplateController {
       if (templatesCount == 0) {
         response.setError(I18n.get("Please define a print template for the model :" + model));
       } else if (templatesCount == 1) {
-        Print print =
-            Beans.get(PrintTemplateService.class)
-                .generatePrint(context.getId(), printTemplateQuery.fetchOne());
-
-        response.setView(getPrintView(print));
+        PrintTemplate printTemplate = printTemplateQuery.fetchOne();
+        Integer inputTypeSelect = printTemplate.getInputTypeSelect();
+        if (inputTypeSelect == 1) {
+          Print print =
+              Beans.get(PrintTemplateService.class).generatePrint(context.getId(), printTemplate);
+          response.setView(getPrintView(print));
+        } else if (inputTypeSelect == 2) {
+          Map<String, Object> view =
+              createExcelTemplateReport(response, printTemplate, context.getId());
+          if (ObjectUtils.notEmpty(view)) {
+            response.setView(view);
+          }
+        }
 
       } else if (templatesCount >= 2) {
         response.setView(
@@ -102,15 +121,49 @@ public class PrintTemplateController {
     }
 
     Long objectId = Long.parseLong(context.get("_objectId").toString());
+    Integer inputTypeSelect = printTemplate.getInputTypeSelect();
 
     try {
       response.setCanClose(true);
-      Print print = Beans.get(PrintTemplateService.class).generatePrint(objectId, printTemplate);
-      response.setView(getPrintView(print));
+      if (inputTypeSelect == 1) {
+        Print print = Beans.get(PrintTemplateService.class).generatePrint(objectId, printTemplate);
+        response.setView(getPrintView(print));
+      } else if (inputTypeSelect == 2) {
+        Map<String, Object> view = createExcelTemplateReport(response, printTemplate, objectId);
+        if (ObjectUtils.notEmpty(view)) {
+          response.setView(view);
+        }
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private Map<String, Object> createExcelTemplateReport(
+      ActionResponse response, PrintTemplate printTemplate, Long objectId)
+      throws ClassNotFoundException, IOException, Exception {
+    if (ObjectUtils.isEmpty(printTemplate.getExcelTemplate())) {
+      response.setFlash("No excel template file selected");
+      return null;
+    }
+    if (!"xlsx"
+        .equals(FilenameUtils.getExtension(printTemplate.getExcelTemplate().getFileName()))) {
+      response.setFlash("Only XLSX file format is allowed");
+      return null;
+    }
+    if (StringUtils.isEmpty(printTemplate.getFormatSelect())) {
+      response.setFlash("Please select an output format type");
+      return null;
+    }
+
+    File outputFile =
+        Beans.get(ExcelReportService.class).createReport(Arrays.asList(objectId), printTemplate);
+    String fileLink = PdfTool.getFileLinkFromPdfFile(outputFile, outputFile.getName());
+
+    return ActionView.define(I18n.get(printTemplate.getMetaModel().getName()))
+        .add("html", fileLink)
+        .map();
   }
 
   private Map<String, Object> getPrintView(Print print) throws AxelorException {
