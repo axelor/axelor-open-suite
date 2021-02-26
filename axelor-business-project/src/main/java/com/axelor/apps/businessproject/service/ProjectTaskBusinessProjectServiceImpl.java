@@ -347,6 +347,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setCurrency((Currency) productCompanyService.get(product, "saleCurrency", company));
     projectTask.setQuantity(projectTask.getBudgetedTime());
 
+    projectTask.setQuantity(
+        projectTask.getBudgetedTime() == null
+                || projectTask.getBudgetedTime().compareTo(BigDecimal.ZERO) == 0
+            ? BigDecimal.ONE
+            : projectTask.getBudgetedTime());
     projectTask = this.updateDiscount(projectTask);
     projectTask = this.compute(projectTask);
     return projectTask;

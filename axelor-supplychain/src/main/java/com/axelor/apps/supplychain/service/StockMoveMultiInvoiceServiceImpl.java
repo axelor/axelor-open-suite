@@ -369,8 +369,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
           @Override
           public Invoice generate() throws AxelorException {
+            Invoice invoice = super.createInvoiceHeader();
+            invoice.setPartnerTaxNbr(partner.getTaxNbr());
 
-            return super.createInvoiceHeader();
+            return invoice;
           }
         };
 

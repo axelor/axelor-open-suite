@@ -53,6 +53,16 @@ public class AppMobileController {
     data.put(
         "isQualityAppEnable",
         appService.isApp("quality") ? appMobile.getIsQualityAppEnable() : false);
+    data.put(
+        "isStockAppEnable", appService.isApp("stock") ? appMobile.getIsStockAppEnable() : false);
+    boolean isProductionAppEnable =
+        appService.isApp("production") ? appMobile.getIsProductionAppEnable() : false;
+    data.put("isProductionAppEnable", isProductionAppEnable);
+
+    if (isProductionAppEnable) {
+      data.put(
+          "mOFilterOnStockDetailStatusSelect", appMobile.getmOFilterOnStockDetailStatusSelect());
+    }
 
     data.put("offlineRecordLimit", appMobile.getOfflineRecordLimit());
 
