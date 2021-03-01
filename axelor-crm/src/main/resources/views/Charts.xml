@@ -823,51 +823,32 @@
 
 	<chart onInit="action.base.chart.set.date.6m" name="chart.created.leads.average.duration.first.opportunity" title="Average duration between lead and first opportunity (days)">
 	   <search-fields>
-		 <field name="fromMonth" title="From Month" type="integer" selection="crm.month.name.selection" x-required="true" />
-		 <field name="toMonth" title="To Month" type="integer" selection="crm.month.name.selection" x-required="true" />
+		 <field name="fromDate" title="From Date" type="date" x-required="true" />
+		 <field name="toDate" title="To Date" type="date" x-required="true" />
 	   </search-fields>
 	   <dataset type="jpql">
 	    <![CDATA[
 
           SELECT
              AVG(DATE(op.createdOn) - DATE(ld.createdOn)) as average,
-             MONTH(ld.createdOn) as month,
-             CASE MONTH(ld.createdOn)
-               WHEN 1 THEN 'January'
-               WHEN 2 THEN 'February'
-               WHEN 3 THEN 'March'
-               WHEN 4 THEN 'April'
-               WHEN 5 THEN 'May'
-               WHEN 6 THEN 'June'
-               WHEN 7 THEN 'July'
-               WHEN 8 THEN 'August'
-               WHEN 9 THEN 'September'
-               WHEN 10 THEN 'October'
-               WHEN 11 THEN 'November'
-               WHEN 12 THEN 'December'
-             ELSE ''
-             END as month_name
-             
+             to_char(ld.createdOn,'MM-yyyy') as title
           FROM
              Lead ld
           INNER JOIN
              ld.opportunitiesList op
           WHERE
-             MONTH(ld.createdOn) BETWEEN :fromMonth AND :toMonth
+             DATE(ld.createdOn) BETWEEN DATE(:fromDate) AND DATE(:toDate)
              AND NOT EXISTS (
                      FROM 
                        ld.opportunitiesList op2
                      WHERE
                        op2 != op
-                       AND op2.createdOn < op.createdOn )
-                       
-          GROUP BY MONTH(ld.createdOn) 
-          ORDER BY MONTH(ld.createdOn) 
-          
-                       		
+                       AND op2.createdOn < op.createdOn)
+          GROUP BY to_char(ld.createdOn,'MM-yyyy') 
+          ORDER BY to_char(ld.createdOn,'MM-yyyy')      		
 		]]>
 	   </dataset>
-	   <category key="month_name" type="text" />
+	   <category key="title" type="text" title="Month"/>
 				<series key="average" type="bar" />
 	</chart>
 
