@@ -34,14 +34,7 @@
     	<panel-tabs name="mainPanelTab">
 			<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" title="To consume products" editable="true" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
 				<panel name="descriptionPanel" title="Descriptions">
-					<field name="objectDescriptionList" colSpan="12">
-						<editor x-layout="table" x-show-on-new="false" x-viewer="true">
-							<panel name="mainPanel" colSpan="12">
-								<field name="image" colSpan="3" canNew="true" widget="Image"/>
-								<field name="description" widget="html" colSpan="9"/>
-							</panel>
-						</editor>
-					</field>
+					<field name="objectDescriptionList" form-view="object-description-form" grid-view="object-description-grid" colSpan="12"/>
 				</panel>
     	</panel-tabs>
     	        

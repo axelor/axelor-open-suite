@@ -4,7 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="object-description-grid" canMove="true" title="Descriptions" model="com.axelor.apps.production.db.ObjectDescription" orderBy="sequence">
-    	<field name="description"/>
+    	<field name="image" widget="Image"/>
+    	<field name="description" widget="html"/>
     </grid>
     
     <form name="object-description-form" title="Description" model="com.axelor.apps.production.db.ObjectDescription" width="large">
