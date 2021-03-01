@@ -71,8 +71,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   protected AppSupplychain appSupplychain;
   protected SaleOrderStockService saleOrderStockService;
-  protected SaleOrderRepository saleOrderRepository;
-  protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -83,9 +81,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       AppSupplychainService appSupplychainService,
-      SaleOrderStockService saleOrderStockService,
-      SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderStockService saleOrderStockService) {
     super(
         saleOrderLineService,
         appBaseService,
@@ -97,8 +93,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.saleOrderStockService = saleOrderStockService;
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.saleOrderStockService = saleOrderStockService;
-    this.saleOrderRepository = saleOrderRepository;
-    this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -342,7 +336,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     for (SaleOrderLine lineToRemove : linesToRemove) {
       saleOrderLines.remove(lineToRemove);
       if (lineToRemove.getId() != null) {
-        saleOrderLineRepository.remove(lineToRemove);
+        saleOrderLineRepo.remove(lineToRemove);
       }
     }
     saleOrder.setSaleOrderLineList(saleOrderLines);
