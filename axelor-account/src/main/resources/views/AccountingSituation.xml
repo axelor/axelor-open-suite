@@ -15,7 +15,7 @@
 		<field name="usedCredit"/>
 	</grid>
 	
-	<grid name="accounting-situation-pfp-partner-grid" title="Suppliers" model="com.axelor.apps.account.db.AccountingSituation">
+	<grid name="accounting-situation-pfp-partner-grid" canNew="false" title="Suppliers" model="com.axelor.apps.account.db.AccountingSituation">
     		<field name="partner.partnerSeq"/>
     		<field name="partner.simpleFullName"/>
 		<field name="partner.fixedPhone"/>
