@@ -77,6 +77,8 @@
 		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="scale" for="cumulativeQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="scale" for="minQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="idealQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="reOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 
     <action-attrs name="action-mrp-line-attrs-domain-supplier-partner">
