@@ -291,16 +291,6 @@
 		<view type="form" name="debt-recovery-method-form"/>
 	</action-view>
 
-	<menuitem name="debt-recovery-root-conf-debt-recovery-level"
-		parent="debt-recovery-root-conf" title="Debt recovery levels"
-		action="debt.recovery.root.conf.debt.recovery.level" />
-
-	<action-view name="debt.recovery.root.conf.debt.recovery.level"
-		title="Debt recovery levels" model="com.axelor.apps.account.db.DebtRecoveryLevel" >
-		<view type="grid" name="debt-recovery-level-grid"/>
-		<view type="form" name="debt-recovery-level-form"/>
-	</action-view>
-	
 	<menuitem name="debt-recovery-root-conf-factor"
 		parent="debt-recovery-root-conf" title="Factor"
 		action="debt.recovery.root.conf.factor" />
