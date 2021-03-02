@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "Add on catalog",,,
+"All my invoices",,,
 "Allow supplier to create products",,,
 "App Supplier Portal",,,
 "Awaiting invoice",,,
@@ -7,7 +8,6 @@
 "Catalog","Catalogar",,
 "Code","Código",,
 "Create new product",,,
-"Deliveries","Entregas",,
 "Deliveries to prepare","Entregas para preparar",,
 "Delivery","Entrega",,
 "Description","Descripción",,
@@ -29,7 +29,7 @@
 "My space","Mi espacio",,
 "Name","Nombre",,
 "Next delivery","Próxima entrega",,
-"Open view",,,
+"None",,,
 "Order","Orden",,
 "Orders",,,
 "Overdue invoices","Facturas vencidas",,
