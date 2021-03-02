@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-    <grid name="payer-quality-config-line-grid" title="Payer quality configuration lines" model="com.axelor.apps.account.db.PayerQualityConfigLine">
+    <grid name="payer-quality-config-line-grid" title="Payer quality configuration lines" model="com.axelor.apps.account.db.PayerQualityConfigLine" canMove="true">
         <field name="name"/>
         <field name="burden"/>
         <field name="description"/>
@@ -12,7 +12,6 @@
     <form name="payer-quality-config-line-form" title="Payer quality configuration line" model="com.axelor.apps.account.db.PayerQualityConfigLine"  >
         <panel name="mainPanel" >
         <field name="incidentTypeSelect"/>
-        <field name="debtRecoveryLevel" form-view="debt-recovery-level-form" grid-view="debt-recovery-level-grid"/>
         <field name="rejectType"/>
         <field name="name"/>
         <field name="burden"/>

@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.debtrecovery;
 
 import com.axelor.apps.account.db.DebtRecoveryHistory;
-import com.axelor.apps.account.db.DebtRecoveryLevel;
 import com.axelor.apps.account.db.DebtRecoveryMethodLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayerQualityConfigLine;
@@ -117,11 +116,11 @@ public class PayerQualityService {
   public BigDecimal getPayerQualityNote(
       DebtRecoveryHistory debtRecoveryHistory,
       List<PayerQualityConfigLine> payerQualityConfigLineList) {
-    DebtRecoveryLevel debtRecoveryLevel = this.getDebtRecoveryLevel(debtRecoveryHistory);
+    Integer debtRecoveryLevel = this.getDebtRecoveryLevel(debtRecoveryHistory);
     if (debtRecoveryLevel != null) {
       for (PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList) {
         if (payerQualityConfigLine.getIncidentTypeSelect() == 0
-            && payerQualityConfigLine.getDebtRecoveryLevel().equals(debtRecoveryLevel)) {
+            && payerQualityConfigLine.getSequence() == debtRecoveryLevel) {
           return payerQualityConfigLine.getBurden();
         }
       }
@@ -140,7 +139,7 @@ public class PayerQualityService {
     return BigDecimal.ZERO;
   }
 
-  public DebtRecoveryLevel getDebtRecoveryLevel(DebtRecoveryHistory debtRecoveryHistory) {
+  public Integer getDebtRecoveryLevel(DebtRecoveryHistory debtRecoveryHistory) {
     DebtRecoveryMethodLine debtRecoveryMethodLine = null;
 
     if (debtRecoveryHistory.getDebtRecoveryDate() != null) {
@@ -149,7 +148,7 @@ public class PayerQualityService {
     }
 
     if (debtRecoveryMethodLine != null) {
-      return debtRecoveryMethodLine.getDebtRecoveryLevel();
+      return debtRecoveryMethodLine.getSequence();
     } else {
       return null;
     }

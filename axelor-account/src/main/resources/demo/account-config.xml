@@ -85,8 +85,6 @@
 		</bind>
 	</input>
 	
-	<input file="account_debtRecoveryLevel.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryLevel" search="self.name = :name"/>
-	
 	<input file="account_debtRecoveryMethod.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryMethod" search="self.code = :code"/>
 	
 	<input file="account_debtRecoveryMethodLine.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryMethodLine" />

@@ -119,7 +119,7 @@ public class DebtRecoveryActionService {
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
-          debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
+          debtRecoveryMethodLine.getSequence());
 
     } else {
 
@@ -217,7 +217,7 @@ public class DebtRecoveryActionService {
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
-          debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
+          debtRecoveryMethodLine.getSequence());
 
     } else {
 
