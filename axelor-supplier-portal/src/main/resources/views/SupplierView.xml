@@ -34,7 +34,7 @@
 				<panel name="shipPanel" title="Delivery" if-module="axelor-stock" itemSpan="12" >
 					<button name="$lastDelivery" title="Last delivery" width="190px" widget="info-button" onClick="action-method-supplier-view-get-last-delivery"/>
 	                <button name="$nextDelivery" title="Next delivery" width="190px" widget="info-button" onClick="action-method-supplier-view-get-next-delivery"/>
-	                <button name="$deliveriesToPrepare" title="Deliveries" width="190px" widget="info-button" onClick="action-method-supplier-view-get-delieveries-to-prepare"/>
+	                <button name="$deliveriesToPrepare" title="Deliveries to prepare" width="190px" widget="info-button" onClick="action-method-supplier-view-get-delieveries-to-prepare"/>
 				</panel>
 			</panel>
 		</panel>
