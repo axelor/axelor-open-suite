@@ -418,7 +418,7 @@
 	
 	<form name="user-select-wizard-form" title="Select Users"  model="com.axelor.apps.base.db.Wizard">
 		<panel name="mainPanel">
-			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false"/>
+			<field name="userSet" title="Users" type="many-to-many" colSpan="12" target="com.axelor.auth.db.User" canNew="false" onSelect="action-project-gantt-user-wizard-user-domain"/>
 			<button name="ganttBtn" title="Open gantt" onClick="action-wizard-validate-user-select,action-open-user-gantt,close" colSpan="3"  />
 		</panel>
 	</form>
@@ -835,6 +835,10 @@
 		<view type="form" name="invoice-form"/>
 		<domain>self.contract.project.id = :_id</domain>
 	</action-view>
+	
+	<action-attrs name="action-project-gantt-user-wizard-user-domain">
+	   <attribute name="domain" expr="eval:&quot;self.id in (${([0]+__repo__(Project).all().fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
+	</action-attrs>
 
 	<search-filters name="project-filters" model="com.axelor.apps.project.db.Project" title="Project filters">
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
