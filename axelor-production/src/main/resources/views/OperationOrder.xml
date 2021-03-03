@@ -110,7 +110,7 @@
 			<field name="machineTool" domain="self.machine = machine" form-view="machine-tool-form" grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4" if="__config__.app.getApp('production').getEnableToolManagement()"/>
 			<panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
 			<field name="prodProcessLine.description" colSpan="12"/>
-			<field name="prodProcessLine.objectDescriptionList" colSpan="12"/>
+			<field name="prodProcessLine.objectDescriptionList" colSpan="12" height="20"/>
 		</panel>
 
 		<panel name="stockMovesPanel" hidden="true" title="Stock moves" colSpan="12" readonlyIf="statusSelect == 6">
