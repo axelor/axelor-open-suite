@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -4114,12 +4114,6 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="width">10%</property>
                         </column>
                         <column id="4615">
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
-                                </structure>
-                            </list-property>
                             <property name="width">10%</property>
                         </column>
                         <column id="4616">
