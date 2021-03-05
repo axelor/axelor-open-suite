@@ -16,7 +16,7 @@
 	    <panel name="packLinePanel">
 	    	<field name="product" onSelect="action-pack-line-attrs-domain-product" onChange="action-pack-line-method-get-product-information" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	    	<field name="price"/>
-	    	<field name="productName"/>
+	    	<field name="productName" requiredIf="typeSelect != 0"/>
 	    	<field name="quantity"/>
 	    	<field name="typeSelect" onChange="action-pack-line-group-type-select-onchange"/>
 	    	<field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
