@@ -76,4 +76,6 @@ public interface ConfiguratorCreatorService {
    * @param creator
    */
   void activate(ConfiguratorCreator creator);
+
+  void setFields(ConfiguratorCreator creator);
 }

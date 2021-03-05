@@ -69,4 +69,12 @@ public class ConfiguratorCreatorController {
       TraceBackService.trace(e);
     }
   }
+
+  public void setFields(ActionRequest request, ActionResponse response) {
+
+    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
+    Beans.get(ConfiguratorCreatorService.class).setFields(creator);
+    response.setValue("attributes", creator.getAttributes());
+  }
 }

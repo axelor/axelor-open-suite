@@ -510,4 +510,15 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     field.setContextFieldValue(creator.getId().toString());
     field.setContextFieldTitle(creator.getName());
   }
+
+  @Override
+  public void setFields(ConfiguratorCreator creator) {
+
+    String fieldName = "configuratorCreator";
+
+    for (MetaJsonField field : creator.getAttributes()) {
+      field.setContextField(fieldName);
+      field.setContextFieldValue(creator.getId().toString());
+    }
+  }
 }
