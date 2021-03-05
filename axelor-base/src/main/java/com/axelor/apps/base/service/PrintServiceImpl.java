@@ -34,6 +34,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -77,7 +78,7 @@ public class PrintServiceImpl implements PrintService {
 
   @Override
   @Transactional
-  public Map<String, Object> generatePDF(Print print) throws AxelorException {
+  public File generatePDF(Print print) throws AxelorException {
     try {
       print = printRepo.find(print.getId());
       String html = generateHtml(print);
@@ -109,10 +110,6 @@ public class PrintServiceImpl implements PrintService {
       MetaFile metaFile = metaFiles.upload(pdfInputStream, documentName);
       File file = MetaFiles.getPath(metaFile).toFile();
 
-      String fileLink =
-          PdfTool.getFileLinkFromPdfFile(
-              PdfTool.printCopiesToFile(file, 1), metaFile.getFileName());
-
       if (ObjectUtils.notEmpty(file)
           && file.exists()
           && (print.getAttach() || StringUtils.notEmpty(print.getMetaFileField()))) {
@@ -136,10 +133,30 @@ public class PrintServiceImpl implements PrintService {
           generatePDF(subPrint);
         }
       }
-      return ActionView.define(documentName).add("html", fileLink).map();
+      return file;
     } catch (IOException | ClassNotFoundException e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
     }
+  }
+
+  @Override
+  public Map<String, Object> getStringTemplateView(Print print)
+      throws AxelorException, IOException {
+    File pdfFile = this.generatePDF(print);
+    MetaFile metaFile =
+        Beans.get(MetaFileRepository.class)
+            .all()
+            .filter("self.filePath = ?1", pdfFile.getName())
+            .fetchOne();
+    String fileLink =
+        PdfTool.getFileLinkFromPdfFile(
+            PdfTool.printCopiesToFile(pdfFile, 1), metaFile.getFileName());
+    String documentName =
+        (StringUtils.notEmpty(print.getDocumentName()) ? print.getDocumentName() : "")
+            + "-"
+            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+            + FILE_EXTENSION_PDF;
+    return ActionView.define(documentName).add("html", fileLink).map();
   }
 
   protected void saveMetaFileInModel(

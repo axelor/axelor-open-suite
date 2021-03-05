@@ -107,7 +107,7 @@ public class ExcelReportDataMapService {
       throws ClassNotFoundException, AxelorException, IOException {
     // Set global variables
     this.print =
-        Beans.get(PrintTemplateService.class).generatePrint(objectIds.get(0), printTemplate);
+        Beans.get(PrintTemplateService.class).getTemplatePrint(objectIds.get(0), printTemplate);
     if (ObjectUtils.notEmpty(printTemplate.getReportQueryBuilderList())) {
       this.reportQueryBuilderList = new ArrayList<>(printTemplate.getReportQueryBuilderList());
     }
