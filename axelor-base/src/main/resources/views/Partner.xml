@@ -1238,13 +1238,6 @@
 		<field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
 	</action-record>
 
-	<action-record name="action-partner-record-set-positive-balance"
-		model="com.axelor.apps.base.db.Partner">
-		<field name="$positiveBalanceBtn" expr="eval: $balance &lt; 0 ? $balance * -1 : $balance"
-			if="$balance != null" />
-		<field name="$positiveBalanceBtn" expr="eval: 0" if="$balance == null" />
-	</action-record>
-
 	<action-record name="action-partner-record-employee"
 		model="com.axelor.apps.base.db.Partner">
 		<field name="isEmployee" expr="eval: false" if="partnerTypeSelect == 1" />
@@ -1258,11 +1251,6 @@
 
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
 		<field name="partnerTypeSelect" expr="eval: __user__.activeCompany?.defaultPartnerTypeSelect"/>
-	</action-record>
-
-	<action-record name="action-partner-record-partner-type-select"
-		model="com.axelor.apps.base.db.Partner">
-		<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}" />
 	</action-record>
 
 	<action-record name="action-partner-record-simple-and-full-name"

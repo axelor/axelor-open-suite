@@ -840,50 +840,6 @@
 		<context name="closed_status" expr="#{['closed', 'canceled']}" />
 	</action-view>
 
-	<action-view id="base.team.tasks.open" name="team.tasks.open"
-		model="com.axelor.team.db.TeamTask" title="My open tasks">
-		<view name="team-task-grid" type="grid" />
-		<view name="team-task-calendar" type="calendar" />
-		<view name="team-task-form" type="form" />
-		<view-param name="details-view" value="true" />
-		<domain>self.assignedTo = :__user__ AND self.status NOT IN :closed_status</domain>
-		<context name="closed_status" expr="#{['closed', 'canceled']}" />
-	</action-view>
-
-	<action-view id="base.team.tasks.assigned" name="team.tasks.assigned"
-		model="com.axelor.team.db.TeamTask" title="My tasks">
-		<view name="team-task-grid" type="grid" />
-		<view name="team-task-calendar" type="calendar" />
-		<view name="team-task-form" type="form" />
-		<view-param name="search-filters" value="task-filters" />
-		<view-param name="details-view" value="true" />
-		<domain>self.assignedTo = :__user__ AND self.typeSelect = :_typeSelect</domain>
-		<context name="_typeSelect"
-			expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK" />
-	</action-view>
-
-	<action-view id="base.team.tasks.created" name="team.tasks.created"
-		model="com.axelor.team.db.TeamTask" title="Tasks created by me">
-		<view name="team-task-grid" type="grid" />
-		<view name="team-task-calendar" type="calendar" />
-		<view name="team-task-form" type="form" />
-		<view-param name="details-view" value="true" />
-		<domain>self.createdBy = :__user__ AND self.status NOT IN :closed_status</domain>
-		<context name="closed_status" expr="#{['closed', 'canceled']}" />
-	</action-view>
-
-	<action-view name="team.tasks.all" model="com.axelor.team.db.TeamTask"
-		title="All tasks">
-		<view name="team-task-grid" type="grid" />
-		<view name="team-task-calendar" type="calendar" />
-		<view name="team-task-form" type="form" />
-		<view-param name="search-filters" value="task-filters" />
-		<view-param name="details-view" value="true" />
-		<domain>self.typeSelect = :_typeSelect</domain>
-		<context name="_typeSelect"
-			expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK" />
-	</action-view>
-
 	<menuitem title="Roles" name="referential-conf-partner-roles"
 		parent="referential-conf" action="referential.conf.partner.roles" />
 
@@ -912,7 +868,7 @@
     <domain>self.assignedTo = :__user__ AND self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
 	</action-view>
-	
+
 	<action-view id="base.team.tasks.created" name="team.tasks.created" model="com.axelor.team.db.TeamTask" title="Tasks created by me">
 	  <view name="team-task-grid" type="grid"/>
 	  <view name="team-task-calendar" type="calendar"/>
