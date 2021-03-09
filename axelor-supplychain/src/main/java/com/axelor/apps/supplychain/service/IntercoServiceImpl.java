@@ -91,7 +91,6 @@ public class IntercoServiceImpl implements IntercoService {
             purchaseOrder.getDeliveryDate(),
             null,
             null,
-            purchaseOrder.getOrderDate(),
             purchaseOrder.getPriceList(),
             purchaseOrder.getCompany().getPartner(),
             null);
