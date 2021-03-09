@@ -358,9 +358,9 @@ public class PurchaseOrderLineController {
   public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
-    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-    if (purchaseOrder == null) {
-      purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    if (purchaseOrder.getId() != null) {
+      purchaseOrder = purchaseOrderLine.getPurchaseOrder();
     }
     Company company = purchaseOrder.getCompany();
 

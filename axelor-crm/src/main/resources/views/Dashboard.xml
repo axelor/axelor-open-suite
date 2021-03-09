@@ -166,7 +166,7 @@
 		<dashlet action="dashlet.opportunities.byStage.byType" height="350" />
 		<dashlet action="dashlet.opportunities.won.by.partner" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.won.by.leadsource" height="350" />
-		<dashlet action="dashlet.opportunities.won.by.saleman" height="350" />
+		<dashlet action="dashlet.opportunities.won.by.saleman" colSpan="12" height="350" />
 		<dashlet action="dashlet.opportunities.by.origin.by.stage" height="350" />
 		<dashlet action="dashlet.opportunities.recent.opps" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.top.deals" height="350" canSearch="true"/>
@@ -186,7 +186,6 @@
 		<dashlet action="dashlet.unassigned.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.source" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.saletage" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.by.saletage.funnel" height="350" canSearch="true"/>
 	</dashboard>
 	
 	<action-view name="dashlet.opportunities.by.source" title="Chart">
@@ -379,8 +378,8 @@
 	</dashboard>
 	
 	<dashboard title="Event monitoring" name="crm.event.salesman"  >
-		<dashlet action="dashlet.events.by.team" height="350" canSearch="true" />
-		<dashlet action="dashlet.events.by.salesman" height="350" canSearch="true" />
+		<dashlet action="dashlet.events.by.team" colSpan="12" height="350" canSearch="true" />
+		<dashlet action="dashlet.events.by.salesman" colSpan="12" height="350" canSearch="true" />
 	</dashboard>
 
 	<action-view name="dashlet.calls.types.by.user" title="Calls type by user">
