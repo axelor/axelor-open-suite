@@ -136,5 +136,11 @@
 		<view type="grid" name="resource-grid" />
 		<view type="form" name="resource-form" />
 	</action-view>
+	
+	<menuitem name="project-tags" title="Tags" parent="project-configurations" action="project.tags"/>
+	<action-view name="project.tags" title="Tags" model="com.axelor.apps.project.db.ProjectTaskTag">
+		<view type="grid" name="project-task-tag-grid" />
+		<view type="form" name="project-task-tag-form" />
+	</action-view>
 
 </object-views>
