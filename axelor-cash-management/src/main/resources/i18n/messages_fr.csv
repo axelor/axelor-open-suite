@@ -149,6 +149,7 @@
 "To","À",,
 "Type",,,
 "Update","Mise à jour",,
+"Value %s is not supported for forecast recap line type.","La valeur %s correspondant au type d'encours n'est pas gérée.",,
 "Worst","Pire cas",,
 "XLS",,,
 "value:Cash management","Cash management",,

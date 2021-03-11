@@ -50,16 +50,20 @@ public class ForecastRecapController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  public void populate(ActionRequest request, ActionResponse response) throws AxelorException {
-    ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
-    if (forecastRecap.getCompany() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.FORECAST_COMPANY));
+  public void populate(ActionRequest request, ActionResponse response) {
+    try {
+      ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
+      if (forecastRecap.getCompany() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FORECAST_COMPANY));
+      }
+      Beans.get(ForecastRecapService.class)
+          .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    Beans.get(ForecastRecapService.class)
-        .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
-    response.setReload(true);
   }
 
   public void fillStartingBalance(ActionRequest request, ActionResponse response) {
