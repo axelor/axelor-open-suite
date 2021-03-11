@@ -634,7 +634,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     title += "-" + forecastRecap.getForecastRecapSeq();
 
     return ReportFactory.createReport(IReport.FORECAST_RECAP, title + "-${date}")
-        .addParam("ForecastRecapId", forecastRecap.getId().toString())
+        .addParam("ForecastRecapId", forecastRecap.getId())
         .addParam(
             "Timezone",
             forecastRecap.getCompany() != null ? forecastRecap.getCompany().getTimezone() : null)

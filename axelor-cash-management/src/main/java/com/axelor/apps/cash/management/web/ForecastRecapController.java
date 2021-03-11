@@ -90,17 +90,22 @@ public class ForecastRecapController {
   }
 
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-    Context context = request.getContext();
-    Long forecastRecapId = new Long(context.get("_forecastRecapId").toString());
-    String reportType = (String) context.get("reportTypeSelect");
-    ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(forecastRecapId);
+    try {
 
-    String fileLink =
-        Beans.get(ForecastRecapService.class).getForecastRecapFileLink(forecastRecap, reportType);
-    String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
-    title += "-" + forecastRecap.getForecastRecapSeq();
-    logger.debug("Printing " + title);
-    response.setView(ActionView.define(title).add("html", fileLink).map());
-    response.setCanClose(true);
+      Context context = request.getContext();
+      Long forecastRecapId = new Long(context.get("_forecastRecapId").toString());
+      String reportType = (String) context.get("reportTypeSelect");
+      ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(forecastRecapId);
+
+      String fileLink =
+          Beans.get(ForecastRecapService.class).getForecastRecapFileLink(forecastRecap, reportType);
+      String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
+      title += "-" + forecastRecap.getForecastRecapSeq();
+      logger.debug("Printing {}", title);
+      response.setView(ActionView.define(title).add("html", fileLink).map());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

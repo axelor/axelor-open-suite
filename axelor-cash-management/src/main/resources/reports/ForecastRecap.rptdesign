@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1871,7 +1871,9 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
       <SeriesDefinitionIndex>0</SeriesDefinitionIndex>
     </OrthogonalSampleData>
   </SampleData>
-  <Interactivity/>
+  <Interactivity>
+    <LegendBehavior>None</LegendBehavior>
+  </Interactivity>
   <EmptyMessage>
     <Caption>
       <Value>This chart contains no data.</Value>
@@ -1985,7 +1987,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
       <TitlePosition>Left</TitlePosition>
       <SeriesDefinitions>
         <Query>
-          <Definition>row[&quot;title&quot;]</Definition>
+          <Definition>row[&quot;balance&quot;] &lt;0</Definition>
           <Grouping>
             <GroupingUnit>Years</GroupingUnit>
             <GroupType>Text</GroupType>
@@ -2242,10 +2244,6 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
           </Triggers>
           <Riser>Rectangle</Riser>
         </Series>
-        <Grouping>
-          <GroupType>Text</GroupType>
-          <AggregateExpression>Sum</AggregateExpression>
-        </Grouping>
       </SeriesDefinitions>
       <Orientation>Vertical</Orientation>
       <LineAttributes>
@@ -2346,9 +2344,6 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
       </Scale>
       <Origin>
         <Type>Min</Type>
-        <Value xsi:type="data:NumberDataElement">
-          <Value>0.0</Value>
-        </Value>
       </Origin>
       <PrimaryAxis>true</PrimaryAxis>
       <Percent>false</Percent>
@@ -2603,13 +2598,13 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
       </Series>
       <Grouping>
         <Enabled>true</Enabled>
-        <GroupingUnit>Years</GroupingUnit>
+        <GroupingUnit>Days</GroupingUnit>
         <GroupType>DateTime</GroupType>
-        <AggregateExpression>Sum</AggregateExpression>
+        <AggregateExpression>First</AggregateExpression>
       </Grouping>
       <Sorting>Ascending</Sorting>
       <SortKey>
-        <Definition>row[&quot;estimated_date&quot;]</Definition>
+        <Definition>row[&quot;estimateddate&quot;]</Definition>
       </SortKey>
     </SeriesDefinitions>
     <Orientation>Horizontal</Orientation>
@@ -2710,7 +2705,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
       <MinorGridsPerUnit>5</MinorGridsPerUnit>
     </Scale>
     <Origin>
-      <Type>Min</Type>
+      <Type>Value</Type>
       <Value xsi:type="data:NumberDataElement">
         <Value>0.0</Value>
       </Value>
@@ -2729,12 +2724,13 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
       <Type>None</Type>
     </Angles>
   </Rotation>
+  <ReverseCategory>false</ReverseCategory>
 </model:ChartWithAxes>
 ]]></xml-property>
                         <property name="outputFormat">SVG</property>
                         <property name="inheritColumns">false</property>
                         <property name="height">2.8020833333333335in</property>
-                        <property name="width">7.895833333333333in</property>
+                        <property name="width">10.34375in</property>
                         <structure name="toc"/>
                         <property name="dataSet">ChartDS</property>
                         <list-property name="boundDataColumns">
