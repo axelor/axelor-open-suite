@@ -74,8 +74,9 @@
 				<field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid" colSpan="12"/>
 			</panel>
 			<panel name="stepMainPanel" showIf="stepStatusSelect == 3" colSpan="12">
- 	        	<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
+ 	        	<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" readonlyIf="employee.contactPartner.id == partner.id"/>
 	        	<button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
+	            <field name="employee.contactPartner" hidden="true"/>
         	</panel>
     		<panel name="stepActivationPanel" showIf="stepStatusSelect == 4" colSpan="12">
     			<field name="activateOn" validIf="!activateOn || (activateOn &amp;&amp; !expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
@@ -87,7 +88,7 @@
 			<field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<!--	<field name="timesheetPeriodConfig"/> -->
 			<field name="workshopStockLocation" onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
-			<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
+			<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" readonlyIf="employee.contactPartner.id == partner.id"/>
 			<button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
 		</panel>
 		<panel name="testingPanel" title="Testing" sidebar="true" hidden="true" showIf="stepStatusSelect == 5">
