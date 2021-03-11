@@ -98,9 +98,9 @@ public class KilometricService {
   public KilometricLog createKilometricLog(Employee employee, BigDecimal distance, Year year) {
 
     KilometricLog log = new KilometricLog();
-    log.setEmployee(employee);
     log.setDistanceTravelled(distance);
     log.setYear(year);
+    employee.addKilometricLogListItem(log);
     return log;
   }
 
