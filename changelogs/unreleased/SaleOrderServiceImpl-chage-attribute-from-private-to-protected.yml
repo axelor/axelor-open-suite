@@ -1,0 +1,3 @@
+---
+title: "SaleOrderServiceImpl - Move attribute from private to protected"
+type: change
