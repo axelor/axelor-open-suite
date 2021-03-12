@@ -123,12 +123,12 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
     purchaseOrder.setStockLocation(stockLocation);
 
-    purchaseOrder.setPaymentMode(supplierPartner.getInPaymentMode());
+    purchaseOrder.setPaymentMode(supplierPartner.getOutPaymentMode());
     purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
 
     if (purchaseOrder.getPaymentMode() == null) {
       purchaseOrder.setPaymentMode(
-          this.accountConfigService.getAccountConfig(company).getInPaymentMode());
+          this.accountConfigService.getAccountConfig(company).getOutPaymentMode());
     }
 
     if (purchaseOrder.getPaymentCondition() == null) {
