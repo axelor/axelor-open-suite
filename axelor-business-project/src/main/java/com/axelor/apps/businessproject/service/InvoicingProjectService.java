@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.util.InvoiceLineComparator;
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -39,6 +40,7 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -89,6 +91,10 @@ public class InvoicingProjectService {
   @Inject protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
+
+  @Inject protected AppBusinessProjectService appBusinessProjectService;
+
+  @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -310,6 +316,11 @@ public class InvoicingProjectService {
   }
 
   public void setLines(InvoicingProject invoicingProject, Project project, int counter) {
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    if (appBusinessProject.getAutomaticInvoicing()) {
+      projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
+      timesheetLineBusinessService.timsheetLineInvoicing(project);
+    }
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
       return;

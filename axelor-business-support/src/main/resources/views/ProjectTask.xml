@@ -9,7 +9,7 @@
 		<field name="status"/>
 		<field name="progressSelect" widget="SelectProgress"/>
 		<field name="projInvTypeSelect"/>
-		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-project-task-method-update-to-invoice"/>
+		<button name="updateToInvoiceBtn" title="Update to invoice" if="__config__.app.getApp('business-project').automaticInvoicing" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-project-task-method-update-to-invoice"/>
 	</grid>
 
 	<grid name="project-task-client-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" orderBy="taskDate">
