@@ -73,4 +73,6 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_EDIT_ORDER_NOTIFY = /*$$(*/
       "At least one sale order line has a stock move with availability request." /*)*/;
+
+  static final String COPY = /*$$(*/ "copy" /*)*/;
 }

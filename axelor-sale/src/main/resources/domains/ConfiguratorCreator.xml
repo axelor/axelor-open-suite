@@ -25,6 +25,8 @@
         <string name="qtyFormula" title="Quantity" large="true" help="Quantity in generated sale order line, 1 if left empty."/>
 
         <boolean name="isActive" title="Is Active" default="false"/>
+        <boolean name="copyNeedingUpdate"/>
+
 
         <entity-listener class="com.axelor.apps.sale.db.repo.ConfiguratorCreatorListener"/>
     </entity>
