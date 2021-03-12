@@ -153,7 +153,8 @@
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
 				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" onChange="action-project-task-attrs-invoice-type-on-change"/>
-				<field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+				<field name="toInvoice" colSpan="2" readonly="true" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing" if-module="axelor-business-project"/>
+				<field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing" if-module="axelor-business-project"/>
 				<field name="isPaid" showIf="project.invoicingSequenceSelect == 1" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="1"/>
 				<field name="isTaskRefused" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="1"/>
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="invoiced" showIf="id &amp;&amp; !($readonly())" colSpan="1"/>

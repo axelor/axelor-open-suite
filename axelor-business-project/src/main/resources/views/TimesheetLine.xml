@@ -9,11 +9,12 @@
 		<field name="product" if="__config__.app.getApp('timesheet').enableActivity" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="hoursDuration" width="62%" min="0.01" aggregate="sum"/>
 		<field name="durationForCustomer" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" aggregate="sum"/>
-		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="toInvoice" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+		<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
 		<field name="enableEditor" hidden="true" />
 		<field name="invoiced" />
 		<field name="project" hidden="true" />
-		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-timesheet-line-method-update-to-invoice" />
+		<button name="updateToInvoiceBtn" title="Update to invoice" if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-timesheet-line-method-update-to-invoice" />
 	</grid>
     
     <form name="timesheet-line-timesheet-project-task-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" onNew="action-project-task-attrs-default-timesheet-line,action-timesheet-line-method-set-timesheet" onSave="action-project-task-validate-check-timesheet-line-date">
@@ -27,7 +28,8 @@
 			<field name="durationForCustomer" colSpan="5" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
     		<label name="durationLabel" colSpan="1" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>	
     		<field name="user" readonly="false" onSelect="action-timesheet-line-attrs-domain-user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>	
-			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<field name="toInvoice" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
 			<field name="timesheet" form-view="timesheet-form" />
 			<field name="enableEditor" />
 			<field name="comments" />
