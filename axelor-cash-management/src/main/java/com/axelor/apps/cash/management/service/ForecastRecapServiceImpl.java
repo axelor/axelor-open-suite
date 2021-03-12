@@ -19,6 +19,7 @@ package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -197,7 +198,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     } else {
       createForecastRecapLine(
           getForecastDate(forecastRecapLineType, model),
-          forecastRecapLineType.getTypeSelect(),
+          getTypeSelect(forecastRecapLineType, model),
           getCompanyAmount(forecastRecap, forecastRecapLineType, model),
           getModel(forecastRecapLineType).getName(),
           model.getId(),
@@ -270,7 +271,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
-            + "AND self.estimatedPaymentDate BETWEEN :fromDate AND :toDate AND self.companyInTaxTotalRemaining != 0 ";
+            + "AND self.estimatedPaymentDate BETWEEN :fromDate AND :toDate "
+            + "AND ((self.statusSelect = 3 AND self.companyInTaxTotalRemaining != 0) "
+            + "OR self.companyInTaxTotal != 0)";
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         return "(self.expectedRealisationDate BETWEEN :fromDate AND :toDate "
             + "OR (self.creationDate BETWEEN :fromDateMinusDuration AND :toDateMinusDuration "
@@ -333,7 +336,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         Invoice invoice = (Invoice) forecastModel;
-        return invoice.getCompanyInTaxTotal();
+        return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+            ? invoice.getCompanyInTaxTotalRemaining()
+            : invoice.getCompanyInTaxTotal();
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         SaleOrder saleOrder = (SaleOrder) forecastModel;
         return currencyService
@@ -475,6 +480,16 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             String.format(
                 I18n.get(IExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
                 forecastRecapLineType.getElementSelect()));
+    }
+  }
+
+  protected Integer getTypeSelect(ForecastRecapLineType forecastRecapLineType, Model model) {
+    if (forecastRecapLineType.getElementSelect()
+        == ForecastRecapLineTypeRepository.ELEMENT_FORECAST) {
+      Forecast forecast = (Forecast) model;
+      return forecast.getTypeSelect();
+    } else {
+      return forecastRecapLineType.getTypeSelect();
     }
   }
 
