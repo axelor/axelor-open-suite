@@ -76,4 +76,6 @@ public interface IExceptionMessage {
 
   String SALE_ORDER_DISCOUNT_TOO_HIGH = /*$$(*/
       "There are lines with a discount superior to the maximal authorized discount." /*)*/;
+
+  static final String COPY = /*$$(*/ "copy" /*)*/;
 }

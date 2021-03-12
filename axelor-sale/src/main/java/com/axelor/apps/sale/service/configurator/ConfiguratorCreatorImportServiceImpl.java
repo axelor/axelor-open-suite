@@ -140,14 +140,8 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     configuratorCreatorService.updateIndicators(creator);
   }
 
-  /**
-   * When exported, attribute name finish with '_XX' where XX is the id of the creator. After
-   * importing, we need to fix these values.
-   *
-   * @param creator
-   * @throws AxelorException
-   */
-  protected void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
+  @Override
+  public void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> attributes = creator.getAttributes();
     if (attributes == null) {
       return;
