@@ -21,7 +21,7 @@
 					]]>
                 </viewer>
             </field>
-            <field name="configuratorCreator"
+            <field name="configuratorCreator" form-view="configurator-creator-form" grid-view="configurator-creator-grid"
                    onSelect="action-configurator-method-creator-domain" onChange="action-configurator-group-creator-onchange"/>
           <field name="configuratorCreatorName"/>
           <field name="attributes" colSpan="12"/>
