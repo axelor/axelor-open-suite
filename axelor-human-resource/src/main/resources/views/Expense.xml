@@ -36,8 +36,8 @@
 	</grid>
 
 	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
-		  onNew="action-expense-record-default,action-expense-attrs-hide-button-readonly-field,action-expense-attrs-multiple-users"
-		  onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
+		  onNew="action-expense-record-default,action-expense-attrs-hide-button-readonly-field,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
+		  onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
 		  onSave="action-expense-method-validate-and-compute" canCopy="false">
 		<menubar>
             <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
@@ -95,7 +95,7 @@
 				</panel>
 				<panel name="inTaxTotalPanel" readonly="true" >
 		            <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
-		                <viewer depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect">
+		                <viewer depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund">
 		                    <![CDATA[
 		                    <dl class="dl-horizontal">
 		                        <dt x-translate>Total W.T.</dt>
@@ -113,11 +113,12 @@
 		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
 		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{$fmt('paymentAmount')}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
-		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal - advanceAmount - withdrawnCash - personalExpenseAmount - paymentAmount')}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('$totalToRefund')}}</dd>
 		                    </dl>
 		                    ]]>
 		                </viewer>
 		            </field>
+		            <field name="$totalToRefund" title="Total to refund" type="decimal" hidden="true"/>
 		        </panel>
 			</panel>
 	    </panel>
@@ -132,9 +133,9 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
-				editable="true" form-view="expense-line-form" grid-view="expense-line-grid" onChange="action-expense-method-compute,action-expense-method-update-moveDate-and-period" />
+				editable="true" form-view="expense-line-form" grid-view="expense-line-grid" onChange="action-expense-method-compute,action-expense-method-update-moveDate-and-period,action-expense-attrs-set-total-to-refund" />
 			<panel-related name="kilometricExpenseLineListPanel" field="kilometricExpenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers"
-				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" onChange="action-expense-method-compute"/>
+				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" onChange="action-expense-method-compute,action-expense-attrs-set-total-to-refund"/>
 			<panel-related name="employeeAdvanceUsageListPanel" showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />
 			<panel name="accountInfoPanel" title="Account information">
 				<panel name="moveInfoPanel" title="Account information">
@@ -319,6 +320,10 @@
     <action-method name="action-expense-method-update-moveDate-and-period">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="updateMoveDateAndPeriod"/>
     </action-method>
+    
+    <action-attrs name="action-expense-attrs-set-total-to-refund">
+    	<attribute name="value" for="$totalToRefund" expr="eval: inTaxTotal - (advanceAmount + withdrawnCash + personalExpenseAmount + paymentAmount)"/>
+    </action-attrs>
     
     <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense" title="Expense filters">
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
