@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -90,8 +91,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.mail.MessagingException;
@@ -466,29 +469,47 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     moveLineService.consolidateMoveLines(moveLines);
-    account = accountConfigService.getExpenseTaxAccount(accountConfig);
     BigDecimal taxTotal = BigDecimal.ZERO;
-    for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
-      exTaxTotal = expenseLine.getTotalTax();
-      taxTotal = taxTotal.add(exTaxTotal);
+    if (ObjectUtils.notEmpty(expense.getGeneralExpenseLineList())) {
+      // Computing TotalTax sum for each taxProfile
+      Map<Tax, BigDecimal> taxProfileMap = new HashMap<Tax, BigDecimal>();
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        if (taxProfileMap.get(expenseLine.getTaxProfile()) == null) {
+          taxProfileMap.put(expenseLine.getTaxProfile(), expenseLine.getTotalTax());
+        } else {
+          taxProfileMap.replace(
+              expenseLine.getTaxProfile(),
+              taxProfileMap.get(expenseLine.getTaxProfile()).add(expenseLine.getTotalTax()));
+        }
+      }
+      for (Tax taxProfile : taxProfileMap.keySet()) {
+        // Creating a moveLine for each taxProfile
+        if (ObjectUtils.isEmpty(taxProfile.getAccountManagementList())
+            || taxProfile.getAccountManagementList().get(0).getPurchaseAccount() == null) {
+          throw new AxelorException(
+              expense,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(com.axelor.apps.account.exception.IExceptionMessage.MOVE_LINE_8),
+              expenseLineId,
+              taxProfile.getName());
+        }
+        account = taxProfile.getAccountManagementList().get(0).getPurchaseAccount();
+        taxTotal = taxProfileMap.get(taxProfile);
+        MoveLine moveLine =
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                account,
+                taxTotal,
+                true,
+                moveDate,
+                moveDate,
+                moveLineId++,
+                expense.getExpenseSeq(),
+                expense.getFullName());
+        moveLines.add(moveLine);
+      }
     }
-
-    if (taxTotal.signum() != 0) {
-      MoveLine moveLine =
-          moveLineService.createMoveLine(
-              move,
-              partner,
-              account,
-              taxTotal,
-              true,
-              moveDate,
-              moveDate,
-              moveLineId++,
-              expense.getExpenseSeq(),
-              expense.getFullName());
-      moveLines.add(moveLine);
-    }
-
     move.getMoveLineList().addAll(moveLines);
 
     moveService.getMoveValidateService().validate(move);
