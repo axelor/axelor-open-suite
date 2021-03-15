@@ -26,7 +26,7 @@
 		<panel-tabs name="mainPanelTab">
 			<panel name="accountingPanel" title="Accounting">
 				<panel name="accountsPanel" title="Accounting.Accounts" colSpan="12">
-					<field name="partnerAccountGenerationModeSelect" hideIf="parnerAccountGeneration == false" colSpan="12"/>
+					<field name="partnerAccountGenerationModeSelect" colSpan="12"/>
 					<panel name="accountsCustomer" title="AccountConfig.Customers" colSpan="12">
 						<field name="customerAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'" grid-view="account-grid" form-view="account-form" help="Select the default customer account to be used in sales invoices. It will also be used as parent account if automatic account creation is enabled."/>
 						<field name="irrecoverableAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
