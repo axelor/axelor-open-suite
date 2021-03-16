@@ -896,7 +896,7 @@
 "Timesheet reminder","Relances feuilles de temps",,
 "Timesheet reminder line",,,
 "Timesheet reminder lines",,,
-"Timesheet reminder template",,,
+"Timesheet reminder template","Modèle d'email pour la relance feuilles de temps",,
 "Timesheet reminders",,,
 "Timesheet report","Rapport feuilles de temps",,
 "Timesheet.fromDate","Date de début",,
