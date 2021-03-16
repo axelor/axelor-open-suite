@@ -1,0 +1,3 @@
+---
+title: "Accounting move printing: fix issue where lines were duplicated."
+type: fix
