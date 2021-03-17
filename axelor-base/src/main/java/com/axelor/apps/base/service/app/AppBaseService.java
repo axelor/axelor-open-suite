@@ -102,4 +102,6 @@ public interface AppBaseService extends AppService {
    * @param manageMultiBanks the new value for the manageMultiBanks boolean
    */
   void setManageMultiBanks(boolean manageMultiBanks);
+
+  String getCustomStyle();
 }
