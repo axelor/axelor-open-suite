@@ -1831,27 +1831,10 @@ from account_invoice as AdvanceInvoice
 left join account_invoice_payment as AdvancePayment on AdvancePayment.invoice = AdvanceInvoice.id
 left join account_invoice_payment as ImputedPayment on ImputedPayment.id = AdvancePayment.imputed_by
 left join account_invoice as Invoice on ImputedPayment.invoice = Invoice.id
-where Invoice.id = ?]]></xml-property>
+where Invoice.id = ? and ImputedPayment.status_select=1;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -1990,28 +1973,11 @@ from account_invoice as AdvanceInvoice
 left join account_invoice_payment as AdvancePayment on AdvancePayment.invoice = AdvanceInvoice.id
 left join account_invoice_payment as ImputedPayment on ImputedPayment.id = AdvancePayment.imputed_by
 left join account_invoice as Invoice on ImputedPayment.invoice = Invoice.id
-where Invoice.id = ?
+where Invoice.id = ? and ImputedPayment.status_select=1
 group by AdvanceInvoice.id]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
