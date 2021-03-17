@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.file.FileTree;
@@ -106,6 +107,12 @@ public class GenerateAosChangelog extends DefaultTask {
   private void write(String newChangelog) throws IOException {
     getLogger().lifecycle("Generating new CHANGELOG.md file");
 
+    String bottomLink = "";
+    Optional<String> previousVersion = computePreviousVersion();
+    if (previousVersion.isPresent()) {
+      bottomLink = computeBottomLink(previousVersion.get());
+    }
+
     File changelogFile = new File(CHANGELOG_PATH);
 
     StringBuilder contentBuilder = new StringBuilder();
@@ -113,6 +120,10 @@ public class GenerateAosChangelog extends DefaultTask {
 
       String sCurrentLine;
       while ((sCurrentLine = br.readLine()) != null) {
+        if (previousVersion.isPresent()
+            && sCurrentLine.startsWith("[" + previousVersion.get() + "]")) {
+          contentBuilder.append(bottomLink).append(System.lineSeparator());
+        }
         contentBuilder.append(sCurrentLine).append(System.lineSeparator());
       }
     }
@@ -134,6 +145,36 @@ public class GenerateAosChangelog extends DefaultTask {
       } catch (IOException ex) {
         throw new GradleException("Could not delete file: " + file, ex);
       }
+    }
+  }
+
+  private String computeBottomLink(String previousVersion) {
+    return String.format(
+        "[%s]: https://github.com/axelor/axelor-open-suite/compare/v%s...v%s",
+        version, previousVersion, version);
+  }
+
+  /**
+   * Only compute the previous version if this is a correction version (e.g. if version is 6.0.6
+   * then will return 6.0.7) But if the last number of the version is 0 we return {@link
+   * Optional#empty}
+   */
+  private Optional<String> computePreviousVersion() {
+    String[] versionArray = version.split("\\.");
+    if (versionArray.length < 2) {
+      return Optional.empty();
+    }
+    int lastNumber = Integer.parseInt(versionArray[versionArray.length - 1]);
+    if (lastNumber <= 0) {
+      return Optional.empty();
+    } else {
+      StringBuilder stringBuilder = new StringBuilder();
+      for (int i = 0; i < versionArray.length - 1; i++) {
+        stringBuilder.append(versionArray[i]);
+        stringBuilder.append(".");
+      }
+      stringBuilder.append(lastNumber - 1);
+      return Optional.of(stringBuilder.toString());
     }
   }
 }

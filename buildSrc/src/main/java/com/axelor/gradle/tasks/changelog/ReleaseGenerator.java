@@ -73,7 +73,7 @@ public class ReleaseGenerator {
 
   private void appendHeader(StringBuilder content, Release release) {
     content
-        .append(MessageFormat.format("## {0} ({1})", release.getVersion(), release.getDate()))
+        .append(MessageFormat.format("## [{0}] ({1})", release.getVersion(), release.getDate()))
         .append(NEW_LINE)
         .append(NEW_LINE);
   }
