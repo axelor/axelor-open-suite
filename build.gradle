@@ -1,3 +1,5 @@
+import com.axelor.gradle.tasks.GenerateAosChangelog
+
 buildscript {
 	ext.repos = {
 		mavenCentral()
@@ -77,7 +79,7 @@ task archiveReports(type: Zip) {
 }
 
 
-task generateChangeLog(type: com.axelor.gradle.tasks.GenerateChangeLog) {
+task generateChangeLog(type: GenerateAosChangelog) {
   group "Axelor application"
   description "Generate change logs from unreleased entries."
   files = fileTree(projectDir) {
