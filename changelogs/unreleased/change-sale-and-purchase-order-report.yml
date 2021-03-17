@@ -1,3 +1,3 @@
 ---
-title: "BIRT : Change saleOrder and purchaseOrder number format."
-type: change
+title: "Sale and purchase orders: Fix number formatting in printings."
+type: fix
