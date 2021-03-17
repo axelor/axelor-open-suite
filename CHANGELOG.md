@@ -1,3 +1,41 @@
+## [5.4.7] (2021-03-17)
+
+#### Changes
+
+* App Mobile: add production related fields.
+* CRM: Dashboards improvements:
+  - Improve titles and translation.
+  - Modify 'Average duration between lead and first opportunity' Chart so the data is shown by months.
+* Prod process: description list can now be sorted.
+* Timesheet: Auto-fill activity when using generation assistant.
+* Account chart: Add 'tax authorized on move line' and 'tax required on move line' values in account demo data.
+* Invoice: a product must be sellable/purchasable in order to be selected in a customer/supplier invoice line.
+* Invoice printing: Move partner tax number under external reference.
+* Sale and purchase orders: Fix number formatting in printings.
+* Sale order: Remove autofill of 'Order date' during auto-generation of order.
+
+#### Fixed
+
+* Job position : add missing fr translations in form.
+* Accounting move printing: fix issue where lines were duplicated.
+* Invoicing project: add missing french translations in form.
+* AppBase config: Add missing french translation.
+* AppBase config: Add timesheet reminder batch in demo data.
+* Configurator creator: fix issue where attributes from a non active configurator model are displayed in others configurators.
+* Forecast recap type: fix sale order french translation to 'Commande client' instead of 'Commande'.
+* Employment contract: solve export employment contract NullPointerException issue.
+* Opportunity: Use next sequence code on copy.
+* Move line: fix exchange rate not being computed.
+* Employee: add missing french translations of form and report.
+* Sale order report: qty column is displayed regardless of the line type.
+* Configurator creator: fix on copy issues.
+* Job application: add missing french translations in form.
+* Leave request: Block the approval when a leave request is already validated.
+* Product company: fix weighted average price value when lines are auto generated.
+* Vehicle: fix auto fill vehicle in vehicle service log, cost and contract popup and change french translation.
+* Training: add missing french translations in form.
+* Expense: fix ConstraintViolationException when validating an expense.
+
 ## [5.4.6] (2021-02-08)
 
 #### Changes
@@ -319,6 +357,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.7]: https://github.com/axelor/axelor-open-suite/compare/v5.4.6...v5.4.7
 [5.4.6]: https://github.com/axelor/axelor-open-suite/compare/v5.4.5...v5.4.6
 [5.4.5]: https://github.com/axelor/axelor-open-suite/compare/v5.4.4...v5.4.5
 [5.4.4]: https://github.com/axelor/axelor-open-suite/compare/v5.4.3...v5.4.4
