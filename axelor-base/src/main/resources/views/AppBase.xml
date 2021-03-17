@@ -64,6 +64,9 @@
                 	<field name="defaultMailMessageTemplate"/>
                 	<panel-related field="mailTemplateAssociationList" grid-view="mail-template-association-grid" form-view="mail-template-association-form"/>
                 </panel>
+                <panel name="stylePanel" title="Style" colSpan="12">
+                	<field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
+                </panel>
 			</panel>
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
 				<panel name="mapPanel" title="Mapping"  colSpan="12">
