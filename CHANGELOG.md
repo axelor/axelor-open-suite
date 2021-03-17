@@ -1,3 +1,30 @@
+## [6.0.8] (2021-03-17)
+
+#### Changes
+
+* CRM: Dashboards improvements:
+  - Improve titles and translation.
+  - Modify 'Average duration between lead and first opportunity' Chart so the data is shown by months.
+* User: Restrict multiple employee creation for same partner in user form.
+* Prod process: description list can now be sorted.
+* Sale order: Remove autofill of 'Order date' during auto-generation of order.
+
+#### Fixed
+
+* Accounting move printing: fix issue where lines were duplicated.
+* Configurator creator: fix issue where attributes from a non active configurator model are displayed in others configurators.
+* Forecast recap type: fix sale order french translation to 'Commande client' instead of 'Commande'.
+* Substitute pfp validator: add missing french translations.
+* Purchase order: fix default payment mode when generated from sale order.
+* Invoice: when generated from a purchase order, fill the project from the order to the invoice.
+* Sale order line: the project label configuration now is applied for sale order lines.
+* Sale order report: qty column is now displayed regardless of the line type.
+* ADVANCED EXPORT: Hide 'advanced export' button when there is nothing to export.
+* Configurator creator: fix on copy issues.
+* Sale and purchase orders: Fix number formatting in printings.
+* PurchaseOrderLine: fix NullPointerException while selecting supplier in supplier request panel.
+* Expense: fix ConstraintViolationException when validating an expense.
+
 ## [6.0.7] (2021-02-25)
 
 #### Changes
@@ -436,6 +463,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.8]: https://github.com/axelor/axelor-open-suite/compare/v6.0.7...v6.0.8
 [6.0.7]: https://github.com/axelor/axelor-open-suite/compare/v6.0.6...v6.0.7
 [6.0.6]: https://github.com/axelor/axelor-open-suite/compare/v6.0.5...v6.0.6
 [6.0.5]: https://github.com/axelor/axelor-open-suite/compare/v6.0.4...v6.0.5

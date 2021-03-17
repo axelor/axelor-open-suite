@@ -1,3 +1,0 @@
----
-title: "Configurator creator: fix issue where attributes from a non active configurator model are displayed in others configurators."
-type: fix

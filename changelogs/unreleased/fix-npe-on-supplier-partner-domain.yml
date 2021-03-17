@@ -1,3 +1,0 @@
----
-title: "PurchaseOrderLine: fix NullPointerException while selecting supplier in supplier request panel"
-type: fix
