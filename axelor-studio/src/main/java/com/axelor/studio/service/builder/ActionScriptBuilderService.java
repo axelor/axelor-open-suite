@@ -442,6 +442,8 @@ public class ActionScriptBuilderService {
         stb.append(format("var map = com.axelor.db.mapper.Mapper.toMap($$);", 2));
       }
       stb.append(format("val = " + getQuery(tModel, line.getFilter(), false, false), 2));
+    } else if (srcModel == null) {
+      stb.append(format("val = " + "$", 2));
     }
 
     List<ActionBuilderLine> lines = line.getSubLines();
