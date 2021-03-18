@@ -544,7 +544,7 @@ public class DebtRecoveryService {
 
         debtRecovery.setBalanceDueDebtRecovery(balanceDueDebtRecovery);
 
-        Integer levelDebtRecovery = 0;
+        Integer levelDebtRecovery = -1;
         if (debtRecovery.getDebtRecoveryMethodLine() != null) {
           levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
         }
