@@ -102,7 +102,7 @@ public class DebtRecoverySessionService {
     LocalDate referenceDate = debtRecovery.getReferenceDate();
     BigDecimal balanceDueDebtRecovery = debtRecovery.getBalanceDueDebtRecovery();
 
-    int debtRecoveryLevel = 0;
+    int debtRecoveryLevel = -1;
     if (debtRecovery.getDebtRecoveryMethodLine() != null) {
       debtRecoveryLevel = debtRecovery.getDebtRecoveryMethodLine().getSequence();
     }
@@ -160,7 +160,7 @@ public class DebtRecoverySessionService {
 
     DebtRecoveryMethod debtRecoveryMethod = debtRecovery.getDebtRecoveryMethod();
 
-    int levelMax = 0;
+    int levelMax = -1;
 
     if (debtRecoveryMethod != null && debtRecoveryMethod.getDebtRecoveryMethodLineList() != null) {
       for (DebtRecoveryMethodLine debtRecoveryMethodLine :
