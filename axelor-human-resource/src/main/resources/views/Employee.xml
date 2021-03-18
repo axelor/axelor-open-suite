@@ -72,7 +72,7 @@
       <field name="maritalStatus" colSpan="4"/>
       <field name="sexSelect" colSpan="4"/>
       <field name="countryOfBirth" colSpan="4" onChange="action-employee-attrs-country-of-birth-on-change"/>
-      <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
+      <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
       <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
       <field name="maritalName" colSpan="4"/>
@@ -211,7 +211,7 @@
           <field name="maritalStatus" colSpan="4"/>
           <field name="sexSelect" colSpan="4"/>
           <field name="countryOfBirth" colSpan="4" onChange="action-employee-attrs-country-of-birth-on-change"/>
-          <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
+          <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
           <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
           <field name="citizenship" colSpan="4"/>
           <field name="maritalName" colSpan="4"/>

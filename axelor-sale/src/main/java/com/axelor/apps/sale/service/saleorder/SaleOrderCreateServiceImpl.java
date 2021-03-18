@@ -93,7 +93,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       LocalDate deliveryDate,
       String internalReference,
       String externalReference,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
       Team team,
@@ -113,7 +112,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
     saleOrder.setDeliveryDate(deliveryDate);
-    saleOrder.setOrderDate(orderDate);
 
     saleOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
@@ -191,7 +189,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             null,
             numSeq,
             externalRef,
-            appSaleService.getTodayDate(company),
             priceList,
             clientPartner,
             team);

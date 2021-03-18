@@ -168,9 +168,9 @@
 	</action-view>
 	
 	<menuitem name="crm-conf-industry-sector" parent="crm-conf"
-		title="Industry sectors" action="crm.conf.industry.sector"/>
+		title="Industry" action="crm.conf.industry.sector"/>
 
-	<action-view name="crm.conf.industry.sector" title="Industry sectors"
+	<action-view name="crm.conf.industry.sector" title="Industry"
 		model="com.axelor.apps.base.db.IndustrySector" >
 		<view type="grid" name="industry-sector-grid"/>
 		<view type="form" name="industry-sector-form"/>
@@ -270,35 +270,63 @@
 	
  	<menuitem name="menu-event-dashboard" parent="crm-root-report" title="Event" order="-5"/> 
 		
- 	<menuitem name="menu-event-dashboard-one" parent="menu-event-dashboard" title="Event Db"  action="crm.event.dashboard.one.view" /> 
+ 	<menuitem name="menu-event-dashboard-one" parent="menu-event-dashboard" title="Event monitoring"  action="crm.event.dashboard.one.view" /> 
 
- 	<action-view name="crm.event.dashboard.one.view" title="Event Dashboard 1" > 
+ 	<action-view name="crm.event.dashboard.one.view" title="Event monitoring" > 
  		<view type="dashboard" name="crm.event.dashboard.one" />
+	</action-view>
+	
+	<menuitem name="menu-event-dashboard-manager" parent="menu-event-dashboard"
+		title="Manager"  action="crm.event.dashboard.manager.view"/>
+		
+    <action-view name="crm.event.dashboard.manager.view" title="Event monitoring">
+		<view type="dashboard" name="crm.event.manager" />
+	</action-view>
+		
+	<menuitem name="menu-event-dashboard-salesman" parent="menu-event-dashboard"
+		title="Salesman"  action="crm.event.dashboard.salesman.view"/>	
+		
+	<action-view name="crm.event.dashboard.salesman.view" title="Event monitoring">
+		<view type="dashboard" name="crm.event.salesman" />
 	</action-view>
 	 
 	<menuitem name="menu-lead-dashboard" parent="crm-root-report" title="Lead" order="-10"/>
 	
-	<menuitem name="menu-lead-dashboard-one" parent="menu-lead-dashboard" title="Lead Db"  action="crm.lead.dashboard.one.view" />
+	<menuitem name="menu-lead-dashboard-one" parent="menu-lead-dashboard" title="Leads monitoring"  action="crm.lead.dashboard.one.view" />
 
-	<action-view name="crm.lead.dashboard.one.view" title="Lead Db 1" >
+	<action-view name="crm.lead.dashboard.one.view" title="Leads monitoring" >
 		<view type="dashboard" name="crm.lead.dashboard.one" />
+	</action-view>
+	
+	<menuitem name="menu-lead-dashboard-manager" parent="menu-lead-dashboard"
+		title="Manager"  action="crm.lead.dashboard.manager.view"/>
+		
+    <action-view name="crm.lead.dashboard.manager.view" title="Leads monitoring">
+		<view type="dashboard" name="crm.lead.manager" />
+	</action-view>
+		
+	<menuitem name="menu-lead-dashboard-salesman" parent="menu-lead-dashboard"
+		title="Salesman"  action="crm.lead.dashboard.salesman.view"/>	
+		
+	<action-view name="crm.lead.dashboard.salesman.view" title="Leads monitoring">
+		<view type="dashboard" name="crm.lead.salesman" />
 	</action-view>
 	
 	<menuitem name="menu-target-dashboard" parent="crm-root-report"	title="Objectives" />
 		
 	<menuitem name="menu-target-user-dashboard" parent="menu-target-dashboard"
-		title="Objectives User Db"  action="crm.target.user.dashboard.view"/>	
+		title="Salesman"  action="crm.target.user.dashboard.view"/>	
 	
-	<action-view name="crm.target.user.dashboard.view" title="Objectives user Dashboard">
+	<action-view name="crm.target.user.dashboard.view" title="Objectives monitoring">
 		<view type="dashboard" name="crm.target.user.dashboard" />
 		<context name="date" expr="eval: __config__.date"/>
 		<context name="user" expr="eval:__user__"/>
 	</action-view>
 	
 	<menuitem name="menu-target-team-dashboard" parent="menu-target-dashboard"
-		title="Objectives Team Db"  action="crm.target.team.dashboard.view"/>	
+		title="Manager"  action="crm.target.team.dashboard.view" order="-1"/>	
 
-	<action-view name="crm.target.team.dashboard.view" title="Objectives team Dashboard">
+	<action-view name="crm.target.team.dashboard.view" title="Objectives monitoring">
 		<view type="dashboard" name="crm.target.team.dashboard" />
 		<context name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
 		<context name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
@@ -309,33 +337,40 @@
 		title="Opportunities" order="-20" />	
 	
 	<menuitem name="menu-opportunities-dashboard-1" parent="menu-opportunities-dashboard"
-		title="Opportunities Db 1"  action="crm.opportunities.dashboard.1.view"/>	
+		title="Tb Opportunities 1"  action="crm.opportunities.dashboard.1.view"/>	
+		
+	<menuitem name="menu-opportunities-dashboard-manager" parent="menu-opportunities-dashboard"
+		title="Manager"  action="crm.opportunities.manager.view"/>
+		
+    <action-view name="crm.opportunities.manager.view" title="Opportunities monitoring">
+		<view type="dashboard" name="crm.opportunities.manager" />
+	</action-view>
+		
+	<menuitem name="menu-opportunities-dashboard-salesman" parent="menu-opportunities-dashboard"
+		title="Salesman"  action="crm.opportunities.salesman.view"/>	
+		
+	<action-view name="crm.opportunities.salesman.view" title="Opportunities monitoring">
+		<view type="dashboard" name="crm.opportunities.salesman" />
+	</action-view>
 
-	<action-view name="crm.opportunities.dashboard.1.view" title="Opportunities Db 1">
+	<action-view name="crm.opportunities.dashboard.1.view" title="Tb Opportunities 1">
 		<view type="dashboard" name="crm.opportunities.dashboard.1" />
 	</action-view>
 	
 	<menuitem name="menu-opportunities-dashboard-2" parent="menu-opportunities-dashboard"
-		title="Opportunities Db 2"  action="crm.opportunities.dashboard.2.view"/>	
+		title="Tb Opportunities 2"  action="crm.opportunities.dashboard.2.view"/>	
 
-	<action-view name="crm.opportunities.dashboard.2.view" title="Opportunities Db 2">
+	<action-view name="crm.opportunities.dashboard.2.view" title="Tb Opportunities 2">
 		<view type="dashboard" name="crm.opportunities.dashboard.2" />
 	</action-view>
 	
-	<menuitem name="menu-opportunities-dashboard-3" parent="menu-opportunities-dashboard"
-		title="Opportunities Db 3"  action="crm.opportunities.dashboard.3.view"/>	
-
-	<action-view name="crm.opportunities.dashboard.3.view" title="Opportunities Db 3">
-		<view type="dashboard" name="crm.opportunities.dashboard.3" />
-	</action-view>
-		
 	<menuitem name="menu-calls-dashboard" parent="crm-root-report"
 		title="Calls" order="-50" />	
 		
 	<menuitem name="menu-calls-dashboard-1" parent="menu-calls-dashboard"
-		title="Calls Db"  action="crm.calls.dashboard.view"/>	
+		title="Calls monitoring"  action="crm.calls.dashboard.view"/>	
 	
-	<action-view name="crm.calls.dashboard.view" title="Calls Db">
+	<action-view name="crm.calls.dashboard.view" title="Calls monitoring">
 		<view type="dashboard" name="crm.calls.dashboard" />
 	</action-view>	
 		

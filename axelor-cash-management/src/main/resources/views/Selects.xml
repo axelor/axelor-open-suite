@@ -38,8 +38,8 @@
   
     <selection name="forecast.recap.line.type.element.select">
         <option value="1">Invoice</option>
-        <option value="2">Sale Order</option>
-        <option value="3">Purchase Order</option>
+        <option value="2">Sale order</option>
+        <option value="3">Purchase order</option>
         <option value="4">Expense</option>
         <option value="5">Forecast</option>
         <option value="6">Opportunity</option>

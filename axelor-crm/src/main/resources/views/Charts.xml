@@ -65,14 +65,18 @@
     	<series key="amount" type="funnel" title="Amount"/>
 	 </chart>
 	 
-	  <chart name="chart.dashboard.opportunities.by.stage.type.bar" title="Pipeline by Stage and Type">
+	  <chart name="chart.dashboard.opportunities.by.stage.type.bar" stacked="true" title="Pipeline by Stage and Type">
 	    <dataset type="sql">
 	    <![CDATA[
 			SELECT
 	          SUM(self.amount) AS amount,
-              coalesce(nullif(message_value, ''), message_key) as _sale_stage
+              coalesce(nullif(message_value, ''), message_key) as _sale_stage,
+              opp_type.name as opp_type_name
+              
 		    FROM
 		        crm_opportunity self
+		    LEFT JOIN
+		        crm_opportunity_type opp_type ON self.opportunity_type = opp_type.id
 		    LEFT JOIN
 		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
 		    LEFT JOIN 
@@ -86,13 +90,13 @@
 				cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
                 AND message_key = selection_item.title AND meta_translation.language = _user.language
 		    GROUP BY
-			   selection_item.id, message_value, message_key
+			   selection_item.id, message_value, message_key,opp_type_name
 			ORDER BY
 			   selection_item.id
 	    ]]>
 	    </dataset>
 	    <category key="_sale_stage" type="text" title="Sales Stage"/>
-    	<series key="amount" type="bar" title="Amount"/>
+    	<series key="amount" type="bar" groupBy="opp_type_name" title="Amount"/>
 	 </chart>
 	
 	 <chart name="chart.dashboard.opportunities.source.amount.bar" title="Opportunities By Source">
@@ -175,6 +179,48 @@
 	    <category key="_sale_man" type="text" title="Salesperson"/>
     	<series key="amount" type="bar" title="Amount"/>
 	  </chart>
+	  
+	  <chart name="chart.dashboard.events.by.team" title="Events by team">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+          		COUNT(self.id) AS total_event,
+	      		_team.name as team_name
+	    	FROM
+	        	ical_event as self
+	    	LEFT JOIN
+	        	team_team as _team ON self.team = _team.id
+	    	GROUP BY
+		    	team_name
+			ORDER BY
+		   		team_name
+		 ]]>
+	    </dataset>
+	    <category key="team_name" type="text" title="Team"/>
+    	<series key="total_event" type="bar" title="Events"/>
+	  </chart>
+	  
+	   <chart name="chart.dashboard.events.by.saleman" title="Events by saleman">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+          		COUNT(self.id) AS total_event,
+	      		sale_man.full_name as _sale_man
+	    	FROM
+	        	ical_event as self
+	    	LEFT JOIN
+	        	auth_user as sale_man ON self.user_id = sale_man.id
+	        	AND sale_man.full_name IS NOT NULL
+	    	GROUP BY
+		    	_sale_man
+			ORDER BY
+		   		_sale_man
+		 ]]>
+	    </dataset>
+	    <category key="_sale_man" type="text" title="Salesperson"/>
+    	<series key="total_event" type="bar" title="Event"/>
+	  </chart>
+	  
 	  
 	  <chart name="chart.opportunities.by.origin.by.stage" title="Opportunities By Origin By Stage" stacked="true">
 		<dataset type="sql">
@@ -562,33 +608,58 @@
 	    <series key="_total_calls" groupBy="_call_type" type="bar" title="Calls"/>
 	</chart>  	  	
 	  	
-	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
+	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" stacked="true" name="chart.calls.types.by.team.by.user.bar" title="Calls by user(of a team)">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" x-required="true"/>
 		    <field type="reference" name="activeTeam" target="com.axelor.team.db.Team" x-required="true" title="Team" />
 		</search-fields>
-		<dataset type="jpql">
+		<dataset type="sql">
 		    <![CDATA[
-				SELECT
-			      COUNT(self.id) AS _total_calls,
-			      saleMan.fullName AS _sale_man			      
-			    FROM
-			      Event self,    
-			      User saleMan      
+			    SELECT    
+				    COUNT(_event.id) AS _total_calls,
+					_user.full_name AS _user_name,
+					_meta._select_title AS _call_type
+				FROM
+					ical_event AS _event
+				LEFT JOIN
+					auth_user AS _user
+					ON _event.user_id = _user.id
+			      
+			    JOIN
+					(SELECT 
+						cast(_item.value as int) AS _select_value,
+				        coalesce(nullif(message_value, ''), message_key) AS _select_title
+					FROM	
+						meta_select AS _selection		
+					JOIN
+						meta_select_item AS _item
+						ON _selection.name = 'crm.event.call.type.select'
+						AND _item.select_id = _selection.id
+					LEFT JOIN
+                        meta_translation ON _item.select_id = _selection.id
+                    JOIN
+                        auth_user AS _user
+                        ON _user.id = :__user__
+                    WHERE
+                        message_key = _item.title AND meta_translation.language = _user.language
+                    GROUP BY
+                        _item.value, message_value, message_key
+					) AS _meta
+				ON
+					_meta._select_value = _event.call_type_select    
 			    
 			    WHERE
-			      self.typeSelect = 1 AND
-			      self.user = saleMan AND
-			      self.team = :activeTeam AND
-			      self.startDateTime BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
+			      _event.type_select = 1 AND
+			      _event.team = :activeTeam AND
+			      _event.start_date_time >= (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC')
 			    GROUP BY        
-			        saleMan.fullName
+			        _user.full_name, _call_type
 			    ORDER BY         
-			         saleMan.fullName
+			         _user.full_name, _call_type DESC
 			  ]]>
 	    </dataset>
-	    <category key="_sale_man" type="text" title="Salesperson"/>
-	    <series key="_total_calls" type="bar" title="Calls"/>
+	    <category key="_user_name" type="text" title="User"/>
+	    <series key="_total_calls" type="bar" groupBy="_call_type" title="Calls"/>
 	</chart> 
 	<chart onInit="action.crm.chart.set.date,action.chart.crm.chart.set.active.team" name="chart.daily.team.calls.summary.by.user.bar" title="Daily team call summary by user" stacked="false">
 	<search-fields>
@@ -613,7 +684,7 @@
 	salesMan.fullName
 
 	</dataset>
-	<category key="_sale_man" type="text" title="Salesperson"/>
+	<category key="_sale_man" type="text" title="User"/>
 	<series key="_total_calls" type="bar" title="Calls"/>
 	</chart>
 
@@ -760,7 +831,7 @@
 
           SELECT
              AVG(DATE(op.createdOn) - DATE(ld.createdOn)) as average,
-             ' ' as title
+             to_char(ld.createdOn,'MM-yyyy') as title
           FROM
              Lead ld
           INNER JOIN
@@ -772,11 +843,12 @@
                        ld.opportunitiesList op2
                      WHERE
                        op2 != op
-                       AND op2.createdOn < op.createdOn )
-                       		
+                       AND op2.createdOn < op.createdOn)
+          GROUP BY to_char(ld.createdOn,'MM-yyyy') 
+          ORDER BY to_char(ld.createdOn,'MM-yyyy')      		
 		]]>
 	   </dataset>
-	   <category key="title" type="text" />
+	   <category key="title" type="text" title="Month"/>
 				<series key="average" type="bar" />
 	</chart>
 

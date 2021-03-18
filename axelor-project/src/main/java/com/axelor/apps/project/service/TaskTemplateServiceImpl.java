@@ -34,4 +34,17 @@ public class TaskTemplateServiceImpl implements TaskTemplateService {
             taskTemplate.getParentTaskTemplate(), taskTemplateSet));
     return taskTemplateSet;
   }
+
+  @Override
+  public boolean isParentTaskTemplateCreatedLoop(
+      TaskTemplate taskTemplate, TaskTemplate parentTaskTemplate) {
+
+    if (parentTaskTemplate == null) {
+      return false;
+    } else if (taskTemplate.equals(parentTaskTemplate)) {
+      return true;
+    }
+    return isParentTaskTemplateCreatedLoop(
+        taskTemplate, parentTaskTemplate.getParentTaskTemplate());
+  }
 }

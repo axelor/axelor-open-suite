@@ -1,6 +1,6 @@
 "importId";"sequence";"elementSelect";"typeSelect";"statusSelect";"operationTypeSelect";"name"
 1;"0";1;1;3;2;"Facture"
-2;"1";2;1;3;;"Commande"
+2;"1";2;1;3;;"Commande client"
 3;"2";3;2;3;;"Commande d'achat"
 4;"3";4;2;3;;"Note de frais"
 5;"4";5;;;;"Prévision"

@@ -1,3 +1,122 @@
+## [5.4.7] (2021-03-17)
+
+#### Changes
+
+* App Mobile: add production related fields.
+* CRM: Dashboards improvements:
+  - Improve titles and translation.
+  - Modify 'Average duration between lead and first opportunity' Chart so the data is shown by months.
+* Prod process: description list can now be sorted.
+* Timesheet: Auto-fill activity when using generation assistant.
+* Account chart: Add 'tax authorized on move line' and 'tax required on move line' values in account demo data.
+* Invoice: a product must be sellable/purchasable in order to be selected in a customer/supplier invoice line.
+* Invoice printing: Move partner tax number under external reference.
+* Sale and purchase orders: Fix number formatting in printings.
+* Sale order: Remove autofill of 'Order date' during auto-generation of order.
+
+#### Fixed
+
+* Job position : add missing fr translations in form.
+* Accounting move printing: fix issue where lines were duplicated.
+* Invoicing project: add missing french translations in form.
+* AppBase config: Add missing french translation.
+* AppBase config: Add timesheet reminder batch in demo data.
+* Configurator creator: fix issue where attributes from a non active configurator model are displayed in others configurators.
+* Forecast recap type: fix sale order french translation to 'Commande client' instead of 'Commande'.
+* Employment contract: solve export employment contract NullPointerException issue.
+* Opportunity: Use next sequence code on copy.
+* Move line: fix exchange rate not being computed.
+* Employee: add missing french translations of form and report.
+* Sale order report: qty column is displayed regardless of the line type.
+* Configurator creator: fix on copy issues.
+* Job application: add missing french translations in form.
+* Leave request: Block the approval when a leave request is already validated.
+* Product company: fix weighted average price value when lines are auto generated.
+* Vehicle: fix auto fill vehicle in vehicle service log, cost and contract popup and change french translation.
+* Training: add missing french translations in form.
+* Expense: fix ConstraintViolationException when validating an expense.
+
+## [5.4.6] (2021-02-08)
+
+#### Changes
+
+* TeamTask: Add parent task template and team task category field on task template. Improve task tree creation for project generated from project template.
+* ResourceBooking: form view change.
+  * Removed 'Computed automatically if left empty' tag.
+  * Name is now required.
+  * Added missing translation.
+* Helpdesk SLA dashboards: add translation and improve filters.
+* Helpdesk Ticket dashboards: improve menu, tab and dashboard titles.
+* Stock Deliveries dashboard changes:
+  * Display country code instead of country alpha code.
+  * Change legend name and series name in 'Customer average delivery delay'.
+  * Add missing translations.
+  * Add Date Range feature in some dashboards.
+* Company: add missing translations in company form.
+* Sync Contact: Change title to Contact synchronisation.
+* MANUF ORDER: add qty and unit field on grid view.
+* Stock Location Reporting: change name from 'Bad stock locations line' dashlet to 'Products whose future quantity is less than the minimum quantity allowed'.
+* Citizenship: change Fr translation of 'citizenship' menu
+* CRM: CRM Dashboards changes.
+* PURCHASE MENU: Moving suppliers map under the new Maps menu.
+  * Making Suppliers Map a sub menu, and moving under new Menu Maps.
+  * Changing Suppliers Map name to Suppliers.
+* Human Resource: Change dashboard name to Reportings
+* Quality Dashboard: improve dashlets titles.
+* Departments: change departments entry menu fr translation.
+* HR Dashboards: Improve french translations and hide leave per employee dashlet.
+
+#### Fixed
+
+* OPPORTUNITY: filter out lost opportunities in best open deals dashlet.
+* Message: update french translations
+* FEC Import: fetch account and journal from the company and code instead of only from the code.
+* Partner: Add missing french translation for 'Customer catalog lines'
+* Quality: Fix control point dashboard sql error issue.
+* ACCOUNT REVERSE MOVE: When generating a reverse move, keep references to analytic move lines.
+* Project: add missing translations in project planning user select wizard form
+* Menu: Add french translation of 'Partner price lists'
+* MRP: Filter out canceled or archived sale order in sale order lines selection.
+* User: Change the french translation of 'All permissions'
+* Stock move: fix split into 2.
+
+ A stock move generated from split feature now correctly keeps the link to the order that generated it.
+
+* Global tracking log: add missing translations in wizard form.
+* Stock Move: fix server error in grid view when sorting by date.
+* Cost Sheet Line: Fix rounding issue happening during computation.
+* Configurator Creator: prevent the creation of duplicate attribute name.
+* StockMove: add french translation of 'Please select the stock move(s) to print'
+* EVENT: Hidding past date warning after record is saved.
+* TICKET: Fix SLA policy viewer.
+* DATA CONFIG LINE: add missing translations.
+* Stock Move Line: fix duplicate stock move lines appearing in sale order line delivery dashlet.
+* StockConfig: all stock locations are now filtered per their company in the form view.
+* COST SHEET REPORT: Hide cost sheet group column in printings when it is disabled in configuration.
+* ProjectTemplate: Fix error happening when generating project with users.
+* AccountingReport: fix detailed customer balance printing being empty.
+* Fix Event calendar tab name's translation.
+* ADVANCE IMPORT: add missing translations in advanced import form.
+* Move: fix wrong form view opened on reversing a move.
+* Team task: Hide 'book resource' button if resource management is not activated.
+* StockRules: Filter message template configuration so we can only select stock rules template.
+* Stock Move: fix split by unit duplicating stock move lines.
+* Convert demo file: add missing translation in wizard form.
+* PRODUCT CATEGORY: Add translation for tree view.
+* Production batch: add production batch tab french translation.
+* Stock move mass invoicing: correctly generate a refund when the price is 0.
+* Purchase Manager Dashboard: fix accounting family not displayed in 'Pos volume by buyer by accounting family'
+* PROJECT PLANNING TIME: Add translations for editor view.
+* Cancel Reason: Add missing french translation for 'free text'.
+* Printing settings: add missing translations in form view.
+* TEAM TASK CATEGORY: Fix wrong french translation for form view tab.
+* Add 'Project/Business (Project)', 'Job Application' and 'Job applications' french translations.
+* Data Backup: update missing translations.
+
+#### Removed
+
+* Menu: Remove purchase orders entry menu under reportings.
+
 ## [5.4.5] (2021-01-11)
 
 #### Changes
@@ -238,6 +357,8 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.7]: https://github.com/axelor/axelor-open-suite/compare/v5.4.6...v5.4.7
+[5.4.6]: https://github.com/axelor/axelor-open-suite/compare/v5.4.5...v5.4.6
 [5.4.5]: https://github.com/axelor/axelor-open-suite/compare/v5.4.4...v5.4.5
 [5.4.4]: https://github.com/axelor/axelor-open-suite/compare/v5.4.3...v5.4.4
 [5.4.3]: https://github.com/axelor/axelor-open-suite/compare/v5.4.2...v5.4.3

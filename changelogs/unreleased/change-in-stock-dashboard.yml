@@ -1,5 +1,0 @@
----
-title: "Change in the name of Bad stock locations line dashlet"
-type: change
-description: |
-  Changing name of 'Bad stock locations line' dashlet to 'Products whose future quantity is less than the minimum quantity allowed'.

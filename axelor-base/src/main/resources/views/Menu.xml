@@ -319,7 +319,7 @@
 	<menuitem name="referential-conf-product-category-tree" title="Categories tree" 
         parent="referential-conf" action="referential.conf.product.category.tree" order="171"/>
     
-    <action-view name="referential.conf.product.category.tree" title="Product category" model="com.axelor.apps.base.db.ProductCategory">
+    <action-view name="referential.conf.product.category.tree" title="Product category tree" model="com.axelor.apps.base.db.ProductCategory">
       <view type="tree" name="product-category-tree"/>
       <view-param name="forceTitle" value="true"/>
     </action-view>
@@ -492,11 +492,11 @@
     </action-view>
     
     <menuitem name="admin-root-organisation-territory-citizenship"
-      parent="admin-root-organisation-territory" title="Citizenship"
+      parent="admin-root-organisation-territory" title="menu.citizenship"
       action="admin.root.organisation.territory.citizenship" />
   
     <action-view name="admin.root.organisation.territory.citizenship"
-      title="Citizenship" model="com.axelor.apps.base.db.Citizenship">
+      title="menu.citizenship" model="com.axelor.apps.base.db.Citizenship">
       <view type="grid" name="citizenship-grid"/>
       <view type="form" name="citizenship-form"/>
     </action-view>

@@ -30,7 +30,7 @@
     	<panel name="otherDetailsPanel">
     		<field name="name"/>
     		<button name="configureBtn" title="Configure" showIf="id == null" onClick="save"/>
-    		<panel-related name="attributesPanel" field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
+    		<panel-related name="attributesPanel" field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save,action-configurator-creator-method-update-attributes"
     				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
     	</panel>
 
@@ -165,6 +165,10 @@
         <view type="grid" name="configurator-grid"/>
         <context name="_configuratorCreator" expr="eval: __self__"/>
     </action-view>
+    
+    <action-method name="action-configurator-creator-method-update-attributes">
+    	<call class="com.axelor.apps.sale.web.ConfiguratorCreatorController" method="updateAttributes"/>
+    </action-method>
     
     <search-filters name="configurator-creator-filters" model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator creator filters">
         <field name="configuratorBom" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator())"/>

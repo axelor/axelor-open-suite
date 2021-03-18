@@ -15,32 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.db.repo;
+package com.axelor.apps.project.db.repo;
 
-import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.service.TaskTemplateService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
-public class OpportunityManagementRepository extends OpportunityRepository {
-  @Override
-  public Opportunity copy(Opportunity entity, boolean deep) {
-    Opportunity copy = super.copy(entity, deep);
-    copy.setSalesStageSelect(OpportunityRepository.SALES_STAGE_NEW);
-    copy.setLostReason(null);
-    copy.setOpportunitySeq(null);
-    return copy;
-  }
+public class TaskTemplateManagementRepository extends TaskTemplateRepository {
 
   @Override
-  public Opportunity save(Opportunity opportunity) {
-    try {
-      if (opportunity.getOpportunitySeq() == null) {
-        Beans.get(OpportunityService.class).setSequence(opportunity);
-      }
-      return super.save(opportunity);
-    } catch (Exception e) {
-      throw new PersistenceException(e);
+  public TaskTemplate save(TaskTemplate taskTemplate) {
+
+    if (taskTemplate.getVersion() != 0
+        && Beans.get(TaskTemplateService.class)
+            .isParentTaskTemplateCreatedLoop(taskTemplate, taskTemplate.getParentTaskTemplate())) {
+      throw new PersistenceException(
+          I18n.get(IExceptionMessage.TASK_TEMPLATE_PARENT_TASK_CREATED_LOOP));
     }
+
+    return super.save(taskTemplate);
   }
 }

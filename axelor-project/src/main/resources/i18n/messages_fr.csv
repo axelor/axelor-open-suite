@@ -246,6 +246,7 @@
 "Teamtask.Package","Forfait",,
 "Template","Modèle",,
 "The company %s doesn't have any configured sequence for Project","La société %s n'a pas de séquence configurer pour les projets",,
+"The parent task creates a loop in the task tree.","La tâche parente crée une boucle dans l'arborescence des tâches.",,
 "Ticket",,,
 "Tickets","Les Tickets",,
 "Time Spent","Temps passés",,

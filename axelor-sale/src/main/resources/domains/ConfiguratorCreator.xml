@@ -23,6 +23,8 @@
         <boolean name="generateProduct" title="Generate product" default="true"/>
 
         <boolean name="isActive" title="Is Active" default="false"/>
+        <boolean name="copyNeedingUpdate"/>
+
 
         <entity-listener class="com.axelor.apps.sale.db.repo.ConfiguratorCreatorListener"/>
     </entity>
