@@ -1,0 +1,3 @@
+---
+title: "Configurator creator attributes: fix issue where `onChange` field could not be emptied."
+type: fix
