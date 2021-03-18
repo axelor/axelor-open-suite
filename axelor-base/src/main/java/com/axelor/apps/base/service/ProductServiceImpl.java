@@ -212,15 +212,18 @@ public class ProductServiceImpl implements ProductService {
     int seq = 1;
 
     List<Product> productVariantsList =
-        productRepo.all().filter("self.parentProduct = ?1", productModel).order("code").fetch();
+        productRepo.all().filter("self.parentProduct = ?1", productModel).fetch();
 
     if (productVariantsList != null && !productVariantsList.isEmpty()) {
-
-      seq =
-          Integer.parseInt(
-                  StringUtils.substringAfterLast(
-                      productVariantsList.get(productVariantsList.size() - 1).getCode(), "-"))
-              + 1;
+      Integer lastSeq = 0;
+      for (Product product : productVariantsList) {
+        Integer productSeq =
+            Integer.parseInt(StringUtils.substringAfterLast(product.getCode(), "-"));
+        if (productSeq.compareTo(lastSeq) > 0) {
+          lastSeq = productSeq;
+        }
+      }
+      seq = lastSeq + 1;
     }
 
     for (ProductVariant productVariant : productVariantList) {
