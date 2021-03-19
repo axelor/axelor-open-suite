@@ -18,10 +18,9 @@
         	<field name="typeSelect" showIf="elementSelect != 5" onChange="action-forecast-recap-type-select-onchange-record"/>
             <field name="operationTypeSelect" showIf="elementSelect == 1  &amp;&amp; typeSelect == 1" selection-in="[2,3]"/>
             <field name="operationTypeSelect" showIf="elementSelect == 1  &amp;&amp; typeSelect == 2" selection-in="[1,4]"/>
-            <field name="statusSelect" widget="MultiSelect" selection="iaccount.invoice.status.select" showIf="elementSelect == 1"/>
-            <field name="statusSelect" showIf="elementSelect == 2" widget="MultiSelect" selection="sale.order.status.select"/>
-            <field name="statusSelect" showIf="elementSelect == 3" widget="MultiSelect" selection="purchase.purchase.order.status.select"/>
-            <field name="statusSelect" widget="MultiSelect" selection="hrs.expenses.status.select" showIf="elementSelect == 4"/>
+            <field name="statusSelect" widget="MultiSelect" selection="iaccount.invoice.status.select" selection-in="[1,2,3]" showIf="elementSelect == 1"/>
+            <field name="statusSelect" showIf="elementSelect == 2" widget="MultiSelect" selection="sale.order.status.select" selection-in="[1,2,3,4]"/>
+            <field name="statusSelect" showIf="elementSelect == 3" widget="MultiSelect" selection="purchase.purchase.order.status.select" selection-in="[1,2,3,4]"/>
             <field name="statusSelect" showIf="elementSelect == 6" selection="crm.opportunity.sales.stage.select" widget="MultiSelect"/>
             <field name="payDaySelect" showIf="elementSelect == 7"/>
             <field name="estimatedDuration" showIf="elementSelect == 2 || elementSelect == 3"/>

@@ -36,6 +36,7 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -295,7 +296,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         return "self.validationDate BETWEEN :fromDate AND :toDate "
             + "AND self.company = :company "
-            + "AND self.statusSelect IN (:statusSelectList) "
+            + "AND self.statusSelect = "
+            + ExpenseRepository.STATUS_VALIDATED
+            + " "
             + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails)";
       case ForecastRecapLineTypeRepository.ELEMENT_FORECAST:
         return "self.estimatedDate BETWEEN :fromDate AND :toDate "
