@@ -58,9 +58,16 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +83,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected TimetableRepository timetableRepo;
 
   protected LocalDate today;
+  protected Map<Integer, List<Integer>> invoiceStatusMap;
 
   @Inject
   public ForecastRecapServiceImpl(
@@ -98,7 +106,36 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
 
     today = appBaseService.getTodayDate(forecastRecap.getCompany());
+    invoiceStatusMap = fetchAvailableStatusMap();
     forecastRecapRepo.save(forecastRecap);
+  }
+
+  protected Map<Integer, List<Integer>> fetchAvailableStatusMap() {
+    List<Integer> supportedOperationTypeSelect =
+        Arrays.asList(
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
+            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+    Map<Integer, List<Integer>> invStatusMap = new HashMap<>();
+
+    for (int operationTypeSelect : supportedOperationTypeSelect) {
+      List<Integer> statusSelectList =
+          forecastRecapLineTypeRepo
+              .all()
+              .filter("self.operationTypeSelect = :operationTypeSelect")
+              .bind("operationTypeSelect", operationTypeSelect)
+              .fetchStream()
+              .map(ForecastRecapLineType::getStatusSelect)
+              .map(StringTool::getIntegerList)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
+      if (statusSelectList.isEmpty()) {
+        statusSelectList.add(0);
+      }
+      invStatusMap.put(operationTypeSelect, statusSelectList);
+    }
+    return invStatusMap;
   }
 
   @Override
@@ -135,8 +172,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         .isEmpty()) {
       for (ForecastRecapLineType forecastRecapLineType : forecastRecapLineTypeList) {
         offset++;
-        this.populateWithTimetables(
-            forecastRecapRepo.find(forecastRecap.getId()), forecastRecapLineType);
+        populateWithTimetables(forecastRecap, forecastRecapLineType);
         populateWithForecastLineType(forecastRecap, forecastRecapLineType);
       }
       JPA.clear();
@@ -150,15 +186,18 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       ForecastRecap forecastRecap, ForecastRecapLineType forecastRecapLineType)
       throws AxelorException {
 
+    List<Integer> statusSelectList =
+        StringTool.getIntegerList(forecastRecapLineType.getStatusSelect());
+    if (statusSelectList.isEmpty()) {
+      statusSelectList.add(0);
+    }
     Query<? extends Model> modelQuery =
         JPA.all(getModel(forecastRecapLineType))
             .filter(getFilter(forecastRecapLineType))
             .bind("company", forecastRecap.getCompany())
             .bind("fromDate", forecastRecap.getFromDate())
             .bind("toDate", forecastRecap.getToDate())
-            .bind(
-                "statusSelectList",
-                StringTool.getIntegerList(forecastRecapLineType.getStatusSelect()))
+            .bind("statusSelectList", statusSelectList)
             .bind("bankDetails", forecastRecap.getBankDetails())
             .bind("operationTypeSelect", forecastRecapLineType.getOperationTypeSelect())
             .bind(
@@ -197,15 +236,18 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         == ForecastRecapLineTypeRepository.ELEMENT_SALARY) {
       createForecastRecapLinesFromEmployee(forecastRecap, (Employee) model, forecastRecapLineType);
     } else {
-      createForecastRecapLine(
-          getForecastDate(forecastRecapLineType, model),
-          getTypeSelect(forecastRecapLineType, model),
-          getCompanyAmount(forecastRecap, forecastRecapLineType, model),
-          getModel(forecastRecapLineType).getName(),
-          model.getId(),
-          getName(forecastRecapLineType, model),
-          forecastRecapLineType,
-          forecastRecap);
+      BigDecimal companyAmount = getCompanyAmount(forecastRecap, forecastRecapLineType, model);
+      if (companyAmount.signum() != 0) {
+        createForecastRecapLine(
+            getForecastDate(forecastRecapLineType, model),
+            getTypeSelect(forecastRecapLineType, model),
+            companyAmount,
+            getModel(forecastRecapLineType).getName(),
+            model.getId(),
+            getName(forecastRecapLineType, model),
+            forecastRecapLineType,
+            forecastRecap);
+      }
     }
   }
 
@@ -348,7 +390,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .getAmountCurrencyConvertedAtDate(
                 saleOrder.getCurrency(),
                 saleOrder.getCompany().getCurrency(),
-                saleOrder.getInTaxTotal(),
+                getOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
                 today)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
@@ -357,7 +399,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .getAmountCurrencyConvertedAtDate(
                 purchaseOrder.getCurrency(),
                 purchaseOrder.getCompany().getCurrency(),
-                purchaseOrder.getInTaxTotal(),
+                getOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
                 today)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
@@ -378,6 +420,57 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 I18n.get(IExceptionMessage.UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE),
                 forecastRecapLineType.getElementSelect()));
     }
+  }
+
+  protected BigDecimal getOrderAmount(
+      ForecastRecap forecastRecap,
+      ForecastRecapLineType forecastRecapLineType,
+      Model forecastModel) {
+    BigDecimal sumAmountInvoices;
+    BigDecimal orderTotal;
+
+    int operationTypeRefund;
+    int operationTypeInvoice;
+
+    if (forecastRecapLineType.getElementSelect()
+        == ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER) {
+      operationTypeRefund = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+      operationTypeInvoice = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+      SaleOrder saleOrder = (SaleOrder) forecastModel;
+      orderTotal = saleOrder.getInTaxTotal();
+    } else {
+      operationTypeRefund = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+      operationTypeInvoice = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+      PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
+      orderTotal = purchaseOrder.getInTaxTotal();
+    }
+
+    TypedQuery<BigDecimal> sumAmountInvoiceQuery =
+        JPA.em()
+            .createQuery(
+                "SELECT SUM(CASE WHEN operationTypeSelect = :operationTypeInvoice "
+                    + "THEN invoice.inTaxTotal "
+                    + "ELSE (invoice.inTaxTotal * -1) "
+                    + "END) "
+                    + "FROM Invoice invoice "
+                    + "WHERE ((invoice.statusSelect IN (:invoiceStatusSelect) "
+                    + "AND operationTypeSelect = :operationTypeInvoice) "
+                    + "OR (invoice.statusSelect IN (:refundStatusSelect) "
+                    + "AND operationTypeSelect = :operationTypeRefund )) "
+                    + (forecastRecapLineType.getElementSelect()
+                            == ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER
+                        ? "AND invoice.saleOrder.id = :orderId"
+                        : "AND invoice.purchaseOrder.id = :orderId"),
+                BigDecimal.class)
+            .setParameter("orderId", forecastModel.getId())
+            .setParameter("operationTypeInvoice", operationTypeInvoice)
+            .setParameter("invoiceStatusSelect", invoiceStatusMap.get(operationTypeInvoice))
+            .setParameter("operationTypeRefund", operationTypeRefund)
+            .setParameter("refundStatusSelect", invoiceStatusMap.get(operationTypeRefund));
+
+    sumAmountInvoices =
+        Optional.ofNullable(sumAmountInvoiceQuery.getSingleResult()).orElse(BigDecimal.ZERO);
+    return orderTotal.subtract(sumAmountInvoices);
   }
 
   protected BigDecimal getCompanyAmountForOpportunity(
@@ -508,16 +601,20 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
           timetableRepo
               .all()
               .filter(
-                  "self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3"
-                      + " AND self.saleOrder.statusSelect IN (?4) AND self.amount != 0"
+                  "self.estimatedDate BETWEEN :fromDate AND :toDate AND self.saleOrder.company = :company"
+                      + " AND self.saleOrder.statusSelect IN (:saleOrderStatusList) AND self.amount != 0"
                       + (forecastRecap.getBankDetails() != null
-                          ? " AND self.saleOrder.companyBankDetails = ?5"
-                          : ""),
-                  forecastRecap.getFromDate(),
-                  forecastRecap.getToDate(),
-                  forecastRecap.getCompany(),
-                  statusList,
-                  forecastRecap.getBankDetails())
+                          ? " AND self.saleOrder.companyBankDetails = :bankDetails "
+                          : "")
+                      + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
+              .bind("fromDate", forecastRecap.getFromDate())
+              .bind("toDate", forecastRecap.getToDate())
+              .bind("company", forecastRecap.getCompany())
+              .bind("saleOrderStatusList", statusList)
+              .bind("bankDetails", forecastRecap.getBankDetails())
+              .bind(
+                  "invoiceStatusSelectList",
+                  invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
               .fetch();
     } else if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER) {
@@ -525,16 +622,20 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
           timetableRepo
               .all()
               .filter(
-                  "self.estimatedDate BETWEEN ?1 AND ?2 AND self.purchaseOrder.company = ?3"
-                      + " AND self.purchaseOrder.statusSelect IN (?4) AND self.amount != 0"
+                  "self.estimatedDate BETWEEN :fromDate AND :toDate AND self.purchaseOrder.company = :company"
+                      + " AND self.purchaseOrder.statusSelect IN (:purchaseOrderStatusList) AND self.amount != 0"
                       + (forecastRecap.getBankDetails() != null
-                          ? " AND self.purchaseOrder.companyBankDetails = ?5"
-                          : ""),
-                  forecastRecap.getFromDate(),
-                  forecastRecap.getToDate(),
-                  forecastRecap.getCompany(),
-                  statusList,
-                  forecastRecap.getBankDetails())
+                          ? " AND self.purchaseOrder.companyBankDetails = :bankDetails "
+                          : "")
+                      + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
+              .bind("fromDate", forecastRecap.getFromDate())
+              .bind("toDate", forecastRecap.getToDate())
+              .bind("company", forecastRecap.getCompany())
+              .bind("purchaseOrderStatusList", statusList)
+              .bind("bankDetails", forecastRecap.getBankDetails())
+              .bind(
+                  "invoiceStatusSelectList",
+                  invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE))
               .fetch();
     }
     if (forecastRecapLineType.getElementSelect()
@@ -558,7 +659,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             timetable.getSaleOrder().getSaleOrderSeq(),
             forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
             forecastRecapRepo.find(forecastRecap.getId()));
-        JPA.clear();
       }
     } else if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER) {
@@ -581,7 +681,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             timetable.getPurchaseOrder().getPurchaseOrderSeq(),
             forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
             forecastRecapRepo.find(forecastRecap.getId()));
-        JPA.clear();
       }
     }
   }
