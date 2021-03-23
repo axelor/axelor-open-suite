@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -458,6 +459,11 @@ public class ExpenseServiceImpl implements ExpenseService {
               expenseLine.getComments() != null
                   ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                   : "");
+      
+      if(expenseLine.getTaxProfile()!=null && expenseLine.getExpenseProduct()!=null && !expenseLine.getExpenseProduct().getBlockExpenseTax()) {
+      moveLine.setTaxLine(expenseLine.getTaxProfile().getActiveTaxLine());
+      }
+      
       for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
@@ -471,9 +477,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     moveLineService.consolidateMoveLines(moveLines);
     BigDecimal taxTotal = BigDecimal.ZERO;
     if (ObjectUtils.notEmpty(expense.getGeneralExpenseLineList())) {
+    	
       // Computing TotalTax sum for each taxProfile
       Map<Tax, BigDecimal> taxProfileMap = new HashMap<Tax, BigDecimal>();
       for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+    	if(expenseLine.getExpenseProduct()!=null && expenseLine.getExpenseProduct().getBlockExpenseTax()) {
+    		continue;
+    	}
         if (taxProfileMap.get(expenseLine.getTaxProfile()) == null) {
           taxProfileMap.put(expenseLine.getTaxProfile(), expenseLine.getTotalTax());
         } else {
@@ -482,10 +492,18 @@ public class ExpenseServiceImpl implements ExpenseService {
               taxProfileMap.get(expenseLine.getTaxProfile()).add(expenseLine.getTotalTax()));
         }
       }
+      
       for (Tax taxProfile : taxProfileMap.keySet()) {
         // Creating a moveLine for each taxProfile
-        if (ObjectUtils.isEmpty(taxProfile.getAccountManagementList())
-            || taxProfile.getAccountManagementList().get(0).getPurchaseAccount() == null) {
+        account = null;
+        if (!ObjectUtils.isEmpty(taxProfile.getAccountManagementList())) {
+          for (AccountManagement accountManagement : taxProfile.getAccountManagementList()) {
+            if (accountManagement.getCompany() == company) {
+              account = accountManagement.getPurchaseAccount();
+            }
+          }
+        }
+        if (account == null) {
           throw new AxelorException(
               expense,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -493,7 +511,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               expenseLineId,
               taxProfile.getName());
         }
-        account = taxProfile.getAccountManagementList().get(0).getPurchaseAccount();
+
         taxTotal = taxProfileMap.get(taxProfile);
         MoveLine moveLine =
             moveLineService.createMoveLine(
@@ -507,6 +525,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                 moveLineId++,
                 expense.getExpenseSeq(),
                 expense.getFullName());
+        moveLine.setTaxLine(taxProfile.getActiveTaxLine());
         moveLines.add(moveLine);
       }
     }
@@ -1079,5 +1098,21 @@ public class ExpenseServiceImpl implements ExpenseService {
       }
     }
     return expense;
+  }
+
+  public ExpenseLine getTaxProfile(ExpenseLine expenseLine) throws AxelorException {
+    Company company = expenseLine.getExpense().getCompany();
+    Partner partner = expenseLine.getExpense().getUser().getPartner();
+    boolean isPurchase = true;
+    Tax taxProfile = null;
+    if (expenseLine.getExpenseProduct() != null && !expenseLine.getExpenseProduct().getBlockExpenseTax())
+    {
+    	taxProfile =
+    	        accountManagementService.getProductTax(
+    	            expenseLine.getExpenseProduct(), company, partner.getFiscalPosition(), isPurchase);
+    	
+    }
+    expenseLine.setTaxProfile(taxProfile);
+    return expenseLine;
   }
 }
