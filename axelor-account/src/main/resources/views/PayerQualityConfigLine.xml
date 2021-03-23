@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-    <grid name="payer-quality-config-line-grid" title="Payer quality configuration lines" model="com.axelor.apps.account.db.PayerQualityConfigLine" canMove="true">
+    <grid name="payer-quality-config-line-grid" title="Payer quality configuration lines" model="com.axelor.apps.account.db.PayerQualityConfigLine">
         <field name="name"/>
         <field name="burden"/>
         <field name="description"/>
