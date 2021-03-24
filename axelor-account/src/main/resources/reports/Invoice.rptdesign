@@ -638,6 +638,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="heading">head_office_address</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">delivery_address_str</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">delivery_address_str</text-property>
+                    <text-property name="heading">delivery_address_str</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">displayHeadOfficeAddress</property>
                     <property name="alias">displayHeadOfficeAddress</property>
                     <property name="analysis">measure</property>
@@ -657,6 +663,18 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="analysis">measure</property>
                     <text-property name="displayName">contactPartnerTitleSelect</text-property>
                     <text-property name="heading">contactPartnerTitleSelect</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">originalInvoice</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">originalInvoice</text-property>
+                    <text-property name="heading">originalInvoice</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">originalInvoiceId</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">originalInvoiceId</text-property>
+                    <text-property name="heading">originalInvoiceId</text-property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
@@ -938,6 +956,16 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="position">53</property>
                         <property name="name">contactPartnerTitleSelect</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">54</property>
+                        <property name="name">originalInvoice</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">55</property>
+                        <property name="name">originalInvoiceId</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1291,6 +1319,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="name">delivery_address_str</property>
                     <property name="nativeName">delivery_address_str</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">51</property>
@@ -1312,6 +1341,20 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="nativeName">contactPartnerTitleSelect</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">54</property>
+                    <property name="name">originalInvoice</property>
+                    <property name="nativeName">originalInvoice</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">55</property>
+                    <property name="name">originalInvoiceId</property>
+                    <property name="nativeName">originalInvoiceId</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, 
@@ -1366,7 +1409,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	Invoice.delivery_address_str,
 	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress",
     AppSale.enable_pack_management as "enablePackMangement",
-    ContactPartner.title_select as "contactPartnerTitleSelect"
+    ContactPartner.title_select as "contactPartnerTitleSelect",
+    Invoice.original_invoice as "originalInvoice",
+    OriginalInvoice.invoice_id as "originalInvoiceId"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_app_sale as AppSale on true
@@ -1382,6 +1427,7 @@ left outer join account_account_config as AccountConfig on (AccountConfig.compan
 left outer join base_bank as Bank on (BankDetail.bank = Bank.id)
 left outer join base_trading_name as TradingName on (TradingName.id = Invoice.trading_name)
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
+left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 where Invoice.id = ?]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineTaxDS" id="3422">
@@ -3878,6 +3924,18 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["delivery_address_str"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">originalInvoice</property>
+                    <text-property name="displayName">originalInvoice</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["originalInvoice"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">originalInvoiceId</property>
+                    <text-property name="displayName">originalInvoiceId</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["originalInvoiceId"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -4271,6 +4329,44 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                     </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["internal_reference"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5732">
+                            <cell id="5733">
+                                <text id="5734">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["originalInvoice"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.originalInvoice'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["originalInvoiceId"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -5386,7 +5482,7 @@ row["message_key"]
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB></br>]]></text-property>
                                     </text>
-                                    <text id="5725">
+                                    <text id="5730">
                                         <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="dataSet">TranslateDS</property>
@@ -5655,7 +5751,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">if(row["ex_tax_total"] != 0) {row["ex_tax_total"]}</VALUE-OF>]]></text-property>
                                     </text>
-                                    <text id="5726">
+                                    <text id="5731">
                                         <property name="fontFamily">sans-serif</property>
                                         <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
