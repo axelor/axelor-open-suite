@@ -107,7 +107,8 @@
 	</action-record>
 
 	<action-record name="action-configurator-record-meta-on-change" model="com.axelor.meta.db.MetaJsonField">
-		<field name="onChange" if="showedOnChange &amp;&amp; showedOnChange != ''" expr="eval: showedOnChange + ',save, action-configurator-update-indicators,save' "/>
+		<field name="onChange" if="showedOnChange &amp;&amp; showedOnChange != ''" expr="eval: showedOnChange + ',save,action-configurator-update-indicators,save' "/>
+		<field name="onChange" if="!showedOnChange || showedOnChange == ''" expr="eval: 'save,action-configurator-update-indicators,save' "/>
 	</action-record>
 
 	<action-condition name="action-condition-sale-meta-json-field-check-duplicate-name">
