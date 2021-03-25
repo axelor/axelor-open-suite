@@ -101,12 +101,12 @@ public class EmployeeHRRepository extends EmployeeRepository {
 
   /**
    * Return true if given employee is a New employee or a Former employee according to hire date and
-   * leaving date.
+   * leaving date, or if given employee is archived.
    *
    * @param employee
    * @return
    */
-  public static boolean isEmployeeFormerOrNew(Employee employee) {
+  public static boolean isEmployeeFormerNewOrArchived(Employee employee) {
     Objects.requireNonNull(employee);
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
     LocalDate today =
@@ -115,6 +115,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
                 ? employee.getUser().getActiveCompany()
                 : AuthUtils.getUser().getActiveCompany());
     return (employee.getLeavingDate() != null && employee.getLeavingDate().compareTo(today) < 0)
-        || (employee.getHireDate() != null && employee.getHireDate().compareTo(today) > 0);
+        || (employee.getHireDate() != null && employee.getHireDate().compareTo(today) > 0)
+        || (employee.getArchived() != null && employee.getArchived());
   }
 }

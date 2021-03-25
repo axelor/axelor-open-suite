@@ -148,6 +148,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+        continue;
+      }
       try {
         createLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
@@ -168,7 +171,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   @Transactional(rollbackOn = {Exception.class})
   public void createLeaveManagement(Employee employee) throws AxelorException {
-    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       return;
     }
     batch = batchRepo.find(batch.getId());
