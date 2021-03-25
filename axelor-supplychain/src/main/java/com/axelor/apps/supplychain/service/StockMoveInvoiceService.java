@@ -54,7 +54,10 @@ public interface StockMoveInvoiceService {
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);
 
   public List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<StockMoveLine> stockMoveLineList, Map<Long, BigDecimal> qtyToInvoiceMap)
+      Invoice invoice,
+      StockMove stockMove,
+      List<StockMoveLine> stockMoveLineList,
+      Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException;
 
   public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
