@@ -136,7 +136,7 @@ public class StockLocationController {
   public void setStocklocationValue(ActionRequest request, ActionResponse response) {
 
     StockLocation stockLocation = request.getContext().asType(StockLocation.class);
-    if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+    if (stockLocation.getIsValued()) {
       response.setValue(
           "stockLocationValue",
           Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
