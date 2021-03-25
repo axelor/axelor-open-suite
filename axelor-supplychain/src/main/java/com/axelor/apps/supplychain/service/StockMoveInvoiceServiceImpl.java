@@ -164,7 +164,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     invoiceGenerator.populate(
         invoice,
-        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+        this.createInvoiceLines(
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
       // do not create empty invoices
@@ -252,7 +253,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     invoiceGenerator.populate(
         invoice,
-        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+        this.createInvoiceLines(
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
 
@@ -318,7 +320,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     invoiceGenerator.populate(
         invoice,
-        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+        this.createInvoiceLines(
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
 
@@ -357,11 +360,13 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   @Override
   public List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<StockMoveLine> stockMoveLineList, Map<Long, BigDecimal> qtyToInvoiceMap)
+      Invoice invoice,
+      StockMove stockMove,
+      List<StockMoveLine> stockMoveLineList,
+      Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    StockMove stockMove = stockMoveLineList.get(0).getStockMove();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
     if ((StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
