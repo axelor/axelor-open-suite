@@ -21,6 +21,7 @@
         onNew="action-invoice-payment-group-new"
         onLoad="action-attrs-invoice-payment-hide-trading-name">
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
+			<field name="typeSelect" showIf="id" colSpan="12" />
             <field name="amount"/>
             <field name="currency" canEdit="false"
                 form-view="currency-form" grid-view="currency-grid"/>
@@ -47,7 +48,6 @@
 			<field name="bankOrder" if-module="axelor-bank-payment" showIf="bankOrder" form-view="bank-order-form" grid-view="bank-order-grid"/>
 			<field name="statusSelect" showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
-			<field name="typeSelect" readonly="true"/>
 			<button name="cancelBtn" title="Cancel"  readonlyIf="statusSelect == 2 || move.statusSelect == 3" hideIf="move.statusSelect == 3" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
 			<field name="move.statusSelect" hidden="true" readonly="true"/>
 		</panel>
