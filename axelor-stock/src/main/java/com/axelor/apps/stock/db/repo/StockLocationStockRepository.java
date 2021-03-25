@@ -42,7 +42,7 @@ public class StockLocationStockRepository extends StockLocationRepository {
     Long stocklocationId = (Long) json.get("id");
     StockLocation stockLocation = find(stocklocationId);
 
-    if (stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
+    if (!stockLocation.getIsValued()) {
       return super.populate(json, context);
     }
 
