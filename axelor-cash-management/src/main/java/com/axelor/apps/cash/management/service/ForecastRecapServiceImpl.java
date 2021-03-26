@@ -262,18 +262,17 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                   ? itDate.lengthOfMonth()
                   : forecastRecapLineType.getPayDaySelect());
       if (itDate.isEqual(payDay)) {
-        if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-          continue;
+        if (!EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee, itDate)) {
+          this.createForecastRecapLine(
+              itDate,
+              forecastRecapLineType.getTypeSelect(),
+              employee.getMainEmploymentContract().getMonthlyGlobalCost(),
+              employee.getClass().getName(),
+              employee.getId(),
+              employee.getName(),
+              forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
+              forecastRecapRepo.find(forecastRecap.getId()));
         }
-        this.createForecastRecapLine(
-            itDate,
-            forecastRecapLineType.getTypeSelect(),
-            employee.getMainEmploymentContract().getMonthlyGlobalCost(),
-            employee.getClass().getName(),
-            employee.getId(),
-            employee.getName(),
-            forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
-            forecastRecapRepo.find(forecastRecap.getId()));
         itDate = itDate.plusMonths(1);
       } else {
         itDate = payDay;

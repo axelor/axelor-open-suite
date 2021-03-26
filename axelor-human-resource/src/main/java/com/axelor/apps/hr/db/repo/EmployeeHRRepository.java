@@ -100,8 +100,23 @@ public class EmployeeHRRepository extends EmployeeRepository {
   }
 
   /**
-   * Return true if given employee is a New employee or a Former employee according to hire date and
-   * leaving date, or if given employee is archived.
+   * Return true if given employee is a New employee or a Former employee at the given date
+   * according to hire date and leaving date, or if given employee is archived.
+   *
+   * @param employee
+   * @param atDate
+   * @return
+   */
+  public static boolean isEmployeeFormerNewOrArchived(Employee employee, LocalDate atDate) {
+    Objects.requireNonNull(employee);
+    return (employee.getLeavingDate() != null && employee.getLeavingDate().compareTo(atDate) < 0)
+        || (employee.getHireDate() != null && employee.getHireDate().compareTo(atDate) > 0)
+        || (employee.getArchived() != null && employee.getArchived());
+  }
+
+  /**
+   * Return true if given employee is a New employee or a Former employee at the current date
+   * according to hire date and leaving date, or if given employee is archived.
    *
    * @param employee
    * @return
@@ -114,8 +129,6 @@ public class EmployeeHRRepository extends EmployeeRepository {
             employee.getUser() != null
                 ? employee.getUser().getActiveCompany()
                 : AuthUtils.getUser().getActiveCompany());
-    return (employee.getLeavingDate() != null && employee.getLeavingDate().compareTo(today) < 0)
-        || (employee.getHireDate() != null && employee.getHireDate().compareTo(today) > 0)
-        || (employee.getArchived() != null && employee.getArchived());
+    return isEmployeeFormerNewOrArchived(employee, today);
   }
 }
