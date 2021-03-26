@@ -18,6 +18,7 @@
     <boolean name="includeOutOfStock" title="Include out of stocks products" default="false"/>
 	<decimal name="stockLocationValue" title="Stock location value" transient="true"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="Trading Name"/>
+    <boolean name="includeVirtualSubLocation" title="Include virtual sub location" />
 
     <finder-method name="findByCompany" using="company"/>
     <finder-method name="findByPartner" using="partner"/>

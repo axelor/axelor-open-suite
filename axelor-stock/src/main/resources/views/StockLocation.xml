@@ -80,6 +80,8 @@
 
 				<field name="isWorkshop"  colSpan="3" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
 				<field name="isOutsourcingLocation" onChange="action-stock-set-partner-doamin-attrs" showIf="typeSelect==2 || typeSelect==3"  colSpan="3" if-module="axelor-production" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+				<field name="includeVirtualSubLocation" onChange="save" hideIf="typeSelect == 3"
+					colSpan="3" />
 			</panel>
 
 		</panel-tabs>
@@ -130,14 +132,14 @@
     <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-grid" />
 		<view type="form" name="stock-location-line-form" />
-		<domain>self.stockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
+		<domain>self.stockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true)) AND ((:typeSelect = 3) OR (:typeSelect != 3 AND ((:includeVirtualSubLocation = true) OR (:includeVirtualSubLocation = false AND self.stockLocation.typeSelect != 3))))</domain>
   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
 
     <action-view name="action-location-details-view-location-content" title="Location content details" model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-details-grid" />
 		<view type="form" name="stock-location-line-details-form" />
-		<domain>self.detailsStockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
+		<domain>self.detailsStockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true)) AND ((:typeSelect = 3) OR (:typeSelect != 3 AND ((:includeVirtualSubLocation = true) OR (:includeVirtualSubLocation = false AND self.detailsStockLocation.typeSelect != 3))))</domain>
   		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
     </action-view>
     
