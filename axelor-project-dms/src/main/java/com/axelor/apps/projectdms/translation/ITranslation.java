@@ -32,4 +32,9 @@ public interface ITranslation {
   public static final String FILE_SIZE = /*$$(*/ "File Size"; /*)*/
 
   public static final String GET_VERSIONS = /*$$(*/ "Get Versions"; /*)*/
+
+  public static final String UPLOAD_COMPLETED = /*$$(*/ "Upload completed"; /*)*/
+
+  public static final String VERSION_NO_REQ = /*$$(*/
+      "Version number field should be required"; /*)*/
 }
