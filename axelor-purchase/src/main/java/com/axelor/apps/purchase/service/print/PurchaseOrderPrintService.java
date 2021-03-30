@@ -36,6 +36,4 @@ public interface PurchaseOrderPrintService {
   String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf) throws AxelorException;
 
   String getFileName(PurchaseOrder purchaseOrder);
-
-  String getPurchaseOrderLineDataSetQuery(Long purchaseOrderId);
 }
