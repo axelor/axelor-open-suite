@@ -734,7 +734,10 @@ public class MrpServiceImpl implements MrpService {
               .all()
               .filter(
                   "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
-                      + "AND self.saleOrder.statusSelect IN (?4)",
+                      + "AND self.saleOrder.statusSelect IN (?4) "
+                      + (!saleOrderMrpLineType.getIncludeOneOffSales()
+                          ? "AND self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE"
+                          : ""),
                   this.productMap.keySet(),
                   this.stockLocationList,
                   SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
