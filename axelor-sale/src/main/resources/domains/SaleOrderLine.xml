@@ -52,6 +52,7 @@
 	
 	<!-- Complementary Products -->
 	<boolean name="isComplementaryProductsUnhandledYet" hidden="true"/>
+	<boolean name="isComplementaryPartnerProductsUnhandledYet" hidden="true"/>
 	<one-to-many name="selectedComplementaryProductList" ref="com.axelor.apps.sale.db.ComplementaryProductSelected" title="Complementary products" mappedBy="saleOrderLine"/>
     <string name="manualId"/>
     <string name="parentId"/>

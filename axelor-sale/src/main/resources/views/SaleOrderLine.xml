@@ -553,6 +553,7 @@
     
     <action-record name="action-sale-order-line-record-complementary-products-to-handle" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="isComplementaryProductsUnhandledYet" expr="eval: true" if="product != null &amp;&amp; product.complementaryProductList != null &amp;&amp; !product.complementaryProductList.isEmpty()"/>
+    	<field name="isComplementaryPartnerProductsUnhandledYet" expr="eval: true" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getManagePartnerComplementaryProduct() &amp;&amp; __parent__.clientPartner?.complementaryProductList != null &amp;&amp; !__parent__.clientPartner?.complementaryProductList.isEmpty()"/>
     </action-record>
 
 	<action-record name="action-sale-order-line-record-fill-discount-amount-from-derogation" model="com.axelor.apps.sale.db.SaleOrderLine">

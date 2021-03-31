@@ -108,4 +108,6 @@ public interface SaleOrderService {
    * @throws AxelorException
    */
   public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException;
+
+  public void fillComplementaryProducts(SaleOrder saleOrder) throws AxelorException;
 }

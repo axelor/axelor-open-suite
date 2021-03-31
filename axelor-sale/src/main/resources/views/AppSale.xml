@@ -19,6 +19,7 @@
             <field name="isDisplaySaleOrderLineNumber" widget="boolean-switch"/>
             <field name="enableSalesProductByTradName" widget="boolean-switch"/>
 			<field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
+			<field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
 	
 		</panel>
 		<panel name="actionsPanel">

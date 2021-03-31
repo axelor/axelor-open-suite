@@ -19,10 +19,12 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
+import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
@@ -369,5 +371,116 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
     }
     return saleOrder;
+  }
+
+  @Override
+  public void fillComplementaryProducts(SaleOrder saleOrder) throws AxelorException {
+    Partner partner = saleOrder.getClientPartner();
+    if (partner != null) {
+      List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+      if (ObjectUtils.notEmpty(saleOrderLineList)) {
+        for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+          if (saleOrderLine.getProduct() != null) {
+            if (saleOrderLine.getSelectedComplementaryProductList() == null) {
+              saleOrderLine.setSelectedComplementaryProductList(new ArrayList<>());
+            }
+            saleOrderLine.clearSelectedComplementaryProductList();
+            for (ComplementaryProduct complProduct : partner.getComplementaryProductList()) {
+              ComplementaryProductSelected newComplProductLine = new ComplementaryProductSelected();
+
+              newComplProductLine.setProduct(complProduct.getProduct());
+              newComplProductLine.setQty(complProduct.getQty());
+              newComplProductLine.setOptional(complProduct.getOptional());
+
+              newComplProductLine.setIsSelected(!complProduct.getOptional());
+              newComplProductLine.setSaleOrderLine(saleOrderLine);
+              saleOrderLine.addSelectedComplementaryProductListItem(newComplProductLine);
+            }
+          }
+        }
+        saleOrder.setSaleOrderLineList(this.handleComplementaryPartnerProducts(saleOrder));
+      }
+    }
+    saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+  }
+
+  protected List<SaleOrderLine> handleComplementaryPartnerProducts(SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList == null) {
+      saleOrderLineList = new ArrayList<SaleOrderLine>();
+    }
+
+    SaleOrderLine originSoLine = null;
+    for (SaleOrderLine soLine : saleOrderLineList) {
+      if (soLine.getIsComplementaryPartnerProductsUnhandledYet()) {
+        originSoLine = soLine;
+        if (originSoLine.getManualId() == null || originSoLine.getManualId().equals("")) {
+          this.setNewManualId(originSoLine);
+        }
+        break;
+      }
+    }
+
+    if (originSoLine != null
+        && originSoLine.getProduct() != null
+        && originSoLine.getSelectedComplementaryProductList() != null) {
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      AppBaseService appBaseService = Beans.get(AppBaseService.class);
+      for (ComplementaryProductSelected compProductSelected :
+          originSoLine.getSelectedComplementaryProductList()) {
+        // Search if there is already a line for this product to modify or remove
+        SaleOrderLine newSoLine = null;
+        if (saleOrderLineList != null) {
+          for (SaleOrderLine soLine : saleOrderLineList) {
+            if (originSoLine.getManualId().equals(soLine.getParentId())) {
+              if (soLine.getProduct() == compProductSelected.getProduct()) {
+                // Edit line if it already exists instead of recreating, otherwise remove if already
+                // exists and is no longer selected
+                if (compProductSelected.getIsSelected()) {
+                  newSoLine = soLine;
+                } else {
+                  saleOrderLineList.remove(soLine);
+                }
+                break;
+              }
+            }
+          }
+        }
+
+        if (newSoLine == null) {
+          if (compProductSelected.getIsSelected()) {
+            newSoLine = new SaleOrderLine();
+            newSoLine.setProduct(compProductSelected.getProduct());
+            newSoLine.setSaleOrder(saleOrder);
+            newSoLine.setQty(
+                originSoLine
+                    .getQty()
+                    .multiply(compProductSelected.getQty())
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+
+            saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
+            saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+
+            newSoLine.setParentId(originSoLine.getManualId());
+
+            saleOrderLineList.add(newSoLine);
+          }
+        } else {
+          newSoLine.setQty(
+              originSoLine
+                  .getQty()
+                  .multiply(compProductSelected.getQty())
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+
+          saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
+          saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+        }
+      }
+      originSoLine.setIsComplementaryPartnerProductsUnhandledYet(false);
+    }
+
+    return saleOrderLineList;
   }
 }

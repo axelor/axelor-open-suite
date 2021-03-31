@@ -20,6 +20,14 @@
 				</insert>
 		</extend>
 		
+		<extend target="//panel-tabs[@name='mainPanelTab']/panel[@name='deliveryPanel']">
+				<insert position="after">
+				  <panel name="productPanel" title="Product" showIf="isCustomer" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getManagePartnerComplementaryProduct()">
+			 		 <field name="complementaryProductList" canSelect="true" colSpan="12" form-view="complementary-product-form" grid-view="complementary-product-grid"/>
+				  </panel>
+				</insert>
+		</extend>
+		
 	</form>
 
 
