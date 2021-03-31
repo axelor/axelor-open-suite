@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.CollectionUtils;
-
 public class SopServiceImpl implements SopService {
 
   public static final int FETCH_LIMIT = 1;
@@ -131,13 +129,10 @@ public class SopServiceImpl implements SopService {
     statusList.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 
-    String stockLocationIds = "0";
-    if (CollectionUtils.isNotEmpty(stockLocationSet)) {
-      stockLocationIds =
-          stockLocationSet.stream()
-              .map(stockLocation -> stockLocation.getId().toString())
-              .collect(Collectors.joining(","));
-    }
+    List<Long> stockLocationIds =
+        stockLocationSet.stream()
+            .map(stockLocation -> stockLocation.getId())
+            .collect(Collectors.toList());
 
     BigDecimal exTaxSum = BigDecimal.ZERO;
     Query<SaleOrderLine> query =
