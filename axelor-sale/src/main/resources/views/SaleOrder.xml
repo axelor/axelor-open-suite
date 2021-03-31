@@ -419,6 +419,7 @@
 	    <field name="message" hidden="true" type="string"/>
 	    <field name="amountInvoiced" hidden="true"/>
 	    <button if="__config__.app.getApp('sale').getEnableConfigurator()" name="addLineFromConfiguratorBtn" title="Add Line from Configurator" showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
+	    <button name="seperateInNewQuotationBtn" title="Separate in a new quotation" showIf="statusSelect == 1" onClick="save,action-sale-order-method-seperate-in-new-quotation"/>
 	  </panel>
 	  <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4" sidebar="true">
 	    <separator/>
@@ -1180,6 +1181,10 @@
 
 	<action-method name="action-sale-order-method-complementary-products">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="handleComplementaryProducts"/>
+	</action-method>
+
+	<action-method name="action-sale-order-method-seperate-in-new-quotation">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="seperateInNewQuotation"/>
 	</action-method>
 
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">

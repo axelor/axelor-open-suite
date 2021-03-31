@@ -73,6 +73,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -772,5 +775,36 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  public void seperateInNewQuotation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
+    Optional<Entry<String, Object>> SOLinesEntry =
+        contextEntry
+            .stream()
+            .filter(entry -> entry.getKey().equals("saleOrderLineList"))
+            .findFirst();
+    if (!SOLinesEntry.isPresent()) {
+      return;
+    }
+
+    Entry<String, Object> entry = SOLinesEntry.get();
+    @SuppressWarnings("unchecked")
+    ArrayList<LinkedHashMap<String, Object>> SOLines =
+        (ArrayList<LinkedHashMap<String, Object>>) entry.getValue();
+
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder copiedSO =
+        Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
+    response.setView(
+        ActionView.define("Sale order")
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .add("grid", "sale-order-grid")
+            .param("forceEdit", "true")
+            .context("_showRecord", copiedSO.getId())
+            .map());
   }
 }

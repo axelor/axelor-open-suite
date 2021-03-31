@@ -22,6 +22,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface SaleOrderService {
@@ -108,4 +110,8 @@ public interface SaleOrderService {
    * @throws AxelorException
    */
   public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException;
+
+  SaleOrder seperateInNewQuotation(
+      SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
+      throws AxelorException;
 }
