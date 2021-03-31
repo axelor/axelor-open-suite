@@ -50,6 +50,7 @@ import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -374,5 +375,36 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
     }
     return saleOrder;
+  }
+
+  @Transactional
+  public SaleOrder seperateInNewQuotation(
+      SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
+      throws AxelorException {
+
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+
+    SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
+    copySaleOrder.clearSaleOrderLineList();
+    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+
+    for (LinkedHashMap<String, Object> soLine : saleOrderLines) {
+      if (!soLine.containsKey("selected") || !(boolean) soLine.get("selected")) {
+        continue;
+      }
+
+      SaleOrderLine saleOrderLine =
+          Beans.get(SaleOrderLineRepository.class)
+              .find(Long.parseLong(soLine.get("id").toString()));
+      copySaleOrder.addSaleOrderLineListItem(saleOrderLine);
+      saleOrder.removeSaleOrderLineListItem(saleOrderLine);
+    }
+
+    copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
+    saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+    Beans.get(SaleOrderRepository.class).save(saleOrder);
+    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+
+    return copySaleOrder;
   }
 }
