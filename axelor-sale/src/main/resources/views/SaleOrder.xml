@@ -211,7 +211,7 @@
 		      </h3>
 		    ]]></viewer>
 		  </field>
-	    <panel name="detailsPanel" colSpan="10">
+	    <panel name="detailsPanel" colSpan="12">
 	      <field name="saleOrderTypeSelect" colSpan="3" css="label-bold bold" showTitle="false" readonlyIf="statusSelect >= 2" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" if-module="axelor-supplychain">
 	        <viewer><![CDATA[
 	          <div>
@@ -271,7 +271,6 @@
 					]]></viewer>
 				</field>
 	  	</panel>
-	  	<field name="oneoffSale" colSpan="2"/>
 	  	<field name="company.tradingNameSet" hidden="true"/>
 	    <panel name="generalInfoPanel" colSpan="12">
 	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>

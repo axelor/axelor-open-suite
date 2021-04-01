@@ -18,7 +18,6 @@
 	<boolean name="blockedOnCustCreditExceed" title="Blocked"/>
 	<boolean name="manualUnblock" title="Manual Unblock"/>
 	<string name="title" title="Title"/>
-	<boolean name="oneoffSale" title="One-off sale"/>
 	
 <!--   	Onglet Coordonnées client -->
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" massUpdate="true"/>
