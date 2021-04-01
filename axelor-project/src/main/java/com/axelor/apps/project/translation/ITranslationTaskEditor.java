@@ -92,4 +92,6 @@ public interface ITranslationTaskEditor {
   public static final String PROJECT_CREATE_SUCCESS = /*$$(*/
       "TaskEditor.projectCreateSuccess"; /*)*/
   public static final String DELETE_RECORD = /*$$(*/ "TaskEditor.deleteRecord"; /*)*/
+  public static final String NEW_SECTION_TITLE = /*$$(*/ "Untitled section"; /*)*/
+  public static final String NEW_TASK_TITLE = /*$$(*/ "New Task"; /*)*/
 }

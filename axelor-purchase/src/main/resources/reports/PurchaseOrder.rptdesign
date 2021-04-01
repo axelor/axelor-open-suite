@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -3271,7 +3271,7 @@ from base_app_base]]></xml-property>
                                                 <property name="contentType">html</property>
                                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                                             </text>
-                                            <data id="4633">
+                                            <data id="4638">
                                                 <structure name="dateTimeFormat">
                                                     <property name="category">Short Date</property>
                                                     <property name="pattern">Short Date</property>
@@ -3327,7 +3327,7 @@ from base_app_base]]></xml-property>
                                                 <property name="contentType">html</property>
                                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                                             </text>
-                                            <data id="4634">
+                                            <data id="4639">
                                                 <structure name="dateTimeFormat">
                                                     <property name="category">Short Date</property>
                                                     <property name="pattern">Short Date</property>
@@ -5957,11 +5957,11 @@ row["first_name"]
                                     <property name="overflow">hidden</property>
                                     <grid id="4623">
                                         <column id="4624"/>
-                                        <column id="4625"/>
                                         <row id="4626">
                                             <cell id="4627">
                                                 <text id="4629">
                                                     <property name="fontSize">8pt</property>
+                                                    <property name="textAlign">right</property>
                                                     <property name="dataSet">AppBaseDS</property>
                                                     <list-property name="visibility">
                                                         <structure>
@@ -5978,43 +5978,7 @@ row["first_name"]
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF> ]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="4628">
-                                                <text id="4630">
-                                                    <property name="fontSize">8pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["isTitleLine"] == 1</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'value:'+row["UnitCode"]</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">message_key</property>
-                                                            <text-property name="displayName">message_key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["UnitCode"]}</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["UnitCode"]}</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -6674,7 +6638,7 @@ row["first_name"]
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <data id="4635">
+                                    <data id="4640">
                                         <property name="fontSize">8pt</property>
                                         <structure name="dateTimeFormat">
                                             <property name="category">Short Date</property>

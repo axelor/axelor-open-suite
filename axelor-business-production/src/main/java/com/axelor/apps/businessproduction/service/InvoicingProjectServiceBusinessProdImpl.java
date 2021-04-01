@@ -95,7 +95,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
               Beans.get(ManufOrderRepository.class)
                   .all()
                   .filter(
-                      "self.productionOrder.project = ?1 AND (self.realStartDateT < ?2)",
+                      "self.productionOrderSet.project = ?1 AND (self.realStartDateT < ?2)",
                       project,
                       deadlineDateToDateTime)
                   .fetch());
@@ -105,7 +105,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
           .addAll(
               Beans.get(ManufOrderRepository.class)
                   .all()
-                  .filter("self.productionOrder.project = ?1", project)
+                  .filter("self.productionOrderSet.project = ?1", project)
                   .fetch());
     }
   }
@@ -136,7 +136,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
         (int)
             Beans.get(ManufOrderRepository.class)
                 .all()
-                .filter("self.productionOrder.project = ?1", project)
+                .filter("self.productionOrderSet.project = ?1", project)
                 .count();
     toInvoiceCount += productionOrderCount;
 

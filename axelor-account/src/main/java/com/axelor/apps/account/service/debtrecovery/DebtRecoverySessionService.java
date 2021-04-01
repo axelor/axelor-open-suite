@@ -102,10 +102,9 @@ public class DebtRecoverySessionService {
     LocalDate referenceDate = debtRecovery.getReferenceDate();
     BigDecimal balanceDueDebtRecovery = debtRecovery.getBalanceDueDebtRecovery();
 
-    int debtRecoveryLevel = 0;
-    if (debtRecovery.getDebtRecoveryMethodLine() != null
-        && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName() != null) {
-      debtRecoveryLevel = debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName();
+    int debtRecoveryLevel = -1;
+    if (debtRecovery.getDebtRecoveryMethodLine() != null) {
+      debtRecoveryLevel = debtRecovery.getDebtRecoveryMethodLine().getSequence();
     }
 
     int theoricalDebtRecoveryLevel;
@@ -161,12 +160,12 @@ public class DebtRecoverySessionService {
 
     DebtRecoveryMethod debtRecoveryMethod = debtRecovery.getDebtRecoveryMethod();
 
-    int levelMax = 0;
+    int levelMax = -1;
 
     if (debtRecoveryMethod != null && debtRecoveryMethod.getDebtRecoveryMethodLineList() != null) {
       for (DebtRecoveryMethodLine debtRecoveryMethodLine :
           debtRecoveryMethod.getDebtRecoveryMethodLineList()) {
-        int currentLevel = debtRecoveryMethodLine.getDebtRecoveryLevel().getName();
+        int currentLevel = debtRecoveryMethodLine.getSequence();
         if (currentLevel > levelMax) {
           levelMax = currentLevel;
         }
@@ -241,7 +240,7 @@ public class DebtRecoverySessionService {
     }
     for (DebtRecoveryMethodLine debtRecoveryMethodLine :
         debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList()) {
-      if (debtRecoveryMethodLine.getDebtRecoveryLevel().getName().equals(debtRecoveryLevel)) {
+      if (debtRecoveryMethodLine.getSequence() == debtRecoveryLevel) {
         return debtRecoveryMethodLine;
       }
     }

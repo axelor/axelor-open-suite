@@ -1,5 +1,5 @@
-"importId";"name"
-1;"Livraison à domicile"
-2;"Livraison express à domicile"
-3;"Livraison à domicile à l'international"
-4;"Livraison en point relais"
+"importId";"name";"hasCarriagePaidPossibility";"carriagePaidThreshold";"product_importId"
+1;"Livraison à domicile";"true";1000;700
+2;"Livraison express à domicile";"true";2000;701
+3;"Livraison à domicile à l'international";"false";;
+4;"Livraison en point relais";"false";;

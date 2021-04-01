@@ -56,6 +56,7 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
       return Collections.emptyList();
     }
     mrp.addProductSetItem(product);
+    mrp.setMrpTypeSelect(MrpRepository.MRP_TYPE_MRP);
     mrp = Beans.get(MrpRepository.class).save(mrp);
     mrp = Beans.get(MrpService.class).createProjectedStock(mrp, product, company, stockLocation);
 

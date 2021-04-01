@@ -44,7 +44,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
@@ -52,15 +51,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  private SaleOrderLineService saleOrderLineService;
+  protected SaleOrderLineService saleOrderLineService;
   protected AppBaseService appBaseService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderRepository saleOrderRepo;

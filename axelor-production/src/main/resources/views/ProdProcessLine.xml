@@ -19,25 +19,15 @@
 		<panel name="mainPanel">
 			<field name="name" />
 			<field name="priority" colSpan="3" />
-			<field name="workCenterTypeSelect"/>
-			<button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
-				onClick="save,action-production-view-work-center-group-wizard" />
-			<field name="workCenterGroup" colSpan="12" canSelect="false" hideIf="workCenterTypeSelect != 3">
-				<editor x-viewer="true">
-					<panel colSpan="12" itemSpan="12">
-						<field name="name"/>
-						<field name="workCenterSet" grid-view="work-center-prod-process-line-grid" form-view="work-center-form" showTitle="false"/>
-					</panel>
-				</editor>
-			</field>
-			<field name="workCenterGroup" colSpan="12" canSelect="false" showIf="workCenterTypeSelect != 3" hidden="true">
-            <editor x-viewer="true">
-               <panel colSpan="12" itemSpan="12">
-                  <field name="name"/>
-                  <field name="workCenterSet" grid-view="work-center-grid-small" form-view="work-center-form" showTitle="false"/>
-               </panel>
-            </editor>
-         </field>
+			<field name="workCenter" hidden="true" grid-view="work-center-grid" form-view="work-center-form" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
+			<panel name="workCenterGroupPanel" hidden="true" colSpan="12">
+				<field name="workCenterTypeSelect"/>
+				<button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
+					onClick="save,action-production-view-work-center-group-wizard" readonlyIf="workCenterTypeSelect == 0 || workCenterTypeSelect == null"/>
+				<field name="workCenterGroup" canNew="true" canEdit="true" canSelect="false" colSpan="12" form-view="work-center-group-form" grid-view="work-center-group-grid"
+					onChange="action-prod-process-line-group-work-center-group-onchange"
+					domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+			</panel>
 			<field name="outsourcing" />
 			<field name="optional" />
 			<field name="useLineInGeneratedPurchaseOrder"/>
@@ -45,6 +35,11 @@
 				onSelect="action-prod-process-line-attrs-machine-tool-domain"
 				if="__config__.app.getApp('production').getEnableToolManagement()" />
 			<field name="stockLocation" />
+			<panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12" hidden="true">
+				<field name="minCapacityPerCycle" colSpan="3" />
+				<field name="maxCapacityPerCycle" colSpan="3" />
+				<field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true" />
+			</panel>
 			<panel name="descriptionPanel" title="Description" colSpan="12">
 				<field name="description" showTitle="false" height="5"
 					colSpan="12" />
@@ -56,14 +51,7 @@
 				editable="true" colSpan="12" form-view="prod-product-form"
 				grid-view="prod-product-grid" />
 			<panel name="descriptionPanel" title="Descriptions">
-				<field name="objectDescriptionList" colSpan="12">
-					<editor x-layout="table" x-show-on-new="false" x-viewer="true">
-						<panel name="mainPanel" colSpan="12">
-							<field name="image" colSpan="3" canNew="true" widget="Image" />
-							<field name="description" widget="html" colSpan="9" />
-						</panel>
-					</editor>
-				</field>
+				<field name="objectDescriptionList" form-view="object-description-form" grid-view="object-description-grid" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 
@@ -76,19 +64,12 @@
 	<form model="com.axelor.apps.production.db.ProdProcessLine" title="Work center group selection"
 		name="prod-process-line-work-center-group-wizard-form">
 		<panel name="mainPanel">
-			<field canNew="true" canEdit="false" canSelect="true"
-				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"/>
+			<field canNew="true" canEdit="false" canSelect="true" form-view="work-center-group-form"
+				name="$workCenterGroupWizard" title="Work center group template" target="com.axelor.apps.production.db.WorkCenterGroup"
+				type="many-to-one" required="true" onSelect="action-attrs-production-set-work-center-group-wizard-domain"/>
 			<button name="workCenterGroupWizardSave" title="Save"
 				onClick="save,action-production-method-set-work-center-group" />
-
 		</panel>
-		<panel name="attrsPanel">
-			<field name="composantNomenclature" hidden="true"/>
-			<field name="allWorkshops" hidden="true"/>
-			<field name="ateliers" hidden="true"/>
-			<field name="multipleQty" hidden="true"/>
-		</panel>
-
 	</form>
 
 	<action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
@@ -107,22 +88,32 @@
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: __this__.id" />
 		<context name="workCenterTypeSelect" expr="eval: __this__.workCenterTypeSelect" />
+		<context name="_template" expr="true"/>
 	</action-view>
 
 	<action-method name="action-production-method-set-work-center-group">
 		<call class="com.axelor.apps.production.web.ProdProcessLineController"
-			method="copyWorkCenterGroup" />
+			method="setWorkCenterGroup" />
 	</action-method>
 
-	<action-attrs name="action-attrs-production-set-work-center-group-domain" model="com.axelor.apps.production.db.ProdProcessLine">
-		<attribute name="domain" for="workCenterGroup" expr="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+	<action-attrs name="action-attrs-production-set-work-center-group-wizard-domain" model="com.axelor.apps.production.db.ProdProcessLine">
+		<attribute name="domain" for="$workCenterGroupWizard" expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
 	</action-attrs>
 
 	<action-group name="action-prod-process-line-group-work-center-onchange">
 		<action name="action-prod-process-line-method-duration"/>
 		<action name="action-prod-process-line-method-capacity-settings"/>
 	</action-group>
-    
+
+	<action-group name="action-prod-process-line-group-work-center-group-onchange">
+		<action name="action-prod-process-line-method-work-center-group-fill-work-center"/>
+		<action name="action-prod-process-line-group-work-center-onchange"/>
+	</action-group>
+
+	<action-method name="action-prod-process-line-method-work-center-group-fill-work-center" model="com.axelor.apps.production.db.ProdProcessLine">
+		<call class="com.axelor.apps.production.web.ProdProcessLineController" method="fillWorkCenter"/>
+	</action-method>
+
     <action-method name="action-prod-process-line-method-duration">
     	<call class="com.axelor.apps.production.web.ProdProcessLineController" method="updateDuration"/>
     </action-method>
@@ -136,6 +127,9 @@
 		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
 		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
 		<attribute name="hidden" for="useLineInGeneratedPurchaseOrder" expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)" if="__parent__ != null"/>
+		<attribute name="hidden" for="workCenter" expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
+		<attribute name="hidden" for="workCenterGroupPanel" expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup()"/>
+		<attribute name="hidden" for="capacitySettingsPanel" expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
     </action-attrs>
     
    <action-attrs name="action-prod-process-line-attrs-machine-tool-domain">

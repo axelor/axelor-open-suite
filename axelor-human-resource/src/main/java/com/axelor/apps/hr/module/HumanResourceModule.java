@@ -57,6 +57,8 @@ import com.axelor.apps.hr.service.batch.MailBatchServiceHR;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
+import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeService;
+import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
@@ -123,5 +125,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetReportService.class).to(TimesheetReportServiceImpl.class);
     bind(EmploymentContractRepository.class).to(EmploymentContractHRRepository.class);
     bind(AppTimesheetService.class).to(AppTimesheetServiceImpl.class);
+    bind(EmploymentAmendmentTypeService.class).to(EmploymentAmendmentTypeServiceImpl.class);
   }
 }

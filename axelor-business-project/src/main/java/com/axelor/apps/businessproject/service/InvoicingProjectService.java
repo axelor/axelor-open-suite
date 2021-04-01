@@ -55,7 +55,6 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -111,6 +110,7 @@ public class InvoicingProjectService {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
+        && invoicingProject.getProjectSet().isEmpty()
         && invoicingProject.getProjectTaskSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
@@ -358,32 +358,15 @@ public class InvoicingProjectService {
 
     StringBuilder polQueryBuilder = new StringBuilder(commonQuery);
     polQueryBuilder.append(
-        " AND (self.purchaseOrder.statusSelect = :statusValidated OR self.purchaseOrder.statusSelect = :statusFinished)");
+        " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)");
 
     Map<String, Object> polQueryMap = new HashMap<>();
     polQueryMap.put("project", project);
-    polQueryMap.put("statusValidated", PurchaseOrderRepository.STATUS_VALIDATED);
-    polQueryMap.put("statusFinished", PurchaseOrderRepository.STATUS_FINISHED);
 
-    if (project.getIsShowTimeSpent()) {
-      StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
-      Map<String, Object> logTimesQueryMap = new HashMap<>();
-      logTimesQueryMap.put("project", project);
+    StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
 
-      if (invoicingProject.getDeadlineDate() != null) {
-        logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");
-        logTimesQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
-      }
-
-      invoicingProject
-          .getLogTimesSet()
-          .addAll(
-              Beans.get(TimesheetLineRepository.class)
-                  .all()
-                  .filter(logTimesQueryBuilder.toString())
-                  .bind(logTimesQueryMap)
-                  .fetch());
-    }
+    Map<String, Object> logTimesQueryMap = new HashMap<>();
+    logTimesQueryMap.put("project", project);
 
     StringBuilder expenseLineQueryBuilder = new StringBuilder(commonQuery);
     expenseLineQueryBuilder.append(
@@ -408,6 +391,9 @@ public class InvoicingProjectService {
       polQueryBuilder.append(" AND self.purchaseOrder.orderDate <= :deadlineDate");
       polQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
+      logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");
+      logTimesQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
+
       expenseLineQueryBuilder.append(" AND self.expenseDate <= :deadlineDate");
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
@@ -428,6 +414,15 @@ public class InvoicingProjectService {
                 .all()
                 .filter(polQueryBuilder.toString())
                 .bind(polQueryMap)
+                .fetch());
+
+    invoicingProject
+        .getLogTimesSet()
+        .addAll(
+            Beans.get(TimesheetLineRepository.class)
+                .all()
+                .filter(logTimesQueryBuilder.toString())
+                .bind(logTimesQueryMap)
                 .fetch());
 
     invoicingProject
@@ -455,6 +450,7 @@ public class InvoicingProjectService {
     invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>());
     invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
+    invoicingProject.setProjectSet(new HashSet<Project>());
     invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
   }
 
@@ -560,6 +556,7 @@ public class InvoicingProjectService {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
+        && invoicingProject.getProjectSet().isEmpty()
         && invoicingProject.getProjectTaskSet().isEmpty()) {
 
       return invoicingProject;

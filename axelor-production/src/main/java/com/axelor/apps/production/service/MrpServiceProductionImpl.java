@@ -30,6 +30,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -70,8 +71,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected AppBaseService appBaseService;
-
   protected ManufOrderRepository manufOrderRepository;
 
   protected ProductCompanyService productCompanyService;
@@ -79,7 +78,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   @Inject
   public MrpServiceProductionImpl(
       AppBaseService appBaseService,
-      AppProductionService appProductionService,
+      AppPurchaseService appPurchaseService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
       ProductRepository productRepository,
@@ -91,12 +90,12 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
-      ManufOrderRepository manufOrderRepository,
       StockLocationService stockLocationService,
+      ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService) {
-
     super(
-        appProductionService,
+        appBaseService,
+        appPurchaseService,
         mrpRepository,
         stockLocationRepository,
         productRepository,
@@ -109,8 +108,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineService,
         mrpForecastRepository,
         stockLocationService);
-
-    this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
   }

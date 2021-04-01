@@ -369,8 +369,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
           @Override
           public Invoice generate() throws AxelorException {
+            Invoice invoice = super.createInvoiceHeader();
+            invoice.setPartnerTaxNbr(partner.getTaxNbr());
 
-            return super.createInvoiceHeader();
+            return invoice;
           }
         };
 
@@ -395,7 +397,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
           stockMoveLocal, stockMoveLocal.getStockMoveLineList());
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMoveLocal.getStockMoveLineList(), null);
+              invoice, stockMoveLocal, stockMoveLocal.getStockMoveLineList(), null);
       if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
@@ -489,7 +491,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     for (StockMove stockMoveLocal : stockMoveList) {
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMoveLocal.getStockMoveLineList(), null);
+              invoice, stockMoveLocal, stockMoveLocal.getStockMoveLineList(), null);
       if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }

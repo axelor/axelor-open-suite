@@ -22,6 +22,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -70,6 +71,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +99,7 @@ public class MrpServiceImpl implements MrpService {
   protected StockLocationService stockLocationService;
 
   protected AppBaseService appBaseService;
+  protected AppPurchaseService appPurchaseService;
 
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
@@ -106,6 +109,7 @@ public class MrpServiceImpl implements MrpService {
   @Inject
   public MrpServiceImpl(
       AppBaseService appBaseService,
+      AppPurchaseService appPurchaseService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
       ProductRepository productRepository,
@@ -132,6 +136,7 @@ public class MrpServiceImpl implements MrpService {
     this.mrpForecastRepository = mrpForecastRepository;
 
     this.appBaseService = appBaseService;
+    this.appPurchaseService = appPurchaseService;
     this.stockLocationService = stockLocationService;
   }
 
@@ -445,6 +450,10 @@ public class MrpServiceImpl implements MrpService {
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
       maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
+      if (appPurchaseService.getAppPurchase() != null
+          && appPurchaseService.getAppPurchase().getManageMultiplePurchaseQuantity()) {
+        reorderQty = computeMultipleProductsPurchaseReorderQty(product, reorderQty);
+      }
     }
 
     if (maturityDate.isBefore(today)) {
@@ -500,6 +509,27 @@ public class MrpServiceImpl implements MrpService {
       }
     }
     return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal computeMultipleProductsPurchaseReorderQty(
+      Product product, BigDecimal reorderQty) {
+    List<ProductMultipleQty> productMultipleQtyList = product.getPurchaseProductMultipleQtyList();
+    if (productMultipleQtyList == null || reorderQty == null || reorderQty.signum() == 0) {
+      return reorderQty;
+    }
+    BigDecimal diff =
+        productMultipleQtyList.stream()
+            .map(ProductMultipleQty::getMultipleQty)
+            .filter(bigDecimal -> bigDecimal.signum() != 0)
+            // compute what needs to be added to reorder quantity to have a multiple
+            .map(
+                bigDecimal -> {
+                  BigDecimal remainder = reorderQty.remainder(bigDecimal);
+                  return remainder.signum() == 0 ? BigDecimal.ZERO : bigDecimal.subtract(remainder);
+                })
+            .min(Comparator.naturalOrder())
+            .orElse(BigDecimal.ZERO);
+    return reorderQty.add(diff);
   }
 
   protected MrpLineType getMrpLineTypeForProposal(
@@ -704,7 +734,10 @@ public class MrpServiceImpl implements MrpService {
               .all()
               .filter(
                   "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
-                      + "AND self.saleOrder.statusSelect IN (?4)",
+                      + "AND self.saleOrder.statusSelect IN (?4) "
+                      + (!saleOrderMrpLineType.getIncludeOneOffSales()
+                          ? "AND self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE"
+                          : ""),
                   this.productMap.keySet(),
                   this.stockLocationList,
                   SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,

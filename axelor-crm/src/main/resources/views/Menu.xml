@@ -30,7 +30,6 @@
 		<view-param name="limit" value="39" />
 		<view-param name="search-filters" value="partner-filters" />
 		<domain>self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)</domain>
-		<context name="user_id" expr="eval:__user__.id" />
 		<context name="_isCustomer" expr="true" />
 		<context name="_domain"
 			expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)" />
@@ -347,7 +346,7 @@
 		title="Opportunities" order="-20" />
 
 	<menuitem name="menu-opportunities-dashboard-1" parent="menu-opportunities-dashboard"
-		title="Opportunities Db 1"  action="crm.opportunities.dashboard.1.view"/>
+		title="Tb Opportunities 1"  action="crm.opportunities.dashboard.1.view"/>
 
 	<menuitem name="menu-opportunities-dashboard-manager" parent="menu-opportunities-dashboard"
 		title="Manager"  action="crm.opportunities.manager.view"/>
@@ -364,15 +363,15 @@
 	</action-view>
 
 	<action-view name="crm.opportunities.dashboard.1.view"
-		title="Opportunities Db 1">
+		title="Tb Opportunities 1">
 		<view type="dashboard" name="crm.opportunities.dashboard.1" />
 	</action-view>
 
 	<menuitem name="menu-opportunities-dashboard-2" parent="menu-opportunities-dashboard"
-		title="Opportunities Db 2" action="crm.opportunities.dashboard.2.view" />
+		title="Tb Opportunities 2" action="crm.opportunities.dashboard.2.view" />
 
 	<action-view name="crm.opportunities.dashboard.2.view"
-		title="Opportunities Db 2">
+		title="Tb Opportunities 2">
 		<view type="dashboard" name="crm.opportunities.dashboard.2" />
 	</action-view>
 

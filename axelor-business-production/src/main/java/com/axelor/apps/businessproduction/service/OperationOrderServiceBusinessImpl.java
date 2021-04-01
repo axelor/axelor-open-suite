@@ -24,19 +24,13 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.util.Comparator;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,35 +48,17 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       return super.createOperationOrder(manufOrder, prodProcessLine);
     }
 
-    WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
+    OperationOrder operationOrder =
+        this.createOperationOrder(
+            manufOrder,
+            prodProcessLine.getPriority(),
+            manufOrder.getIsToInvoice(),
+            prodProcessLine.getWorkCenter(),
+            prodProcessLine.getWorkCenter().getMachine(),
+            prodProcessLine.getMachineTool(),
+            prodProcessLine);
 
-    Optional<WorkCenter> workCenter = Optional.empty();
-
-    if (workCenterGroup != null
-        && workCenterGroup.getWorkCenterSet() != null
-        && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenter =
-          workCenterGroup.getWorkCenterSet().stream()
-              .min(Comparator.comparing(WorkCenter::getSequence));
-    }
-
-    if (workCenter.isPresent()) {
-      OperationOrder operationOrder =
-          this.createOperationOrder(
-              manufOrder,
-              prodProcessLine.getPriority(),
-              manufOrder.getIsToInvoice(),
-              workCenter.get(),
-              workCenter.get().getMachine(),
-              prodProcessLine.getMachineTool(),
-              prodProcessLine);
-
-      return Beans.get(OperationOrderRepository.class).save(operationOrder);
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.NO_WORK_CENTER_GROUP));
-    }
+    return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
   @Transactional

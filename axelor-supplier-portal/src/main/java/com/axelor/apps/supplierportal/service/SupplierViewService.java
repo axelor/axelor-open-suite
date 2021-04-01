@@ -37,6 +37,8 @@ public interface SupplierViewService {
 
   public String getDeliveriesToPrepareOfSupplier(User user);
 
+  public String getOverdueInvoicesOfSupplier(User user);
+
   public String getAwaitingInvoicesOfSupplier(User user);
 
   public String getTotalRemainingOfSupplier(User user);

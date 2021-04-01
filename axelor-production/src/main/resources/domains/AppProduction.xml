@@ -37,6 +37,8 @@
 		
 		<boolean name="isManufOrderPlannedAfterMerge" title="Automatically plan after fusion" />
 
+		<boolean name="manageWorkCenterGroup" title="Manage work center group"/>
+
 		<track>
 			<field name="prodOrderMgtOnSO" on="UPDATE"/>
 			<field name="productionOrderGenerationAuto" on="UPDATE"/>

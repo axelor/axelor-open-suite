@@ -50,7 +50,7 @@ public interface BillOfMaterialService {
       throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
-  public TempBomTree generateTree(BillOfMaterial billOfMaterial);
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom);
 
   @Transactional
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial);

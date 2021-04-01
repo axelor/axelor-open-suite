@@ -123,7 +123,7 @@ public class HumanResourceMobileController {
       expenseLine.setExpenseProduct(expenseProduct);
 
       Employee employee = user.getEmployee();
-      if (employee != null && !EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (employee != null && !EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         KilometricAllowParamRepository kilometricAllowParamRepo =
             Beans.get(KilometricAllowParamRepository.class);
 

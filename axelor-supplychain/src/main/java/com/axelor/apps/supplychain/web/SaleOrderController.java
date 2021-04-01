@@ -914,6 +914,19 @@ public class SaleOrderController {
     }
   }
 
+  public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String message =
+          Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
+      if (message != null) {
+        response.setFlash(message);
+      }
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
   /**
    * Called from sale order form view, on invoiced partner select. Call {@link
    * PartnerSupplychainLinkService#computePartnerFilter}

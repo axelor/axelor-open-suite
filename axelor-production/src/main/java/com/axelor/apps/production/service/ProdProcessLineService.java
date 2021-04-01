@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
 public interface ProdProcessLineService {
@@ -30,5 +31,14 @@ public interface ProdProcessLineService {
 
   public BigDecimal getProdProcessLineMaxCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
 
-  public void copyWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup);
+  public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
+      throws AxelorException;
+
+  /**
+   * Returns work center with min sequence in {@link ProdProcessLine#workCenterGroup}. Can return
+   * null if the work center group is null, else if the work center group has no work centers,
+   * throws an exception.
+   */
+  public WorkCenter getMainWorkCenterFromGroup(ProdProcessLine prodProcessLine)
+      throws AxelorException;
 }

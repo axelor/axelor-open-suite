@@ -74,9 +74,10 @@ public class PurchaseOrderSupplierLineController {
       purchaseOrderLine = request.getContext().getParent().asType(PurchaseOrderLine.class);
     }
 
-    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-    if (purchaseOrder == null) {
-      purchaseOrder = request.getContext().getParent().getParent().asType(PurchaseOrder.class);
+    PurchaseOrder purchaseOrder =
+        request.getContext().getParent().getParent().asType(PurchaseOrder.class);
+    if (purchaseOrder.getId() != null) {
+      purchaseOrder = purchaseOrderLine.getPurchaseOrder();
     }
     Company company = purchaseOrder.getCompany();
 

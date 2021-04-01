@@ -1,7 +1,0 @@
----
-title: "Partner Delegations improvements on Partner, Sale Order and Stock Move"
-type: feature
-description: |
-  Update Partner Delegations translation and column order on Partner form for better consistency.
-  Add automatic invoiced partner and delivered partner set on client partner change on Sale Order and update the related addresses.
-  Add automatic invoiced partner set on partner change on Stock Move and update the related address also. 

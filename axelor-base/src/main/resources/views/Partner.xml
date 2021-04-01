@@ -354,7 +354,7 @@
 				<field name="taxNbr" hideIf="partnerTypeSelect== 2" />
 				<field name="paymentDelay" if-module="axelor-cash-management"
 					if="__config__.app.isApp('cash-management')" />
-				<field name="parentPartner" hideIf="partnerTypeSelect != 1"
+				<field name="parentPartner" hideIf="partnerTypeSelect != 1" if="__config__.app.getApp('base').getManageSubsidiaryPartner()"
 					domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
 					form-view="partner-form" grid-view="partner-grid" />
 				<field name="sellerCode" showIf="isFactor"
@@ -371,7 +371,7 @@
 				colSpan="6"/>
 		</panel>
 		<panel-dashlet action="action-partner-view-subsidiary-partners"
-			name="subsidiaryPartners" />
+			name="subsidiaryPartners"  showIf="partnerTypeSelect == 1" if="__config__.app.getApp('base').getManageSubsidiaryPartner()"/>
 		<panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
 			hideIf="!id || isContact || partnerTypeSelect == 2"
 			domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
@@ -1238,13 +1238,6 @@
 		<field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
 	</action-record>
 
-	<action-record name="action-partner-record-set-positive-balance"
-		model="com.axelor.apps.base.db.Partner">
-		<field name="$positiveBalanceBtn" expr="eval: $balance &lt; 0 ? $balance * -1 : $balance"
-			if="$balance != null" />
-		<field name="$positiveBalanceBtn" expr="eval: 0" if="$balance == null" />
-	</action-record>
-
 	<action-record name="action-partner-record-employee"
 		model="com.axelor.apps.base.db.Partner">
 		<field name="isEmployee" expr="eval: false" if="partnerTypeSelect == 1" />
@@ -1258,11 +1251,6 @@
 
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
 		<field name="partnerTypeSelect" expr="eval: __user__.activeCompany?.defaultPartnerTypeSelect"/>
-	</action-record>
-
-	<action-record name="action-partner-record-partner-type-select"
-		model="com.axelor.apps.base.db.Partner">
-		<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}" />
 	</action-record>
 
 	<action-record name="action-partner-record-simple-and-full-name"
@@ -1283,7 +1271,7 @@
 		<field name="isSupplier" expr="true" if="_isSupplier || (__user__?.activeCompany?.defaultPartnerCategorySelect == 2 &amp;&amp; !_isCustomer &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
 		<field name="isCarrier" expr="true" if="_isCarrier"/>
 		<field name="isSubcontractor" expr="true" if="_isSubcontractor"/>
-		<field name="partnerTypeSelect" expr="#{2}" if="user_id"/>
+		<field name="partnerTypeSelect" expr="#{2}" if="created_from_user_id"/>
 	</action-record>
 
 	<action-record name="action-partner-contact-record-default"
@@ -1451,7 +1439,7 @@
 		title="Subsidiaries" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
-		<domain>self.id in (select p.id from Partner p where p.parentPartner = :id)</domain>
+		<domain>self.parentPartner = :id</domain>
 	</action-view>
 
 	<action-record name="action-record-base-partner-set-business-card"

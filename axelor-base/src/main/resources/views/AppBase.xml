@@ -30,6 +30,7 @@
     	    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
     	    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
     	    	<field name="teamManagement" widget="boolean-switch"/>
+    	    	<field name="manageSubsidiaryPartner" widget="boolean-switch"/>
     	    	<panel name="productBarCodePanel" title="Product BarCode">
     	    		<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
     	    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
@@ -62,6 +63,9 @@
 				<panel itemSpan="12" colSpan="6">
                 	<field name="defaultMailMessageTemplate"/>
                 	<panel-related field="mailTemplateAssociationList" grid-view="mail-template-association-grid" form-view="mail-template-association-form"/>
+                </panel>
+                <panel name="stylePanel" title="Style" colSpan="12">
+                	<field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
                 </panel>
 			</panel>
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">

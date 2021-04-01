@@ -1,5 +1,0 @@
----
-title: "OPERATION ORDER : display discription"
-type: feature
-description : |
-  Addition of dotted field prodProcessLine.description & prodProcessLine.objectDescriptionList

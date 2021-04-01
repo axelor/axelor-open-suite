@@ -46,7 +46,7 @@ public class CashManagementForecastRepository extends ForecastRepository {
           throw new AxelorException(
               company,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.FORCAST_SEQUENCE_ERROR),
+              I18n.get(IExceptionMessage.FORECAST_SEQUENCE_ERROR),
               company.getName());
 
         } else {

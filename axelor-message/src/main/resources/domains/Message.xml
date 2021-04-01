@@ -34,6 +34,8 @@
   	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
   	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>
 		<many-to-one name="template" ref="com.axelor.apps.message.db.Template" readonly="true"/>
+		
+	<string name="emailThreadId" title="Thread ID" hidden="true"/>	
 
 		<!-- SMS -->
 		<string name="toMobilePhone" title="Mobile phone"/>

@@ -1,0 +1,3 @@
+---
+title: "MailMessage: fix sender user always being the same for all sent messages."
+type: fix

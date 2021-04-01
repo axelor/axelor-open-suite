@@ -18,7 +18,6 @@
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = false AND self.isSupplier = true</domain>
-		<context name="user_id" expr="eval:__user__.id" />
 		<context name="_isSupplier" expr="true"/>
 		<context name="_domain" expr="self.isContact = false AND self.isSupplier = true"/>
 		<context name="json-enhance" expr="eval:true" />
@@ -215,7 +214,7 @@
 		model="com.axelor.apps.base.db.PriceList" >
 		<view type="grid" name="price-list-grid" />
 		<view type="form" name="purchase-price-list-form" />
-		<domain>self.typeSelect = 2 and self.id not in (select priceList.id from PriceList priceList join PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where priceList.typeSelect = 2 and partnerPriceList.isExclusive IS TRUE )</domain>
+		<domain>self.typeSelect = 2 and self.id not in (select priceList.id from PriceList priceList where parentPriceList IS NOT NULL ) and self.id not in (select priceList.id from PriceList priceList join PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where priceList.typeSelect = 2 and partnerPriceList.isExclusive IS TRUE )</domain>
 	</action-view>
 
 <!-- TOP MENU -->

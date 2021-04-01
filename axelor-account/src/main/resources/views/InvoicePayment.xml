@@ -21,6 +21,7 @@
         onNew="action-invoice-payment-group-new"
         onLoad="action-attrs-invoice-payment-hide-trading-name">
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
+			<field name="typeSelect" showIf="id" colSpan="12" />
             <field name="amount"/>
             <field name="currency" canEdit="false"
                 form-view="currency-form" grid-view="currency-grid"/>

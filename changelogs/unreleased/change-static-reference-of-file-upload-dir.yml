@@ -1,6 +1,0 @@
----
-title: "Changing all static reference of file upload dir with dynamic reference"
-type: change
-description: |
-  Replace all static reference to file upload dir with Metafile api.
-  Creating all the temp files using Metafiles temp file.

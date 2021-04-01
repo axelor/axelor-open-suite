@@ -1,5 +1,0 @@
----
-title: "Sale order: check external reference duplicate"
-type: feature
-description: |
-  In a sale order, add a message when the external reference is already used in another sale order

@@ -782,8 +782,7 @@ public class SaleOrderController {
 
     Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
     Optional<Entry<String, Object>> SOLinesEntry =
-        contextEntry
-            .stream()
+        contextEntry.stream()
             .filter(entry -> entry.getKey().equals("saleOrderLineList"))
             .findFirst();
     if (!SOLinesEntry.isPresent()) {

@@ -173,7 +173,8 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
     billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-    TempBomTree tempBomTree = Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial);
+    TempBomTree tempBomTree =
+        Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
 
     response.setView(
         ActionView.define(I18n.get("Bill of materials"))

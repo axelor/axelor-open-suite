@@ -9,11 +9,8 @@
 	    <dashlet action="dashlet.customers.by.country" height="350"   canSearch="true"/>
 	    <dashlet action="dashlet.customers.by.industrySector" height="350"   canSearch="true"/>
 	    <dashlet action="dashlet.partner.by.saleman" height="350"   canSearch="true" colSpan="12"/>
-		<dashlet action="dashlet.partner.recent.partners" height="350"   canSearch="true" colSpan="12"/>	
-		<dashlet action="dashlet.my.customers" height="350"   canSearch="true" colSpan="12"/>	
 		<dashlet height="350" action="dashlet.prospects.by.country" canSearch="true"/> 
 		<dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
-		<dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
 		<dashlet action="dashlet.customers.with.first.sale.order" height="350" canSearch="true"/>
   	</dashboard>
   	

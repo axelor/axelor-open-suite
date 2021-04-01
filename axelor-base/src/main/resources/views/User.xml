@@ -10,7 +10,7 @@
         <field name="name"/>
         <field name="fullName"/>
         <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
-        <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
+        <field name="tradingName" if="__config__.app.getApp('base').getEnableTradingNamesManagement()" form-view="trading-name-form" grid-view="trading-name-grid"/>
         <field name="group" form-view="group-form" grid-view="group-grid"/>
         <field name="blocked"/>
 		<field name="activateOn"/>
@@ -58,7 +58,7 @@
 			</panel>
 			<panel name="stepContactPanel" showIf="stepStatusSelect == 2" colSpan="12">
 				<panel name="contactInformationPanel" title="Contact Information" showIf="id &amp;&amp; [2,5].indexOf(stepStatusSelect) > -1" colSpan="12">
-	      			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="action-user-view-user-partner-type-wizard,action-user-attrs"/>
+	      			<button name="createPartnerBtn" title="Create Partner" colSpan="12" showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0" onClick="save,action-user-view-user-partner-type-wizard,action-user-attrs"/>
 	      			<field name="partner" showTitle="false" colSpan="12" canNew="true" domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)" form-view="partner-employee-form" grid-view="partner-employee-grid">
 	        			<editor x-viewer="true">
 	          				<field name="fullName" readonly="true"/>
@@ -70,14 +70,15 @@
 	      			</field>
     		 	</panel>
         	 	<field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
-				<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
+				<field name="tradingName" if="__config__.app.getApp('base').getEnableTradingNamesManagement()" form-view="trading-name-form" grid-view="trading-name-grid"/>
 				<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid" onSelect="action-user-attrs-domain-active-team"/>
 	        	<panel-related name="companySetPanel" title="Internal companies" field="companySet" showTitle="false" canNew="false" showIf="[2,5].indexOf(stepStatusSelect) > -1" colSpan="12"/>
 				<field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid" colSpan="12"/>
 			</panel>
 			<panel name="stepMainPanel" showIf="stepStatusSelect == 3" colSpan="12">
- 	        	<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
+ 	        	<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" readonlyIf="employee.contactPartner.id == partner.id"/>
 	        	<button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
+	            <field name="employee.contactPartner" hidden="true"/>
         	</panel>
     		<panel name="stepActivationPanel" showIf="stepStatusSelect == 4" colSpan="12">
     			<field name="activateOn" validIf="!activateOn || (activateOn &amp;&amp; !expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
@@ -88,9 +89,9 @@
     	<panel name="mainPanel" sidebar="true" showIf="stepStatusSelect == 5">
 			<field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<!--	<field name="timesheetPeriodConfig"/> -->
-			<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
+			<field name="tradingName" if="__config__.app.getApp('base').getEnableTradingNamesManagement()" form-view="trading-name-form" grid-view="trading-name-grid"/>
 			<field name="workshopStockLocation" onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
-			<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
+			<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" readonlyIf="employee.contactPartner.id == partner.id"/>
 			<button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
 		</panel>
 		<panel name="testingPanel" title="Testing" sidebar="true" hidden="true" showIf="stepStatusSelect == 5">
@@ -205,7 +206,7 @@
 			<field name="image" showTitle="false"/>
 			<field name="language"/>
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
-			<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
+			<field name="tradingName" if="__config__.app.getApp('base').getEnableTradingNamesManagement()" form-view="trading-name-form" grid-view="trading-name-grid"/>
 			<field name="singleTab" widget="inline-checkbox"/>
 			<field name="change" title="Change password?" widget="inline-checkbox"/>
 			<panel name="allPasswordsPanel" showIf="change" itemSpan="12">
@@ -243,22 +244,22 @@
 		</panel>
 	</form>
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Partner type" name="user-partner-type-wizard-form">
+	<form model="com.axelor.apps.base.db.Wizard" title="Partner type selection" name="user-partner-type-wizard-form">
 		<panel name="mainPanel">
 			<field name="$partnerType" title="Partner type" type="integer" selection="user.partner.type.select"/>
-			<button onClick="action-user-record-form-partner-contact" name="createBtn" title="Create Partner" showIf="$partnerType"/>
+			<button onClick="action-user-view-form-partner-contact,close" name="createBtn" title="Create Partner" showIf="$partnerType"/>
 		</panel>
 	</form>
-	
+
     <action-attrs name="action-user-attrs-domain-followers">
-    	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
+    	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN
     	(${__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().collect{it.parentUser.id}.join(',')}) &quot;"
     	if="!__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
-    	
-    	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id = 0 &quot;" 
+
+    	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id = 0 &quot;"
     	if="__repo__(CalendarManagement).all().filter('self.user.id = ?1', id).fetch().isEmpty()"/>
     </action-attrs>
-    
+
     <action-attrs name="action-user-attrs-domain-active-company">
   		<attribute name="domain" expr="eval:companySet?.size() > 0 ? &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; : &quot;self = null&quot; " for="activeCompany"/>
     </action-attrs>
@@ -299,7 +300,7 @@
     <action-validate name="action-user-check-company">
         <notify message="Please select active company"  if="__repo__(Company).all().fetch().size != 1"/>
     </action-validate>
-    
+
     <action-group name="action-user-group-employee">
 		<action name="com.axelor.apps.hr.web.UserHrController:createEmployee"/>
 		<action name="action-employee-user-show-employee" if="partner != null"/>
@@ -311,16 +312,16 @@
 		<view-param name="popup-save" value="false"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
-		<context name="user_id" expr="eval:__this__.id"/>
+		<context name="created_from_user_id" expr="eval:__this__.id"/>
  	</action-view>
-	
-	<action-view name="action-user-record-form-partner-contact" title="Partner" model="com.axelor.apps.base.db.Partner">
+
+	<action-view name="action-user-view-form-partner-contact" title="Partner" model="com.axelor.apps.base.db.Partner">
 		<view type="form" name="partner-employee-form" if="partnerType == 1"/>
 		<view type="form" name="partner-contact-form" if="partnerType == 2"/>
 		<view type="form" name="partner-form" if="partnerType == 3"/>
 		<view-param name="show-toolbar" value="false" />
-		<view-param name="popup" value="true"/>
-		<context name="user_id" expr="eval: user_id"/>
+		<view-param name="popup" value="reload"/>
+		<context name="created_from_user_id" expr="eval: created_from_user_id"/>
 	</action-view>
 	
 	<action-method name="action-user-apply-applicaton-mode">

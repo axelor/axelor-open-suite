@@ -544,10 +544,9 @@ public class DebtRecoveryService {
 
         debtRecovery.setBalanceDueDebtRecovery(balanceDueDebtRecovery);
 
-        Integer levelDebtRecovery = 0;
+        Integer levelDebtRecovery = -1;
         if (debtRecovery.getDebtRecoveryMethodLine() != null) {
-          levelDebtRecovery =
-              debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName();
+          levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
         }
 
         LocalDate referenceDate = this.getReferenceDate(debtRecovery);
@@ -601,9 +600,7 @@ public class DebtRecoveryService {
         if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
           // Si le niveau de relance a évolué
           if (debtRecovery.getDebtRecoveryMethodLine() != null
-              && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel() != null
-              && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName()
-                  > levelDebtRecovery) {
+              && debtRecovery.getDebtRecoveryMethodLine().getSequence() > levelDebtRecovery) {
             debtRecoveryActionService.runAction(debtRecovery);
 
             DebtRecoveryHistory debtRecoveryHistory =

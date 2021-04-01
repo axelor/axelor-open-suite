@@ -1,5 +1,0 @@
----
-title: "axelor-tool: Add method to remove duplicates"
-type: feature
-description : |
-  Add a method to help removing duplicates on a list using stream.

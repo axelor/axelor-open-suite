@@ -23,6 +23,7 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
@@ -35,6 +36,7 @@ import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -48,22 +50,21 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   protected ProjectRepository projectRepo;
   protected ProjectTaskRepository projectTaskRepo;
   protected TimesheetLineRepository timesheetLineRepo;
-  protected TimesheetRepository timesheetRepo;
 
   @Inject
   public TimesheetLineProjectServiceImpl(
       TimesheetService timesheetService,
-      TimesheetRepository timesheetRepo,
+      TimesheetHRRepository timesheetHRRepository,
+      TimesheetRepository timesheetRepository,
       EmployeeRepository employeeRepository,
       ProjectRepository projectRepo,
       ProjectTaskRepository projectTaskaRepo,
       TimesheetLineRepository timesheetLineRepo) {
-    super(timesheetService, employeeRepository);
+    super(timesheetService, timesheetHRRepository, timesheetRepository, employeeRepository);
 
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskaRepo;
     this.timesheetLineRepo = timesheetLineRepo;
-    this.timesheetRepo = timesheetRepo;
   }
 
   @Override
@@ -118,7 +119,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     return timesheetLine;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine) {
     timesheetLine = getDefaultToInvoice(timesheetLine);
@@ -128,7 +129,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   @Transactional
   public TimesheetLine setTimesheet(TimesheetLine timesheetLine) {
     Timesheet timesheet =
-        timesheetRepo
+        timesheetRepository
             .all()
             .filter(
                 "self.user = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
@@ -139,7 +140,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
             .fetchOne();
     if (timesheet == null) {
       Timesheet lastTimesheet =
-          timesheetRepo
+          timesheetRepository
               .all()
               .filter(
                   "self.user = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
@@ -154,7 +155,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
                   ? lastTimesheet.getToDate().plusDays(1)
                   : timesheetLine.getDate(),
               null);
-      timesheet = timesheetRepo.save(timesheet);
+      timesheet = timesheetRepository.save(timesheet);
     }
     timesheetLine.setTimesheet(timesheet);
     return timesheetLine;

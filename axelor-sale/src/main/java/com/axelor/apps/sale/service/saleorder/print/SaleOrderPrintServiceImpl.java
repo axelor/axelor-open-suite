@@ -18,8 +18,6 @@
 package com.axelor.apps.sale.service.saleorder.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -46,15 +44,14 @@ import java.util.Optional;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
-  @Inject protected SaleOrderService saleOrderService;
-
+  protected SaleOrderService saleOrderService;
   protected AppSaleService appSaleService;
-  protected AppBaseService appBaseService;
 
   @Inject
-  public SaleOrderPrintServiceImpl(AppSaleService appSaleService, AppBaseService appBaseService) {
+  public SaleOrderPrintServiceImpl(
+      SaleOrderService saleOrderService, AppSaleService appSaleService) {
+    this.saleOrderService = saleOrderService;
     this.appSaleService = appSaleService;
-    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -107,8 +104,6 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
     String title = saleOrderService.getFileName(saleOrder);
 
-    AppBase appBase = appBaseService.getAppBase();
-
     ReportSettings reportSetting =
         ReportFactory.createReport(IReport.SALES_ORDER, title + " - ${date}");
 
@@ -119,13 +114,6 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
             saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
-        .addParam(
-            "GroupProducts",
-            appBase.getIsRegroupProductsOnPrintings() && saleOrder.getGroupProductsOnPrintings())
-        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
-        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
-        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
-        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
@@ -141,7 +129,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
     return prefixFileName
         + " - "
-        + Beans.get(AppBaseService.class)
+        + appSaleService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .format(DateTimeFormatter.BASIC_ISO_DATE)
