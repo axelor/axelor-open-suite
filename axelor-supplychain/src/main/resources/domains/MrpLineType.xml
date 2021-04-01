@@ -19,7 +19,6 @@
       <boolean name="ignoreEndDate" title="Ignore end date" help="Include elements with a date later than MRP end date."/>
 
 	  <string name="applicationFieldSelect" title="Field of application" selection="supplychain.mrp.line.type.application.field.select"/>
-    <boolean name="includeOneOffSales" title="One-off sales included"/>
 	  
       <extra-code><![CDATA[
 	
