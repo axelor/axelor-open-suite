@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
@@ -250,21 +249,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               .toString();
     }
 
-    AppBase appBase = appBaseService.getAppBase();
-
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
         .addParam(
             "Timezone", invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
         .addParam("ReportType", reportType == null ? 0 : reportType)
-        .addParam(
-            "GroupProducts",
-            appBase.getIsRegroupProductsOnPrintings() && invoice.getGroupProductsOnPrintings())
-        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
-        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
-        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
-        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
         .addParam("Watermark", watermark)
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
