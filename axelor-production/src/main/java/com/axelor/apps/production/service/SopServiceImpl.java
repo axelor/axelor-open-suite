@@ -16,7 +16,6 @@ import com.axelor.apps.production.db.repo.SopRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -27,10 +26,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
 
 public class SopServiceImpl implements SopService {
 
@@ -104,20 +99,14 @@ public class SopServiceImpl implements SopService {
     for (SopLine sopLine : sop.getSopLineList()) {
       sop = sopRepo.find(sop.getId());
       if (sop.getIsForecastOnHistoric()) {
-        this.setSalesForecast(
-            sopLine, sop.getProductCategory(), sop.getStockLocationSet(), sop.getCompany());
+        this.setSalesForecast(sopLine, sop.getProductCategory(), sop.getCompany());
       }
     }
   }
 
   @Transactional
-  protected void setSalesForecast(
-      SopLine sopLine,
-      ProductCategory category,
-      Set<StockLocation> stockLocationSet,
-      Company company)
+  protected void setSalesForecast(SopLine sopLine, ProductCategory category, Company company)
       throws AxelorException {
-
     sopLine = sopLineRepo.find(sopLine.getId());
     LocalDate fromDate = sopLine.getPeriod().getFromDate();
     LocalDate toDate = sopLine.getPeriod().getToDate();
@@ -130,28 +119,15 @@ public class SopServiceImpl implements SopService {
     ArrayList<Integer> statusList = new ArrayList<Integer>();
     statusList.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-
-    String stockLocationIds = "0";
-    if (CollectionUtils.isNotEmpty(stockLocationSet)) {
-      stockLocationIds =
-          stockLocationSet.stream()
-              .map(stockLocation -> stockLocation.getId().toString())
-              .collect(Collectors.joining(","));
-    }
-
     BigDecimal exTaxSum = BigDecimal.ZERO;
     Query<SaleOrderLine> query =
         saleOrderLineRepo
             .all()
             .filter(
-                "self.saleOrder.company = ?1 "
-                    + "AND self.saleOrder.statusSelect in (?2) "
-                    + "AND self.product.productCategory = ?3 "
-                    + "AND self.saleOrder.stockLocation.id in (?4)",
+                "self.saleOrder.company = ?1 AND self.saleOrder.statusSelect in (?2) AND self.product.productCategory = ?3",
                 company,
                 statusList,
-                category,
-                stockLocationIds)
+                category)
             .order("id");
     int offset = 0;
     List<SaleOrderLine> saleOrderLineList;
