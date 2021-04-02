@@ -10,6 +10,7 @@
 	  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	  	<decimal name="qty" title="Qty" precision="20" scale="10"/>
     	<boolean name="optional" title="Optional"/>
+    	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
 	</entity>
 
 </domain-models>

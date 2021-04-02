@@ -21,6 +21,7 @@
 		<boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
 		<boolean name="enableSalesProductByTradName" title="Filter products by trading name" default="false"/>
 		<many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
+		<boolean name="managePartnerComplementaryProduct" title="Manage partner complementary product"/>
 
 		<track>
 			<field name="manageSaleOrderVersion" on="UPDATE"/>

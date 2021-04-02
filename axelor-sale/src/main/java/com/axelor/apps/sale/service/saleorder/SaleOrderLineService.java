@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -295,4 +296,18 @@ public interface SaleOrderLineService {
    * @return a String with the JPQL expression used to filter product selection
    */
   String computeProductDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+
+  /**
+   * To manage Complementary Product sale order line.
+   *
+   * @param saleOrderLine 
+   * @param saleOrder
+   * @param complementaryProducts
+   * @throws AxelorException
+   */
+  public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      List<ComplementaryProduct> complementaryProducts)
+      throws AxelorException;
 }
