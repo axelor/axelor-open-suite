@@ -1479,10 +1479,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
 
-    for (String[] iteams : allMoveData) {
-      for (String iteam : iteams) {
-        if (iteam != null) {
-          iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+    for (String[] items : allMoveData) {
+      for (int i = 0; i < items.length; i++) {
+        if (items[i] != null) {
+          items[i] = items[i].replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
         }
       }
     }
