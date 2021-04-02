@@ -1,3 +1,22 @@
+## [6.0.9] (2021-04-02)
+
+#### Fixed
+
+* INVOICE: allow to delete a draft invoice generated from business invoicing.
+* Advanced import: Reset status, file and error log on copy.
+* Stock move multi invoicing: fix IndexOutOfBoundsException when trying to invoice a stock move with no lines.
+* Sale Order: archive stock moves that are automatically cancelled when editing a sale order.
+* Move line export: fix issue when exporting lines with special char in description.
+* Project DMS: Add missing french translation.
+* PRODUCT: product variant generation sequence fix.
+* ADVANCED IMPORT: header visibility fix.
+* Invoice: fix printing when cancelling advance.
+* Projected stock: Fix projected stock always displaying 'no records found'.
+* MailMessage: fix sender user always being the same for all sent messages.
+* Configurator creator attributes: fix issue where `onChange` field could not be emptied.
+* DebtRecoveryMethodLine: we can now only select message templates that use debt recovery history.
+* Purchase order: fix error due to missing parameter when generating a purchase order printing for an email.
+
 ## [6.0.8] (2021-03-17)
 
 #### Changes
@@ -463,6 +482,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.9]: https://github.com/axelor/axelor-open-suite/compare/v6.0.8...v6.0.9
 [6.0.8]: https://github.com/axelor/axelor-open-suite/compare/v6.0.7...v6.0.8
 [6.0.7]: https://github.com/axelor/axelor-open-suite/compare/v6.0.6...v6.0.7
 [6.0.6]: https://github.com/axelor/axelor-open-suite/compare/v6.0.5...v6.0.6
