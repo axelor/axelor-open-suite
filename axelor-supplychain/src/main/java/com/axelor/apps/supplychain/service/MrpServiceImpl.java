@@ -1197,6 +1197,7 @@ public class MrpServiceImpl implements MrpService {
               .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
               .fetch();
     }
+    reset(mrpRepository.find(mrp.getId()));
     this.startMrp(mrpRepository.find(mrp.getId()));
     this.assignProductAndLevel(this.getProductList());
 

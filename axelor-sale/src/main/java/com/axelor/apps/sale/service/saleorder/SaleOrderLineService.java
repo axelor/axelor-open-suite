@@ -300,7 +300,7 @@ public interface SaleOrderLineService {
   /**
    * To manage Complementary Product sale order line.
    *
-   * @param saleOrderLine 
+   * @param saleOrderLine
    * @param saleOrder
    * @param complementaryProducts
    * @throws AxelorException
