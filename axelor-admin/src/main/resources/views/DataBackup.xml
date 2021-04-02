@@ -20,7 +20,8 @@
 				colSpan="4" />
 			<field name="isRelativeDate" widget="boolean-switch"  onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
 			<field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"  colSpan="2"/>
-			<spacer colSpan="4"/>
+			<field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
+			<spacer colSpan="2"/>
 			<button-group name="mainBtnGroup" colSpan="3">
 			<button name="backToDraftBtn" title="Return to draft status"
 				showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
