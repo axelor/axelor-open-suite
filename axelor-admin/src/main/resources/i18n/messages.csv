@@ -61,6 +61,7 @@
 "Fields to export",,,
 "File",,,
 "File upload path not configured",,,
+"Generate csv file for empty tables",,,
 "Group Menu Assistant",,,
 "Groups",,,
 "Groups not found: %s",,,

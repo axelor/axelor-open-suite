@@ -61,6 +61,7 @@
 "Fields to export","Champs à exporter",,
 "File","Fichier",,
 "File upload path not configured",,,
+"Generate csv file for empty tables","Générer un fichier csv pour les tables vides",,
 "Group Menu Assistant","Assistant gestion des menus par groupes",,
 "Groups","Groupes",,
 "Groups not found: %s","Groupe(s) inconnu(s) : %s",,
