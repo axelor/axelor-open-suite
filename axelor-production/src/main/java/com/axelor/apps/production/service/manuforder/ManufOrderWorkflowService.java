@@ -577,12 +577,7 @@ public class ManufOrderWorkflowService {
 
       purchaseOrderLine =
           purchaseOrderLineService.createPurchaseOrderLine(
-              purchaseOrder,
-              product,
-              product.getName(),
-              product.getDescription(),
-              quantity,
-              purchaseUnit);
+              purchaseOrder, product, null, null, quantity, purchaseUnit);
 
       purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
     }
