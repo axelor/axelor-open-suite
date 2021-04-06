@@ -14,10 +14,12 @@
         <panel>
             <field name="sequence"/>
             <field name="isEditable" colSpan="2"/>
+            <field name="isSignature" colSpan="2"/>
             <field name="ignoreTheLine" colSpan="2"/>
+            <field name="nbColumns"/>
             <field name="isWithPageBreakAfter" colSpan="2"/>
-            <field name="title" widget="html" colSpan="12" help="String template"/>
-            <field name="content" widget="html" colSpan="12" help="String template"/>
+            <field name="title" widget="html" colSpan="12" help="String template" hideIf="isSignature"/>
+            <field name="content" widget="html" colSpan="12" help="String template" hideIf="isSignature"/>
             <panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
             <field name="conditions" widget="CodeEditor" x-code-syntax="groovy" colSpan="12" help="Groovy conditions"/>
             <panel-related name="printTemplateLineListPanel" field="printTemplateLineList" grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12" orderBy="sequence" canMove="true"/>

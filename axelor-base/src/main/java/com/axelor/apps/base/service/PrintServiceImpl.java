@@ -255,12 +255,26 @@ public class PrintServiceImpl implements PrintService {
               printLine.getIsWithPageBreakAfter()
                   ? "<div style=\"page-break-after: always;\">"
                   : "<div>");
-          if (StringUtils.notEmpty(printLine.getTitle())) {
-            htmlBuilder.append(printLine.getTitle());
+          htmlBuilder.append("<table>");
+          htmlBuilder.append("<tr>");
+          if (printLine.getIsSignature()) {
+            htmlBuilder.append("<td>&nbsp;</td></tr></table></div>");
+            continue;
           }
-          if (StringUtils.notEmpty(printLine.getContent())) {
-            htmlBuilder.append(printLine.getContent());
+          Integer nbColumns = printLine.getNbColumns() == 0 ? 1 : printLine.getNbColumns();
+          for (int i = 0; i < nbColumns; i++) {
+            htmlBuilder.append("<td style=\"padding: 0px 10px 0px 10px\">");
+
+            if (StringUtils.notEmpty(printLine.getTitle())) {
+              htmlBuilder.append(printLine.getTitle());
+            }
+            if (StringUtils.notEmpty(printLine.getContent())) {
+              htmlBuilder.append(printLine.getContent());
+            }
+            htmlBuilder.append("</td>");
           }
+          htmlBuilder.append("</tr>");
+          htmlBuilder.append("</table>");
           htmlBuilder.append("</div>");
         }
       }
