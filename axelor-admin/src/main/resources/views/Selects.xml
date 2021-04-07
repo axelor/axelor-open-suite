@@ -40,6 +40,7 @@
 		<option value="2">Backup Created</option>
 		<option value="3">Backup Restored</option>
 		<option value="4">Backup Restore Error</option>
+		<option value="5">Error</option>
 	</selection>
 	
 	<selection name="global.tracking.log.type.select">
