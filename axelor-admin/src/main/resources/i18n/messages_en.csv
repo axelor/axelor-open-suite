@@ -46,6 +46,7 @@
 "Details",,,
 "Draft",,,
 "EXPORT",,,
+"Error",,,
 "Error in import. Please check log.",,,
 "Error in import: %s. Please check the server log",,,
 "Error in refreshing app",,,
