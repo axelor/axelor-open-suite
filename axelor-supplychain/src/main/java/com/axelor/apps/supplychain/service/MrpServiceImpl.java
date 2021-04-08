@@ -729,15 +729,23 @@ public class MrpServiceImpl implements MrpService {
 
     if (mrp.getSaleOrderLineSet().isEmpty()) {
 
+      String filter =
+          "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
+              + "AND self.saleOrder.statusSelect IN (?4) ";
+
+      if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+          == MrpLineTypeRepository.ONE_OFF_SALES_EXCLUDED) {
+        filter += "AND self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE";
+      } else if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
+          == MrpLineTypeRepository.ONE_OFF_SALES_ONLY) {
+        filter += "AND self.saleOrder.oneoffSale IS TRUE";
+      }
+
       saleOrderLineList.addAll(
           saleOrderLineRepository
               .all()
               .filter(
-                  "self.product.id in (?1) AND self.saleOrder.stockLocation in (?2) AND self.deliveryState != ?3 "
-                      + "AND self.saleOrder.statusSelect IN (?4) "
-                      + (!saleOrderMrpLineType.getIncludeOneOffSales()
-                          ? "AND self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE"
-                          : ""),
+                  filter,
                   this.productMap.keySet(),
                   this.stockLocationList,
                   SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
