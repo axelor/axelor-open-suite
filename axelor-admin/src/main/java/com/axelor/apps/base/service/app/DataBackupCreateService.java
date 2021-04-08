@@ -186,6 +186,11 @@ public class DataBackupCreateService {
               if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
                 temcsv.setSearch("self.code = :code");
               }
+              if (!AutoImportModelMap.containsKey(csvInput.getTypeName())
+                  && !((Class.forName(metaModel.getFullName()).getSuperclass())
+                      .equals(App.class))) {
+                temcsv.setSearch("self.importId = :importId");
+              }
               simpleCsvs.add(temcsv);
             } else {
               simpleCsvs.add(csvInput);
@@ -455,6 +460,8 @@ public class DataBackupCreateService {
         csvInput.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
       } else if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
         csvInput.setSearch("self.code = :code");
+      } else {
+        csvInput.setSearch("self.importId = :importId");
       }
     } catch (ClassNotFoundException e) {
     }
