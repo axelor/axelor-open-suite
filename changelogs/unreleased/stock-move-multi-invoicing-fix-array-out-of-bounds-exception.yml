@@ -1,3 +1,0 @@
----
-title: "Stock move multi invoicing: fix IndexOutOfBoundsException when trying to invoice a stock move with no lines."
-type: fix

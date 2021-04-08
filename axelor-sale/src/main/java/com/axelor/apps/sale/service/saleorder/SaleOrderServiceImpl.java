@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
+import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
@@ -401,5 +403,29 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     Beans.get(SaleOrderRepository.class).save(copySaleOrder);
 
     return copySaleOrder;
+  }
+
+  @Override
+  public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException {
+
+    if (saleOrder.getClientPartner() == null
+        || CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())
+        || CollectionUtils.isEmpty(saleOrder.getClientPartner().getComplementaryProductList())) {
+      return;
+    }
+
+    List<SaleOrderLine> newComplementarySOLines = new ArrayList<>();
+    List<ComplementaryProduct> complementaryProducts =
+        saleOrder.getClientPartner().getComplementaryProductList();
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      if (saleOrderLine.getMainSaleOrderLine() != null) {
+        continue;
+      }
+      newComplementarySOLines.addAll(
+          saleOrderLineService.manageComplementaryProductSaleOrderLine(
+              saleOrderLine, saleOrder, complementaryProducts));
+    }
+    newComplementarySOLines.stream().forEach(line -> saleOrder.addSaleOrderLineListItem(line));
+    Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
   }
 }

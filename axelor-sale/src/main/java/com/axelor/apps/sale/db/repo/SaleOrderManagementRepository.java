@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.db.repo;
 
+import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -25,6 +26,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -77,13 +79,19 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   @Override
   public SaleOrder save(SaleOrder saleOrder) {
     try {
-      if (Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement()) {
+      AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
+      if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);
       } else {
         saleOrderComputeService.resetPackTotal(saleOrder);
       }
       computeSeq(saleOrder);
       computeFullName(saleOrder);
+
+      if (appSale.getManagePartnerComplementaryProduct()) {
+        Beans.get(SaleOrderService.class).manageComplementaryProductSOLines(saleOrder);
+      }
+
       computeSubMargin(saleOrder);
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
       return super.save(saleOrder);

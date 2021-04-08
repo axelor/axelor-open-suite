@@ -15,9 +15,10 @@
 		width="large">
 		<panel name="mainPanel">
 			<field name="statusSelect" readonly="true" widget="NavSelect"
-				selection-in="[0,1,2]" colSpan="12" />
+				selection-in="[0,1,2,5]" colSpan="12" />
 			<field name="fetchLimit" widget="Integer" required="true" min="1"
 				colSpan="4" />
+			<field name="checkAllErrorFirst" widget="boolean-switch" colSpan ="2"/>
 			<field name="isRelativeDate" widget="boolean-switch"  onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
 			<field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"  colSpan="2"/>
 			<field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>

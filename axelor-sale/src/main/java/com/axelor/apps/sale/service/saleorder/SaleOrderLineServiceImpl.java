@@ -949,4 +949,47 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     return domain;
   }
+
+  @Override
+  public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      List<ComplementaryProduct> complementaryProducts)
+      throws AxelorException {
+
+    List<SaleOrderLine> newComplementarySOLines = new ArrayList<>();
+    if (saleOrderLine.getComplementarySaleOrderLineList() == null) {
+      saleOrderLine.setComplementarySaleOrderLineList(new ArrayList<>());
+    }
+
+    for (ComplementaryProduct complementaryProduct : complementaryProducts) {
+      Product product = complementaryProduct.getProduct();
+      if (product == null) {
+        continue;
+      }
+
+      SaleOrderLine complementarySOLine;
+      Optional<SaleOrderLine> complementarySOLineOpt =
+          saleOrderLine.getComplementarySaleOrderLineList().stream()
+              .filter(
+                  line -> line.getMainSaleOrderLine() != null && line.getProduct().equals(product))
+              .findFirst();
+      if (complementarySOLineOpt.isPresent()) {
+        complementarySOLine = complementarySOLineOpt.get();
+      } else {
+        complementarySOLine = new SaleOrderLine();
+        complementarySOLine.setSequence(saleOrderLine.getSequence());
+        complementarySOLine.setProduct(complementaryProduct.getProduct());
+        saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
+        newComplementarySOLines.add(complementarySOLine);
+      }
+
+      complementarySOLine.setQty(complementaryProduct.getQty());
+      this.computeProductInformation(complementarySOLine, saleOrder);
+      this.computeValues(saleOrder, complementarySOLine);
+      saleOrderLineRepo.save(complementarySOLine);
+    }
+
+    return newComplementarySOLines;
+  }
 }

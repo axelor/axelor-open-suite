@@ -111,6 +111,14 @@ public interface SaleOrderService {
    */
   public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException;
 
+  /**
+   * To manage Complementary Product sale order lines.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException;
+
   SaleOrder seperateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException;
