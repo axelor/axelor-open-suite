@@ -60,6 +60,7 @@ public class MenuBuilderService {
       if (actionBuilder.getName() == null) {
         actionBuilder.setName(menu.getName().replace("-", "."));
       }
+      actionBuilder.setXmlId(builder.getXmlId());
       actionBuilder.setTitle(menu.getTitle());
       actionBuilder.setAppBuilder(builder.getAppBuilder());
       menu.setAction(actionBuilderService.build(actionBuilder));
