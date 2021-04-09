@@ -1567,7 +1567,7 @@ SELECT
     SOL."UnitCode",
 	SOL."packHideUnitAmounts"
 FROM SOL
-LEFT JOIN base_app_base AppBase ON (AppBase.id = 1)
+LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
 WHERE  AppBase.is_regroup_products_on_printings IS NULL OR AppBase.is_regroup_products_on_printings IS FALSE
 OR SaleOrder.group_products_on_printings IS NULL OR SaleOrder.group_products_on_printings IS FALSE
@@ -1605,7 +1605,7 @@ SELECT
     SOL."UnitCode",
 	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
 FROM SOL
-LEFT JOIN base_app_base AppBase ON (AppBase.id = 1)
+LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_products_on_printings IS TRUE
 AND AppBase.regroup_products_level_select = 'category'
@@ -1646,7 +1646,7 @@ SELECT
     SOL."UnitCode",
 	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
 FROM SOL
-LEFT JOIN base_app_base AppBase ON (AppBase.id = 1)
+LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_products_on_printings IS TRUE
 AND AppBase.regroup_products_level_select = 'global'
