@@ -171,6 +171,14 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
     int statusSelect = productionOrder.getStatusSelect();
 
+    if (productionOrder.getManufOrderSet().stream()
+        .allMatch(
+            manufOrder -> manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT)) {
+      statusSelect = ProductionOrderRepository.STATUS_DRAFT;
+      productionOrder.setStatusSelect(statusSelect);
+      return productionOrderRepo.save(productionOrder);
+    }
+
     boolean oneStarted = false;
     boolean onePlanned = false;
     boolean allCancel = true;
