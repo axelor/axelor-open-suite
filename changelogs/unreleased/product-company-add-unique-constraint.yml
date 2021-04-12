@@ -1,0 +1,3 @@
+---
+title: "Product company: add database constraint to prevent having multiple lines in a product with the same company."
+type: fix

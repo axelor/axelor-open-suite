@@ -137,6 +137,8 @@
         <!-- Json field -->
         <string name="productAttrs" title="Fields" json="true" />
 
+		<unique-constraint columns="product,company"/>
+
 		<extra-code>
 	   		<![CDATA[
 				// PRODUCT TYPE SELECT
