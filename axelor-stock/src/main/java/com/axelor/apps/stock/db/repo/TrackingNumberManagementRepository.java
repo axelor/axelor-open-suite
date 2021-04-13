@@ -24,6 +24,7 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -100,9 +101,11 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
           trackingNumber.setBarCode(barcodeFile);
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        TraceBackService.trace(e);
+        throw new ValidationException(e);
       } catch (AxelorException e) {
-        throw new ValidationException(e.getMessage());
+        TraceBackService.trace(e);
+        throw new ValidationException(e);
       }
     }
 
