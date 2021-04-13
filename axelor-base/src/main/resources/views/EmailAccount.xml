@@ -22,8 +22,7 @@
        	 	<field name="login"/>
         	<field name="change" title="Change password?" showIf="id &amp;&amp; !$readonly()" widget="boolean"/>
         	<panel name="passwordPanel" colSpan="12" showIf="change || !id">
-		        <field name="newPassword" title="Password" placeholder="new password" widget="password" requiredIf="!id || change" validIf="(!change &amp;&amp; id) || confirm == newPassword"/>
-		    	<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
+		        <field name="newPassword" title="Password" placeholder="password" widget="password" requiredIf="!id || change" />
 		    	<field name="password" hidden="true"/>
 		    </panel>
         </panel>
