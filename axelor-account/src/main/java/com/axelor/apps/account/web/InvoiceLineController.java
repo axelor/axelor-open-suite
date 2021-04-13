@@ -316,13 +316,16 @@ public class InvoiceLineController {
 
     Context parentContext = context.getParent();
 
-    Invoice invoice = parentContext.asType(Invoice.class);
+    Invoice invoice;
 
-    if (!parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
+    if (parentContext == null
+        || !parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
 
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
       invoice = invoiceLine.getInvoice();
+    } else {
+      invoice = parentContext.asType(Invoice.class);
     }
 
     return invoice;
