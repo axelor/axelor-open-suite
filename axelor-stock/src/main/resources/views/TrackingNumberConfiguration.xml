@@ -23,6 +23,9 @@
         <panel name="namePanel">
             <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
         </panel>
+        <panel name="barCodePanel" if="__config__.app.getApp('stock').getActivateBarCodeGeneration()">
+        	<field name="barcodeTypeConfig"/>
+        </panel>
         <panel name="purchaseTrackingPanel">
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel name="purchaseTrackingManagementPanel" title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
@@ -58,6 +61,7 @@
     	<field name="saleQtyByTracking" expr="0"/>
     	<field name="purchaseQtyByTracking" expr="0"/>
     	<field name="productionQtyByTracking" expr="0"/>
+    	<field name="barcodeTypeConfig" expr="eval:__config__.app.getApp('stock')?.getBarcodeTypeConfig()" if="eval:__config__.app.getApp('stock')?.getActivateBarCodeGeneration()"/>
     </action-record>
     
     

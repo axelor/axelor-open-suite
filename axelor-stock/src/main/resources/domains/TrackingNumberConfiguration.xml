@@ -29,6 +29,8 @@
 
     <string name="name" title="Name" required="true"/>
     <string name="fullName" title="Full name" namecolumn="true"/>
+    
+    <many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 
 	<extra-code>
    		<![CDATA[
