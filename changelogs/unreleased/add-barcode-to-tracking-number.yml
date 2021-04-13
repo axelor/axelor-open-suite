@@ -1,0 +1,8 @@
+---
+title: "Tracking number : Add barcode"
+type: feature
+description: |
+  Add barcode generation process to tracking number :
+  - Add settings field for barcode generation on App Stock
+  - Add barcode type on Tracking Number Configuration model and view with a defaulting from App Stock
+  - Add barcode, serial number and barcode type on Tracking Number model and view with a defaulting on barcode type from Tracking Number Configuration.
