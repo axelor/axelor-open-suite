@@ -144,6 +144,7 @@ public class DataBackupCreateService {
       errorsCount = checkErrors(dataBackup, metaModelList, tempDirectoryPath, subClassesMap);
 
       dataBackup.setFetchLimit(fetchLimit);
+      fileNameList.clear();
     }
 
     if (errorsCount == 0) {
