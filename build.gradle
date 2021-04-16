@@ -1,26 +1,26 @@
 import com.axelor.gradle.tasks.GenerateAosChangelog
 
 buildscript {
-    ext.repos = {
-        mavenCentral() {
-            content {
-                excludeGroup 'com.axelor'
-            }
-        }
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-                content {
-                    excludeGroup 'com.axelor'
-                }
-        }
-        maven { url 'https://repository.axelor.com/nexus/public/' }
+  ext.repos = {
+    mavenCentral() {
+      content {
+        excludeGroup 'com.axelor'
+      }
     }
-    ext.openPlatformVersion = '5.3.9'
-    ext.appVersion = '6.0.9'
-    repositories repos
-    dependencies {
-        classpath "com.axelor:axelor-gradle:${openPlatformVersion}"
+    maven {
+      url 'https://plugins.gradle.org/m2/'
+      content {
+        excludeGroup 'com.axelor'
+      }
     }
+    maven { url 'https://repository.axelor.com/nexus/public/' }
+  }
+  ext.openPlatformVersion = '5.3.9'
+  ext.appVersion = '6.0.9'
+  repositories repos
+  dependencies {
+    classpath "com.axelor:axelor-gradle:${openPlatformVersion}"
+  }
 }
 
 allprojects { repositories repos }
@@ -33,18 +33,18 @@ apply from: './gradle/style.gradle'
 
 allprojects {
 
-	configurations {
-   		runtimeClasspath.exclude group:"org.eclipse.birt.runtime.3_7_1", module:"org.apache.commons.codec"
-	}
+  configurations {
+    runtimeClasspath.exclude group: "org.eclipse.birt.runtime.3_7_1", module: "org.apache.commons.codec"
+  }
 
-	apply plugin: 'idea'
-	apply plugin: 'eclipse'
+  apply plugin: 'idea'
+  apply plugin: 'eclipse'
 
-	group = "com.axelor"
-	version = "${appVersion}"
+  group = "com.axelor"
+  version = "${appVersion}"
 
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
 
 }
 
@@ -53,36 +53,36 @@ subprojects {
 }
 
 axelor {
-	title "Axelor ERP"
-	description "Axelor Entreprise Application"
+  title "Axelor ERP"
+  description "Axelor Entreprise Application"
 }
 
 dependencies {
-	gradle.appModules.each { dir ->
-		implementation project(":modules:$dir.name")
-	}
+  gradle.appModules.each { dir ->
+    implementation project(":modules:$dir.name")
+  }
 }
 
 task("dataImport", type: JavaExec) {
-	main = "com.axelor.apps.erp.Main"
-	classpath = sourceSets.main.runtimeClasspath
-	if(System.getProperty("exec.args") != null) {
-		args System.getProperty("exec.args").split()
-	}
+  main = "com.axelor.apps.erp.Main"
+  classpath = sourceSets.main.runtimeClasspath
+  if (System.getProperty("exec.args") != null) {
+    args System.getProperty("exec.args").split()
+  }
 }
 
 task archiveReports(type: Zip) {
-	file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { dir ->
-		if(new File(dir, "build.gradle").exists() && new File(dir, "/src/main/resources/reports").exists()) {
-			new File(dir, "/src/main/resources/reports/").listFiles().each { report ->
-				from report.getPath()
-			}
-		}
-	}
+  file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { dir ->
+    if (new File(dir, "build.gradle").exists() && new File(dir, "/src/main/resources/reports").exists()) {
+      new File(dir, "/src/main/resources/reports/").listFiles().each { report ->
+        from report.getPath()
+      }
+    }
+  }
 
-	classifier 'reports'
-	includeEmptyDirs = false
-	destinationDirectory = file("$buildDir/libs")
+  classifier 'reports'
+  includeEmptyDirs = false
+  destinationDirectory = file("$buildDir/libs")
 }
 
 
