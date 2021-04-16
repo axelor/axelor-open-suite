@@ -3,12 +3,14 @@ rootProject.name = "axelor-erp"
 
 def modules = []
 file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { it ->
-    if(new File(it, "build.gradle").exists()) { modules.add(it) }
+  if (new File(it, "build.gradle").exists()) {
+    modules.add(it)
+  }
 }
 
 gradle.ext.appModules = modules
 
 modules.each { dir ->
-	include "modules:$dir.name"
-	project(":modules:$dir.name").projectDir = dir
+  include "modules:$dir.name"
+  project(":modules:$dir.name").projectDir = dir
 }
