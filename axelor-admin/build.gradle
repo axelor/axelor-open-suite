@@ -16,4 +16,5 @@ dependencies {
 	api project(":modules:axelor-exception")
 	api project(":modules:axelor-tool")
     implementation libs.commons_io
+    implementation libs.opencsv
 }
