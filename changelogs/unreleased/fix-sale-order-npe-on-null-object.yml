@@ -1,0 +1,6 @@
+---
+title: "SaleOrder : NPE when selecting product"
+type: fix
+description: |
+    Handling NPE when product is selected in SO and user's active company is not filled.
+
