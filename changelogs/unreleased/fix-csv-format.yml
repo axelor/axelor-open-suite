@@ -1,0 +1,3 @@
+---
+title: "Fix unescaped quotes in translation csv causing issue when reloading views."
+type: fix
