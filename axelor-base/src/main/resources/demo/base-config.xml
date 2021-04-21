@@ -141,6 +141,7 @@
 		<bind to="netMass" eval="1" if="productTypeSelect == 'storable'" />
         <bind to="grossMass" eval="1" if="productTypeSelect == 'storable'" />
         <bind to="massUnit" search="self.labelToPrinting = 'kg'" if="productTypeSelect == 'storable'" />
+        <bind to="isShippingCostsProduct" column="isShippingCostsProduct" eval="isShippingCostsProduct ? isShippingCostsProduct : 'false'" />
 	</input>
 	
 	<input file="base_productVariantAttr.csv" separator=";" type="com.axelor.apps.base.db.ProductVariantAttr" search="self.code = :code" />
