@@ -1,6 +1,0 @@
-title: Anomaly 36622 - Problem with product from demo data in sales modules
-type: fix
-description: |
-  At the load of Demo Data, only variant products appeared in sale - product. A problem was in the import of Demo Data : a field "isShippingCostsProduct" was not at false and the search was on this field.
-
-  axelor-base / demo / base-config
