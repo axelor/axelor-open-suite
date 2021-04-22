@@ -109,10 +109,8 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             purchaseOrderLineService.createPurchaseOrderLine(
                 purchaseOrder,
                 product,
-                purchaseRequestLine.getNewProduct()
-                    ? purchaseRequestLine.getProductTitle()
-                    : product.getName(),
-                purchaseRequestLine.getNewProduct() ? null : product.getDescription(),
+                purchaseRequestLine.getNewProduct() ? purchaseRequestLine.getProductTitle() : null,
+                null,
                 purchaseRequestLine.getQuantity(),
                 purchaseRequestLine.getUnit());
         purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);

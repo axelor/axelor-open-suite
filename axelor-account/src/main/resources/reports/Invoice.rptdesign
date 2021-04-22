@@ -2260,7 +2260,7 @@ RETURNS table(inv_id bigint, product_name varchar, description text,
     "PackHideUnitAmounts" boolean) as
 $func$
 BEGIN
-
+IF (SELECT COUNT(to_regclass('sale_customer_catalog')) = 0) THEN
 return query
 select Invoice.id as inv_id,
 InvoiceLine.product_name,
@@ -2287,8 +2287,8 @@ InvoiceLine.sequence as "sequence",
 InvoiceLine.type_select as "typeSelect",
 Invoice.in_ati,
 InvoiceLine.product_code as "productCode",
-CASE WHEN (SELECT COUNT(to_regclass('sale_customer_catalog')) = 0) THEN null ELSE CustomerCatalog.product_customer_code END as "CustomerProductCode",
-CASE WHEN (SELECT COUNT(to_regclass('sale_customer_catalog')) = 0) THEN null ELSE CustomerCatalog.product_customer_name END as "CustomerProductName",
+CustomerCatalog.product_customer_code as "CustomerProductCode",
+CustomerCatalog.product_customer_name as "CustomerProductName",
 ProductCategory.id as "productCategory",
 InvoiceLine.is_show_total as showTotal,
 InvoiceLine.is_hide_unit_amounts as hideUnitAmounts,
@@ -2303,10 +2303,52 @@ left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = Invoice.partner)
 left outer join sale_sale_order_line as SaleOrderLine on InvoiceLine.sale_order_line = SaleOrderLine.id
 where Invoice.id = invoiceId;
-
+ELSE
+return query
+select Invoice.id as inv_id,
+InvoiceLine.product_name,
+InvoiceLine.description,
+Product.product_type_select as "productType",
+TaxLine.value as "taxValue",
+InvoiceLine.qty,
+Unit.label_to_printing as "unitName",
+(CASE WHEN Invoice.in_ati
+	THEN InvoiceLine.in_tax_price
+	ELSE InvoiceLine.price END)
+	as "unitPrice",
+InvoiceLine.price,
+(InvoiceLine.price_discounted
+	- (CASE WHEN Invoice.in_ati
+		THEN InvoiceLine.in_tax_price
+		ELSE InvoiceLine.price END))
+	* InvoiceLine.qty
+	as "totalDiscountAmount",
+InvoiceLine.ex_tax_total,
+InvoiceLine.in_tax_total,
+Currency.code as "currencyCode",
+InvoiceLine.sequence as "sequence",
+InvoiceLine.type_select as "typeSelect",
+Invoice.in_ati,
+InvoiceLine.product_code as "productCode",
+''::varchar as "CustomerProductCode",
+''::varchar as "CustomerProductName",
+ProductCategory.id as "productCategory",
+InvoiceLine.is_show_total as showTotal,
+InvoiceLine.is_hide_unit_amounts as hideUnitAmounts,
+(SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts"
+from account_invoice_line as InvoiceLine
+inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)
+left outer join account_tax_line as TaxLine on (InvoiceLine.tax_line = TaxLine.id)
+left outer join base_product as Product on (InvoiceLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
+left outer join base_unit as Unit on (InvoiceLine.unit = Unit.id)
+left outer join base_currency as Currency on (Invoice.currency = Currency.id)
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = Invoice.partner)
+left outer join sale_sale_order_line as SaleOrderLine on InvoiceLine.sale_order_line = SaleOrderLine.id
+where Invoice.id = invoiceId;
+END IF;
 END;
-$func$ LANGUAGE plpgsql;
-]]></xml-property>
+$func$ LANGUAGE plpgsql;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceLineDS" id="4451">
             <property name="nullsOrdering">nulls lowest</property>
@@ -2775,7 +2817,7 @@ select
     INV."hideUnitAmounts",
     INV."PackHideUnitAmounts"
     from INV
-    LEFT JOIN base_app_base AppBase ON (AppBase.id = 1)
+    LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
     WHERE  AppBase.is_regroup_products_on_printings IS NULL OR AppBase.is_regroup_products_on_printings IS FALSE
     OR Invoice.group_products_on_printings IS NULL OR Invoice.group_products_on_printings IS FALSE
@@ -2816,7 +2858,7 @@ select
     BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts"
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
-    LEFT JOIN base_app_base AppBase ON (AppBase.id = 1)
+    LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
     WHERE AppBase.is_regroup_products_on_printings IS TRUE AND Invoice.group_products_on_printings IS TRUE
     AND AppBase.regroup_products_level_select = 'category'
@@ -2859,7 +2901,7 @@ select
     BOOL_OR(INV."hideUnitAmounts") as "hideUnitAmounts",
     BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts"
 from INV
-LEFT JOIN base_app_base AppBase ON (AppBase.id = 1)
+LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND Invoice.group_products_on_printings IS TRUE
     AND AppBase.regroup_products_level_select = 'global'
