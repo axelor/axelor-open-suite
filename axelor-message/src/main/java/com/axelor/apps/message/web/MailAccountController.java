@@ -43,6 +43,8 @@ public class MailAccountController {
       Beans.get(MailAccountService.class).checkMailAccountConfiguration(account);
 
       response.setValue("isValid", Boolean.TRUE);
+      response.setValue("change", Boolean.FALSE);
+      response.setValue("newPassword", null);
       response.setFlash(I18n.get(IExceptionMessage.MAIL_ACCOUNT_3));
 
     } catch (Exception e) {
