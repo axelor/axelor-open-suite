@@ -30,6 +30,7 @@ import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -88,6 +89,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   private ExecutorService executor = Executors.newCachedThreadPool();
 
   private String userName = null;
+
+  protected Template template = null;
+  protected boolean isDefaultTemplate = false;
+  protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
   @Inject AppBaseService appBaseService;
 
@@ -295,7 +300,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
     for (String recipient : recipients) {
       MailBuilder builder = sender.compose().subject(getSubject(message, related));
-      builder.to(recipient);
+      this.setRecipients(builder, recipient, related);
 
       Model obj = Beans.get(MailService.class).resolve(recipient);
       userName = null;
@@ -348,12 +353,6 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   @Override
   protected String template(MailMessage message, Model entity) throws IOException {
-    Template template = getTemplateByModel(entity);
-    boolean isDefaultTemplate = false;
-    if (template == null) {
-      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
-      isDefaultTemplate = true;
-    }
     if (template == null) {
       return super.template(message, entity);
     }
@@ -401,8 +400,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (message == null) {
       return null;
     }
-    Template template = getTemplateByModel(entity);
-    boolean isDefaultTemplate = false;
+    template = this.getTemplateByModel(entity);
     if (template == null) {
       template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
@@ -444,5 +442,34 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
     }
     return null;
+  }
+
+  protected void setRecipients(MailBuilder builder, String recipient, Model entity) {
+    builder.to(recipient);
+
+    if (template == null) {
+      return;
+    }
+
+    Templates templates = createTemplates(template);
+    Map<String, Object> data = Maps.newHashMap();
+
+    if (isDefaultTemplate) {
+      data.put("entity", entity);
+    } else {
+      Class<?> klass = EntityHelper.getEntityClass(entity);
+      data.put(klass.getSimpleName(), entity);
+    }
+    builder.cc(getRecipients(template.getCcRecipients(), data, templates));
+    builder.bcc(getRecipients(template.getBccRecipients(), data, templates));
+    builder.to(getRecipients(template.getToRecipients(), data, templates));
+  }
+
+  protected String[] getRecipients(
+      String recipients, Map<String, Object> data, Templates templates) {
+    if (StringUtils.notBlank(recipients)) {
+      return templates.fromText(recipients).make(data).render().split(RECIPIENTS_SPLIT_REGEX);
+    }
+    return new String[0];
   }
 }
