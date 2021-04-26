@@ -31,5 +31,5 @@ public interface ImportCityService {
    */
   public ImportHistory importCity(String typeSelect, MetaFile dataFile);
 
-  public MetaFile downloadZip(String downloadFileName) throws Exception;
+  public MetaFile downloadZip(String downloadFileName, boolean isDump) throws Exception;
 }
