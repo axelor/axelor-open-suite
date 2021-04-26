@@ -20,13 +20,14 @@ package com.axelor.apps.base.service.imports;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
+import com.axelor.apps.tool.net.URLService;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
@@ -34,13 +35,13 @@ import com.google.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -61,6 +62,8 @@ public class ImportCityServiceImpl implements ImportCityService {
   @Inject private FactoryImporter factoryImporter;
 
   @Inject private MetaFiles metaFiles;
+
+  @Inject protected AppBaseService appBaseService;
 
   protected static final String CITYTEXTFILE = "cityTextFile.txt";
 
@@ -109,7 +112,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @param typeSelect
    * @return
    */
-  private File getConfigXmlFile(String typeSelect) {
+  protected File getConfigXmlFile(String typeSelect) {
 
     File configFile = null;
     try {
@@ -140,7 +143,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @param dataFile
    * @return
    */
-  private File getDataCsvFile(MetaFile dataFile) {
+  protected File getDataCsvFile(MetaFile dataFile) {
 
     File csvFile = null;
     try {
@@ -162,7 +165,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @param dataCsvFile
    * @return
    */
-  private ImportHistory importCityData(File configXmlFile, File dataCsvFile) {
+  protected ImportHistory importCityData(File configXmlFile, File dataCsvFile) {
 
     ImportHistory importHistory = null;
     try {
@@ -184,7 +187,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @param configXmlFile
    * @param dataCsvFile
    */
-  private void deleteTempFiles(File configXmlFile, File dataCsvFile) {
+  protected void deleteTempFiles(File configXmlFile, File dataCsvFile) {
 
     try {
       if (configXmlFile.isDirectory() && dataCsvFile.isDirectory()) {
@@ -208,26 +211,27 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @throws Exception
    */
   @Override
-  public MetaFile downloadZip(String downloadFileName) throws Exception {
+  public MetaFile downloadZip(String downloadFileName, boolean isDump) throws Exception {
 
-    File downloadFile = null;
-    File cityTextFile = null;
-    File tempDir = null;
-    MetaFile metaFile = null;
-
+    String downloadUrl = null;
     try {
+      File downloadFile = null;
+      File cityTextFile = null;
+      File tempDir = null;
+      MetaFile metaFile = null;
+
+      downloadUrl = getDownloadUrl(isDump);
+
       tempDir = Files.createTempDir();
       downloadFile = new File(tempDir, downloadFileName);
-      AppBase appBase = Beans.get(AppBaseRepository.class).all().fetchOne();
 
       cityTextFile = new File(tempDir, CITYTEXTFILE);
 
-      URL url = new URL(appBase.getGeoNamesUrl() + downloadFileName);
-
-      FileUtils.copyURLToFile(url, downloadFile);
+      URLService.fileUrl(downloadFile, downloadUrl + downloadFileName, null, null);
 
       LOG.debug("path for downloaded zip file : " + downloadFile.getPath());
 
+      StringBuilder buffer = null;
       try (ZipFile zipFile = new ZipFile(downloadFile.getPath());
           FileWriter writer = new FileWriter(cityTextFile)) {
 
@@ -240,7 +244,8 @@ public class ImportCityServiceImpl implements ImportCityService {
             BufferedReader stream =
                 new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
 
-            StringBuilder buffer = this.extractDataFromDownloadedFile(stream);
+            buffer =
+                isDump ? this.extractDataDumpImport(stream) : this.extractDataZipImport(stream);
 
             cityTextFile.createNewFile();
 
@@ -255,16 +260,20 @@ public class ImportCityServiceImpl implements ImportCityService {
       metaFile = metaFiles.upload(cityTextFile);
       FileUtils.forceDelete(tempDir);
 
+      return metaFile;
     } catch (UnknownHostException hostExp) {
       throw new Exception(I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR), hostExp);
+    } catch (FileNotFoundException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.NO_DATA_FILE_FOUND),
+          downloadUrl);
     } catch (Exception e) {
       throw e;
     }
-
-    return metaFile;
   }
 
-  private MetaFile extractCityZip(MetaFile dataFile) throws Exception {
+  protected MetaFile extractCityZip(MetaFile dataFile) throws Exception {
 
     ZipEntry entry = null;
     MetaFile metaFile = null;
@@ -299,7 +308,7 @@ public class ImportCityServiceImpl implements ImportCityService {
     return metaFile;
   }
 
-  private StringBuilder extractDataFromDownloadedFile(BufferedReader downloadedCityFileStream)
+  protected StringBuilder extractDataDumpImport(BufferedReader downloadedCityFileStream)
       throws IOException {
 
     HashMap<String, String> regionMap = new HashMap<>();
@@ -349,10 +358,54 @@ public class ImportCityServiceImpl implements ImportCityService {
       }
     }
 
-    return this.createCityFile(regionMap, departmentMap, cantonMap, cityList);
+    return this.createCityFileDumpImport(regionMap, departmentMap, cantonMap, cityList);
   }
 
-  private StringBuilder createCityFile(
+  protected StringBuilder extractDataZipImport(BufferedReader downloadedCityFileStream)
+      throws IOException {
+
+    List<String> cityList = new ArrayList<>();
+
+    String line;
+
+    while ((line = downloadedCityFileStream.readLine()) != null) {
+      String[] values = line.split(SEPERATOR);
+
+      cityList.add(
+          String.format(
+              "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
+              values[0], // country code
+              values[1], // zip code
+              values[2], // city name
+              values[3], // region name
+              values[4], // region code
+              values[5], // department name
+              values[6], // department code
+              values[7], // canton name
+              values[8])); // canton code
+    }
+
+    return this.createCityFileZipImport(cityList);
+  }
+
+  protected StringBuilder createCityFileZipImport(List<String> cityList) {
+
+    StringBuilder buffer = new StringBuilder();
+
+    Set<String> checkDuplicateCitySet = new HashSet<>();
+
+    for (String value : cityList) {
+      String[] values = value.split(SEPERATOR);
+
+      if (checkDuplicateCitySet.add(values[1].toLowerCase().concat(values[2].toLowerCase()))) {
+        buffer.append(value);
+      }
+    }
+
+    return buffer;
+  }
+
+  protected StringBuilder createCityFileDumpImport(
       HashMap<String, String> regionMap,
       HashMap<String, String> departmentMap,
       HashMap<String, String> cantonMap,
@@ -385,5 +438,21 @@ public class ImportCityServiceImpl implements ImportCityService {
     }
 
     return buffer;
+  }
+
+  protected String getDownloadUrl(boolean isDump) throws AxelorException {
+    String downloadUrl = null;
+    AppBase appBase = appBaseService.getAppBase();
+
+    downloadUrl = isDump ? appBase.getGeoNamesDumpUrl() : appBase.getGeoNamesZipUrl();
+
+    if (StringUtils.isEmpty(downloadUrl)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.GEONAMES_URL_NOT_SPECIFIED),
+          downloadUrl);
+    }
+
+    return downloadUrl;
   }
 }

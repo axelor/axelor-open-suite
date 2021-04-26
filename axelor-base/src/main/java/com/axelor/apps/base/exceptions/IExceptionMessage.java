@@ -417,4 +417,9 @@ public interface IExceptionMessage {
   /* Scheduler */
   public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
       "The scheduler service is enabled." /*)*/;
+
+  /* Geonames import */
+  public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
+  public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
+      "Please fill in GeoNames URL in Base application configuration." /*)*/;
 }
