@@ -660,8 +660,7 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType19.serviceTypeLabel"; /*)*/
   public static final String ACCOUNTING_REPORT_19_TITLE =
       /*$$(*/ "AccountingReportType19.title"; /*)*/
-  public static final String ACCOUNTING_REPORT_19_TO =
-      /*$$(*/ "AccountingReportType19.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_TO = /*$$(*/ "AccountingReportType19.to"; /*)*/
   public static final String ACCOUNTING_REPORT_19_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType19.total_report"; /*)*/
 
@@ -691,8 +690,7 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType20.serviceType"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TITLE =
       /*$$(*/ "AccountingReportType20.title"; /*)*/
-  public static final String ACCOUNTING_REPORT_20_TO =
-      /*$$(*/ "AccountingReportType20.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_TO = /*$$(*/ "AccountingReportType20.to"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType20.total_report"; /*)*/
 
