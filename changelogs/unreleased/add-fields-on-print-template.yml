@@ -1,3 +1,6 @@
 ---
-title: "PrintTemplate : add fields on print template"
-type: feature
+title: "PrintTemplate: add fields on print template."
+type: change
+description: |
+  * Add new field to display the text on multiples columns.
+  * Add new field to display a docusign signature.
