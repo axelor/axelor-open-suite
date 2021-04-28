@@ -357,7 +357,8 @@
 	</action-record>
 
 	<action-group name="action-manuf-order-group-prod-process-onchange">
-    <action name="action-manuf-order-attrs-isConsProOnOperation"/>
+	    <action name="action-manuf-order-attrs-reset-operation-order-list"/>
+  	    <action name="action-manuf-order-attrs-isConsProOnOperation"/>
 		<action name="action-manuf-order-record-isConsProOnOperation"/>
 		<action name="action-manuf-order-record-update-qty-from-prod-process"/>
 		<action name="action-production-attrs-set-outsourcing-value"/>
@@ -488,6 +489,10 @@
    		<attribute name="value" for="operationOrderList" expr="eval: null"/>
    		<attribute name="value" for="toConsumeProdProductList" expr="eval: null"/>
    		<attribute name="value" for="toProduceProdProductList" expr="eval: null"/>
+   	</action-attrs>
+   	
+    <action-attrs name="action-manuf-order-attrs-reset-operation-order-list">
+   		<attribute name="value" for="operationOrderList" expr="eval: null"/>
    	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-prodProcess">
