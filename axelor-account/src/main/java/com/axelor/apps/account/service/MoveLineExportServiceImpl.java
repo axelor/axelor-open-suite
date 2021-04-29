@@ -1200,8 +1200,14 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         items[7] = "";
         Partner partner = moveLine.getPartner();
         if (partner != null) {
-          items[6] = partner.getPartnerSeq();
-          items[7] = partner.getName();
+          items[6] =
+              moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
+                  ? partner.getPartnerSeq()
+                  : "";
+          items[7] =
+              moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
+                  ? partner.getName()
+                  : "";
         }
         items[8] = moveLine.getOrigin();
         if (moveLine.getOriginDate() != null) {
