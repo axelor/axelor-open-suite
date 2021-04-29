@@ -1,3 +1,0 @@
----
-title: "SaleOrder: fix NPE on product selection when the current user does not have an active company."
-type: fix

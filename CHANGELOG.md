@@ -1,3 +1,30 @@
+## [6.0.10] (2021-04-29)
+
+#### Changes
+
+* PrintTemplate: add fields on print template.
+  * Add new field to display the text on multiples columns.
+  * Add new field to display a docusign signature.
+
+#### Fixed
+
+* SaleOrder: fix NPE on product selection when the current user does not have an active company.
+* Mail message: The fields to/bcc/cc recipients in email templates are now correctly used in generated emails.
+* Contract: add missing translations.
+* Demo data: fix XML configuration to import partner.
+* Invoice Line: fix product description not retrieved for sale invoices.
+* Invoice: fix rounding error on advance payment imputation.
+* Bank details: fix BBAN check on other countries than France.
+* User: Do not block by default users created from external authentication.
+* AppDocuSign: Fix error on trying to access the app configuration.
+* Product company: add database constraint to prevent having multiple lines in a product with the same company.
+* Forecast recap line type: fix data-init.
+* Action builder: Fix issue where the user was unable to save.
+* Invoice Line: Fix filter on supplier in supplier invoice.
+* Purchase order line: fill supplier code and name on generated purchase order lines.
+* Fix errors in CSV files that might cause parsing issues.
+* Fix missing and wrong french translations.
+
 ## [6.0.9] (2021-04-02)
 
 #### Fixed
@@ -482,6 +509,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.10]: https://github.com/axelor/axelor-open-suite/compare/v6.0.9...v6.0.10
 [6.0.9]: https://github.com/axelor/axelor-open-suite/compare/v6.0.8...v6.0.9
 [6.0.8]: https://github.com/axelor/axelor-open-suite/compare/v6.0.7...v6.0.8
 [6.0.7]: https://github.com/axelor/axelor-open-suite/compare/v6.0.6...v6.0.7
