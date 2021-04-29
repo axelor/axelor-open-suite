@@ -1,4 +1,19 @@
 # Changelog
+## [5.2.18] - 2021-04-29
+## Bug Fixes
+* ACCOUNT REVERSE MOVE: When generating a reverse move, keep references to analytic move lines.
+* SaleOrder: fix NPE on product selection when the current user does not have an active company.
+* Invoice: fix rounding error on advance payment imputation.
+* DATA BACKUP: Improve exception handling and fix issue where the databackup process does not return a result.
+* COST SHEET REPORT: Hide cost sheet group column in printings when it is disabled in configuration.
+* Move line export: fix issue when exporting lines with special char in description.
+* LeaveRequest: Block the approval when a leave request is already validated.
+* MailMessage: fix sender user always being the same for all sent messages.
+* Purchase order: fix error due to missing parameter when generating a purchase order printing for an email.
+* Expense: fix ConstraintViolationException when validating an expense.
+* OPPORTUNITY: filter out lost opportunities in best open deals dashlet.
+* MRP: Filter out canceled or archived sale order in sale order lines selection.
+
 ## [5.2.17] - 2021-01-15
 ## Improvements
 * Accounting report: improved and change VAT logic in vat reports, now collected vat and deductible vat depend of the invoice or the return and not only from the move.
@@ -756,6 +771,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[5.2.18]: https://github.com/axelor/axelor-open-suite/compare/v5.2.17...v5.2.18
 [5.2.17]: https://github.com/axelor/axelor-open-suite/compare/v5.2.16...v5.2.17
 [5.2.16]: https://github.com/axelor/axelor-open-suite/compare/v5.2.15...v5.2.16
 [5.2.15]: https://github.com/axelor/axelor-open-suite/compare/v5.2.14...v5.2.15
