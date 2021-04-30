@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -109,10 +109,8 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             purchaseOrderLineService.createPurchaseOrderLine(
                 purchaseOrder,
                 product,
-                purchaseRequestLine.getNewProduct()
-                    ? purchaseRequestLine.getProductTitle()
-                    : product.getName(),
-                purchaseRequestLine.getNewProduct() ? null : product.getDescription(),
+                purchaseRequestLine.getNewProduct() ? purchaseRequestLine.getProductTitle() : null,
+                null,
                 purchaseRequestLine.getQuantity(),
                 purchaseRequestLine.getUnit());
         purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);

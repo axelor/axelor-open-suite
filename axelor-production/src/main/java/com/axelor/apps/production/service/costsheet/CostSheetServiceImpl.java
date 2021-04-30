@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -357,7 +357,6 @@ public class CostSheetServiceImpl implements CostSheetService {
       for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
 
         WorkCenter workCenter = prodProcessLine.getWorkCenter();
-
         if (workCenter != null) {
 
           int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
@@ -440,7 +439,6 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine) {
 
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
-
     int costType = workCenter.getCostTypeSelect();
 
     if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
@@ -461,9 +459,8 @@ public class CostSheetServiceImpl implements CostSheetService {
               .divide(
                   new BigDecimal(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN)
+                  RoundingMode.HALF_UP)
               .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
-      qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_EVEN);
       BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
@@ -829,18 +826,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       Long realDuration)
       throws AxelorException {
-    BigDecimal costPerHour = BigDecimal.ZERO;
-    //    if (prodHumanResource.getProduct() != null) {
-    //      Product product = prodHumanResource.getProduct();
-    //      costPerHour =
-    //          unitConversionService.convert(
-    //              hourUnit,
-    //              product.getUnit(),
-    //              product.getCostPrice(),
-    //              appProductionService.getNbDecimalDigitForUnitPrice(),
-    //              product);
-    //    }
-    costPerHour = workCenter.getCostAmount();
+    BigDecimal costPerHour = workCenter.getCostAmount();
     BigDecimal durationHours =
         new BigDecimal(realDuration)
             .divide(

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,19 +18,25 @@
 package com.axelor.apps.project.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.project.db.repo.AbstractResourceBookingRepository;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
-import com.axelor.apps.project.db.repo.ResourceBookingRepository;
+import com.axelor.apps.project.db.repo.TaskTemplateManagementRepository;
+import com.axelor.apps.project.db.repo.TaskTemplateRepository;
 import com.axelor.apps.project.db.repo.TeamProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
+import com.axelor.apps.project.service.ProjectTemplateService;
+import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
+import com.axelor.apps.project.service.ResourceBookingService;
+import com.axelor.apps.project.service.ResourceBookingServiceImpl;
+import com.axelor.apps.project.service.TaskTemplateService;
+import com.axelor.apps.project.service.TaskTemplateServiceImpl;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.TimerProjectTaskServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -49,6 +55,9 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectTaskService.class).to(ProjectTaskServiceImpl.class);
     bind(TeamRepository.class).to(TeamProjectRepository.class);
     bind(TimerProjectTaskService.class).to(TimerProjectTaskServiceImpl.class);
-    bind(AbstractResourceBookingRepository.class).to(ResourceBookingRepository.class);
+    bind(TaskTemplateService.class).to(TaskTemplateServiceImpl.class);
+    bind(ProjectTemplateService.class).to(ProjectTemplateServiceImpl.class);
+    bind(TaskTemplateRepository.class).to(TaskTemplateManagementRepository.class);
+    bind(ResourceBookingService.class).to(ResourceBookingServiceImpl.class);
   }
 }

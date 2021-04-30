@@ -27,7 +27,7 @@
 	</action-method>
 	
 	<action-validate name="action-validate-unset-project">
-		<alert message="Are you sure wants to unlink project from selected lines?."/>
+		<alert message="Are you sure to unlink project from selected lines?"/>
 	</action-validate>
 	
 	<action-attrs id="business-project-action-project-project-default" name="action-project-project-default" model="com.axelor.apps.project.db.Project">

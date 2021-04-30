@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -123,6 +123,12 @@ public interface IExceptionMessage {
   /** Product service */
   public static final String PRODUCT_NO_SEQUENCE = /*$$(*/
       "There is no configured sequence for product" /*)*/;
+
+  public static final String CATEGORY_NO_SEQUENCE = /*$$(*/
+      "There is no configured sequence for the category" /*)*/;
+
+  public static final String APP_BASE_NO_SEQUENCE =
+      "There is no configured product sequence in the app base config";
 
   /** Importer */
   public static final String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
@@ -404,6 +410,11 @@ public interface IExceptionMessage {
   public static final String DUPLICATE_ACTIVE_BANK_DETAILS = /*$$(*/
       "The same bank details are already active." /*)*/;
 
+  // product category service
+  public static final String PRODUCT_CATEGORY_PARENTS_CIRCULAR_DEPENDENCY = /*$$(*/
+      "Configuration error: the product category %s is an ancestor of himself." /*)*/;
+  public static final String PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY = /*$$(*/
+      "Configuration error: the product category %s is among its descendants." /*)*/;
   /* Print template */
   public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
       "The groovy condition result must be a boolean" /*)*/;
@@ -413,4 +424,13 @@ public interface IExceptionMessage {
       "Error in print template line with sequence %s and title %s." /*)*/;
   public static final String PRINT_TEMPLATE_LINE_TEST_REFRESH = /*$$(*/
       "Refresh page to reflect changes in selection" /*)*/;
+
+  /* Scheduler */
+  public static final String QUARTZ_SCHEDULER_ENABLED = /*$$(*/
+      "The scheduler service is enabled." /*)*/;
+
+  /* Geonames import */
+  public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
+  public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
+      "Please fill in GeoNames URL in Base application configuration." /*)*/;
 }

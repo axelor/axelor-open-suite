@@ -48,6 +48,30 @@
 		<field name="typeSelect"/>
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
+	
+	<grid name="my-event-grouped-by-team-grid" orderBy="-startDateTime" groupBy="team" title="Events" model="com.axelor.apps.crm.db.Event">
+    	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+    	<hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+    	<hilite color="success" if="statusSelect == 2"/>
+    	<hilite color="danger" if="statusSelect == 3"/>
+		<field name="startDateTime"/>
+		<field name="subject"/>
+		<field name="typeSelect"/>
+		<field name="duration" widget="duration" x-big="true"/>
+		<field name="team" hidden="true"/>
+	</grid>
+	
+	<grid name="my-event-grouped-by-user-grid" orderBy="-startDateTime" groupBy="user" title="Events" model="com.axelor.apps.crm.db.Event">
+    	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+    	<hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+    	<hilite color="success" if="statusSelect == 2"/>
+    	<hilite color="danger" if="statusSelect == 3"/>
+		<field name="startDateTime"/>
+		<field name="subject"/>
+		<field name="typeSelect"/>
+		<field name="duration" widget="duration" x-big="true"/>
+		<field name="user" hidden="true"/>
+	</grid>
 
     <grid name="lead-event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
@@ -115,11 +139,12 @@
 					<field name="subject" showTitle="true" colSpan="12"/>
 				</editor>
 			</field>
-			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time"/>
+			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time,action-event-attrs-show-past-event-text"/>
 			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			<field name="allDay" colSpan="2"/>
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true" hidden="true"/>
-			<static name="pastEventText" hidden="true" showIf="id &amp;&amp; $moment(startDateTime) &lt; $moment(todayDate)" colSpan="12"><![CDATA[<span class='label label-warning'>The selected date is in the past.</span>]]></static>
+			<static name="pastEventText" hidden="true" colSpan="12">
+					<![CDATA[<span class='label label-warning'>The selected date is in the past.</span>]]></static>
 		</panel>
 
 		<panel-tabs name="mainPanelTab">
@@ -197,6 +222,7 @@
 	<action-group name="action-group-crm-event-onload">
 		<action name="action-partner-method-check-rights" if="calendar != null"/>
 		<action name="action-event-hide-private" if="typeSelect == 2" />
+		<action name="action-event-attrs-show-past-event-text"/>
 	</action-group>
 	
 	<action-record name="action-event-record-current-user" model="com.axelor.apps.crm.db.Event">
@@ -270,6 +296,7 @@
 		<action name="action-event-view-modifications-recurrence" if="recurrenceConfiguration &amp;&amp; id > 0"/>
 		<action name="save"/>
 		<action name="action-event-method-manage-followers"/>
+		<action name="action-event-attrs-show-past-event-text"/>
 	</action-group>
 	
 	<action-view name="action-event-view-modifications-recurrence" title="Apply modifications" model="com.axelor.apps.base.db.Wizard">
@@ -494,6 +521,10 @@
 	<action-method name="action-event-method-add-guest">
     	<call class="com.axelor.apps.crm.web.EventController" method="addGuest"/>
     </action-method>
+    
+    <action-attrs name="action-event-attrs-show-past-event-text">
+    	<attribute name="hidden" for="pastEventText" expr="eval: startDateTime &gt;= __time__ || __this__.startDateTime == __self__.startDateTime"/>
+    </action-attrs>
 
 <!-- 	FILTERS -->
 	

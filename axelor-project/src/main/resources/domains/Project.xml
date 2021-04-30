@@ -40,7 +40,7 @@
 		<decimal name="sequence" title="Sequence" />
 		<integer name="orderByState"/>
 	  
-		<boolean name="imputable" default="true" massUpdate="true"/>
+		<boolean name="imputable" default="true" massUpdate="true" help="If this option is disabled this project cannot be selected on a timesheet."/>
 	  
 		<many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to start"/>
 		<many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to start"/>

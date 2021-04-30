@@ -291,16 +291,6 @@
 		<view type="form" name="debt-recovery-method-form"/>
 	</action-view>
 
-	<menuitem name="debt-recovery-root-conf-debt-recovery-level"
-		parent="debt-recovery-root-conf" title="Debt recovery levels"
-		action="debt.recovery.root.conf.debt.recovery.level" />
-
-	<action-view name="debt.recovery.root.conf.debt.recovery.level"
-		title="Debt recovery levels" model="com.axelor.apps.account.db.DebtRecoveryLevel" >
-		<view type="grid" name="debt-recovery-level-grid"/>
-		<view type="form" name="debt-recovery-level-form"/>
-	</action-view>
-	
 	<menuitem name="debt-recovery-root-conf-factor"
 		parent="debt-recovery-root-conf" title="Factor"
 		action="debt.recovery.root.conf.factor" />
@@ -327,10 +317,10 @@
 		<view-param name="search-filters" value="reimbursement-filters"/>
 	</action-view>
 
-    <menuitem name="account-root-accounting-cheque-deposit-slip-all" parent="account-root-accounting" title="Cheque deposit slips"
+    <menuitem name="account-root-accounting-cheque-deposit-slip-all" parent="account-root-accounting" title="Deposit slips"
         action="account.root.accounting.cheque.deposit.slip.all" />
 
-    <action-view name="account.root.accounting.cheque.deposit.slip.all" title="Cheque deposit slips"
+    <action-view name="account.root.accounting.cheque.deposit.slip.all" title="Deposit slips"
         model="com.axelor.apps.account.db.DepositSlip">
         <view type="grid" name="cheque-deposit-slip-grid" />
         <view type="form" name="cheque-deposit-slip-form" />
@@ -694,14 +684,6 @@
 		<context name="_operationTypeSelect" expr="eval:2"/>
 	</action-view>
 	
-	<menuitem name="menu-account-invoice-dashboard-sample" parent="invoice-root-report" order="-145"
-    title="General"  action="account.invoice.dashboard.view.sample"/>    
-
-    <action-view name="account.invoice.dashboard.view.sample" title="General Details">
-        <view type="dashboard" name="account.invoice.dashboard.sample" />        
-    </action-view>
-   
-    
 	<menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report" 
     title="Sale Invoices"  action="account.sale.invoice.dashboard.1.view" />    
 	

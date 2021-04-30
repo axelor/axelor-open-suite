@@ -6,6 +6,7 @@
     <grid name="account-type-grid" title="Account types" model="com.axelor.apps.account.db.AccountType">
         <field name="name"/>
         <field name="technicalTypeSelect"/>
+        <field name="isManageSubsidiaryAccount"/>
     </grid>
    
    
@@ -13,6 +14,7 @@
         <panel name="overviewPanel" title="Overview">
         	<field name="name"/>
         	<field name="technicalTypeSelect"/>
+        	<field name="isManageSubsidiaryAccount"/>
         	<panel-dashlet name="accountListPanel" action="action-dashlet-account-list" colSpan="12"/>
         </panel>
         <panel-dashlet name="accountTypePanel" title="Accounting.Accounts" action="action-account-type-view-account" colSpan="12"/>

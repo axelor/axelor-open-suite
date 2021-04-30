@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -74,9 +74,10 @@ public class PurchaseOrderSupplierLineController {
       purchaseOrderLine = request.getContext().getParent().asType(PurchaseOrderLine.class);
     }
 
-    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-    if (purchaseOrder == null) {
-      purchaseOrder = request.getContext().getParent().getParent().asType(PurchaseOrder.class);
+    PurchaseOrder purchaseOrder =
+        request.getContext().getParent().getParent().asType(PurchaseOrder.class);
+    if (purchaseOrder.getId() != null) {
+      purchaseOrder = purchaseOrderLine.getPurchaseOrder();
     }
     Company company = purchaseOrder.getCompany();
 

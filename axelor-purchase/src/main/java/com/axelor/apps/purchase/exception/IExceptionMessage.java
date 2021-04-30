@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -63,4 +63,7 @@ public interface IExceptionMessage {
       "There is no sequence set for the purchase requests for the company %s" /*)*/;
   public static final String PURCHASE_REQUEST_MISSING_SUPPLIER_USER = /*$$(*/
       "Please enter supplier for following purchase request : %s" /*)*/;
+
+  public static final String DIFFERENT_SUPPLIER = /*$$(*/
+      "The supplier of the purchase order is different from the default supplier of the product." /*)*/;
 }

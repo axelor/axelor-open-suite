@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -1106,6 +1106,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           trackingNumber.setPerishableExpirationDate(
               LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
         }
+        if (trackingNumberItem.get("origin") != null) {
+          trackingNumber.setOrigin(trackingNumberItem.get("origin").toString());
+        }
+        if (trackingNumberItem.get("note") != null) {
+          trackingNumber.setNote(trackingNumberItem.get("note").toString());
+        }
         trackingNumber.setProduct(stockMoveLine.getProduct());
       }
 
@@ -1185,7 +1191,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               + stockMove.getFromStockLocation().getId()
               + " AND sll.currentQty > 0)";
     }
-    return domain + " AND dtype = 'Product'";
+    return domain + " AND self.dtype = 'Product'";
   }
 
   @Override

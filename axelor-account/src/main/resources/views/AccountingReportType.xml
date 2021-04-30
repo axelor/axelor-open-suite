@@ -7,6 +7,7 @@
 		<field name="name"/>
 		<field name="reportExportTypeSelect"/>
 		<field name="typeSelect"/>
+		<field name="company"/>
 	</grid>
 
 	<form title="Report type" name="accounting-report-type-form" model="com.axelor.apps.account.db.AccountingReportType"

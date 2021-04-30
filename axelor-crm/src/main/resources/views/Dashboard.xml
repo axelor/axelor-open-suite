@@ -52,10 +52,10 @@
 
 
 	<action-view name="dashlet.opportunities.won.by.partner"
-		title="Opportunities Won By Partner" model="com.axelor.apps.crm.db.Opportunity">
+		title="Opportunities By Partner" model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid-group" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect = 5 AND self.partner is not null</domain>
+		<domain>self.partner is not null</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -63,7 +63,7 @@
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
-		<domain>self.salesStageSelect not in (9, 10)</domain>
+		<domain>self.salesStageSelect not in (6)</domain>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 
@@ -142,41 +142,52 @@
 
 
 	<dashboard title="Dashboard" name="crm.opportunities.dashboard.1" >
+		<dashlet action="dashlet.salesman.dashboard.opportunities" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.open.opportunities" height="350" canSearch="true" title="All opportunities" colSpan="12"/>
+		<dashlet action="dashlet.unassigned.opportunities" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.team.open.opportunities" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.opportunities.by.source" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.opportunities.by.saletage" height="350" canSearch="true" colSpan="12"/>
+		<dashlet action="dashlet.opportunities.by.type" title="Opportunities by type of needs" height="350" colSpan="12"/>
+	</dashboard>
+	
+	<dashboard title="Dashboard" name="crm.opportunities.dashboard.2">
+		<dashlet action="dashlet.opportunities.byStage.byType" height="350" />
+		<dashlet action="dashlet.opportunities.won.by.partner" height="350" canSearch="true"/>
+		<dashlet action="dashlet.opportunities.won.by.leadsource" height="350" />
+		<dashlet action="dashlet.opportunities.won.by.saleman" height="350" />
+		<dashlet action="dashlet.opportunities.by.origin.by.stage" height="350" colSpan="12"/>
+		<dashlet action="dashlet.opportunities.top.deals" colSpan="12" height="350" canSearch="true"/>
+		
+	</dashboard>
+	
+	<dashboard title="Dashboard" name="crm.opportunities.manager">
+		<dashlet action="dashlet.opportunities.by.type" height="350" />
+		<dashlet action="dashlet.opportunities.byStage.byType" height="350" />
+		<dashlet action="dashlet.opportunities.won.by.partner" height="350" canSearch="true"/>
+		<dashlet action="dashlet.opportunities.won.by.leadsource" height="350" />
+		<dashlet action="dashlet.opportunities.won.by.saleman" colSpan="12" height="350" />
+		<dashlet action="dashlet.opportunities.by.origin.by.stage" height="350" />
+		<dashlet action="dashlet.opportunities.recent.opps" height="350" canSearch="true"/>
+		<dashlet action="dashlet.opportunities.top.deals" height="350" canSearch="true"/>
+		<dashlet action="dashlet.opportunities.key.account" height="350" canSearch="true"/>
+		<dashlet action="dashlet.opportunities.lost.deals" height="350" canSearch="true"/>
+		<dashlet action="dashlet.team.closed.opportunities" height="350" canSearch="true"/>
+		<dashlet action="dashlet.team.open.opportunities" height="350" canSearch="true"/>
+		
+	</dashboard>
+	
+	<dashboard title="Dashboard" name="crm.opportunities.salesman" >
 		<dashlet action="dashlet.salesman.dashboard.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.closed.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.open.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.my.closed.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.my.open.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.unassigned.opportunities" height="350" canSearch="true"/>
-		<dashlet action="dashlet.team.closed.opportunities" height="350" canSearch="true"/>
-		<dashlet action="dashlet.team.open.opportunities" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.source" height="350" canSearch="true"/>
 		<dashlet action="dashlet.opportunities.by.saletage" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.by.saletage.funnel" height="350" canSearch="true"/>
 	</dashboard>
 	
-	<dashboard title="Dashboard" name="crm.opportunities.dashboard.2">
-		<dashlet action="dashlet.opportunities.by.type" height="350" />
-		<dashlet action="dashlet.opportunities.byStage.byType" height="350" />
-		<dashlet action="dashlet.opportunities.won.by.partner" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.won.by.leadsource" height="350" />
-		<dashlet action="dashlet.opportunities.won.by.saleman" height="350" />
-		<dashlet action="dashlet.opportunities.by.origin.by.stage" height="350" />
-		<dashlet action="dashlet.opportunities.recent.opps" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.top.deals" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.key.account" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.lost.deals" height="350" canSearch="true"/>
-		
-	</dashboard>
-	
-	<dashboard title="Dashboard" name="crm.opportunities.dashboard.3"  >
-		<dashlet action="dashlet.opportunities.pipeline.next.90d" height="350" />
-		<dashlet action="dashlet.opportunities.my.top.deals" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.my.team.top.deals" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.my.key.account" height="350" canSearch="true"/>
-		<dashlet action="dashlet.opportunities.my.team.key.account" height="350" canSearch="true"/>
-	</dashboard>
-
 	<action-view name="dashlet.opportunities.by.source" title="Chart">
 		<view type="chart" name="chart.dashboard.opportunities.source.amount.bar" />
 	</action-view>
@@ -229,7 +240,17 @@
 	<!-- Lead Dashboard 1 -->
 
 	<dashboard title="Lead Dashboard 1" name="crm.lead.dashboard.one"  >
-		<dashlet action="dashlet.salesman.dashboard.leads" height="350" canSearch="true"/>
+		<dashlet action="dashlet.salesman.dashboard.leads" height="350" colSpan="12" canSearch="true"/>
+		<dashlet action="dashlet.leads.by.source" height="350" colSpan="12" />
+		<dashlet action="dashlet.leads.by.country" height="350" colSpan="12" />
+		<dashlet action="dashlet.unassigned.leads" height="350" colSpan="12" />		
+		<dashlet action="dashlet.team.leads" height="350" colSpan="12"/>		
+		<dashlet action="dashlet.created.leads.per.month" height="350" colSpan="12"/>
+		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" colSpan="12"/>
+		<dashlet action="dashlet.created.leads.average.duration.first.opportunity" colSpan="12" title="Average duration between lead creation and first opportunity creation (days)" height="350" />
+	</dashboard>
+	
+	<dashboard title="Dashboard" name="crm.lead.manager"  >
 		<dashlet action="dashlet.leads.by.source" height="350" />
 		<dashlet action="dashlet.leads.by.country" height="350" />
 		<dashlet action="dashlet.leads.by.team.by.status" height="350"/>
@@ -237,6 +258,19 @@
 		<dashlet action="dashlet.my.leads" height="350" />
 		<dashlet action="dashlet.unassigned.leads" height="350" />		
 		<dashlet action="dashlet.team.leads" height="350"/>		
+		<dashlet action="dashlet.created.leads.per.month" height="350" />
+		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" />
+		<dashlet action="dashlet.created.leads.with.opportunity" height="350" />
+		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" />
+		<dashlet action="dashlet.created.leads.average.duration.first.opportunity" height="350" />
+	</dashboard>
+	
+	<dashboard title="Dashboard" name="crm.lead.salesman"  >
+		<dashlet action="dashlet.salesman.dashboard.leads" height="350" canSearch="true"/>
+		<dashlet action="dashlet.leads.by.source" height="350" />
+		<dashlet action="dashlet.leads.by.country" height="350" />
+		<dashlet action="dashlet.my.leads" height="350" />
+		<dashlet action="dashlet.unassigned.leads" height="350" />		
 		<dashlet action="dashlet.created.leads.per.month" height="350" />
 		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" />
 		<dashlet action="dashlet.created.leads.with.opportunity" height="350" />
@@ -324,7 +358,7 @@
 		<dashlet action="dashlet.calls.types.by.user" height="350" />
 		<dashlet action="dashlet.calls.types.by.team" height="350"/>
 		<dashlet action="dashlet.calls.by.team.by.user" height="350"/>
-		<dashlet action="dashlet.held.calls.types.by.user" height="350"/>
+		<dashlet action="dashlet.held.calls.types.by.user" height="350" colSpan="12"/>
 		<dashlet action="dashlet.held.calls.types.by.team" height="350"/>
 		<dashlet action="dashlet.daily.team.calls.summary.by.user" height="350"/>
 	</dashboard>
@@ -332,8 +366,20 @@
 	<!-- Event Dashboard 1 -->
 
 	<dashboard title="Event Dashboard 1" name="crm.event.dashboard.one"  >
+		<dashlet action="dashlet.salesman.dashboard.activities" colSpan="12" height="350" canSearch="true" />
+		<dashlet action="dashlet.salesman.dashboard.activities.events.by.team" height="350" colSpan="12" canSearch="true" />
+		<dashlet action="dashlet.salesman.dashboard.activities.events.by.salesman" height="350" colSpan="12" canSearch="true" />
+		<dashlet action="dashlet.salesman.dashboard.activities.my.plan.activities" height="350" colSpan="12" canSearch="true" />
+	</dashboard>
+	
+	<dashboard title="Event monitoring" name="crm.event.manager"  >
 		<dashlet action="dashlet.salesman.dashboard.activities" height="350" canSearch="true" />
-		<dashlet action="dashlet.my.today.support.activities" height="350" canSearch="true" />
+		<dashlet action="dashlet.salesman.dashboard.planned.activities" height="350" canSearch="true" />
+	</dashboard>
+	
+	<dashboard title="Event monitoring" name="crm.event.salesman"  >
+		<dashlet action="dashlet.events.by.team" colSpan="12" height="350" canSearch="true" />
+		<dashlet action="dashlet.events.by.salesman" colSpan="12" height="350" canSearch="true" />
 	</dashboard>
 
 	<action-view name="dashlet.calls.types.by.user" title="Calls type by user">
@@ -344,6 +390,14 @@
 	<action-view name="dashlet.calls.types.by.team" title="Calls type by team">
 		<view type="chart" name="chart.calls.types.by.team.bar" />
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+	</action-view>
+	
+	<action-view name="dashlet.events.by.team" title="Events by team">
+		<view type="chart" name="chart.dashboard.events.by.team" />
+	</action-view>
+	
+	<action-view name="dashlet.events.by.salesman" title="Events by salesman">
+		<view type="chart" name="chart.dashboard.events.by.saleman" />
 	</action-view>
 
 	<action-view name="dashlet.calls.by.team.by.user" title="Calls by team by user">
@@ -493,5 +547,32 @@
 	<action-view title="CRM Activities" model="com.axelor.apps.base.db.Partner" name="dashlet.customer.crm.activities">
   		<view type="chart" name="chart.customer.crm.activities"/>  		
 	</action-view>
+	
+	<action-view name="dashlet.salesman.dashboard.planned.activities" title="My Planned Activities"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="my-event-grid"/>
+		<view type="form" name="event-form"/>
+	    <domain>self.statusSelect = 1 and self.user =:__user__</domain>
+	</action-view>
+	
+	<action-view name="dashlet.salesman.dashboard.activities.events.by.team" title="Events by team"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="my-event-grouped-by-team-grid"/>
+		<view type="form" name="event-form"/>
+	</action-view>
+	
+	<action-view name="dashlet.salesman.dashboard.activities.events.by.salesman" title="Events by salesman"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="my-event-grouped-by-user-grid"/>
+		<view type="form" name="event-form"/>
+	</action-view>
+	
+	<action-view name="dashlet.salesman.dashboard.activities.my.plan.activities" title="My plan activities"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="my-event-grid"/>
+		<view type="form" name="event-form"/>
+	    <domain>self.statusSelect = 1 and self.user =:__user__</domain>
+	</action-view>
+	
 	
 </object-views>

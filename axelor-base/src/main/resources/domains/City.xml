@@ -17,6 +17,20 @@
     <boolean name="hasZipOnRight" title="Zip On Right" />
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country" />
     
+    <finder-method name="findByZipAndCountry" using="zip,country" all="true"/>
+    
+    <extra-code>
+		<![CDATA[
+		//importTypeSelect
+		public static final String IMPORT_TYPE_SELECT_AUTO = "auto";
+		public static final String IMPORT_TYPE_SELECT_MANUAL = "manual";
+		
+		//typeSelect
+		public static final String TYPE_SELECT_GEONAMES = "geonames";
+		
+		]]>
+ 	</extra-code>
+ 	
   </entity>
 
 </domain-models>

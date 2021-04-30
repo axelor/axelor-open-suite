@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
@@ -58,12 +57,12 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -77,6 +76,15 @@ import org.slf4j.LoggerFactory;
 public class InventoryService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final String PRODUCT_NAME = I18n.get("Product Name");
+  private final String PRODUCT_CODE = I18n.get("Product Code");
+  private final String PRODUCT_CATEGORY = I18n.get("Product category");
+  private final String RACK = I18n.get("Rack");
+  private final String TRACKING_NUMBER = I18n.get("Tracking Number");
+  private final String CURRENT_QUANTITY = I18n.get("Current Quantity");
+  private final String REAL_QUANTITY = I18n.get("Real Quantity");
+  private final String DESCRIPTION = I18n.get("Description");
+  private final String LAST_INVENTORY_DATE = I18n.get("Last Inventory date");
 
   protected InventoryLineService inventoryLineService;
   protected SequenceService sequenceService;
@@ -182,6 +190,9 @@ public class InventoryService {
     List<String[]> data = this.getDatas(filePath);
 
     HashMap<String, InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
+    List<String> headers = Arrays.asList(data.get(0));
+
+    data.remove(0); /* Skip headers */
 
     for (String[] line : data) {
       if (line.length < 6)
@@ -191,13 +202,13 @@ public class InventoryService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.INVENTORY_3));
 
-      String code = line[1].replace("\"", "");
-      String rack = line[2].replace("\"", "");
-      String trackingNumberSeq = line[3].replace("\"", "");
+      String code = line[headers.indexOf(PRODUCT_CODE)].replace("\"", "");
+      String rack = line[headers.indexOf(RACK)].replace("\"", "");
+      String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
 
       BigDecimal realQty;
       try {
-        realQty = new BigDecimal(line[5].replace("\"", ""));
+        realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)].replace("\"", ""));
       } catch (NumberFormatException e) {
         throw new AxelorException(
             new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
@@ -206,7 +217,7 @@ public class InventoryService {
             I18n.get(IExceptionMessage.INVENTORY_3));
       }
 
-      String description = line[6].replace("\"", "");
+      String description = line[headers.indexOf(DESCRIPTION)].replace("\"", "");
 
       int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();
       String key = code + trackingNumberSeq;
@@ -222,7 +233,7 @@ public class InventoryService {
       } else {
         BigDecimal currentQty;
         try {
-          currentQty = new BigDecimal(line[4].replace("\"", ""));
+          currentQty = new BigDecimal(line[headers.indexOf(CURRENT_QUANTITY)].replace("\"", ""));
         } catch (NumberFormatException e) {
           throw new AxelorException(
               new Throwable(I18n.get(IExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)),
@@ -235,7 +246,7 @@ public class InventoryService {
         List<Product> productList =
             productRepo
                 .all()
-                .filter("self.code = :code AND dtype = 'Product'")
+                .filter("self.code = :code AND self.dtype = 'Product'")
                 .bind("code", code)
                 .fetch();
         if (productList != null && !productList.isEmpty()) {
@@ -290,7 +301,6 @@ public class InventoryService {
           I18n.get(IExceptionMessage.INVENTORY_3));
     }
 
-    data.remove(0); /* Skip headers */
     return data;
   }
 
@@ -298,15 +308,15 @@ public class InventoryService {
     HashMap<String, InventoryLine> inventoryLineMap = new HashMap<>();
 
     for (InventoryLine line : inventory.getInventoryLineList()) {
-      String key = "";
+      StringBuilder key = new StringBuilder();
       if (line.getProduct() != null) {
-        key += line.getProduct().getCode();
+        key.append(line.getProduct().getCode());
       }
       if (line.getTrackingNumber() != null) {
-        key += line.getTrackingNumber().getTrackingNumberSeq();
+        key.append(line.getTrackingNumber().getTrackingNumberSeq());
       }
 
-      inventoryLineMap.put(key, line);
+      inventoryLineMap.put(key.toString(), line);
     }
 
     return inventoryLineMap;
@@ -704,28 +714,26 @@ public class InventoryService {
           }
         });
 
-    String fileName = I18n.get("Inventory") + "_" + inventory.getInventorySeq() + ".csv";
-    String filePath = AppSettings.get().get("file.upload.dir");
-    Path path = Paths.get(filePath, fileName);
-    File file = path.toFile();
+    String fileName = I18n.get("Inventory") + "_" + inventory.getInventorySeq();
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    log.debug("File Located at: {}", path);
+    log.debug("File Located at: {}", file.getPath());
 
     String[] headers = {
-      I18n.get("Product Name"),
-      I18n.get("Product Code"),
-      I18n.get("Product category"),
-      I18n.get("Rack"),
-      I18n.get("Tracking Number"),
-      I18n.get("Current Quantity"),
-      I18n.get("Real Quantity"),
-      I18n.get("Description"),
-      I18n.get("Last Inventory date")
+      PRODUCT_NAME,
+      PRODUCT_CODE,
+      PRODUCT_CATEGORY,
+      RACK,
+      TRACKING_NUMBER,
+      CURRENT_QUANTITY,
+      REAL_QUANTITY,
+      DESCRIPTION,
+      LAST_INVENTORY_DATE
     };
-    CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
+    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
-      return Beans.get(MetaFiles.class).upload(is, fileName);
+      return Beans.get(MetaFiles.class).upload(is, file.getName());
     }
   }
 

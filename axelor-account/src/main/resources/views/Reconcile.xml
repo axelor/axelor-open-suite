@@ -25,9 +25,20 @@
     </grid>
 
     <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile" canDelete="statusSelect == 1" >
-		<panel name="companyPanel" showTitle="false">
-			<field name="company" canEdit="false"/>
-		</panel>
+        <panel name="reconcileGroupPanel" showTitle="false" colSpan="12">
+		    <panel name="companyPanel" showTitle="false" colSpan="8">
+			    <field name="company" canEdit="false"/>
+		    </panel>
+            <field name="reconcileGroup.code" showTitle="false" colSpan="4">
+                <viewer depends="reconcileGroup.code">
+                  <![CDATA[
+                     <h3>
+                         <span style="margin: 5px 0 !important; display: inline-table; line-height: initial; text-align:right; display:block; width:100%;">{{record.reconcileGroup.code}}</span>
+                     </h3>
+                  ]]>
+                </viewer>
+            </field>
+        </panel>
 		<panel name="mainPanel">
 			<field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-debit" form-view="move-line-form" grid-view="move-line-grid"/>
 			<field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-credit" form-view="move-line-form" grid-view="move-line-grid"/>

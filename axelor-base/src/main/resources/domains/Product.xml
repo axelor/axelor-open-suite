@@ -53,6 +53,8 @@
 		<boolean name="autoUpdateSalePrice" default="false"
 			title="Update sale price from cost price" />
 
+        <one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine" mappedBy="product"/>
+
 		<decimal name="costPrice" title="Cost price" precision="20"
 			scale="10" massUpdate="true" min="0" />
 
@@ -132,13 +134,20 @@
 			
 		<boolean name="allowToForcePurchaseQty" title="Allow to force purchases quantities"/>
 		
+		<many-to-many name="tradingNameSellerSet" ref="com.axelor.apps.base.db.TradingName" title="Trading names that can sell this product"/>
+		<many-to-many name="tradingNameBuyerSet" ref="com.axelor.apps.base.db.TradingName" title="Trading names that can buy this product"/>
+		
 		<one-to-many name="productCompanyList" ref="com.axelor.apps.base.db.ProductCompany" title="Products per companies"
 			mappedBy="product"/>
-      
-        <!-- Json field -->
+
+		<string name="dtype" insertable="false" updatable="false"/>
+
+		<!-- Json field -->
         <string name="productAttrs" title="Fields" json="true" />
         
         <boolean name="expense" title="Expense"/>
+
+		<unique-constraint columns="product,company"/>
 
 		<extra-code>
 	   		<![CDATA[

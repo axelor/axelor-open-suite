@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.db.AppInvoice;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
@@ -387,15 +388,19 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
+
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    if ((isPurchase
-            && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
-        || (!isPurchase
-            && appAccountService
-                .getAppInvoice()
-                .getIsEnabledProductDescriptionCopyForSuppliers())) {
+    AppInvoice appInvoice = appAccountService.getAppInvoice();
+
+    Boolean isEnabledProductDescriptionCopy =
+        isPurchase
+            ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
+            : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
+
+    if (isEnabledProductDescriptionCopy) {
       productInformation.put("description", null);
     }
+
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
       productInformation.put("analyticMoveLineList", null);
@@ -408,18 +413,21 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
-    productInformation.put("productName", invoiceLine.getProduct().getName());
-    productInformation.put("productCode", invoiceLine.getProduct().getCode());
-    productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
+    Product product = invoiceLine.getProduct();
 
-    if ((isPurchase
-            && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
-        || (!isPurchase
-            && appAccountService
-                .getAppInvoice()
-                .getIsEnabledProductDescriptionCopyForSuppliers())) {
-      productInformation.put("description", invoiceLine.getProduct().getDescription());
+    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    productInformation.put("productName", product.getName());
+    productInformation.put("productCode", product.getCode());
+    productInformation.put("unit", this.getUnit(product, isPurchase));
+
+    AppInvoice appInvoice = appAccountService.getAppInvoice();
+    Boolean isEnabledProductDescriptionCopy =
+        isPurchase
+            ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
+            : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
+
+    if (isEnabledProductDescriptionCopy) {
+      productInformation.put("description", product.getDescription());
     }
 
     return productInformation;

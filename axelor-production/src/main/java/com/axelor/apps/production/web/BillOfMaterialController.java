@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -173,7 +173,8 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
     billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-    TempBomTree tempBomTree = Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial);
+    TempBomTree tempBomTree =
+        Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
 
     response.setView(
         ActionView.define(I18n.get("Bill of materials"))

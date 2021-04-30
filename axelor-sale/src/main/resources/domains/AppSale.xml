@@ -13,11 +13,15 @@
         <boolean name="manageMultipleSaleQuantity" title="Manage multiple sale quantity"/>
         <boolean  name="printingConfigPerSaleOrder" title="Printing config per Sale Order"/>
         <boolean name="closeOpportunityUponSaleOrderConfirmation"
-            title="Close opportunity when one of the linked sale orders is confirmed"/><boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
+            title="Close opportunity when one of the linked sale orders is confirmed"/>
+        <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
         <integer name="salemanSelect" title="User to fill saleman" selection="sale.order.fill.saleman.select" default="1"/>
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
 		<boolean name="enablePackManagement" title="Pack Management"/>
 		<boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
+		<boolean name="enableSalesProductByTradName" title="Filter products by trading name" default="false"/>
+		<many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
+		<boolean name="managePartnerComplementaryProduct" title="Manage partner complementary product"/>
 
 		<track>
 			<field name="manageSaleOrderVersion" on="UPDATE"/>

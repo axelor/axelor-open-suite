@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
@@ -48,7 +49,8 @@ public class ProductStockRepository extends ProductBaseRepository {
   @Inject private StockLocationLineService stockLocationLineService;
 
   public Product save(Product product) {
-
+    WeightedAveragePriceService weightedAveragePriceService =
+        Beans.get(WeightedAveragePriceService.class);
     Set<MetaField> specificProductFieldSet =
         appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
     if (!specificProductFieldSet.isEmpty() && appBaseService.getAppBase().getEnableMultiCompany()) {
@@ -73,6 +75,10 @@ public class ProductStockRepository extends ProductBaseRepository {
                 specificField.getName(),
                 mapper.get(product, specificField.getName()));
           }
+          // specific case for avgPrice per company
+          productCompany.setAvgPrice(
+              weightedAveragePriceService.computeAvgPriceForCompany(
+                  product, stockConfig.getCompany()));
           productCompany.setCompany(stockConfig.getCompany());
           productCompany.setProduct(product);
           product.addProductCompanyListItem(productCompany);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.util.InvoiceLineComparator;
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -39,6 +40,7 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -88,6 +90,10 @@ public class InvoicingProjectService {
   @Inject protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
+
+  @Inject protected AppBusinessProjectService appBusinessProjectService;
+
+  @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -145,6 +151,7 @@ public class InvoicingProjectService {
             customer.getCurrency(),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(customer, PriceListRepository.TYPE_SALE),
+            null,
             null,
             null,
             null,
@@ -309,6 +316,11 @@ public class InvoicingProjectService {
   }
 
   public void setLines(InvoicingProject invoicingProject, Project project, int counter) {
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    if (appBusinessProject.getAutomaticInvoicing()) {
+      projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
+      timesheetLineBusinessService.timsheetLineInvoicing(project);
+    }
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
       return;
@@ -494,9 +506,11 @@ public class InvoicingProjectService {
       List<File> fileList = new ArrayList<>();
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
+      Invoice invoice = invoicingProject.getInvoice();
+
       fileList.add(
           Beans.get(InvoicePrintServiceImpl.class)
-              .print(invoicingProject.getInvoice(), null, ReportSettings.FORMAT_PDF, null));
+              .print(invoice, null, ReportSettings.FORMAT_PDF, null));
       fileList.add(reportSettings.generate().getFile());
 
       MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,9 @@ package com.axelor.apps.supplierportal.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplierportal.service.SupplierViewService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
@@ -46,7 +48,7 @@ public class SupplierViewController {
     try {
       SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
       User user = supplierViewService.getSupplierUser();
-      String domain = Beans.get(SupplierViewService.class).getAwaitingInvoicesOfSupplier(user);
+      String domain = Beans.get(SupplierViewService.class).getPurchaseOrdersOfSupplier(user);
       response.setView(
           ActionView.define(I18n.get("Purchase orders"))
               .model(PurchaseOrder.class.getName())
@@ -82,13 +84,16 @@ public class SupplierViewController {
       SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
       User user = supplierViewService.getSupplierUser();
       String domain = Beans.get(SupplierViewService.class).getLastPurchaseOrderOfSupplier(user);
-      response.setView(
-          ActionView.define(I18n.get("Last order"))
-              .model(PurchaseOrder.class.getName())
-              .add("grid", "purchase-order-grid")
-              .add("form", "purchase-order-form")
-              .domain(domain)
-              .map());
+      PurchaseOrder purchaseOrder =
+          Beans.get(PurchaseOrderRepository.class).all().filter(domain).fetchOne();
+      if (purchaseOrder != null) {
+        response.setView(
+            ActionView.define(I18n.get("Last order"))
+                .model(PurchaseOrder.class.getName())
+                .add("form", "purchase-order-form")
+                .context("_showRecord", purchaseOrder.getId())
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -100,13 +105,16 @@ public class SupplierViewController {
       SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
       User user = supplierViewService.getSupplierUser();
       String domain = Beans.get(SupplierViewService.class).getLastDeliveryOfSupplier(user);
-      response.setView(
-          ActionView.define(I18n.get("Last delivery"))
-              .model(StockMove.class.getName())
-              .add("grid", "stock-move-supplier-grid")
-              .add("form", "stock-move-supplier-form")
-              .domain(domain)
-              .map());
+      StockMove stockMove = Beans.get(StockMoveRepository.class).all().filter(domain).fetchOne();
+      if (stockMove != null) {
+        response.setView(
+            ActionView.define(I18n.get("Last delivery"))
+                .model(StockMove.class.getName())
+                .add("form", "stock-move-supplier-form")
+                .domain(domain)
+                .context("_showRecord", stockMove.getId())
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -117,13 +125,16 @@ public class SupplierViewController {
       SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
       User user = supplierViewService.getSupplierUser();
       String domain = Beans.get(SupplierViewService.class).getNextDeliveryOfSupplier(user);
-      response.setView(
-          ActionView.define(I18n.get("Next delivery"))
-              .model(StockMove.class.getName())
-              .add("grid", "stock-move-supplier-grid")
-              .add("form", "stock-move-supplier-form")
-              .domain(domain)
-              .map());
+      StockMove stockMove = Beans.get(StockMoveRepository.class).all().filter(domain).fetchOne();
+      if (stockMove != null) {
+        response.setView(
+            ActionView.define(I18n.get("Next delivery"))
+                .model(StockMove.class.getName())
+                .add("form", "stock-move-supplier-form")
+                .domain(domain)
+                .context("_showRecord", stockMove.getId())
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -152,7 +163,7 @@ public class SupplierViewController {
     try {
       SupplierViewService supplierViewService = Beans.get(SupplierViewService.class);
       User user = supplierViewService.getSupplierUser();
-      String domain = Beans.get(SupplierViewService.class).getAwaitingInvoicesOfSupplier(user);
+      String domain = Beans.get(SupplierViewService.class).getOverdueInvoicesOfSupplier(user);
       response.setView(
           ActionView.define(I18n.get("Overdue invoices"))
               .model(Invoice.class.getName())

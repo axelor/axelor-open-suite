@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -138,11 +138,8 @@ public interface StockMoveService {
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
   @Transactional
-  public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
-
-  @Transactional
-  public void splitStockMoveLinesSpecial(
-      StockMove stockMove, List<StockMoveLine> list, BigDecimal splitQty);
+  public boolean splitStockMoveLines(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
 
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove);

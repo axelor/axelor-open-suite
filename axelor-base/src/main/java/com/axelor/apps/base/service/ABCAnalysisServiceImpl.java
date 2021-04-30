@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -181,11 +181,11 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   }
 
   protected String getProductCategoryQuery() {
-    return "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND dtype = 'Product'";
+    return "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.dtype = 'Product'";
   }
 
   protected String getProductFamilyQuery() {
-    return "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND dtype = 'Product'";
+    return "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.dtype = 'Product'";
   }
 
   protected void createAllABCAnalysisLine(ABCAnalysis abcAnalysis) throws AxelorException {

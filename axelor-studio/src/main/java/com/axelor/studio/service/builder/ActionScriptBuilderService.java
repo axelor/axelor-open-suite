@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -442,6 +442,8 @@ public class ActionScriptBuilderService {
         stb.append(format("var map = com.axelor.db.mapper.Mapper.toMap($$);", 2));
       }
       stb.append(format("val = " + getQuery(tModel, line.getFilter(), false, false), 2));
+    } else if (srcModel == null) {
+      stb.append(format("val = " + "$", 2));
     }
 
     List<ActionBuilderLine> lines = line.getSubLines();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,6 +55,9 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
   public void resetLeaveManagementLines(List<Employee> employeeList) {
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+        continue;
+      }
       try {
         resetLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
@@ -75,7 +78,7 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
 
   @Transactional(rollbackOn = {Exception.class})
   public void resetLeaveManagement(Employee employee) throws AxelorException {
-    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       return;
     }
     LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();

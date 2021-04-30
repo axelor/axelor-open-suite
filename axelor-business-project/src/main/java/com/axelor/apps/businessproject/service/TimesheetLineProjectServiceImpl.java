@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -31,13 +32,17 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     implements TimesheetLineBusinessService {
@@ -119,5 +124,83 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine) {
     timesheetLine = getDefaultToInvoice(timesheetLine);
     return timesheetLineRepo.save(timesheetLine);
+  }
+
+  @Transactional
+  public TimesheetLine setTimesheet(TimesheetLine timesheetLine) {
+    Timesheet timesheet =
+        timesheetRepository
+            .all()
+            .filter(
+                "self.user = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
+                timesheetLine.getUser(),
+                timesheetLine.getProject().getCompany(),
+                timesheetLine.getDate())
+            .order("id")
+            .fetchOne();
+    if (timesheet == null) {
+      Timesheet lastTimesheet =
+          timesheetRepository
+              .all()
+              .filter(
+                  "self.user = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
+                  timesheetLine.getUser(),
+                  TimesheetRepository.STATUS_CANCELED)
+              .order("-toDate")
+              .fetchOne();
+      timesheet =
+          timesheetService.createTimesheet(
+              timesheetLine.getUser(),
+              lastTimesheet != null && lastTimesheet.getToDate() != null
+                  ? lastTimesheet.getToDate().plusDays(1)
+                  : timesheetLine.getDate(),
+              null);
+      timesheet = timesheetRepository.save(timesheet);
+    }
+    timesheetLine.setTimesheet(timesheet);
+    return timesheetLine;
+  }
+
+  @Override
+  public QueryBuilder<TimesheetLine> getTimesheetLineInvoicingFilter() {
+    QueryBuilder<TimesheetLine> timespentQueryBuilder =
+        QueryBuilder.of(TimesheetLine.class)
+            .add(
+                "((self.projectTask.parentTask.invoicingType = :_invoicingType "
+                    + "AND self.projectTask.parentTask.toInvoice = :_teamTaskToInvoice) "
+                    + " OR (self.projectTask.parentTask IS NULL "
+                    + "AND self.projectTask.invoicingType = :_invoicingType "
+                    + "AND self.projectTask.toInvoice = :_projectTaskToInvoice))")
+            .add("self.projectTask.project.isBusinessProject = :_isBusinessProject")
+            .add("self.toInvoice = :_toInvoice")
+            .bind("_invoicingType", ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
+            .bind("_isBusinessProject", true)
+            .bind("_projectTaskToInvoice", true)
+            .bind("_toInvoice", false);
+
+    return timespentQueryBuilder;
+  }
+
+  @Override
+  public void timsheetLineInvoicing(Project project) {
+    QueryBuilder<TimesheetLine> timesheetLineQueryBuilder = getTimesheetLineInvoicingFilter();
+    timesheetLineQueryBuilder =
+        timesheetLineQueryBuilder
+            .add("self.project.id = :projectId")
+            .bind("projectId", project.getId());
+
+    Query<TimesheetLine> timesheetLineQuery = timesheetLineQueryBuilder.build().order("id");
+
+    int offset = 0;
+    List<TimesheetLine> timesheetLineList;
+
+    while (!(timesheetLineList = timesheetLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      offset += timesheetLineList.size();
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        updateTimesheetLines(timesheetLine);
+      }
+      JPA.clear();
+    }
   }
 }

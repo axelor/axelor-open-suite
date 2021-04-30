@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,19 +17,20 @@
  */
 package com.axelor.apps.production.db.repo;
 
-import com.axelor.apps.base.db.repo.AppProductionRepository;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.google.inject.Inject;
 
 public class MachineToolManagementRepository extends MachineRepository {
 
   @Inject MachineToolRepository machineToolRepository;
-  @Inject AppProductionRepository appProductionRepository;
+  @Inject AppProductionService appProductionService;
 
   @Override
   public Machine save(Machine entity) {
-    if (appProductionRepository.all().fetchOne().getEnableToolManagement()) {
+    if (appProductionService.getAppProduction().getEnableToolManagement()
+        && entity.getMachineToolLineList() != null) {
       for (MachineTool machineTool : entity.getMachineToolLineList()) {
         machineTool.setMachine(entity);
         machineToolRepository.save(machineTool);

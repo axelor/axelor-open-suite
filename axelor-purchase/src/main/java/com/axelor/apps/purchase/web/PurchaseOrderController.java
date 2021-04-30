@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -140,7 +140,9 @@ public class PurchaseOrderController {
         fileLink = purchaseOrderPrintService.printPurchaseOrders(ids);
         title = I18n.get("Purchase orders");
       } else if (context.get("id") != null) {
-        PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+        PurchaseOrder purchaseOrder =
+            Beans.get(PurchaseOrderRepository.class)
+                .find(Long.parseLong(context.get("id").toString()));
         title = purchaseOrderPrintService.getFileName(purchaseOrder);
         fileLink =
             purchaseOrderPrintService.printPurchaseOrder(purchaseOrder, ReportSettings.FORMAT_PDF);

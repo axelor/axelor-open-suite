@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TimerProjectTaskServiceImpl extends AbstractTimerService
     implements TimerProjectTaskService {
@@ -47,11 +48,11 @@ public class TimerProjectTaskServiceImpl extends AbstractTimerService
   public Timer find(Model model) {
     User user = userService.getUser();
     ProjectTask task = (ProjectTask) model;
+    List<Timer> timers = task.getTimerList();
 
-    return task.getTimerList().stream()
-        .filter(t -> t.getAssignedToUser() == user)
-        .findFirst()
-        .orElse(null);
+    return timers != null && !timers.isEmpty()
+        ? timers.stream().filter(t -> t.getAssignedToUser() == user).findFirst().orElse(null)
+        : null;
   }
 
   @Override

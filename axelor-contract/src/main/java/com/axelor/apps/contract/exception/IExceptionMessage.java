@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,4 +35,6 @@ public interface IExceptionMessage {
       "There is no contract associated with this version." /*)*/;
   String CONTRACT_MISSING_FIRST_PERIOD = /*$$(*/
       "Please fill the first period end date and the invoice frequency." /*)*/;
+  String CONTRACT_VERSION_EMPTY_NEXT_CONTRACT = /*$$(*/
+      "The next contract field is not set on the current contract version." /*)*/;
 }

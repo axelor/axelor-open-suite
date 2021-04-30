@@ -10,8 +10,9 @@
     <string name="name" title="Name" required="true"/>
     <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
     <date name="taskDate" title="Task date"/>
-    <integer name="status" title="Status" selection="project.task.status"/>
-    <integer name="priority" title="Priority" selection="project.task.priority"/>
+    <string name="status" title="Status" selection="project.task.status"/>
+    <string name="statusBeforeComplete" title="Last status" selection="project.task.status"/>
+    <string name="priority" title="Priority" selection="project.task.priority"/>
     <date name="taskDeadline" title="Task deadline" />
     <integer name="taskDuration" title="Task duration" />
     <integer name="sequence" title="Sequence"/>
@@ -22,7 +23,7 @@
     <boolean name="doApplyToAllNextTasks" title="Apply modifications to next tasks" default="false"/>
     <boolean name="hasDateOrFrequencyChanged" title="Date or frequency changed" readonly="true" default="false"/>
 
-    <integer name="typeSelect" title="Type" selection="project.task.type.select" />
+    <string name="typeSelect" title="Type" selection="project.task.type.select" default="task"/>
   
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
@@ -57,24 +58,25 @@
     <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile" />
     
     <many-to-many name="projectTaskTagSet" ref="com.axelor.apps.project.db.ProjectTaskTag" title="Tags"/>
+    <many-to-one name="projectTaskSection" ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
    
     <extra-code>
       
       // STATUS SELECT
-      public static final Integer STATUS_NEW = 1;
-      public static final Integer STATUS_IN_PROGRESS = 2;
-      public static final Integer STATUS_CLOSED = 3;
-      public static final Integer STATUS_CANCELED = 4;
+      public static final String STATUS_NEW = "new";
+      public static final String STATUS_IN_PROGRESS = "in-progress";
+      public static final String STATUS_CLOSED = "closed";
+      public static final String STATUS_CANCELED = "canceled";
       
       // PRIORITY SELECT
-      public static final Integer PRIORITY_LOW = 1;
-      public static final Integer PRIORITY_NORMAL = 2;
-      public static final Integer PRIORITY_HIGHT = 3;
-      public static final Integer PRIORITY_URGENT = 4;
+      public static final String PRIORITY_LOW = "low";
+      public static final String PRIORITY_NORMAL = "normal";
+      public static final String PRIORITY_HIGHT = "high";
+      public static final String PRIORITY_URGENT = "urgent";
       
       // TYPE SELECT
-      public static final Integer TYPE_TASK = 0;
-      public static final Integer TYPE_TICKET = 1;
+      public static final String TYPE_TASK = "task";
+      public static final String TYPE_TICKET = "ticket";
     </extra-code>
     
     <track replace="true">

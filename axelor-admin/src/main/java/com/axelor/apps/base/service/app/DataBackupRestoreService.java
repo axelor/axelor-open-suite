@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -86,9 +86,7 @@ public class DataBackupRestoreService {
                 strError = "Errors : \n" + sb1.toString();
               }
               str = "Total Records :  {" + total + "} - Success Records :  {" + count + "}  \n";
-              if (total != 0 && count != 0) {
-                sb.append(modelName + " : \n");
-              }
+              sb.append(modelName + " : \n");
               sb.append(strError).append(str + "-----------------------------------------\n");
               sb1.setLength(0);
             }

@@ -27,7 +27,14 @@
 
 	<form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form" onNew="action-ticket-group-on-new" onLoad="action-ticket-group-timer-process">
 		<panel name="mainPanel" colSpan="12">
-			<field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false" onChange="action-record-to-set-progress-select"/>
+			<field name="statusSelect" colSpan="8" readonly="true" widget="NavSelect" showTitle="false" onChange="action-record-to-set-progress-select"/>
+			<field name="slaPolicy.name" showTitle="false" hideIf="statusSelect >= slaPolicy.reachStageSelect" colSpan="4">
+				<viewer><![CDATA[
+					<h4 style="text-align: right;">
+			        	<span class="label label-important" ng-if="record.slaPolicy">{{record.slaPolicy.name}}</span>
+			        </h4>
+				]]></viewer>
+			</field>
 			<field name="ticketSeq" showTitle="false">
 				<viewer depends="ticketSeq">
 					<![CDATA[
@@ -46,14 +53,7 @@
 			</panel>
 			<field name="subject" colSpan="12"/>
 			<field name="mailSubject"/>
-
-			<field name="slaPolicy" showTitle="false" readonly="true" hideIf="statusSelect >= slaPolicy.reachStageSelect">
-				<viewer><![CDATA[
-					<h3>
-			        	<span class="label label-important" ng-if="record.slaPolicy">{{record.slaPolicy.name}}</span>
-			        </h3>
-				]]></viewer>
-			</field>
+			<field name="slaPolicy.reachStageSelect" hidden="true"/>
 		</panel>
 
 		<panel name="otherDetailsPanel" colSpan="12">
@@ -89,6 +89,7 @@
 
 		<panel name="characteristicsPanel" title="Characteristics" sidebar="true" canCollapse="true">
 			<field name="ticketType" colSpan="12"/>
+			<field name="slaPolicy" colSpan="12" hideIf="statusSelect >= slaPolicy.reachStageSelect" readonly="true"/>
 			<field name="prioritySelect" colSpan="6" widget="single-select"/>
 			<field name="deadlineDateT" colSpan="6"/>
 			<field name="isSlaCompleted" hidden="true"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public class CampaignServiceImpl implements CampaignService {
 
@@ -116,6 +117,7 @@ public class CampaignServiceImpl implements CampaignService {
           | IllegalAccessException
           | MessagingException
           | IOException
+          | JSONException
           | AxelorException e) {
         errors.append(partner.getName() + "\n");
         e.printStackTrace();
@@ -138,6 +140,7 @@ public class CampaignServiceImpl implements CampaignService {
           | IllegalAccessException
           | MessagingException
           | IOException
+          | JSONException
           | AxelorException e) {
         errors.append(lead.getName() + "\n");
         e.printStackTrace();
@@ -150,7 +153,7 @@ public class CampaignServiceImpl implements CampaignService {
   @Transactional(rollbackOn = {Exception.class})
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException {
+          MessagingException, IOException, AxelorException, JSONException {
     Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
     message.setRelatedTo1Select(Campaign.class.getCanonicalName());
     message.setRelatedTo1SelectId(campaign.getId());

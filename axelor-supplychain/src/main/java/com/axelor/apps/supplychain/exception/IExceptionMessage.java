@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -138,9 +138,11 @@ public interface IExceptionMessage {
   static final String SO_MISSING_STOCK_LOCATION = /*$$(*/
       "Stock location is missing for the sale order %s." /*)*/;
 
-  /** Sale order Stock Service Implement */
   static final String PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this purchase order" /*)*/;
+
+  static final String RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE = /*$$(*/
+      "Please configure a correct value for the sale order date used for reservation." /*)*/;
 
   /** Purchase Order Stock Service Implement */
   static final String PO_MISSING_STOCK_LOCATION = /*$$(*/

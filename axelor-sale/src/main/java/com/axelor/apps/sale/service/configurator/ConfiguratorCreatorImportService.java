@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.sale.db.ConfiguratorCreator;
+import com.axelor.exception.AxelorException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -59,4 +61,13 @@ public interface ConfiguratorCreatorImportService {
    */
   String importConfiguratorCreators(InputStream xmlInputStream, String configFilePath)
       throws IOException;
+
+  /**
+   * When exported, attribute name finish with '_XX' where XX is the id of the creator. After
+   * importing or copying, we need to fix these values.
+   *
+   * @param creator a saved configurator creator
+   * @throws AxelorException
+   */
+  void fixAttributesName(ConfiguratorCreator creator) throws AxelorException;
 }
