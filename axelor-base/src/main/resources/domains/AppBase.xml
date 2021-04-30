@@ -97,12 +97,12 @@
 
 	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
 
-	   	<string name="geoNamesUrl" title="GeoNames URL"/>
+	   	<string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
+	   	<string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
 
 		<boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners" default="false"/>
 
 	   	<string name="customAppStyle" title="Custom style" large="true" help="Custom css to personnalize web user interface."/>
-
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

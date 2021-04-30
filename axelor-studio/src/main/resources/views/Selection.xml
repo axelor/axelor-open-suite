@@ -38,7 +38,7 @@
         <option value="in">in</option>
         <option value="notIn">not in</option>
         <option value="like">contains</option>
-        <option value="notLike">doesn't contains</option>
+        <option value="notLike">doesn't contain</option>
         <option value="isNull">is null</option>
         <option value="notNull">is not null</option>
 		<option value="isTrue">is true</option>

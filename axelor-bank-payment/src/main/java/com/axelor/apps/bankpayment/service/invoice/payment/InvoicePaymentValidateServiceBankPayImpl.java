@@ -92,8 +92,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   public void validate(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-    if (invoicePayment == null
-        || (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT)) {
+    if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
       return;
     }
 
@@ -134,13 +133,11 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     }
 
     invoicePaymentToolService.updateAmountPaid(invoice);
-    if (invoicePayment != null
-        && invoice != null
+    if (invoice != null
         && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
-
-    if (invoicePayment != null) invoicePaymentRepository.save(invoicePayment);
+    invoicePaymentRepository.save(invoicePayment);
   }
 
   @Transactional(rollbackOn = {Exception.class})

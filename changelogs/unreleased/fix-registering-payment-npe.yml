@@ -1,5 +1,0 @@
----
-title: "InvoicePayment : NPE while registering payment"
-type: fix
-description: |
-  Handling of NPE when all movelines have account with boolean useForPartnerBalance disable.

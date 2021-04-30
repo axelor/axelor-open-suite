@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -31,6 +32,7 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class ImportCityController {
@@ -51,24 +53,28 @@ public class ImportCityController {
 
     String typeSelect = (String) request.getContext().get("typeSelect");
 
-    if (typeSelect.equals("geonames")) {
-      LinkedHashMap<String, Object> map =
-          (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
-
+    if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
       List<ImportHistory> importHistoryList = new ArrayList<ImportHistory>();
 
-      String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
-
+      String importTypeSelect = (String) request.getContext().get("importTypeSelect");
       try {
-        if (map != null) {
-          dataFile =
-              Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
-          importHistoryList.add(importCityService.importCity(typeSelect, dataFile));
-        }
+        if (CityRepository.IMPORT_TYPE_SELECT_AUTO.equals(importTypeSelect)) {
+          String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
+          MetaFile zipImportDataFile = importCityService.downloadZip(downloadFileName, false);
+          MetaFile dumpImportDataFile = importCityService.downloadZip(downloadFileName, true);
+          importHistoryList.add(
+              importCityService.importCity(typeSelect + "-zip", zipImportDataFile));
+          importHistoryList.add(
+              importCityService.importCity(typeSelect + "-dump", dumpImportDataFile));
+        } else {
+          Map<String, Object> map =
+              (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
 
-        if (downloadFileName != null) {
-          dataFile = importCityService.downloadZip(downloadFileName);
-          importHistoryList.add(importCityService.importCity(typeSelect, dataFile));
+          if (map != null) {
+            dataFile =
+                Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
+            importHistoryList.add(importCityService.importCity(typeSelect + "-dump", dataFile));
+          }
         }
 
         response.setAttr("$importHistoryList", "hidden", false);
