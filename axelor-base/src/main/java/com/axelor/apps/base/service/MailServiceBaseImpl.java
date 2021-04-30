@@ -30,6 +30,7 @@ import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -88,6 +89,12 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   private ExecutorService executor = Executors.newCachedThreadPool();
 
   private String userName = null;
+
+  protected Template template = null;
+  protected boolean isDefaultTemplate = false;
+  protected Map<String, Object> templatesContext;
+  protected Templates templates;
+  protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
   @Inject AppBaseService appBaseService;
 
@@ -295,7 +302,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
     for (String recipient : recipients) {
       MailBuilder builder = sender.compose().subject(getSubject(message, related));
-      builder.to(recipient);
+      this.setRecipients(builder, recipient, related);
 
       Model obj = Beans.get(MailService.class).resolve(recipient);
       userName = null;
@@ -348,36 +355,48 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   @Override
   protected String template(MailMessage message, Model entity) throws IOException {
-    Template template = getTemplateByModel(entity);
-    boolean isDefaultTemplate = false;
-    if (template == null) {
-      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
-      isDefaultTemplate = true;
-    }
     if (template == null) {
       return super.template(message, entity);
     }
 
     final String text = message.getBody().trim();
-    Map<String, Object> data = new HashMap<>();
-    Map<String, Object> templatesContext = Maps.newHashMap();
-    Class<?> klass = EntityHelper.getEntityClass(entity);
-    data.put("username", userName);
+    templatesContext.put("username", userName);
 
     if (MESSAGE_TYPE_NOTIFICATION.equals(message.getType())) {
       final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
       final Map<String, Object> details = messages.details(message);
       final String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
       final ObjectMapper mapper = Beans.get(ObjectMapper.class);
-      data = mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+      Map<String, Object> data =
+          mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+      templatesContext.putAll(data);
     } else {
-      data.put("comment", text);
+      templatesContext.put("comment", text);
     }
 
+    return templates.fromText(template.getContent()).make(templatesContext).render();
+  }
+
+  @Override
+  protected String getSubject(final MailMessage message, Model entity) {
+    if (message == null) {
+      return null;
+    }
+    template = this.getTemplateByModel(entity);
+    if (template == null) {
+      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+      isDefaultTemplate = true;
+    }
+    if (template == null) {
+      return super.getSubject(message, entity);
+    }
+    templatesContext = Maps.newHashMap();
+    Class<?> klass = EntityHelper.getEntityClass(entity);
+
     if (isDefaultTemplate) {
-      data.put("entity", entity);
+      templatesContext.put("entity", entity);
     } else {
-      data.put(klass.getSimpleName(), entity);
+      templatesContext.put(klass.getSimpleName(), entity);
     }
 
     try {
@@ -391,39 +410,11 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
     }
-    data.putAll(templatesContext);
-    Templates templates = createTemplates(template);
-    return templates.fromText(template.getContent()).make(data).render();
-  }
-
-  @Override
-  protected String getSubject(final MailMessage message, Model entity) {
-    if (message == null) {
-      return null;
-    }
-    Template template = getTemplateByModel(entity);
-    boolean isDefaultTemplate = false;
-    if (template == null) {
-      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
-      isDefaultTemplate = true;
-    }
-    if (template != null) {
-      Map<String, Object> data = Maps.newHashMap();
-      if (isDefaultTemplate) {
-        data.put("entity", entity);
-      } else {
-        Class<?> klass = EntityHelper.getEntityClass(entity);
-        data.put(klass.getSimpleName(), entity);
-      }
-      Templates templates = createTemplates(template);
-      return templates.fromText(template.getSubject()).make(data).render();
-    } else {
-      return super.getSubject(message, entity);
-    }
+    templates = createTemplates(template);
+    return templates.fromText(template.getSubject()).make(templatesContext).render();
   }
 
   protected Templates createTemplates(Template template) {
-    Templates templates;
     if (template.getTemplateEngineSelect() == TemplateRepository.TEMPLATE_ENGINE_GROOVY_TEMPLATE) {
       templates = Beans.get(GroovyTemplates.class);
     } else {
@@ -444,5 +435,28 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
     }
     return null;
+  }
+
+  protected void setRecipients(MailBuilder builder, String recipient, Model entity) {
+    builder.to(recipient);
+
+    if (template == null) {
+      return;
+    }
+
+    builder.cc(getRecipients(template.getCcRecipients()));
+    builder.bcc(getRecipients(template.getBccRecipients()));
+    builder.to(getRecipients(template.getToRecipients()));
+  }
+
+  protected String[] getRecipients(String recipients) {
+    if (StringUtils.notBlank(recipients)) {
+      return templates
+          .fromText(recipients)
+          .make(templatesContext)
+          .render()
+          .split(RECIPIENTS_SPLIT_REGEX);
+    }
+    return new String[0];
   }
 }

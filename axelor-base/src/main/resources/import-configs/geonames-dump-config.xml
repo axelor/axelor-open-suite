@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
   	
-  	<input file="geonames_city.csv" separator="\t" type="com.axelor.apps.base.db.City" search="self.zip = :zip AND self.name = :name AND self.country.alpha2Code = :country_alpha2Code" call="com.axelor.csv.script.ImportCity:importCity">
+  	<input file="geonames_city.csv" separator="\t" type="com.axelor.apps.base.db.City" search="self.country.alpha2Code = :country_alpha2Code AND UPPER(self.name) = UPPER(:name) AND self.canton.code = :canton_code" call="com.axelor.csv.script.ImportCity:importCity">
   		<header>country_alpha2Code, zip, name, department_region_name, department_region_code, department_name, department_code, canton_name, canton_code, lattitude, longitude, population</header>
 		<bind to="country" search="self.alpha2Code = :country_alpha2Code" update="true"/>
-		<bind to="department" type="com.axelor.apps.base.db.Department" search="self.code = :department_code AND self.name = :department_name" if="!department_code.empty &amp;&amp; !department_name.empty">
+		<bind to="department" type="com.axelor.apps.base.db.Department" search="self.code = :department_code AND UPPER(self.name) = UPPER(:department_name)" if="!department_code.empty &amp;&amp; !department_name.empty">
 			<bind to="code" column="department_code"/>
 			<bind to="name" column="department_name"/>
 			<bind to="region" type="com.axelor.apps.base.db.Region" search="self.code = :department_region_code AND self.country.alpha2Code = :country_alpha2Code" if="!department_region_code.empty &amp;&amp; !department_region_name.empty">
@@ -20,6 +20,8 @@
  			<bind to="name" column="canton_name"/>
  		</bind>
  		<bind to="nbInhCommune" column="population"/>
+ 		<bind to="zip" column="zip"/>
+ 		<bind to="inseeCode" column="zip"/>
 	</input>
   	
 </csv-inputs>
