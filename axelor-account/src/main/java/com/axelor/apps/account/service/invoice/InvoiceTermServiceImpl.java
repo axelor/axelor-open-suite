@@ -1,0 +1,137 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.account.service.invoice;
+
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
+
+public class InvoiceTermServiceImpl implements InvoiceTermService {
+
+  protected CurrencyService currencyService;
+
+  @Inject
+  public InvoiceTermServiceImpl(CurrencyService currencyService) {
+    this.currencyService = currencyService;
+  }
+
+  @Override
+  public Invoice computeInvoiceTerms(Invoice invoice) throws AxelorException {
+
+    if (invoice.getPaymentCondition() == null
+        || CollectionUtils.isEmpty(invoice.getPaymentCondition().getPaymentConditionLineList())) {
+      return null;
+    }
+
+    invoice.clearInvoiceTermList();
+
+    Set<PaymentConditionLine> paymentConditionLines =
+        new HashSet<>(invoice.getPaymentCondition().getPaymentConditionLineList());
+    Iterator<PaymentConditionLine> iterator = paymentConditionLines.iterator();
+    BigDecimal total = BigDecimal.ZERO;
+    while (iterator.hasNext()) {
+      PaymentConditionLine paymentConditionLine = iterator.next();
+      InvoiceTerm invoiceTerm = computeInvoiceTerm(invoice, paymentConditionLine);
+      if (!iterator.hasNext()) {
+        invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
+      } else {
+        total = total.add(invoiceTerm.getAmount());
+      }
+      invoice.addInvoiceTermListItem(invoiceTerm);
+    }
+
+    return invoice;
+  }
+
+  @Override
+  public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
+      throws AxelorException {
+
+    InvoiceTerm invoiceTerm = new InvoiceTerm();
+
+    Currency companyCurrency = invoice.getCompany().getCurrency();
+
+    if (companyCurrency == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),
+          invoice.getCompany().getName());
+    }
+
+    LocalDate today = Beans.get(AppAccountService.class).getTodayDate(invoice.getCompany());
+
+    invoiceTerm.setPaymentConditionLine(paymentConditionLine);
+    invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+    invoiceTerm.setCompanyCurrencyAmountRemaining(BigDecimal.ZERO);
+    BigDecimal amount =
+        invoice
+            .getInTaxTotal()
+            .multiply(paymentConditionLine.getPaymentPercentage())
+            .divide(BigDecimal.valueOf(100));
+    invoiceTerm.setAmount(amount);
+
+    invoiceTerm.setCompanyCurrencyAmount(
+        currencyService
+            .getAmountCurrencyConvertedAtDate(invoice.getCurrency(), companyCurrency, amount, today)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
+    invoiceTerm.setIsPaid(false);
+    return invoiceTerm;
+  }
+
+  @Override
+  public Invoice setDueDates(Invoice invoice, LocalDate invoiceDate) {
+
+    if (invoice.getPaymentCondition() == null
+        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return invoice;
+    }
+
+    LocalDate nDaysDate = null;
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      LocalDate dueDate =
+          InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
+      invoiceTerm.setDueDate(dueDate);
+
+      if (nDaysDate == null || dueDate.isBefore(nDaysDate)) {
+        nDaysDate = dueDate;
+      }
+    }
+
+    invoice.getInvoiceTermList().sort(Comparator.comparing(InvoiceTerm::getDueDate));
+    return invoice;
+  }
+}

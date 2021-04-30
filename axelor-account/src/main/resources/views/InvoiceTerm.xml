@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+    
+    <grid name="invoice-term-grid" title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
+		<hilite color="danger" if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+		<field name="dueDate"/>
+	    <field name="amount"/>
+	    <field name="amountRemaining"/>
+	    <field name="isPaid"/>
+	    <field name="isHoldBack"/>
+	</grid>
+	
+	<grid name="invoice-term-invoice-grid" title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate">
+	    <field name="dueDate"/>
+	    <field name="amount"/>
+	    <field name="amountRemaining"/>
+	    <field name="isPaid"/>
+	    <field name="isHoldBack"/>
+	</grid>
+	
+	<form name="invoice-term-invoice-form" title="Invoice term"
+        model="com.axelor.apps.account.db.InvoiceTerm">
+		<panel name="mainPanel">
+		    <field name="dueDate"/>
+	   	 	<field name="estimatedPaymentDate" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
+	    	<field name="amount"/>
+	    	<field name="amountRemaining"/>
+	    	<field name="isPaid" readonly="true" />
+			<field name="isHoldBack"/>
+			<field name="invoice" form-view="invoice-form" grid-view="invoice-grid" hidden="true" readonly="true"/>
+		</panel>
+		<panel name="CompanyCurrencyAmountsPanel" title="Amount company currency" hideIf="invoice?.company?.currency.code == invoice.currency?.code">
+		    <field name="companyCurrencyAmount"/>
+	    	<field name="companyCurrencyAmountRemaining"/>
+		</panel>
+	</form>
+    
+    <form name="invoice-term-form" title="Invoice term"
+        model="com.axelor.apps.account.db.InvoiceTerm">
+		<panel name="mainPanel" readonlyIf="invoice.statusSelect >= 3">
+			<field name="invoice" form-view="invoice-form" grid-view="invoice-grid" readonly="true" colSpan="4"/>
+			<field name="isPaid" readonly="true" colSpan="4"/>
+			<field name="isHoldBack" colSpan="4"/>
+			<field name="dueDate"/>
+			<field name="estimatedPaymentDate" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
+	    	<field name="amount"/>
+	    	<field name="amountRemaining"/>
+		</panel>
+		<panel name="CompanyCurrencyAmountsPanel" title="Amount company currency" hideIf="invoice?.company?.currency?.code == invoice.currency?.code">
+		    <field name="companyCurrencyAmount"/>
+	    	<field name="companyCurrencyAmountRemaining"/>
+		</panel>
+	</form>
+
+</object-views>
+	
