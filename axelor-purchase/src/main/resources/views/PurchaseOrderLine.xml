@@ -190,6 +190,10 @@
 		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" />
 		</panel>
+		<panel-mail name="mailPanel">
+		  <mail-messages limit="4" />
+		  <mail-followers />
+	  	</panel-mail>
 	</form>
 	
 	<form name="purchase-order-line-menu-form" title="PO line" 
