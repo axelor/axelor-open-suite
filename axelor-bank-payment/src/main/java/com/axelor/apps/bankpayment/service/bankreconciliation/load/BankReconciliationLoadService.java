@@ -75,7 +75,9 @@ public class BankReconciliationLoadService {
    * @return the filter.
    */
   protected String getBankStatementLinesFilter(
-      boolean includeOtherBankStatements, boolean includeBankStatement, boolean isLineTypeMovement) {
+      boolean includeOtherBankStatements,
+      boolean includeBankStatement,
+      boolean isLineTypeMovement) {
 
     String filter;
     if (!includeOtherBankStatements && includeBankStatement) {
@@ -98,11 +100,11 @@ public class BankReconciliationLoadService {
               + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
               + " and self.bankStatement != :bankStatement";
     }
-    
-    if(isLineTypeMovement) {
-    	filter += " and self.amountRemainToReconcile > 0";
-    } 
-    
+
+    if (isLineTypeMovement) {
+      filter += " and self.amountRemainToReconcile > 0";
+    }
+
     return filter;
   }
 
@@ -113,7 +115,7 @@ public class BankReconciliationLoadService {
     return JPA.all(BankStatementLine.class)
         .filter(
             getBankStatementLinesFilter(
-                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement,true))
+                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, true))
         .bind("bankDetails", bankReconciliation.getBankDetails())
         .bind("currency", bankReconciliation.getCurrency())
         .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
