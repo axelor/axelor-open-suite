@@ -19,7 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.service.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;

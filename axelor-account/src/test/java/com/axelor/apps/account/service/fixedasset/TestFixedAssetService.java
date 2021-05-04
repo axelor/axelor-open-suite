@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.fixedasset;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -10,9 +10,9 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.FixedAssetType;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.Assert;
@@ -26,7 +26,6 @@ public class TestFixedAssetService {
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineService fixedAssetLineService;
   protected MoveLineService moveLineService;
-  protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
 
   /*
