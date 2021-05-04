@@ -25,6 +25,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -61,11 +62,20 @@ public class MoveController {
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) {
+
     Move move = request.getContext().asType(Move.class);
+
     try {
-      ListUtils.emptyIfNull(move.getMoveLineList())
-          .forEach(moveLine -> moveLine.setDate(move.getDate()));
-      response.setValues(move);
+
+      if (move.getPeriod() != null && move.getDate() != null) {
+        for (MoveLine moveLine : ListUtils.emptyIfNull(move.getMoveLineList())) {
+          if ((move.getPeriod().getFromDate().isAfter(moveLine.getDate())
+              || move.getPeriod().getToDate().isBefore(moveLine.getDate()))) {
+            moveLine.setDate(move.getDate());
+          }
+        }
+        response.setValue("moveLineList", move.getMoveLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -77,11 +87,13 @@ public class MoveController {
 
     try {
       if (move.getDate() != null && move.getCompany() != null) {
-
-        response.setValue(
-            "period",
+        Period period =
             Beans.get(PeriodService.class)
-                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+        if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
+
+          response.setValue("period", period);
+        }
       } else {
         response.setValue("period", null);
       }
