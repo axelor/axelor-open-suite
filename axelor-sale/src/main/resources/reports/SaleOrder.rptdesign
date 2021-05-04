@@ -4796,7 +4796,7 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">row["UnitCode"]</value>
+                                                        <value type="javascript">'value:'+row["UnitCode"]</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
@@ -4850,7 +4850,7 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">row["UnitCode"]</value>
+                                                        <value type="javascript">'value:'+row["UnitCode"]</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
