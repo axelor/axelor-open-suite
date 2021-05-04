@@ -46,16 +46,23 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private FixedAssetLineRepository fixedAssetLineRepo;
+  protected FixedAssetLineRepository fixedAssetLineRepo;
 
-  @Inject private MoveCreateService moveCreateService;
+  protected MoveCreateService moveCreateService;
 
-  @Inject private MoveRepository moveRepo;
+  protected MoveRepository moveRepo;
 
   protected MoveLineService moveLineService;
 
   @Inject
-  public FixedAssetLineServiceImpl(MoveLineService moveLineService) {
+  public FixedAssetLineServiceImpl(
+      FixedAssetLineRepository fixedAssetLineRepo,
+      MoveCreateService moveCreateService,
+      MoveRepository moveRepo,
+      MoveLineService moveLineService) {
+    this.fixedAssetLineRepo = fixedAssetLineRepo;
+    this.moveCreateService = moveCreateService;
+    this.moveRepo = moveRepo;
     this.moveLineService = moveLineService;
   }
 

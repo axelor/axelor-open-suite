@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.service.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -55,7 +55,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     if ((fixedAsset.getFixedAssetLineList() == null || fixedAsset.getFixedAssetLineList().isEmpty())
         && fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
-      Beans.get(FixedAssetService.class).generateAndcomputeLines(fixedAsset);
+      Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
     }
   }
 

@@ -19,7 +19,10 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.FixedAssetServiceImpl;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.FixedAssetLineService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
@@ -29,14 +32,19 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
 
   @Inject
-  public FixedAssetServiceSupplyChainImpl(MoveLineService moveLineService) {
-    super(moveLineService);
+  public FixedAssetServiceSupplyChainImpl(
+      FixedAssetRepository fixedAssetRepo,
+      FixedAssetLineService fixedAssetLineService,
+      MoveLineService moveLineService,
+      AccountConfigService accountConfigService) {
+    super(fixedAssetRepo, fixedAssetLineService, moveLineService, accountConfigService);
   }
 
   @Transactional
@@ -49,8 +57,8 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
       return fixedAssetList;
     }
 
-    if (CollectionUtils.isEmpty(fixedAssetList)) {
-      return null;
+    if (fixedAssetList.isEmpty()) {
+      return new ArrayList<>();
     }
 
     StockLocation stockLocation =
