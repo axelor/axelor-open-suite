@@ -24,6 +24,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
@@ -133,6 +134,15 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
     } else if (purchaseOrder != null) {
       invoice.setPrintingSettings(purchaseOrder.getPrintingSettings());
+    }
+
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      invoice.setDisplayStockMoveOnInvoicePrinting(
+          AuthUtils.getUser()
+              .getActiveCompany()
+              .getAccountConfig()
+              .getDisplayStockMoveOnInvoicePrinting());
     }
 
     return invoice;
