@@ -44,7 +44,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections4.ListUtils;
 
 @Singleton
 public class MoveController {
@@ -67,15 +66,9 @@ public class MoveController {
 
     try {
 
-      if (move.getPeriod() != null && move.getDate() != null) {
-        for (MoveLine moveLine : ListUtils.emptyIfNull(move.getMoveLineList())) {
-          if ((move.getPeriod().getFromDate().isAfter(moveLine.getDate())
-              || move.getPeriod().getToDate().isBefore(moveLine.getDate()))) {
-            moveLine.setDate(move.getDate());
-          }
-        }
-        response.setValue("moveLineList", move.getMoveLineList());
-      }
+      move = Beans.get(MoveService.class).updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -613,5 +614,19 @@ public class MoveServiceImpl implements MoveService {
       domain += ")";
     }
     return domain;
+  }
+
+  @Override
+  public Move updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(Move move)
+      throws AxelorException {
+    if (move.getPeriod() != null && move.getDate() != null) {
+      for (MoveLine moveLine : ListUtils.emptyIfNull(move.getMoveLineList())) {
+        if ((move.getPeriod().getFromDate().isAfter(moveLine.getDate())
+            || move.getPeriod().getToDate().isBefore(moveLine.getDate()))) {
+          moveLine.setDate(move.getDate());
+        }
+      }
+    }
+    return move;
   }
 }
