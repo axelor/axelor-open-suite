@@ -110,6 +110,7 @@
 "Test connection",,,
 "The email template model (%s) is different than the entity generating the email (%s)",,,
 "There is already a default account",,,
+"There is no default email account",,,
 "To",,,
 "Type",,,
 "Unable to reach server. Please check Host,Port and SSL/TLS",,,
