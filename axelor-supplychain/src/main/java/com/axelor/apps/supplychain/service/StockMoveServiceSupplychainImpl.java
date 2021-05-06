@@ -18,6 +18,8 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -37,6 +39,8 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
@@ -375,6 +379,40 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public StockMove splitInto2(
+      StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
+      throws AxelorException {
+    StockMove newStockMove = super.splitInto2(originalStockMove, modifiedStockMoveLines);
+    newStockMove.setOrigin(originalStockMove.getOrigin());
+    newStockMove.setOriginTypeSelect(originalStockMove.getOriginTypeSelect());
+    newStockMove.setOriginId(originalStockMove.getOriginId());
+    return newStockMove;
+  }
+
+  @Override
+  protected StockMoveLine createSplitStockMoveLine(
+      StockMove originalStockMove,
+      StockMoveLine originalStockMoveLine,
+      StockMoveLine modifiedStockMoveLine) {
+
+    StockMoveLine newStockMoveLine =
+        super.createSplitStockMoveLine(
+            originalStockMove, originalStockMoveLine, modifiedStockMoveLine);
+
+    if (originalStockMoveLine.getQty().compareTo(originalStockMoveLine.getRequestedReservedQty())
+        < 0) {
+      newStockMoveLine.setRequestedReservedQty(
+          originalStockMoveLine.getRequestedReservedQty().subtract(originalStockMoveLine.getQty()));
+      originalStockMoveLine.setRequestedReservedQty(originalStockMoveLine.getQty());
+    }
+    newStockMoveLine.setPurchaseOrderLine(originalStockMoveLine.getPurchaseOrderLine());
+    newStockMoveLine.setSaleOrderLine(originalStockMoveLine.getSaleOrderLine());
+
+    return newStockMoveLine;
+  }
+
+  @Override
   public void verifyProductStock(StockMove stockMove) throws AxelorException {
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
     if (stockMove.getAvailabilityRequest()
@@ -441,5 +479,44 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     return isAllocatedStockMoveLineRemoved;
+  }
+
+  @Override
+  public void setDefaultInvoicedPartner(StockMove stockMove) {
+    if (stockMove != null
+        && stockMove.getPartner() != null
+        && stockMove.getPartner().getId() != null) {
+      Partner partner = Beans.get(PartnerRepository.class).find(stockMove.getPartner().getId());
+      if (partner != null) {
+        if (!CollectionUtils.isEmpty(partner.getPartner1SupplychainLinkList())) {
+          List<PartnerSupplychainLink> partnerSupplychainLinkList =
+              partner.getPartner1SupplychainLinkList();
+          // Retrieve all Invoiced by Type
+          List<PartnerSupplychainLink> partnerSupplychainLinkInvoicedByList =
+              partnerSupplychainLinkList.stream()
+                  .filter(
+                      partnerSupplychainLink ->
+                          PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
+                              partnerSupplychainLink
+                                  .getPartnerSupplychainLinkType()
+                                  .getTypeSelect()))
+                  .collect(Collectors.toList());
+
+          // If there is only one, then it is the default one
+          if (partnerSupplychainLinkInvoicedByList.size() == 1) {
+            PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
+                partnerSupplychainLinkInvoicedByList.get(0);
+            stockMove.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
+          } else if (partnerSupplychainLinkInvoicedByList.size() == 0) {
+            stockMove.setInvoicedPartner(partner);
+          } else {
+            stockMove.setInvoicedPartner(null);
+          }
+
+        } else {
+          stockMove.setInvoicedPartner(partner);
+        }
+      }
+    }
   }
 }

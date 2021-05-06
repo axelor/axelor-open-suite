@@ -1,3 +1,0 @@
----
-title: "Replace all __date__ occurrences by a global __config__.date configuration to fix timezone related issues"
-type: fix

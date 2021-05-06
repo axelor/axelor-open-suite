@@ -193,14 +193,17 @@
     	<field name="startDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="startDate == null"/>
     	<field name="salePrice" expr="1"/>
     	<field name="purchasePrice" expr="1"/>
-    	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
-    	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
+    	<field name="saleCurrency" expr="eval: __user__.activeCompany?.currency"/>
+    	<field name="purchaseCurrency" expr="eval: __user__.activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
     	<field name="expense" expr="true"/>
     	<field name="productTypeSelect" expr="service"/>
     	<field name="saleSupplySelect" expr="0"/>
 		<field name="sellable" expr="false"/>
+    	<field name="salesUnit" expr="eval: __config__.app.getApp('sale')?.getSaleUnit()" if="__config__.app.isApp('sale')"/>
+    	<field name="purchasesUnit" expr="eval: __config__.app.getApp('purchase')?.getPurchaseUnit()" if="__config__.app.isApp('purchase')"/>
+    	<field name="unit" expr="eval: __config__.app.getApp('stock')?.getStockUnit()" if="__config__.app.isApp('stock')"/>
     </action-record>
     
     <action-record name="hr-action-product-record-default-new" model="com.axelor.apps.base.db.Product">

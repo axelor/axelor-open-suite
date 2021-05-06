@@ -16,11 +16,12 @@
       	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
       	  <field name="$existingMenu" title="Existing menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
 	      <field name="title" />
+	      <field name="xmlId" />
 	      <field name="parentMenu" />
 	      <field name="icon" widget="ImageSelect"/>
 	      <field name="iconBackground"/>
-	      <field name="order"/>
-	      <field name="showAction" widget="boolean-switch" onChange="action-menu-builder-show-action" />
+	      <field name="order" colSpan="3"/>
+	      <field name="showAction" colSpan="3" widget="boolean-switch" onChange="action-menu-builder-show-action" />
 	      <field name="actionBuilder" colSpan="12" showIf="showAction" showTitle="false">
 	      	<editor>
 	      		<field name="isJson" colSpan="2"/>

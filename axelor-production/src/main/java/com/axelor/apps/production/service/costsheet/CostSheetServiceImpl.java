@@ -357,7 +357,6 @@ public class CostSheetServiceImpl implements CostSheetService {
       for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
 
         WorkCenter workCenter = prodProcessLine.getWorkCenter();
-
         if (workCenter != null) {
 
           int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
@@ -440,7 +439,6 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine) {
 
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
-
     int costType = workCenter.getCostTypeSelect();
 
     if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
@@ -828,18 +826,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       Long realDuration)
       throws AxelorException {
-    BigDecimal costPerHour = BigDecimal.ZERO;
-    //    if (prodHumanResource.getProduct() != null) {
-    //      Product product = prodHumanResource.getProduct();
-    //      costPerHour =
-    //          unitConversionService.convert(
-    //              hourUnit,
-    //              product.getUnit(),
-    //              product.getCostPrice(),
-    //              appProductionService.getNbDecimalDigitForUnitPrice(),
-    //              product);
-    //    }
-    costPerHour = workCenter.getCostAmount();
+    BigDecimal costPerHour = workCenter.getCostAmount();
     BigDecimal durationHours =
         new BigDecimal(realDuration)
             .divide(

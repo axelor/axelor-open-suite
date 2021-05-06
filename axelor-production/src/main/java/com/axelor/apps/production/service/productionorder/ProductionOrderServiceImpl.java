@@ -31,18 +31,14 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionOrderServiceImpl implements ProductionOrderService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
@@ -141,31 +137,54 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
     if (manufOrder != null) {
       if (saleOrder != null) {
-        manufOrder.setSaleOrder(saleOrder);
+        manufOrder.addSaleOrderSetItem(saleOrder);
         manufOrder.setClientPartner(saleOrder.getClientPartner());
         manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
       }
-      productionOrder.addManufOrderListItem(manufOrder);
+      productionOrder.addManufOrderSetItem(manufOrder);
+      manufOrder.addProductionOrderSetItem(productionOrder);
     }
-    productionOrder = Beans.get(ProductionOrderService.class).updateStatus(productionOrder);
+
+    productionOrder = updateProductionOrderStatus(productionOrder);
     return productionOrderRepo.save(productionOrder);
   }
 
   @Override
-  public ProductionOrder updateStatus(ProductionOrder productionOrder) {
+  public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet) {
 
-    if (productionOrder == null || productionOrder.getStatusSelect() == null) {
+    if (CollectionUtils.isEmpty(productionOrderSet)) {
+      return productionOrderSet;
+    }
+
+    for (ProductionOrder productionOrder : productionOrderSet) {
+      updateProductionOrderStatus(productionOrder);
+    }
+
+    return productionOrderSet;
+  }
+
+  protected ProductionOrder updateProductionOrderStatus(ProductionOrder productionOrder) {
+
+    if (productionOrder.getStatusSelect() == null) {
       return productionOrder;
     }
 
     int statusSelect = productionOrder.getStatusSelect();
+
+    if (productionOrder.getManufOrderSet().stream()
+        .allMatch(
+            manufOrder -> manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT)) {
+      statusSelect = ProductionOrderRepository.STATUS_DRAFT;
+      productionOrder.setStatusSelect(statusSelect);
+      return productionOrderRepo.save(productionOrder);
+    }
 
     boolean oneStarted = false;
     boolean onePlanned = false;
     boolean allCancel = true;
     boolean allCompleted = true;
 
-    for (ManufOrder manufOrder : productionOrder.getManufOrderList()) {
+    for (ManufOrder manufOrder : productionOrder.getManufOrderSet()) {
 
       switch (manufOrder.getStatusSelect()) {
         case (ManufOrderRepository.STATUS_PLANNED):
@@ -204,7 +223,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     }
 
     productionOrder.setStatusSelect(statusSelect);
-
     return productionOrderRepo.save(productionOrder);
   }
 }

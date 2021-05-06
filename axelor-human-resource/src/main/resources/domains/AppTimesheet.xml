@@ -26,10 +26,7 @@
 		
 		<boolean name="displayTaskColumnInPrinting" title="Display task column in printing"/>
 		<boolean name="displayActivityColumnInPrinting" title="Display activity column in printing" />
-		
-		<boolean name="needValidation" title="Need validation" default="false"/>
-		<boolean name="enableActivity" title="Enable activity"/>
-		
+
 		<track>
 			<field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
 			<field name="consolidateTSLine" on="UPDATE"/>

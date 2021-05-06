@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -72,7 +71,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     LOG.debug(
         "Création d'une ligne de commande fournisseur pour le produit : {}",
-        new Object[] {saleOrderLine.getProductName()});
+        saleOrderLine.getProductName());
 
     Unit unit = null;
     BigDecimal qty = BigDecimal.ZERO;
@@ -94,36 +93,11 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     PurchaseOrderLine purchaseOrderLine =
         super.createPurchaseOrderLine(
-            purchaseOrder,
-            saleOrderLine.getProduct(),
-            saleOrderLine.getProductName(),
-            saleOrderLine.getDescription(),
-            qty,
-            unit);
+            purchaseOrder, saleOrderLine.getProduct(), null, null, qty, unit);
 
     purchaseOrderLine.setIsTitleLine(
         saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
     this.getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
-    return purchaseOrderLine;
-  }
-
-  @Override
-  public PurchaseOrderLine createPurchaseOrderLine(
-      PurchaseOrder purchaseOrder,
-      Product product,
-      String productName,
-      String description,
-      BigDecimal qty,
-      Unit unit)
-      throws AxelorException {
-
-    PurchaseOrderLine purchaseOrderLine =
-        super.createPurchaseOrderLine(purchaseOrder, product, productName, description, qty, unit);
-
-    //		purchaseOrderLine.setAmountInvoiced(BigDecimal.ZERO);
-    //
-    //		purchaseOrderLine.setIsInvoiced(false);
-
     return purchaseOrderLine;
   }
 

@@ -10,7 +10,7 @@
 		<dataset type="jpql">
 			SELECT
 				COUNT(self.id) AS _moves,
-				country.alpha3Code AS _country
+				country.name AS _country
 			FROM
 				StockMove self,    
 				StockLocation stockLocation,    
@@ -26,20 +26,21 @@
 				address.addressL7Country = country AND
 				self.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate)
 			GROUP BY
-				country.alpha3Code   
+				country.name   
 		</dataset>
 		<category key="_country" type="text" title="Country"/>
-		<series key="_moves" type="bar" title="Stock Moves"/>
+		<series key="_moves" type="bar" title="Quantity"/>
 	</chart>	
 	
-	<chart onInit="action.base.default.month.value" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
+	<chart onInit="action.base.chart.set.date.6m" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
 		<search-fields>
-			<field type="string" name="monthSelect" title="Historical Period" selection="base.year.period.duration.select" x-required="true"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
 				SUM(self.realQty) AS _qty,
-				country.alpha3Code AS _country
+				country.name AS _country
 			FROM
 				StockMoveLine self,    
 				StockMove stockMove,
@@ -50,28 +51,29 @@
 				stockMove.typeSelect = 2 AND
 				stockMove.statusSelect = 3 AND
 				stockMove.company = :activeCompany AND
-				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
+				stockMove.realDate BETWEEN DATE(:fromDate) AND  DATE(:toDate) AND
 				self.stockMove = stockMove AND
 				stockMove.toStockLocation = stockLocation AND
 				stockLocation.typeSelect = 2 AND
 				stockMove.toAddress = address AND
 				address.addressL7Country = country
 			GROUP BY
-				country.alpha3Code    
+				country.name    
 		</dataset>
 		<category key="_country" type="text" title="Country"/>
 		<series key="_qty" type="bar" title="Quantity"/>
 	</chart>
 
-	<chart onInit="action.base.default.month.value" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
+	<chart onInit="action.base.chart.set.date.6m" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
 	       title="Product deliveries in qty by country by accounting family" stacked="true">
 		<search-fields>
-			<field type="string" name="monthSelect" title="Historical Period" selection="base.year.period.duration.select" x-required="true"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
 				SUM(self.realQty) AS _qty,
-				country.alpha3Code AS _country,
+				country.name AS _country,
 				productFamily.name AS _family
 			FROM
 				StockMoveLine self,    
@@ -84,7 +86,7 @@
 				stockMove.typeSelect = 2 AND
 				stockMove.statusSelect = 3 AND
 				stockMove.company = :activeCompany AND
-				stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
+				stockMove.realDate BETWEEN DATE(:fromDate) AND  DATE(:toDate) AND
 				self.stockMove = stockMove AND
 				stockMove.toStockLocation = stockLocation AND
 				stockLocation.typeSelect = 2 AND
@@ -92,7 +94,7 @@
 				address.addressL7Country = country AND
 				self.product.productFamily = productFamily
 			GROUP BY
-				country.alpha3Code, productFamily.name    
+				country.name, productFamily.name    
 		</dataset>
 		<category key="_country" type="text" title="Country"/>
 		<series key="_qty" type="bar" title="Quantity" groupBy="_family"/>
@@ -104,42 +106,60 @@
 			<field type="string" name="monthSelect" title="Historical Period" selection="base.year.period.duration.select" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
-			SELECT
-				COUNT(self.id) AS moves,
-				(CASE 
-				      when self.estimated_date >= self.real_date then 'OnTime Deliveries'
-				      when self.estimated_date &lt; self.real_date then 'Late Deliveries'                        
-				END) AS status    
-			FROM
- 				stock_stock_move AS self
-			JOIN
-				auth_user AS _user
-				ON _user.id = :__user__
-				AND self.company = _user.active_company      
-			JOIN
-				stock_stock_location AS _location
-				ON _location.type_select = 2
-				AND self.to_stock_location = _location.id
-			WHERE
-				self.type_select = 2 AND
-				self.status_select = 3 AND                 
-				self.real_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate)    
-			GROUP BY
-				status    
+			SELECT moves,
+			(CASE  
+					WHEN (translation.message_value IS NULL OR translation.message_value = '') THEN label
+					ELSE translation.message_value
+				END) AS status
+			
+			FROM (
+				SELECT
+					COUNT(self.id) AS moves,
+					(CASE 
+					      when self.estimated_date >= self.real_date then 'OnTime Deliveries'
+					      when self.estimated_date &lt; self.real_date then 'Late Deliveries'                        
+					END) AS label    
+				FROM
+	 				stock_stock_move AS self
+				JOIN
+					auth_user AS _user
+					ON _user.id = :__user__
+					AND self.company = _user.active_company      
+				JOIN
+					stock_stock_location AS _location
+					ON _location.type_select = 2
+					AND self.to_stock_location = _location.id
+				WHERE
+					self.type_select = 2 AND
+					self.status_select = 3 AND
+					self.estimated_date IS NOT NULL AND           
+					self.real_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate)
+				GROUP BY
+					label
+			)  situation
+			
+			LEFT JOIN
+				meta_translation as translation
+		  		ON
+				translation.message_key = label AND translation.language = :_language
 		</dataset>
 		<category key="status" type="text" title="Status"/>
 		<series key="moves" type="donut" title="Stock Moves" />
 	</chart>
 
-	<chart onInit="action.base.default.month.value" name="chart.stockMove.average.delivery.time.delay" 
+	<chart onInit="action.base.chart.set.date.6m" name="chart.stockMove.average.delivery.time.delay" 
 	       title="Customer average delivery delay" >
 		<search-fields>	    
-			<field type="string" name="monthSelect" title="Historical Period" selection="base.year.period.duration.select" x-required="true"/>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">    
 			SELECT
-				ROUND(AVG((self.estimated_date - self.real_date)*-1)) AS moves,
-				'Average Delay' AS label
+				ROUND(AVG((self.estimated_date - self.real_date)*-1)) AS days,
+				(CASE  
+					WHEN (translation.message_value IS NULL OR translation.message_value = '') THEN 'Delay'
+					ELSE translation.message_value
+				END) AS label
 			FROM
 				stock_stock_move AS self
 			JOIN
@@ -150,15 +170,19 @@
 				stock_stock_location AS _location
 				ON self.to_stock_location = _location.id
 				AND _location.type_select = 2
+			LEFT JOIN
+				meta_translation as translation
+		  		ON
+				translation.message_key = 'Delay' AND translation.language = :_language
 			WHERE
 				self.type_select = 2 AND
 				self.status_select = 3 AND
-				self.real_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate)
+				self.real_date BETWEEN DATE(:fromDate) AND  DATE(:toDate)
 			GROUP BY
 				label    
 		</dataset>
 		<category key="label" type="text" title="Delay"/>
-		<series key="moves" type="bar" title="Stock Moves"/>
+		<series key="days" type="bar" title="Days"/>
 	</chart>
 	  
 	<chart name="chart.stock.report.for.product" title="Stock" onInit="action-product-set-today-date">

@@ -6,7 +6,7 @@
 		<field name="name"/>
 		<field name="increase"/>
 		<field name="payrollPreprationExport"/>
-		<field name="exportCode"></field>
+		<field name="exportCode"/>
 	</grid>
 
 	<form name="extra-hours-type-form" title="Extra hours type" model="com.axelor.apps.hr.db.ExtraHoursType">

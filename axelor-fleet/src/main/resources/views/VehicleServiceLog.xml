@@ -8,7 +8,7 @@
     </grid>
     <form name="vehicle-service-log-form" title="Vehicle Service Log" model="com.axelor.apps.fleet.db.VehicleServiceLog" width="large" >
     	<panel name="mainPanel" title="Information">
-    		<field name="vehicle" title="Vehicle">
+    		<field name="vehicle" title="Vehicle" hideIf="$popup()">
       			<editor>
         			<field name="name" colSpan="12"/>
         			<field name="vehicleOdometer"/>

@@ -35,7 +35,8 @@ public class ProductController {
     product = Beans.get(ProductRepository.class).find(product.getId());
 
     TempBomTree tempBomTree =
-        Beans.get(BillOfMaterialService.class).generateTree(product.getDefaultBillOfMaterial());
+        Beans.get(BillOfMaterialService.class)
+            .generateTree(product.getDefaultBillOfMaterial(), true);
 
     response.setView(
         ActionView.define(I18n.get("Bill of materials"))

@@ -83,7 +83,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
       // fill onChange if empty
       if (Strings.isNullOrEmpty(field.getOnChange())) {
-        field.setOnChange("save,action-configurator-update-indicators,save");
+        field.setOnChange("action-configurator-update-indicators");
       }
     }
     configuratorCreatorRepo.save(creator);

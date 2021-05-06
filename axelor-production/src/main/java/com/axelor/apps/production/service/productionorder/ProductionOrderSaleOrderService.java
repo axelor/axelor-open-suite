@@ -27,6 +27,6 @@ public interface ProductionOrderSaleOrderService {
 
   public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
-  public ProductionOrder generateManufOrder(
+  public ProductionOrder generateManufOrders(
       ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 }

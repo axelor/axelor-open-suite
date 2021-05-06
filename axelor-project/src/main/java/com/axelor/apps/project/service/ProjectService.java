@@ -20,11 +20,9 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import java.util.Map;
 
 public interface ProjectService {
   Project generateProject(
@@ -46,18 +44,5 @@ public interface ProjectService {
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
       throws AxelorException;
 
-  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
-      throws AxelorException;
-
-  public Map<String, Object> getTaskView(
-      Project project, String title, String domain, Map<String, Object> context);
-
-  public Project generateProject(
-      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner);
-
-  public Map<String, Object> getPerStatusKanban(Project project, Map<String, Object> context);
-
-  public String getTimeZone(Project project);
-
-  public ProjectStatus getDefaultProjectStatus();
+  boolean checkIfResourceBooked(Project project);
 }

@@ -20,13 +20,17 @@ package com.axelor.apps.sale.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.service.PartnerServiceImpl;
+import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
+import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
+import com.axelor.apps.sale.db.repo.ConfiguratorCreatorSaleRepository;
 import com.axelor.apps.sale.db.repo.OpportunitySaleRepository;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.apps.sale.db.repo.SaleBatchSaleRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.AddressServiceSaleImpl;
@@ -36,6 +40,9 @@ import com.axelor.apps.sale.service.PackLineService;
 import com.axelor.apps.sale.service.PackLineServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
+import com.axelor.apps.sale.service.ProductCategorySaleService;
+import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
+import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -93,5 +100,9 @@ public class SaleModule extends AxelorModule {
     bind(OpportunityManagementRepository.class).to(OpportunitySaleRepository.class);
     bind(PartnerSaleService.class).to(PartnerSaleServiceImpl.class);
     bind(PackLineService.class).to(PackLineServiceImpl.class);
+    bind(ProductCategorySaleService.class).to(ProductCategoryServiceSaleImpl.class);
+    bind(ProductCategoryServiceImpl.class).to(ProductCategoryServiceSaleImpl.class);
+    bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
+    bind(ConfiguratorCreatorRepository.class).to(ConfiguratorCreatorSaleRepository.class);
   }
 }

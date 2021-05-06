@@ -16,11 +16,13 @@
         <panel>
             <field name="sequence"/>
             <field name="isEditable" colSpan="2"/>
+            <field name="isSignature" colSpan="2"/>
             <field name="ignoreTheLine" colSpan="2"/>
+            <field name="nbColumns"/>
             <field name="isWithPageBreakAfter" colSpan="2"/>
-            <field name="title" widget="html" colSpan="12"
+            <field name="title" widget="html" colSpan="12" hideIf="isSignature"
                    help="Here you can write the title of the PDF to print using string template method. For example : A look at $EmploymentContrat.company.name$ 's potential future projects."/>
-            <field name="content" widget="html" colSpan="12"
+            <field name="content" widget="html" colSpan="12" hideIf="isSignature"
                    help="Here you can write text using string template method (as in email models). This text will display in the generated PDF. For example : The company $EmploymentContrat.payCompany$ and the employee $EmploymentContract.employee$ agreed on the following points."/>
             <panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
             <field name="conditions" widget="CodeEditor" x-code-syntax="groovy" colSpan="12"

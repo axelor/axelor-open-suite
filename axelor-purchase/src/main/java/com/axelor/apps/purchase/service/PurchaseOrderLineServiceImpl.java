@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -490,95 +491,32 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 
     purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
-    purchaseOrderLine.setDescription(description);
+
+    if (product != null) {
+      purchaseOrderLine.setProduct(product);
+      fill(purchaseOrderLine, purchaseOrder);
+      compute(purchaseOrderLine, purchaseOrder);
+    }
+
+    if (description != null) {
+      purchaseOrderLine.setDescription(description);
+    }
 
     purchaseOrderLine.setIsOrdered(false);
 
-    purchaseOrderLine.setQty(qty);
+    if (qty != null) {
+      purchaseOrderLine.setQty(qty);
+    }
     purchaseOrderLine.setSequence(sequence);
     sequence++;
 
-    purchaseOrderLine.setUnit(unit);
-    purchaseOrderLine.setProductName(productName);
-
-    if (product == null) {
-      return purchaseOrderLine;
+    if (unit != null) {
+      purchaseOrderLine.setUnit(unit);
     }
 
-    purchaseOrderLine.setProduct(product);
-
-    if (productName == null) {
-      purchaseOrderLine.setProductName(product.getName());
+    if (productName != null) {
+      purchaseOrderLine.setProductName(productName);
     }
-
-    TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
-    purchaseOrderLine.setTaxLine(taxLine);
-
-    BigDecimal price = this.getExTaxUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
-    BigDecimal inTaxPrice = this.getInTaxUnitPrice(purchaseOrder, purchaseOrderLine, taxLine);
-
-    Map<String, Object> discounts =
-        this.getDiscountsFromPriceLists(
-            purchaseOrder, purchaseOrderLine, product.getInAti() ? inTaxPrice : price);
-
-    if (discounts != null) {
-      if (discounts.get("price") != null) {
-        BigDecimal discountPrice = (BigDecimal) discounts.get("price");
-        if (purchaseOrderLine.getProduct().getInAti()) {
-          inTaxPrice = discountPrice;
-          price = this.convertUnitPrice(true, purchaseOrderLine.getTaxLine(), discountPrice);
-        } else {
-          price = discountPrice;
-          inTaxPrice = this.convertUnitPrice(false, purchaseOrderLine.getTaxLine(), discountPrice);
-        }
-      }
-      if (purchaseOrderLine.getProduct().getInAti() != purchaseOrder.getInAti()) {
-        purchaseOrderLine.setDiscountAmount(
-            this.convertUnitPrice(
-                purchaseOrderLine.getProduct().getInAti(),
-                purchaseOrderLine.getTaxLine(),
-                (BigDecimal) discounts.get("discountAmount")));
-      } else {
-        purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
-      }
-      purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
-    }
-
-    purchaseOrderLine.setPrice(price);
-    purchaseOrderLine.setInTaxPrice(inTaxPrice);
-
-    BigDecimal priceDiscounted = this.computeDiscount(purchaseOrderLine, purchaseOrder.getInAti());
-    purchaseOrderLine.setPriceDiscounted(priceDiscounted);
-
-    BigDecimal exTaxTotal, inTaxTotal, companyExTaxTotal, companyInTaxTotal;
-
-    if (!purchaseOrder.getInAti()) {
-      exTaxTotal = computeAmount(purchaseOrderLine.getQty(), priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
-      companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
-      companyInTaxTotal =
-          companyExTaxTotal.add(
-              companyExTaxTotal.multiply(purchaseOrderLine.getTaxLine().getValue()));
-
-    } else {
-      inTaxTotal = computeAmount(purchaseOrderLine.getQty(), priceDiscounted);
-      exTaxTotal =
-          inTaxTotal.divide(
-              purchaseOrderLine.getTaxLine().getValue().add(BigDecimal.ONE),
-              2,
-              BigDecimal.ROUND_HALF_UP);
-      companyInTaxTotal = this.getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
-      companyExTaxTotal =
-          companyInTaxTotal.divide(
-              purchaseOrderLine.getTaxLine().getValue().add(BigDecimal.ONE),
-              2,
-              BigDecimal.ROUND_HALF_UP);
-    }
-
-    purchaseOrderLine.setExTaxTotal(exTaxTotal);
-    purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
-    purchaseOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
-    purchaseOrderLine.setInTaxTotal(inTaxTotal);
 
     return purchaseOrderLine;
   }
@@ -729,5 +667,39 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         product.getPurchaseProductMultipleQtyList(),
         product.getAllowToForcePurchaseQty(),
         response);
+  }
+
+  @Override
+  public void checkDifferentSupplier(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionResponse response) {
+    if (!appBaseService.getAppBase().getEnableTradingNamesManagement()) {
+      return;
+    }
+
+    Product product = purchaseOrderLine.getProduct();
+    TradingName tradingName = purchaseOrder.getTradingName();
+
+    if (product == null || tradingName == null) {
+      return;
+    }
+
+    Partner supplierOnPurchaseOrder = purchaseOrder.getSupplierPartner();
+    Partner defaultSupplierOnProduct = product.getDefaultSupplierPartner();
+    if (defaultSupplierOnProduct == null) {
+      return;
+    }
+
+    if (supplierOnPurchaseOrder != defaultSupplierOnProduct) {
+
+      String message = String.format(I18n.get(IExceptionMessage.DIFFERENT_SUPPLIER));
+      String title =
+          String.format(
+              "<span class='label %s'>%s</span>", ContextTool.SPAN_CLASS_WARNING, message);
+
+      response.setAttr("differentSupplierLabel", "title", title);
+      response.setAttr("differentSupplierLabel", "hidden", false);
+    } else {
+      response.setAttr("differentSupplierLabel", "hidden", true);
+    }
   }
 }

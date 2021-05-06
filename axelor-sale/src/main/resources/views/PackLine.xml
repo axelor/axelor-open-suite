@@ -16,7 +16,7 @@
 	    <panel name="packLinePanel">
 	    	<field name="product" onSelect="action-pack-line-attrs-domain-product" onChange="action-pack-line-method-get-product-information" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	    	<field name="price"/>
-	    	<field name="productName"/>
+	    	<field name="productName" requiredIf="typeSelect != 0"/>
 	    	<field name="quantity"/>
 	    	<field name="typeSelect" onChange="action-pack-line-group-type-select-onchange"/>
 	    	<field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
@@ -50,7 +50,7 @@
     </action-group>
 
     <action-attrs name="action-pack-line-attrs-domain-product">
-    	<attribute name="domain" for="product" expr="eval: &quot; self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'&quot;"/>
+    	<attribute name="domain" for="product" expr="eval: &quot; self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and self.dtype = 'Product'&quot;"/>
     </action-attrs>
     
     <action-method name="action-pack-line-method-get-product-information">

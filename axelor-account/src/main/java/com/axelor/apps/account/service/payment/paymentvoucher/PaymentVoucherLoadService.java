@@ -79,8 +79,6 @@ public class PaymentVoucherLoadService {
 
     MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 
-    List<MoveLine> moveLines = null;
-
     String query =
         "self.partner = ?1 "
             + "and self.account.useForPartnerBalance = 't' "
@@ -88,7 +86,8 @@ public class PaymentVoucherLoadService {
             + "and (self.move.statusSelect = ?3 OR self.move.statusSelect = ?4)"
             + "and self.move.ignoreInDebtRecoveryOk = 'f' "
             + "and self.move.company = ?2 "
-            + "and self.move.invoice.pfpValidateStatusSelect != ?5";
+            + "and self.move.invoice.pfpValidateStatusSelect != ?5 "
+            + "and (?6 IS NULL OR self.move.tradingName = ?6)";
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
       query += " and self.debit > 0 ";
@@ -96,19 +95,17 @@ public class PaymentVoucherLoadService {
       query += " and self.credit > 0 ";
     }
 
-    moveLines =
-        moveLineRepo
-            .all()
-            .filter(
-                query,
-                paymentVoucher.getPartner(),
-                paymentVoucher.getCompany(),
-                MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_ACCOUNTED,
-                InvoiceRepository.PFP_STATUS_LITIGATION)
-            .fetch();
-
-    return moveLines;
+    return moveLineRepo
+        .all()
+        .filter(
+            query,
+            paymentVoucher.getPartner(),
+            paymentVoucher.getCompany(),
+            MoveRepository.STATUS_VALIDATED,
+            MoveRepository.STATUS_ACCOUNTED,
+            InvoiceRepository.PFP_STATUS_LITIGATION,
+            paymentVoucher.getTradingName())
+        .fetch();
   }
 
   @Transactional(rollbackOn = {Exception.class})

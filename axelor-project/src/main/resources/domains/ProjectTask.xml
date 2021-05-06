@@ -9,8 +9,10 @@
     
     <string name="name" title="Name" required="true"/>
     <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
-    <many-to-one name="status" title="Status" ref="com.axelor.apps.project.db.ProjectStatus"/>
-    <many-to-one name="priority" title="Priority" ref="com.axelor.apps.project.db.ProjectPriority"/>
+    <date name="taskDate" title="Task date"/>
+    <string name="status" title="Status" selection="project.task.status"/>
+    <string name="statusBeforeComplete" title="Last status" selection="project.task.status"/>
+    <string name="priority" title="Priority" selection="project.task.priority"/>
     <date name="taskDeadline" title="Task deadline" />
     <integer name="taskDuration" title="Task duration" />
     <integer name="sequence" title="Sequence"/>
@@ -21,16 +23,16 @@
     <boolean name="doApplyToAllNextTasks" title="Apply modifications to next tasks" default="false"/>
     <boolean name="hasDateOrFrequencyChanged" title="Date or frequency changed" readonly="true" default="false"/>
 
-    <integer name="typeSelect" title="Type" selection="project.task.type.select" />
+    <string name="typeSelect" title="Type" selection="project.task.type.select" default="task"/>
   
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
     <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
-    
-    <many-to-one name="statusBeforeComplete" title="Last status" ref="com.axelor.apps.project.db.ProjectStatus"/>
+      
     <many-to-one name="parentTask" ref="com.axelor.apps.project.db.ProjectTask" title="Parent task"/>
     <many-to-one name="projectTaskCategory" ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Category"/>
     <integer name="progressSelect" title="Progress" selection="project.task.progress.select"/>
+    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
     <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask" mappedBy="parentTask"/>
     
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Followers"/>
@@ -48,34 +50,33 @@
     <many-to-many name="startToStartSet" title="Tasks to start before start" ref="com.axelor.apps.project.db.ProjectTask"/>
     <many-to-many name="finishToFinishSet" title="Tasks to finish before finish" ref="com.axelor.apps.project.db.ProjectTask"/>
     <decimal name="durationHours" title="Duration hours" />
-    <date name="taskDate" title="Start Date"/>
-	<date name="taskEndDate" title="Due Date" />
+    <date name="taskEndDate" title="Task end" />
 
     <one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
     
     <decimal name="budgetedTime" title="Estimated time"/>
     <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile" />
     
-    <many-to-one name="projectTaskSection" ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
     <many-to-many name="projectTaskTagSet" ref="com.axelor.apps.project.db.ProjectTaskTag" title="Tags"/>
+    <many-to-one name="projectTaskSection" ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
    
     <extra-code>
       
       // STATUS SELECT
-      public static final Integer STATUS_NEW = 1;
-      public static final Integer STATUS_IN_PROGRESS = 2;
-      public static final Integer STATUS_CLOSED = 3;
-      public static final Integer STATUS_CANCELED = 4;
+      public static final String STATUS_NEW = "new";
+      public static final String STATUS_IN_PROGRESS = "in-progress";
+      public static final String STATUS_CLOSED = "closed";
+      public static final String STATUS_CANCELED = "canceled";
       
       // PRIORITY SELECT
-      public static final Integer PRIORITY_LOW = 1;
-      public static final Integer PRIORITY_NORMAL = 2;
-      public static final Integer PRIORITY_HIGHT = 3;
-      public static final Integer PRIORITY_URGENT = 4;
+      public static final String PRIORITY_LOW = "low";
+      public static final String PRIORITY_NORMAL = "normal";
+      public static final String PRIORITY_HIGHT = "high";
+      public static final String PRIORITY_URGENT = "urgent";
       
       // TYPE SELECT
-      public static final Integer TYPE_TASK = 0;
-      public static final Integer TYPE_TICKET = 1;
+      public static final String TYPE_TASK = "task";
+      public static final String TYPE_TICKET = "ticket";
     </extra-code>
     
     <track replace="true">

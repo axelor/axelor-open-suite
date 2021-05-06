@@ -80,7 +80,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
-
     OperationOrder operationOrder =
         this.createOperationOrder(
             manufOrder,

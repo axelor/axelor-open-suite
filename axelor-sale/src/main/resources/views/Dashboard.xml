@@ -11,6 +11,8 @@
 		<dashlet action="dashlet.salesman.dashboard.activities" canSearch="true" height="350" />
 		<dashlet action="dashlet.salesman.dashboard.leads" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.salesman.dashboard.opportunities" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.my.customers" height="350" canSearch="true"/>
+		<dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
 	</dashboard>
 	
 	<action-view name="dashlet.salesman.dashboard.orders" title="My Sales Orders" model="com.axelor.apps.sale.db.SaleOrder">
