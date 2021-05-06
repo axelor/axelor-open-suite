@@ -42,10 +42,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
   public ProdProcessLine generateProdProcessLine(
       ConfiguratorProdProcessLine confProdProcessLine, JsonContext attributes)
       throws AxelorException {
-    if (confProdProcessLine == null) {
-      return null;
-    }
-    if (!checkConditions(confProdProcessLine, attributes)) {
+    if (confProdProcessLine == null || !checkConditions(confProdProcessLine, attributes)) {
       return null;
     }
 

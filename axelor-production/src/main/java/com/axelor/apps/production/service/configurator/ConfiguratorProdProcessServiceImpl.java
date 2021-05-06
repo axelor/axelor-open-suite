@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
@@ -124,8 +125,11 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
         confProdProcess.getConfiguratorProdProcessLineList();
     if (confLines != null) {
       for (ConfiguratorProdProcessLine confLine : confLines) {
-        prodProcess.addProdProcessLineListItem(
-            confProdProcessLineService.generateProdProcessLine(confLine, attributes));
+        ProdProcessLine generatedProdProcessLine =
+            confProdProcessLineService.generateProdProcessLine(confLine, attributes);
+        if (generatedProdProcessLine != null) {
+          prodProcess.addProdProcessLineListItem(generatedProdProcessLine);
+        }
       }
     }
     return prodProcess;
