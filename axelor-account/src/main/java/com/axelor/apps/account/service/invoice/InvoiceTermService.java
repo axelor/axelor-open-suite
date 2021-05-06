@@ -18,17 +18,67 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface InvoiceTermService {
 
   public Invoice computeInvoiceTerms(Invoice invoice) throws AxelorException;
 
+  /**
+   * Method that compute invoiceTerm fields based on the payment condition line rules
+   *
+   * @param invoice
+   * @param paymentConditionLine
+   * @return
+   * @throws AxelorException
+   */
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
 
+  /**
+   * Method to init invoice terms due dates
+   *
+   * @param invoice
+   * @param invoiceDate
+   * @return
+   */
   public Invoice setDueDates(Invoice invoice, LocalDate invoiceDate);
+
+  /**
+   * Method that returns unpaid invoiceTerms (isPaid != true) of an invoice
+   *
+   * @param invoice
+   * @return
+   */
+  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice);
+
+  /**
+   * method that filter invoiceTerm List and returns only invoice terms with holdback status same as
+   * first invoice term of the list.
+   *
+   * @param invoiceTerms
+   * @return
+   */
+  public List<InvoiceTerm> filterInvoiceTermsByHoldBack(List<InvoiceTerm> invoiceTerms);
+
+  /**
+   * Method that returns only unpaid invoice terms of an invoice having holdback status same as
+   * first returned invoice term
+   *
+   * @param invoice
+   * @return
+   */
+  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice);
+
+  /**
+   * Update amount remaining and paid status
+   *
+   * @param invoicePayment
+   */
+  public void updateInvoiceTermsPaidAmount(InvoicePayment invoicePayment) throws AxelorException;
 }
