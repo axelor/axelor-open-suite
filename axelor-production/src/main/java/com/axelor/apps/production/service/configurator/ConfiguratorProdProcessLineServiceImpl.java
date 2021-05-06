@@ -19,8 +19,12 @@ package com.axelor.apps.production.service.configurator;
 
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -41,11 +45,52 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     if (confProdProcessLine == null) {
       return null;
     }
+    if (!checkConditions(confProdProcessLine, attributes)) {
+      return null;
+    }
+
+    String name;
+    Integer priority;
+    StockLocation stockLocation;
     ProdProcessLine prodProcessLine = new ProdProcessLine();
     BigDecimal minCapacityPerCycle;
     BigDecimal maxCapacityPerCycle;
     long durationPerCycle;
 
+    if (confProdProcessLine.getDefNameAsFormula()) {
+      Object computedName =
+          configuratorService.computeFormula(confProdProcessLine.getNameFormula(), attributes);
+      if (computedName == null) {
+        throw new AxelorException(
+            confProdProcessLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                String.format(
+                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA,
+                    confProdProcessLine.getId())));
+      } else {
+        name = String.valueOf(computedName);
+      }
+    } else {
+      name = confProdProcessLine.getName();
+    }
+    if (confProdProcessLine.getDefPriorityAsFormula()) {
+      priority =
+          new Integer(
+              String.valueOf(
+                  configuratorService.computeFormula(
+                      confProdProcessLine.getPriorityFormula(), attributes)));
+    } else {
+      priority = confProdProcessLine.getPriority();
+    }
+    if (confProdProcessLine.getDefStockLocationAsFormula()) {
+      stockLocation =
+          (StockLocation)
+              configuratorService.computeFormula(
+                  confProdProcessLine.getStockLocationFormula(), attributes);
+    } else {
+      stockLocation = confProdProcessLine.getStockLocation();
+    }
     if (confProdProcessLine.getDefMinCapacityFormula()) {
       minCapacityPerCycle =
           new BigDecimal(
@@ -74,11 +119,11 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       durationPerCycle = confProdProcessLine.getDurationPerCycle();
     }
 
-    prodProcessLine.setName(confProdProcessLine.getName());
-    prodProcessLine.setPriority(confProdProcessLine.getPriority());
+    prodProcessLine.setName(name);
+    prodProcessLine.setPriority(priority);
     prodProcessLine.setWorkCenter(confProdProcessLine.getWorkCenter());
     prodProcessLine.setOutsourcing(confProdProcessLine.getOutsourcing());
-    prodProcessLine.setStockLocation(confProdProcessLine.getStockLocation());
+    prodProcessLine.setStockLocation(stockLocation);
     prodProcessLine.setDescription(confProdProcessLine.getDescription());
 
     prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
@@ -86,5 +131,16 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setDurationPerCycle(durationPerCycle);
 
     return prodProcessLine;
+  }
+
+  protected boolean checkConditions(
+      ConfiguratorProdProcessLine confProdProcessLine, JsonContext jsonAttributes)
+      throws AxelorException {
+    String condition = confProdProcessLine.getUseCondition();
+    // no condition = we always generate the bill of materials
+    if (condition == null) {
+      return true;
+    }
+    return (boolean) configuratorService.computeFormula(condition, jsonAttributes);
   }
 }
