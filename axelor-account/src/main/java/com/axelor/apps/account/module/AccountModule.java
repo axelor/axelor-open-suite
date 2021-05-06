@@ -68,8 +68,6 @@ import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.DepositSlipServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.FiscalPositionAccountServiceImpl;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineServiceImpl;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineExportServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
@@ -96,6 +94,10 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -247,7 +249,9 @@ public class AccountModule extends AxelorModule {
 
     bind(FixedAssetService.class).to(FixedAssetServiceImpl.class);
 
-    bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
+    bind(FixedAssetLineMoveService.class).to(FixedAssetLineMoveServiceImpl.class);
+
+    bind(FixedAssetLineComputationService.class).to(FixedAssetLineComputationServiceImpl.class);
 
     bind(ExtractContextMoveService.class).to(ExtractContextMoveServiceImpl.class);
 

@@ -20,6 +20,7 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
@@ -34,7 +35,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
       computeDepreciation(fixedAsset);
       return super.save(fixedAsset);
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
       throw new PersistenceException(e);
     }
   }

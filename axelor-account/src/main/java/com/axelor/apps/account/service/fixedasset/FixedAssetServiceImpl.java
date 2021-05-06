@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,10 +37,8 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,7 +48,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected FixedAssetRepository fixedAssetRepo;
 
-  protected FixedAssetLineService fixedAssetLineService;
+  protected FixedAssetLineMoveService fixedAssetLineMoveService;
+
+  protected FixedAssetLineComputationService fixedAssetLineComputationService;
 
   protected MoveLineService moveLineService;
 
@@ -63,221 +62,33 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Inject
   public FixedAssetServiceImpl(
       FixedAssetRepository fixedAssetRepo,
-      FixedAssetLineService fixedAssetLineService,
+      FixedAssetLineMoveService fixedAssetLineMoveService,
+      FixedAssetLineComputationService fixedAssetLineComputationService,
       MoveLineService moveLineService,
       AccountConfigService accountConfigService) {
     this.fixedAssetRepo = fixedAssetRepo;
-    this.fixedAssetLineService = fixedAssetLineService;
+    this.fixedAssetLineMoveService = fixedAssetLineMoveService;
+    this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineService = moveLineService;
     this.accountConfigService = accountConfigService;
   }
 
   @Override
   public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) {
-    boolean isLinear =
-        fixedAsset
-            .getComputationMethodSelect()
-            .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR);
-    BigDecimal depreciationValue = this.computeDepreciationValue(fixedAsset, isLinear);
-    BigDecimal cumulativeValue = depreciationValue;
-    LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
-    LocalDate firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
-    LocalDate acquisitionDate = fixedAsset.getAcquisitionDate();
-    boolean isFirstPeriodDay =
-        DateTool.minusMonths(firstDepreciationDate, fixedAsset.getPeriodicityInMonth())
-            .plusDays(1)
-            .equals(acquisitionDate);
-    boolean isProrataTemporis =
-        fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-            && !fixedAsset.getAcquisitionDate().equals(fixedAsset.getFirstDepreciationDate())
-            && !isFirstPeriodDay;
-    LocalDate endDate = DateTool.plusMonths(depreciationDate, fixedAsset.getDurationInMonth());
-    int counter = 1;
-
-    final int numberOfDepreciation = fixedAsset.getNumberOfDepreciation() - 1;
-    while (depreciationDate.isBefore(endDate.plusDays(1))
-        && depreciationValue.compareTo(BigDecimal.ZERO) > 0
-        && ((isProrataTemporis && counter <= numberOfDepreciation + 2)
-            || (!isProrataTemporis && counter <= numberOfDepreciation + 1))) {
-      FixedAssetLine fixedAssetLine = new FixedAssetLine();
-      fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
-      fixedAssetLine.setDepreciationDate(depreciationDate);
-      // case : cumulativeValue > grossValue, i have to reduce the exceed amount
-      if (cumulativeValue.compareTo(fixedAsset.getGrossValue()) > 0) {
-        fixedAssetLine.setDepreciation(
-            depreciationValue.subtract(cumulativeValue.subtract(fixedAsset.getGrossValue())));
-        fixedAssetLine.setCumulativeDepreciation(fixedAsset.getGrossValue());
-        fixedAssetLine.setResidualValue(BigDecimal.ZERO);
-      } else {
-        fixedAssetLine.setDepreciation(depreciationValue);
-        fixedAssetLine.setCumulativeDepreciation(cumulativeValue);
-        fixedAssetLine.setResidualValue(
-            fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
-      }
-
+    FixedAssetLine initialFixedAssetLine =
+        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
+    fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
+    // counter to avoid too many iterations in case of a current or future mistake
+    int c = 0;
+    final int MAX_ITERATION = 1000;
+    FixedAssetLine fixedAssetLine = initialFixedAssetLine;
+    while (c < MAX_ITERATION && fixedAssetLine.getResidualValue().signum() != 0) {
+      fixedAssetLine =
+          fixedAssetLineComputationService.computePlannedFixedAssetLine(fixedAsset, fixedAssetLine);
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
-      if ((!isLinear && counter == numberOfDepreciation)
-          || (isLinear && (isProrataTemporis && counter == numberOfDepreciation + 1)
-              || (!isProrataTemporis && counter == numberOfDepreciation))) {
-        depreciationValue = fixedAssetLine.getResidualValue();
-        cumulativeValue = cumulativeValue.add(depreciationValue);
-
-        depreciationDate = addPeriodicity(fixedAsset, firstDepreciationDate, counter);
-        if (isProrataTemporis) {
-
-          endDate =
-              DateTool.plusMonths(acquisitionDate, fixedAsset.getDurationInMonth()).minusDays(1);
-          depreciationDate = endDate;
-        }
-        counter++;
-        continue;
-      }
-
-      if (fixedAsset
-          .getComputationMethodSelect()
-          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        if (counter > 2 && fixedAsset.getNumberOfDepreciation() > 3) {
-          if (counter == 3) {
-            int remainingYear = fixedAsset.getNumberOfDepreciation() - 3;
-            depreciationValue =
-                fixedAssetLine
-                    .getResidualValue()
-                    .divide(new BigDecimal(remainingYear), RoundingMode.HALF_UP);
-          }
-        } else {
-          depreciationValue =
-              this.computeDepreciation(
-                  fixedAsset, fixedAssetLine.getResidualValue(), false, isLinear);
-        }
-
-        depreciationDate = addPeriodicity(fixedAsset, firstDepreciationDate, counter);
-      } else {
-        depreciationValue =
-            this.computeDepreciation(fixedAsset, fixedAsset.getGrossValue(), false, isLinear);
-
-        depreciationDate = addPeriodicity(fixedAsset, firstDepreciationDate, counter);
-      }
-      depreciationValue = depreciationValue.setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
-      cumulativeValue =
-          cumulativeValue.add(depreciationValue).setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
-      counter++;
+      c++;
     }
     return fixedAsset;
-  }
-
-  protected LocalDate addPeriodicity(
-      FixedAsset fixedAsset, LocalDate fisrtDepreciationDate, int counter) {
-    LocalDate depreciationDate;
-    depreciationDate =
-        DateTool.plusMonths(fisrtDepreciationDate, fixedAsset.getPeriodicityInMonth() * counter);
-    // Manage Leap year, february with 29 days.
-    if (depreciationDate.getMonthValue() == 2) {
-      depreciationDate =
-          fisrtDepreciationDate.plusMonths(fixedAsset.getPeriodicityInMonth() * counter);
-    }
-    return depreciationDate;
-  }
-
-  protected BigDecimal computeDepreciationValue(FixedAsset fixedAsset, boolean isLinear) {
-    BigDecimal depreciationValue = BigDecimal.ZERO;
-    depreciationValue =
-        this.computeDepreciation(fixedAsset, fixedAsset.getGrossValue(), true, isLinear);
-    return depreciationValue;
-  }
-
-  protected BigDecimal computeProrataTemporis(FixedAsset fixedAsset, boolean isFirstYear) {
-    BigDecimal prorataTemporis = BigDecimal.ONE;
-    if (isFirstYear
-        && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-        && !fixedAsset.getAcquisitionDate().equals(fixedAsset.getFirstDepreciationDate())) {
-
-      LocalDate acquisitionDate = fixedAsset.getAcquisitionDate();
-      LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
-
-      int acquisitionYear = acquisitionDate.getYear();
-      Month acquisitionMonth = acquisitionDate.getMonth();
-      int acquisitionDay = acquisitionDate.getDayOfMonth();
-      int depreciationYear = depreciationDate.getYear();
-      Month depreciationMonth = depreciationDate.getMonth();
-      int depreciationDay = depreciationDate.getDayOfMonth();
-
-      // US way
-      if (fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis()) {
-
-        if (acquisitionMonth == Month.FEBRUARY
-            && depreciationMonth == Month.FEBRUARY
-            && isLastDayOfFebruary(acquisitionYear, acquisitionDay)
-            && isLastDayOfFebruary(depreciationYear, depreciationDay)) {
-          depreciationDay = 30;
-        }
-
-        if (acquisitionMonth == Month.FEBRUARY
-            && isLastDayOfFebruary(acquisitionYear, acquisitionDay)) {
-          acquisitionDay = 30;
-        }
-
-        if (acquisitionDay >= 30 && depreciationDay > 30) {
-          depreciationDay = 30;
-        }
-
-        if (acquisitionDay > 30) {
-          acquisitionDay = 30;
-        }
-
-      } else { // European way
-
-        if (acquisitionDay == 31) {
-          acquisitionDay = 30;
-        }
-
-        if (depreciationDay == 31) {
-          depreciationDay = 30;
-        }
-      }
-
-      BigDecimal nbDaysBetweenAcqAndFirstDepDate =
-          BigDecimal.valueOf(
-                  360 * (depreciationYear - acquisitionYear)
-                      + 30 * (depreciationMonth.getValue() - acquisitionMonth.getValue())
-                      + (depreciationDay - acquisitionDay))
-              .setScale(CALCULATION_SCALE);
-      BigDecimal nbDaysOfPeriod =
-          BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth() * 30)
-              .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
-      prorataTemporis =
-          nbDaysBetweenAcqAndFirstDepDate.divide(
-              nbDaysOfPeriod, CALCULATION_SCALE, RoundingMode.HALF_UP);
-    }
-    return prorataTemporis;
-  }
-
-  protected BigDecimal computeDepreciation(
-      FixedAsset fixedAsset, BigDecimal residualValue, boolean isFirstYear, boolean isLinear) {
-
-    int numberOfDepreciation =
-        !isLinear && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-            ? fixedAsset.getNumberOfDepreciation() - 1
-            : fixedAsset.getNumberOfDepreciation();
-    BigDecimal depreciationRate =
-        numberOfDepreciation == 0
-            ? BigDecimal.ZERO
-            : BigDecimal.valueOf(100)
-                .divide(
-                    BigDecimal.valueOf(numberOfDepreciation),
-                    CALCULATION_SCALE,
-                    RoundingMode.HALF_UP);
-    BigDecimal ddRate = BigDecimal.ONE;
-    BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
-    if (fixedAsset
-        .getComputationMethodSelect()
-        .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      ddRate = fixedAsset.getDegressiveCoef();
-    }
-    return residualValue
-        .multiply(depreciationRate)
-        .multiply(ddRate)
-        .multiply(prorataTemporis)
-        .divide(new BigDecimal(100), RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -378,8 +189,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
       FixedAssetLine depreciationFixedAssetLine =
           generateProrataDepreciationLine(fixedAsset, disposalDate, previousRealizedLine);
-      fixedAssetLineService.realize(depreciationFixedAssetLine);
-      fixedAssetLineService.generateDisposalMove(depreciationFixedAssetLine);
+      fixedAssetLineMoveService.realize(depreciationFixedAssetLine);
+      fixedAssetLineMoveService.generateDisposalMove(depreciationFixedAssetLine);
     } else {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
         return;
@@ -485,12 +296,5 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         }
       }
     }
-  }
-
-  protected boolean isLastDayOfFebruary(int year, int day) {
-    Calendar calendar = Calendar.getInstance();
-    calendar.set(year, Calendar.FEBRUARY, 1);
-    int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-    return maxDays == day;
   }
 }

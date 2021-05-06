@@ -20,9 +20,9 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.exception.AxelorException;
 
-public interface FixedAssetLineService {
+public interface FixedAssetLineMoveService {
 
-  public void realize(FixedAssetLine fixedAssetLine) throws AxelorException;
+  void realize(FixedAssetLine fixedAssetLine) throws AxelorException;
 
-  public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException;
+  void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException;
 }

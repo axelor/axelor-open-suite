@@ -78,7 +78,6 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
-import com.axelor.apps.supplychain.service.fixedasset.FixedAssetServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
@@ -147,6 +146,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesServiceImpl;
+import com.axelor.apps.supplychain.service.fixedasset.FixedAssetServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceServiceImpl;

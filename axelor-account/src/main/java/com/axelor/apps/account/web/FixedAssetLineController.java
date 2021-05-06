@@ -19,7 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -34,7 +34,7 @@ public class FixedAssetLineController {
     fixedAssetLine = Beans.get(FixedAssetLineRepository.class).find(fixedAssetLine.getId());
 
     try {
-      Beans.get(FixedAssetLineService.class).realize(fixedAssetLine);
+      Beans.get(FixedAssetLineMoveService.class).realize(fixedAssetLine);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
