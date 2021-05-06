@@ -19,6 +19,8 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -34,6 +36,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -42,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +136,25 @@ public class MoveToolService {
     } else {
       return moveLineService.getCreditCustomerMoveLine(invoice);
     }
+  }
+
+  /**
+   * Fonction permettant de récuperer les lignes d'écriture (non complétement lettrée sur le compte
+   * client) de la saisie paiement
+   *
+   * @param invoicePayment Une saisie paiement
+   * @return
+   * @throws AxelorException
+   */
+  public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException {
+    List<MoveLine> moveLines = Lists.newArrayList();
+    if (!CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+      for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+        moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
+      }
+    }
+    return moveLines;
   }
 
   /**

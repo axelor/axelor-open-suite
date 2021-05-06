@@ -18,8 +18,11 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Currency;
@@ -36,16 +39,20 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   protected CurrencyService currencyService;
+  protected InvoiceTermRepository invoiceTermRepo;
 
   @Inject
-  public InvoiceTermServiceImpl(CurrencyService currencyService) {
+  public InvoiceTermServiceImpl(
+      CurrencyService currencyService, InvoiceTermRepository invoiceTermRepo) {
     this.currencyService = currencyService;
+    this.invoiceTermRepo = invoiceTermRepo;
   }
 
   @Override
@@ -94,7 +101,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     LocalDate today = Beans.get(AppAccountService.class).getTodayDate(invoice.getCompany());
 
     invoiceTerm.setPaymentConditionLine(paymentConditionLine);
-    invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
     invoiceTerm.setCompanyCurrencyAmountRemaining(BigDecimal.ZERO);
     BigDecimal amount =
         invoice
@@ -102,11 +108,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(paymentConditionLine.getPaymentPercentage())
             .divide(BigDecimal.valueOf(100));
     invoiceTerm.setAmount(amount);
+    invoiceTerm.setAmountRemaining(amount);
 
-    invoiceTerm.setCompanyCurrencyAmount(
+    BigDecimal currencyAmount =
         currencyService
             .getAmountCurrencyConvertedAtDate(invoice.getCurrency(), companyCurrency, amount, today)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    invoiceTerm.setCompanyCurrencyAmount(currencyAmount);
+    invoiceTerm.setCompanyCurrencyAmountRemaining(currencyAmount);
+
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
     return invoiceTerm;
@@ -133,5 +143,68 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoice.getInvoiceTermList().sort(Comparator.comparing(InvoiceTerm::getDueDate));
     return invoice;
+  }
+
+  @Override
+  public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) {
+
+    return invoiceTermRepo
+        .all()
+        .filter("self.invoice = ?1 AND self.isPaid is not true", invoice)
+        .order("dueDate")
+        .fetch();
+  }
+
+  @Override
+  public List<InvoiceTerm> filterInvoiceTermsByHoldBack(List<InvoiceTerm> invoiceTerms) {
+
+    if (CollectionUtils.isEmpty(invoiceTerms)) {
+      return invoiceTerms;
+    }
+
+    boolean isFirstHoldBack = invoiceTerms.get(0).getIsHoldBack();
+    invoiceTerms.removeIf(it -> it.getIsHoldBack() != isFirstHoldBack);
+
+    return invoiceTerms;
+  }
+
+  @Override
+  public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) {
+
+    return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTerms(invoice));
+  }
+
+  @Override
+  public void updateInvoiceTermsPaidAmount(InvoicePayment invoicePayment) throws AxelorException {
+
+    if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+      return;
+    }
+    Currency paymentCurrency = invoicePayment.getCurrency();
+    Currency companyCurrency = invoicePayment.getInvoice().getCompany().getCurrency();
+    LocalDate today =
+        Beans.get(AppAccountService.class).getTodayDate(invoicePayment.getInvoice().getCompany());
+
+    for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+      InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
+      BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
+      BigDecimal convertedPaidAmount =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(paymentCurrency, companyCurrency, paidAmount, today)
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+      BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
+      BigDecimal convertedAmountRemaining =
+          invoiceTerm.getAmountRemaining().subtract(convertedPaidAmount);
+
+      if (amountRemaining.compareTo(BigDecimal.ZERO) <= 0) {
+        amountRemaining = BigDecimal.ZERO;
+        convertedAmountRemaining = BigDecimal.ZERO;
+        invoiceTerm.setIsPaid(true);
+      }
+
+      invoiceTerm.setAmountRemaining(amountRemaining);
+      invoiceTerm.setCompanyCurrencyAmountRemaining(convertedAmountRemaining);
+    }
   }
 }

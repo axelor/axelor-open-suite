@@ -440,6 +440,8 @@ public class MoveLineServiceImpl implements MoveLineService {
               origin,
               null);
       moveLines.add(moveLine1);
+
+      invoiceTerm.setMoveLine(moveLine1);
     }
 
     AnalyticMoveLineRepository analyticMoveLineRepository =

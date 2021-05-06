@@ -451,7 +451,7 @@ InvoiceSet.length > 0))"
 					<field name="paymentSchedule" readonly="true" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
 			</panel>
-			<panel name="invoiceTermsPanel" title="Terms" showTitle="true" showIf="invoiceTermList != null" readonlyIf="invoice.statusSelect >= 3">
+			<panel name="invoiceTermsPanel" title="Terms" showTitle="true" showIf="invoiceTermList != null" readonly="true">
 			     <panel-related name="invoiceTermListPanel" field="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form" grid-view="invoice-term-invoice-grid" canNew="false" canRemove="false"/>
 			</panel>
 		</panel-tabs>

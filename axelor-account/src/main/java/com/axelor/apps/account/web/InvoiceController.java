@@ -235,7 +235,7 @@ public class InvoiceController {
   public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getExTaxTotal().equals(BigDecimal.ZERO)
+      if (invoice.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0
           || invoice.getPaymentCondition() == null) {
         return;
       }
