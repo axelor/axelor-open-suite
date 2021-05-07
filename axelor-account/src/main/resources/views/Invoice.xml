@@ -34,6 +34,9 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk" />
+    <field name="delayReason"/>
+    <field name="nextActionDate"/>
+    <field name="delayReasonComment"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
@@ -361,6 +364,9 @@
 					<button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable"   onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable" showIf="irrecoverableStatusSelect == 1"/>
 					</panel>
 				</panel>
+				<field name="delayReason" canNew="false" canEdit="false"/>
+				<field name="nextActionDate"/>
+				<field name="delayReasonComment" widget="html" colSpan="12"/>
 				<panel-dashlet name="showSubrogationReleasePanel" action="action-invoice-view-show-subrogation-release" colSpan="12" showIf="partner.factorizedCustomer"/>
 				<field name="partner.factorizedCustomer" hidden="true"/>
 			</panel>

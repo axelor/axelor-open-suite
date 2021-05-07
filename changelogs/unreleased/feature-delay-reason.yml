@@ -1,0 +1,6 @@
+---
+title: Accounting - new Delay reason model
+type: feature
+description: |
+  Add new Delay reason model and views,
+  Add delay reason, delay reason comments and next action date fields on Invoice.

@@ -1,0 +1,17 @@
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+	
+    <grid name="delay-reason-grid" title="Delay reason" model="com.axelor.apps.account.db.DelayReason" orderBy="name">
+    	<field name="name"/>
+    	<field name="description"/>
+    </grid>
+    
+    <form name="delay-reason-form" title="Delay reason" model="com.axelor.apps.account.db.DelayReason" width="large">
+    	<panel name="mainPanel">
+    		<field name="name"/>
+    		<field name="description" widget="html" colSpan="12"/>
+       	</panel>
+    </form>
+
+</object-views>
