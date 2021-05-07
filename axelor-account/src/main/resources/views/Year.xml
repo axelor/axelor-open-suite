@@ -27,10 +27,10 @@
 		</panel>
 		<panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
 		<panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet" name="linkedAdjustingMovesPanel" showIf="statusSelect &gt; 1"/>
-		<panel name="actionsPanel" sidebar="true" readonlyIf="statusSelect == 2">
+		<panel name="actionsPanel" sidebar="true">
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
-			<field name="closureDateTime" showIf="statusSelect == 2"/>
+			<field name="closureDateTime" showIf="statusSelect == 2" readonlyIf="statusSelect == 2"/>
 			<button name="closeBtn" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book"/>
 			<button name="adjustBtn" title="Adjust fiscal year" onClick="action-group-account-year-adjust-click" showIf="statusSelect == 2"/>
 		</panel>
