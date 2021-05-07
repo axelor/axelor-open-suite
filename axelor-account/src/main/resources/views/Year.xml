@@ -52,6 +52,7 @@
     
     <action-group name="action-group-account-year-close-click">
     	<action name="action-year-check-date"/>
+    	<action name="save"/>
     	<action name="action-year-close-method"/>
     	<action name="save"/>
     </action-group>
