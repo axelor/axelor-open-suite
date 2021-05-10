@@ -83,7 +83,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
   protected static final String SEPERATOR = "\t";
 
-  final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /** {@inheritDoc}} */
   @Override
@@ -107,7 +107,7 @@ public class ImportCityServiceImpl implements ImportCityService {
   }
 
   /**
-   * create bind or config file according to typeSelect
+   * Creates binding or configuration file according to typeSelect
    *
    * @param typeSelect
    * @return
@@ -127,9 +127,9 @@ public class ImportCityServiceImpl implements ImportCityService {
             I18n.get(IExceptionMessage.IMPORTER_3));
       }
 
-      FileOutputStream outputStream = new FileOutputStream(configFile);
-
-      IOUtils.copy(bindFileInputStream, outputStream);
+      try (FileOutputStream outputStream = new FileOutputStream(configFile)) {
+        IOUtils.copy(bindFileInputStream, outputStream);
+      }
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -138,7 +138,7 @@ public class ImportCityServiceImpl implements ImportCityService {
   }
 
   /**
-   * create geonames-city.csv data file from geonames .txt data file
+   * create geonames-city.csv data file from geonames.txt data file
    *
    * @param dataFile
    * @return
@@ -159,7 +159,7 @@ public class ImportCityServiceImpl implements ImportCityService {
   }
 
   /**
-   * Import city data
+   * Imports city data
    *
    * @param configXmlFile
    * @param dataCsvFile
@@ -182,7 +182,7 @@ public class ImportCityServiceImpl implements ImportCityService {
   }
 
   /**
-   * Delete temporary config & data file
+   * Deletes temporary configuration & data file
    *
    * @param configXmlFile
    * @param dataCsvFile
@@ -203,7 +203,7 @@ public class ImportCityServiceImpl implements ImportCityService {
   }
 
   /**
-   * extracting file from the zip
+   * Extracts file from the zip
    *
    * @param downloadFileName : zip fileName to download from internet
    * @return
@@ -229,7 +229,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
       URLService.fileUrl(downloadFile, downloadUrl + downloadFileName, null, null);
 
-      LOG.debug("path for downloaded zip file : " + downloadFile.getPath());
+      LOG.debug("path for downloaded zip file : {}", downloadFile.getPath());
 
       StringBuilder buffer = null;
       try (ZipFile zipFile = new ZipFile(downloadFile.getPath());
@@ -252,7 +252,7 @@ public class ImportCityServiceImpl implements ImportCityService {
             writer.flush();
             writer.write(buffer.toString().replace("\"", ""));
 
-            LOG.debug("Length of file : " + cityTextFile.length());
+            LOG.debug("Length of file : {}", cityTextFile.length());
             break;
           }
         }
@@ -273,7 +273,7 @@ public class ImportCityServiceImpl implements ImportCityService {
     }
   }
 
-  protected MetaFile extractCityZip(MetaFile dataFile) throws Exception {
+  protected MetaFile extractCityZip(MetaFile dataFile) throws IOException {
 
     ZipEntry entry = null;
     MetaFile metaFile = null;
