@@ -72,11 +72,14 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       name = confProdProcessLine.getName();
     }
     if (confProdProcessLine.getDefPriorityAsFormula()) {
-      priority =
-          new Integer(
-              String.valueOf(
-                  configuratorService.computeFormula(
-                      confProdProcessLine.getPriorityFormula(), attributes)));
+      Object computedPriority =
+          configuratorService.computeFormula(confProdProcessLine.getPriorityFormula(), attributes);
+      if (computedPriority != null) {
+        priority = new Integer(String.valueOf(computedPriority));
+      } else {
+        priority = 0;
+      }
+
     } else {
       priority = confProdProcessLine.getPriority();
     }
@@ -134,7 +137,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       ConfiguratorProdProcessLine confProdProcessLine, JsonContext jsonAttributes)
       throws AxelorException {
     String condition = confProdProcessLine.getUseCondition();
-    // no condition = we always generate the bill of materials
+    // no condition = we always generate the prod process line
     if (condition == null) {
       return true;
     }
