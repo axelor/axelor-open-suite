@@ -23,18 +23,9 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -45,13 +36,10 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermServiceImpl implements InvoiceTermService {
 
-  protected CurrencyService currencyService;
   protected InvoiceTermRepository invoiceTermRepo;
 
   @Inject
-  public InvoiceTermServiceImpl(
-      CurrencyService currencyService, InvoiceTermRepository invoiceTermRepo) {
-    this.currencyService = currencyService;
+  public InvoiceTermServiceImpl(InvoiceTermRepository invoiceTermRepo) {
     this.invoiceTermRepo = invoiceTermRepo;
   }
 
@@ -89,19 +77,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     InvoiceTerm invoiceTerm = new InvoiceTerm();
 
-    Currency companyCurrency = invoice.getCompany().getCurrency();
-
-    if (companyCurrency == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),
-          invoice.getCompany().getName());
-    }
-
-    LocalDate today = Beans.get(AppAccountService.class).getTodayDate(invoice.getCompany());
-
     invoiceTerm.setPaymentConditionLine(paymentConditionLine);
-    invoiceTerm.setCompanyCurrencyAmountRemaining(BigDecimal.ZERO);
     BigDecimal amount =
         invoice
             .getInTaxTotal()
@@ -109,13 +85,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .divide(BigDecimal.valueOf(100));
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-
-    BigDecimal currencyAmount =
-        currencyService
-            .getAmountCurrencyConvertedAtDate(invoice.getCurrency(), companyCurrency, amount, today)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-    invoiceTerm.setCompanyCurrencyAmount(currencyAmount);
-    invoiceTerm.setCompanyCurrencyAmountRemaining(currencyAmount);
 
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
@@ -180,31 +149,18 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       return;
     }
-    Currency paymentCurrency = invoicePayment.getCurrency();
-    Currency companyCurrency = invoicePayment.getInvoice().getCompany().getCurrency();
-    LocalDate today =
-        Beans.get(AppAccountService.class).getTodayDate(invoicePayment.getInvoice().getCompany());
 
     for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
       BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
-      BigDecimal convertedPaidAmount =
-          currencyService
-              .getAmountCurrencyConvertedAtDate(paymentCurrency, companyCurrency, paidAmount, today)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
-      BigDecimal convertedAmountRemaining =
-          invoiceTerm.getAmountRemaining().subtract(convertedPaidAmount);
 
       if (amountRemaining.compareTo(BigDecimal.ZERO) <= 0) {
         amountRemaining = BigDecimal.ZERO;
-        convertedAmountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
       }
 
       invoiceTerm.setAmountRemaining(amountRemaining);
-      invoiceTerm.setCompanyCurrencyAmountRemaining(convertedAmountRemaining);
     }
   }
 }

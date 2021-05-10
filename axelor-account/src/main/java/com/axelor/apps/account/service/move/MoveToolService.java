@@ -158,6 +158,22 @@ public class MoveToolService {
   }
 
   /**
+   * Fonction permettant de récuperer les lignes d'écriture (non complétement lettrée sur le compte
+   * client) de la saisie paiement
+   *
+   * @param invoicePayment Une saisie paiement
+   * @return
+   * @throws AxelorException
+   */
+  public List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException {
+    if (this.isDebitCustomer(invoice, true)) {
+      return moveLineService.getDebitCustomerMoveLines(invoice);
+    } else {
+      return moveLineService.getCreditCustomerMoveLines(invoice);
+    }
+  }
+
+  /**
    * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte
    * client) de la facture Récupération par requête. A privilégié si les lignes d'écritures ne sont
    * pas managées par JPA ou si le nombre d'écriture est très important (> 100)
@@ -367,11 +383,13 @@ public class MoveToolService {
 
       Beans.get(InvoiceRepository.class).save(invoice);
 
-      MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
+      List<MoveLine> moveLines = this.getInvoiceCustomerMoveLines(invoice);
       //			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
 
-      if (moveLine != null) {
-        inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
+      if (!CollectionUtils.isEmpty(moveLines)) {
+        for (MoveLine moveLine : moveLines) {
+          inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
+        }
 
         if (isMinus) {
           inTaxTotalRemaining = inTaxTotalRemaining.negate();

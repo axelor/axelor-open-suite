@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -46,7 +47,16 @@ public interface InvoiceTermPaymentService {
   public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
-      BigDecimal availableAmount);
+      BigDecimal availableAmount)
+      throws AxelorException;
+
+  /**
+   * Method to create invoiceTermPayments for an invoicePayment
+   *
+   * @param invoicePayment
+   * @return
+   */
+  public void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException;
 
   /**
    * Method to create new InvoiceTermPayment usign invoiceTerm amountRemaining
@@ -67,7 +77,8 @@ public interface InvoiceTermPaymentService {
    * @return
    */
   public BigDecimal computeInvoicePaymentAmount(
-      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments);
+      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments)
+      throws AxelorException;
 
   /**
    * Method to update invoice Payment Amount based on its invoiceTermPayments
@@ -75,5 +86,6 @@ public interface InvoiceTermPaymentService {
    * @param invoicePayment
    * @return
    */
-  public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment);
+  public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment)
+      throws AxelorException;
 }

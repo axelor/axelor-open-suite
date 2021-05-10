@@ -59,6 +59,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -424,13 +425,20 @@ public class MoveLineServiceImpl implements MoveLineService {
         account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, true);
       }
 
+      Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
       MoveLine moveLine1 =
           this.createMoveLine(
               move,
               partner,
               account,
               invoiceTerm.getAmount(),
-              invoiceTerm.getCompanyCurrencyAmount(),
+              currencyService
+                  .getAmountCurrencyConvertedAtDate(
+                      invoice.getCurrency(),
+                      companyCurrency,
+                      invoiceTerm.getAmount(),
+                      invoice.getInvoiceDate())
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
               null,
               isDebitCustomer,
               invoice.getInvoiceDate(),
@@ -820,6 +828,42 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   /**
+   * Fonction permettant de récuperer les ligne d'écritures (au credit et non complétement lettrée
+   * sur le compte client) de la facture
+   *
+   * @param invoice Une facture
+   * @return
+   */
+  @Override
+  public List<MoveLine> getCreditCustomerMoveLines(Invoice invoice) {
+    if (invoice.getMove() != null) {
+      return this.getCreditCustomerMoveLines(invoice.getMove());
+    }
+    return null;
+  }
+
+  /**
+   * Fonction permettant de récuperer les lignes d'écriture (au credit et non complétement lettrée
+   * sur le compte client) de l'écriture de facture
+   *
+   * @param move Une écriture de facture
+   * @return
+   */
+  @Override
+  public List<MoveLine> getCreditCustomerMoveLines(Move move) {
+
+    List<MoveLine> moveLines = Lists.newArrayList();
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getAccount().getUseForPartnerBalance()
+          && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        moveLines.add(moveLine);
+      }
+    }
+    return moveLines;
+  }
+
+  /**
    * Fonction permettant de récuperer la ligne d'écriture (au credit et non complétement lettrée sur
    * le compte client) de l'écriture de facture
    *
@@ -834,6 +878,21 @@ public class MoveLineServiceImpl implements MoveLineService {
           && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
         return moveLine;
       }
+    }
+    return null;
+  }
+
+  /**
+   * Fonction permettant de récuperer les lignes d'écriture (au débit et non complétement lettrée
+   * sur le compte client) de la facture
+   *
+   * @param invoice Une facture
+   * @return
+   */
+  @Override
+  public List<MoveLine> getDebitCustomerMoveLines(Invoice invoice) {
+    if (invoice.getMove() != null) {
+      return this.getDebitCustomerMoveLines(invoice.getMove());
     }
     return null;
   }
@@ -870,6 +929,27 @@ public class MoveLineServiceImpl implements MoveLineService {
       }
     }
     return null;
+  }
+
+  /**
+   * Fonction permettant de récuperer les lignes d'écriture (au débit et non complétement lettrée
+   * sur le compte client) de l'écriture de facture
+   *
+   * @param move Une écriture de facture
+   * @return
+   */
+  @Override
+  public List<MoveLine> getDebitCustomerMoveLines(Move move) {
+
+    List<MoveLine> moveLines = Lists.newArrayList();
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getAccount().getUseForPartnerBalance()
+          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        moveLines.add(moveLine);
+      }
+    }
+    return moveLines;
   }
 
   /**

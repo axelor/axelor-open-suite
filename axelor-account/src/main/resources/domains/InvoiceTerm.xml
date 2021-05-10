@@ -13,12 +13,7 @@
   	<boolean name="isHoldBack" title="Holdback" default="false"/>
   	<decimal name="amount" title="Amount"/>
   	<decimal name="amountRemaining" title="Amount remaining"/>
-  	<!--     Amounts based on the company currency -->
-  	<decimal name="companyCurrencyAmount" title="Amount"/>
-  	<decimal name="companyCurrencyAmountRemaining" title="Amount remaining"/>
-  	
   	<many-to-one name="paymentConditionLine" ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line"/>
-  	
   	<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move line" readonly="true"/>
   	
   	<string name="name" namecolumn="true" search="invoice,dueDate,amount" title="Name">
