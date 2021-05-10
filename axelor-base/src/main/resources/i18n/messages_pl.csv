@@ -1642,6 +1642,7 @@
 "The entered IBAN code is not valid . <br> Either the code doesn't respect the norm, or the format you have entered is not correct. It has to be without any blank space, as the following : <br> FR0000000000000000000000000","Wprowadzony kod IBAN nie jest poprawny . <br> Albo kod nie jest zgodny z normą, albo wprowadzony format nie jest poprawny. Musi być bez pustej przestrzeni, jak następuje: <br> FR0000000000000000000000000000000.",,
 "The following address is invalid. Please use '+' button to create a new one :","Poniższy adres jest nieważny. Proszę użyć przycisku +, aby utworzyć nowy :",,
 "The from date is incorrect","Data od daty jest nieprawidłowa",,
+"The geonames file type is invalid.",,,
 "The groovy condition result must be a boolean",,,
 "The line cannot be imported (import : %s)","Linia nie może być importowana (import: %s)",,
 "The price list %s will still be active when the price list %s will become active.","Cennik %s będzie nadal aktywny, gdy cennik %s stanie się aktywny.",,

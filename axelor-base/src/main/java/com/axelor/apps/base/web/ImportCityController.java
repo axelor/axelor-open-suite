@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.service.imports.ImportCityService;
+import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -60,8 +61,10 @@ public class ImportCityController {
       try {
         if (CityRepository.IMPORT_TYPE_SELECT_AUTO.equals(importTypeSelect)) {
           String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
-          MetaFile zipImportDataFile = importCityService.downloadZip(downloadFileName, false);
-          MetaFile dumpImportDataFile = importCityService.downloadZip(downloadFileName, true);
+          MetaFile zipImportDataFile =
+              importCityService.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
+          MetaFile dumpImportDataFile =
+              importCityService.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
           importHistoryList.add(
               importCityService.importCity(typeSelect + "-zip", zipImportDataFile));
           importHistoryList.add(
