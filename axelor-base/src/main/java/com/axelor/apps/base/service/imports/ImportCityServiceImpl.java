@@ -352,7 +352,7 @@ public class ImportCityServiceImpl implements ImportCityService {
                 values[10], // region code
                 values[11], // department code
                 values[12], // canton code
-                values[4], // lattitude
+                values[4], // latitude
                 values[5], // longitude
                 values[14])); // population
       }
