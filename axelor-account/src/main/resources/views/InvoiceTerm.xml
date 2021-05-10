@@ -38,10 +38,6 @@
 			<field name="invoice" form-view="invoice-form" grid-view="invoice-grid" hidden="true" readonly="true"/>
 			<field name="invoice.company" hidden="true"/>
 		</panel>
-		<panel name="CompanyCurrencyAmountsPanel" title="Amount company currency" hideIf="invoice.company.currency.code == invoice.currency.code">
-		    <field name="companyCurrencyAmount"/>
-	    	<field name="companyCurrencyAmountRemaining"/>
-		</panel>
 	</form>
     
     <form name="invoice-term-form" title="Invoice term"
@@ -57,10 +53,6 @@
 	    	<field name="amountRemaining"/>
 	    	<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true" showIf="moveLine"/>
 	    	<field name="invoice.company" hidden="true"/>
-		</panel>
-		<panel name="CompanyCurrencyAmountsPanel" title="Amount company currency" hideIf="invoice.company.currency.code == invoice.currency.code">
-		    <field name="companyCurrencyAmount"/>
-	    	<field name="companyCurrencyAmountRemaining"/>
 		</panel>
 	</form>
 

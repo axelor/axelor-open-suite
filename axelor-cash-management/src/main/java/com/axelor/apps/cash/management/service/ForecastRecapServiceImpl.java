@@ -316,9 +316,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
             + "AND ((self.statusSelect = 3 AND self.companyInTaxTotalRemaining != 0) "
-            + "OR self.companyInTaxTotal != 0) "
-            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
-            + "AND Inv.estimatedPaymentDate BETWEEN :fromDate AND :toDate) > 0";
+            + "OR self.companyInTaxTotal != 0) ";
+        //            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
+        //            + "AND Inv.estimatedPaymentDate BETWEEN :fromDate AND :toDate) > 0";
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         return "(self.expectedRealisationDate BETWEEN :fromDate AND :toDate "
             + "OR (self.creationDate BETWEEN :fromDateMinusDuration AND :toDateMinusDuration "
@@ -386,8 +386,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         InvoiceTerm invoiceTerm =
             invoice.getInvoiceTermList().stream().filter(it -> !it.getIsPaid()).findFirst().get();
         return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-            ? invoiceTerm.getCompanyCurrencyAmountRemaining()
-            : invoiceTerm.getAmountRemaining();
+            ? invoiceTerm.getAmountRemaining()
+            : invoiceTerm.getAmount();
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         SaleOrder saleOrder = (SaleOrder) forecastModel;
         return currencyService

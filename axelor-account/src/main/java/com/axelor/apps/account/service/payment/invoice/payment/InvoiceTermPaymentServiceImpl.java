@@ -17,14 +17,34 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService {
+
+  protected CurrencyService currencyService;
+  protected InvoiceTermService invoiceTermService;
+
+  @Inject
+  public InvoiceTermPaymentServiceImpl(
+      CurrencyService currencyService, InvoiceTermService invoiceTermService) {
+    this.currencyService = currencyService;
+    this.invoiceTermService = invoiceTermService;
+  }
 
   @Override
   public List<InvoiceTermPayment> initInvoiceTermPayments(
@@ -40,12 +60,40 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   @Override
+  public void createInvoicePaymentTerms(InvoicePayment invoicePayment) throws AxelorException {
+
+    Invoice invoice = invoicePayment.getInvoice();
+    if (invoice == null
+        || CollectionUtils.isEmpty(invoicePayment.getInvoice().getInvoiceTermList())) {
+      return;
+    }
+    List<InvoiceTerm> invoiceTerms = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+    if (CollectionUtils.isEmpty(invoiceTerms)) {
+      return;
+    }
+    invoicePayment.setInvoiceTermPaymentList(
+        initInvoiceTermPaymentsWithAmount(
+            invoicePayment, invoiceTerms, invoicePayment.getAmount()));
+  }
+
+  @Override
   public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
-      BigDecimal availableAmount) {
+      BigDecimal availableAmount)
+      throws AxelorException {
 
     List<InvoiceTermPayment> invoiceTermPayments = Lists.newArrayList();
+
+    availableAmount =
+        currencyService
+            .getAmountCurrencyConvertedAtDate(
+                invoicePayment.getCurrency(),
+                invoicePayment.getInvoice().getCurrency(),
+                availableAmount,
+                Beans.get(AppAccountService.class)
+                    .getTodayDate(invoicePayment.getInvoice().getCompany()))
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
       if (availableAmount.compareTo(BigDecimal.ZERO) > 0) {
@@ -76,7 +124,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   @Override
-  public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment) {
+  public InvoicePayment updateInvoicePaymentAmount(InvoicePayment invoicePayment)
+      throws AxelorException {
 
     invoicePayment.setAmount(
         computeInvoicePaymentAmount(invoicePayment, invoicePayment.getInvoiceTermPaymentList()));
@@ -86,12 +135,24 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
   @Override
   public BigDecimal computeInvoicePaymentAmount(
-      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments) {
+      InvoicePayment invoicePayment, List<InvoiceTermPayment> invoiceTermPayments)
+      throws AxelorException {
 
     BigDecimal sum = BigDecimal.ZERO;
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPayments) {
       sum = sum.add(invoiceTermPayment.getPaidAmount());
     }
+
+    sum =
+        currencyService
+            .getAmountCurrencyConvertedAtDate(
+                invoicePayment.getInvoice().getCurrency(),
+                invoicePayment.getCurrency(),
+                sum,
+                Beans.get(AppAccountService.class)
+                    .getTodayDate(invoicePayment.getInvoice().getCompany()))
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
     return sum;
   }
 }
