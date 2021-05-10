@@ -40,7 +40,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   protected BigDecimal computeInitialLinearDepreciation(FixedAsset fixedAsset) {
     return computeInitialDepreciationNumerator(
             fixedAsset.getGrossValue(), fixedAsset, fixedAsset.getNumberOfDepreciation())
-        .divide(new BigDecimal(100), RETURNED_SCALE, RoundingMode.HALF_UP);
+        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeInitialDegressiveDepreciation(FixedAsset fixedAsset) {
@@ -70,7 +70,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   protected BigDecimal computeLinearDepreciation(FixedAsset fixedAsset) {
     return computeDepreciationNumerator(
             fixedAsset.getGrossValue(), fixedAsset.getNumberOfDepreciation())
-        .divide(new BigDecimal(100), RETURNED_SCALE, RoundingMode.HALF_UP);
+        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeOnGoingDegressiveDepreciation(
@@ -86,7 +86,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     BigDecimal ddRate = fixedAsset.getDegressiveCoef();
     return computeDepreciationNumerator(baseValue, numberOfDepreciation)
         .multiply(ddRate)
-        .divide(new BigDecimal(100), RETURNED_SCALE, RoundingMode.HALF_UP);
+        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeInitialDepreciationNumerator(
@@ -104,9 +104,8 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   protected BigDecimal computeDepreciationRate(int numberOfDepreciation) {
     return numberOfDepreciation == 0
         ? BigDecimal.ZERO
-        : BigDecimal.valueOf(100)
-            .divide(
-                BigDecimal.valueOf(numberOfDepreciation), CALCULATION_SCALE, RoundingMode.HALF_UP);
+        : BigDecimal.ONE.divide(
+            BigDecimal.valueOf(numberOfDepreciation), CALCULATION_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeProrataTemporis(FixedAsset fixedAsset) {

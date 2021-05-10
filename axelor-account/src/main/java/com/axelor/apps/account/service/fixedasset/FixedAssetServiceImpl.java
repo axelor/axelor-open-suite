@@ -56,7 +56,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected AccountConfigService accountConfigService;
 
-  protected static final int CALCULATION_SCALE = 6;
+  protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
 
   @Inject
