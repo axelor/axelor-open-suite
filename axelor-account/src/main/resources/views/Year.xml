@@ -31,10 +31,10 @@
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
 			<field name="closureDateTime" showIf="statusSelect == 2" readonlyIf="statusSelect == 2"/>
-			<button name="closeBtn" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book"/>
+			<button name="closeBtn" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book" readonlyIf="!id"/>
 			<button name="adjustBtn" title="Adjust fiscal year" onClick="action-group-account-year-adjust-click" showIf="statusSelect == 2"/>
 		</panel>
-		<panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2">
+		<panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2" readonlyIf="!id">
 			<field name="periodDurationSelect"/>
 			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-year-group-generate-period-click" />
 		</panel>
