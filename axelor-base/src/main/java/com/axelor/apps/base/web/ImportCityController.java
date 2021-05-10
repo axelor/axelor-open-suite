@@ -49,45 +49,79 @@ public class ImportCityController {
    */
   @SuppressWarnings("unchecked")
   public void importCity(ActionRequest request, ActionResponse response) {
+    try {
+      List<ImportHistory> importHistoryList = null;
 
-    MetaFile dataFile;
+      String typeSelect = (String) request.getContext().get("typeSelect");
+      if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
 
-    String typeSelect = (String) request.getContext().get("typeSelect");
+        String importTypeSelect = (String) request.getContext().get("importTypeSelect");
+        switch (importTypeSelect) {
+          case CityRepository.IMPORT_TYPE_SELECT_AUTO:
+            String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
+            importHistoryList = importFromGeonamesAutoConfig(downloadFileName, typeSelect);
+            break;
 
-    if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
-      List<ImportHistory> importHistoryList = new ArrayList<>();
+          case CityRepository.IMPORT_TYPE_SELECT_MANUAL:
+            Map<String, Object> map =
+                (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
+            importHistoryList = importFromGeonamesManualConfig(map, typeSelect);
+            break;
 
-      String importTypeSelect = (String) request.getContext().get("importTypeSelect");
-      try {
-        if (CityRepository.IMPORT_TYPE_SELECT_AUTO.equals(importTypeSelect)) {
-          String downloadFileName = (String) request.getContext().get("autoImportTypeSelect");
-          MetaFile zipImportDataFile =
-              importCityService.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
-          MetaFile dumpImportDataFile =
-              importCityService.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
-          importHistoryList.add(
-              importCityService.importCity(typeSelect + "-zip", zipImportDataFile));
-          importHistoryList.add(
-              importCityService.importCity(typeSelect + "-dump", dumpImportDataFile));
-        } else {
-          Map<String, Object> map =
-              (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
-
-          if (map != null) {
-            dataFile =
-                Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
-            importHistoryList.add(importCityService.importCity(typeSelect + "-dump", dataFile));
-          }
+          default:
+            break;
         }
-
-        response.setAttr("$importHistoryList", "hidden", false);
-        response.setAttr("$importHistoryList", "value", importHistoryList);
-
-        response.setFlash(I18n.get("City import completed"));
-
-      } catch (Exception e) {
-        TraceBackService.trace(response, e);
       }
+
+      response.setAttr("$importHistoryList", "hidden", false);
+      response.setAttr("$importHistoryList", "value", importHistoryList);
+
+      response.setFlash(I18n.get("City import completed"));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
+
+  /**
+   * Imports cities from a predefined Geonames configuration.
+   *
+   * @param downloadFileName
+   * @param typeSelect
+   * @return
+   * @throws Exception
+   */
+  private List<ImportHistory> importFromGeonamesAutoConfig(
+      String downloadFileName, String typeSelect) throws Exception {
+    MetaFile zipImportDataFile = importCityService.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
+    MetaFile dumpImportDataFile =
+        importCityService.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
+
+    List<ImportHistory> importHistoryList = new ArrayList<>();
+    importHistoryList.add(importCityService.importCity(typeSelect + "-zip", zipImportDataFile));
+    importHistoryList.add(importCityService.importCity(typeSelect + "-dump", dumpImportDataFile));
+
+    return importHistoryList;
+  }
+
+  /**
+   * Imports cities from a custom Geonames file. This is useful for the countries not present in the
+   * predefined list.
+   *
+   * @param map
+   * @param typeSelect
+   * @return
+   */
+  private List<ImportHistory> importFromGeonamesManualConfig(
+      Map<String, Object> map, String typeSelect) {
+    List<ImportHistory> importHistoryList = new ArrayList<>();
+
+    if (map != null) {
+      MetaFile dataFile =
+          Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
+      importHistoryList.add(importCityService.importCity(typeSelect + "-dump", dataFile));
+    }
+
+    return importHistoryList;
   }
 }
