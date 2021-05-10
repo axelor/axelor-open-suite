@@ -347,7 +347,7 @@ public class ImportCityServiceImpl implements ImportCityService {
             String.format(
                 "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s",
                 values[8], // country code
-                values[13], // zip code
+                values[13], // insee code
                 values[1], // city name
                 values[10], // region code
                 values[11], // department code

@@ -4,7 +4,7 @@
 
   <input file="geonames_city.csv" separator="\t" type="com.axelor.apps.base.db.City" search="self.country.alpha2Code = :country_alpha2Code AND UPPER(self.name) = UPPER(:name) AND self.canton.code = :canton_code"
     call="com.axelor.csv.script.ImportCity:importCity">
-    <header>country_alpha2Code, zip, name, department_region_name, department_region_code, department_name, department_code, canton_name, canton_code, latitude, longitude, population</header>
+    <header>country_alpha2Code, insee_code, name, department_region_name, department_region_code, department_name, department_code, canton_name, canton_code, latitude, longitude, population</header>
     <bind to="country" search="self.alpha2Code = :country_alpha2Code" update="true" />
     <bind to="department" type="com.axelor.apps.base.db.Department" search="self.code = :department_code AND UPPER(self.name) = UPPER(:department_name)" if="!department_code.empty &amp;&amp; !department_name.empty">
       <bind to="code" column="department_code" />
@@ -21,8 +21,7 @@
       <bind to="name" column="canton_name" />
     </bind>
     <bind to="nbInhCommune" column="population" />
-    <bind to="zip" column="zip" />
-    <bind to="inseeCode" column="zip" />
+    <bind to="inseeCode" column="insee_code" />
   </input>
 
 </csv-inputs>

@@ -49,12 +49,12 @@ public class ImportCityController {
   @SuppressWarnings("unchecked")
   public void importCity(ActionRequest request, ActionResponse response) {
 
-    MetaFile dataFile = new MetaFile();
+    MetaFile dataFile;
 
     String typeSelect = (String) request.getContext().get("typeSelect");
 
     if (CityRepository.TYPE_SELECT_GEONAMES.equals(typeSelect)) {
-      List<ImportHistory> importHistoryList = new ArrayList<ImportHistory>();
+      List<ImportHistory> importHistoryList = new ArrayList<>();
 
       String importTypeSelect = (String) request.getContext().get("importTypeSelect");
       try {
