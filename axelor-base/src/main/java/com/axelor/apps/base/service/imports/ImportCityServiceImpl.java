@@ -85,6 +85,11 @@ public class ImportCityServiceImpl implements ImportCityService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public enum GEONAMES_FILE {
+    ZIP,
+    DUMP;
+  }
+
   /** {@inheritDoc}} */
   @Override
   public ImportHistory importCity(String typeSelect, MetaFile dataFile) {
@@ -138,7 +143,7 @@ public class ImportCityServiceImpl implements ImportCityService {
   }
 
   /**
-   * create geonames-city.csv data file from geonames.txt data file
+   * Creates geonames-city.csv data file from geonames.txt data file
    *
    * @param dataFile
    * @return
@@ -147,7 +152,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
     File csvFile = null;
     try {
-      File tempDir = Files.createTempDir();
+      File tempDir = java.nio.file.Files.createTempDirectory(null).toFile();
       csvFile = new File(tempDir, "geonames_city.csv");
 
       Files.copy(MetaFiles.getPath(dataFile).toFile(), csvFile);
@@ -211,21 +216,15 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @throws Exception
    */
   @Override
-  public MetaFile downloadZip(String downloadFileName, boolean isDump) throws Exception {
+  public MetaFile downloadZip(String downloadFileName, GEONAMES_FILE geonamesFile)
+      throws Exception {
+    String downloadUrl = getDownloadUrl(geonamesFile);
 
-    String downloadUrl = null;
     try {
-      File downloadFile = null;
-      File cityTextFile = null;
-      File tempDir = null;
-      MetaFile metaFile = null;
+      File tempDir = java.nio.file.Files.createTempDirectory(null).toFile();
+      File downloadFile = new File(tempDir, downloadFileName);
 
-      downloadUrl = getDownloadUrl(isDump);
-
-      tempDir = Files.createTempDir();
-      downloadFile = new File(tempDir, downloadFileName);
-
-      cityTextFile = new File(tempDir, CITYTEXTFILE);
+      File cityTextFile = new File(tempDir, CITYTEXTFILE);
 
       URLService.fileUrl(downloadFile, downloadUrl + downloadFileName, null, null);
 
@@ -244,8 +243,20 @@ public class ImportCityServiceImpl implements ImportCityService {
             BufferedReader stream =
                 new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
 
-            buffer =
-                isDump ? this.extractDataDumpImport(stream) : this.extractDataZipImport(stream);
+            switch (geonamesFile) {
+              case DUMP:
+                buffer = this.extractDataDumpImport(stream);
+                break;
+
+              case ZIP:
+                buffer = this.extractDataZipImport(stream);
+                break;
+
+              default:
+                throw new AxelorException(
+                    TraceBackRepository.CATEGORY_NO_VALUE,
+                    I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE));
+            }
 
             cityTextFile.createNewFile();
 
@@ -257,17 +268,20 @@ public class ImportCityServiceImpl implements ImportCityService {
           }
         }
       }
-      metaFile = metaFiles.upload(cityTextFile);
+      MetaFile metaFile = metaFiles.upload(cityTextFile);
       FileUtils.forceDelete(tempDir);
 
       return metaFile;
+
     } catch (UnknownHostException hostExp) {
       throw new Exception(I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR), hostExp);
+
     } catch (FileNotFoundException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.NO_DATA_FILE_FOUND),
           downloadUrl);
+
     } catch (Exception e) {
       throw e;
     }
@@ -314,7 +328,7 @@ public class ImportCityServiceImpl implements ImportCityService {
     HashMap<String, String> regionMap = new HashMap<>();
     HashMap<String, String> departmentMap = new HashMap<>();
     HashMap<String, String> cantonMap = new HashMap<>();
-    List<String> cityList = new ArrayList<>();
+    List<String> cities = new ArrayList<>();
 
     String line;
 
@@ -343,7 +357,7 @@ public class ImportCityServiceImpl implements ImportCityService {
               && values[7].equals(FEATURE_CLASS_CODE_FOR_CITY))
           || (values[6].equals(FEATURE_CLASS_FOR_CITY)
               && !values[7].equals(CITY_NO_LONGER_EXIST_CODE))) {
-        cityList.add(
+        cities.add(
             String.format(
                 "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s",
                 values[8], // country code
@@ -358,7 +372,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       }
     }
 
-    return this.createCityFileDumpImport(regionMap, departmentMap, cantonMap, cityList);
+    return this.createCityFileDumpImport(regionMap, departmentMap, cantonMap, cities);
   }
 
   protected StringBuilder extractDataZipImport(BufferedReader downloadedCityFileStream)
@@ -440,11 +454,22 @@ public class ImportCityServiceImpl implements ImportCityService {
     return buffer;
   }
 
-  protected String getDownloadUrl(boolean isDump) throws AxelorException {
-    String downloadUrl = null;
+  protected String getDownloadUrl(GEONAMES_FILE geonamesFile) throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
+    String downloadUrl = null;
 
-    downloadUrl = isDump ? appBase.getGeoNamesDumpUrl() : appBase.getGeoNamesZipUrl();
+    switch (geonamesFile) {
+      case DUMP:
+        downloadUrl = appBase.getGeoNamesDumpUrl();
+        break;
+      case ZIP:
+        downloadUrl = appBase.getGeoNamesZipUrl();
+        break;
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE));
+    }
 
     if (StringUtils.isEmpty(downloadUrl)) {
       throw new AxelorException(
