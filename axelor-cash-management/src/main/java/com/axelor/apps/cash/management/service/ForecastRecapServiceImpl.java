@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -50,6 +51,7 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -69,6 +71,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -310,15 +314,14 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected String getFilter(ForecastRecapLineType forecastRecapLineType) throws AxelorException {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
-        // FIXME la requete ne fonctionne pas
         return "self.company = :company "
             + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
             + "AND ((self.statusSelect = 3 AND self.companyInTaxTotalRemaining != 0) "
-            + "OR self.companyInTaxTotal != 0) ";
-        //            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
-        //            + "AND Inv.estimatedPaymentDate BETWEEN :fromDate AND :toDate) > 0";
+            + "OR self.companyInTaxTotal != 0) "
+            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
+            + "AND Inv.estimatedPaymentDate BETWEEN :fromDate AND :toDate) > 0";
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         return "(self.expectedRealisationDate BETWEEN :fromDate AND :toDate "
             + "OR (self.creationDate BETWEEN :fromDateMinusDuration AND :toDateMinusDuration "
@@ -383,11 +386,15 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         Invoice invoice = (Invoice) forecastModel;
-        InvoiceTerm invoiceTerm =
-            invoice.getInvoiceTermList().stream().filter(it -> !it.getIsPaid()).findFirst().get();
-        return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-            ? invoiceTerm.getAmountRemaining()
-            : invoiceTerm.getAmount();
+        if (!CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        	InvoiceTerm invoiceTerm = Beans.get(InvoiceTermRepository.class).all().filter("self.invoice = ?1 AND self.isPaid != true",invoice).order("dueDate").fetchOne();
+        	if (invoiceTerm == null) { return BigDecimal.ZERO; }
+        return invoiceTerm.getAmountRemaining();
+        }else {
+        	return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+                    ? invoice.getCompanyInTaxTotalRemaining()
+                    : invoice.getCompanyInTaxTotal();
+        }
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         SaleOrder saleOrder = (SaleOrder) forecastModel;
         return currencyService
