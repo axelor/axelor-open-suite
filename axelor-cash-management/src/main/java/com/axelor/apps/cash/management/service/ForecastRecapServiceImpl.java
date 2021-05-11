@@ -71,7 +71,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -387,13 +386,20 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         Invoice invoice = (Invoice) forecastModel;
         if (!CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-        	InvoiceTerm invoiceTerm = Beans.get(InvoiceTermRepository.class).all().filter("self.invoice = ?1 AND self.isPaid != true",invoice).order("dueDate").fetchOne();
-        	if (invoiceTerm == null) { return BigDecimal.ZERO; }
-        return invoiceTerm.getAmountRemaining();
-        }else {
-        	return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-                    ? invoice.getCompanyInTaxTotalRemaining()
-                    : invoice.getCompanyInTaxTotal();
+          InvoiceTerm invoiceTerm =
+              Beans.get(InvoiceTermRepository.class)
+                  .all()
+                  .filter("self.invoice = ?1 AND self.isPaid != true", invoice)
+                  .order("dueDate")
+                  .fetchOne();
+          if (invoiceTerm == null) {
+            return BigDecimal.ZERO;
+          }
+          return invoiceTerm.getAmountRemaining();
+        } else {
+          return invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+              ? invoice.getCompanyInTaxTotalRemaining()
+              : invoice.getCompanyInTaxTotal();
         }
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         SaleOrder saleOrder = (SaleOrder) forecastModel;
