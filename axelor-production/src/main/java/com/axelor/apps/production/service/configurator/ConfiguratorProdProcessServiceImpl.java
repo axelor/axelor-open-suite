@@ -78,6 +78,15 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       }
     } else {
       name = confProdProcess.getName();
+      if (name == null) {
+        throw new AxelorException(
+            confProdProcess,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                String.format(
+                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME,
+                    confProdProcess.getId())));
+      }
     }
     if (confProdProcess.getDefCodeAsFormula()) {
       code =

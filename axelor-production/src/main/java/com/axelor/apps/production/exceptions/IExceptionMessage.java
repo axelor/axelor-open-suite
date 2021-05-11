@@ -200,7 +200,13 @@ public interface IExceptionMessage {
   String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NAME_FORMULA = /*$$(*/
       "The formula script to fill the name returns null value. Please correct on prod process configurator id : %s." /*)*/;
 
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME = /*$$(*/
+      "Name cannot be null for prod process to generate. Please correct on prod process configurator id : %s." /*)*/;
+
   // Configurator Prod Process Line Service
   String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA = /*$$(*/
       "The formula script to fill the name returns null value. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME = /*$$(*/
+      "Name cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
 }

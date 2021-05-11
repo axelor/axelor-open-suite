@@ -405,6 +405,8 @@
 "MpsCharge.title",,,
 "Multi-level planning",,,
 "Name","Nome",,
+"Name cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s.",,,
+"Name cannot be null for prod process to generate. Please correct on prod process configurator id : %s.",,,
 "Nb of digits for BOM quantities","Nb di cifre per le quantità della distinta base",,
 "Need / Manufacturing order","Necessità / Ordine di produzione",,
 "Need / Manufacturing proposal","Necessità / Proposta di produzione",,

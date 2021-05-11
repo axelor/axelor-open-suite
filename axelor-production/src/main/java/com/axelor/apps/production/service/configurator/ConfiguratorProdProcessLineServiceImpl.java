@@ -70,6 +70,15 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       }
     } else {
       name = confProdProcessLine.getName();
+      if (name == null) {
+        throw new AxelorException(
+            confProdProcessLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                String.format(
+                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME,
+                    confProdProcessLine.getId())));
+      }
     }
     if (confProdProcessLine.getDefPriorityAsFormula()) {
       Object computedPriority =
