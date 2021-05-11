@@ -145,6 +145,94 @@ public class TestFixedAssetService {
   }
 
   /*
+   * ================================================================================================
+   * ==  Linear fixed asset with prorata but acquisition date is equal to first depreciation date  ==
+   * ================================================================================================
+   */
+
+  protected FixedAsset generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded() {
+    FixedAsset fixedAsset =
+        createFixedAsset(
+            FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
+            LocalDate.of(2020, 12, 31),
+            LocalDate.of(2020, 12, 31),
+            5,
+            12,
+            createFixedAssetCategoryFromIsProrataTemporis(true),
+            new BigDecimal("500.00"));
+    fixedAssetService.generateAndComputeLines(fixedAsset);
+    return fixedAsset;
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeeded() {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    Assert.assertTrue(
+        fixedAsset.getFixedAssetLineList() != null
+            && fixedAsset.getFixedAssetLineList().size() == 5);
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFirstLine() {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2020, 12, 31),
+            new BigDecimal("100.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("400.00")),
+        fixedAsset.getFixedAssetLineList().get(0));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededSecondLine() {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2021, 12, 31),
+            new BigDecimal("100.00"),
+            new BigDecimal("200.00"),
+            new BigDecimal("300.00")),
+        fixedAsset.getFixedAssetLineList().get(1));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededThirdLine() {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2022, 12, 31),
+            new BigDecimal("100.00"),
+            new BigDecimal("300.00"),
+            new BigDecimal("200.00")),
+        fixedAsset.getFixedAssetLineList().get(2));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFourthLine() {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2023, 12, 31),
+            new BigDecimal("100.00"),
+            new BigDecimal("400.00"),
+            new BigDecimal("100.00")),
+        fixedAsset.getFixedAssetLineList().get(3));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFifthLine() {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2024, 12, 31),
+            new BigDecimal("100.00"),
+            new BigDecimal("500.00"),
+            new BigDecimal("0.00")),
+        fixedAsset.getFixedAssetLineList().get(4));
+  }
+
+  /*
    * ==================================
    * ==  Prorata linear fixed asset  ==
    * ==================================
@@ -154,7 +242,7 @@ public class TestFixedAssetService {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
-            LocalDate.of(2020, 10, 4),
+            LocalDate.of(2020, 10, 5),
             LocalDate.of(2020, 12, 31),
             5,
             12,
@@ -237,7 +325,7 @@ public class TestFixedAssetService {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
-            LocalDate.of(2025, 10, 3),
+            LocalDate.of(2025, 10, 4),
             new BigDecimal("76.11"),
             new BigDecimal("500.00"),
             new BigDecimal("0.00")),
@@ -366,5 +454,136 @@ public class TestFixedAssetService {
             new BigDecimal("102638.35"),
             new BigDecimal("0.00")),
         fixedAsset.getFixedAssetLineList().get(7));
+  }
+
+  /*
+   * =====================================
+   * ==  Prorata degressive fixed asset ==
+   * =====================================
+   */
+
+  protected FixedAsset generateAndComputeLinesProrataDegressiveFixedAsset() {
+    FixedAsset fixedAsset =
+        createFixedAsset(
+            FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
+            new BigDecimal("2.25"),
+            LocalDate.of(2021, 7, 1),
+            LocalDate.of(2021, 12, 31),
+            7,
+            12,
+            createFixedAssetCategoryFromIsProrataTemporis(true, false),
+            new BigDecimal("102638.35"));
+    fixedAssetService.generateAndComputeLines(fixedAsset);
+    return fixedAsset;
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAsset() {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
+    Assert.assertTrue(
+        fixedAsset.getFixedAssetLineList() != null
+            && fixedAsset.getFixedAssetLineList().size() == 7);
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFirstLine() {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2021, 12, 31),
+            new BigDecimal("16495.45"),
+            new BigDecimal("16495.45"),
+            new BigDecimal("86142.90")),
+        fixedAsset.getFixedAssetLineList().get(0));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetSecondLine() {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2022, 12, 31),
+            new BigDecimal("27688.79"),
+            new BigDecimal("44184.24"),
+            new BigDecimal("58454.11")),
+        fixedAsset.getFixedAssetLineList().get(1));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetThirdLine() {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2023, 12, 31),
+            new BigDecimal("18788.82"),
+            new BigDecimal("62973.06"),
+            new BigDecimal("39665.29")),
+        fixedAsset.getFixedAssetLineList().get(2));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFourthLine() {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2024, 12, 31),
+            new BigDecimal("12749.56"),
+            new BigDecimal("75722.62"),
+            new BigDecimal("26915.73")),
+        fixedAsset.getFixedAssetLineList().get(3));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFifthLine() {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2025, 12, 31),
+            new BigDecimal("8971.91"),
+            new BigDecimal("84694.53"),
+            new BigDecimal("17943.82")),
+        fixedAsset.getFixedAssetLineList().get(4));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetSixthLine() {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2026, 12, 31),
+            new BigDecimal("8971.91"),
+            new BigDecimal("93666.44"),
+            new BigDecimal("8971.91")),
+        fixedAsset.getFixedAssetLineList().get(5));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetLastLine() {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2027, 6, 30),
+            new BigDecimal("8971.91"),
+            new BigDecimal("102638.35"),
+            new BigDecimal("0.00")),
+        fixedAsset.getFixedAssetLineList().get(6));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesNoProrataDegressiveFixedAssetLastLine() {
+    FixedAsset fixedAsset =
+        createFixedAsset(
+            FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
+            new BigDecimal("2.25"),
+            LocalDate.of(2021, 12, 31),
+            LocalDate.of(2021, 12, 31),
+            7,
+            12,
+            createFixedAssetCategoryFromIsProrataTemporis(true, false),
+            new BigDecimal("102638.35"));
+    fixedAssetService.generateAndComputeLines(fixedAsset);
+    Assert.assertEquals(
+        LocalDate.of(2027, 12, 31),
+        fixedAsset.getFixedAssetLineList().get(6).getDepreciationDate());
   }
 }

@@ -46,8 +46,30 @@ public class FixedAssetTestTool {
       int periodicityInMonth,
       FixedAssetCategory fixedAssetCategory,
       BigDecimal grossValue) {
+
+    return createFixedAsset(
+        computationMethodSelect,
+        BigDecimal.ZERO,
+        acquisitionDate,
+        firstDepreciationDate,
+        numberOfDepreciation,
+        periodicityInMonth,
+        fixedAssetCategory,
+        grossValue);
+  }
+
+  public static FixedAsset createFixedAsset(
+      String computationMethodSelect,
+      BigDecimal degressiveCoef,
+      LocalDate acquisitionDate,
+      LocalDate firstDepreciationDate,
+      int numberOfDepreciation,
+      int periodicityInMonth,
+      FixedAssetCategory fixedAssetCategory,
+      BigDecimal grossValue) {
     FixedAsset fixedAsset = new FixedAsset();
     fixedAsset.setComputationMethodSelect(computationMethodSelect);
+    fixedAsset.setDegressiveCoef(degressiveCoef);
     fixedAsset.setFirstDepreciationDate(firstDepreciationDate);
     fixedAsset.setAcquisitionDate(acquisitionDate);
     fixedAsset.setNumberOfDepreciation(numberOfDepreciation);

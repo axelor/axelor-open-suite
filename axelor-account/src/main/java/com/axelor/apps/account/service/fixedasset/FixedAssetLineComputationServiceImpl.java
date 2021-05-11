@@ -38,13 +38,15 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   }
 
   protected BigDecimal computeInitialLinearDepreciation(FixedAsset fixedAsset) {
-    return computeInitialDepreciationNumerator(
-            fixedAsset.getGrossValue(), fixedAsset, fixedAsset.getNumberOfDepreciation())
+    return computeInitialDepreciationNumerator(fixedAsset.getGrossValue(), fixedAsset)
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeInitialDegressiveDepreciation(FixedAsset fixedAsset) {
-    return computeDegressiveDepreciation(fixedAsset.getGrossValue(), fixedAsset);
+    BigDecimal ddRate = fixedAsset.getDegressiveCoef();
+    return computeInitialDepreciationNumerator(fixedAsset.getGrossValue(), fixedAsset)
+        .multiply(ddRate)
+        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeDepreciation(
@@ -75,24 +77,32 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
 
   protected BigDecimal computeOnGoingDegressiveDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
-    return computeDegressiveDepreciation(previousFixedAssetLine.getResidualValue(), fixedAsset);
+    BigDecimal degressiveDepreciation =
+        computeDegressiveDepreciation(previousFixedAssetLine.getResidualValue(), fixedAsset);
+    BigDecimal linearDepreciation =
+        previousFixedAssetLine
+            .getResidualValue()
+            .divide(
+                BigDecimal.valueOf(
+                    fixedAsset.getNumberOfDepreciation()
+                        - fixedAsset.getFixedAssetLineList().size()),
+                RETURNED_SCALE,
+                RoundingMode.HALF_UP);
+    return degressiveDepreciation.max(linearDepreciation);
   }
 
   protected BigDecimal computeDegressiveDepreciation(BigDecimal baseValue, FixedAsset fixedAsset) {
-    int numberOfDepreciation =
-        fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-            ? fixedAsset.getNumberOfDepreciation() - 1
-            : fixedAsset.getNumberOfDepreciation();
     BigDecimal ddRate = fixedAsset.getDegressiveCoef();
-    return computeDepreciationNumerator(baseValue, numberOfDepreciation)
+    return computeDepreciationNumerator(baseValue, fixedAsset.getNumberOfDepreciation())
         .multiply(ddRate)
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeInitialDepreciationNumerator(
-      BigDecimal baseValue, FixedAsset fixedAsset, int numberOfDepreciation) {
+      BigDecimal baseValue, FixedAsset fixedAsset) {
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset);
-    return computeDepreciationNumerator(baseValue, numberOfDepreciation).multiply(prorataTemporis);
+    return computeDepreciationNumerator(baseValue, fixedAsset.getNumberOfDepreciation())
+        .multiply(prorataTemporis);
   }
 
   protected BigDecimal computeDepreciationNumerator(
@@ -113,7 +123,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     if (fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
         && !fixedAsset.getAcquisitionDate().equals(fixedAsset.getFirstDepreciationDate())) {
 
-      LocalDate acquisitionDate = fixedAsset.getAcquisitionDate();
+      LocalDate acquisitionDate = fixedAsset.getAcquisitionDate().minusDays(1);
       LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
 
       int acquisitionYear = acquisitionDate.getYear();
@@ -162,7 +172,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
                   360 * (depreciationYear - acquisitionYear)
                       + 30 * (depreciationMonth.getValue() - acquisitionMonth.getValue())
                       + (depreciationDay - acquisitionDay))
-              .setScale(CALCULATION_SCALE);
+              .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
       BigDecimal nbDaysOfPeriod =
           BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth() * 30)
               .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
@@ -190,7 +200,9 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     BigDecimal residualValue = fixedAsset.getGrossValue().subtract(cumulativeDepreciation);
 
     LocalDate depreciationDate;
-    if (!fixedAsset.getFixedAssetCategory().getIsProrataTemporis() || residualValue.signum() != 0) {
+    if (!fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
+        || fixedAsset.getAcquisitionDate().equals(fixedAsset.getFirstDepreciationDate())
+        || residualValue.signum() != 0) {
       depreciationDate = computeDepreciationDate(fixedAsset, previousFixedAssetLine);
     } else {
       depreciationDate = computeLastProrataDepreciationDate(fixedAsset);
@@ -225,7 +237,12 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   }
 
   protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset) {
-    return DateTool.plusMonths(fixedAsset.getAcquisitionDate(), fixedAsset.getDurationInMonth())
-        .minusDays(1);
+    LocalDate d =
+        DateTool.plusMonths(fixedAsset.getAcquisitionDate(), fixedAsset.getDurationInMonth());
+    if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
+        fixedAsset.getComputationMethodSelect())) {
+      d = DateTool.minusMonths(d, fixedAsset.getPeriodicityInMonth());
+    }
+    return d.minusDays(1);
   }
 }
