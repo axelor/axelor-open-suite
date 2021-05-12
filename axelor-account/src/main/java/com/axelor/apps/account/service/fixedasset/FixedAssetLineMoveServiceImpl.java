@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
@@ -42,20 +42,27 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FixedAssetLineServiceImpl implements FixedAssetLineService {
+public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private FixedAssetLineRepository fixedAssetLineRepo;
+  protected FixedAssetLineRepository fixedAssetLineRepo;
 
-  @Inject private MoveCreateService moveCreateService;
+  protected MoveCreateService moveCreateService;
 
-  @Inject private MoveRepository moveRepo;
+  protected MoveRepository moveRepo;
 
   protected MoveLineService moveLineService;
 
   @Inject
-  public FixedAssetLineServiceImpl(MoveLineService moveLineService) {
+  public FixedAssetLineMoveServiceImpl(
+      FixedAssetLineRepository fixedAssetLineRepo,
+      MoveCreateService moveCreateService,
+      MoveRepository moveRepo,
+      MoveLineService moveLineService) {
+    this.fixedAssetLineRepo = fixedAssetLineRepo;
+    this.moveCreateService = moveCreateService;
+    this.moveRepo = moveRepo;
     this.moveLineService = moveLineService;
   }
 
@@ -96,7 +103,9 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
-        new Object[] {fixedAsset.getReference(), company.getName(), journal.getCode()});
+        fixedAsset.getReference(),
+        company.getName(),
+        journal.getCode());
 
     // Creating move
     Move move =
@@ -110,7 +119,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
     if (move != null) {
-      List<MoveLine> moveLines = new ArrayList<MoveLine>();
+      List<MoveLine> moveLines = new ArrayList<>();
 
       String origin = fixedAsset.getReference();
       Account debitLineAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();

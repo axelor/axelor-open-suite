@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -34,7 +34,7 @@ public interface FixedAssetService {
    * @param fixedAsset
    * @return
    */
-  public FixedAsset generateAndcomputeLines(FixedAsset fixedAsset);
+  FixedAsset generateAndComputeLines(FixedAsset fixedAsset);
 
   /**
    * Allow to create fixed asset from invoice
@@ -43,7 +43,7 @@ public interface FixedAssetService {
    * @return
    * @throws AxelorException
    */
-  public List<FixedAsset> createFixedAssets(Invoice invoice) throws AxelorException;
+  List<FixedAsset> createFixedAssets(Invoice invoice) throws AxelorException;
 
   /**
    * Allow to disposal remaining depreciation
@@ -53,16 +53,16 @@ public interface FixedAssetService {
    * @param fixedAsset
    * @throws AxelorException
    */
-  public void disposal(LocalDate disposalDate, BigDecimal disposalAmount, FixedAsset fixedAsset)
+  void disposal(LocalDate disposalDate, BigDecimal disposalAmount, FixedAsset fixedAsset)
       throws AxelorException;
 
-  public void createAnalyticOnMoveLine(
+  void createAnalyticOnMoveLine(
       AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine)
       throws AxelorException;
 
-  public void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
+  void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
 
-  public void validate(FixedAsset fixedAsset);
+  void validate(FixedAsset fixedAsset);
 
-  public int massValidation(List<Long> fixedAssetIds);
+  int massValidation(List<Long> fixedAssetIds);
 }

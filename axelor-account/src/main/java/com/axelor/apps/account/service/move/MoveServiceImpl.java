@@ -483,7 +483,7 @@ public class MoveServiceImpl implements MoveService {
                     newMoveLine.getAnalyticDistributionTemplate(),
                     newMoveLine.getDebit().add(newMoveLine.getCredit()),
                     AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
-                    move.getDate());
+                    dateOfReversion);
         if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
           analyticMoveLineList.forEach(
               analyticMoveLine -> newMoveLine.addAnalyticMoveLineListItem(analyticMoveLine));

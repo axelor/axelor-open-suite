@@ -46,9 +46,9 @@
     </panel>
     <panel name="importPanel" colSpan="12">
       <field name="metaFile" title="Input file" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" showIf="importTypeSelect == 'manual'" />
-      <field name="autoImportTypeSelect" title="Auto Import" selection="base.city.auto.import.type.select" showIf="importTypeSelect == 'auto' &amp;&amp; typeSelect=='geonames'" />
-      <button name="importBtn" colSpan="4" title="Import" readonlyIf=" (typeSelect == null || metaFile == null) &amp;&amp; autoImportTypeSelect == null" onClick="action-base-method-import-city" />
-      <field name="$importHistoryList" type="one-to-many" target="com.axelor.apps.base.db.ImportHistory" hidden="true" title="Import Log" colSpan="12" canEdit="false" canNew="false" canRemove="false" />
+      <field name="autoImportTypeSelect" title="Auto import" selection="base.city.auto.import.type.select" showIf="importTypeSelect == 'auto' &amp;&amp; typeSelect=='geonames'" />
+      <button name="importBtn" title="Import" readonlyIf="(typeSelect == null || metaFile == null) &amp;&amp; autoImportTypeSelect == null" onClick="action-base-method-import-city" />
+      <field name="$importHistoryList" type="one-to-many" target="com.axelor.apps.base.db.ImportHistory" hidden="true" title="Import log" colSpan="12" canEdit="false" canNew="false" canRemove="false" />
     </panel>
   </form>
 
