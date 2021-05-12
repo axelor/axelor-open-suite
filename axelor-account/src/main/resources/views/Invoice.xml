@@ -581,7 +581,7 @@ InvoiceSet.length > 0))"
 				<field name="$format" title="Format" type="integer" selection="invoice.report.format" colSpan="12" required="true"/>
 			</panel>
 			<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" showIf="$reportType ==1 || $reportType==3"/>
-			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print" readonlyIf="$reportType==null || $format==null"/>
+			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close" readonlyIf="$reportType==null || $format==null"/>
 		</panel>
 	</form>
 

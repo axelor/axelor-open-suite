@@ -4943,7 +4943,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">row["UnitCode"]</value>
+                                                        <value type="javascript">'value:'+row["UnitCode"]</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
@@ -4997,7 +4997,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">row["UnitCode"]</value>
+                                                        <value type="javascript">'value:'+row["UnitCode"]</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
