@@ -699,6 +699,8 @@
 "Surcharge","Toeslag",,
 "Template",,,
 "The bill of materials %s has been generated","De materiaallijst %s is gegenereerd",,
+"The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s.",,,
+"The condition formula to generate the prod process line returns null value or is not consistent. Please correct on prod process line configurator id : %s.",,,
 "The formula script to fill the name returns null value. Please correct on prod process configurator id : %s.",,,
 "The formula script to fill the name returns null value. Please correct on prod process line configurator id : %s.",,,
 "The manufacturing order was canceled.","De productieorder is geannuleerd.",,
