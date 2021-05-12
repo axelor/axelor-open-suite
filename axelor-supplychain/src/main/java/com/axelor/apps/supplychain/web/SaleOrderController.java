@@ -70,6 +70,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class SaleOrderController {
@@ -100,6 +101,18 @@ public class SaleOrderController {
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
+          // we have to inject TraceBackService to use non static methods
+          Beans.get(TraceBackService.class)
+              .findLastMessageTraceBack(
+                  Beans.get(StockMoveRepository.class).find(stockMoveList.get(0)))
+              .ifPresent(
+                  traceback ->
+                      response.setNotify(
+                          String.format(
+                              I18n.get(
+                                  com.axelor.apps.message.exception.IExceptionMessage
+                                      .SEND_EMAIL_EXCEPTION),
+                              traceback.getMessage())));
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
@@ -110,6 +123,24 @@ public class SaleOrderController {
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
+          // we have to inject TraceBackService to use non static methods
+          TraceBackService traceBackService = Beans.get(TraceBackService.class);
+          StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
+
+          stockMoveList.stream()
+              .map(stockMoveRepository::find)
+              .map(traceBackService::findLastMessageTraceBack)
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .findAny()
+              .ifPresent(
+                  traceback ->
+                      response.setNotify(
+                          String.format(
+                              I18n.get(
+                                  com.axelor.apps.message.exception.IExceptionMessage
+                                      .SEND_EMAIL_EXCEPTION),
+                              traceback.getMessage())));
         } else {
           response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }

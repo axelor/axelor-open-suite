@@ -1,3 +1,20 @@
+## [5.4.8] (2021-04-21)
+
+#### Fixed
+
+* Stock move multi invoicing: fix IndexOutOfBoundsException when trying to invoice a stock move with no lines.
+* Sale Order: archive stock moves that are automatically cancelled when editing a sale order.
+* Purchase order: fix default payment mode when generated from sale order.
+* Product company: add database constraint to prevent having multiple lines in a product with the same company.
+* Move line export: fix issue when exporting lines with special char in description.
+* PRODUCT: fix generation of product variant sequence.
+* ADVANCED IMPORT: header visibility fix.
+* Invoice: fix printing when cancelling advance.
+* Fix unescaped quotes in translation csv causing issue when reloading views.
+* MailMessage: fix sender user always being the same for all sent messages.
+* Configurator creator attributes: fix issue where `onChange` field could not be emptied.
+* Purchase order: fix error due to missing parameter when generating a purchase order printing for an email.
+
 ## [5.4.7] (2021-03-17)
 
 #### Changes
@@ -357,6 +374,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.8]: https://github.com/axelor/axelor-open-suite/compare/v5.4.7...v5.4.8
 [5.4.7]: https://github.com/axelor/axelor-open-suite/compare/v5.4.6...v5.4.7
 [5.4.6]: https://github.com/axelor/axelor-open-suite/compare/v5.4.5...v5.4.6
 [5.4.5]: https://github.com/axelor/axelor-open-suite/compare/v5.4.4...v5.4.5

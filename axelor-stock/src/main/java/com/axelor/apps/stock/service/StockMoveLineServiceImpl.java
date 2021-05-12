@@ -232,7 +232,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           }
           break;
         case StockMoveLineService.TYPE_PURCHASES:
-          if (trackingNumberConfiguration.getIsPurchaseTrackingManaged()) {
+          if (trackingNumberConfiguration.getIsPurchaseTrackingManaged()
+              && trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr()) {
             // Générer numéro de série si case cochée
             this.generateTrackingNumber(
                 stockMoveLine,
@@ -1185,7 +1186,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               + stockMove.getFromStockLocation().getId()
               + " AND sll.currentQty > 0)";
     }
-    return domain + " AND dtype = 'Product'";
+    return domain + " AND self.dtype = 'Product'";
   }
 
   @Override

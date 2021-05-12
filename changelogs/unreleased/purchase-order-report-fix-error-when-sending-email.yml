@@ -1,3 +1,0 @@
----
-title: "Purchase order: fix error due to missing parameter when generating a purchase order printing for an email."
-type: fix

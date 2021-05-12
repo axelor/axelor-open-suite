@@ -391,7 +391,7 @@
 	
 	<action-attrs name="action-purchase-order-line-attrs-product-domain">
 		<attribute name="domain" for="product"
-			expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and dtype = 'Product'&quot;
+			expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.dtype = 'Product'&quot;
 			+ (isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog() ? &quot; and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id})&quot; : &quot;&quot;)
       + (__config__.app.getApp('base')?.getCompanySpecificProductFieldsList()?.find({it.name == 'purchasable'}) ? &quot; and (SELECT purchasable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = ${__parent__ ? __parent__.company.id : purchaseOrder.company.id}) IS TRUE&quot; : &quot;&quot;)"/>
 	</action-attrs>
@@ -424,7 +424,7 @@
 	<action-attrs name="action-purchase-order-line-attrs-set-isFilterOnSupplier">
 		<attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
 	</action-attrs>
-    
+
 <!--     ACTION VIEW -->
     <action-view name="action-purchase-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">
   		<view type="grid" name="stock-move-line-all-grid"/>
@@ -432,5 +432,5 @@
   		<domain>self.purchaseOrderLine.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
-	
+
 </object-views>
