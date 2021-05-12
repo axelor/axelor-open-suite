@@ -23,9 +23,11 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -62,6 +64,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTerm invoiceTerm = computeInvoiceTerm(invoice, paymentConditionLine);
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
+        invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
       } else {
         total = total.add(invoiceTerm.getAmount());
       }
@@ -82,7 +85,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoice
             .getInTaxTotal()
             .multiply(paymentConditionLine.getPaymentPercentage())
-            .divide(BigDecimal.valueOf(100));
+            .divide(BigDecimal.valueOf(100))
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
 
