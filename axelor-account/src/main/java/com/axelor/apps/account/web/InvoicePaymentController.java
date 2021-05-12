@@ -42,6 +42,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -242,7 +243,7 @@ public class InvoicePaymentController {
           }
         }
         if (selectedInvoiceTerms.isEmpty()) {
-          response.setError(IExceptionMessage.INVOICE__PAYMENT_1);
+          response.setError(I18n.get(IExceptionMessage.INVOICE__PAYMENT_1));
         } else {
           selectedInvoiceTerms =
               Beans.get(InvoiceTermService.class)
