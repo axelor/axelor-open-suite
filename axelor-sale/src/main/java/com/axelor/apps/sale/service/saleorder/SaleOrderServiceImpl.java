@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,16 +20,24 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
+import com.axelor.apps.sale.db.ComplementaryProduct;
+import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.PackLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.JpaSequence;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -37,22 +45,40 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected SaleOrderLineService saleOrderLineService;
+  protected AppBaseService appBaseService;
+  protected SaleOrderLineRepository saleOrderLineRepo;
+  protected SaleOrderRepository saleOrderRepo;
+  protected SaleOrderComputeService saleOrderComputeService;
+  protected SaleOrderMarginService saleOrderMarginService;
 
-  @Inject private SaleOrderLineService saleOrderService;
+  @Inject
+  public SaleOrderServiceImpl(
+      SaleOrderLineService saleOrderLineService,
+      AppBaseService appBaseService,
+      SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderRepository saleOrderRepo,
+      SaleOrderComputeService saleOrderComputeService,
+      SaleOrderMarginService saleOrderMarginService) {
+    this.saleOrderLineService = saleOrderLineService;
+    this.appBaseService = appBaseService;
+    this.saleOrderLineRepo = saleOrderLineRepo;
+    this.saleOrderRepo = saleOrderRepo;
+    this.saleOrderComputeService = saleOrderComputeService;
+    this.saleOrderMarginService = saleOrderMarginService;
+  }
 
   @Override
   public String getFileName(SaleOrder saleOrder) {
@@ -134,7 +160,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
-    // Nothing to do if we don't have supplychain.
+    checkUnauthorizedDiscounts(saleOrder);
   }
 
   @Override
@@ -147,32 +173,53 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) {
-    Integer sequence = 0;
+
+    List<PackLine> packLineList = pack.getComponents();
+    if (ObjectUtils.isEmpty(packLineList)) {
+      return saleOrder;
+    }
+    packLineList.sort(Comparator.comparing(PackLine::getSequence));
+    Integer sequence = -1;
 
     List<SaleOrderLine> soLines = saleOrder.getSaleOrderLineList();
     if (soLines != null && !soLines.isEmpty()) {
-      sequence =
-          Collections.max(
-              soLines.stream().map(soLine -> soLine.getSequence()).collect(Collectors.toSet()));
+      sequence = soLines.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
     }
 
-    BigDecimal ConversionRate = new BigDecimal(1.00);
+    BigDecimal conversionRate = new BigDecimal(1.00);
     if (pack.getCurrency() != null
         && !pack.getCurrency().getCode().equals(saleOrder.getCurrency().getCode())) {
       try {
-        ConversionRate =
-            Beans.get(CurrencyConversionService.class)
+        conversionRate =
+            Beans.get(CurrencyConversionFactory.class)
+                .getCurrencyConversionService()
                 .convert(pack.getCurrency(), saleOrder.getCurrency());
       } catch (MalformedURLException | JSONException | AxelorException e) {
         TraceBackService.trace(e);
       }
     }
 
+    if (Boolean.FALSE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
+      if (saleOrderLineService.getPackLineTypes(packLineList) == null
+          || !saleOrderLineService
+              .getPackLineTypes(packLineList)
+              .contains(PackLineRepository.TYPE_START_OF_PACK)) {
+        sequence++;
+      }
+      soLines =
+          saleOrderLineService.createNonStandardSOLineFromPack(
+              pack, saleOrder, packQty, soLines, sequence);
+    }
+
     SaleOrderLine soLine;
-    for (PackLine packLine : pack.getComponents()) {
+    for (PackLine packLine : packLineList) {
+      if (packLine.getTypeSelect() != PackLineRepository.TYPE_NORMAL
+          && Boolean.TRUE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
+        continue;
+      }
       soLine =
-          saleOrderService.createSaleOrderLine(
-              packLine, saleOrder, packQty, ConversionRate, ++sequence);
+          saleOrderLineService.createSaleOrderLine(
+              packLine, saleOrder, packQty, conversionRate, ++sequence);
       if (soLine != null) {
         soLine.setSaleOrder(saleOrder);
         soLines.add(soLine);
@@ -190,5 +237,195 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       Beans.get(SaleOrderRepository.class).save(saleOrder);
     }
     return saleOrder;
+  }
+
+  @Override
+  public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList == null) {
+      saleOrderLineList = new ArrayList<SaleOrderLine>();
+    }
+
+    SaleOrderLine originSoLine = null;
+    for (SaleOrderLine soLine : saleOrderLineList) {
+      if (soLine.getIsComplementaryProductsUnhandledYet()) {
+        originSoLine = soLine;
+        if (originSoLine.getManualId() == null || originSoLine.getManualId().equals("")) {
+          this.setNewManualId(originSoLine);
+        }
+        break;
+      }
+    }
+
+    if (originSoLine != null
+        && originSoLine.getProduct() != null
+        && originSoLine.getSelectedComplementaryProductList() != null) {
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      AppBaseService appBaseService = Beans.get(AppBaseService.class);
+      for (ComplementaryProductSelected compProductSelected :
+          originSoLine.getSelectedComplementaryProductList()) {
+        // Search if there is already a line for this product to modify or remove
+        SaleOrderLine newSoLine = null;
+        if (saleOrderLineList != null) {
+          for (SaleOrderLine soLine : saleOrderLineList) {
+            if (originSoLine.getManualId().equals(soLine.getParentId())) {
+              if (soLine.getProduct() == compProductSelected.getProduct()) {
+                // Edit line if it already exists instead of recreating, otherwise remove if already
+                // exists and is no longer selected
+                if (compProductSelected.getIsSelected()) {
+                  newSoLine = soLine;
+                } else {
+                  saleOrderLineList.remove(soLine);
+                }
+                break;
+              }
+            }
+          }
+        }
+
+        if (newSoLine == null) {
+          if (compProductSelected.getIsSelected()) {
+            newSoLine = new SaleOrderLine();
+            newSoLine.setProduct(compProductSelected.getProduct());
+            newSoLine.setSaleOrder(saleOrder);
+            newSoLine.setQty(
+                originSoLine
+                    .getQty()
+                    .multiply(compProductSelected.getQty())
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+
+            saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
+            saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+
+            newSoLine.setParentId(originSoLine.getManualId());
+
+            saleOrderLineList.add(newSoLine);
+          }
+        } else {
+          newSoLine.setQty(
+              originSoLine
+                  .getQty()
+                  .multiply(compProductSelected.getQty())
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+
+          saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
+          saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+        }
+      }
+      originSoLine.setIsComplementaryProductsUnhandledYet(false);
+    }
+
+    return saleOrderLineList;
+  }
+
+  @Override
+  public void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        BigDecimal maxDiscountAuthorized =
+            saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
+        if (saleOrderLine.getDiscountDerogation() != null && maxDiscountAuthorized != null) {
+          maxDiscountAuthorized = saleOrderLine.getDiscountDerogation().max(maxDiscountAuthorized);
+        }
+        if (maxDiscountAuthorized != null
+            && saleOrderLineService.isSaleOrderLineDiscountGreaterThanMaxDiscount(
+                saleOrderLine, maxDiscountAuthorized)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
+        }
+      }
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void setNewManualId(SaleOrderLine saleOrderLine) {
+    saleOrderLine.setManualId(JpaSequence.nextValue("sale.order.line.idSeq"));
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    boolean isStartOfPack = false;
+    BigDecimal newQty = BigDecimal.ZERO;
+    BigDecimal oldQty = BigDecimal.ZERO;
+    this.sortSaleOrderLineList(saleOrder);
+
+    for (SaleOrderLine SOLine : saleOrderLineList) {
+
+      if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK && !isStartOfPack) {
+        newQty = SOLine.getQty();
+        oldQty = saleOrderLineRepo.find(SOLine.getId()).getQty();
+        if (newQty.compareTo(oldQty) != 0) {
+          isStartOfPack = true;
+          SOLine = EntityHelper.getEntity(SOLine);
+          saleOrderLineRepo.save(SOLine);
+        }
+      } else if (isStartOfPack) {
+        if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
+          break;
+        }
+        saleOrderLineService.updateProductQty(SOLine, saleOrder, oldQty, newQty);
+      }
+    }
+    return saleOrder;
+  }
+
+  @Transactional
+  public SaleOrder seperateInNewQuotation(
+      SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
+      throws AxelorException {
+
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+
+    SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
+    copySaleOrder.clearSaleOrderLineList();
+    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+
+    for (LinkedHashMap<String, Object> soLine : saleOrderLines) {
+      if (!soLine.containsKey("selected") || !(boolean) soLine.get("selected")) {
+        continue;
+      }
+
+      SaleOrderLine saleOrderLine =
+          Beans.get(SaleOrderLineRepository.class)
+              .find(Long.parseLong(soLine.get("id").toString()));
+      copySaleOrder.addSaleOrderLineListItem(saleOrderLine);
+      saleOrder.removeSaleOrderLineListItem(saleOrderLine);
+    }
+
+    copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
+    saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+    Beans.get(SaleOrderRepository.class).save(saleOrder);
+    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+
+    return copySaleOrder;
+  }
+
+  @Override
+  public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException {
+
+    if (saleOrder.getClientPartner() == null
+        || CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())
+        || CollectionUtils.isEmpty(saleOrder.getClientPartner().getComplementaryProductList())) {
+      return;
+    }
+
+    List<SaleOrderLine> newComplementarySOLines = new ArrayList<>();
+    List<ComplementaryProduct> complementaryProducts =
+        saleOrder.getClientPartner().getComplementaryProductList();
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      if (saleOrderLine.getMainSaleOrderLine() != null) {
+        continue;
+      }
+      newComplementarySOLines.addAll(
+          saleOrderLineService.manageComplementaryProductSaleOrderLine(
+              saleOrderLine, saleOrder, complementaryProducts));
+    }
+    newComplementarySOLines.stream().forEach(line -> saleOrder.addSaleOrderLineListItem(line));
+    Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
   }
 }

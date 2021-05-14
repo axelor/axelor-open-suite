@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <selection name='base.advanced.export.wizard.export.format.select'>
 		<option value="PDF">PDF</option>
@@ -14,8 +14,7 @@
 	      	<field name="_xAdvancedExport" title="Advanced export" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.AdvancedExport"
 				   form-view="advanced-export-form" grid-view="advanced-export-grid" onSelect="action-advanced-export-wizard-attr-change-domain-from-model" />
 	      	<field name="exportFormatSelect" type="string" title="Export format" requiredIf="_xAdvancedExport != null" selection="base.advanced.export.wizard.export.format.select"/>
-			<spacer name="exportFormatSelectSpacer"/>
-	      	<button name="generateExportBtn" title="Export" onClick="action-advanced-export-wizard-method-generate-file,close"/>
+			<button name="generateExportBtn" title="Export" showIf="_xAdvancedExport != null" onClick="action-advanced-export-wizard-method-generate-file,close"/>
 	      	<button name="personalisedExportBtn" title="Personalised export" onClick="action-advanced-export-view-open-form,close"/>
       	</panel>
 	</form>

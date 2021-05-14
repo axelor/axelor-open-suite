@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.hr.service;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
@@ -169,7 +169,7 @@ public class PayrollPreparationService {
 
       payrollLeave.setDuration(
           leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
-      payrollLeave.setLeaveReason(leaveRequest.getLeaveLine().getLeaveReason());
+      payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
       payrollLeave.setLeaveRequest(leaveRequest);
       payrollLeaveList.add(payrollLeave);
     }
@@ -314,7 +314,7 @@ public class PayrollPreparationService {
     }
 
     String fileName = this.getPayrollPreparationExportName();
-    String filePath = AppSettings.get().get("file.upload.dir");
+    String filePath = Beans.get(AppService.class).getDataExportDir();
 
     new File(filePath).mkdirs();
     CsvTool.csvWriter(filePath, fileName, ';', headerLine, list);
@@ -330,7 +330,7 @@ public class PayrollPreparationService {
         Beans.get(AppBaseService.class).getTodayDate(payrollPreparation.getCompany()));
     payrollPreparationRepo.save(payrollPreparation);
 
-    return filePath + System.getProperty("file.separator") + fileName;
+    return path.toString();
   }
 
   public String[] createExportFileLine(PayrollPreparation payrollPreparation) {

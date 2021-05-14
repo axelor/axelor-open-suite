@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -18,6 +18,7 @@
 	<boolean name="blockedOnCustCreditExceed" title="Blocked"/>
 	<boolean name="manualUnblock" title="Manual Unblock"/>
 	<string name="title" title="Title"/>
+	<boolean name="oneoffSale" title="One-off sale"/>
 	
 <!--   	Onglet Coordonnées client -->
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" massUpdate="true"/>
@@ -103,6 +104,7 @@
 
 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
 	<many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+    <boolean name="groupProductsOnPrintings" title="Group products on printings" default="false" />
 	
 	<!-- Subscription fields -->
 	<integer name="periodicityTypeSelect" selection="sale.subscription.periodicity.type.select" title="Periodicity type" default="2"/>
@@ -126,6 +128,8 @@
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
+ 	
+ 	<finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
 
     <extra-code>
    		<![CDATA[

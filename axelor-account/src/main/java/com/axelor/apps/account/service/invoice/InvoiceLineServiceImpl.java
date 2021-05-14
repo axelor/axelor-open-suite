@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,8 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.db.AppInvoice;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
@@ -46,6 +48,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -67,6 +70,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected AppAccountService appAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected ProductCompanyService productCompanyService;
+  protected InvoiceLineRepository invoiceLineRepo;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -75,7 +80,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -83,6 +90,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.productCompanyService = productCompanyService;
+    this.invoiceLineRepo = invoiceLineRepo;
+    this.appBaseService = appBaseService;
   }
 
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
@@ -379,15 +388,19 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
+
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    if ((isPurchase
-            && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
-        || (!isPurchase
-            && appAccountService
-                .getAppInvoice()
-                .getIsEnabledProductDescriptionCopyForSuppliers())) {
+    AppInvoice appInvoice = appAccountService.getAppInvoice();
+
+    Boolean isEnabledProductDescriptionCopy =
+        isPurchase
+            ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
+            : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
+
+    if (isEnabledProductDescriptionCopy) {
       productInformation.put("description", null);
     }
+
     if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
         == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
       productInformation.put("analyticMoveLineList", null);
@@ -400,18 +413,21 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
-    productInformation.put("productName", invoiceLine.getProduct().getName());
-    productInformation.put("productCode", invoiceLine.getProduct().getCode());
-    productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
+    Product product = invoiceLine.getProduct();
 
-    if ((isPurchase
-            && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
-        || (!isPurchase
-            && appAccountService
-                .getAppInvoice()
-                .getIsEnabledProductDescriptionCopyForSuppliers())) {
-      productInformation.put("description", invoiceLine.getProduct().getDescription());
+    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    productInformation.put("productName", product.getName());
+    productInformation.put("productCode", product.getCode());
+    productInformation.put("unit", this.getUnit(product, isPurchase));
+
+    AppInvoice appInvoice = appAccountService.getAppInvoice();
+    Boolean isEnabledProductDescriptionCopy =
+        isPurchase
+            ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
+            : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
+
+    if (isEnabledProductDescriptionCopy) {
+      productInformation.put("description", product.getDescription());
     }
 
     return productInformation;
@@ -459,5 +475,87 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("productName", invoiceLine.getProduct().getName());
 
     return productInformation;
+  }
+
+  @Override
+  public boolean hasEndOfPackTypeLine(List<InvoiceLine> invoiceLineList) {
+    return ObjectUtils.isEmpty(invoiceLineList)
+        ? Boolean.FALSE
+        : invoiceLineList.stream()
+            .anyMatch(
+                invoiceLine ->
+                    invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_END_OF_PACK);
+  }
+
+  @Override
+  public boolean isStartOfPackTypeLineQtyChanged(List<InvoiceLine> invoiceLineList) {
+
+    if (ObjectUtils.isEmpty(invoiceLineList)) {
+      return false;
+    }
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      if (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_START_OF_PACK
+          && invoiceLine.getId() != null) {
+        InvoiceLine oldInvoiceLine = invoiceLineRepo.find(invoiceLine.getId());
+        if (oldInvoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_START_OF_PACK
+            && invoiceLine.getQty().compareTo(oldInvoiceLine.getQty()) != 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public InvoiceLine updateProductQty(
+      InvoiceLine invoiceLine, Invoice invoice, BigDecimal oldQty, BigDecimal newQty)
+      throws AxelorException {
+    BigDecimal qty =
+        invoiceLine
+            .getQty()
+            .divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+            .multiply(newQty)
+            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+    invoiceLine.setQty(qty);
+    if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL
+        || invoiceLine.getProduct() == null) {
+      return invoiceLine;
+    }
+
+    BigDecimal exTaxTotal;
+    BigDecimal inTaxTotal;
+    BigDecimal taxRate = BigDecimal.ZERO;
+    TaxLine taxLine = invoiceLine.getTaxLine();
+    BigDecimal priceDiscounted = this.computeDiscount(invoiceLine, invoice.getInAti());
+    if (taxLine != null) {
+      taxRate = taxLine.getValue();
+      invoiceLine.setTaxRate(taxRate);
+      invoiceLine.setTaxCode(taxLine.getTax().getCode());
+    }
+    if (Boolean.FALSE.equals(invoice.getInAti())) {
+      exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
+      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+    } else {
+      inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+    }
+    invoiceLine.setExTaxTotal(exTaxTotal);
+    invoiceLine.setCompanyExTaxTotal(this.getCompanyExTaxTotal(exTaxTotal, invoice));
+    invoiceLine.setInTaxTotal(inTaxTotal);
+    invoiceLine.setCompanyInTaxTotal(this.getCompanyExTaxTotal(inTaxTotal, invoice));
+    invoiceLine.setPriceDiscounted(priceDiscounted);
+
+    return this.computeAnalyticDistributionWithUpdatedQty(invoiceLine);
+  }
+
+  private InvoiceLine computeAnalyticDistributionWithUpdatedQty(InvoiceLine invoiceLine) {
+
+    if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
+      List<AnalyticMoveLine> analyticMoveLineList = this.computeAnalyticDistribution(invoiceLine);
+      if (ObjectUtils.notEmpty(analyticMoveLineList)) {
+        invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+      }
+    }
+    return invoiceLine;
   }
 }

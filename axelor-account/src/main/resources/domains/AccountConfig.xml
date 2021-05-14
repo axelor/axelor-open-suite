@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
@@ -144,8 +144,9 @@
 		<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
 		<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
 		<boolean name="displayHeadOfficeAddrOnInvoicePrinting" title="Display head office address on invoice printing"/>
+		<boolean name="displayStockMoveOnInvoicePrinting" title="Display Deliveries information on invoice printing" default="false"/>
 		<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
-		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices" help="Short legal note to be displayed on sale invoices"/>
+		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices"/>
 		<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
 		<many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark" title="Watermark"/>
 		

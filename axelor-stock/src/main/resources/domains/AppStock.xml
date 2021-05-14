@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -10,6 +10,7 @@
 		<boolean name="isSeparateShipmentOperations" title="Separate the shipment operations"/>
 		<boolean name="isRequiredShipmentSupplierDetails" title="Require to fill the shipment information"/>
         <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
+        <many-to-one name="stockUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"></many-to-one>
 
         <track>
         	<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>

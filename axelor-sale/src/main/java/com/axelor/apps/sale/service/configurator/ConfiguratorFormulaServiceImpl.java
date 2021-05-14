@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,16 +43,16 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
           formula,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
-    } else {
-      if (!Beans.get(ConfiguratorService.class)
-          .areCompatible(wantedTypeName, getCalculatedClassName(result))) {
-        throw new AxelorException(
-            formula,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR),
-            result.getClass().getSimpleName(),
-            wantedTypeName);
-      }
+    } else if (!Beans.get(ConfiguratorService.class)
+            .areCompatible(wantedTypeName, getCalculatedClassName(result))
+        && !wantedTypeName.equals("one-to-many")
+        && !wantedTypeName.equals("many-to-many")) {
+      throw new AxelorException(
+          formula,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_FORMULA_TYPE_ERROR),
+          result.getClass().getSimpleName(),
+          wantedTypeName);
     }
   }
 

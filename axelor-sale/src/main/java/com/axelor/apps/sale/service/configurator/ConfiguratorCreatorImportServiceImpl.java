@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,9 @@ import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaJsonField;
 import com.google.common.io.Files;
@@ -33,9 +35,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 
@@ -135,14 +140,8 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     configuratorCreatorService.updateIndicators(creator);
   }
 
-  /**
-   * When exported, attribute name finish with '_XX' where XX is the id of the creator. After
-   * importing, we need to fix these values.
-   *
-   * @param creator
-   * @throws AxelorException
-   */
-  protected void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
+  @Override
+  public void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> attributes = creator.getAttributes();
     if (attributes == null) {
       return;
@@ -152,7 +151,37 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
       if (name != null && name.contains("_")) {
         attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
       }
+      updateOtherFieldsInAttribute(creator, attribute);
       updateAttributeNameInFormulas(creator, name, attribute.getName());
+    }
+  }
+
+  /**
+   * Update the configurator id in other fields of the attribute.
+   *
+   * @param creator
+   * @param attribute attribute to update
+   */
+  protected void updateOtherFieldsInAttribute(
+      ConfiguratorCreator creator, MetaJsonField attribute) {
+    try {
+      List<Field> fieldsToUpdate =
+          Arrays.stream(attribute.getClass().getDeclaredFields())
+              .filter(field -> field.getType().equals(String.class))
+              .collect(Collectors.toList());
+      for (Field field : fieldsToUpdate) {
+        Mapper mapper = Mapper.of(attribute.getClass());
+        Method getter = mapper.getGetter(field.getName());
+        String fieldString = (String) getter.invoke(attribute);
+        if (fieldString != null && fieldString.contains("_")) {
+          Method setter = mapper.getSetter(field.getName());
+          String updatedFieldString =
+              fieldString.substring(0, fieldString.lastIndexOf('_')) + '_' + creator.getId();
+          setter.invoke(attribute, updatedFieldString);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 
@@ -185,10 +214,9 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
       String oldAttributeName,
       String newAttributeName) {
 
-    formulas.stream()
-        .forEach(
-            configuratorFormula ->
-                configuratorFormula.setFormula(
-                    configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName)));
+    formulas.forEach(
+        configuratorFormula ->
+            configuratorFormula.setFormula(
+                configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName)));
   }
 }

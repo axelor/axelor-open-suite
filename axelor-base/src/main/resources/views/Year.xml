@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
 	<grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
 		<field name="name"/>
@@ -22,7 +22,7 @@
 	        <field name="typeSelect" readonly="true" />
 	    </panel>
 	    <panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
-	    <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2">
+	    <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2" readonlyIf="!id">
 			<field name="periodDurationSelect"/>
 			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-year-group-generate-period-click" />
 		</panel>

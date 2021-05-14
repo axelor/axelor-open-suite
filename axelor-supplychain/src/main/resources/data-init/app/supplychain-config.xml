@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
   	    
-    <input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId"/>
+    <input file="supplychain_mrpLineType.csv" separator=";" type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId">
+		<bind to="applicationFieldSelect" column="applicationFieldSelect" eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"/>
+	</input>
     
 	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
 		<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
@@ -12,5 +14,7 @@
 		<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
 		<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)" />
 	</input>
+
+	<input file="supplychain_stock_move_invoicing_blocking_reason.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMoveInvoicingBlockingReason" search="self.name = :name"/>
 
 </csv-inputs>

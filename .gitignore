@@ -14,3 +14,4 @@ application.min.*
 .idea/
 out/
 *.iml
+*.jar

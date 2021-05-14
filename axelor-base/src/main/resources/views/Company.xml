@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
   <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
 	  <field name="name"/>
@@ -57,6 +57,8 @@
 	    	<panel name="informationsPanel" title="Information">
 	      		<field name="notes" colSpan="12"/>
 	    		<field name="companyDepartmentList" grid-view="company-department-company-grid" form-view="company-department-company-form" canSelect="true" domain="self.company IS NULL" colSpan="12"/>
+    			<field name="partnerList" form-view="partner-form" grid-view="partner-grid" colSpan="12" canNew="false" canSelect="true" domain="self.isInternal is true"/>
+          <field name="workshopList" colSpan="12" if-module="axelor-production" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()" canNew="false" canSelect="true" domain="self.isWorkshop is true"/>
 	    	</panel>
 	    	<panel name="configurationsPanel" title="Configurations">
 	  			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>

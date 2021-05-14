@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="product-expense-grid" title="Expense types" model="com.axelor.apps.base.db.Product" orderBy="name">
 	    <field name="picture" widget="Image"/>
@@ -193,14 +193,17 @@
     	<field name="startDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="startDate == null"/>
     	<field name="salePrice" expr="1"/>
     	<field name="purchasePrice" expr="1"/>
-    	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
-    	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
+    	<field name="saleCurrency" expr="eval: __user__.activeCompany?.currency"/>
+    	<field name="purchaseCurrency" expr="eval: __user__.activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
     	<field name="expense" expr="true"/>
     	<field name="productTypeSelect" expr="service"/>
     	<field name="saleSupplySelect" expr="0"/>
 		<field name="sellable" expr="false"/>
+    	<field name="salesUnit" expr="eval: __config__.app.getApp('sale')?.getSaleUnit()" if="__config__.app.isApp('sale')"/>
+    	<field name="purchasesUnit" expr="eval: __config__.app.getApp('purchase')?.getPurchaseUnit()" if="__config__.app.isApp('purchase')"/>
+    	<field name="unit" expr="eval: __config__.app.getApp('stock')?.getStockUnit()" if="__config__.app.isApp('stock')"/>
     </action-record>
     
     <action-record name="hr-action-product-record-default-new" model="com.axelor.apps.base.db.Product">

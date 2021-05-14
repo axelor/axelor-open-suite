@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -91,6 +91,7 @@
     <string name="note" title="Notes" large="true"/>
       <string name="specificNotes" title="Specific notes" large="true"/>
     <many-to-one name="printedPDF" ref="com.axelor.meta.db.MetaFile"/>
+    <boolean name="groupProductsOnPrintings" title="Group products on printings" />
     
     <!-- Totals & Status -->
     
@@ -145,6 +146,8 @@
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 
   <string name="headOfficeAddress" title="Head office address"/>
+     
+    <boolean name="displayStockMoveOnInvoicePrinting" title="Display Deliveries on printing" default="false"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 

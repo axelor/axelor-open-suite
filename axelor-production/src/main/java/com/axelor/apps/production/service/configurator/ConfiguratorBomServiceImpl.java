@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,6 +37,7 @@ import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
@@ -48,7 +49,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
   protected ConfiguratorProdProcessService confProdProcessService;
 
   @Inject
-  ConfiguratorBomServiceImpl(
+  public ConfiguratorBomServiceImpl(
       ConfiguratorBOMRepository configuratorBOMRepo,
       ConfiguratorService configuratorService,
       BillOfMaterialRepository billOfMaterialRepository,
@@ -61,7 +62,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public BillOfMaterial generateBillOfMaterial(
+  public Optional<BillOfMaterial> generateBillOfMaterial(
       ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
       throws AxelorException {
     level++;
@@ -75,6 +76,10 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     BigDecimal qty;
     Unit unit;
     ProdProcess prodProcess;
+
+    if (!checkConditions(configuratorBOM, attributes)) {
+      return Optional.empty();
+    }
 
     if (configuratorBOM.getDefNameAsFormula()) {
       name =
@@ -153,15 +158,24 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
-        BillOfMaterial childBom =
-            generateBillOfMaterial(confBomChild, attributes, level, generatedProduct);
-        billOfMaterial.addBillOfMaterialSetItem(childBom);
+        generateBillOfMaterial(confBomChild, attributes, level, generatedProduct)
+            .ifPresent(billOfMaterial::addBillOfMaterialSetItem);
       }
     }
 
     billOfMaterial = billOfMaterialRepository.save(billOfMaterial);
     configuratorBOM.setBillOfMaterialId(billOfMaterial.getId());
     configuratorBOMRepo.save(configuratorBOM);
-    return billOfMaterial;
+    return Optional.of(billOfMaterial);
+  }
+
+  protected boolean checkConditions(ConfiguratorBOM configuratorBOM, JsonContext jsonAttributes)
+      throws AxelorException {
+    String condition = configuratorBOM.getUseCondition();
+    // no condition = we always generate the bill of materials
+    if (condition == null) {
+      return true;
+    }
+    return (boolean) configuratorService.computeFormula(condition, jsonAttributes);
   }
 }

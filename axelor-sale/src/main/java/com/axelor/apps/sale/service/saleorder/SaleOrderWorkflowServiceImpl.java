@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -54,6 +54,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected SaleOrderRepository saleOrderRepo;
   protected AppSaleService appSaleService;
   protected UserService userService;
+  protected SaleOrderLineService saleOrderLineService;
 
   @Inject
   public SaleOrderWorkflowServiceImpl(
@@ -61,13 +62,15 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
-      UserService userService) {
+      UserService userService,
+      SaleOrderLineService saleOrderLineService) {
 
     this.sequenceService = sequenceService;
     this.partnerRepo = partnerRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.userService = userService;
+    this.saleOrderLineService = saleOrderLineService;
   }
 
   @Override
@@ -126,6 +129,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
     Partner partner = saleOrder.getClientPartner();
+
+    checkSaleOrderBeforeFinalization(saleOrder);
 
     Blocking blocking =
         Beans.get(BlockingService.class)
@@ -229,5 +234,14 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         + " "
         + saleOrder.getSaleOrderSeq()
         + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");
+  }
+
+  /**
+   * Throws exceptions to block the finalization of given sale order.
+   *
+   * @param saleOrder a sale order being finalized
+   */
+  protected void checkSaleOrderBeforeFinalization(SaleOrder saleOrder) throws AxelorException {
+    Beans.get(SaleOrderService.class).checkUnauthorizedDiscounts(saleOrder);
   }
 }

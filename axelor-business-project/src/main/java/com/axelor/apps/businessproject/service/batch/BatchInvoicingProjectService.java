@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service.batch;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
@@ -78,6 +79,11 @@ public class BatchInvoicingProjectService extends AbstractBatch {
 
         if (invoicingProject != null && invoicingProject.getId() != null) {
           incrementDone();
+          if (batch.getProjectInvoicingAssistantBatch().getActionSelect()
+              == ProjectInvoicingAssistantBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
+            invoicingProject.setDeadlineDate(
+                batch.getProjectInvoicingAssistantBatch().getDeadlineDate());
+          }
 
           Map<String, Object> map = new HashMap<String, Object>();
           map.put("id", invoicingProject.getId());

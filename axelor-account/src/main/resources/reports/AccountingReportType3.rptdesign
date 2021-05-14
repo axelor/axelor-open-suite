@@ -1812,13 +1812,6 @@ row["ReportedBalanceAmount"]
                                 <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
-                            <structure>
-                                <property name="name">date_to</property>
-                                <text-property name="displayName">date_to</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1168">
@@ -2047,14 +2040,6 @@ row["ReportedBalanceAmount"]
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> ]]></text-property>
                                     </text>
-                                    <data id="4226">
-                                        <structure name="dateTimeFormat">
-                                            <property name="category">Short Date</property>
-                                            <property name="pattern">Short Date</property>
-                                        </structure>
-                                        <property name="display">inline</property>
-                                        <property name="resultSetColumn">date_to</property>
-                                    </data>
                                 </cell>
                             </row>
                             <row id="1210">
@@ -3244,13 +3229,6 @@ dataSetRow["invoice_reconciled_name"]
                                 <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
-                            <structure>
-                                <property name="name">date_to</property>
-                                <text-property name="displayName">date_to</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                                <property name="dataType">date</property>
-                                <property name="allowExport">true</property>
-                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1446">
@@ -3534,14 +3512,6 @@ dataSetRow["invoice_reconciled_name"]
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> ]]></text-property>
                                     </text>
-                                    <data id="4225">
-                                        <structure name="dateTimeFormat">
-                                            <property name="category">Short Date</property>
-                                            <property name="pattern">Short Date</property>
-                                        </structure>
-                                        <property name="display">inline</property>
-                                        <property name="resultSetColumn">date_to</property>
-                                    </data>
                                 </cell>
                             </row>
                             <row id="1384">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -30,10 +30,14 @@
 
 		<boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
 		
-		<string name="preTaskStatusSet" title="Status for invoice pre task tasks" selection="team.task.status"/>
-		<string name="postTaskStatusSet" title="Status for invoice post task tasks" selection="team.task.status"/>
-		<string name="exculdeTaskInvoicing" title="Exculde tasks for invoicing"/>
-		
+		<boolean name="generateProjectSequence" title="Generate sequence for project"/>
+
+		<boolean name="automaticInvoicing" title="Automatic invoicing" help="On creation of an Invoicing project, attached Timesheet Lines and Teamtasks will be automatically set as to invoice regarding Status for invoice pre task tasks, Status for invoice post task tasks and Exclude tasks for invoicing field"/>
+
+		<string name="preTaskStatusSet" title="Status for invoice pre task tasks" selection="project.task.status"/>
+		<string name="postTaskStatusSet" title="Status for invoice post task tasks" selection="project.task.status"/>
+		<string name="exculdeTaskInvoicing" title="Exculde tasks for invoicing" help="Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria"/>
+
 		<track>
 			<field name="productInvoicingProject" on="UPDATE"/>
 			

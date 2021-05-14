@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,7 +45,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
   protected final Logger log = LoggerFactory.getLogger(getClass());
   protected PartnerRepository partnerRepo;
   protected PartnerService partnerService;
-  protected ReimbursementExportService reimbursementExportService;
+  protected ReimbursementExportService partnerReimbursementExportService;
 
   @Inject
   public BatchCreditTransferPartnerReimbursement(
@@ -54,7 +54,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
       ReimbursementExportService reimbursementExportService) {
     this.partnerRepo = partnerRepo;
     this.partnerService = partnerService;
-    this.reimbursementExportService = reimbursementExportService;
+    partnerReimbursementExportService = reimbursementExportService;
   }
 
   @Override
@@ -141,7 +141,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
             .fetch();
 
     Reimbursement reimbursement =
-        reimbursementExportService.runCreateReimbursement(moveLineList, company, partner);
+        partnerReimbursementExportService.runCreateReimbursement(moveLineList, company, partner);
     return reimbursement;
   }
 }

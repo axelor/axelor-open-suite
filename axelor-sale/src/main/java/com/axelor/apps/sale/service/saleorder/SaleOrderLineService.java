@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,8 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.sale.db.ComplementaryProduct;
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -28,7 +30,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface SaleOrderLineService {
 
@@ -139,10 +143,171 @@ public interface SaleOrderLineService {
    */
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
+  /**
+   * Fill the complementaryProductList of the saleOrderLine from the possible complementary products
+   * of the product of the line
+   *
+   * @param saleOrderLine
+   */
+  public void fillComplementaryProductList(SaleOrderLine saleOrderLine);
+
   public SaleOrderLine createSaleOrderLine(
       PackLine packLine,
       SaleOrder saleOrder,
       BigDecimal packQty,
-      BigDecimal ConversionRate,
+      BigDecimal conversionRate,
       Integer sequence);
+
+  /**
+   * Get unique values of type field from pack lines
+   *
+   * @param packLineList
+   * @return
+   */
+  public Set<Integer> getPackLineTypes(List<PackLine> packLineList);
+
+  /**
+   * To create non standard SaleOrderLine from Pack.
+   *
+   * @param pack
+   * @param saleOrder
+   * @param packQty
+   * @param saleOrderLineList
+   * @param sequence
+   * @return
+   */
+  public List<SaleOrderLine> createNonStandardSOLineFromPack(
+      Pack pack,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      List<SaleOrderLine> saleOrderLineList,
+      Integer sequence);
+
+  /**
+   * Finds max discount from product category and his parents, and returns it.
+   *
+   * @param saleOrder a sale order (from context or sale order line)
+   * @param saleOrderLine a sale order line
+   * @return The maximal discount or null if the value is not needed
+   */
+  BigDecimal computeMaxDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  /**
+   * Compares sale order line discount with given max discount. Manages the two cases of amount
+   * percent and amount fixed.
+   *
+   * @param saleOrderLine a sale order line
+   * @param maxDiscount a max discount
+   * @return whether the discount is greather than the one authorized
+   */
+  boolean isSaleOrderLineDiscountGreaterThanMaxDiscount(
+      SaleOrderLine saleOrderLine, BigDecimal maxDiscount);
+
+  /**
+   * To create 'Start of pack' and 'End of pack' type {@link SaleOrderLine}.
+   *
+   * @param pack
+   * @param saleOrder
+   * @param packQty
+   * @param packLine
+   * @param typeSelect
+   * @param sequence
+   * @return
+   */
+  public SaleOrderLine createStartOfPackAndEndOfPackTypeSaleOrderLine(
+      Pack pack,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      PackLine packLine,
+      Integer typeSelect,
+      Integer sequence);
+
+  /**
+   * To check that saleOrderLineList has "End of pack" type line.
+   *
+   * @param saleOrderLineList
+   * @return
+   */
+  public boolean hasEndOfPackTypeLine(List<SaleOrderLine> saleOrderLineList);
+
+  /**
+   * Update product qty.
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @param oldQty
+   * @param newQty
+   * @return {@link SaleOrderLine}}
+   * @throws AxelorException
+   */
+  public SaleOrderLine updateProductQty(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty)
+      throws AxelorException;
+
+  /**
+   * To check that Start of pack type line quantity changed or not.
+   *
+   * @param saleOrderLineList
+   * @return
+   */
+  public boolean isStartOfPackTypeLineQtyChanged(List<SaleOrderLine> saleOrderLineList);
+
+  /**
+   * Fill price for standard line from pack line.
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @return
+   * @throws AxelorException
+   */
+  public void fillPriceFromPackLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
+
+  /**
+   * A function used to get the ex tax unit price of a sale order line from pack line
+   *
+   * @param saleOrder the sale order containing the sale order line
+   * @param saleOrderLine
+   * @param taxLine
+   * @return the ex tax unit price of the sale order line
+   * @throws AxelorException
+   */
+  public BigDecimal getExTaxUnitPriceFromPackLine(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+
+  /**
+   * A function used to get the in tax unit price of a sale order line from pack line
+   *
+   * @param saleOrder the sale order containing the sale order line
+   * @param saleOrderLine
+   * @param taxLine
+   * @return the in tax unit price of the sale order line
+   * @throws AxelorException
+   */
+  public BigDecimal getInTaxUnitPriceFromPackLine(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+
+  /**
+   * Compute product domain from configurations and sale order.
+   *
+   * @param saleOrderLine a sale order line
+   * @param saleOrder a sale order (can be a sale order from context and not from database)
+   * @return a String with the JPQL expression used to filter product selection
+   */
+  String computeProductDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+
+  /**
+   * To manage Complementary Product sale order line.
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @param complementaryProducts
+   * @throws AxelorException
+   */
+  public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      List<ComplementaryProduct> complementaryProducts)
+      throws AxelorException;
 }

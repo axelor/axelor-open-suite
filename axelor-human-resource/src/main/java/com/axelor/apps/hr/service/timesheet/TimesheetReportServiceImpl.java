@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,8 @@ import com.axelor.apps.hr.db.TimesheetReminderLine;
 import com.axelor.apps.hr.db.TimesheetReport;
 import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetReminderRepository;
 import com.axelor.apps.hr.db.repo.TimesheetReportRepository;
@@ -76,6 +78,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   protected TimesheetReportRepository timesheetReportRepository;
   protected ExtraHoursLineRepository extraHoursLineRepository;
   protected TimesheetLineRepository timesheetLineRepository;
+  protected LeaveRequestRepository leaveRequestRepository;
 
   protected MessageService messageService;
   protected TemplateMessageService templateMessageService;
@@ -91,6 +94,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       TimesheetReportRepository timesheetReportRepository,
       ExtraHoursLineRepository extraHoursLineRepository,
       TimesheetLineRepository timesheetLineRepository,
+      LeaveRequestRepository leaveRequestRepository,
       MessageService messageService,
       TemplateMessageService templateMessageService,
       PublicHolidayService publicHolidayService,
@@ -102,6 +106,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     this.timesheetReportRepository = timesheetReportRepository;
     this.extraHoursLineRepository = extraHoursLineRepository;
     this.timesheetLineRepository = timesheetLineRepository;
+    this.leaveRequestRepository = leaveRequestRepository;
 
     this.messageService = messageService;
     this.templateMessageService = templateMessageService;
@@ -469,11 +474,16 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
   private BigDecimal getLeaveHours(User user, LocalDate date, BigDecimal dailyWorkingHours)
       throws AxelorException {
-    LeaveRequest leave = leaveService.getLeave(user, date);
-    if (leave != null) {
-      return leaveService.computeDuration(leave, date, date).multiply(dailyWorkingHours);
+    List<LeaveRequest> leavesList = leaveService.getLeaves(user, date);
+    BigDecimal totalLeaveHours = BigDecimal.ZERO;
+    for (LeaveRequest leave : leavesList) {
+      BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
+      if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+        leaveHours = leaveHours.multiply(dailyWorkingHours);
+      }
+      totalLeaveHours = totalLeaveHours.add(leaveHours);
     }
-    return BigDecimal.ZERO;
+    return totalLeaveHours;
   }
 
   private BigDecimal getWeekLeaveHours(
@@ -481,19 +491,12 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       throws AxelorException {
     BigDecimal leaveHours = BigDecimal.ZERO;
     do {
-      LeaveRequest leave = leaveService.getLeave(user, fromDate);
-      if (leave != null) {
 
-        boolean isPublicHoliday =
-            publicHolidayService.checkPublicHolidayDay(
-                fromDate, user.getEmployee().getPublicHolidayEventsPlanning());
-        if (!isPublicHoliday) {
-          leaveHours =
-              leaveHours.add(
-                  leaveService
-                      .computeDuration(leave, fromDate, fromDate)
-                      .multiply(dailyWorkingHours));
-        }
+      boolean isPublicHoliday =
+          publicHolidayService.checkPublicHolidayDay(
+              fromDate, user.getEmployee().getPublicHolidayEventsPlanning());
+      if (!isPublicHoliday) {
+        leaveHours = leaveHours.add(getLeaveHours(user, fromDate, dailyWorkingHours));
       }
       fromDate = fromDate.plusDays(1);
     } while (fromDate.until(toDate).getDays() > -1);

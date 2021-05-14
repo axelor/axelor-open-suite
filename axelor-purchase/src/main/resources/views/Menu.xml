@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	
 	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.app.isApp('purchase')"
@@ -18,7 +18,6 @@
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = false AND self.isSupplier = true</domain>
-		<context name="user_id" expr="eval:__user__" />
 		<context name="_isSupplier" expr="true"/>
 		<context name="_domain" expr="self.isContact = false AND self.isSupplier = true"/>
 		<context name="json-enhance" expr="eval:true" />
@@ -47,7 +46,7 @@
 		<view type="grid" name="product-purchase-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false AND self.purchasable = true AND dtype = 'Product'</domain>
+		<domain>self.isModel = false AND self.purchasable = true AND self.dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_fromPurchase" expr="eval:true" />
 	</action-view>
@@ -119,9 +118,14 @@
 	
 	<menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings" order="200" icon="fa-bar-chart"/>
 
-	<menuitem name="purchase-maps-partner-suppliers" parent="sc-root-purchase-report" 
-		title="Suppliers Map" action="action-show-suppliers-on-map-page" order="10"/>		
-		
+	<menuitem name="purchase-report-maps" parent="sc-root-purchase-report" title="Maps" order="10"/>
+
+	<menuitem name="purchase-maps-partner-suppliers" parent="purchase-report-maps"
+		title="Suppliers" action="action-purchase-method-show-suppliers-on-map-page"/>
+	
+	<action-method name="action-purchase-method-show-suppliers-on-map-page">
+	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+	</action-method>		
 	
 	<!-- demandeur menus -->
 	
@@ -210,17 +214,17 @@
 		model="com.axelor.apps.base.db.PriceList" >
 		<view type="grid" name="price-list-grid" />
 		<view type="form" name="purchase-price-list-form" />
-		<domain>self.typeSelect = 2</domain>
+		<domain>self.typeSelect = 2 and self.id not in (select priceList.id from PriceList priceList where parentPriceList IS NOT NULL ) and self.id not in (select priceList.id from PriceList priceList join PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where priceList.typeSelect = 2 and partnerPriceList.isExclusive IS TRUE )</domain>
 	</action-view>
 
 <!-- TOP MENU -->
 
 	<menuitem name="top-menu-purchase" title="Purchases" order="3" top="true" left="false" if="__config__.app.isApp('purchase')"/>
 	
-	<menuitem name="top-menu-purchase-quotations" title="Sale quotations" top="true"
+	<menuitem name="top-menu-purchase-quotations" title="Purchase quotations" top="true"
 		 action="top.menu.purchase.quotations" parent="top-menu-purchase"/>
 		
-	<action-view name="top.menu.purchase.quotations" title="Sale quotations"
+	<action-view name="top.menu.purchase.quotations" title="Purchase quotations"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
 		<view type="cards" name="purchase-order-cards" />
 		<view type="grid" name="purchase-order-quotation-grid" />
@@ -259,13 +263,6 @@
 		
 	<action-view name="purchase.dashboard.2" title="Purchase Manager">
 		<view type="dashboard" name="purchase.dashboard.2" />	    
-	</action-view>
-	
-	<menuitem name="menu-purchase-dashboard-3" parent="sc-root-purchase-report"  
-		title="Purchase orders"  action="purchase.purchase.dashboard.3" />
-		
-	<action-view name="purchase.purchase.dashboard.3" title="Purchase orders Details">
-		<view type="dashboard" name="purchase.dashboard.3" />	    
 	</action-view>
 	
 	

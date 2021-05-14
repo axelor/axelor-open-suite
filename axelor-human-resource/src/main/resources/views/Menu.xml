@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<menuitem name="hr-root" order="-104" title="HR" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
 	     icon-background="#84429f"/>
@@ -68,7 +68,7 @@
 		<view type="cards" name="product-activity-cards"/>
     	<view type="grid" name="product-activity-grid"/>
 	    <view type="form" name="product-activity-form"/>
-	    <domain>self.isActivity = true AND dtype = 'Product'</domain>
+	    <domain>self.isActivity = true AND self.dtype = 'Product'</domain>
 	</action-view>
 
 	<menuitem name="end-of-contract-reason-all" parent="hr-root-emp-mgt-conf"
@@ -156,7 +156,73 @@
     	<view type="grid" name="file-type-grid"/>
 	    <view type="form" name="file-type-form"/>
 	</action-view>
-  
+
+	<menuitem name="hr-root-configuration-employments" parent="hr-root-emp-mgt-conf" title="Employments"/>
+
+	<menuitem name="hr-root-configuration-collective-agreement" parent="hr-root-configuration-employments" title="Collective agreement" action="hr.root.configuration.collective.agreement" order="1"/>
+	<action-view name="hr.root.configuration.collective.agreement" title="Collective agreement" model="com.axelor.apps.hr.db.CollectiveAgreement">	
+		<view name="collective-agreement-grid" type="grid" />
+		<view name="collective-agreement-form" type="form" />	
+	</action-view>
+
+	<menuitem name="hr-root-configuration-qualification" parent="hr-root-configuration-employments" title="Qualification"  action="hr.root.configuration.qualification" order="5"/>
+	<action-view name="hr.root.configuration.qualification" title="Qualification" model="com.axelor.apps.hr.db.Qualification">
+		<view name="qualification-grid" type="grid" />
+		<view name="qualification-form" type="form" />		
+	</action-view>
+
+	<menuitem name="hr-root-configuration-qualification-level" parent="hr-root-configuration-employments" title="Qualification Level" action="hr.root.configuration.qualification.level" order="10"/>
+	<action-view name="hr.root.configuration.qualification.level" title="Qualification Level" model="com.axelor.apps.hr.db.QualificationLevel">
+		<view name="qualification-level-grid" type="grid" />
+		<view name="qualification-level-form" type="form" />		
+	</action-view>
+
+	<menuitem name="hr-root-configuration-pay-grid" parent="hr-root-configuration-employments" title="Pay Grid" action="hr.root.configuration.pay.grid" order="15"/>
+	<action-view name="hr.root.configuration.pay.grid" title="Pay Grid" model="com.axelor.apps.hr.db.PayGrid">
+		<view name="pay-grid-grid" type="grid" />
+		<view name="pay-grid-form" type="form" />	
+	</action-view>
+
+	<menuitem name="hr-root-configuration-employments-all" parent="hr-root-configuration-employments" title="Employments" action="hr.root.configuration.employments" order="20"/>	
+	<action-view name="hr.root.configuration.employments" title="Employments" model="com.axelor.apps.hr.db.Employment">
+		<view type="grid" name="employment-grid" />
+		<view type="form" name="employment-form" />
+	</action-view>
+
+	<menuitem name="hr-root-configuration-smic-value" parent="hr-root-configuration-employments" title="SmicValue.menu" action="hr.root.configuration.smic.value" order="25"/>
+	<action-view name="hr.root.configuration.smic.value" title="SmicValue.menu" model="com.axelor.apps.hr.db.SmicValue">
+		<view name="smic-value-grid" type="grid" />
+		<view name="smic-value-form" type="form" />	
+	</action-view>
+
+	<menuitem name="hr-root-configuration-employment-contract-amendment" parent="hr-root-emp-mgt-conf" title="Employment contracts/Contract amendments"/>
+
+	<menuitem name="hr-root-configuration-contract-type" title="Contract types" parent="hr-root-configuration-employment-contract-amendment" action="hr.root.configuration.contract.type" order="1"/>
+	<action-view name="hr.root.configuration.contract.type" title="Contract types" model="com.axelor.apps.hr.db.EmploymentContractType">
+		<view type="grid" name="employment-contract-type-grid"/>
+		<view type="form" name="employment-contract-type-form"/>
+	</action-view>
+
+	<menuitem name="hr-employment-amendment-type" parent="hr-root-configuration-employment-contract-amendment" title="Amendment type" action="employment.amendment.type.all" order="5"/>	
+	<action-view name="employment.amendment.type.all" title="Amendment type" model="com.axelor.apps.hr.db.EmploymentAmendmentType">
+		<view type="grid" name="employment-amendment-type-grid"/>
+		<view type="form" name="employment-amendment-type-form"/>
+	</action-view>
+
+	<menuitem name="hr-root-emp-mgt-probation-period" parent="hr-root-configuration-employment-contract-amendment" title="Probation periods" action="hr.root.emp.mgt.probation.period" order="10"/>  
+    <action-view name="hr.root.emp.mgt.probation.period" title="Probation periods" model="com.axelor.apps.hr.db.ProbationPeriod">
+        <view type="grid" name="probation-period-grid"/>
+        <view type="form" name="probation-period-form"/>
+    </action-view>
+
+	<menuitem name="hr-root-configuration-health-mutual" parent="hr-root-emp-mgt-conf" title="Health mutual"/>
+
+	<menuitem name="hr-root-configuration-health-mutual-rejection-reason" parent="hr-root-configuration-health-mutual" title="Health mutual rejection reasons" action="hr.root.configuration.health.mutual.rejection.reason" order="1"/>
+	<action-view name="hr.root.configuration.health.mutual.rejection.reason" title="Health mutual rejection reasons" model="com.axelor.apps.hr.db.HealthMutualRejectionReason">
+		<view type="grid" name="health-mutual-rejection-reason-grid" />
+		<view type="form" name="health-mutual-rejection-reason-form" />
+	</action-view>
+
 	<!-- Leave App -->
 	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f" title="Leave Requests" order="5"/>
 
@@ -288,7 +354,7 @@
 	    <view type="form" name="product-expense-form"/>
 	    <view-param name="search-filters" value="product-expense-filters"/>
 	    <view-param name="forceTitle" value="true" />
-		<domain>self.isModel = false AND self.expense = true AND dtype = 'Product'</domain>
+		<domain>self.isModel = false AND self.expense = true AND self.dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
@@ -402,7 +468,7 @@
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND self.expense = false AND dtype = 'Product'</domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND self.expense = false AND self.dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>
@@ -426,7 +492,7 @@
 		<view-param name="search-filters" value="hr-batch-filters"/>
 	</action-view>
 
-	<menuitem name="hr-report-root" parent="hr-root" title="Dashboards" order="300" icon="fa-bar-chart"/>
+	<menuitem name="hr-report-root" parent="hr-root" title="Reportings" order="300" icon="fa-bar-chart"/>
 
     <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root" title="Human Resources Manager"
     	action="hr.manager.dashboard.view"/>

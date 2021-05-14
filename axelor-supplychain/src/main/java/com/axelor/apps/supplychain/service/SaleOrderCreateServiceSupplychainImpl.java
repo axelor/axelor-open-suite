@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -81,7 +81,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       LocalDate deliveryDate,
       String internalReference,
       String externalReference,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
       Team team,
@@ -97,7 +96,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           deliveryDate,
           internalReference,
           externalReference,
-          orderDate,
           priceList,
           clientPartner,
           team,
@@ -112,7 +110,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         internalReference,
         externalReference,
         null,
-        orderDate,
         priceList,
         clientPartner,
         team,
@@ -128,7 +125,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       String internalReference,
       String externalReference,
       StockLocation stockLocation,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
       Team team,
@@ -150,7 +146,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             deliveryDate,
             internalReference,
             externalReference,
-            orderDate,
             priceList,
             clientPartner,
             team,
@@ -218,7 +213,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             numSeq,
             externalRef,
             stockLocation,
-            appBaseService.getTodayDate(company),
             priceList,
             clientPartner,
             team,

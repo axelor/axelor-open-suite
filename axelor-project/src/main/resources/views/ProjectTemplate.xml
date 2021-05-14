@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="project-template-grid" model="com.axelor.apps.project.db.ProjectTemplate" title="Project template">
 		<field name="name"/>
@@ -32,7 +32,7 @@
 
 		<panel-tabs name="mainPanelTab">
 			<panel title="Task template" name="taskPanel">
-				<field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
+				<field name="taskTemplateSet" widget="TagSelect" canNew="false" canEdit="false" colSpan="12" onChange="action-project-template-method-add-parent-task-template,save"/>
 			</panel>
 
 			<panel title="Members" name="membersPanel">
@@ -53,8 +53,8 @@
 			</panel>
 
 			<panel title="Configurations" name="configurationsPanel" >
-				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect" canEdit="false" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-activity-form" grid-view="product-activity-grid" />
-				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
+				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect" canEdit="false" domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form" grid-view="product-activity-grid" />
+				<field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
 				<field name="imputable" colSpan="4" widget="boolean-switch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
 				<field name="excludePlanning" if-module="axelor-business-project"/>
@@ -91,6 +91,10 @@
 	<action-method name="action-project-template-method-generate-project-from-wizard">
 		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="createProjectFromWizard"/>
 	</action-method>
+
+    <action-method name="action-project-template-method-add-parent-task-template">
+        <call class="com.axelor.apps.project.web.ProjectTemplateController" method="addParentTaskTemplate"/>
+    </action-method>
 
 	<action-attrs name="action-attrs-project-template-set-wizard-hidden">
 	  <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>

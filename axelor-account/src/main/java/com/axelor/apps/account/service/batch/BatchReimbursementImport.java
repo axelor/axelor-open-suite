@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.ReimbursementImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -45,7 +46,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected boolean stop = false;
+  protected boolean end = false;
 
   protected BigDecimal totalAmount = BigDecimal.ZERO;
 
@@ -79,14 +80,14 @@ public class BatchReimbursementImport extends BatchStrategy {
           ExceptionOriginRepository.REIMBURSEMENT,
           batch.getId());
       incrementAnomaly();
-      stop = true;
+      end = true;
     }
     checkPoint();
   }
 
   @Override
   protected void process() {
-    if (!stop) {
+    if (!end) {
 
       Company company = batch.getAccountingBatch().getCompany();
 
@@ -98,7 +99,7 @@ public class BatchReimbursementImport extends BatchStrategy {
 
       try {
 
-        String dataImportDir = appBaseService.getFileUploadDir();
+        String dataImportDir = AppService.getFileUploadDir();
 
         String reimbursementImportFolderPathCFONB =
             accountConfig.getReimbursementImportFolderPathCFONB() == null

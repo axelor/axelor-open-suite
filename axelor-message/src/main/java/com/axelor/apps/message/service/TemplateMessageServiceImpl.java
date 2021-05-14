@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,7 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -60,6 +61,7 @@ import java.util.Set;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 public class TemplateMessageServiceImpl implements TemplateMessageService {
 
@@ -67,6 +69,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   private static final char TEMPLATE_DELIMITER = '$';
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private Model modelObject;
 
   protected MessageService messageService;
   protected TemplateContextService templateContextService;
@@ -82,14 +85,36 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   public Message generateMessage(Model model, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
+    return generateMessage(model, template, false);
+  }
+
+  @Override
+  public Message generateMessage(Model model, Template template, Boolean isTemporaryMessage)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException {
+
+    this.modelObject = model;
     Class<?> klass = EntityHelper.getEntityClass(model);
     return generateMessage(
-        model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
+        model.getId() == null ? 0L : model.getId(),
+        klass.getCanonicalName(),
+        klass.getSimpleName(),
+        template,
+        isTemporaryMessage);
+  }
+
+  @Override
+  public Message generateMessage(Long objectId, String model, String tag, Template template)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException {
+
+    return generateMessage(objectId, model, tag, template, false);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Message generateMessage(Long objectId, String model, String tag, Template template)
+  public Message generateMessage(
+      Long objectId, String model, String tag, Template template, Boolean isForTemporaryEmail)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
 
@@ -116,19 +141,54 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             String.format(
                 I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL), modelName, model));
       }
-      initMaker(objectId, model, tag, template.getIsJson(), templatesContext);
-      computeTemplateContexts(
-          template.getTemplateContextList(),
-          objectId,
-          model,
-          template.getIsJson(),
-          templatesContext);
+
+      if (objectId != 0L) {
+        initMaker(objectId, model, tag, template.getIsJson(), templatesContext);
+        computeTemplateContexts(
+            template.getTemplateContextList(),
+            objectId,
+            model,
+            template.getIsJson(),
+            templatesContext);
+      } else {
+        Class<?> klass = EntityHelper.getEntityClass(this.modelObject);
+        Context context = new Context(Mapper.toMap(this.modelObject), klass);
+
+        templatesContext.put(tag, context.asType(klass));
+        if (template.getTemplateContextList() != null) {
+          for (TemplateContext templateContext : template.getTemplateContextList()) {
+            Object result = templateContextService.computeTemplateContext(templateContext, context);
+            templatesContext.put(templateContext.getName(), result);
+          }
+        }
+      }
     }
 
     log.debug("model : {}", model);
     log.debug("tag : {}", tag);
     log.debug("object id : {}", objectId);
     log.debug("template : {}", template);
+
+    Message message =
+        generateMessage(
+            model, objectId, template, templates, templatesContext, isForTemporaryEmail);
+
+    if (!isForTemporaryEmail) {
+      message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
+      message = Beans.get(MessageRepository.class).save(message);
+      messageService.attachMetaFiles(message, getMetaFiles(template, templates, templatesContext));
+    }
+
+    return message;
+  }
+
+  private Message generateMessage(
+      String model,
+      Long objectId,
+      Template template,
+      Templates templates,
+      Map<String, Object> templatesContext,
+      Boolean isForTemporaryEmail) {
 
     String content = "";
     String subject = "";
@@ -192,6 +252,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     } else {
       fromAddress = getEmailAddress(mailAccount.getFromAddress());
     }
+
     Message message =
         messageService.createMessage(
             model,
@@ -207,13 +268,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             addressBlock,
             mediaTypeSelect,
             mailAccount,
-            signature);
-
-    message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
-
-    message = Beans.get(MessageRepository.class).save(message);
-
-    messageService.attachMetaFiles(message, getMetaFiles(template, templates, templatesContext));
+            signature,
+            isForTemporaryEmail);
 
     return message;
   }
@@ -221,10 +277,21 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   @Override
   public Message generateAndSendMessage(Model model, Template template)
       throws MessagingException, IOException, AxelorException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException {
+          InstantiationException, IllegalAccessException, JSONException {
 
     Message message = this.generateMessage(model, template);
     messageService.sendMessage(message);
+
+    return message;
+  }
+
+  @Override
+  public Message generateAndSendTemporaryMessage(Model model, Template template)
+      throws MessagingException, IOException, AxelorException, ClassNotFoundException,
+          InstantiationException, IllegalAccessException, JSONException {
+
+    Message message = this.generateMessage(model, template, true);
+    messageService.sendMessage(message, true);
 
     return message;
   }

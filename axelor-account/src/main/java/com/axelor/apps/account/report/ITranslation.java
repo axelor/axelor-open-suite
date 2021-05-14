@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,6 +93,8 @@ public interface ITranslation {
   public static final String INVOICE_AMOUNT_REMAINING = /*$$(*/ "Invoice.amountRemaining"; /*)*/
   public static final String INVOICE_PROFORMA_INVOICE = /*$$(*/ "Invoice.proformaInvoice"; /*)*/
   public static final String INVOICE_DELIVERY_ADDRESS = /*$$(*/ "Invoice.deliveryAddress"; /*)*/
+  public static final String INVOICE_ORIGINAL_INVOICE = /*$$(*/ "Invoice.originalInvoice"; /*)*/
+  public static final String INVOICE_SHIPPING_DATE = /*$$(*/ "Invoice.shippingDate"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
@@ -415,6 +417,10 @@ public interface ITranslation {
       "AccountingReportType2001.AnalyticMoveLineID"; /*)*/
   public static final String ACCOUNTING_REPORT_2001_MOVE_LINE_NAME = /*$$(*/
       "AccountingReportType2001.moveLineName"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ORIGIN = /*$$(*/
+      "AccountingReportType2001.origin"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_DESCRIPTION = /*$$(*/
+      "AccountingReportType2001.description"; /*)*/
 
   public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/
       "SaleInvoicesDetails.title"; /*)*/
@@ -644,4 +650,28 @@ public interface ITranslation {
   public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
   public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
       "Invoice.headOfficeAddress"; /*)*/
+
+  public static final String PAYMENT_REMINDER_PAYMENT_REMINDER =
+      /*$$(*/ "PaymentReminder.payment_reminder"; /*)*/
+  public static final String PAYMENT_REMINDER_REFERENCE_DATE =
+      /*$$(*/ "PaymentReminder.reference_date"; /*)*/
+  public static final String PAYMENT_REMINDER_LAST_REMINDER_DATE =
+      /*$$(*/ "PaymentReminder.last_reminder_date"; /*)*/
+  public static final String PAYMENT_REMINDER_CURRENCY_CODE =
+      /*$$(*/ "PaymentReminder.currency_code"; /*)*/
+  public static final String PAYMENT_REMINDER_IDENTIFICATION_CODE =
+      /*$$(*/ "PaymentReminder.identification_code"; /*)*/
+  public static final String PAYMENT_REMINDER_DATE = /*$$(*/ "PaymentReminder.date"; /*)*/
+  public static final String PAYMENT_REMINDER_LATE_PAYMMENT_DAYS =
+      /*$$(*/ "PaymentReminder.late_payment_days"; /*)*/
+  public static final String PAYMENT_REMINDER_AMOUNT = /*$$(*/ "PaymentReminder.amount_incl"; /*)*/
+  public static final String PAYMENT_REMINDER_AMOUNT_PAID =
+      /*$$(*/ "PaymentReminder.amount_paid"; /*)*/
+  public static final String PAYMENT_REMINDER_TO_PAY = /*$$(*/ "PaymentReminder.to_pay"; /*)*/
+  public static final String PAYMENT_REMINDER_TOTAL_AMOUNT =
+      /*$$(*/ "PaymentReminder.total_amount_incl"; /*)*/
+  public static final String PAYMENT_REMINDER_TOTAL_AMOUNT_PAID =
+      /*$$(*/ "PaymentReminder.total_amount_paid"; /*)*/
+  public static final String PAYMENT_REMINDER_TOTAL_TO_PAY =
+      /*$$(*/ "PaymentReminder.total_to_pay"; /*)*/
 }

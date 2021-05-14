@@ -1,5 +1,5 @@
-"importId";"name";"typeSelect";"label";"code";"elementSelect";"archived";"sequence";"statusSelect"
-3;"MPR - Manufacturing proposal";1;"Manufacturing proposal";"MPR";8;;"2";
-5;"MOR - Manufacturing order";1;"Manufacturing order";"MOR";6;;"4";6
-6;"NMP - Need / Manufacturing proposal";2;"Need / Manufacturing proposal";"NMP";9;;"5";
-9;"NMO - Need / Manufacturing order";2;"Need / Manufacturing order";"NMO";7;;"8";
+"importId";"name";"typeSelect";"label";"code";"elementSelect";"archived";"sequence";"statusSelect";"applicationFieldSelect"
+3;"MPR - Manufacturing proposal";1;"Manufacturing proposal";"MPR";8;;"2";;1
+5;"MOR - Manufacturing order";1;"Manufacturing order";"MOR";6;;"4";6;1
+6;"NMP - Need / Manufacturing proposal";2;"Need / Manufacturing proposal";"NMP";9;;"5";;1
+9;"NMO - Need / Manufacturing order";2;"Need / Manufacturing order";"NMO";7;;"8";;1

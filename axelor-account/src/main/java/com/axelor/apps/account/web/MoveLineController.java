@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,9 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -35,6 +37,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -205,6 +208,25 @@ public class MoveLineController {
     if (move != null) {
       String domain = Beans.get(MoveService.class).filterPartner(move);
       response.setAttr("partner", "domain", domain);
+    }
+  }
+
+  public void computeCurrentRate(ActionRequest request, ActionResponse response) {
+    try {
+      Context parentContext = request.getContext().getParent();
+      BigDecimal currencyRate = BigDecimal.ONE;
+      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+        Move move = parentContext.asType(Move.class);
+        Currency currency = move.getCurrency();
+        Currency companyCurrency = move.getCompanyCurrency();
+        if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
+          currencyRate =
+              Beans.get(CurrencyService.class).getCurrencyConversionRate(currency, companyCurrency);
+        }
+      }
+      response.setValue("currencyRate", currencyRate);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

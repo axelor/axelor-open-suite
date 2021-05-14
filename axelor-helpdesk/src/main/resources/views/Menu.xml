@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<menuitem name="helpdesk-root" title="Helpdesk" order="-80" if="__config__.app.isApp('helpdesk')"
 		icon="fa-life-ring" icon-background="#b6473f"/>
@@ -81,18 +81,20 @@
 	
 	<menuitem title="Reportings" name="helpdesk-reporting" order="-20" parent="helpdesk-root" icon="fa-bar-chart"/>
 	
-	<menuitem title="Ticket" name="helpdesk-report-ticket" action="helpdesk.report.ticket" parent="helpdesk-reporting"/>
+	<menuitem title="Tickets" name="helpdesk-report-ticket" action="helpdesk.report.ticket" parent="helpdesk-reporting"/>
 
-	<action-view name="helpdesk.report.ticket" title="Ticket Details">
+	<action-view name="helpdesk.report.ticket" title="Tickets">
 		<view type="dashboard" name="helpdesk.ticket.dashboard"/>
 		<context name="_user_id" expr="eval:__user__.id" />
+		<context name="_language" expr="eval: __user__.getLanguage()"/>
 		<context name="_myActiveTeam" expr="eval:__user__.activeTeam != null ? __user__.activeTeam.id : 0"/>
 	</action-view>
 	
 	<menuitem title="SLA" name="helpdesk-report-sla" action="helpdesk.report.sla" parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk').getIsSla()"/>
 	
-	<action-view name="helpdesk.report.sla" title="SLA Details">
+	<action-view name="helpdesk.report.sla" title="SLA">
 	  <view name="helpdesk.sla.dashboard" type="dashboard"/>
+	  <context name="_language" expr="eval: __user__.getLanguage()"/>
 	  <context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	

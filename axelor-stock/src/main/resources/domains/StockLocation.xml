@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -17,6 +17,10 @@
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     <boolean name="includeOutOfStock" title="Include out of stocks products" default="false"/>
 	<decimal name="stockLocationValue" title="Stock location value" transient="true"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="Trading Name"/>
+    <boolean name="includeVirtualSubLocation" title="Include virtual sub location" />
+    <boolean name="isValued" title="Valued" />
+
     <finder-method name="findByCompany" using="company"/>
     <finder-method name="findByPartner" using="partner"/>
     

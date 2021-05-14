@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,8 +21,6 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -44,36 +42,17 @@ public class ConfiguratorCreatorController {
    * @param response
    */
   public void updateAndActivate(ActionRequest request, ActionResponse response) {
-    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-    ConfiguratorCreatorService configuratorCreatorService =
-        Beans.get(ConfiguratorCreatorService.class);
-    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
-    configuratorCreatorService.updateAttributes(creator);
-    configuratorCreatorService.updateIndicators(creator);
-    configuratorCreatorService.activate(creator);
-    response.setSignal("refresh-app", true);
-  }
-
-  /**
-   * Called from the configurator creator form on new
-   *
-   * @param request
-   * @param response
-   */
-  public void configure(ActionRequest request, ActionResponse response) {
-    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-    ConfiguratorCreatorService configuratorCreatorService =
-        Beans.get(ConfiguratorCreatorService.class);
-    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
-    User currentUser = AuthUtils.getUser();
-    configuratorCreatorService.authorizeUser(creator, currentUser);
     try {
-      configuratorCreatorService.addRequiredFormulas(creator);
+      ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+      ConfiguratorCreatorService configuratorCreatorService =
+          Beans.get(ConfiguratorCreatorService.class);
+      creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
+      configuratorCreatorService.updateIndicators(creator);
+      configuratorCreatorService.activate(creator);
+      response.setSignal("refresh-app", true);
     } catch (Exception e) {
       TraceBackService.trace(e);
-      response.setError(e.getMessage());
     }
-    response.setReload(true);
   }
 
   /**
@@ -89,6 +68,17 @@ public class ConfiguratorCreatorController {
       String importLog =
           Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
       response.setValue("importLog", importLog);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void updateAttributes(ActionRequest request, ActionResponse response) {
+    try {
+      ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+      creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
+      Beans.get(ConfiguratorCreatorService.class).updateAttributes(creator);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

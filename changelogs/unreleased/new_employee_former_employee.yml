@@ -1,9 +1,0 @@
----
-title: "EMPLOYEE : Implement new employees and former employees feature"
-type: feature
-description : |
-  Add "Leaving date" on Employee.
-  If this date is in the past or if the hire date is in the futur, exclude this employee from automatic process.
-  Modify Employee's form and card view to quickly see if an employee is former or new.
-  Add three new advanced searchs based on this new field.
-  Updated demo data to fill this new field.

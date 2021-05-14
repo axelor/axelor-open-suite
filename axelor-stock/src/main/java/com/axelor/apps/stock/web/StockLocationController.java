@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -136,7 +136,7 @@ public class StockLocationController {
   public void setStocklocationValue(ActionRequest request, ActionResponse response) {
 
     StockLocation stockLocation = request.getContext().asType(StockLocation.class);
-    if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+    if (stockLocation.getIsValued()) {
       response.setValue(
           "stockLocationValue",
           Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,7 +33,7 @@ import com.axelor.rpc.filter.Filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class DuplicateObjectsService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);
   @Inject private MetaFieldRepository metaFieldRepo;
 
@@ -125,8 +124,7 @@ public class DuplicateObjectsService {
     Query originalObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id = :ids");
     originalObj.setParameter("ids", selectedIds.get(0));
-    Object originalObjct = originalObj.getSingleResult();
-    return originalObjct;
+    return originalObj.getSingleResult();
   }
 
   @Transactional
@@ -134,8 +132,7 @@ public class DuplicateObjectsService {
     Query duplicateObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
     duplicateObj.setParameter("ids", selectedIds.subList(1, selectedIds.size()));
-    List<Object> duplicateObjects = duplicateObj.getResultList();
-    return duplicateObjects;
+    return duplicateObj.getResultList();
   }
 
   @Transactional
@@ -143,8 +140,7 @@ public class DuplicateObjectsService {
     Query duplicateObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
     duplicateObj.setParameter("ids", selectedIds);
-    List<Object> duplicateObjects = duplicateObj.getResultList();
-    return duplicateObjects;
+    return duplicateObj.getResultList();
   }
 
   @Transactional
@@ -164,11 +160,9 @@ public class DuplicateObjectsService {
                       + " self WHERE self.id = :id");
     }
     selectedObj.setParameter("id", id);
-    Object selectedObject = selectedObj.getSingleResult();
-    return selectedObject;
+    return selectedObj.getSingleResult();
   }
 
-  @SuppressWarnings("unchecked")
   public Filter getJpaSecurityFilter(Class<? extends Model> beanClass) {
 
     JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
@@ -183,7 +177,7 @@ public class DuplicateObjectsService {
       Set<String> fieldSet, Class<? extends Model> modelClass, String filter)
       throws AxelorException {
     if (fieldSet == null || fieldSet.isEmpty()) {
-      return null;
+      return Collections.emptyList();
     }
 
     String concatedFields = concatFields(modelClass, fieldSet);
@@ -276,7 +270,6 @@ public class DuplicateObjectsService {
     }
 
     String query = queryBuilder.toString();
-    ;
 
     log.debug("Final query prepared: {}", query);
 

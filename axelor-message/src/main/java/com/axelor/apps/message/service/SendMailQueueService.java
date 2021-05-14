@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.message.service;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.JpaSupport;
 import com.axelor.event.Observes;
 import com.axelor.events.ShutdownEvent;
@@ -43,10 +45,12 @@ public class SendMailQueueService extends JpaSupport {
   private static final int ENTITY_FIND_TIMEOUT = 10000;
   private static final int ENTITY_FIND_INTERVAL = 200;
   protected MessageRepository messageRepository;
+  protected UserRepository userRepository;
 
   @Inject
-  public SendMailQueueService(MessageRepository messageRepository) {
+  public SendMailQueueService(MessageRepository messageRepository, UserRepository userRepository) {
     this.messageRepository = messageRepository;
+    this.userRepository = userRepository;
   }
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -61,6 +65,7 @@ public class SendMailQueueService extends JpaSupport {
   public void submitMailJob(MailBuilder mailBuilder, Message message) {
     long messageId = message.getId();
     log.debug("Submitting job to executor for message {}...", messageId);
+    User currentUser = AuthUtils.getUser();
     executor.submit(
         () -> {
           try {
@@ -79,7 +84,7 @@ public class SendMailQueueService extends JpaSupport {
                       updateMessage.setSentByEmail(true);
                       updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
                       updateMessage.setSentDateT(LocalDateTime.now());
-                      updateMessage.setSenderUser(AuthUtils.getUser());
+                      updateMessage.setSenderUser(userRepository.find(currentUser.getId()));
                       messageRepository.save(updateMessage);
                     });
                 done = true;
@@ -107,6 +112,7 @@ public class SendMailQueueService extends JpaSupport {
   protected void onApplicationShutdown(@Observes ShutdownEvent event) {
     log.debug("Shutting down mail executor..");
     executor.shutdown();
+    log.debug("Mail executor stopped.");
   }
 
   private Message findMessage(Long messageId) {

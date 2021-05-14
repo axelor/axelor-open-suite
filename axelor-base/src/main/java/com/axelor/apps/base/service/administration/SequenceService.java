@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,9 +27,13 @@ import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.event.Observes;
+import com.axelor.events.ShutdownEvent;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
@@ -37,12 +41,14 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.annotation.concurrent.ThreadSafe;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -64,18 +70,23 @@ public class SequenceService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private SequenceVersionRepository sequenceVersionRepository;
+  private final SequenceVersionRepository sequenceVersionRepository;
 
-  private AppBaseService appBaseService;
+  private final AppBaseService appBaseService;
 
-  @Inject private SequenceRepository sequenceRepo;
+  private final SequenceRepository sequenceRepo;
+
+  protected ExecutorService executor = Executors.newSingleThreadExecutor();
 
   @Inject
   public SequenceService(
-      SequenceVersionRepository sequenceVersionRepository, AppBaseService appBaseService) {
+      SequenceVersionRepository sequenceVersionRepository,
+      AppBaseService appBaseService,
+      SequenceRepository sequenceRepo) {
 
     this.sequenceVersionRepository = sequenceVersionRepository;
     this.appBaseService = appBaseService;
+    this.sequenceRepo = sequenceRepo;
   }
 
   public static boolean isYearValid(Sequence sequence) {
@@ -90,11 +101,7 @@ public class SequenceService {
         seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
         seq = seqPrefixe + seqSuffixe;
 
-    if (yearlyResetOk && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR)) {
-      return false;
-    }
-
-    return true;
+    return seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR);
   }
 
   public static boolean isMonthValid(Sequence sequence) {
@@ -109,13 +116,8 @@ public class SequenceService {
         seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
         seq = seqPrefixe + seqSuffixe;
 
-    if (monthlyResetOk
-        && ((!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH))
-            || (!seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR)))) {
-      return false;
-    }
-
-    return true;
+    return (seq.contains(PATTERN_MONTH) || seq.contains(PATTERN_FULL_MONTH))
+        && (seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR));
   }
 
   public static boolean isSequenceLengthValid(Sequence sequence) {
@@ -183,15 +185,39 @@ public class SequenceService {
   }
 
   /**
-   * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
+   * Method returning a sequence number from a given generic sequence and a date
    *
    * @param sequence
+   * @param refDate
    * @return
    */
-  @Transactional
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
 
-    SequenceVersion sequenceVersion = getVersion(sequence, refDate);
+    try {
+      Future<String> newSeq =
+          executor.submit(
+              () -> {
+                Sequence seq = sequenceRepo.find(sequence.getId());
+                SequenceVersion sequenceVersion = getVersion(seq, refDate);
+                String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
+                JPA.runInTransaction(
+                    () -> {
+                      sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
+                      if (sequenceVersion.getId() == null) {
+                        sequenceVersionRepository.save(sequenceVersion);
+                      }
+                    });
+                return nextSeq;
+              });
+      return newSeq.get();
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  private String computeNextSeq(
+      SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate) {
 
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
         seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
@@ -204,7 +230,6 @@ public class SequenceService {
     } else {
       sequenceValue = findNextLetterSequence(sequenceVersion);
     }
-    sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
             .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
@@ -217,7 +242,6 @@ public class SequenceService {
 
     log.debug("nextSeq : : : : {}", nextSeq);
 
-    sequenceVersionRepository.save(sequenceVersion);
     return nextSeq;
   }
 
@@ -377,5 +401,16 @@ public class SequenceService {
     fn.append(sequence.getName());
 
     return fn.toString();
+  }
+
+  /**
+   * This method calls shutdown on the executor when the application stops.
+   *
+   * @param event shutdown event
+   */
+  protected void onApplicationShutdown(@Observes ShutdownEvent event) {
+    log.debug("Shutting down sequence executor..");
+    executor.shutdown();
+    log.debug("Sequence executor stopped.");
   }
 }

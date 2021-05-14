@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -113,12 +113,15 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException {
 
+    if (product == null) {
+      return null;
+    }
+
     @SuppressWarnings("unchecked")
     List<SupplierCatalog> supplierCatalogList =
         (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
-        && product != null
         && supplierCatalogList != null) {
       SupplierCatalog resSupplierCatalog = null;
 

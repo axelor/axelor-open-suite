@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix missing file type on printedPdf metafile field"
+type: fix

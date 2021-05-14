@@ -25,7 +25,7 @@
 			<statusSelect>2</statusSelect>
 			<name>Conception de l&apos;ordinateur</name>
 			<code></code>
-			<codeFormula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos; AND dtype = &apos;Product&apos;&quot;).count() + 1)</codeFormula>
+			<codeFormula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos; AND self.dtype = &apos;Product&apos;&quot;).count() + 1)</codeFormula>
 			<defCodeAsFormula>true</defCodeAsFormula>
 			<companyCode>AXE</companyCode>
 			<stockLocation>1</stockLocation>
@@ -315,10 +315,10 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;CARTM&apos; AND dtype = &apos;Product&apos;</domain>
+				<domain>self.productCategory.code = &apos;CARTM&apos; AND self.dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>6</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -353,10 +353,10 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;DD&apos; AND dtype = &apos;Product&apos;</domain>
+				<domain>self.productCategory.code = &apos;DD&apos; AND self.dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>7</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -391,10 +391,10 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;MEM&apos; AND dtype = &apos;Product&apos;</domain>
+				<domain>self.productCategory.code = &apos;MEM&apos; AND self.dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>10</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -429,10 +429,10 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;BOIT&apos; AND dtype = &apos;Product&apos;</domain>
+				<domain>self.productCategory.code = &apos;BOIT&apos; AND self.dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>5</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -467,10 +467,10 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;ECR&apos; AND dtype = &apos;Product&apos;</domain>
+				<domain>self.productCategory.code = &apos;ECR&apos; AND self.dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>8</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -508,7 +508,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>0</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -546,7 +546,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>13</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -584,7 +584,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>3</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -622,7 +622,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>4</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -660,7 +660,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>11</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -698,7 +698,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>1</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -736,7 +736,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>14</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -774,7 +774,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>2</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -809,10 +809,10 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;PROC&apos; AND dtype = &apos;Product&apos;</domain>
+				<domain>self.productCategory.code = &apos;PROC&apos; AND self.dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>9</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -850,7 +850,7 @@
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>12</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -920,7 +920,7 @@ return cp*nbOrdi_1</formula>
 		
 			<configuratorProductFormula>
 				<metaField>code</metaField>
-				<formula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos; AND dtype = &apos;Product&apos;&quot;).count() + 1)</formula>
+				<formula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos; AND self.dtype = &apos;Product&apos;&quot;).count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
@@ -1004,7 +1004,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>0</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1042,7 +1042,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>7</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1077,10 +1077,10 @@ return cp*nbOrdi_1</formula>
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code=&apos;IMP&apos; AND dtype = &apos;Product&apos;</domain>
+				<domain>self.productCategory.code=&apos;IMP&apos; AND self.dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>4</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1118,7 +1118,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>6</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1156,7 +1156,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>5</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1194,7 +1194,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>3</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1232,7 +1232,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>2</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1270,7 +1270,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>1</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1308,7 +1308,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>8</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1346,7 +1346,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>9</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1384,7 +1384,7 @@ return cp*nbOrdi_1</formula>
 				<domain></domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>10</sequence>
-				<onChange>save,action-configurator-update-indicators,save</onChange>
+				<onChange>action-configurator-update-indicators</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
 				<contextField>configuratorCreator</contextField>
@@ -1419,7 +1419,7 @@ return cp*nbOrdi_1</formula>
 		
 			<configuratorProductFormula>
 				<metaField>code</metaField>
-				<formula>&quot;PUB&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Campagne publicitaire&apos; AND dtype = &apos;Product&apos;&quot;).count() + 1)</formula>
+				<formula>&quot;PUB&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Campagne publicitaire&apos; AND self.dtype = &apos;Product&apos;&quot;).count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
@@ -1427,6 +1427,13 @@ return cp*nbOrdi_1</formula>
 			<configuratorProductFormula>
 				<metaField>productCategory</metaField>
 				<formula>__repo__(ProductCategory).all().filter(&quot;self.code = &apos;FORF&apos;&quot;).fetchOne()</formula>
+				<showOnConfigurator>true</showOnConfigurator>
+				<configuratorCreatorImportId>2</configuratorCreatorImportId>
+			</configuratorProductFormula>
+
+			<configuratorProductFormula>
+				<metaField>productFamily</metaField>
+				<formula>__repo__(ProductFamily).all().filter(&quot;self.code = &apos;SERV&apos;&quot;).fetchOne()</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>

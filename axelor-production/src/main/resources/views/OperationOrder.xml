@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <calendar name="operation-order-planned-calendar" model="com.axelor.apps.production.db.OperationOrder" 
     eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="machine" mode="week"
@@ -23,7 +23,7 @@
     	<field name="manufOrder" width="120" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
-        <field name="prodProcessLine.outsourcing"/>
+        <field name="outsourcing"/>
         <field name="machine" grid-view="machine-grid" form-view="machine-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
@@ -109,6 +109,8 @@
 			<field name="machine" hidden="true" readonlyIf="statusSelect &gt; 3" onSelect="action-operation-order-attrs-domain-machine" onChange="save,action-operation-order-method-machine-change" grid-view="work-center-machine-grid" form-view="work-center-machine-form" colSpan="4"/>
 			<field name="machineTool" domain="self.machine = machine" form-view="machine-tool-form" grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4" if="__config__.app.getApp('production').getEnableToolManagement()"/>
 			<panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
+			<field name="prodProcessLine.description" colSpan="12"/>
+			<field name="prodProcessLine.objectDescriptionList" colSpan="12" height="20"/>
 		</panel>
 
 		<panel name="stockMovesPanel" hidden="true" title="Stock moves" colSpan="12" readonlyIf="statusSelect == 6">

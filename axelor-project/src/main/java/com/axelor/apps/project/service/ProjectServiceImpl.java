@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,10 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -28,18 +31,20 @@ import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -55,7 +60,8 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Inject WikiRepository wikiRepo;
-  @Inject TeamTaskProjectService teamTaskProjectService;
+  @Inject ProjectTaskService projectTaskService;
+  @Inject ResourceBookingService resourceBookingService;
 
   @Override
   public Project generateProject(
@@ -145,7 +151,7 @@ public class ProjectServiceImpl implements ProjectService {
       project.setTeam(projectTemplate.getTeam());
       project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
       project.setAssignedTo(projectTemplate.getAssignedTo());
-      project.setTeamTaskCategorySet(new HashSet<>(projectTemplate.getTeamTaskCategorySet()));
+      project.setProjectTaskCategorySet(new HashSet<>(projectTemplate.getProjectTaskCategorySet()));
       project.setSynchronize(projectTemplate.getSynchronize());
       project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
       project.setImputable(projectTemplate.getImputable());
@@ -168,12 +174,25 @@ public class ProjectServiceImpl implements ProjectService {
       projectRepository.save(project);
 
       Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
+      if (ObjectUtils.isEmpty(taskTemplateSet)) {
+        return project;
+      }
+      List<TaskTemplate> taskTemplateList = new ArrayList<TaskTemplate>(taskTemplateSet);
+      Collections.sort(
+          taskTemplateList,
+          new Comparator<TaskTemplate>() {
 
-      if (taskTemplateSet != null) {
-        Iterator<TaskTemplate> taskTemplateItr = taskTemplateSet.iterator();
+            @Override
+            public int compare(TaskTemplate taskTemplatet1, TaskTemplate taskTemplate2) {
+              return taskTemplatet1.getParentTaskTemplate() == null || taskTemplate2 == null
+                  ? 1
+                  : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1;
+            }
+          });
 
-        while (taskTemplateItr.hasNext()) {
-          createTask(taskTemplateItr.next(), project);
+      if (taskTemplateList != null) {
+        for (TaskTemplate taskTemplate : taskTemplateList) {
+          createTask(taskTemplate, project, taskTemplateSet);
         }
       }
 
@@ -181,13 +200,63 @@ public class ProjectServiceImpl implements ProjectService {
     }
   }
 
-  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
+  public ProjectTask createTask(
+      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
 
-    TeamTask task =
-        teamTaskProjectService.create(
-            taskTemplate.getName(), project, taskTemplate.getAssignedTo());
+    if (!ObjectUtils.isEmpty(project.getProjectTaskList())) {
+      for (ProjectTask projectTask : project.getProjectTaskList()) {
+        if (projectTask.getName().equals(taskTemplate.getName())) {
+          return projectTask;
+        }
+      }
+    }
+    ProjectTask task =
+        projectTaskService.create(taskTemplate.getName(), project, taskTemplate.getAssignedTo());
     task.setDescription(taskTemplate.getDescription());
+    ProjectTaskCategory projectTaskCategory = taskTemplate.getProjectTaskCategory();
+    if (projectTaskCategory != null) {
+      task.setProjectTaskCategory(projectTaskCategory);
+      project.addProjectTaskCategorySetItem(projectTaskCategory);
+    }
 
+    TaskTemplate parentTaskTemplate = taskTemplate.getParentTaskTemplate();
+
+    if (parentTaskTemplate != null && taskTemplateSet.contains(parentTaskTemplate)) {
+      task.setParentTask(this.createTask(parentTaskTemplate, project, taskTemplateSet));
+      return task;
+    }
     return task;
+  }
+
+  public boolean checkIfResourceBooked(Project project) {
+
+    List<ResourceBooking> resourceBookingList = project.getResourceBookingList();
+    if (resourceBookingList != null) {
+      for (ResourceBooking resourceBooking : resourceBookingList) {
+        if (resourceBooking.getFromDate() != null
+            && resourceBooking.getToDate() != null
+            && (resourceBookingService.checkIfResourceBooked(resourceBooking)
+                || checkIfResourceBookedInList(resourceBookingList, resourceBooking))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean checkIfResourceBookedInList(
+      List<ResourceBooking> resourceBookingList, ResourceBooking resourceBooking) {
+
+    return resourceBookingList.stream()
+        .anyMatch(
+            x ->
+                !x.equals(resourceBooking)
+                    && x.getResource().equals(resourceBooking.getResource())
+                    && x.getFromDate() != null
+                    && x.getToDate() != null
+                    && ((resourceBooking.getFromDate().compareTo(x.getFromDate()) >= 0
+                            && resourceBooking.getFromDate().compareTo(x.getToDate()) <= 0)
+                        || (resourceBooking.getToDate().compareTo(x.getFromDate()) >= 0)
+                            && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
   }
 }

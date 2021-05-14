@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,27 +29,42 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.sale.db.ComplementaryProduct;
+import com.axelor.apps.sale.db.ComplementaryProductSelected;
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.translation.ITranslation;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.loader.ModuleManager;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,17 +72,33 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject protected CurrencyService currencyService;
+  protected CurrencyService currencyService;
+  protected PriceListService priceListService;
+  protected ProductMultipleQtyService productMultipleQtyService;
+  protected AppBaseService appBaseService;
+  protected AppSaleService appSaleService;
+  protected AccountManagementService accountManagementService;
+  protected SaleOrderLineRepository saleOrderLineRepo;
 
-  @Inject protected PriceListService priceListService;
+  @Inject
+  public SaleOrderLineServiceImpl(
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      ProductMultipleQtyService productMultipleQtyService,
+      AppBaseService appBaseService,
+      AppSaleService appSaleService,
+      AccountManagementService accountManagementService,
+      SaleOrderLineRepository saleOrderLineRepo) {
+    this.currencyService = currencyService;
+    this.priceListService = priceListService;
+    this.productMultipleQtyService = productMultipleQtyService;
+    this.appBaseService = appBaseService;
+    this.appSaleService = appSaleService;
+    this.accountManagementService = accountManagementService;
+    this.saleOrderLineRepo = saleOrderLineRepo;
+  }
 
-  @Inject protected ProductMultipleQtyService productMultipleQtyService;
-
-  @Inject protected AppBaseService appBaseService;
-
-  @Inject protected AppSaleService appSaleService;
-
-  @Inject protected AccountManagementService accountManagementService;
+  @Inject protected ProductCategoryService productCategoryService;
 
   @Inject protected ProductCompanyService productCompanyService;
 
@@ -84,6 +115,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
     fillPrice(saleOrderLine, saleOrder);
+    fillComplementaryProductList(saleOrderLine);
   }
 
   @Override
@@ -106,6 +138,29 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
             convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
+      }
+    }
+  }
+
+  @Override
+  public void fillComplementaryProductList(SaleOrderLine saleOrderLine) {
+    if (saleOrderLine.getProduct() != null
+        && saleOrderLine.getProduct().getComplementaryProductList() != null) {
+      if (saleOrderLine.getSelectedComplementaryProductList() == null) {
+        saleOrderLine.setSelectedComplementaryProductList(new ArrayList<>());
+      }
+      saleOrderLine.clearSelectedComplementaryProductList();
+      for (ComplementaryProduct complProduct :
+          saleOrderLine.getProduct().getComplementaryProductList()) {
+        ComplementaryProductSelected newComplProductLine = new ComplementaryProductSelected();
+
+        newComplProductLine.setProduct(complProduct.getProduct());
+        newComplProductLine.setQty(complProduct.getQty());
+        newComplProductLine.setOptional(complProduct.getOptional());
+
+        newComplProductLine.setIsSelected(!complProduct.getOptional());
+        newComplProductLine.setSaleOrderLine(saleOrderLine);
+        saleOrderLine.addSelectedComplementaryProductListItem(newComplProductLine);
       }
     }
   }
@@ -182,6 +237,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
+    line.setSelectedComplementaryProductList(null);
     return line;
   }
 
@@ -577,8 +633,15 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       PackLine packLine,
       SaleOrder saleOrder,
       BigDecimal packQty,
-      BigDecimal ConversionRate,
+      BigDecimal conversionRate,
       Integer sequence) {
+
+    if (packLine.getTypeSelect() == PackLineRepository.TYPE_START_OF_PACK
+        || packLine.getTypeSelect() == PackLineRepository.TYPE_END_OF_PACK) {
+      return createStartOfPackAndEndOfPackTypeSaleOrderLine(
+          packLine.getPack(), saleOrder, packQty, packLine, packLine.getTypeSelect(), sequence);
+    }
+
     if (packLine.getProductName() != null) {
       SaleOrderLine soLine = new SaleOrderLine();
 
@@ -596,18 +659,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       soLine.setTypeSelect(packLine.getTypeSelect());
       soLine.setSequence(sequence);
       if (packLine.getPrice() != null) {
-        soLine.setPrice(packLine.getPrice().multiply(ConversionRate));
+        soLine.setPrice(packLine.getPrice().multiply(conversionRate));
       }
-      soLine.setIsShowTotal(packLine.getIsShowTotal());
-      soLine.setIsHideUnitAmounts(packLine.getIsHideUnitAmounts());
 
       if (product != null) {
         if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
           soLine.setDescription(product.getDescription());
         }
         try {
-          Beans.get(SaleOrderLineService.class).fillPrice(soLine, saleOrder);
-          Beans.get(SaleOrderLineService.class).computeValues(saleOrder, soLine);
+          this.fillPriceFromPackLine(soLine, saleOrder);
+          this.computeValues(saleOrder, soLine);
         } catch (AxelorException e) {
           TraceBackService.trace(e);
         }
@@ -615,5 +676,320 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       return soLine;
     }
     return null;
+  }
+
+  @Override
+  public BigDecimal computeMaxDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    Optional<BigDecimal> maxDiscount = Optional.empty();
+    Product product = saleOrderLine.getProduct();
+    if (product != null && product.getProductCategory() != null) {
+      maxDiscount = productCategoryService.computeMaxDiscount(product.getProductCategory());
+    }
+    if (!maxDiscount.isPresent()
+        || saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_NONE
+        || saleOrder == null
+        || (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION
+            && (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
+                || !saleOrder.getOrderBeingEdited()))) {
+      return null;
+    } else {
+      return maxDiscount.get();
+    }
+  }
+
+  @Override
+  public boolean isSaleOrderLineDiscountGreaterThanMaxDiscount(
+      SaleOrderLine saleOrderLine, BigDecimal maxDiscount) {
+    return (saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_PERCENT
+            && saleOrderLine.getDiscountAmount().compareTo(maxDiscount) > 0)
+        || (saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED
+            && saleOrderLine.getPrice().signum() != 0
+            && saleOrderLine
+                    .getDiscountAmount()
+                    .multiply(BigDecimal.valueOf(100))
+                    .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP)
+                    .compareTo(maxDiscount)
+                > 0);
+  }
+
+  @Override
+  public List<SaleOrderLine> createNonStandardSOLineFromPack(
+      Pack pack,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      List<SaleOrderLine> saleOrderLineList,
+      Integer sequence) {
+    SaleOrderLine saleOrderLine;
+    Set<Integer> packLineTypeSet = getPackLineTypes(pack.getComponents());
+    int typeSelect = SaleOrderLineRepository.TYPE_START_OF_PACK;
+    for (int i = 0; i < 2; i++) {
+      if (packLineTypeSet == null || !packLineTypeSet.contains(typeSelect)) {
+        saleOrderLine =
+            this.createStartOfPackAndEndOfPackTypeSaleOrderLine(
+                pack, saleOrder, packQty, null, typeSelect, sequence);
+        saleOrderLineList.add(saleOrderLine);
+      }
+      if (typeSelect == SaleOrderLineRepository.TYPE_START_OF_PACK) {
+        sequence += pack.getComponents().size() + 1;
+        typeSelect = SaleOrderLineRepository.TYPE_END_OF_PACK;
+      }
+    }
+
+    return saleOrderLineList;
+  }
+
+  @Override
+  public SaleOrderLine createStartOfPackAndEndOfPackTypeSaleOrderLine(
+      Pack pack,
+      SaleOrder saleOrder,
+      BigDecimal packqty,
+      PackLine packLine,
+      Integer typeSelect,
+      Integer sequence) {
+
+    SaleOrderLine saleOrderLine = new SaleOrderLine();
+    saleOrderLine.setTypeSelect(typeSelect);
+    switch (typeSelect) {
+      case SaleOrderLineRepository.TYPE_START_OF_PACK:
+        saleOrderLine.setProductName(packLine == null ? pack.getName() : packLine.getProductName());
+        saleOrderLine.setQty(
+            packLine != null && packLine.getQuantity() != null
+                ? packLine
+                    .getQuantity()
+                    .multiply(packqty)
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+                : packqty);
+        break;
+
+      case SaleOrderLineRepository.TYPE_END_OF_PACK:
+        saleOrderLine.setProductName(
+            packLine == null
+                ? I18n.get(ITranslation.SALE_ORDER_LINE_END_OF_PACK)
+                : packLine.getProductName());
+        saleOrderLine.setIsShowTotal(pack.getIsShowTotal());
+        saleOrderLine.setIsHideUnitAmounts(pack.getIsHideUnitAmounts());
+        break;
+      default:
+        return null;
+    }
+    saleOrderLine.setSaleOrder(saleOrder);
+    saleOrderLine.setSequence(sequence);
+    return saleOrderLine;
+  }
+
+  @Override
+  public boolean hasEndOfPackTypeLine(List<SaleOrderLine> saleOrderLineList) {
+    return ObjectUtils.isEmpty(saleOrderLineList)
+        ? Boolean.FALSE
+        : saleOrderLineList.stream()
+            .anyMatch(
+                saleOrderLine ->
+                    saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK);
+  }
+
+  @Override
+  public SaleOrderLine updateProductQty(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty)
+      throws AxelorException {
+    if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+      return saleOrderLine;
+    }
+    this.fillPriceFromPackLine(saleOrderLine, saleOrder);
+    this.computeValues(saleOrder, saleOrderLine);
+    return saleOrderLine;
+  }
+
+  @Override
+  public boolean isStartOfPackTypeLineQtyChanged(List<SaleOrderLine> saleOrderLineList) {
+
+    if (ObjectUtils.isEmpty(saleOrderLineList)) {
+      return false;
+    }
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK
+          && saleOrderLine.getId() != null) {
+        SaleOrderLine oldSaleOrderLine = saleOrderLineRepo.find(saleOrderLine.getId());
+        if (oldSaleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK
+            && saleOrderLine.getQty().compareTo(oldSaleOrderLine.getQty()) != 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public void fillPriceFromPackLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    this.fillTaxInformation(saleOrderLine, saleOrder);
+    saleOrderLine.setCompanyCostPrice(this.getCompanyCostPrice(saleOrder, saleOrderLine));
+    BigDecimal exTaxPrice;
+    BigDecimal inTaxPrice;
+    if (saleOrderLine.getProduct().getInAti()) {
+      inTaxPrice =
+          this.getInTaxUnitPriceFromPackLine(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
+      inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
+      if (!saleOrderLine.getEnableFreezeFields()) {
+        saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
+        saleOrderLine.setInTaxPrice(inTaxPrice);
+      }
+    } else {
+      exTaxPrice =
+          this.getExTaxUnitPriceFromPackLine(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
+      exTaxPrice = fillDiscount(saleOrderLine, saleOrder, exTaxPrice);
+      if (!saleOrderLine.getEnableFreezeFields()) {
+        saleOrderLine.setPrice(exTaxPrice);
+        saleOrderLine.setInTaxPrice(
+            convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
+      }
+    }
+  }
+
+  @Override
+  public BigDecimal getExTaxUnitPriceFromPackLine(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException {
+    return this.getUnitPriceFromPackLine(saleOrder, saleOrderLine, taxLine, false);
+  }
+
+  @Override
+  public BigDecimal getInTaxUnitPriceFromPackLine(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException {
+    return this.getUnitPriceFromPackLine(saleOrder, saleOrderLine, taxLine, true);
+  }
+
+  /**
+   * A method used to get the unit price of a sale order line from pack line, either in ati or wt
+   *
+   * @param saleOrder the sale order containing the sale order line
+   * @param saleOrderLine
+   * @param taxLine the tax applied to the unit price
+   * @param resultInAti whether you want the result in ati or not
+   * @return the unit price of the sale order line
+   * @throws AxelorException
+   */
+  protected BigDecimal getUnitPriceFromPackLine(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine, boolean resultInAti)
+      throws AxelorException {
+
+    Product product = saleOrderLine.getProduct();
+
+    Boolean productInAti =
+        (Boolean) productCompanyService.get(product, "inAti", saleOrder.getCompany());
+    BigDecimal productSalePrice = saleOrderLine.getPrice();
+
+    BigDecimal price =
+        (productInAti == resultInAti)
+            ? productSalePrice
+            : this.convertUnitPrice(productInAti, taxLine, productSalePrice);
+
+    return currencyService
+        .getAmountCurrencyConvertedAtDate(
+            (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
+            saleOrder.getCurrency(),
+            price,
+            saleOrder.getCreationDate())
+        .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public Set<Integer> getPackLineTypes(List<PackLine> packLineList) {
+    Set<Integer> packLineTypeSet = new HashSet<>();
+    packLineList.stream()
+        .forEach(
+            packLine -> {
+              if (packLine.getTypeSelect() == PackLineRepository.TYPE_START_OF_PACK) {
+                packLineTypeSet.add(PackLineRepository.TYPE_START_OF_PACK);
+              } else if (packLine.getTypeSelect() == PackLineRepository.TYPE_END_OF_PACK) {
+                packLineTypeSet.add(PackLineRepository.TYPE_END_OF_PACK);
+              }
+            });
+    return packLineTypeSet;
+  }
+
+  @Override
+  public String computeProductDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    String domain =
+        "self.isModel = false"
+            + " and (self.endDate = null or self.endDate > :__date__)"
+            + " and self.dtype = 'Product'";
+
+    if (appBaseService.getAppBase().getCompanySpecificProductFieldsSet() != null
+        && appBaseService.getAppBase().getCompanySpecificProductFieldsSet().stream()
+            .anyMatch(it -> "sellable".equals(it.getName()))
+        && saleOrder != null
+        && saleOrder.getCompany() != null) {
+      domain +=
+          " and (SELECT sellable "
+              + "FROM ProductCompany productCompany "
+              + "WHERE productCompany.product.id = self.id "
+              + "AND productCompany.company.id = "
+              + saleOrder.getCompany().getId()
+              + ") IS TRUE ";
+    } else {
+      domain += " and self.sellable = true ";
+    }
+
+    if (appSaleService.getAppSale().getEnableSalesProductByTradName()
+        && saleOrder != null
+        && saleOrder.getTradingName() != null
+        && saleOrder.getCompany() != null
+        && saleOrder.getCompany().getTradingNameSet() != null
+        && !saleOrder.getCompany().getTradingNameSet().isEmpty()) {
+      domain +=
+          " AND " + saleOrder.getTradingName().getId() + " member of self.tradingNameSellerSet";
+    }
+
+    // The standard way to do this would be to override the method in HR module.
+    // But here, we have to do this because overriding a sale service in hr module will prevent the
+    // override in supplychain, business-project, and business production module.
+    if (ModuleManager.isInstalled("axelor-human-resource")) {
+      domain += " AND self.expense = false ";
+    }
+
+    return domain;
+  }
+
+  @Override
+  public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      List<ComplementaryProduct> complementaryProducts)
+      throws AxelorException {
+
+    List<SaleOrderLine> newComplementarySOLines = new ArrayList<>();
+    if (saleOrderLine.getComplementarySaleOrderLineList() == null) {
+      saleOrderLine.setComplementarySaleOrderLineList(new ArrayList<>());
+    }
+
+    for (ComplementaryProduct complementaryProduct : complementaryProducts) {
+      Product product = complementaryProduct.getProduct();
+      if (product == null) {
+        continue;
+      }
+
+      SaleOrderLine complementarySOLine;
+      Optional<SaleOrderLine> complementarySOLineOpt =
+          saleOrderLine.getComplementarySaleOrderLineList().stream()
+              .filter(
+                  line -> line.getMainSaleOrderLine() != null && line.getProduct().equals(product))
+              .findFirst();
+      if (complementarySOLineOpt.isPresent()) {
+        complementarySOLine = complementarySOLineOpt.get();
+      } else {
+        complementarySOLine = new SaleOrderLine();
+        complementarySOLine.setSequence(saleOrderLine.getSequence());
+        complementarySOLine.setProduct(complementaryProduct.getProduct());
+        saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
+        newComplementarySOLines.add(complementarySOLine);
+      }
+
+      complementarySOLine.setQty(complementaryProduct.getQty());
+      this.computeProductInformation(complementarySOLine, saleOrder);
+      this.computeValues(saleOrder, complementarySOLine);
+      saleOrderLineRepo.save(complementarySOLine);
+    }
+
+    return newComplementarySOLines;
   }
 }

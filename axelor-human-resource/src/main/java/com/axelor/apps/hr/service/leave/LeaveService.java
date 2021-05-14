@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public interface LeaveService {
 
@@ -72,28 +74,28 @@ public interface LeaveService {
 
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void validate(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendValidationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void refuse(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
 
@@ -115,11 +117,11 @@ public interface LeaveService {
   public boolean isLeaveDay(User user, LocalDate date);
 
   /**
-   * Gets the leave for the given user for the given date.
+   * Gets the leaves for the given user for the given date.
    *
    * @param user
    * @param date
    * @return
    */
-  public LeaveRequest getLeave(User user, LocalDate date);
+  public List<LeaveRequest> getLeaves(User user, LocalDate date);
 }

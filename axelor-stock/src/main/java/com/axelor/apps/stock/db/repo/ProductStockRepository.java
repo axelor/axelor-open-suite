@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,14 +25,18 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ProductStockRepository extends ProductBaseRepository {
 
@@ -45,26 +49,39 @@ public class ProductStockRepository extends ProductBaseRepository {
   @Inject private StockLocationLineService stockLocationLineService;
 
   public Product save(Product product) {
-
-    if (!appBaseService.getAppBase().getCompanySpecificProductFieldsList().isEmpty()) {
-      ArrayList<Company> productCompanyList = new ArrayList<Company>();
+    WeightedAveragePriceService weightedAveragePriceService =
+        Beans.get(WeightedAveragePriceService.class);
+    Set<MetaField> specificProductFieldSet =
+        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    if (!specificProductFieldSet.isEmpty() && appBaseService.getAppBase().getEnableMultiCompany()) {
+      ArrayList<Company> productCompanyList = new ArrayList<>();
       if (product.getProductCompanyList() != null) {
         for (ProductCompany productCompany : product.getProductCompanyList()) {
           productCompanyList.add(productCompany.getCompany());
         }
       }
+      Mapper mapper = Mapper.of(Product.class);
       List<StockConfig> stockConfigList = Beans.get(StockConfigRepository.class).all().fetch();
       for (StockConfig stockConfig : stockConfigList) {
-        if (stockConfig.getCompany() != null) {
-          if (!productCompanyList.contains(stockConfig.getCompany())
-              && stockConfig.getReceiptDefaultStockLocation() != null
-              && (stockConfig.getCompany().getArchived() == null
-                  || !stockConfig.getCompany().getArchived())) {
-            ProductCompany productCompany = new ProductCompany();
-            productCompany.setCompany(stockConfig.getCompany());
-            productCompany.setProduct(product);
-            product.addProductCompanyListItem(productCompany);
+        if (stockConfig.getCompany() != null
+            && !productCompanyList.contains(stockConfig.getCompany())
+            && stockConfig.getReceiptDefaultStockLocation() != null
+            && (stockConfig.getCompany().getArchived() == null
+                || !stockConfig.getCompany().getArchived())) {
+          ProductCompany productCompany = new ProductCompany();
+          for (MetaField specificField : specificProductFieldSet) {
+            mapper.set(
+                productCompany,
+                specificField.getName(),
+                mapper.get(product, specificField.getName()));
           }
+          // specific case for avgPrice per company
+          productCompany.setAvgPrice(
+              weightedAveragePriceService.computeAvgPriceForCompany(
+                  product, stockConfig.getCompany()));
+          productCompany.setCompany(stockConfig.getCompany());
+          productCompany.setProduct(product);
+          product.addProductCompanyListItem(productCompany);
         }
       }
     }
