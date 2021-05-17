@@ -771,6 +771,7 @@
 "Work center group selection","Sélection du modèle de poste de charge",,
 "Work center group template","Modèle de groupe de poste de charge",,
 "Work center groups",,,
+"Work center is missing from prod process line %s-%s.","Le poste de charge est manquant dans la phase %s-%s.",,
 "Work center model","Modèles de poste de charge",,
 "Work center type","Type de poste de charge",,
 "Work centers","Postes de charge",,
