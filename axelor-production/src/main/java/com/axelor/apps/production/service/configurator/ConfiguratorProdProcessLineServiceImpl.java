@@ -150,7 +150,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     if (condition == null) {
       return true;
     }
-    
+
     Object computedConditions = configuratorService.computeFormula(condition, jsonAttributes);
     if (computedConditions == null) {
       throw new AxelorException(
@@ -161,7 +161,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
                   IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION,
                   confProdProcessLine.getId())));
     }
-    
+
     return (boolean) computedConditions;
   }
 }

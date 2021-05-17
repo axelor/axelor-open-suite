@@ -140,7 +140,7 @@ public interface IExceptionMessage {
 
   String CONFIGURATOR_BOM_INCONSISTENT_CONDITION = /*$$(*/
       "The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s." /*)*/;
-  
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
@@ -212,7 +212,7 @@ public interface IExceptionMessage {
 
   String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME = /*$$(*/
       "Name cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
-  
+
   String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION = /*$$(*/
       "The condition formula to generate the prod process line returns null value or is not consistent. Please correct on prod process line configurator id : %s." /*)*/;
 }

@@ -176,7 +176,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     if (condition == null) {
       return true;
     }
-    
+
     Object computedConditions = configuratorService.computeFormula(condition, jsonAttributes);
     if (computedConditions == null) {
       throw new AxelorException(
@@ -187,7 +187,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
                   IExceptionMessage.CONFIGURATOR_BOM_INCONSISTENT_CONDITION,
                   configuratorBOM.getId())));
     }
-    
+
     return (boolean) computedConditions;
   }
 }
