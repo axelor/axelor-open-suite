@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -294,6 +294,11 @@
                     <text-property name="displayName">is_cons_pro_on_operation</text-property>
                     <text-property name="heading">is_cons_pro_on_operation</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">mo_comment_from_sale_order</property>
+                    <property name="alias">mo_comment_from_sale_order</property>
+                    <property name="analysis">dimension</property>
+                </structure>
             </list-property>
             <list-property name="filter">
                 <structure>
@@ -396,6 +401,11 @@
                     <structure>
                         <property name="position">18</property>
                         <property name="name">mo_comment_from_sale_order</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">sale_order</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -511,13 +521,19 @@
                     <property name="nativeName">mo_comment_from_sale_order</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">sale_order</property>
+                    <property name="nativeName">sale_order</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT ManufOrder.id,ManufOrder.note AS note, MetaFile.file_path AS logo_path,
 Company.height as logo_height,
 Company.width as logo_width,
 ManufOrder.manuf_order_seq, BOM.name as bom_name, Product.name as product_name,
 Product.code as product_code, ManufOrder.qty, Unit.label_to_printing as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet,Product.bar_code as bar_code,
-BarCodeFile.file_path as barcode_picture, ManufOrder.status_select, ManufOrder.is_cons_pro_on_operation, ManufOrder.mo_comment_from_sale_order
+BarCodeFile.file_path as barcode_picture, ManufOrder.status_select, ManufOrder.is_cons_pro_on_operation, ManufOrder.mo_comment_from_sale_order, SaleOrder.full_name as sale_order
 FROM production_manuf_order AS ManufOrder
 LEFT JOIN base_company AS Company ON (Company.id = ManufOrder.company)
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
@@ -526,6 +542,7 @@ LEFT JOIN base_product as Product ON (Product.id = BOM.product)
 left join meta_file as BarCodeFile on (BarCodeFile.id = Product.bar_code)
 LEFT JOIN base_unit AS Unit ON (Unit.id = BOM.unit)
 LEFT JOIN production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
+LEFT JOIN sale_sale_order AS SaleOrder ON (SaleOrder.id = ManufOrder.sale_order)
 WHERE ManufOrder.id IN (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1872,6 +1889,12 @@ INNER JOIN
                     <expression name="expression" type="javascript">dataSetRow["mo_comment_from_sale_order"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">sale_order</property>
+                    <text-property name="displayName">sale_order</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["sale_order"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="4231">
                 <property name="width">11.135416666666666in</property>
@@ -2208,6 +2231,7 @@ INNER JOIN
                                                     <property name="marginTop">1pt</property>
                                                     <property name="marginLeft">2pt</property>
                                                     <property name="textAlign">left</property>
+                                                    <property name="display">inline</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="paramBindings">
                                                         <structure>
@@ -2232,7 +2256,12 @@ INNER JOIN
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : &amp;nbsp;]]></text-property>
+                                                </text>
+                                                <text id="4851">
+                                                    <property name="display">inline</property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["sale_order"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="4760">
@@ -3700,9 +3729,9 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4578">
+                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="4173">
@@ -4265,12 +4294,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="backgroundColor">#FFFFFF</property>
                                             <property name="textAlign">center</property>
                                             <image id="4531">
+                                                <expression name="altText">""</expression>
                                                 <structure name="toc"/>
                                                 <property name="source">file</property>
                                                 <property name="fitToContainer">true</property>
                                                 <property name="proportionalScale">true</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
-                                                <expression name="altText">""</expression>
                                             </image>
                                         </cell>
                                     </row>
@@ -4679,9 +4708,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopWidth">thin</property>
                                                             <property name="textAlign">center</property>
                                                             <image id="4586">
+                                                                <expression name="altText">""</expression>
                                                                 <property name="source">file</property>
                                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                                                <expression name="altText">""</expression>
                                                             </image>
                                                         </cell>
                                                         <cell id="4509">
