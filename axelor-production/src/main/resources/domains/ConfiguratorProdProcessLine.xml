@@ -8,10 +8,20 @@
         <many-to-one name="configuratorProdProcess" title="Production process"
                      ref="com.axelor.apps.production.db.ConfiguratorProdProcess"/>
         <string name="name" title="Label"/>
+        <string name="nameFormula" title="Label" large="true"/>
+        <boolean name="defNameAsFormula" title="Define with a script" default="false"/>
+        
         <integer name="priority" title="Priority"/>
+        <string name="priorityFormula" title="Priority" large="true"/>
+        <boolean name="defPriorityAsFormula" title="Define with a script" default="false"/>
+        
         <many-to-one required="true" name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
         <boolean name="outsourcing" title="Outsourcing"/>
+        
         <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
+        <string name="stockLocationFormula" title="Stock location" large="true"/>
+        <boolean name="defStockLocationAsFormula" title="Define with a script" default="false"/>
+        
         <string name="description" title="Description" large="true"/>
 
         <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
@@ -25,6 +35,8 @@
         <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
         <string name="durationPerCycleFormula" title="Duration / cycle (hh:mm)"/>
         <boolean name="defDurationFormula" title="Define with a script"/>
+        
+        <string name="useCondition" title="Condition" large="true"/>
     </entity>
 
 </domain-models>

@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.imports;
 
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
 import com.axelor.meta.db.MetaFile;
 
 public interface ImportCityService {
@@ -31,5 +32,5 @@ public interface ImportCityService {
    */
   public ImportHistory importCity(String typeSelect, MetaFile dataFile);
 
-  public MetaFile downloadZip(String downloadFileName, boolean isDump) throws Exception;
+  public MetaFile downloadZip(String downloadFileName, GEONAMES_FILE geonamesFile) throws Exception;
 }
