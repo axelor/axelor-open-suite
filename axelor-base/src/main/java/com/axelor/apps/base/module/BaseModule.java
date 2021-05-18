@@ -39,6 +39,8 @@ import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -230,5 +232,6 @@ public class BaseModule extends AxelorModule {
     bind(PrintTemplateLineService.class).to(PrintTemplateLineServiceImpl.class);
     bind(AdvancedImportRepository.class).to(AdvancedImportBaseRepository.class);
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
+    bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
   }
 }

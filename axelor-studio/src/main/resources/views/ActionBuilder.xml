@@ -15,7 +15,8 @@
       	  <field name="isJson" onChange="action-action-builder-method-set-views,action-action-builder-type-select-change" colSpan="2"/>
 	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
 	      <spacer name="appBuilderSpacer" if="!__config__.app.getApp('bpm').getEnableAppBuilder()"/>
-	      <field name="name" colSpan="9" required="true"/>
+	      <field name="name" required="true"/>
+	      <field name="xmlId" colSpan="3"/>
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
 	      <panel name="modelPanel" colSpan="6" itemSpan="12">
 		      <field name="model"  widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
@@ -94,5 +95,10 @@
   <action-method name="action-action-builder-method-set-views">
   	<call class="com.axelor.studio.web.ActionBuilderController" method="setViews" if="typeSelect == 3"/>
   </action-method>
+  
+  <action-method name="action-mapper-method-create-script-from-json">
+  	<call class="com.axelor.studio.web.ActionBuilderController" method="createMapperScript"/>
+  </action-method>
+  
   
 </object-views>
