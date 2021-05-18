@@ -2,12 +2,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
-    <grid name="delay-reason-grid" title="Delay reason" model="com.axelor.apps.account.db.DelayReason" orderBy="name">
+    <grid name="payment-delay-reason-grid" title="Payment delay reason" model="com.axelor.apps.account.db.PaymentDelayReason" orderBy="name">
     	<field name="name"/>
-    	<field name="description"/>
+    	<field name="description" widget="html"/>
     </grid>
     
-    <form name="delay-reason-form" title="Delay reason" model="com.axelor.apps.account.db.DelayReason" width="large">
+    <form name="payment-delay-reason-form" title="Payment delay reason" model="com.axelor.apps.account.db.PaymentDelayReason" width="large">
     	<panel name="mainPanel">
     		<field name="name"/>
     		<field name="description" widget="html" colSpan="12"/>

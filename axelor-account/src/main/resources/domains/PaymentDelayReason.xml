@@ -4,7 +4,7 @@
 
     <module name="account" package="com.axelor.apps.account.db" />
 
-    <entity name="DelayReason">
+    <entity name="PaymentDelayReason">
 
         <string name="name" title="Reason of late payment" required="true" namecolumn="true"/>
         <string name="description" title="Description" large="true"/>
