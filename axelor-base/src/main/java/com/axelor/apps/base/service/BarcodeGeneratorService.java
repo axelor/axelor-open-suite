@@ -25,4 +25,8 @@ public interface BarcodeGeneratorService {
 
   InputStream createBarCode(String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
       throws AxelorException;
+
+  boolean checkSerialNumberConsistency(
+      String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
+      throws AxelorException;
 }

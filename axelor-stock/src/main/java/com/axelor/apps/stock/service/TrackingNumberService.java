@@ -141,6 +141,9 @@ public class TrackingNumberService {
     AppStock appStock = Beans.get(AppStockService.class).getAppStock();
     if (appStock != null && appStock.getActivateBarCodeGeneration()) {
       trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
+      if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
+        trackingNumber.setSerialNumber(seq);
+      }
     }
 
     return trackingNumber;

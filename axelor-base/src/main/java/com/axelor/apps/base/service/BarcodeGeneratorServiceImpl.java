@@ -357,4 +357,72 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
         barcodeFormat,
         barcodeLength);
   }
+
+  @Override
+  public boolean checkSerialNumberConsistency(
+      String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
+      throws AxelorException {
+    if (serialno != null && barcodeTypeConfig != null) {
+      BarcodeFormat barcodeFormat = null;
+      switch (barcodeTypeConfig.getName()) {
+        case "AZTEC":
+          barcodeFormat = BarcodeFormat.AZTEC;
+          break;
+
+        case "CODABAR":
+          barcodeFormat = BarcodeFormat.CODABAR;
+          serialno = checkTypeForCodabar(serialno, barcodeFormat);
+          break;
+
+        case "CODE_39":
+          barcodeFormat = BarcodeFormat.CODE_39;
+          serialno = checkTypeForCode39(serialno, barcodeFormat);
+          break;
+
+        case "CODE_128":
+          barcodeFormat = BarcodeFormat.CODE_128;
+          break;
+
+        case "DATA_MATRIX":
+          barcodeFormat = BarcodeFormat.DATA_MATRIX;
+          break;
+
+        case "EAN_8":
+          barcodeFormat = BarcodeFormat.EAN_8;
+          serialno = checkTypeForEan8(serialno, barcodeFormat, isPadding);
+          break;
+
+        case "ITF":
+          barcodeFormat = BarcodeFormat.ITF;
+          serialno = checkTypeForItf(serialno, barcodeFormat, isPadding);
+          break;
+
+        case "PDF_417":
+          barcodeFormat = BarcodeFormat.PDF_417;
+          serialno = checkTypeForPdf417(serialno, barcodeFormat, isPadding);
+          break;
+
+        case "QR_CODE":
+          barcodeFormat = BarcodeFormat.QR_CODE;
+          break;
+
+        case "UPC_A":
+          barcodeFormat = BarcodeFormat.UPC_A;
+          serialno = checkTypeForUpca(serialno, barcodeFormat, isPadding);
+          break;
+
+        case "EAN_13":
+          barcodeFormat = BarcodeFormat.EAN_13;
+          serialno = checkTypeForEan13(serialno, barcodeFormat, isPadding);
+          break;
+
+        default:
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.BARCODE_GENERATOR_9));
+      }
+      return true;
+    }
+    return false;
+  }
 }
