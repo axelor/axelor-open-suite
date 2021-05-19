@@ -173,7 +173,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
       throws AxelorException {
     String condition = configuratorBOM.getUseCondition();
     // no condition = we always generate the bill of materials
-    if (condition == null) {
+    if (condition == null || condition.trim().isEmpty()) {
       return true;
     }
 
