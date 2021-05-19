@@ -157,7 +157,7 @@ public class MoveToolService {
       return moveLineRepository
           .all()
           .filter(
-              "self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0",
+              "self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining != 0",
               invoice.getMove(),
               invoice.getPartnerAccount())
           .fetchOne();

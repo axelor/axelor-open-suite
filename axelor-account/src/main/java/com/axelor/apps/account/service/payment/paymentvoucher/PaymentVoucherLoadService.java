@@ -82,7 +82,7 @@ public class PaymentVoucherLoadService {
     String query =
         "self.partner = ?1 "
             + "and self.account.useForPartnerBalance = 't' "
-            + "and self.amountRemaining > 0 "
+            + "and self.amountRemaining != 0 "
             + "and (self.move.statusSelect = ?3 OR self.move.statusSelect = ?4)"
             + "and self.move.ignoreInDebtRecoveryOk = 'f' "
             + "and self.move.company = ?2 "
