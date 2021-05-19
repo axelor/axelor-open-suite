@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.studio.service.mapper;
 
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 
-public interface FixedAssetLineService {
+public interface MapperScriptGeneratorService {
 
-  public void realize(FixedAssetLine fixedAssetLine) throws AxelorException;
-
-  public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException;
+  @CallMethod
+  public String generate(String mapperJson);
 }

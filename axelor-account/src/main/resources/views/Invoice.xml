@@ -383,6 +383,7 @@ InvoiceSet.length > 0))"
         		<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
+				<field name="displayStockMoveOnInvoicePrinting" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
 				<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" hidden="true"/>
 				<panel name="descriptionToDisplayOnInvoicePanel" title="Comment to display on invoice" colSpan="12">
 				  <field name="note" widget="html" colSpan="12" showTitle="false"/>
@@ -581,7 +582,7 @@ InvoiceSet.length > 0))"
 				<field name="$format" title="Format" type="integer" selection="invoice.report.format" colSpan="12" required="true"/>
 			</panel>
 			<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" showIf="$reportType ==1 || $reportType==3"/>
-			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print" readonlyIf="$reportType==null || $format==null"/>
+			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close" readonlyIf="$reportType==null || $format==null"/>
 		</panel>
 	</form>
 
@@ -841,6 +842,7 @@ InvoiceSet.length > 0))"
 			<action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
       <action name="action-invoice-record-set-dummy-field-language"/>
         <action name="action-invoice-method-set-default-group-products-on-printings"/>
+        <action name="action-invoice-record-set-display-stock-move-on-invoice-printing" if="__config__.app.isApp('supplychain')"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >

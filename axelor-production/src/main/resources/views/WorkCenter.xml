@@ -89,7 +89,7 @@
      <action-record name="action-work-center-record-default" model="com.axelor.apps.production.db.WorkCenter">
 		     <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
 		     <field name="product" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null" />
-		     <field name="workCenterTypeSelect" expr="#{__parent__.workCenterTypeSelect}" if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>    
+		     <field name="workCenterTypeSelect" expr="#{__parent__.workCenterTypeSelect}" if="#{__parent__ != null || __parent__._model == 'com.axelor.apps.production.db.WorkCenterGroup'}"/>
     </action-record>
 
    <action-attrs name="action-work-center-attrs-set-readonly-on-new-load">

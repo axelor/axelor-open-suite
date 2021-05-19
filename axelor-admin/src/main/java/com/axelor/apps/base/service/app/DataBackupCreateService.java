@@ -144,6 +144,7 @@ public class DataBackupCreateService {
       errorsCount = checkErrors(dataBackup, metaModelList, tempDirectoryPath, subClassesMap);
 
       dataBackup.setFetchLimit(fetchLimit);
+      fileNameList.clear();
     }
 
     if (errorsCount == 0) {
@@ -187,6 +188,10 @@ public class DataBackupCreateService {
             }
             if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
               temcsv.setSearch("self.code = :code");
+            }
+            if (!AutoImportModelMap.containsKey(csvInput.getTypeName())
+                && !((Class.forName(metaModel.getFullName()).getSuperclass()).equals(App.class))) {
+              temcsv.setSearch("self.importId = :importId");
             }
             simpleCsvs.add(temcsv);
           } else {
@@ -472,6 +477,8 @@ public class DataBackupCreateService {
         csvInput.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
       } else if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
         csvInput.setSearch("self.code = :code");
+      } else {
+        csvInput.setSearch("self.importId = :importId");
       }
     } catch (ClassNotFoundException e) {
     }

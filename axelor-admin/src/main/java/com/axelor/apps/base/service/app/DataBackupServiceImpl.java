@@ -59,12 +59,9 @@ public class DataBackupServiceImpl implements DataBackupService {
 
   private ExecutorService executor = Executors.newCachedThreadPool();
 
-  @Transactional
   @Override
   public void createBackUp(DataBackup dataBackup) {
-    DataBackup obj = dataBackupRepository.find(dataBackup.getId());
-    obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_IN_PROGRESS);
-    dataBackupRepository.save(obj);
+    DataBackup obj = setStatus(dataBackup);
     if (dataBackup.getUpdateImportId()) {
       updateImportId();
     }
@@ -106,7 +103,7 @@ public class DataBackupServiceImpl implements DataBackupService {
               obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_ERROR);
             }
             obj.setLogMetaFile(logFile);
-            Beans.get(DataBackupRepository.class).save(obj);
+            dataBackupRepository.save(obj);
             LOG.info("Data BackUp Saved");
             return true;
           }
@@ -114,12 +111,9 @@ public class DataBackupServiceImpl implements DataBackupService {
     runner.run(job);
   }
 
-  @Transactional
   @Override
   public void restoreBackUp(DataBackup dataBackup) {
-    DataBackup obj = dataBackupRepository.find(dataBackup.getId());
-    obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_IN_PROGRESS);
-    dataBackupRepository.save(obj);
+    DataBackup obj = setStatus(dataBackup);
 
     try {
       executor.submit(
@@ -171,6 +165,13 @@ public class DataBackupServiceImpl implements DataBackupService {
 
   public boolean sequencesOrMrpLineTypesExist() {
     return restoreService.sequencesOrMrpLineTypesExist();
+  }
+
+  @Transactional
+  protected DataBackup setStatus(DataBackup dataBackup) {
+    DataBackup obj = dataBackupRepository.find(dataBackup.getId());
+    obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_IN_PROGRESS);
+    return dataBackupRepository.save(obj);
   }
 
   @Transactional

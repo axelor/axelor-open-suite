@@ -214,7 +214,19 @@
 						configProdProcessLine += "${cppl.name}"
 					}
 					configProdProcessLine += """</name>
+					<nameFormula>"""
+					if (cppl.nameFormula != null) {
+						configProdProcessLine += "${cppl.nameFormula}"
+					}
+					configProdProcessLine += """</nameFormula>
+					<defNameAsFormula>${cppl.defNameAsFormula}</defNameAsFormula>
 					<priority>${cppl.priority}</priority>
+					<priorityFormula>"""
+					if (cppl.priorityFormula != null) {
+						configProdProcessLine += "${cppl.priorityFormula}"
+					}
+					configProdProcessLine += """</priorityFormula>
+					<defPriorityAsFormula>${cppl.defPriorityAsFormula}</defPriorityAsFormula>
 					<workCenter>${cppl.workCenter?.id}</workCenter>
 					<outsourcing>${cppl.outsourcing}</outsourcing>
 					<stockLocation>"""
@@ -222,6 +234,12 @@
 						configProdProcessLine += "${cppl.stockLocation?.id}"
 					}
 					configProdProcessLine += """</stockLocation>
+					<stockLocationFormula>"""
+					if (cppl.stockLocationFormula != null) {
+						configProdProcessLine += "${cppl.stockLocationFormula}"
+					}
+					configProdProcessLine += """</stockLocationFormula>
+					<defStockLocationAsFormula>${cppl.defStockLocationAsFormula}</defStockLocationAsFormula>
 					<description>"""
 					if (cppl.description != null) {
 						configProdProcessLine += "${cppl.description}"
@@ -248,6 +266,11 @@
 					}
 					configProdProcessLine += """</durationPerCycleFormula>
 					<defDurationFormula>${cppl.defDurationFormula}</defDurationFormula>
+					<useCondition>"""
+					if (cppl.useCondition != null) {
+						configProdProcessLine += "${cppl.useCondition}"
+					}
+					configProdProcessLine += """</useCondition>
 				</configuratorProdProcessLine>
 		"""
 		return configProdProcessLine
@@ -335,6 +358,8 @@
 			<importId>${cb.configuratorProdProcess?.id}</importId>
 			<statusSelect>${cb.configuratorProdProcess?.statusSelect}</statusSelect>
 			<name>${cb.configuratorProdProcess?.name}</name>
+			<nameFormula>${cb.configuratorProdProcess?.nameFormula}</nameFormula>
+			<defNameAsFormula>${cb.configuratorProdProcess?.defNameAsFormula}</defNameAsFormula>
 			<code>${cb.configuratorProdProcess?.code}</code>
 			<codeFormula>${cb.configuratorProdProcess?.codeFormula}</codeFormula>
 			<defCodeAsFormula>${cb.configuratorProdProcess?.defCodeAsFormula}</defCodeAsFormula>

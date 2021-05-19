@@ -5,12 +5,32 @@
     <form name="configurator-prod-process-line-form" title="Configurator Phases"
           model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
         <panel name="mainPanel">
-            <field name="name"/>
-            <field name="priority"/>
+        	<field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+                   x-code-syntax="groovy"/>
+            <panel name="namePanel" title="Label">
+                <field name="defNameAsFormula" colSpan="6"/>
+                <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
+                <field name="nameFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defNameAsFormula"/>
+            </panel>
+            <panel name="priorityPanel" title="Priority">
+                <field name="defPriorityAsFormula" colSpan="6"/>
+                <field name="priority" colSpan="12" showIf="!defPriorityAsFormula"/>
+                <field name="priorityFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defPriorityAsFormula"/>
+            </panel>
             <field name="workCenter"/>
-            <field name="outsourcing"/>
-            <field name="stockLocation"/>
+            <field name="outsourcing" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
             <field name="description"/>
+            <panel name="stockLocationPanel" title="Stock location">
+                <field name="defStockLocationAsFormula" colSpan="6"/>
+                <field name="stockLocation" colSpan="12" showIf="!defStockLocationAsFormula"/>
+                <field name="stockLocationFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defStockLocationAsFormula"/>
+            </panel>
         </panel>
         <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
             <panel name="minCapacityPanel">

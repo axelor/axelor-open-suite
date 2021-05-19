@@ -23,6 +23,11 @@
 		<option value="geonames">Geonames</option>
 	</selection>
 
+    <selection name="base.city.import.type.select">
+        <option value="manual">Manual</option>
+        <option value="auto">Auto</option>
+    </selection>
+	
 	<selection name="base.city.auto.import.type.select">
 		<option value="FR.zip">France</option>
 		<option value="allCountries.zip">All Countries</option>

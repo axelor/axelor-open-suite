@@ -176,6 +176,18 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     if (condition == null) {
       return true;
     }
-    return (boolean) configuratorService.computeFormula(condition, jsonAttributes);
+
+    Object computedConditions = configuratorService.computeFormula(condition, jsonAttributes);
+    if (computedConditions == null) {
+      throw new AxelorException(
+          configuratorBOM,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              String.format(
+                  IExceptionMessage.CONFIGURATOR_BOM_INCONSISTENT_CONDITION,
+                  configuratorBOM.getId())));
+    }
+
+    return (boolean) computedConditions;
   }
 }
