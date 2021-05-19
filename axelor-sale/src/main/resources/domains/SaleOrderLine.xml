@@ -80,6 +80,9 @@
 	<boolean name="discountsNeedReview" readonly="true"/>
 
 	<decimal name="discountDerogation" title="Discount derogation (%)" min="0" max="100"/>
+	
+	<string name="lineProductionComment" title="Line production commentary" large="true"/>
+	
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
 	<extra-code>
