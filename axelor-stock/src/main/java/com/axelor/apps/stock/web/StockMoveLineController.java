@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -148,10 +149,15 @@ public class StockMoveLineController {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMoveLine.getStockMove().getId());
     }
 
-    boolean _hasWarranty = false, _isPerishable = false;
+    boolean _hasWarranty = false, _isPerishable = false, _isSeqUsedForSerialNumber = false;
     if (stockMoveLine.getProduct() != null) {
-      _hasWarranty = stockMoveLine.getProduct().getHasWarranty();
-      _isPerishable = stockMoveLine.getProduct().getIsPerishable();
+      Product product = stockMoveLine.getProduct();
+      _hasWarranty = product.getHasWarranty();
+      _isPerishable = product.getIsPerishable();
+      if (product.getTrackingNumberConfiguration() != null) {
+        _isSeqUsedForSerialNumber =
+            product.getTrackingNumberConfiguration().getUseTrackingNumberSeqAsSerialNbr();
+      }
     }
     response.setView(
         ActionView.define(I18n.get(IExceptionMessage.TRACK_NUMBER_WIZARD_TITLE))
@@ -166,6 +172,7 @@ public class StockMoveLineController {
             .context("_stockMoveLine", stockMoveLine)
             .context("_hasWarranty", _hasWarranty)
             .context("_isPerishable", _isPerishable)
+            .context("_isSeqUsedForSerialNumber", _isSeqUsedForSerialNumber)
             .map());
   }
 

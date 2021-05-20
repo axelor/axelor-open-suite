@@ -11,6 +11,10 @@
 		<boolean name="isRequiredShipmentSupplierDetails" title="Require to fill the shipment information"/>
         <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
         <many-to-one name="stockUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"></many-to-one>
+        
+        <boolean name="activateBarCodeGeneration" title="Activate bar code generation for tracking number" default="false"/>
+		<boolean name="editTrackingNumberBarcodeType" title="Edit tracking number barcode type" default="false"/>
+		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 
         <track>
         	<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
