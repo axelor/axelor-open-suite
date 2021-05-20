@@ -147,7 +147,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       throws AxelorException {
     String condition = confProdProcessLine.getUseCondition();
     // no condition = we always generate the prod process line
-    if (condition == null) {
+    if (condition == null || condition.trim().isEmpty()) {
       return true;
     }
 
