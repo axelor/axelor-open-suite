@@ -389,9 +389,9 @@
 					<field name="originalInvoice" readonly="true" showIf="originalInvoice" form-view="invoice-form" grid-view="invoice-grid"/>
 					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
 				</panel>
-				<field name="paymentDelayReason" canNew="false" canEdit="false"/>
-				<field name="nextActionDate"/>
-				<field name="paymentDelayReasonComments" widget="html" colSpan="12"/>
+				<field name="paymentDelayReason" canNew="false" canEdit="false" showIf="statusSelect == 3"/>
+				<field name="nextActionDate" showIf="statusSelect == 3"/>
+				<field name="paymentDelayReasonComments" widget="html" colSpan="12" showIf="statusSelect == 3"/>
 				<panel colSpan="12"  name="irrecoverablePanel" title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>
 					<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
