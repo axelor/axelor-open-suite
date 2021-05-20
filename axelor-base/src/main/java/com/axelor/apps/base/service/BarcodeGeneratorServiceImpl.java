@@ -363,7 +363,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
       String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
       throws AxelorException {
     if (serialno != null && barcodeTypeConfig != null) {
-      BarcodeFormat barcodeFormat = null;
+      BarcodeFormat barcodeFormat;
       switch (barcodeTypeConfig.getName()) {
         case "AZTEC":
           barcodeFormat = BarcodeFormat.AZTEC;

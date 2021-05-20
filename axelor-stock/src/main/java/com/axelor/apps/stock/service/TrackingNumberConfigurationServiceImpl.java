@@ -6,14 +6,25 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
-public class TrackingNumberConfiguratorService {
+public class TrackingNumberConfigurationServiceImpl implements TrackingNumberConfigurationService {
 
-  @Inject private SequenceService sequenceService;
-  @Inject private BarcodeGeneratorService barcodeGeneratorService;
+  protected SequenceService sequenceService;
+  protected BarcodeGeneratorService barcodeGeneratorService;
+  protected AppBaseService appBaseService;
 
+  @Inject
+  public TrackingNumberConfigurationServiceImpl(
+      SequenceService sequenceService,
+      BarcodeGeneratorService barcodeGeneratorService,
+      AppBaseService appBaseService) {
+    this.sequenceService = sequenceService;
+    this.barcodeGeneratorService = barcodeGeneratorService;
+    this.appBaseService = appBaseService;
+  }
+
+  @Override
   public boolean checkSequenceAndBarcodeTypeConfigConsistency(TrackingNumberConfiguration config)
       throws AxelorException {
     if (config.getBarcodeTypeConfig() != null
@@ -22,7 +33,7 @@ public class TrackingNumberConfiguratorService {
       Sequence sequence = config.getSequence();
       String testSeq =
           sequenceService.computeTestSeq(
-              sequence, Beans.get(AppBaseService.class).getTodayDate(sequence.getCompany()));
+              sequence, appBaseService.getTodayDate(sequence.getCompany()));
       return barcodeGeneratorService.checkSerialNumberConsistency(
           testSeq, config.getBarcodeTypeConfig(), false);
     }

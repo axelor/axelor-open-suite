@@ -1,7 +1,7 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import com.axelor.apps.stock.service.TrackingNumberConfiguratorService;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -15,7 +15,7 @@ public class TrackingNumberConfigurationController {
     try {
       TrackingNumberConfiguration config =
           request.getContext().asType(TrackingNumberConfiguration.class);
-      Beans.get(TrackingNumberConfiguratorService.class)
+      Beans.get(TrackingNumberConfigurationService.class)
           .checkSequenceAndBarcodeTypeConfigConsistency(config);
     } catch (Exception e) {
       response.setError(e.getLocalizedMessage());

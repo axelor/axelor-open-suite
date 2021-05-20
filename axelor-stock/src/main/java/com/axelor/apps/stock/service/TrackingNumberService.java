@@ -31,7 +31,6 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,6 +42,8 @@ public class TrackingNumberService {
   @Inject private SequenceService sequenceService;
 
   @Inject private TrackingNumberRepository trackingNumberRepo;
+
+  @Inject private AppStockService appStockService;
 
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
@@ -138,7 +139,7 @@ public class TrackingNumberService {
     trackingNumber.setTrackingNumberSeq(seq);
 
     // In case of barcode generation, retrieve the one set on tracking number configuration
-    AppStock appStock = Beans.get(AppStockService.class).getAppStock();
+    AppStock appStock = appStockService.getAppStock();
     if (appStock != null && appStock.getActivateBarCodeGeneration()) {
       trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
       if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
