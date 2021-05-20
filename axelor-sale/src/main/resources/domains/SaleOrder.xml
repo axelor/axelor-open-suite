@@ -127,6 +127,9 @@
 	
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 	
+	<date name="lastReminderDate" title="Last reminder"/>
+	<string name="lastReminderComments" title="Comment" large="true"/>
+	
  	<unique-constraint columns="saleOrderSeq,company"/>
  	
  	<finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
