@@ -799,5 +799,15 @@
 		<view type="grid" name="fec-import-grid"/>
 		<view type="form" name="fec-import-form"/>
 	</action-view>
+	
+	<!-- Delay Reason -->
+	
+	<menuitem name="debt-recovery-root-conf-payment-delay-reason" parent="debt-recovery-root-conf" title="Payment delay reasons" action="debt.recovery.root.conf.payment.delay.reason" />
+		
+	<action-view name="debt.recovery.root.conf.payment.delay.reason" title="Payment delay reason" model="com.axelor.apps.account.db.PaymentDelayReason" >
+		<view type="grid" name="payment-delay-reason-grid"/>
+		<view type="form" name="payment-delay-reason-form"/>
+	</action-view>
+	
 		
 </object-views>
