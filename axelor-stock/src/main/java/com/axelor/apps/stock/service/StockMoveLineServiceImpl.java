@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Product;
@@ -1114,6 +1115,21 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           trackingNumber.setNote(trackingNumberItem.get("note").toString());
         }
         trackingNumber.setProduct(stockMoveLine.getProduct());
+
+        if (stockMoveLine.getProduct() != null) {
+          // In case of barcode generation, retrieve the one set on tracking number configuration
+          AppStock appStock = appStockService.getAppStock();
+          TrackingNumberConfiguration trackingNumberConfiguration =
+              stockMoveLine.getProduct().getTrackingNumberConfiguration();
+          if (appStock != null && appStock.getActivateBarCodeGeneration()) {
+            trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
+            if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
+              trackingNumber.setSerialNumber(trackingNumber.getTrackingNumberSeq());
+            }
+            // It will launch barcode generation
+            trackingNumberRepo.save(trackingNumber);
+          }
+        }
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
