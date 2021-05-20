@@ -41,6 +41,7 @@ import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -952,44 +953,49 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
   @Override
   public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
-      SaleOrderLine saleOrderLine,
-      SaleOrder saleOrder,
-      List<ComplementaryProduct> complementaryProducts)
+      ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
     List<SaleOrderLine> newComplementarySOLines = new ArrayList<>();
+    if (saleOrderLine.getMainSaleOrderLine() != null) {
+      return newComplementarySOLines;
+    }
+
     if (saleOrderLine.getComplementarySaleOrderLineList() == null) {
       saleOrderLine.setComplementarySaleOrderLineList(new ArrayList<>());
     }
 
-    for (ComplementaryProduct complementaryProduct : complementaryProducts) {
-      Product product = complementaryProduct.getProduct();
-      if (product == null) {
-        continue;
-      }
+    SaleOrderLine complementarySOLine =
+        getOrCreateComplementryLine(
+            complementaryProduct.getProduct(), saleOrderLine, newComplementarySOLines);
 
-      SaleOrderLine complementarySOLine;
-      Optional<SaleOrderLine> complementarySOLineOpt =
-          saleOrderLine.getComplementarySaleOrderLineList().stream()
-              .filter(
-                  line -> line.getMainSaleOrderLine() != null && line.getProduct().equals(product))
-              .findFirst();
-      if (complementarySOLineOpt.isPresent()) {
-        complementarySOLine = complementarySOLineOpt.get();
-      } else {
-        complementarySOLine = new SaleOrderLine();
-        complementarySOLine.setSequence(saleOrderLine.getSequence());
-        complementarySOLine.setProduct(complementaryProduct.getProduct());
-        saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
-        newComplementarySOLines.add(complementarySOLine);
-      }
-
-      complementarySOLine.setQty(complementaryProduct.getQty());
-      this.computeProductInformation(complementarySOLine, saleOrder);
-      this.computeValues(saleOrder, complementarySOLine);
-      saleOrderLineRepo.save(complementarySOLine);
-    }
-
+    complementarySOLine.setQty(complementaryProduct.getQty());
+    complementarySOLine.setIsComplementaryPartnerProductsHandled(
+        complementaryProduct.getGenerationTypeSelect()
+            == ComplementaryProductRepository.GENERATION_TYPE_SALE_ORDER);
+    this.computeProductInformation(complementarySOLine, saleOrder);
+    this.computeValues(saleOrder, complementarySOLine);
+    saleOrderLineRepo.save(complementarySOLine);
     return newComplementarySOLines;
+  }
+
+  protected SaleOrderLine getOrCreateComplementryLine(
+      Product product, SaleOrderLine saleOrderLine, List<SaleOrderLine> newComplementarySOLines) {
+    SaleOrderLine complementarySOLine;
+    Optional<SaleOrderLine> complementarySOLineOpt =
+        saleOrderLine.getComplementarySaleOrderLineList().stream()
+            .filter(
+                line -> line.getMainSaleOrderLine() != null && line.getProduct().equals(product))
+            .findFirst();
+    if (complementarySOLineOpt.isPresent()) {
+      complementarySOLine = complementarySOLineOpt.get();
+    } else {
+      complementarySOLine = new SaleOrderLine();
+      complementarySOLine.setSequence(saleOrderLine.getSequence());
+      complementarySOLine.setProduct(product);
+      saleOrderLine.addComplementarySaleOrderLineListItem(complementarySOLine);
+      newComplementarySOLines.add(complementarySOLine);
+    }
+    return complementarySOLine;
   }
 }

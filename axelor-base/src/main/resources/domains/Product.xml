@@ -147,6 +147,8 @@
         
         <boolean name="expense" title="Expense"/>
 
+		<unique-constraint columns="product,company"/>
+
 		<extra-code>
 	   		<![CDATA[
 				// PRODUCT TYPE SELECT

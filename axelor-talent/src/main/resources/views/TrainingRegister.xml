@@ -21,10 +21,10 @@
 		<panel name="detailPanel">
 			<field name="training" readonly="true"/>
 			<field name="trainingSession" onChange="action-training-session-change"/>
-			<field name="employee" onChange="action-training-register-employee-change-method"/>
-			<spacer name="employeeSpacer"/>
 			<field name="fromDate" onChange="action-training-register-from-date-change-method"/>
 			<field name="toDate" onChange="action-training-register-to-date-change-method"/>
+			<field name="employee" onChange="action-training-register-employee-change-method"/>
+			<spacer name="employeeSpacer"/>
 		</panel>
 		<panel name="actionPanel" itemSpan="12" sidebar="true">
 			<button name="completeBtn" title="Training completed" showIf="statusSelect == 1" onClick="save,action-training-register-method-complete"/>

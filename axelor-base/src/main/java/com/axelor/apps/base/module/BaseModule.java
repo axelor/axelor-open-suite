@@ -39,6 +39,8 @@ import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -130,6 +132,7 @@ import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -147,6 +150,7 @@ import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.auth.pac4j.AuthPac4jUserService;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.base.service.ical.ICalendarEventServiceImpl;
 import com.axelor.report.ReportGenerator;
@@ -227,5 +231,7 @@ public class BaseModule extends AxelorModule {
     bind(PrintService.class).to(PrintServiceImpl.class);
     bind(PrintTemplateLineService.class).to(PrintTemplateLineServiceImpl.class);
     bind(AdvancedImportRepository.class).to(AdvancedImportBaseRepository.class);
+    bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
+    bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
   }
 }

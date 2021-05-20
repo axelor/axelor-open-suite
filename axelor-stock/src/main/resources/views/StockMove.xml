@@ -433,7 +433,7 @@
 				<field name="fullySpreadOverLogisticalFormsFlag" showIf="id &amp;&amp; typeSelect == 2"/>
                 <panel-dashlet name="ReversionPanel" action="action-stock-move-view-reversion" title="Reversions" colSpan="12" showIf="!isReversion"/>
                 <panel-dashlet name="logisticalFormsListPanel" action="action-stock-move-view-logistical-forms" title="Logistical forms" colSpan="12" showIf="id &amp;&amp; typeSelect == 2"/>
-                <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
+                <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Dashlet.Moves" if-module="axelor-supplychain"/>
 			</panel>
             
 			<panel name="datesPanel" title="Dates">

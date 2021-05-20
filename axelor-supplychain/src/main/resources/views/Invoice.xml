@@ -23,4 +23,8 @@
     	<alert message="At least one stock move is in litigation, do you really want to validate passed for payment ?" if="__repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',id).fetch().size &gt;= 1"/>
     </action-validate>
     
+    <action-record name="action-invoice-record-set-display-stock-move-on-invoice-printing" model="com.axelor.apps.account.db.Invoice">
+    	<field name="displayStockMoveOnInvoicePrinting" expr="eval: __user__.activeCompany?.accountConfig?.displayStockMoveOnInvoicePrinting"/>
+    </action-record>
+    
 </object-views>

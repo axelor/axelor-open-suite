@@ -70,7 +70,7 @@
 	 </form>
 
 
-	 <form name="mrp-generate-proposal-wizard-form" onNew="action-mrp-wizard-attrs-set-default-onnew" model="com.axelor.apps.base.db.Wizard" title="MPS" >
+	 <form name="mrp-generate-proposal-wizard-form" onLoad="action-mrp-wizard-attrs-set-default-onnew" model="com.axelor.apps.supplychain.db.Mrp" title="MPS" >
 		 <panel name="wizardPanel">
 		 	<field name="$consolidateProposalsPerSupplier" title="Consolidate the proposals per supplier" type="boolean" widget="boolean-switch" />
 	 		<button name="generateProposalsBtn" title="Generate all proposals" onClick="action-method-mrp-generate-all-proposal,close"/>
@@ -106,15 +106,17 @@
 		<context name="_proposalElementSelect" expr="eval: [__repo__(MrpLineType).ELEMENT_PURCHASE_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL_NEED]"/>
 	</action-view>
 
-	<action-view name="action-mrp-view-generate-proposal-wizard" title="Mrp" model="com.axelor.apps.base.db.Wizard">
+	<action-view name="action-mrp-view-generate-proposal-wizard" title="Mrp" model="com.axelor.apps.supplychain.db.Mrp">
 		<view type="form" name="mrp-generate-proposal-wizard-form"/>
 		<view-param name="popup" value="reload"/>
-	    <view-param name="show-confirm" value="false" />
-	    <view-param name="show-toolbar" value="false" />
-   	  	<view-param name="popup-save" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<view-param name="forceEdit" value="true"/>
+		<context name="_showRecord" expr="eval: id"/>
 	</action-view>
 
-	<action-attrs name="action-mrp-wizard-attrs-set-default-onnew">
+	<action-attrs name="action-mrp-wizard-attrs-set-default-onnew" model="com.axelor.apps.supplychain.db.Mrp">
 		<attribute name="value" for="$consolidateProposalsPerSupplier" expr="eval:true"/>
 	</action-attrs>
 

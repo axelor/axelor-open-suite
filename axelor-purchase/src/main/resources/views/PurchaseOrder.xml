@@ -406,7 +406,6 @@
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-attrs-external-reference"/>
 		<action name="action-purchase-order-record-load-trading-name-config"/>
-		<action name="action-purchase-order-record-set-group-product-on-printing"/>
 	</action-group>
 
     <action-group name="action-group-purchase-order-company-change-actions">

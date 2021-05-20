@@ -11,12 +11,14 @@
     <form name="print-line-form" title="Print line" model="com.axelor.apps.base.db.PrintLine">
         <panel>
             <field name="rank" readonly="true"/>
-            <field name="title" widget="html" colSpan="12" readonlyIf="!isEditable"/>
-            <field name="content" widget="html" colSpan="12" readonlyIf="!isEditable"/>                     
+            <field name="title" widget="html" colSpan="12" readonlyIf="!isEditable" hideIf="isSignature"/>
+            <field name="content" widget="html" colSpan="12" readonlyIf="!isEditable" hideIf="isSignature"/>                     
             <field name="isEditable" readonly="true"/>
             <field name="isWithPageBreakAfter"/>            
             <field name="sequence" hidden="true"/>
             <field name="parent" hidden="true"/>            
+            <field name="nbColumns" readonlyIf="!isEditable"/>    
+            <field name="isSignature"/>        
         </panel>
     </form>
 

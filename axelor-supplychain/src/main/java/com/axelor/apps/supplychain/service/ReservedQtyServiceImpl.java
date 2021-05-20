@@ -791,6 +791,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         stockLocationLine.getRequestedReservedQty().add(diffReservedQuantityLocation));
 
     stockMoveLine.setRequestedReservedQty(newReservedQty);
+    if (stockMoveLine.getRequestedReservedQty().compareTo(stockMoveLine.getReservedQty()) < 0) {
+      updateReservedQty(stockMoveLine, stockMoveLine.getRequestedReservedQty());
+    }
   }
 
   /**

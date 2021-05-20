@@ -5,10 +5,13 @@
     <form name="configurator-prod-process-form" title="Configurator Prod Process"
           model="com.axelor.apps.production.db.ConfiguratorProdProcess">
         <panel name="mainPanel">
-            <field name="name"/>
-            <field name="company"/>
-            <field name="statusSelect" selection-in="[2,3]"/>
-
+            <panel name="namePanel" title="Label">
+                <field name="defNameAsFormula" colSpan="6"/>
+                <field name="name" colSpan="12" showIf="!defNameAsFormula" requiredIf="!defNameAsFormula"/>
+                <field name="nameFormula" colSpan="12" height="120" requiredIf="defNameAsFormula"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defNameAsFormula"/>
+            </panel>
             <panel name="codePanel" title="Code">
                 <field name="defCodeAsFormula" colSpan="6"/>
                 <field name="code" colSpan="12" showIf="!defCodeAsFormula"/>
@@ -16,7 +19,9 @@
                        widget="CodeEditor" x-code-syntax="groovy"
                        showTitle="false" showIf="defCodeAsFormula"/>
             </panel>
-            <panel name="stockLocationPanel" title="Stock Location">
+            <field name="company"/>
+            <field name="statusSelect" selection-in="[2,3]"/>
+			<panel name="stockLocationPanel" title="Stock Location">
                 <field name="defStockLocationAsFormula" colSpan="6"/>
                 <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" showIf="!defStockLocationAsFormula"/>
                 <field name="stockLocationFormula" colSpan="12" height="120"
