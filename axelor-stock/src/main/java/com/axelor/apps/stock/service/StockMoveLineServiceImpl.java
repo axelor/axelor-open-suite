@@ -1114,14 +1114,19 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (trackingNumberItem.get("note") != null) {
           trackingNumber.setNote(trackingNumberItem.get("note").toString());
         }
+        if (trackingNumberItem.get("serialNbr") != null) {
+          trackingNumber.setSerialNumber(trackingNumberItem.get("serialNbr").toString());
+        }
         trackingNumber.setProduct(stockMoveLine.getProduct());
-
+        
         if (stockMoveLine.getProduct() != null) {
           // In case of barcode generation, retrieve the one set on tracking number configuration
           AppStock appStock = appStockService.getAppStock();
           TrackingNumberConfiguration trackingNumberConfiguration =
               stockMoveLine.getProduct().getTrackingNumberConfiguration();
-          if (appStock != null && appStock.getActivateBarCodeGeneration()) {
+          if (appStock != null
+              && appStock.getActivateBarCodeGeneration()
+              && trackingNumberConfiguration != null) {
             trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
             if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
               trackingNumber.setSerialNumber(trackingNumber.getTrackingNumberSeq());
