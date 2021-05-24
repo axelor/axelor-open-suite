@@ -6,6 +6,8 @@
 
 	allFields = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaJsonFieldRepository' as Class).all()
 	
+	allSelectionBuilders = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.SelectionBuilderRepository' as Class).all()
+
 	allSelections = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaSelectRepository' as Class).all()
 	
 	allCharts = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.ChartBuilderRepository' as Class).all()
@@ -31,8 +33,10 @@
 		
 		allFields = allFields.filter('self.appBuilder.id in ?1 OR (self.appBuilder is null and self.jsonModel.appBuilder.id in ?1)',__ids__)
 		
+		allSelectionBuilders = allSelectionBuilders.filter('self.appBuilder.id in ?1 OR self.appBuilder is null',__ids__)
+		
 		allSelections = allSelections.filter('(self.appBuilder.id in ?1 OR self.appBuilder is null) AND self.isCustom = true',__ids__)
-					
+		
 		allCharts = allCharts.filter('self.appBuilder.id in ?1',__ids__)
 				
 		allDashboards = allDashboards.filter('self.appBuilder.id in ?1',__ids__)
@@ -50,7 +54,7 @@
 		allWkfs = allWkfs.filter('self.appBuilder.id in ?1)',__ids__)
 	} else {
 		allSelections = allSelections.filter('self.isCustom = true')
-	
+		
 		allMenus = allMenus.filter('self.parentMenu is null')
 		
 		allMenusParentMenu = allMenusParentMenu.filter('self.parentMenu is not null')
@@ -149,6 +153,17 @@
 				\n\t\t\t<isSelectionField>${field.isSelectionField}</isSelectionField>
 				\n\t\t\t<selectionText>${field.selectionText}</selectionText>
 				\n\t\t</field>"""
+	})
+	
+	selectionBuilders = ""
+	allSelectionBuilders.fetch().each({
+		selectionBuilder -> 
+				selectionBuilders += """\n\t\t<selectionBuilder>
+				\n\t\t\t<metaSelect>${selectionBuilder.metaSelect?.name}</metaSelect>
+				\n\t\t\t<name>${selectionBuilder.name}</name>
+				\n\t\t\t<selectionText>${selectionBuilder.selectionText}</selectionText>
+				\n\t\t\t<appBuilder>${selectionBuilder.appBuilder?.code}</appBuilder>
+				\n\t\t</selectionBuilder>"""
 	})
 	
 	selections = ""
@@ -553,6 +568,10 @@
 	<fields>
 		$fields
 	</fields>
+	
+	<selectionBuilders>
+		$selectionBuilders
+	</selectionBuilders>
 	
 	<selections>
 		$selections
