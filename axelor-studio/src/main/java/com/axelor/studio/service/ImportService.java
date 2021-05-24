@@ -31,12 +31,14 @@ import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.db.SelectionBuilder;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepository;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
+import com.axelor.studio.db.repo.SelectionBuilderRepository;
 import com.axelor.studio.service.wkf.WkfService;
 import com.google.inject.Inject;
 import java.io.ByteArrayInputStream;
@@ -52,6 +54,8 @@ public class ImportService {
   @Inject private MetaJsonModelRepository metaJsonModelRepo;
 
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
+
+  @Inject private SelectionBuilderRepository selectionBuilderRepo;
 
   @Inject private DashboardBuilderRepository dashboardBuilderRepo;
 
@@ -79,6 +83,14 @@ public class ImportService {
     assert bean instanceof MetaJsonField;
 
     return metaJsonFieldRepo.save((MetaJsonField) bean);
+  }
+
+  public Object importSelectionBuilder(Object bean, Map<String, Object> values)
+      throws JAXBException, AxelorException {
+
+    assert bean instanceof SelectionBuilder;
+
+    return selectionBuilderRepo.save((SelectionBuilder) bean);
   }
 
   public Object importChartBuilder(Object bean, Map<String, Object> values)
