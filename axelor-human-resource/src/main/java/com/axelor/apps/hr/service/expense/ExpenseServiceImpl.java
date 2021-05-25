@@ -400,7 +400,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                 partner,
                 moveDate,
                 partner.getInPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -616,7 +617,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                 partner,
                 paymentDate,
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     move.addMoveLineListItem(
         moveLineService.createMoveLine(
