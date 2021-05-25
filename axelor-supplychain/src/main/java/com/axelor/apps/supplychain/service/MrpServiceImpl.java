@@ -1131,7 +1131,7 @@ public class MrpServiceImpl implements MrpService {
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
-            .filter("self.mrp.id = ?1", mrp.getId())
+            .filter("self.mrp.id = ?1 AND self.toProcess = true", mrp.getId())
             .order("maturityDate")
             .fetch();
 
