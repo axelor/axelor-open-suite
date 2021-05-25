@@ -128,6 +128,7 @@
 		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
 		<attribute name="hidden" for="useLineInGeneratedPurchaseOrder" expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)" if="__parent__ != null"/>
 		<attribute name="hidden" for="workCenter" expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
+		<attribute name="required" for="workCenter" expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup()"/>
 		<attribute name="hidden" for="workCenterGroupPanel" expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup()"/>
 		<attribute name="hidden" for="capacitySettingsPanel" expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
     </action-attrs>

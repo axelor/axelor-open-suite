@@ -9,6 +9,7 @@
 	    <string name="name" title="Name" required="true" />
 		<many-to-one name="metaSelect" ref="com.axelor.meta.db.MetaSelect" title="Existing selection"/>
 		<string name="selectionText" title="Selection" large="true" />
+		<many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder" title="App builder"/>
 	</entity>
 
 </domain-models>
