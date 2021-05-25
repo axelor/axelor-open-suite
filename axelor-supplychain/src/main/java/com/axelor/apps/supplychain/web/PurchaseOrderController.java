@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -432,6 +432,20 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       Beans.get(PurchaseOrderSupplychainService.class).updateToValidatedStatus(purchaseOrder);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      String message =
+          Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
+      if (message != null) {
+        response.setFlash(message);
+      }
+      response.setValues(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

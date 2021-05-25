@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,7 +56,6 @@ public class ReimbursementImportService {
   protected RejectImportService rejectImportService;
   protected AccountConfigService accountConfigService;
   protected ReimbursementRepository reimbursementRepo;
-  protected AppService appService;
 
   @Inject
   public ReimbursementImportService(
@@ -65,8 +64,7 @@ public class ReimbursementImportService {
       MoveLineService moveLineService,
       RejectImportService rejectImportService,
       AccountConfigService accountConfigService,
-      ReimbursementRepository reimbursementRepo,
-      AppService appService) {
+      ReimbursementRepository reimbursementRepo) {
 
     this.moveService = moveService;
     this.moveRepo = moveRepo;
@@ -74,13 +72,12 @@ public class ReimbursementImportService {
     this.rejectImportService = rejectImportService;
     this.accountConfigService = accountConfigService;
     this.reimbursementRepo = reimbursementRepo;
-    this.appService = appService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void runReimbursementImport(Company company) throws AxelorException, IOException {
 
-    String dataUploadDir = appService.getFileUploadDir();
+    String dataUploadDir = AppService.getFileUploadDir();
 
     this.testCompanyField(company);
 

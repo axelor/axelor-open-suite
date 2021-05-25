@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -68,6 +71,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +99,7 @@ public class MrpServiceImpl implements MrpService {
   protected StockLocationService stockLocationService;
 
   protected AppBaseService appBaseService;
+  protected AppPurchaseService appPurchaseService;
 
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
@@ -104,6 +109,7 @@ public class MrpServiceImpl implements MrpService {
   @Inject
   public MrpServiceImpl(
       AppBaseService appBaseService,
+      AppPurchaseService appPurchaseService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
       ProductRepository productRepository,
@@ -130,6 +136,7 @@ public class MrpServiceImpl implements MrpService {
     this.mrpForecastRepository = mrpForecastRepository;
 
     this.appBaseService = appBaseService;
+    this.appPurchaseService = appPurchaseService;
     this.stockLocationService = stockLocationService;
   }
 
@@ -438,9 +445,15 @@ public class MrpServiceImpl implements MrpService {
       String relatedToSelectName)
       throws AxelorException {
 
+    LocalDate initialMaturityDate = maturityDate;
+
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
       maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
+      if (appPurchaseService.getAppPurchase() != null
+          && appPurchaseService.getAppPurchase().getManageMultiplePurchaseQuantity()) {
+        reorderQty = computeMultipleProductsPurchaseReorderQty(product, reorderQty);
+      }
     }
 
     if (maturityDate.isBefore(today)) {
@@ -469,6 +482,10 @@ public class MrpServiceImpl implements MrpService {
               stockLocation,
               null);
       if (createdmrpLine != null) {
+        createdmrpLine.setWarnDelayFromSupplier(
+            mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+                && DAYS.between(initialMaturityDate, maturityDate)
+                    < product.getSupplierDeliveryTime());
         mrpLine = mrpLineRepository.save(createdmrpLine);
       }
       mrpLine.setRelatedToSelectName(relatedToSelectName);
@@ -492,6 +509,27 @@ public class MrpServiceImpl implements MrpService {
       }
     }
     return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal computeMultipleProductsPurchaseReorderQty(
+      Product product, BigDecimal reorderQty) {
+    List<ProductMultipleQty> productMultipleQtyList = product.getPurchaseProductMultipleQtyList();
+    if (productMultipleQtyList == null || reorderQty == null || reorderQty.signum() == 0) {
+      return reorderQty;
+    }
+    BigDecimal diff =
+        productMultipleQtyList.stream()
+            .map(ProductMultipleQty::getMultipleQty)
+            .filter(bigDecimal -> bigDecimal.signum() != 0)
+            // compute what needs to be added to reorder quantity to have a multiple
+            .map(
+                bigDecimal -> {
+                  BigDecimal remainder = reorderQty.remainder(bigDecimal);
+                  return remainder.signum() == 0 ? BigDecimal.ZERO : bigDecimal.subtract(remainder);
+                })
+            .min(Comparator.naturalOrder())
+            .orElse(BigDecimal.ZERO);
+    return reorderQty.add(diff);
   }
 
   protected MrpLineType getMrpLineTypeForProposal(
@@ -668,6 +706,7 @@ public class MrpServiceImpl implements MrpService {
               purchaseOrder.getStockLocation(),
               purchaseOrderLine);
       if (mrpLine != null) {
+        mrpLine.setSupplierPartner(purchaseOrder.getSupplierPartner());
         mrpLineRepository.save(mrpLine);
       }
     }
@@ -964,7 +1003,7 @@ public class MrpServiceImpl implements MrpService {
                       + "AND self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
@@ -983,7 +1022,7 @@ public class MrpServiceImpl implements MrpService {
                       + "self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
@@ -1158,6 +1197,7 @@ public class MrpServiceImpl implements MrpService {
               .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
               .fetch();
     }
+    reset(mrpRepository.find(mrp.getId()));
     this.startMrp(mrpRepository.find(mrp.getId()));
     this.assignProductAndLevel(this.getProductList());
 

@@ -38,4 +38,6 @@ public interface ProjectTaskService {
   void removeNextTasks(ProjectTask projectTask);
 
   public ProjectTask create(String subject, Project project, User assignedTo);
+
+  void deleteProjectTask(ProjectTask projectTask);
 }

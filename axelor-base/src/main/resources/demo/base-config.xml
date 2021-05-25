@@ -87,7 +87,7 @@
 	
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" call="com.axelor.csv.script.ImportPartner:importPartner">
 		<bind to="partnerSeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.PARTNER)" />
-		<bind to="emailAddress" search="self.address = :email">
+		<bind to="emailAddress" if="email &amp;&amp; email.trim() != ''" search="self.partner.importId = :importId">
 			<bind to="address" column="email" />
 		</bind>
 		<bind to="partnerAddressList" search="self.address.importId = :address" if="address != null &amp;&amp; isContact == 'false'">
@@ -141,6 +141,7 @@
 		<bind to="netMass" eval="1" if="productTypeSelect == 'storable'" />
         <bind to="grossMass" eval="1" if="productTypeSelect == 'storable'" />
         <bind to="massUnit" search="self.labelToPrinting = 'kg'" if="productTypeSelect == 'storable'" />
+        <bind to="isShippingCostsProduct" column="isShippingCostsProduct" eval="isShippingCostsProduct ? isShippingCostsProduct : 'false'" />
 	</input>
 	
 	<input file="base_productVariantAttr.csv" separator=";" type="com.axelor.apps.base.db.ProductVariantAttr" search="self.code = :code" />
@@ -225,6 +226,8 @@
 		<bind column="Condition" to="trackingCondition" />
 		<bind to="appBase" search="self.id = '1'" />
 	</input>
+	
+	<input file="base_mailBatch.csv" separator=";" type="com.axelor.apps.base.db.MailBatch" search="self.code = :code"/>
 
 </csv-inputs>
 

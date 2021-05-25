@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,6 +180,8 @@ public class MoveServiceImpl implements MoveService {
       if (move != null) {
 
         move.setInvoice(invoice);
+
+        move.setTradingName(invoice.getTradingName());
 
         boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
@@ -494,8 +497,11 @@ public class MoveServiceImpl implements MoveService {
                     newMoveLine.getAnalyticDistributionTemplate(),
                     newMoveLine.getDebit().add(newMoveLine.getCredit()),
                     AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
-                    move.getDate());
-        newMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
+                    dateOfReversion);
+        if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
+          analyticMoveLineList.forEach(
+              analyticMoveLine -> newMoveLine.addAnalyticMoveLineListItem(analyticMoveLine));
+        }
       }
 
       newMove.addMoveLineListItem(newMoveLine);

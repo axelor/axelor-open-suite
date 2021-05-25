@@ -19,7 +19,13 @@
 					</panel-related>
 				</insert>
 		</extend>
-		
+		<extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
+			<insert position="after">
+				<panel name="productPanel" title="Product" showIf="isCustomer" if="__config__.app.isApp('sale')">
+					<field name="complementaryProductList" colSpan="12"/>
+				</panel>
+			</insert>
+		</extend>
 	</form>
 
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,12 +19,14 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
+import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVInput;
+import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -32,6 +34,7 @@ import com.axelor.db.internal.DBHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
@@ -121,9 +124,11 @@ public class DataBackupCreateService {
   StringBuilder sb = new StringBuilder();
 
   /* Generate csv Files for each individual MetaModel and single config file */
-  public File create(DataBackup dataBackup) throws InterruptedException {
+  public DataBackup create(DataBackup dataBackup) throws InterruptedException {
     File tempDir = Files.createTempDir();
     String tempDirectoryPath = tempDir.getAbsolutePath();
+    int fetchLimit = dataBackup.getFetchLimit();
+    int errorsCount = 0;
 
     fileNameList = new ArrayList<>();
     List<MetaModel> metaModelList = getMetaModels();
@@ -133,70 +138,94 @@ public class DataBackupCreateService {
     LinkedList<CSVInput> notNullReferenceCsvs = new LinkedList<>();
     Map<String, List<String>> subClassesMap = getSubClassesMap();
 
-    for (MetaModel metaModel : metaModelList) {
+    if (dataBackup.getCheckAllErrorFirst()) {
+      dataBackup.setFetchLimit(1);
 
-      try {
-        List<String> subClasses = subClassesMap.get(metaModel.getFullName());
-        long totalRecord = getMetaModelDataCount(metaModel, subClasses);
-        if (totalRecord > 0) {
-          LOG.debug("Exporting Model : " + metaModel.getFullName());
+      errorsCount = checkErrors(dataBackup, metaModelList, tempDirectoryPath, subClassesMap);
 
-          notNullReferenceFlag = false;
-          referenceFlag = false;
-
-          CSVWriter csvWriter =
-              new CSVWriter(
-                  new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
-                  SEPARATOR,
-                  QUOTE_CHAR);
-          CSVInput csvInput =
-              writeCSVData(
-                  metaModel, csvWriter, dataBackup, totalRecord, subClasses, tempDirectoryPath);
-          csvWriter.close();
-
-          if (notNullReferenceFlag) {
-            notNullReferenceCsvs.add(csvInput);
-          } else if (referenceFlag) {
-            refernceCsvs.add(csvInput);
-            CSVInput temcsv = new CSVInput();
-            temcsv.setFileName(csvInput.getFileName());
-            temcsv.setTypeName(csvInput.getTypeName());
-
-            if (dataBackup.getIsRelativeDate()) {
-              temcsv.setBindings(new ArrayList<>());
-              getCsvInputForDateorDateTime(metaModel, temcsv);
-            }
-            if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
-              temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
-            }
-            if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
-              temcsv.setSearch("self.code = :code");
-            }
-            simpleCsvs.add(temcsv);
-          } else {
-            simpleCsvs.add(csvInput);
-          }
-
-          fileNameList.add(metaModel.getName() + ".csv");
-        }
-      } catch (ClassNotFoundException e) {
-      } catch (IOException e) {
-        TraceBackService.trace(e, DataBackupService.class.getName());
-      }
+      dataBackup.setFetchLimit(fetchLimit);
+      fileNameList.clear();
     }
 
-    CSVConfig csvConfig = new CSVConfig();
-    csvConfig.setInputs(simpleCsvs);
-    csvConfig.getInputs().addAll(notNullReferenceCsvs);
-    csvConfig.getInputs().addAll(refernceCsvs);
-    csvConfig.getInputs().addAll(notNullReferenceCsvs);
-    generateConfig(tempDirectoryPath, csvConfig);
+    if (errorsCount == 0) {
+      for (MetaModel metaModel : metaModelList) {
 
-    fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
-    File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
+        try {
+          List<String> subClasses = subClassesMap.get(metaModel.getFullName());
+          long totalRecord = getMetaModelDataCount(metaModel, subClasses);
+          if (totalRecord > 0) {
+            LOG.debug("Exporting Model : " + metaModel.getFullName());
 
-    if (!Strings.isNullOrEmpty(sb.toString())) {
-      try {
+            notNullReferenceFlag = false;
+            referenceFlag = false;
+
+            CSVWriter csvWriter =
+                new CSVWriter(
+                    new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
+                    SEPARATOR,
+                    QUOTE_CHAR);
+            CSVInput csvInput =
+                writeCSVData(
+                    metaModel, csvWriter, dataBackup, totalRecord, subClasses, tempDirectoryPath);
+            csvWriter.close();
+
+            if (notNullReferenceFlag) {
+              notNullReferenceCsvs.add(csvInput);
+            } else if (referenceFlag) {
+              refernceCsvs.add(csvInput);
+              CSVInput temcsv = new CSVInput();
+              temcsv.setFileName(csvInput.getFileName());
+              temcsv.setTypeName(csvInput.getTypeName());
+
+              if (dataBackup.getIsRelativeDate()) {
+                temcsv.setBindings(new ArrayList<>());
+                getCsvInputForDateorDateTime(metaModel, temcsv);
+              }
+              if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
+                temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
+              }
+              if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
+                temcsv.setSearch("self.code = :code");
+              }
+              if (!AutoImportModelMap.containsKey(csvInput.getTypeName())
+                  && !((Class.forName(metaModel.getFullName()).getSuperclass())
+                      .equals(App.class))) {
+                temcsv.setSearch("self.importId = :importId");
+              }
+              simpleCsvs.add(temcsv);
+            } else {
+              simpleCsvs.add(csvInput);
+            }
+
+            fileNameList.add(metaModel.getName() + ".csv");
+          }
+        } catch (ClassNotFoundException e) {
+        } catch (IOException e) {
+          TraceBackService.trace(e, DataBackupService.class.getName());
+        } catch (Exception e) {
+          JPA.em().getTransaction().rollback();
+          if (!dataBackup.getCheckAllErrorFirst()) {
+            sb.append("\nError occured while processing model : " + metaModel.getFullName() + "\n");
+            sb.append(e.getMessage() + "\n");
+          }
+          JPA.em().getTransaction().begin();
+          dataBackup = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
+          errorsCount++;
+        }
+      }
+
+      CSVConfig csvConfig = new CSVConfig();
+      csvConfig.setInputs(simpleCsvs);
+      csvConfig.getInputs().addAll(notNullReferenceCsvs);
+      csvConfig.getInputs().addAll(refernceCsvs);
+      csvConfig.getInputs().addAll(notNullReferenceCsvs);
+      generateConfig(tempDirectoryPath, csvConfig);
+
+      fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
+    }
+
+    try {
+      if (!Strings.isNullOrEmpty(sb.toString())) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
         String logFileName = "DataBackupLog_" + LocalDateTime.now().format(formatter) + ".log";
 
@@ -209,12 +238,19 @@ public class DataBackupCreateService {
         if (file != null) {
           dataBackup.setLogMetaFile(metaFiles.upload(file));
         }
-      } catch (IOException e) {
-        e.printStackTrace();
       }
+
+      if (errorsCount == 0) {
+        File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
+        dataBackup.setBackupMetaFile(metaFiles.upload(zippedFile));
+      } else {
+        dataBackup.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_ERROR);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    return zippedFile;
+    return dataBackup;
   }
 
   void getCsvInputForDateorDateTime(MetaModel metaModel, CSVInput csvInput) {
@@ -425,6 +461,8 @@ public class DataBackupCreateService {
         csvInput.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
       } else if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
         csvInput.setSearch("self.code = :code");
+      } else {
+        csvInput.setSearch("self.importId = :importId");
       }
     } catch (ClassNotFoundException e) {
     }
@@ -736,5 +774,44 @@ public class DataBackupCreateService {
     } catch (IOException e) {
       TraceBackService.trace(e, "Error From DataBackupCreateService - generateConfig()");
     }
+  }
+
+  protected int checkErrors(
+      DataBackup dataBackup,
+      List<MetaModel> metaModelList,
+      String tempDirectoryPath,
+      Map<String, List<String>> subClassesMap) {
+    int errorsCount = 0;
+
+    for (MetaModel metaModel : metaModelList) {
+
+      try {
+        List<String> subClasses = subClassesMap.get(metaModel.getFullName());
+        long totalRecord = getMetaModelDataCount(metaModel, subClasses);
+        if (totalRecord > 0) {
+          LOG.debug("Checking Model : " + metaModel.getFullName());
+
+          CSVWriter csvWriter =
+              new CSVWriter(
+                  new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
+                  SEPARATOR,
+                  QUOTE_CHAR);
+          writeCSVData(metaModel, csvWriter, dataBackup, 1, subClasses, tempDirectoryPath);
+          csvWriter.close();
+        }
+      } catch (ClassNotFoundException e) {
+      } catch (IOException e) {
+        TraceBackService.trace(e, DataBackupService.class.getName());
+      } catch (Exception e) {
+        JPA.em().getTransaction().rollback();
+        sb.append("\nError occured while processing model : " + metaModel.getFullName() + "\n");
+        sb.append(e.getMessage() + "\n");
+        JPA.em().getTransaction().begin();
+        dataBackup = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
+        dataBackup.setFetchLimit(1);
+        errorsCount++;
+      }
+    }
+    return errorsCount;
   }
 }

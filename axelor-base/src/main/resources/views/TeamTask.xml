@@ -53,7 +53,7 @@
 
   <action-record name="action-team-task-record-set-default" model="com.axelor.team.db.TeamTask">
     <field name="isFirst" expr="true"/>
-    <field name="typeSelect" expr="eval: _typeSelect"/>
+    <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect"/>
   </action-record>
 
   <action-record name="action-team-task-record-set-date-or-frequency-changed" model="com.axelor.team.db.TeamTask">
@@ -68,7 +68,6 @@
 		<field name="isOrderAccepted" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="isOrderProposed" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="assignment" hidden="true" if="!__config__.app.isApp('business-support')"/>
-		<field name="taskDeadline" hidden="true" if="__config__.app.isApp('business-support')"/>
 		<field name="internalDescription" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
 		<field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>

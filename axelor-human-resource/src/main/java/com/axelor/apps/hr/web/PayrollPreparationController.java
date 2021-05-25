@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -92,7 +92,8 @@ public class PayrollPreparationController {
 
     String file = payrollPreparationService.exportPayrollPreparation(payrollPreparation);
     if (file != null) {
-      response.setExportFile(file);
+      String[] filePath = file.split("/");
+      response.setExportFile(filePath[filePath.length - 1]);
     }
     payrollPreparationService.closePayPeriodIfExported(payrollPreparation);
 

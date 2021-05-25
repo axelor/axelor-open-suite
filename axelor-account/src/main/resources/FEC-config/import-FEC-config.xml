@@ -6,7 +6,6 @@
  	<input file="FEC.csv" separator="|" type="com.axelor.apps.account.db.MoveLine" call="com.axelor.csv.script.ImportMove:importFECMove">
  		<!-- <header>journalCode, journalName, move_reference, moveLine_date, accountCode, accountName, partnerSeq, partnerName, moveLine_origin, moveLineOriginDate, description, debit, credit, reconcileGroupCode, reconcileGroupDateOfLettering, validationDate, currencyAmount, move_currency</header> -->
  		<bind to="partner" column="CompAuxNum" search="self.partnerSeq = :CompAuxNum" update="true"/>
- 		<bind to="account" column="CompteNum" search="self.code = :CompteNum" update="true"/>
  		<bind to="debit" eval="Debit.replace(',', '.')" column="Debit"/>
  		<bind to="credit" eval="Credit.replace(',', '.')" column="Credit"/>
  		<bind to="origin" column="PieceRef"/>

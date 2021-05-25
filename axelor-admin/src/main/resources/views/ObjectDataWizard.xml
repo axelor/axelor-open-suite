@@ -19,7 +19,7 @@
 	</action-attrs>
 	
 	<action-validate name="action-object-data-export-wizard-validate-anonymize">
-		<alert message="Are you sure wants to anonymize data ?."/>
+		<alert message="Are you sure to anonymize data?"/>
 	</action-validate>
 	
 	<action-method name="action-object-data-export-wizard-method-anonymyize">

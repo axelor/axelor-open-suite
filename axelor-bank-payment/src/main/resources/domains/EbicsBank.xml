@@ -19,7 +19,7 @@
 	
 	<integer name="certValidityPeriodSelect" title="Certificate validity period(Years)" default="5" selection="bankpayment.ebics.bank.certificate.validity.period.select" />
 	
-	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank" orphanRemoval="true"/>
+	<one-to-many name="ebicsCertificateList" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificates" mappedBy="ebicsBank"/>
 	
 	<string name="protocolSelect" title="Protocol" selection="bankpayment.ebics.bank.protocol.select" default="ssl" />
 	

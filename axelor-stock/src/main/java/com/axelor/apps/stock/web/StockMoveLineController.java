@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -274,6 +274,9 @@ public class StockMoveLineController {
       map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
       map.put("$availableQty", availableQty);
       map.put("$moveTypeSelect", stockMove.getTypeSelect());
+      map.put("origin", trackingNumber.getOrigin());
+      map.put("note", trackingNumber.getNote());
+
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);

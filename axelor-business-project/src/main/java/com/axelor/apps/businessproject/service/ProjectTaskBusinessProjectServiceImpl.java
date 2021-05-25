@@ -291,7 +291,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
               !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
                   && pattern
                       .splitAsStream(appBusinessProject.getPreTaskStatusSet())
-                      .map(Integer::valueOf)
                       .collect(Collectors.toList())
                       .contains(projectTask.getStatus()));
           break;
@@ -301,9 +300,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
               !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
                   && pattern
                       .splitAsStream(appBusinessProject.getPostTaskStatusSet())
-                      .map(Integer::valueOf)
                       .collect(Collectors.toList())
                       .contains(projectTask.getStatus()));
+          break;
+
+        default:
           break;
       }
     } else {
@@ -346,6 +347,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setCurrency((Currency) productCompanyService.get(product, "saleCurrency", company));
     projectTask.setQuantity(projectTask.getBudgetedTime());
 
+    projectTask.setQuantity(
+        projectTask.getBudgetedTime() == null
+                || projectTask.getBudgetedTime().compareTo(BigDecimal.ZERO) == 0
+            ? BigDecimal.ONE
+            : projectTask.getBudgetedTime());
     projectTask = this.updateDiscount(projectTask);
     projectTask = this.compute(projectTask);
     return projectTask;

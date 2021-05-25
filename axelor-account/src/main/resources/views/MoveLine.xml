@@ -333,7 +333,7 @@
 	    <action name="action-move-line-record-get-first-move-line-informations"/>
 	    <action name="action-move-line-record-get-creditdebit-balance"/>
 	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
-	    <action name="action-move-line-record-set-currencyRate"/>
+	    <action name="action-move-line-method-set-currencyRate"/>
 	    <action name="action-move-line-record-set-currencyAmount"/>
     </action-group>
 	
@@ -423,10 +423,9 @@
 		<field name="credit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
 	</action-record>
 
-	<action-record name="action-move-line-record-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
-		<field name="currencyRate" expr="1" if="__parent__?.currency == __parent__?.companyCurrency"/>
-		<field name="currencyRate" expr="call:com.axelor.apps.base.service.CurrencyService:getCurrencyConversionRate(__parent__.currency, __parent__.companyCurrency)" if="__parent__?.currency != __parent__?.companyCurrency"/>
-	</action-record>
+	<action-method name="action-move-line-method-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="computeCurrentRate"/>
+	</action-method>
 
 	<action-record name="action-move-line-record-set-currencyAmount" model="com.axelor.apps.account.db.MoveLine">
 		<field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>

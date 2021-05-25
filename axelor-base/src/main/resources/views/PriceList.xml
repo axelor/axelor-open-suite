@@ -13,7 +13,7 @@
     </grid>
     
     <grid name="price-list-hist-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
-    	<field name="createdOn" title="Date"></field>
+    	<field name="createdOn" title="Date"/>
     	<field name="title"/>
     	<field name="typeSelect"/>
     	<field name="isActive"/>
@@ -23,6 +23,7 @@
     
    <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
+        onSave="action-price-list-method-check-anomaly"
 	   width="large">
    		<panel name="mainPanel" >
 		    <field name="title"/>
@@ -30,12 +31,13 @@
 			<field name="isActive" colSpan="2"/>
 			<field name="applicationBeginDate" onChange="action-price-list-method-check-dates"/>
 			<field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
+			<field name="nonNegotiable" showIf="typeSelect == 1"/>
 			<field name="hideDiscount"/>
     	</panel>
 		<panel name="priceListLinePanel" title="Price list lines" >
 			<field name="generalDiscount"/>
 			<label name="orLabel" title="Or" colSpan="12"/>
-			<panel-related name="historizedPriceListPanel" field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
+			<panel-related name="priceListLineListPanel" field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
 		 </panel>
 		<panel name="commentsPanel" title="Comments">
 			<field name="comments" colSpan="12" height="3"/>    					
@@ -49,13 +51,17 @@
    
    <form name="sale-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-group-base-sale-pricelist-onnew"
-	   onLoad="action-price-list-attrs-readonly-type-select-true">
+	   onLoad="action-price-list-attrs-readonly-type-select-true"
+        onSave="action-price-list-method-check-anomaly"
+        width="100%">
    		<panel-include view="price-list-form"/>
    </form>
    
    <form name="purchase-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-group-base-purchase-pricelist-onnew"
-	   onLoad="action-price-list-attrs-readonly-type-select-true">
+	   onLoad="action-price-list-attrs-readonly-type-select-true"
+        onSave="action-price-list-method-check-anomaly"
+        width="100%">
    		<panel-include view="price-list-form"/>
    </form>
    
@@ -100,6 +106,11 @@
 		<call class="com.axelor.apps.base.web.PriceListController"
 			  method="checkDates"/>
 	</action-method>
+
+    <action-method name="action-price-list-method-check-anomaly">
+        <call class="com.axelor.apps.base.web.PriceListController"
+                method="checkPriceListLineList"/>
+    </action-method>
 
 	<action-view name="action-price-list-view-dashlet-partner-price-list" title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
 		<view type="grid" name="partner-price-list-grid" />

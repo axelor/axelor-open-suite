@@ -33,4 +33,6 @@ dependencies {
 
 	implementation libs.google_oauth_client_jetty
 	implementation libs.google_api_services_people
+
+	implementation libs.pac4j_core
 }

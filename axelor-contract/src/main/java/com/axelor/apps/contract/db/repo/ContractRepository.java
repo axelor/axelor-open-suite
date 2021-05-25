@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,10 +52,10 @@ public class ContractRepository extends AbstractContractRepository {
                   type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE, company);
       if (seq == null) {
         throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
                 I18n.get("The company %s doesn't have any configured sequence for contracts"),
-                company.getName()),
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+                company.getName()));
       }
       return seq;
     } catch (Exception e) {

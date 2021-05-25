@@ -146,6 +146,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
+  @Transactional
   public ProjectTask create(String subject, Project project, User assignedTo) {
     ProjectTask task = new ProjectTask();
     task.setName(subject);
@@ -154,6 +155,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     task.setStatus(ProjectTaskRepository.STATUS_NEW);
     task.setPriority(ProjectTaskRepository.PRIORITY_NORMAL);
     project.addProjectTaskListItem(task);
+    projectTaskRepo.save(task);
     return task;
   }
 
@@ -170,5 +172,11 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     // Module 'project' fields
     newProjectTask.setProgressSelect(0);
     newProjectTask.setTaskEndDate(date);
+  }
+
+  @Override
+  @Transactional
+  public void deleteProjectTask(ProjectTask projectTask) {
+    projectTaskRepo.remove(projectTask);
   }
 }

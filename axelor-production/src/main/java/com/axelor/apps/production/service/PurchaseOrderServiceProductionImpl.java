@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,8 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
@@ -49,17 +51,20 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
-      BudgetSupplychainService budgetSupplychainService) {
+      BudgetSupplychainService budgetSupplychainService,
+      PurchaseOrderLineRepository purchaseOrderLineRepository,
+      PurchaseOrderLineService purchaseOrderLineService) {
     super(
         appSupplychainService,
         accountConfigService,
         appAccountService,
         appBaseService,
         purchaseOrderStockService,
-        budgetSupplychainService);
+        budgetSupplychainService,
+        purchaseOrderLineRepository,
+        purchaseOrderLineService);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   @Transactional
   public PurchaseOrder mergePurchaseOrders(

@@ -72,7 +72,7 @@
       <field name="maritalStatus" colSpan="4"/>
       <field name="sexSelect" colSpan="4"/>
       <field name="countryOfBirth" colSpan="4" onChange="action-employee-attrs-country-of-birth-on-change"/>
-      <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
+      <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
       <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
       <field name="maritalName" colSpan="4"/>
@@ -141,7 +141,7 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')" showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
+      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
       <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
     </panel>
@@ -162,7 +162,7 @@
             <viewer>
               <![CDATA[
             <h4 class="text-right">
-                <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.dateOfHire) > $moment().subtract(30, 'days')" x-translate>New employee</span>
+                <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>New employee</span>
                 <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
             </h4>
 	        ]]>
@@ -223,7 +223,7 @@
           <field name="maritalStatus" colSpan="4"/>
           <field name="sexSelect" colSpan="4"/>
           <field name="countryOfBirth" colSpan="4" onChange="action-employee-attrs-country-of-birth-on-change"/>
-          <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
+          <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
           <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
           <field name="citizenship" colSpan="4"/>
           <field name="maritalName" colSpan="4"/>
@@ -292,7 +292,7 @@
 
       <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
         <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
         <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
 
@@ -536,10 +536,6 @@
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
 	</action-method>
 
-	<action-method name="action-employee-method-print-employee-report" >
-		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
-	</action-method>
-
 	<action-condition name="action-employee-validate-dates">
 		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
 	</action-condition>
@@ -569,10 +565,10 @@
         <field name="socialSecurityNumber" title="Social security number" hidden="true"/>
         <field name="contactPartner.firstName" title="First name"/>
         <filter title="New employees">
-          <domain>self.leavingDate IS NULL AND self.dateOfHire &gt; CURRENT_DATE - 30</domain>
+          <domain>self.leavingDate IS NULL AND self.hireDate &gt; CURRENT_DATE - 30</domain>
         </filter>
         <filter title="Active employees">
-          <domain>(self.leavingDate IS NULL OR self.leavingDate &gt; CURRENT_DATE) AND (self.dateOfHire IS NULL OR self.dateOfHire &lt; CURRENT_DATE)</domain>
+          <domain>(self.leavingDate IS NULL OR self.leavingDate &gt; CURRENT_DATE) AND (self.hireDate IS NULL OR self.hireDate &lt; CURRENT_DATE)</domain>
         </filter>
         <filter title="Former employees">
           <domain>self.leavingDate &lt; CURRENT_DATE</domain>

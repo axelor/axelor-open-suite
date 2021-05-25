@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -165,10 +165,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
     for (com.axelor.apps.bankpayment.db.EbicsPartnerService ebicsPartnerService :
         ebicsPartnerServiceSet) {
       allowOrderCurrDiffFromBankDetails =
-          allowOrderCurrDiffFromBankDetails
-              || ebicsPartnerService
-                  .getBankOrderFileFormat()
-                  .getAllowOrderCurrDiffFromBankDetails();
+          ebicsPartnerService.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails();
       if (allowOrderCurrDiffFromBankDetails) {
         break;
       }
@@ -191,21 +188,15 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
     }
 
     if (!bankDetailsWithoutCurrency.isEmpty()) {
-      Function<String, String> addLi =
-          new Function<String, String>() {
-            @Override
-            public String apply(String s) {
-              return "<li>".concat(s).concat("</li>").toString();
-            }
-          };
+      Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
 
       throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
               I18n.get(IExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
               "<ul>"
                   + Joiner.on("").join(Iterables.transform(bankDetailsWithoutCurrency, addLi))
                   + "<ul>"),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           ebicsPartner);
     }
   }

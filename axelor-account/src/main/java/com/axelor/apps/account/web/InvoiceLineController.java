@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -321,13 +321,16 @@ public class InvoiceLineController {
 
     Context parentContext = context.getParent();
 
-    Invoice invoice = parentContext.asType(Invoice.class);
+    Invoice invoice;
 
-    if (!parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
+    if (parentContext == null
+        || !parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
 
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
       invoice = invoiceLine.getInvoice();
+    } else {
+      invoice = parentContext.asType(Invoice.class);
     }
 
     return invoice;

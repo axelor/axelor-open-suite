@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
@@ -37,15 +37,15 @@ import java.util.Optional;
 
 public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
-  private FixedAssetLineService fixedAssetLineService;
+  private FixedAssetLineMoveService fixedAssetLineMoveService;
   private AppBaseService appBaseService;
 
   @Inject FixedAssetLineRepository fixedAssetLineRepo;
 
   @Inject
   public BatchRealizeFixedAssetLine(
-      FixedAssetLineService fixedAssetLineService, AppBaseService appBaseService) {
-    this.fixedAssetLineService = fixedAssetLineService;
+      FixedAssetLineMoveService fixedAssetLineMoveService, AppBaseService appBaseService) {
+    this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.appBaseService = appBaseService;
   }
 
@@ -83,7 +83,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
         if (fixedAssetLine.getFixedAsset().getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
-          fixedAssetLineService.realize(fixedAssetLine);
+          fixedAssetLineMoveService.realize(fixedAssetLine);
           incrementDone();
         }
       } catch (Exception e) {

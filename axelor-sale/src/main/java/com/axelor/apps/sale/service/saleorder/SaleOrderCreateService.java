@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,7 +44,6 @@ public interface SaleOrderCreateService {
    * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
    * @param externalReference Client reference for order, if any
-   * @param orderDate Date of order (if <code>null</code>, will be set to today's date).
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
    *     price list.
    * @param clientPartner Customer bound to the order, should not be <code>null</code>
@@ -61,7 +60,6 @@ public interface SaleOrderCreateService {
       LocalDate deliveryDate,
       String internalReference,
       String externalReference,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
       Team team)
@@ -74,7 +72,6 @@ public interface SaleOrderCreateService {
         deliveryDate,
         internalReference,
         externalReference,
-        orderDate,
         priceList,
         clientPartner,
         team,
@@ -93,7 +90,6 @@ public interface SaleOrderCreateService {
    * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
    * @param externalReference Client reference for order, if any
-   * @param orderDate Date of order (if <code>null</code>, will be set to today's date).
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
    *     price list.
    * @param clientPartner Customer bound to the order, should not be <code>null</code>
@@ -111,7 +107,6 @@ public interface SaleOrderCreateService {
       LocalDate deliveryDate,
       String internalReference,
       String externalReference,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
       Team team,

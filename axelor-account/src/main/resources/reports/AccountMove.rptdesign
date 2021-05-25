@@ -510,68 +510,7 @@ left join meta_file as MetaFile on (MetaFile.id = company.logo)
 where move.id IN (?)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountMoveLine" id="4444">
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">date</text-property>
-                    <text-property name="heading">date</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">partner</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">partner</text-property>
-                    <text-property name="heading">partner</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">label</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">label</text-property>
-                    <text-property name="heading">label</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">credit</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">credit</text-property>
-                    <text-property name="heading">credit</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">debit</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">debit</text-property>
-                    <text-property name="heading">debit</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">currency_amount</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">currency_amount</text-property>
-                    <text-property name="heading">currency_amount</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">tax_rate</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">tax_rate</text-property>
-                    <text-property name="heading">tax_rate</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">reconcile_sequence</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">reconcile_sequence</text-property>
-                    <text-property name="heading">reconcile_sequence</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">origin</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">origin</text-property>
-                    <text-property name="heading">origin</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">description</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">description</text-property>
-                    <text-property name="heading">description</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -584,148 +523,24 @@ where move.id IN (?)]]></xml-property>
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">date</property>
-                        <property name="dataType">date</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">partner</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">label</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">credit</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">debit</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">currency_amount</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">tax_rate</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">reconcile_sequence</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">origin</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">description</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">date</property>
-                    <property name="nativeName">date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">partner</property>
-                    <property name="nativeName">partner</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">label</property>
-                    <property name="nativeName">label</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">credit</property>
-                    <property name="nativeName">credit</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">debit</property>
-                    <property name="nativeName">debit</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">currency_amount</property>
-                    <property name="nativeName">currency_amount</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">tax_rate</property>
-                    <property name="nativeName">tax_rate</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">reconcile_sequence</property>
-                    <property name="nativeName">reconcile_sequence</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">origin</property>
-                    <property name="nativeName">origin</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">description</property>
-                    <property name="nativeName">description</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-            </list-property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[select line.date_val as date, partner.partner_seq as partner, account.label,
 trunc(line.credit,2) as credit,
 trunc(line.debit,2) as debit,
 trunc(line.currency_amount,2) as currency_amount,
-line.tax_rate, reconcile.reconcile_seq as reconcile_sequence, line.origin as origin, line.description as description,
+line.tax_rate, line.origin as origin, line.description as description,
 reconcileGroup.code as reconcile_group,base_currency.code as company_currency_code,base_currency.name as company_currency_name,
 move.currency_code
 from account_move_line as line
 left join base_partner as partner on (partner.id = line.partner)
 left join account_move as move on (move.id = line.move)
 left join account_account as account on (account.id = line.account)
-left join account_reconcile as reconcile on (reconcile.debit_move_line = line.id OR reconcile.credit_move_line = line.id)
 left join account_reconcile_group as reconcileGroup on (reconcileGroup.id = line.reconcile_group)
 left join base_currency on (base_currency.id = move.company_currency)
-where move.id IN (?);]]></xml-property>
+where move.id IN (?)
+ORDER BY line.counter;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1468,87 +1283,45 @@ if(row._outer["technical_origin"] == 1) {
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
+                                    <property name="name">credit</property>
+                                    <text-property name="displayName">credit</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">debit</property>
+                                    <text-property name="displayName">debit</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">currency_amount</property>
+                                    <text-property name="displayName">currency_amount</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                                <structure>
                                     <property name="name">tax_rate</property>
                                     <text-property name="displayName">tax_rate</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["tax_rate"]</expression>
                                     <property name="dataType">decimal</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">reconcile_sequence</property>
-                                    <text-property name="displayName">reconcile_sequence</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["reconcile_sequence"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">reconcile_group</property>
-                                    <text-property name="displayName">reconcile_group</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow['reconcile_group']</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">currency_amount</property>
-                                    <text-property name="displayName">currency_amount</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow['currency_amount']</expression>
-                                    <property name="dataType">decimal</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">credit</property>
-                                    <text-property name="displayName">credit</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow['credit']</expression>
-                                    <property name="dataType">decimal</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">debit</property>
-                                    <text-property name="displayName">debit</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow['debit']</expression>
-                                    <property name="dataType">decimal</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                                <structure>
                                     <property name="name">origin</property>
-                                    <text-property name="displayName">origin</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow['origin']</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">description</property>
-                                    <text-property name="displayName">description</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow['description']</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">credit_1</property>
-                                    <text-property name="displayName">credit</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
-                                    <property name="dataType">decimal</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">debit_1</property>
-                                    <text-property name="displayName">debit</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
-                                    <property name="dataType">decimal</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">currency_amount_1</property>
-                                    <text-property name="displayName">currency_amount</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
-                                    <property name="dataType">decimal</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">origin_1</property>
                                     <text-property name="displayName">origin</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["origin"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">description_1</property>
+                                    <property name="name">description</property>
                                     <text-property name="displayName">description</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">reconcile_group</property>
+                                    <text-property name="displayName">reconcile_group</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["reconcile_group"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
@@ -1556,21 +1329,18 @@ if(row._outer["technical_origin"] == 1) {
                                     <text-property name="displayName">company_currency_code</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["company_currency_code"]</expression>
                                     <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">currency_code</property>
-                                    <text-property name="displayName">currency_code</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["currency_code"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                                 <structure>
                                     <property name="name">company_currency_name</property>
                                     <text-property name="displayName">company_currency_name</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["company_currency_name"]</expression>
                                     <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">currency_code</property>
+                                    <text-property name="displayName">currency_code</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["currency_code"]</expression>
+                                    <property name="dataType">string</property>
                                 </structure>
                             </list-property>
                             <structure name="toc"/>
@@ -2245,12 +2015,6 @@ if(row._outer["technical_origin"] == 1) {
                     <text-property name="displayName">tax_rate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["tax_rate"]</expression>
                     <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">reconcile_sequence</property>
-                    <text-property name="displayName">reconcile_sequence</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["reconcile_sequence"]</expression>
-                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">origin</property>

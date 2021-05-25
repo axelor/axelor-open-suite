@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -136,6 +136,8 @@ public class ManufOrderWorkflowService {
       }
       if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
         manufOrderService.preFillOperations(manufOrder);
+      } else {
+        manufOrderService.updateOperationsName(manufOrder);
       }
       if (!manufOrder.getIsConsProOnOperation()
           && CollectionUtils.isEmpty(manufOrder.getToConsumeProdProductList())) {
@@ -164,13 +166,12 @@ public class ManufOrderWorkflowService {
     for (ManufOrder manufOrder : manufOrderList) {
       if (manufOrder.getOperationOrderList() != null) {
         for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-          operationOrderWorkflowService.plan(operationOrder);
+          operationOrderWorkflowService.plan(operationOrder, null);
         }
       }
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
-      //    	manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
       if (manufOrder.getPlannedEndDateT() == null) {
         manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
       }
@@ -189,7 +190,7 @@ public class ManufOrderWorkflowService {
       manufOrder.setCancelReasonStr(null);
 
       manufOrderRepo.save(manufOrder);
-      Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
+      Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
     }
     return manufOrderList;
   }
@@ -218,7 +219,7 @@ public class ManufOrderWorkflowService {
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
-    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }
 
   @Transactional
@@ -314,7 +315,7 @@ public class ManufOrderWorkflowService {
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
-    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -412,7 +413,7 @@ public class ManufOrderWorkflowService {
       }
     }
     manufOrderRepo.save(manufOrder);
-    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }
 
   public LocalDateTime computePlannedStartDateT(ManufOrder manufOrder) {
@@ -581,12 +582,7 @@ public class ManufOrderWorkflowService {
 
       purchaseOrderLine =
           purchaseOrderLineService.createPurchaseOrderLine(
-              purchaseOrder,
-              product,
-              product.getName(),
-              product.getDescription(),
-              quantity,
-              purchaseUnit);
+              purchaseOrder, product, null, null, quantity, purchaseUnit);
 
       purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
     }
@@ -684,6 +680,6 @@ public class ManufOrderWorkflowService {
     Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
     manufOrder.setPurchaseOrder(purchaseOrder);
 
-    Beans.get(ManufOrderRepository.class).save(manufOrder);
+    manufOrderRepo.save(manufOrder);
   }
 }

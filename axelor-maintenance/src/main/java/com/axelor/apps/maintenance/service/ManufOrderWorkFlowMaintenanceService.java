@@ -61,7 +61,7 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
         productionConfigRepo);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
@@ -93,7 +93,7 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
     }
 
     for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-      operationOrderWorkflowService.plan(operationOrder);
+      operationOrderWorkflowService.plan(operationOrder, null);
     }
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
@@ -132,7 +132,7 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
         .collect(Collectors.toList());
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {

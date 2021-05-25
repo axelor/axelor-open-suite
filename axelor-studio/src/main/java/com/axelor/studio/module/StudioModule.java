@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,6 +38,8 @@ import com.axelor.studio.db.repo.StudioWkfNodeRepo;
 import com.axelor.studio.db.repo.StudioWkfRepository;
 import com.axelor.studio.db.repo.WkfNodeRepository;
 import com.axelor.studio.db.repo.WkfRepository;
+import com.axelor.studio.service.mapper.MapperScriptGeneratorService;
+import com.axelor.studio.service.mapper.MapperScriptGeneratorServiceImpl;
 
 public class StudioModule extends AxelorModule {
 
@@ -53,5 +55,6 @@ public class StudioModule extends AxelorModule {
     bind(MetaJsonModelRepository.class).to(MetaJsonModelRepo.class);
     bind(WkfNodeRepository.class).to(StudioWkfNodeRepo.class);
     bind(SelectionBuilderRepository.class).to(SelectionBuilderRepo.class);
+    bind(MapperScriptGeneratorService.class).to(MapperScriptGeneratorServiceImpl.class);
   }
 }

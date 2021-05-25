@@ -4,11 +4,13 @@
 
 	<grid name="project-task-tag-grid" title="Tags" model="com.axelor.apps.project.db.ProjectTaskTag">
 		<field name="name"/>
+		<field name="colorSelect"/>
 	</grid>
 
 	<form title="Tag" name="project-task-tag-form" model="com.axelor.apps.project.db.ProjectTaskTag">
 		<panel name="mainPanel">
 			<field name="name"/>
+			<field name="colorSelect"/>
 		</panel>
 	</form>
 

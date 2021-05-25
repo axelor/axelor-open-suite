@@ -103,6 +103,7 @@
 
 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
 	<many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+    <boolean name="groupProductsOnPrintings" title="Group products on printings" default="false" />
 	
 	<!-- Subscription fields -->
 	<integer name="periodicityTypeSelect" selection="sale.subscription.periodicity.type.select" title="Periodicity type" default="2"/>
@@ -126,6 +127,8 @@
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
+ 	
+ 	<finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
 
     <extra-code>
    		<![CDATA[

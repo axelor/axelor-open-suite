@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.schema.views.Selection.Option;
+import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.db.SelectionBuilder;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -79,11 +80,15 @@ public class SelectionBuilderService {
     String xmlId = SELECTION_PREFIX + selectionBuilder.getId();
 
     updateMetaSelectFromText(
-        selectionBuilder.getSelectionText(), selectionBuilder.getName(), xmlId);
+        selectionBuilder.getSelectionText(),
+        selectionBuilder.getName(),
+        selectionBuilder.getAppBuilder(),
+        xmlId);
   }
 
   @Transactional
-  public String updateMetaSelectFromText(String selectionText, String name, String xmlId) {
+  public String updateMetaSelectFromText(
+      String selectionText, String name, AppBuilder appBuilder, String xmlId) {
 
     if (name == null && xmlId == null) {
       return null;
@@ -92,6 +97,7 @@ public class SelectionBuilderService {
     MetaSelect metaSelect = updateSelectItems(selectionText, name, xmlId);
 
     metaSelect.setIsCustom(true);
+    metaSelect.setAppBuilder(appBuilder);
     metaSelect.setName(name);
 
     if (xmlId != null) {

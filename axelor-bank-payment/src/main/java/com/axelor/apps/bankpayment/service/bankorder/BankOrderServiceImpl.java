@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,7 +65,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,12 +73,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BankOrderServiceImpl implements BankOrderService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
@@ -390,8 +385,8 @@ public class BankOrderServiceImpl implements BankOrderService {
         == EbicsPartnerRepository.EBICS_TYPE_TS) {
       if (bankOrder.getSignedMetaFile() == null) {
         throw new AxelorException(
-            I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED),
-            TraceBackRepository.CATEGORY_NO_VALUE);
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED));
       }
 
       signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
@@ -403,8 +398,6 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
-
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     if (!bankPaymentConfigService
         .getBankPaymentConfig(bankOrder.getSenderCompany())
@@ -576,8 +569,8 @@ public class BankOrderServiceImpl implements BankOrderService {
         && bankOrder.getBankOrderFileFormat().getAllowOrderCurrDiffFromBankDetails()
         && bankDetails.getCurrency() == null) {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY),
-          TraceBackRepository.CATEGORY_MISSING_FIELD);
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY));
     }
   }
 
@@ -826,13 +819,11 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public ActionViewBuilder buildBankOrderLineView(
       String gridViewName, String formViewName, String viewDomain) {
-    ActionViewBuilder actionViewBuilder =
-        ActionView.define(I18n.get("Bank Order Lines"))
-            .model(BankOrderLine.class.getName())
-            .add("grid", gridViewName)
-            .add("form", formViewName)
-            .domain(viewDomain);
-    return actionViewBuilder;
+    return ActionView.define(I18n.get("Bank Order Lines"))
+        .model(BankOrderLine.class.getName())
+        .add("grid", gridViewName)
+        .add("form", formViewName)
+        .domain(viewDomain);
   }
 
   @Transactional

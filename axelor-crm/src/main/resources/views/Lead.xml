@@ -110,7 +110,7 @@
 						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
 				</field>
-				<field name="jobTitleFunction" colSpan="6" placeholder="Function" showTitle="false"/>
+				<field name="jobTitleFunction" colSpan="6" placeholder="Function" showTitle="false" canNew="true"/>
 			</panel>
 		</panel>
 
@@ -129,14 +129,13 @@
 							]]>
 						</viewer>
 					</field>
-					<field name="mobilePhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-mobilePhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
-					<field name="emailAddress" colSpan="3" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
+					<field name="mobilePhone" colSpan="4" placeholder="+33100000000" onChange="action-partner-method-normalize-mobilePhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
+					<field name="emailAddress" colSpan="4" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 						<editor x-show-titles="false">
 							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
-					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
-					<field name="fax" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fax" pattern="^\+?([\s()-.]*\d){7,}$"/>
+					<field name="fixedPhone" colSpan="4" placeholder="+33100000000" onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
 					<field name="webSite" colSpan="6" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
 								
@@ -155,8 +154,8 @@
 				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12" hideIf="$readonly()">
 					<field name="primaryAddress" colSpan="12"/>
 					<field name="primaryPostalCode" colSpan="6"/>
-					<field name="primaryCity" colSpan="6" form-view="city-form" grid-view="city-grid" onChange="action-attrs-lead-set-primary-state-country-postal-code"/>
-					<field name="primaryState" colSpan="6" form-view="region-form" grid-view="region-grid"/>
+					<field name="primaryCity" colSpan="6" form-view="city-form" grid-view="city-grid" onChange="action-attrs-lead-set-primary-state-country-postal-code" canNew="true"/>
+					<field name="primaryState" colSpan="6" form-view="region-form" grid-view="region-grid" canNew="true"/>
 					<field name="primaryCountry" colSpan="6" form-view="country-form" grid-view="country-grid"/>
 				</panel>
 
@@ -191,7 +190,7 @@
 		</panel>
 		
 		<panel sidebar="true" name="marketingPanel" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
-			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid"/>
+			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid" canNew="true"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="estimatedBudget" colSpan="6"/>
 		</panel>

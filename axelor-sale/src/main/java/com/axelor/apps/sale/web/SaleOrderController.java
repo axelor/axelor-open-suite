@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -137,7 +137,7 @@ public class SaleOrderController {
   public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLS);
+    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
   public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
@@ -172,9 +172,11 @@ public class SaleOrderController {
 
       } else if (context.get("id") != null) {
 
-        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+        SaleOrder saleOrder =
+            Beans.get(SaleOrderRepository.class).find(Long.parseLong(context.get("id").toString()));
         title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
         fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        response.setCanClose(true);
 
         logger.debug("Printing " + title);
       } else {
@@ -743,6 +745,18 @@ public class SaleOrderController {
       response.setError(e.getMessage());
     }
     response.setAttr("clientPartner", "domain", domain);
+  }
+
+  public void handleComplementaryProducts(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    try {
+      response.setValue(
+          "saleOrderLineList",
+          Beans.get(SaleOrderService.class).handleComplementaryProducts(saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {

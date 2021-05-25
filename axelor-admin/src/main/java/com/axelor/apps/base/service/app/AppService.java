@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,12 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -45,5 +50,15 @@ public interface AppService {
 
   public String getDataExportDir() throws AxelorException;
 
-  public String getFileUploadDir() throws AxelorException;
+  public static String getFileUploadDir() throws AxelorException {
+    String appSettingsPath = MetaFiles.getPath("tmp").getParent().toString();
+    if (appSettingsPath == null || appSettingsPath.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessages.FILE_UPLOAD_DIR_ERROR));
+    }
+    return !appSettingsPath.endsWith(File.separator)
+        ? appSettingsPath + File.separator
+        : appSettingsPath;
+  }
 }

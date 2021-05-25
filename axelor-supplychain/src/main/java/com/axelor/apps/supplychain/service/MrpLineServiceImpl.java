@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -135,14 +135,18 @@ public class MrpLineServiceImpl implements MrpLineService {
     StockLocation stockLocation = mrpLine.getStockLocation();
     LocalDate maturityDate = mrpLine.getMaturityDate();
 
-    Partner supplierPartner = product.getDefaultSupplierPartner();
+    Partner supplierPartner = mrpLine.getSupplierPartner();
 
     if (supplierPartner == null) {
-      throw new AxelorException(
-          mrpLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MRP_LINE_1),
-          product.getFullName());
+      supplierPartner = product.getDefaultSupplierPartner();
+
+      if (supplierPartner == null) {
+        throw new AxelorException(
+            mrpLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MRP_LINE_1),
+            product.getFullName());
+      }
     }
 
     Company company = stockLocation.getCompany();
@@ -289,7 +293,11 @@ public class MrpLineServiceImpl implements MrpLineService {
     mrpLine.setCumulativeQty(cumulativeQty);
     mrpLine.setStockLocation(stockLocation);
 
-    mrpLine.setMinQty(this.getMinQty(product, stockLocation));
+    mrpLine = this.setMrpLineQty(mrpLine, product, stockLocation);
+
+    if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
+      mrpLine.setSupplierPartner(product.getDefaultSupplierPartner());
+    }
 
     this.updatePartner(mrpLine, model);
 
@@ -309,7 +317,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     return mrpLine;
   }
 
-  protected BigDecimal getMinQty(Product product, StockLocation stockLocation) {
+  protected MrpLine setMrpLineQty(MrpLine mrpLine, Product product, StockLocation stockLocation) {
 
     StockRules stockRules =
         stockRulesService.getStockRules(
@@ -319,9 +327,11 @@ public class MrpLineServiceImpl implements MrpLineService {
             StockRulesRepository.USE_CASE_USED_FOR_MRP);
 
     if (stockRules != null) {
-      return stockRules.getMinQty();
+      mrpLine.setMinQty(stockRules.getMinQty());
+      mrpLine.setIdealQty(stockRules.getIdealQty());
+      mrpLine.setReOrderQty(stockRules.getReOrderQty());
     }
-    return BigDecimal.ZERO;
+    return mrpLine;
   }
 
   protected void createMrpLineOrigins(MrpLine mrpLine, Model model) {

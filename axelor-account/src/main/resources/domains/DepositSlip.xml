@@ -15,7 +15,7 @@
         <date name="fromDate" title="Start date" />
         <date name="toDate" title="End date" />
         <date name="depositDate" required="true" copy="false" />
-
+        <integer name="depositType" title="Deposit type" selection="account.deposit.type.select"/>
         <string name="depositNumber" readonly="true" copy="false" namecolumn="true" />
         <date name="publicationDate" readonly="true" copy="false" />
 

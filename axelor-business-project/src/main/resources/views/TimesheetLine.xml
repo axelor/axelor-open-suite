@@ -10,4 +10,18 @@
 		<call class="com.axelor.apps.businessproject.web.TimesheetLineBusinessController" method="setDefaultToInvoice"/>
 	</action-method>
 	
+	<grid name="timesheet-line-invoicing-project-grid" title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine" orderBy="-date" groupBy="project">
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="teamTask"/>
+		<field name="date" />
+		<field name="product" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="hoursDuration" width="62%" min="0.01" aggregate="sum"/>
+		<field name="durationForCustomer" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" aggregate="sum"/>
+		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="enableEditor" hidden="true" />
+		<field name="invoiced" />
+		<field name="project" hidden="true" />
+		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-timesheet-line-method-update-to-invoice" />
+	</grid>
+	
 </object-views>

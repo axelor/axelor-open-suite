@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -88,7 +88,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
               Beans.get(ManufOrderRepository.class)
                   .all()
                   .filter(
-                      "self.productionOrder.project = ?1 AND (self.realStartDateT < ?2)",
+                      "self.productionOrderSet.project = ?1 AND (self.realStartDateT < ?2)",
                       project,
                       deadlineDateToDateTime)
                   .fetch());
@@ -98,7 +98,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
           .addAll(
               Beans.get(ManufOrderRepository.class)
                   .all()
-                  .filter("self.productionOrder.project = ?1", project)
+                  .filter("self.productionOrderSet.project = ?1", project)
                   .fetch());
     }
   }
@@ -129,7 +129,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
         (int)
             Beans.get(ManufOrderRepository.class)
                 .all()
-                .filter("self.productionOrder.project = ?1", project)
+                .filter("self.productionOrderSet.project = ?1", project)
                 .count();
     toInvoiceCount += productionOrderCount;
 

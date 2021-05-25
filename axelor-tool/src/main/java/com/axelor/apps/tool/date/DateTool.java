@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -307,6 +307,16 @@ public class DateTool {
   public static Date toDate(LocalDate date) {
 
     return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+  }
+
+  /**
+   * Returns the maximum of two dates. A null date is treated as being less than any non-null date.
+   */
+  public static LocalDateTime max(LocalDateTime d1, LocalDateTime d2) {
+    if (d1 == null && d2 == null) return null;
+    if (d1 == null) return d2;
+    if (d2 == null) return d1;
+    return (d1.isAfter(d2)) ? d1 : d2;
   }
 
   public static ZonedDateTime getTodayDateTime(String timeZone) {

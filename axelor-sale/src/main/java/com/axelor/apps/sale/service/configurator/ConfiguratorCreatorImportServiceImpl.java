@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -140,14 +140,8 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     configuratorCreatorService.updateIndicators(creator);
   }
 
-  /**
-   * When exported, attribute name finish with '_XX' where XX is the id of the creator. After
-   * importing, we need to fix these values.
-   *
-   * @param creator
-   * @throws AxelorException
-   */
-  protected void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
+  @Override
+  public void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> attributes = creator.getAttributes();
     if (attributes == null) {
       return;

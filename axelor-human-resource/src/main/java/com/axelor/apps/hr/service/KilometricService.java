@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -99,9 +99,9 @@ public class KilometricService {
   public KilometricLog createKilometricLog(Employee employee, BigDecimal distance, Year year) {
 
     KilometricLog log = new KilometricLog();
-    log.setEmployee(employee);
     log.setDistanceTravelled(distance);
     log.setYear(year);
+    employee.addKilometricLogListItem(log);
     return log;
   }
 

@@ -123,7 +123,7 @@
     
     <action-attrs name="action-configurator-bom-attrs-product-domain">
         <attribute name="domain" for="product"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' AND dtype = 'Product'&quot;"/>
+                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.dtype = 'Product'&quot;"/>
     </action-attrs>
 
     <tree name="configurator-bom-tree" title="Configurators BOMs tree">
