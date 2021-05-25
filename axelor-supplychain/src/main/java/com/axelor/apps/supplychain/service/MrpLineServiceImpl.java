@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -78,6 +79,7 @@ public class MrpLineServiceImpl implements MrpLineService {
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected MrpForecastRepository mrpForecastRepo;
+  protected MrpLineRepository mrpLineRepo;
 
   @Inject
   public MrpLineServiceImpl(
@@ -89,7 +91,8 @@ public class MrpLineServiceImpl implements MrpLineService {
       StockRulesService stockRulesService,
       SaleOrderLineRepository saleOrderLineRepo,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
-      MrpForecastRepository mrpForecastRepo) {
+      MrpForecastRepository mrpForecastRepo,
+      MrpLineRepository mrpLineRepo) {
 
     this.appBaseService = appBaseService;
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
@@ -100,6 +103,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.mrpForecastRepo = mrpForecastRepo;
+    this.mrpLineRepo = mrpLineRepo;
   }
 
   @Override
@@ -403,5 +407,12 @@ public class MrpLineServiceImpl implements MrpLineService {
       return ((MrpForecast) model).getPartner();
     }
     return null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateProposalToProcess(MrpLine mrpLine, boolean proposalToProcess) {
+    mrpLine.setProposalToProcess(proposalToProcess);
+    mrpLineRepo.save(mrpLine);
   }
 }

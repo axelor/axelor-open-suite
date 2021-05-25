@@ -17,15 +17,12 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
-import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
-import com.axelor.db.JPA;
-import com.axelor.db.Query;
+import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -61,17 +58,18 @@ public class MrpLineController {
 
   @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
-  private void toggle(ActionRequest request, ActionResponse response, boolean value) {
+  private void toggle(ActionRequest request, ActionResponse response, boolean proposalToProcess) {
     List<Integer> mrpLineIds = (List<Integer>) request.getContext().get("_ids");
 
     if (CollectionUtils.isNotEmpty(mrpLineIds)) {
       MrpLineRepository mrpLineRepo = Beans.get(MrpLineRepository.class);
+      MrpLineService mrpLineService = Beans.get(MrpLineService.class);
       MrpLine mrpLine;
 
       for (Integer mrpId : mrpLineIds) {
         mrpLine = mrpLineRepo.find(Long.valueOf(mrpId));
-        mrpLine.setToProcess(value);
-        mrpLineRepo.save(mrpLine);
+
+        mrpLineService.updateProposalToProcess(mrpLine, proposalToProcess);
       }
     }
 
@@ -81,35 +79,10 @@ public class MrpLineController {
   @Transactional(rollbackOn = {Exception.class})
   public void selectAll(ActionRequest request, ActionResponse response) {
     try {
-      MrpLineRepository mrpLineRepo = Beans.get(MrpLineRepository.class);
       Mrp mrp = request.getContext().getParent().asType(Mrp.class);
       mrp = Beans.get(MrpRepository.class).find(mrp.getId());
 
-      Query<MrpLine> mrpLineQuery =
-          mrpLineRepo
-              .all()
-              .filter(
-                  "(self.mrp.displayProductWithoutProposal = true AND self.mrp.id = ?1)"
-                      + " OR (self.mrp.displayProductWithoutProposal = false AND self.mrp.id = ?1 AND self.product.id IN (select m.product from MrpLine as m where m.mrp.id = ?1 AND m.mrpLineType.elementSelect in (?2, ?3, ?4)))",
-                  mrp.getId(),
-                  MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL,
-                  MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL,
-                  MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED)
-              .order("id");
-
-      int offset = 0;
-      List<MrpLine> mrpLineList;
-
-      while (!(mrpLineList = mrpLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
-        for (MrpLine mrpLine : mrpLineList) {
-          offset++;
-
-          mrpLine.setToProcess(true);
-          mrpLineRepo.save(mrpLine);
-        }
-
-        JPA.clear();
-      }
+      Beans.get(MrpService.class).massUpdateProposalToProcess(mrp, true);
 
       response.setAttr("mrpLinePanel", "refresh", true);
     } catch (Exception e) {

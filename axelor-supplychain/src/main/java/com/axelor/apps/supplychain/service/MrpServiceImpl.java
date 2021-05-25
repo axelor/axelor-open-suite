@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -58,6 +59,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -1131,7 +1133,7 @@ public class MrpServiceImpl implements MrpService {
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
-            .filter("self.mrp.id = ?1 AND self.toProcess = true", mrp.getId())
+            .filter("self.mrp.id = ?1 AND self.proposalToProcess = true", mrp.getId())
             .order("maturityDate")
             .fetch();
 
@@ -1222,5 +1224,42 @@ public class MrpServiceImpl implements MrpService {
   public void onError(Mrp mrp, Exception e) {
     reset(mrp);
     mrp.setErrorLog(e.getMessage());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void massUpdateProposalToProcess(Mrp mrp, boolean proposalToProcess) {
+    Query<MrpLine> mrpLineQuery =
+        mrpLineRepository
+            .all()
+            .filter(
+                "("
+                    + " self.mrp.displayProductWithoutProposal = true "
+                    + " AND self.mrp.id = :mrpId"
+                    + ") OR ("
+                    + " self.mrp.displayProductWithoutProposal = false "
+                    + " AND self.mrp.id = :mrpId "
+                    + " AND self.product.id IN ("
+                    + "   select m.product from MrpLine as m "
+                    + "   where m.mrp.id = :mrpId "
+                    + "   AND m.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal, :manufProposalNeed)))")
+            .bind("mrpId", mrp.getId())
+            .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
+            .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
+            .bind("manufProposalNeed", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED)
+            .order("id");
+
+    int offset = 0;
+    List<MrpLine> mrpLineList;
+
+    while (!(mrpLineList = mrpLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+      for (MrpLine mrpLine : mrpLineList) {
+        offset++;
+
+        mrpLineService.updateProposalToProcess(mrpLine, true);
+      }
+
+      JPA.clear();
+    }
   }
 }

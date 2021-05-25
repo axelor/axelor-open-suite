@@ -57,4 +57,6 @@ public interface MrpLineService {
   MrpLineOrigin createMrpLineOrigin(Model model);
 
   MrpLineOrigin copyMrpLineOrigin(MrpLineOrigin mrpLineOrigin);
+
+  void updateProposalToProcess(MrpLine mrpLine, boolean proposalToProcess);
 }
