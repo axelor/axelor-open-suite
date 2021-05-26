@@ -38,12 +38,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
   protected CurrencyService currencyService;
   protected InvoiceTermService invoiceTermService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public InvoiceTermPaymentServiceImpl(
-      CurrencyService currencyService, InvoiceTermService invoiceTermService) {
+      CurrencyService currencyService,
+      InvoiceTermService invoiceTermService,
+      AppAccountService appAccountService) {
     this.currencyService = currencyService;
     this.invoiceTermService = invoiceTermService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -91,8 +95,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                 invoicePayment.getCurrency(),
                 invoicePayment.getInvoice().getCurrency(),
                 availableAmount,
-                Beans.get(AppAccountService.class)
-                    .getTodayDate(invoicePayment.getInvoice().getCompany()))
+                appAccountService.getTodayDate(invoicePayment.getInvoice().getCompany()))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {

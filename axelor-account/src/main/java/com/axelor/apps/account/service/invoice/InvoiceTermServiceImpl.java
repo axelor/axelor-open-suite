@@ -85,8 +85,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoice
             .getInTaxTotal()
             .multiply(paymentConditionLine.getPaymentPercentage())
-            .divide(BigDecimal.valueOf(100))
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            .divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
 

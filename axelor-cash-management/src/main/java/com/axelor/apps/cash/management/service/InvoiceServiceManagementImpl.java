@@ -88,10 +88,16 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       int paymentDelay = invoice.getPartner().getPaymentDelay().intValue();
 
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-        invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
+        if (invoiceTerm.getEstimatedPaymentDate() == null) {
+          invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
+        }
       }
     } else {
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getEstimatedPaymentDate() != null) {
+          continue;
+        }
+
         LocalDate estimatedPaymentDate = invoiceTerm.getDueDate();
 
         if (invoiceTerm.getPaymentConditionLine().getTypeSelect()

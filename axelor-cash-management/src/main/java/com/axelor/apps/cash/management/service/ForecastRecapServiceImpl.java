@@ -51,7 +51,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -85,6 +84,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected ForecastRecapLineTypeRepository forecastRecapLineTypeRepo;
   protected ForecastRecapRepository forecastRecapRepo;
   protected TimetableRepository timetableRepo;
+  protected InvoiceTermRepository invoiceTermRepo;
 
   protected LocalDate today;
   protected Map<Integer, List<Integer>> invoiceStatusMap;
@@ -95,12 +95,14 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       CurrencyService currencyService,
       ForecastRecapLineTypeRepository forecastRecapLineTypeRepo,
       ForecastRecapRepository forecastRecapRepo,
-      TimetableRepository timetableRepo) {
+      TimetableRepository timetableRepo,
+      InvoiceTermRepository invoiceTermRepo) {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.forecastRecapLineTypeRepo = forecastRecapLineTypeRepo;
     this.forecastRecapRepo = forecastRecapRepo;
     this.timetableRepo = timetableRepo;
+    this.invoiceTermRepo = invoiceTermRepo;
   }
 
   @Override
@@ -387,7 +389,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         Invoice invoice = (Invoice) forecastModel;
         if (!CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
           InvoiceTerm invoiceTerm =
-              Beans.get(InvoiceTermRepository.class)
+              invoiceTermRepo
                   .all()
                   .filter("self.invoice = ?1 AND self.isPaid != true", invoice)
                   .order("dueDate")
@@ -526,9 +528,21 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         Invoice invoice = (Invoice) forecastModel;
-        InvoiceTerm invoiceTerm =
-            invoice.getInvoiceTermList().stream().filter(it -> !it.getIsPaid()).findFirst().get();
-        return invoiceTerm.getEstimatedPaymentDate();
+
+        if (!CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+          InvoiceTerm invoiceTerm =
+              invoiceTermRepo
+                  .all()
+                  .filter("self.invoice = ?1 AND self.isPaid != true", invoice)
+                  .order("estimatedPaymentDate")
+                  .fetchOne();
+          if (invoiceTerm == null) {
+            return invoice.getDueDate();
+          }
+          return invoiceTerm.getEstimatedPaymentDate();
+        } else {
+          return invoice.getDueDate();
+        }
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         SaleOrder saleOrder = (SaleOrder) forecastModel;
         return saleOrder.getExpectedRealisationDate() == null

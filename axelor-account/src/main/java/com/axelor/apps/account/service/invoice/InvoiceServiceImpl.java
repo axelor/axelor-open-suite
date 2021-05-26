@@ -162,7 +162,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getCompany() == null
         || invoice.getOperationTypeSelect() == null
         || invoice.getOperationTypeSelect() == 0
-        || invoice.getPartner() == null) return null;
+        || invoice.getPartner() == null) {
+      return null;
+    }
     AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
     if (InvoiceToolService.isPurchase(invoice)) {
       return isHoldBack
@@ -173,18 +175,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           ? situationService.getHoldBackCustomerAccount(invoice.getPartner(), invoice.getCompany())
           : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
     }
-  }
-
-  @Override
-  public Account getPartnerAccount(Invoice invoice) throws AxelorException {
-    if (invoice.getCompany() == null
-        || invoice.getOperationTypeSelect() == null
-        || invoice.getOperationTypeSelect() == 0
-        || invoice.getPartner() == null) return null;
-    AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
-    return InvoiceToolService.isPurchase(invoice)
-        ? situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany())
-        : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
   }
 
   public Journal getJournal(Invoice invoice) throws AxelorException {

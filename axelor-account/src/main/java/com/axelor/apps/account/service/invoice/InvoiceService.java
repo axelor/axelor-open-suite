@@ -46,17 +46,6 @@ public interface InvoiceService {
   public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
 
   /**
-   * Fetches suitable account for partner bound to the invoice, depending in the partner and the
-   * type of invoice.
-   *
-   * @param invoice Invoice to fetch the partner account for
-   * @return null if the invoice does not contains enough information to determine the partner
-   *     account.
-   * @throws AxelorException
-   */
-  Account getPartnerAccount(Invoice invoice) throws AxelorException;
-
-  /**
    * Fetches suitable account for partner bound to the invoice, depending in the partner,the type of
    * invoice, and if holdback.
    *

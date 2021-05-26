@@ -243,7 +243,7 @@ public class InvoicePaymentController {
           }
         }
         if (selectedInvoiceTerms.isEmpty()) {
-          response.setError(I18n.get(IExceptionMessage.INVOICE__PAYMENT_1));
+          response.setError(I18n.get(IExceptionMessage.INVOICE_PAYMENT_MISSING_TERM_LINE));
         } else {
           selectedInvoiceTerms =
               Beans.get(InvoiceTermService.class)

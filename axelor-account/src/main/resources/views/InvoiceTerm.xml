@@ -26,31 +26,31 @@
 	
 	<form name="invoice-term-invoice-form" title="Invoice term"
         model="com.axelor.apps.account.db.InvoiceTerm">
-		<panel name="mainPanel" readonly="true">
-		    <field name="name" colSpan="12"/>
-		    <field name="dueDate"/>
+		<panel name="mainPanel">
+		    <field name="name" colSpan="12" readonly="true"/>
+		    <field name="dueDate" readonly="true"/>
 	   	 	<field name="estimatedPaymentDate" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
-	    	<field name="amount"/>
-	    	<field name="amountRemaining"/>
+	    	<field name="amount" readonly="true"/>
+	    	<field name="amountRemaining" readonly="true"/>
 	    	<field name="isPaid" readonly="true" />
-			<field name="isHoldBack"/>
+			<field name="isHoldBack" readonly="true"/>
 			<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true" showIf="moveLine"/>
 			<field name="invoice" form-view="invoice-form" grid-view="invoice-grid" hidden="true" readonly="true"/>
-			<field name="invoice.company" hidden="true"/>
+			<field name="invoice.company" hidden="true" />
 		</panel>
 	</form>
     
     <form name="invoice-term-form" title="Invoice term"
         model="com.axelor.apps.account.db.InvoiceTerm">
-		<panel name="mainPanel" readonly="true">
-			<field name="name"/>
+		<panel name="mainPanel">
+			<field name="name" readonly="true"/>
 			<field name="invoice" form-view="invoice-form" grid-view="invoice-grid" readonly="true"/>
 			<field name="isPaid" readonly="true"/>
-			<field name="isHoldBack"/>
-			<field name="dueDate"/>
+			<field name="isHoldBack" readonly="true"/>
+			<field name="dueDate" readonly="true"/>
 			<field name="estimatedPaymentDate" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
-	    	<field name="amount"/>
-	    	<field name="amountRemaining"/>
+	    	<field name="amount" readonly="true"/>
+	    	<field name="amountRemaining" readonly="true"/>
 	    	<field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true" showIf="moveLine"/>
 	    	<field name="invoice.company" hidden="true"/>
 		</panel>

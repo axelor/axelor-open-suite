@@ -139,10 +139,9 @@ public class MoveToolService {
   }
 
   /**
-   * Fonction permettant de récuperer les lignes d'écriture (non complétement lettrée sur le compte
-   * client) de la saisie paiement
+   * Method that returns all move lines of an invoice payment that are not completely lettered
    *
-   * @param invoicePayment Une saisie paiement
+   * @param invoicePayment Invoice payment
    * @return
    * @throws AxelorException
    */
@@ -158,10 +157,9 @@ public class MoveToolService {
   }
 
   /**
-   * Fonction permettant de récuperer les lignes d'écriture (non complétement lettrée sur le compte
-   * client) de la saisie paiement
+   * Method that returns all the move lines of an invoice that are not completely lettered
    *
-   * @param invoicePayment Une saisie paiement
+   * @param invoice Invoice
    * @return
    * @throws AxelorException
    */

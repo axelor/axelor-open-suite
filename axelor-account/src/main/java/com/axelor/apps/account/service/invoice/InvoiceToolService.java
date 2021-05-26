@@ -55,10 +55,15 @@ public class InvoiceToolService {
       return invoiceDate;
     }
 
-    InvoiceTerm invoiceTerm =
-        invoice.getInvoiceTermList().stream().filter(it -> !it.getIsPaid()).findFirst().get();
-    if (invoiceTerm.getDueDate() != null) {
-      return invoiceTerm.getDueDate();
+    LocalDate dueDate = null;
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      if (!invoiceTerm.getIsPaid() && (dueDate == null || invoiceDate.isBefore(dueDate))) {
+        dueDate = invoiceTerm.getDueDate();
+      }
+    }
+
+    if (dueDate != null) {
+      return dueDate;
     }
     return invoiceDate;
   }

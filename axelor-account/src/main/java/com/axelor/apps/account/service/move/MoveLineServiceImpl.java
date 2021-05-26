@@ -395,8 +395,6 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
 
-    int moveLineId = 1;
-
     if (partner == null) {
       throw new AxelorException(
           invoice,
@@ -418,39 +416,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-
-      Account account = partnerAccount;
-      if (invoiceTerm.getIsHoldBack()) {
-        account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, true);
-      }
-
-      Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
-      MoveLine moveLine1 =
-          this.createMoveLine(
-              move,
-              partner,
-              account,
-              invoiceTerm.getAmount(),
-              currencyService
-                  .getAmountCurrencyConvertedAtDate(
-                      invoice.getCurrency(),
-                      companyCurrency,
-                      invoiceTerm.getAmount(),
-                      invoice.getInvoiceDate())
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-              null,
-              isDebitCustomer,
-              invoice.getInvoiceDate(),
-              invoiceTerm.getDueDate(),
-              invoice.getOriginDate(),
-              moveLineId++,
-              origin,
-              null);
-      moveLines.add(moveLine1);
-
-      invoiceTerm.setMoveLine(moveLine1);
-    }
+    moveLines.addAll(
+        addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+    int moveLineId = moveLines.size() + 1;
 
     AnalyticMoveLineRepository analyticMoveLineRepository =
         Beans.get(AnalyticMoveLineRepository.class);
@@ -626,6 +594,54 @@ public class MoveLineServiceImpl implements MoveLineService {
       this.consolidateMoveLines(moveLines);
     }
 
+    return moveLines;
+  }
+
+  private List<MoveLine> addInvoiceTermMoveLines(
+      Invoice invoice,
+      Account partnerAccount,
+      Move move,
+      Partner partner,
+      boolean isDebitCustomer,
+      String origin)
+      throws AxelorException {
+
+    int moveLineId = 1;
+    List<MoveLine> moveLines = new ArrayList<MoveLine>();
+
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+
+      Account account = partnerAccount;
+      if (invoiceTerm.getIsHoldBack()) {
+        account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, true);
+      }
+
+      Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+      MoveLine moveLine1 =
+          this.createMoveLine(
+              move,
+              partner,
+              account,
+              invoiceTerm.getAmount(),
+              currencyService
+                  .getAmountCurrencyConvertedAtDate(
+                      invoice.getCurrency(),
+                      companyCurrency,
+                      invoiceTerm.getAmount(),
+                      invoice.getInvoiceDate())
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+              null,
+              isDebitCustomer,
+              invoice.getInvoiceDate(),
+              invoiceTerm.getDueDate(),
+              invoice.getOriginDate(),
+              moveLineId++,
+              origin,
+              null);
+      moveLines.add(moveLine1);
+
+      invoiceTerm.setMoveLine(moveLine1);
+    }
     return moveLines;
   }
 
@@ -828,10 +844,9 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   /**
-   * Fonction permettant de récuperer les ligne d'écritures (au credit et non complétement lettrée
-   * sur le compte client) de la facture
+   * Method that returns all credit move lines of an invoice that are not completely lettered
    *
-   * @param invoice Une facture
+   * @param invoice Invoice
    * @return
    */
   @Override
@@ -843,10 +858,9 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   /**
-   * Fonction permettant de récuperer les lignes d'écriture (au credit et non complétement lettrée
-   * sur le compte client) de l'écriture de facture
+   * Method that returns all credit move lines of a move that are not completely lettered
    *
-   * @param move Une écriture de facture
+   * @param move Invoice move
    * @return
    */
   @Override
@@ -883,10 +897,9 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   /**
-   * Fonction permettant de récuperer les lignes d'écriture (au débit et non complétement lettrée
-   * sur le compte client) de la facture
+   * Method that returns all debit move lines of an invoice that are not completely lettered
    *
-   * @param invoice Une facture
+   * @param invoice Invoice
    * @return
    */
   @Override
@@ -932,10 +945,9 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   /**
-   * Fonction permettant de récuperer les lignes d'écriture (au débit et non complétement lettrée
-   * sur le compte client) de l'écriture de facture
+   * Method that returns all debit move lines of a move that are not completely lettered
    *
-   * @param move Une écriture de facture
+   * @param move Invoice move
    * @return
    */
   @Override

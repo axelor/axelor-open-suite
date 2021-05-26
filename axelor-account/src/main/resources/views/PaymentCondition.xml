@@ -15,7 +15,7 @@
         <field name="name"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 		<field name="isFree" colSpan="3"/>
-        <panel-related colSpan="12" name="PaymentConditionLineListPanel" title="Payment condition lines" field="paymentConditionLineList" 
+        <panel-related colSpan="12" name="paymentConditionLineListPanel" title="Payment condition lines" field="paymentConditionLineList" 
         	grid-view="payment-condition-line-grid" form-view="payment-condition-line-form"/>
         <field name="advancePaymentNeeded" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
       </panel>
@@ -26,7 +26,7 @@
     </search-filters>
     
     <action-validate name="action-payment-condition-validate-payment-percentage">
-    	<error message="The sum of line percentages (payment percentage) must equal 100" if="eval: paymentConditionLineList?.collect(){ it?.paymentPercentage }?.sum() != 100"/>
+    	<error message="The sum of line percentages (payment percentage) must be equal to 100" if="eval: paymentConditionLineList?.collect(){ it?.paymentPercentage }?.sum() != 100"/>
     </action-validate>
     
     <action-record name="action-payment-schedule-record-in-tax-amount"

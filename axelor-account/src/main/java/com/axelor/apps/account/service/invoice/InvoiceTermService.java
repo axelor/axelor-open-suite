@@ -30,7 +30,7 @@ public interface InvoiceTermService {
   public Invoice computeInvoiceTerms(Invoice invoice) throws AxelorException;
 
   /**
-   * Method that compute invoiceTerm fields based on the payment condition line rules
+   * Method that computes invoiceTerm fields based on the payment condition line rules
    *
    * @param invoice
    * @param paymentConditionLine
@@ -58,8 +58,8 @@ public interface InvoiceTermService {
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice);
 
   /**
-   * method that filter invoiceTerm List and returns only invoice terms with holdback status same as
-   * first invoice term of the list.
+   * Method that filters invoiceTerm List and returns only invoice terms with holdback status same
+   * as first invoice term of the list.
    *
    * @param invoiceTerms
    * @return

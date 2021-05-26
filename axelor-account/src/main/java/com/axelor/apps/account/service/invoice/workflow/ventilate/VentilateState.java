@@ -133,7 +133,7 @@ public class VentilateState extends WorkflowInvoice {
   protected void setPartnerAccount() throws AxelorException {
     // Partner account is actually set upon validation but we keep this for backward compatibility
     if (invoice.getPartnerAccount() == null) {
-      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice);
+      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, false);
 
       if (account == null) {
         throw new AxelorException(
