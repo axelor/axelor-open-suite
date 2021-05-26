@@ -31,9 +31,7 @@ public interface ClientViewService {
   /* Project */
   public List<Filter> getTotalProjectsOfUser(User user);
 
-  public List<Filter> getNewTasksOfUser(User user);
-
-  public List<Filter> getTasksInProgressOfUser(User user);
+  public List<Filter> getTasksInCompletedOfUser(User user);
 
   public List<Filter> getTasksDueOfUser(User user);
 

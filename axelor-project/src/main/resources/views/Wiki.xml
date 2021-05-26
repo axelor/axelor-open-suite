@@ -5,7 +5,6 @@
 	
 	<grid name="wiki-grid" title="Wiki" model="com.axelor.apps.project.db.Wiki">
 		<field name="title"/>
-		<field name="content"/>
 		<field name="project"/>
 	</grid>
 
@@ -14,12 +13,16 @@
 		<field name="content"/>
 	</grid>
 	
-	<form name="wiki-form" title="Wiki"  model="com.axelor.apps.project.db.Wiki" width="large" onNew="action-business-support-attrs-project-default">
+	<form name="wiki-form" title="Wiki" model="com.axelor.apps.project.db.Wiki" width="large" onNew="action-business-support-attrs-project-default,action-wiki-record-on-new">
 		<panel name="mainPanel">
 			<field name="title" colSpan="6"/>
 			<field name="project" colSpan="6" canEdit="false"/>
 			<field name="content" widget="HTML" colSpan="12"/>
 		</panel>
 	</form>
+	
+	<action-record name="action-wiki-record-on-new" model="com.axelor.apps.project.db.Wiki">
+	   <field name="project" expr="eval: _project" if="_project"/>
+	</action-record>
 
 </object-views>
