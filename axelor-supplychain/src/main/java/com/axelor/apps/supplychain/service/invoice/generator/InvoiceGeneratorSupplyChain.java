@@ -17,14 +17,15 @@
  */
 package com.axelor.apps.supplychain.service.invoice.generator;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
@@ -138,11 +139,10 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
     if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
         || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+
+      AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
       invoice.setDisplayStockMoveOnInvoicePrinting(
-          AuthUtils.getUser()
-              .getActiveCompany()
-              .getAccountConfig()
-              .getDisplayStockMoveOnInvoicePrinting());
+          accountConfig.getDisplayStockMoveOnInvoicePrinting());
     }
 
     return invoice;

@@ -37,6 +37,42 @@
     <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
+  
+  <grid name="invoice-with-payment-delay-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+   	<menubar>
+	    <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+	      <item name="printInvoicesItem" title="Print invoices" action="action-invoice-method-show-invoice"/>
+	  	</menu>
+     	<menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+	      <item name="validateSelectedInvoicesItem" title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	      <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	      <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
+	      <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
+	    </menu>
+	</menubar>
+   	<hilite color="primary" if="statusSelect == 1"/>
+    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+    <field name="invoiceId" width="120"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+		<field name="operationSubTypeSelect" width="160"/>
+    <field name="invoiceDate" width="120"/>
+    <field name="dueDate" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120"/>
+    <field name="inTaxTotal" aggregate="sum" width="120"/>
+    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="currency" width="60"/>
+    <field name="statusSelect" width="100"/>
+    <field name="debtRecoveryBlockingOk" />
+    <field name="paymentDelayReason"/>
+    <field name="nextActionDate"/>
+    <field name="paymentDelayReasonComments" widget="html"/>
+    <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+  </grid>
 
   <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
 	<menubar>
@@ -354,6 +390,9 @@
 					<field name="originalInvoice" readonly="true" showIf="originalInvoice" form-view="invoice-form" grid-view="invoice-grid"/>
 					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
 				</panel>
+				<field name="paymentDelayReason" canNew="false" canEdit="false" showIf="statusSelect == 3"/>
+				<field name="nextActionDate" showIf="statusSelect == 3"/>
+				<field name="paymentDelayReasonComments" widget="html" colSpan="12" showIf="statusSelect == 3"/>
 				<panel colSpan="12"  name="irrecoverablePanel" title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>
 					<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid"/>
@@ -585,7 +624,7 @@ InvoiceSet.length > 0))"
 				<field name="$format" title="Format" type="integer" selection="invoice.report.format" colSpan="12" required="true"/>
 			</panel>
 			<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" showIf="$reportType ==1 || $reportType==3"/>
-			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print" readonlyIf="$reportType==null || $format==null"/>
+			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close" readonlyIf="$reportType==null || $format==null"/>
 		</panel>
 	</form>
 

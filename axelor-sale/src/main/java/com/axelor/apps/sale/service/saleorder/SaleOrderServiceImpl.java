@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -29,6 +30,7 @@ import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -49,6 +51,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -408,24 +411,45 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException {
 
-    if (saleOrder.getClientPartner() == null
-        || CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())
-        || CollectionUtils.isEmpty(saleOrder.getClientPartner().getComplementaryProductList())) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    List<ComplementaryProduct> complementaryProducts =
+        saleOrder.getClientPartner().getComplementaryProductList();
+
+    if (CollectionUtils.isEmpty(saleOrderLineList)
+        || CollectionUtils.isEmpty(complementaryProducts)) {
       return;
     }
 
     List<SaleOrderLine> newComplementarySOLines = new ArrayList<>();
-    List<ComplementaryProduct> complementaryProducts =
-        saleOrder.getClientPartner().getComplementaryProductList();
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      if (saleOrderLine.getMainSaleOrderLine() != null) {
+    for (ComplementaryProduct complementaryProduct : complementaryProducts) {
+      Product product = complementaryProduct.getProduct();
+      if (product == null) {
         continue;
       }
-      newComplementarySOLines.addAll(
-          saleOrderLineService.manageComplementaryProductSaleOrderLine(
-              saleOrderLine, saleOrder, complementaryProducts));
+
+      if (complementaryProduct.getGenerationTypeSelect()
+          == ComplementaryProductRepository.GENERATION_TYPE_SALE_ORDER) {
+        SaleOrderLine saleOrderLine =
+            Collections.max(saleOrderLineList, Comparator.comparing(SaleOrderLine::getSequence));
+        if (saleOrderLineList.stream()
+            .anyMatch(
+                line ->
+                    product.equals(line.getProduct())
+                        && line.getIsComplementaryPartnerProductsHandled())) {
+          continue;
+        }
+        newComplementarySOLines.addAll(
+            saleOrderLineService.manageComplementaryProductSaleOrderLine(
+                complementaryProduct, saleOrder, saleOrderLine));
+      } else {
+        for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+          newComplementarySOLines.addAll(
+              saleOrderLineService.manageComplementaryProductSaleOrderLine(
+                  complementaryProduct, saleOrder, saleOrderLine));
+        }
+      }
     }
-    newComplementarySOLines.stream().forEach(line -> saleOrder.addSaleOrderLineListItem(line));
-    Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+    newComplementarySOLines.forEach(saleOrder::addSaleOrderLineListItem);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
   }
 }

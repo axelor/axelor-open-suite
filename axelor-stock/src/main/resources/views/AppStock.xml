@@ -11,6 +11,11 @@
 			<field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
 			<field name="stockUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
+		<panel name="trackingNumberBarCodePanel" title="Tracking number barcode">
+    		<field name="activateBarCodeGeneration" widget="Boolean-switch" colSpan="4"/>
+    		<field name="editTrackingNumberBarcodeType" showIf="activateBarCodeGeneration == true" widget="boolean-switch" colSpan="4"/>
+		 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration == true" requiredIf="activateBarCodeGeneration &amp;&amp; !editTrackingNumberBarcodeType" colSpan="4"/>
+	    </panel>
 		<panel name="customsPanel" title="Customs">
           	<field name="economicArea"/>
         </panel>

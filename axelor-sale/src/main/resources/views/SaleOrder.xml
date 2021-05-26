@@ -27,6 +27,8 @@
 	  <field name="inTaxTotal" aggregate="sum"/>
 	  <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
 	  <field name="statusSelect"/>
+	  <field name="lastReminderDate"/>
+	  <field name="lastReminderComments"/>
 	  <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
 	  <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   </grid>
@@ -503,6 +505,8 @@
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
 	    </field>
+	    <field name="lastReminderDate" colSpan="6"/>
+	    <field name="lastReminderComments"/>
 	    <field if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getAllowTimetableInvoicing()" name="expectedRealisationDate" colSpan="6"/>
 	    <field name="cancelReason" hidden="true"/>
 	    <field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">

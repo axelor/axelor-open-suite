@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Product;
@@ -232,7 +233,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           }
           break;
         case StockMoveLineService.TYPE_PURCHASES:
-          if (trackingNumberConfiguration.getIsPurchaseTrackingManaged()) {
+          if (trackingNumberConfiguration.getIsPurchaseTrackingManaged()
+              && trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr()) {
             // Générer numéro de série si case cochée
             this.generateTrackingNumber(
                 stockMoveLine,
@@ -1112,7 +1114,27 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (trackingNumberItem.get("note") != null) {
           trackingNumber.setNote(trackingNumberItem.get("note").toString());
         }
+        if (trackingNumberItem.get("serialNbr") != null) {
+          trackingNumber.setSerialNumber(trackingNumberItem.get("serialNbr").toString());
+        }
         trackingNumber.setProduct(stockMoveLine.getProduct());
+
+        if (stockMoveLine.getProduct() != null) {
+          // In case of barcode generation, retrieve the one set on tracking number configuration
+          AppStock appStock = appStockService.getAppStock();
+          TrackingNumberConfiguration trackingNumberConfiguration =
+              stockMoveLine.getProduct().getTrackingNumberConfiguration();
+          if (appStock != null
+              && appStock.getActivateBarCodeGeneration()
+              && trackingNumberConfiguration != null) {
+            trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
+            if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
+              trackingNumber.setSerialNumber(trackingNumber.getTrackingNumberSeq());
+            }
+            // It will launch barcode generation
+            trackingNumberRepo.save(trackingNumber);
+          }
+        }
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);

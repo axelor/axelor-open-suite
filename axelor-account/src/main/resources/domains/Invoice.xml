@@ -151,6 +151,11 @@
   <string name="headOfficeAddress" title="Head office address"/>
      
     <boolean name="displayStockMoveOnInvoicePrinting" title="Display Deliveries on printing" default="false"/>
+    
+    <many-to-one name="paymentDelayReason" title="Payment delay reason" ref="com.axelor.apps.account.db.PaymentDelayReason"/>
+	<string name="paymentDelayReasonComments" title="Payment delay reason comments" large="true"/>
+	<date name="nextActionDate" title="Next action date"/>
+    
 
   	<unique-constraint columns="invoiceId,company"/>
 

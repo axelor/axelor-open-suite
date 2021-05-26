@@ -142,11 +142,22 @@
  	
  	<input file="bpm.xml" root="bpm" >
  			
- 		<bind node="selections/selection" type="com.axelor.meta.db.MetaSelect" search="self.name = :name" update="true">
+ 		<bind node="selectionBuilders/selectionBuilder" type="com.axelor.studio.db.SelectionBuilder" search="self.name = :name" update="true">
+ 			<bind node="metaSelect" to="metaSelect" search="self.name = :metaSelect" create="false"/>
+ 			<bind node="name" to="name"/>
+ 			<bind node="selectionText" to="selectionText"/>
+ 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false" />
+ 		</bind>
+ 		
+ 		<bind node="selectionBuilders/selectionBuilder" type="com.axelor.studio.db.SelectionBuilder" search="self.name = :name" create="false" call="com.axelor.studio.service.ImportService:importSelectionBuilder" update="true">
+ 			<bind node="name" to="name"/>
+ 		</bind>
+ 		
+ 		<bind node="selections/selection" type="com.axelor.meta.db.MetaSelect" search="self.name = :name AND self.isCustom = true" update="true">
  			<bind node="name" to="name"/>
  			<bind node="module" to="module"/>
  			<bind node="priority" to="priority"/>
- 			<bind node="items/option" to="items">
+ 			<bind node="items/option" to="items" search="self.title = :title AND self.value = :value">
  				<bind node="title" to="title"/>
  				<bind node="value" to="value"/>
  				<bind node="icon" to="icon"/>

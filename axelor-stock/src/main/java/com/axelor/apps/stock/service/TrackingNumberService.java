@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -26,6 +27,7 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -40,6 +42,8 @@ public class TrackingNumberService {
   @Inject private SequenceService sequenceService;
 
   @Inject private TrackingNumberRepository trackingNumberRepo;
+
+  @Inject private AppStockService appStockService;
 
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
@@ -133,6 +137,15 @@ public class TrackingNumberService {
       }
     }
     trackingNumber.setTrackingNumberSeq(seq);
+
+    // In case of barcode generation, retrieve the one set on tracking number configuration
+    AppStock appStock = appStockService.getAppStock();
+    if (appStock != null && appStock.getActivateBarCodeGeneration()) {
+      trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
+      if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
+        trackingNumber.setSerialNumber(seq);
+      }
+    }
 
     return trackingNumber;
   }

@@ -36,10 +36,12 @@
          <bind node="text()" to="code" alias="prodProcessCode"/>
        </bind>
        
-       <bind node="configuratorProdProcess" to="configuratorProdProcess" update="true" search="self.importId = :importId" if="configProdProcessName">
+       <bind node="configuratorProdProcess" to="configuratorProdProcess" update="true" search="self.importId = :importId" if="configProdProcessName || nameFormula">
        	 <bind node="importId" to="importId"/>
          <bind node="statusSelect" to="statusSelect"/>
          <bind node="name" to="name" alias="configProdProcessName"/>
+         <bind node="nameFormula" to="nameFormula"/>
+         <bind node="defNameAsFormula" to="defNameAsFormula"/>
          <bind node="code" to="code"/>
          <bind node="codeFormula" to="codeFormula"/>
          <bind node="defCodeAsFormula" to="defCodeAsFormula"/>
@@ -63,13 +65,19 @@
          <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
          <bind node="configuratorProdProcessLineList/configuratorProdProcessLine" to="configuratorProdProcessLineList">
            <bind node="name" to="name"/>
+           <bind node="nameFormula" to="nameFormula"/>
+           <bind node="defNameAsFormula" to="defNameAsFormula"/>
            <bind node="priority" to="priority"/>
+           <bind node="priorityFormula" to="priorityFormula"/>
+           <bind node="defPriorityAsFormula" to="defPriorityAsFormula"/>
            <bind node="workCenter" to="workCenter" search="self.id = :workCenterId" if="workCenterId">
              <bind node="text()" to="id" alias="workCenterId"/>
            </bind>
            <bind node="stockLocation" to="stockLocation" search="self.id = :stockLocationId" if="stockLocationId">
              <bind node="text()" to="id" alias="stockLocationId"/>
            </bind>
+           <bind node="stockLocationFormula" to="stockLocationFormula"/>
+           <bind node="defStockLocationAsFormula" to="defStockLocationAsFormula"/>
            <bind node="outsourcing" to="outsourcing"/>
            <bind node="description" to="description"/>
            <bind node="minCapacityPerCycle" to="minCapacityPerCycle"/>
@@ -81,6 +89,7 @@
            <bind node="durationPerCycle" to="durationPerCycle"/>
            <bind node="durationPerCycleFormula" to="durationPerCycleFormula"/>
            <bind node="defDurationFormula" to="defDurationFormula"/>
+           <bind node="useCondition" to="useCondition"/>
          </bind>
        </bind>
          

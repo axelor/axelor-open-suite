@@ -440,7 +440,6 @@ public class InvoiceController {
                     reportType,
                     locale);
         title = I18n.get("Invoice");
-        response.setCanClose(true);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));

@@ -31,6 +31,7 @@
      <boolean name="showAction" title="Object"/>
      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" />
+     <string name="xmlId" title="Id" unique="true"/>
      
      <finder-method name="findByParentMenu" using="parentMenu" all="true"/>
   </entity>

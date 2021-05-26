@@ -173,9 +173,21 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
       throws AxelorException {
     String condition = configuratorBOM.getUseCondition();
     // no condition = we always generate the bill of materials
-    if (condition == null) {
+    if (condition == null || condition.trim().isEmpty()) {
       return true;
     }
-    return (boolean) configuratorService.computeFormula(condition, jsonAttributes);
+
+    Object computedConditions = configuratorService.computeFormula(condition, jsonAttributes);
+    if (computedConditions == null) {
+      throw new AxelorException(
+          configuratorBOM,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              String.format(
+                  IExceptionMessage.CONFIGURATOR_BOM_INCONSISTENT_CONDITION,
+                  configuratorBOM.getId())));
+    }
+
+    return (boolean) computedConditions;
   }
 }
