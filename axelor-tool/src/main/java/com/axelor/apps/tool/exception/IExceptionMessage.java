@@ -41,4 +41,11 @@ public interface IExceptionMessage {
   /** Pdf Tool */
   static final String BAD_COPY_NUMBER_ARGUMENT = /*$$(*/
       "The parameter copyNumber should be superior to 0." /*)*/;
+
+  // Meta tool
+  static final String ERROR_CONVERT_TYPE_TO_JSON_TYPE = /*$$(*/
+      "Type %s could not be converted to json type." /*)*/;
+
+  static final String ERROR_CONVERT_JSON_TYPE_TO_TYPE = /*$$(*/
+      "Meta json field type %s could not be converted to a meta field type." /*)*/;
 }

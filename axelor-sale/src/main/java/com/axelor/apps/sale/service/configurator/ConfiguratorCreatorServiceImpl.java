@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.ConfiguratorProductFormula;
 import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
+import com.axelor.apps.tool.MetaTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
@@ -35,6 +36,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.annotations.Widget;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -90,7 +92,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   @Transactional
-  public void updateIndicators(ConfiguratorCreator creator) {
+  public void updateIndicators(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> indicators =
         Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
 
@@ -218,7 +220,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * @param formula
    * @param creator
    */
-  protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
+  protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator)
+      throws AxelorException {
     MetaField formulaMetaField = formula.getMetaField();
     List<MetaJsonField> fields =
         Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
@@ -246,7 +249,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       typeName = metaField.getTypeName();
     }
     completeSelection(metaField, newField);
-    newField.setType(typeToJsonType(typeName));
+    newField.setType(MetaTool.typeToJsonType(typeName));
     newField.setName(formulaMetaField.getName() + "_" + creator.getId());
     newField.setTitle(formulaMetaField.getLabel());
     creator.addIndicator(newField);
@@ -313,28 +316,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       }
     } catch (ClassNotFoundException | NoSuchFieldException e) {
       TraceBackService.trace(e);
-    }
-  }
-
-  /**
-   * Convert the type of a field to a type of a json field.
-   *
-   * @param nameType type of a field
-   * @return corresponding type of json field
-   */
-  protected String typeToJsonType(String nameType) {
-    if (nameType.equals("BigDecimal")) {
-      return "decimal";
-    } else if (nameType.equals("ManyToOne")) {
-      return "many-to-one";
-    } else if (nameType.equals("OneToMany")) {
-      return "one-to-many";
-    } else if (nameType.equals("OneToOne")) {
-      return "one-to-one";
-    } else if (nameType.equals("ManyToMany")) {
-      return "many-to-many";
-    } else {
-      return nameType.toLowerCase();
     }
   }
 
