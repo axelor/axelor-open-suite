@@ -1,0 +1,3 @@
+---
+title: "Email sending: fix NPE when sending email from scheduler."
+type: fix

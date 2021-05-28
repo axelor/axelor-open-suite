@@ -84,7 +84,9 @@ public class SendMailQueueService extends JpaSupport {
                       updateMessage.setSentByEmail(true);
                       updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
                       updateMessage.setSentDateT(LocalDateTime.now());
-                      updateMessage.setSenderUser(userRepository.find(currentUser.getId()));
+                      if (currentUser != null) {
+                        updateMessage.setSenderUser(userRepository.find(currentUser.getId()));
+                      }
                       messageRepository.save(updateMessage);
                     });
                 done = true;
