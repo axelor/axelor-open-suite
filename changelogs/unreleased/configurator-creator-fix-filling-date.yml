@@ -1,0 +1,3 @@
+---
+title: "Configurator: fix issue preventing generation of product or sale order line when trying to fill a date field with the configurator."
+type: fix
