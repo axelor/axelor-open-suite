@@ -547,34 +547,9 @@
     <action name="action-project-task-method-onchange-category" if="__config__.app.isApp('business-project')" />
   </action-group>
 
-	<action-record name="action-project-task-defaults"  model="com.axelor.apps.project.db.ProjectTask">
-		<field name="name" expr="eval: _value" if="_value"/>
-		<field name="assignedTo" expr="eval:__user__" />
-		<field name="taskDate" expr="#{__config__.date}"/>
-    	<field name="project" expr="eval:_project" />
-    	<field name="customerReferral" expr="eval: __user__" if="__user__?.roles.contains(__repo__(Role).all().filter('self.name=?','role.customer').fetchOne())"/>
-    	<field name="assignment" expr="eval:2"/>
-	</action-record>
-
-	<action-record name="action-project-task-business-support-provider" model="com.axelor.apps.project.db.ProjectTask">
-		<field name="$provider" expr="eval: __config__.app.getApp('business-support').providerCompany.name" if="__config__.app.getApp('business-support').providerCompany"/>
-	</action-record>
-
-	<action-record name="action-project-task-update-planned-progress" model="com.axelor.apps.project.db.ProjectTask">
-		<field name="plannedProgress" expr="eval: progressSelect"/>
-	</action-record>
-
     <action-attrs name="action-project-task-atts-priority-on-select">
       <attribute name="domain" expr="eval: (project?.projectTaskPrioritySet !=  null &amp;&amp; project?.projectTaskPrioritySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskPrioritySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;" for="priority"/>
     </action-attrs>
-
-	<action-attrs name="action-project-task-attrs-project-task-category-configurations" model="com.axelor.apps.project.db.ProjectTask">
-		<attribute name="domain" for="projectTaskCategory" expr="eval: (project?.projectTaskCategorySet !=  null &amp;&amp; project?.projectTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-	</action-attrs>
-
-	<action-attrs name="action-project-task-attrs-project-assigned-to-configurations" model="com.axelor.apps.project.db.ProjectTask">
-  		<attribute name="domain" expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;" for="assignedTo"/>
-	</action-attrs>
 
 	<action-attrs name="action-project-task-attrs-project-parent-task-configurations" model="com.axelor.apps.project.db.ProjectTask">
 		<attribute name="domain" expr="eval: (project?.projectTaskList !=null &amp;&amp; project?.projectTaskList?.size() > 0 ) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;" for="parentTask"/>
@@ -584,48 +559,6 @@
 		<attribute name="domain" expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN (${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;" for="membersUserSet"/>
 	</action-attrs>
 
-	<action-attrs name="action-project-task-attrs-set-task-duration">
-		<attribute name="value" for="taskDuration" expr="eval:java.time.temporal.ChronoUnit.DAYS.between(taskDate, taskEndDate)*86400" if="taskDate != null &amp;&amp; taskEndDate != null"/>
-	</action-attrs>
-
-	<action-attrs name="action-project-task-attrs-onclick-order-accepted">
-		<attribute name="value" for="isOrderAccepted" expr="eval:true"/>
-		<attribute name="value" for="assignment" expr="eval:2"/>
-		<attribute name="hidden" for="acceptOrderBtn" expr="eval:true"/>
-	</action-attrs>
-
-	<action-attrs name="action-project-task-attrs-customer-referral-domain">
-		<attribute name="domain" for="customerReferral" expr="eval: &quot; (SELECT role FROM Role role WHERE role.name='role.customer') MEMBER OF self.roles AND self.id IN (SELECT userSet.id FROM Project p INNER JOIN p.membersUserSet userSet WHERE p.id = ${project?.id}) &quot;"/>
-	</action-attrs>
-
-	<action-view name="action-project-task-book-resource" title="Book resource" model="com.axelor.apps.project.db.ResourceBooking">
-		<view type="form" name="resource-booking-form" />
-		<view type="grid" name="resource-booking-grid" />
-		<view type="calendar" name="resource-booking-calendar" />
-		<context name="_project" expr="eval:__self__.project"/>
-		<context name="_task" expr="eval:__self__"/>
-	</action-view>
-
-	<action-record name="action-project-task-record-assigned-yourself" model="com.axelor.apps.project.db.ProjectTask">
-		<field name="assignedTo" expr="eval: __user__"/>
-	</action-record>
-
-	<action-record name="action-project-task-record-product-selected" model="com.axelor.apps.project.db.ProjectTask">
-	  <field name="quantity" expr="1"/>
-	  <field name="unit" expr="eval: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'salesUnit', project?.company) ?: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'unit', project?.company)"/>
-	  <field name="unitPrice" expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'salePrice', project.company"/>
-	  <field name="currency" expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'saleCurrency', project.company)"/>
-	</action-record>
-
-	<action-method name="action-project-task-method-manage-timer-buttons">
-		<call class="com.axelor.apps.project.web.ProjectTaskController" method="manageTimerButtons"/>
-	</action-method>
-
-	<action-method name="action-project-task-method-compute-total-timer-duration">
-		<call class="com.axelor.apps.project.web.ProjectTaskController"
-			method="computeTotalTimerDuration"/>
-	</action-method>
-
 	<action-group name="action-project-task-group-timer-process">
 		<action name="action-project-task-attrs-project-filter-status" if="project?.isShowStatus"/>
 		<action name="action-project-task-method-manage-timer-buttons" if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
@@ -633,10 +566,6 @@
 		<action name="action-project-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-project-task-business-support-provider" if="__config__.app.isApp('business-support')"/>
 		<action name="action-project-attrs-project-planning-time-cancel-remove"/>
-	</action-group>
-
-	<action-group name="action-project-task-group-project-category-onchange">
-		<action name="action-project-task-method-onchange-category" if="__config__.app.isApp('business-project')" />
 	</action-group>
 
 	<action-method name="action-project-task-method-start-timer">
