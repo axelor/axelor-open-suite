@@ -17,13 +17,38 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.db.AppStock;
+import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationSaveService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
+import javax.validation.ValidationException;
 
 public class StockLocationStockRepository extends StockLocationRepository {
+
+  protected AppStockService appStockService;
+  protected BarcodeGeneratorService barcodeGeneratorService;
+  protected MetaFiles metaFiles;
+
+  @Inject
+  public StockLocationStockRepository(
+      AppStockService appStockService,
+      BarcodeGeneratorService barcodeGeneratorService,
+      MetaFiles metaFiles) {
+    this.appStockService = appStockService;
+    this.barcodeGeneratorService = barcodeGeneratorService;
+    this.metaFiles = metaFiles;
+  }
 
   /**
    * Override to remove incompatible stock locations in partners
@@ -32,9 +57,38 @@ public class StockLocationStockRepository extends StockLocationRepository {
    * @return
    */
   @Override
-  public StockLocation save(StockLocation entity) {
-    Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(entity);
-    return super.save(entity);
+  public StockLocation save(StockLocation stockLocation) {
+    Beans.get(StockLocationSaveService.class).removeForbiddenDefaultStockLocation(stockLocation);
+
+    // Barcode generation
+    AppStock appStock = appStockService.getAppStock();
+
+    if (appStock != null
+        && appStock.getActivateStockLocationBarCodeGeneration()
+        && stockLocation.getBarCode() == null
+        && stockLocation.getBarcodeTypeConfig() != null
+        && stockLocation.getSerialNumber() != null) {
+      try {
+        boolean addPadding = false;
+        InputStream inStream =
+            barcodeGeneratorService.createBarCode(
+                stockLocation.getSerialNumber(), stockLocation.getBarcodeTypeConfig(), addPadding);
+        if (inStream != null) {
+          MetaFile barcodeFile =
+              metaFiles.upload(
+                  inStream, String.format("StockLocationBarCode%d.png", stockLocation.getId()));
+          stockLocation.setBarCode(barcodeFile);
+        }
+      } catch (IOException e) {
+        TraceBackService.trace(e);
+        throw new ValidationException(e);
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+        throw new ValidationException(e);
+      }
+    }
+
+    return super.save(stockLocation);
   }
 
   @Override
