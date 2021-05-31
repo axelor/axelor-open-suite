@@ -141,7 +141,8 @@ public class DoubtfulCustomerService {
                 invoice.getCurrency(),
                 partner,
                 move.getPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                move.getFunctionalOriginSelect());
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
 
@@ -247,7 +248,8 @@ public class DoubtfulCustomerService {
                 null,
                 partner,
                 moveLine.getMove().getPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                moveLine.getMove().getFunctionalOriginSelect());
 
     BigDecimal amountRemaining = moveLine.getAmountRemaining();
 

@@ -126,7 +126,8 @@ public class ChequeRejectionService {
                 partner,
                 rejectionDate,
                 null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     int ref = 1;
 

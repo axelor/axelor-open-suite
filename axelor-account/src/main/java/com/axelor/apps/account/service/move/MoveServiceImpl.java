@@ -32,10 +32,12 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -156,6 +158,14 @@ public class MoveServiceImpl implements MoveService {
           "Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})",
           new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
+      int functionalOrigin = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
+      if (functionalOrigin == PriceListRepository.TYPE_PURCHASE) {
+        functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
+      } else if (functionalOrigin == PriceListRepository.TYPE_SALE) {
+        functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
+      } else {
+        functionalOrigin = 0;
+      }
       move =
           moveCreateService.createMove(
               journal,
@@ -164,7 +174,8 @@ public class MoveServiceImpl implements MoveService {
               partner,
               invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
-              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+              functionalOrigin);
 
       if (move != null) {
 
@@ -319,7 +330,8 @@ public class MoveServiceImpl implements MoveService {
                 partner,
                 invoice.getInvoiceDate(),
                 null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
         if (move != null) {
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -394,7 +406,8 @@ public class MoveServiceImpl implements MoveService {
             partner,
             invoice.getInvoiceDate(),
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -457,6 +470,7 @@ public class MoveServiceImpl implements MoveService {
             dateOfReversion,
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
+            move.getFunctionalOriginSelect(),
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove());
