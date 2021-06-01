@@ -126,23 +126,48 @@
 		title="Moves" order="0"/>
 
 	<menuitem name="account-root-move-move" parent="account-root-move"
-		title="Moves" action="account.root.move.move" />
+		title="Moves" action="account.root.move.move" order="0"/>
 
 	<action-view name="account.root.move.move" title="Moves"
 		model="com.axelor.apps.account.db.Move" >
 		<view type="grid" name="move-grid" />
 		<view type="form" name="move-form"/>
 		<view-param name="search-filters" value="move-filters"/>
+		<domain>self.statusSelect != 5</domain>
 	</action-view>
 
 	<menuitem name="account-root-move-move-line" parent="account-root-move"
-		title="Move lines" action="account.root.move.move.line" />
+		title="Move lines" action="account.root.move.move.line" order="5"/>
 
 	<action-view name="account.root.move.move.line" title="Move lines"
 		model="com.axelor.apps.account.db.MoveLine" >
 		<view type="grid" name="move-line-grid" />
 		<view type="form" name="move-line-form"/>
 		<view-param name="search-filters" value="move-line-filters"/>
+		<domain>self.move.statusSelect != 5</domain>
+	</action-view>
+	
+	<menuitem name="account-root-move-moves-simulated" parent="account-root-move"
+		title="Moves Simulated" action="account.root.move.moves.simulated" order="15"/>
+
+	<action-view name="account.root.move.moves.simulated" title="Moves Simulated"
+		model="com.axelor.apps.account.db.Move" >
+		<view type="grid" name="move-grid" />
+		<view type="form" name="move-form"/>
+		<domain>self.statusSelect = 5</domain>
+		<context name="_isSimulatedMove" expr="true"/>
+	</action-view>
+	
+	<menuitem name="account-root-move-move-line-simulated" parent="account-root-move"
+		title="Move Lines Simulated" action="account.root.move.move.line.simulated" order="20"/>
+
+	<action-view name="account.root.move.move.line.simulated" title="Move Lines Simulated"
+		model="com.axelor.apps.account.db.MoveLine" >
+		<view type="grid" name="move-line-grid" />
+		<view type="form" name="move-line-form"/>
+		<view-param name="search-filters" value="move-line-filters"/>
+		<domain>self.move.statusSelect = 5</domain>
+		<context name="_isSimulatedMoveLine" expr="true"/>
 	</action-view>
 
 	<menuitem name="account-root-payments" parent="account-root"
@@ -731,7 +756,7 @@
 	
 	<!-- Move template -->
 	
-	<menuitem name="move-template-wizard" title="Move From Template" parent="account-root-move" action="move.template.wizard"  top="true" />
+	<menuitem name="move-template-wizard" title="Move From Template" parent="account-root-move" action="move.template.wizard"  top="true" order="10"/>
 	
 	<action-view name="move.template.wizard"
 		title="Move From Template" model="com.axelor.apps.base.db.Wizard">
