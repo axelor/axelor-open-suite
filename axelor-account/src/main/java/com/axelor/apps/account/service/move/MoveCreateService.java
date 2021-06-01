@@ -85,7 +85,8 @@ public class MoveCreateService {
       Currency currency,
       Partner partner,
       PaymentMode paymentMode,
-      int technicalOriginSelect)
+      int technicalOriginSelect,
+      int functionalOriginSelect)
       throws AxelorException {
     return this.createMove(
         journal,
@@ -94,7 +95,8 @@ public class MoveCreateService {
         partner,
         appAccountService.getTodayDate(company),
         paymentMode,
-        technicalOriginSelect);
+        technicalOriginSelect,
+        functionalOriginSelect);
   }
 
   /**
@@ -117,7 +119,8 @@ public class MoveCreateService {
       Partner partner,
       LocalDate date,
       PaymentMode paymentMode,
-      int technicalOriginSelect)
+      int technicalOriginSelect,
+      int functionalOriginSelect)
       throws AxelorException {
     return this.createMove(
         journal,
@@ -127,6 +130,7 @@ public class MoveCreateService {
         date,
         paymentMode,
         technicalOriginSelect,
+        functionalOriginSelect,
         false,
         false,
         false);
@@ -155,6 +159,7 @@ public class MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       int technicalOriginSelect,
+      int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
       boolean ignoreInAccountingOk,
       boolean autoYearClosureMove)
@@ -206,6 +211,7 @@ public class MoveCreateService {
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
     move.setTechnicalOriginSelect(technicalOriginSelect);
+    move.setFunctionalOriginSelect(functionalOriginSelect);
     moveRepository.save(move);
     move.setReference(Beans.get(SequenceService.class).getDraftSequenceNumber(move));
 
@@ -232,7 +238,8 @@ public class MoveCreateService {
       Partner partner,
       LocalDate date,
       PaymentMode paymentMode,
-      int technicalOriginSelect)
+      int technicalOriginSelect,
+      int functionalOriginSelect)
       throws AxelorException {
     Move move =
         this.createMove(
@@ -242,7 +249,8 @@ public class MoveCreateService {
             partner,
             date,
             paymentMode,
-            technicalOriginSelect);
+            technicalOriginSelect,
+            functionalOriginSelect);
     move.setPaymentVoucher(paymentVoucher);
     return move;
   }

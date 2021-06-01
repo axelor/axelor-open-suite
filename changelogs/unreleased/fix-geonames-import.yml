@@ -1,3 +1,3 @@
 ---
-title: "GeoNames Import: Improve import process, remove duplicate elements"
+title: "GeoNames Import: Improve import process, avoid importing duplicated elements."
 type: change

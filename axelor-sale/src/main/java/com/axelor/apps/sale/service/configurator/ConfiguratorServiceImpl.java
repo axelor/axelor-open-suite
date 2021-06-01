@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.tool.MetaTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -44,9 +45,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
-import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
@@ -101,7 +100,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
 
     String wantedClassName;
-    String wantedType = jsonTypeToType(indicator.getType());
+    String wantedType = MetaTool.jsonTypeToType(indicator.getType());
 
     // do not check one-to-many or many-to-many
     if (wantedType.equals("ManyToMany")
@@ -127,27 +126,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           indicator.getName().substring(0, indicator.getName().indexOf('_')),
           wantedClassName,
           calculatedValueClassName);
-    }
-  }
-
-  /**
-   * Convert the type of a json field to a type of a field.
-   *
-   * @param nameType type of a json field
-   * @return corresponding type of field
-   */
-  protected String jsonTypeToType(String nameType) {
-    MetaSelectItem item =
-        Beans.get(MetaSelectItemRepository.class)
-            .all()
-            .filter("self.select.name = :_jsonFieldType AND self.value = :_value")
-            .bind("_jsonFieldType", "json.field.type")
-            .bind("_value", nameType)
-            .fetchOne();
-    if (item == null) {
-      return "";
-    } else {
-      return item.getTitle().equals("Decimal") ? "BigDecimal" : item.getTitle();
     }
   }
 

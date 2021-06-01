@@ -15,14 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.db.ImportConfiguration;
 
-public interface FixedAssetLineService {
+public class ImportConfigurationBaseRepository extends ImportConfigurationRepository {
 
-  public void realize(FixedAssetLine fixedAssetLine) throws AxelorException;
-
-  public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException;
+  @Override
+  public ImportConfiguration copy(ImportConfiguration entity, boolean deep) {
+    ImportConfiguration importConfiguration = super.copy(entity, deep);
+    importConfiguration.setImportHistoryList(null);
+    importConfiguration.setStatusSelect(ImportConfigurationRepository.STATUS_DRAFT);
+    importConfiguration.setStartDateTime(null);
+    importConfiguration.setEndDateTime(null);
+    return importConfiguration;
+  }
 }

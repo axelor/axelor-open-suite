@@ -145,6 +145,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     try {
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
       metaFile = metaFiles.upload(file);
+      metaFile.setFileName(String.format("%s.%s", reportSettings.getOutputName(), format));
       invoice.setPrintedPDF(metaFile);
       return MetaFiles.getPath(metaFile).toFile();
     } catch (IOException e) {
