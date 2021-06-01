@@ -154,7 +154,8 @@ public class MoveLineController {
             if (moveLine != null && moveLine.getMove() != null) {
               Integer statusSelect = moveLine.getMove().getStatusSelect();
               if (statusSelect.equals(MoveRepository.STATUS_VALIDATED)
-                  || statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)) {
+                  || statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)
+                  || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
                 totalCredit = totalCredit.add(moveLine.getCredit());
                 totalDebit = totalDebit.add(moveLine.getDebit());
               }
