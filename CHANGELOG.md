@@ -1,3 +1,28 @@
+## [6.0.11] (2021-06-02)
+
+#### Fixed
+
+* ManufOrder: make linked sale order sequence appears a origin in printing.
+* Move reversion: Fill reversal date in analytical moveline on reversed move.
+* Inventory Line: Update gap, gap value and real value while importing demo data.
+* Year: fix not being able to adjust fiscal year when fiscal year is closed and make sidebar readonly for new records.
+* Year: fix reported balance date becoming empty after clicking 'close year' button.
+* Configurator creator: fix import error on Windows.
+* Sale order line: Do not check for multiple quantities when the configuration is disabled.
+* StockLocation: content lines and detail lines are no longer duplicated on copy.
+* ProductCategory: remove wrongly added field `dtype`.
+* TrackingNumberConfig: Fix sequence being required even if we do not generate automatically a tracking number for purchase.
+* Email sending: fix NPE when sending email from scheduler.
+* SaleOrder: fix button to print invoices from invoicing dashlet.
+* Fixed asset: fix fixed asset linear and degressive computation.
+* Project: show contract panel tab only on a business project.
+* CostSheetLine: display the correct icon in the tree view's dropdown list.
+* Move line: remove the possibility to select a date for a move line out of the move period.
+* Translation: Add missing french translations and fix incorrect existing ones in all modules.
+* Configurator: fix issue preventing generation of product or sale order line when trying to fill a date field with the configurator.
+* Stock correction: make stock correction reason field required.
+* GeoNames Import: Improve import process, avoid importing duplicated elements.
+
 ## [6.0.10] (2021-04-29)
 
 #### Changes
@@ -509,6 +534,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.11]: https://github.com/axelor/axelor-open-suite/compare/v6.0.10...v6.0.11
 [6.0.10]: https://github.com/axelor/axelor-open-suite/compare/v6.0.9...v6.0.10
 [6.0.9]: https://github.com/axelor/axelor-open-suite/compare/v6.0.8...v6.0.9
 [6.0.8]: https://github.com/axelor/axelor-open-suite/compare/v6.0.7...v6.0.8

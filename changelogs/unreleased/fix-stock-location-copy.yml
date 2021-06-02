@@ -1,6 +1,0 @@
----
-title: "StockLocation : Copy"
-type: fix
-description: |
-    Fixed StockLocation copy so that content lines and detail lines are no longer copied when copying a stock location.
-

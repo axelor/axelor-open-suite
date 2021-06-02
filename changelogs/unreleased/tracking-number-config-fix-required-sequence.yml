@@ -1,3 +1,0 @@
----
-title: "TrackingNumberConfig: Fix sequence being required even if we do not generate automatically a tracking number for purchase."
-type: fix
