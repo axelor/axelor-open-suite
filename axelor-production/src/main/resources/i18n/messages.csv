@@ -697,6 +697,7 @@
 "Sunday hours",,,
 "Supplier RFQ/PO",,,
 "Surcharge",,,
+"Take good the following comment into account:",,,
 "Template",,,
 "The bill of materials %s has been generated",,,
 "The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s.",,,

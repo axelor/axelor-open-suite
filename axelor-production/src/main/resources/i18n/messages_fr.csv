@@ -697,6 +697,7 @@
 "Sunday hours","Heures Dimanche",,
 "Supplier RFQ/PO","Devis/Commande Fournisseur",,
 "Surcharge",,,
+"Take good the following comment into account:","Prenez bien le commentaire suivant en compte:",,
 "Template",,,
 "The bill of materials %s has been generated","La nomenclature %s a été générée",,
 "The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s.","La formule de condition de génération de la nomenclature a renvoyé une valeur null ou est incorrecte. Merci de corriger le configurateur de nomenclature avec l'id : %s",,

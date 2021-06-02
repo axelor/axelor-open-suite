@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -259,4 +260,23 @@ public interface ManufOrderService {
    * @param ids List of ids of manufacturing orders to merge
    */
   public boolean canMerge(List<Long> ids);
+
+  /**
+   * find a sale order line from a manuf order.
+   *
+   * @param ManufOrder manufOrder
+   * @return SaleOrderLine
+   * @throws AxelorException
+   */
+  public SaleOrderLine getSaleOrderLineFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * save a manuf order.
+   *
+   * @param ManufOrder manufOrder
+   * @return ManufOrder
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  public ManufOrder merge(ManufOrder manufOrder) throws AxelorException;
 }

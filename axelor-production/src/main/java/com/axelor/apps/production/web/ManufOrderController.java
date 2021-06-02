@@ -38,6 +38,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -48,6 +49,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -65,16 +67,28 @@ import org.slf4j.LoggerFactory;
 public class ManufOrderController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final String PRODUCTION_COMMENT = /*$$(*/
+      "Take good the following comment into account:" /*)*/;
 
   public void start(ActionRequest request, ActionResponse response) {
 
     try {
       Long manufOrderId = (Long) request.getContext().get("id");
       ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
-
       Beans.get(ManufOrderWorkflowService.class).start(manufOrder);
-
       response.setReload(true);
+      if (manufOrder.getSaleOrderSet() != null && !manufOrder.getSaleOrderSet().isEmpty()) {
+        SaleOrderLine saleOrderLine =
+            Beans.get(ManufOrderService.class).getSaleOrderLineFromManufOrder(manufOrder);
+        if (saleOrderLine != null) {
+          String message =
+              I18n.get(PRODUCTION_COMMENT)
+                  .concat(System.lineSeparator())
+                  .concat(saleOrderLine.getLineProductionComment());
+          response.setFlash(message);
+          response.setCanClose(true);
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -208,16 +222,43 @@ public class ManufOrderController {
                 .fetch();
       }
 
+      String lineProductionComment = null;
+
       for (ManufOrder manufOrder : manufOrders) {
 
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
+
+        if (manufOrder.getSaleOrderSet() != null && !manufOrder.getSaleOrderSet().isEmpty()) {
+          SaleOrderLine saleOrderLine =
+              Beans.get(ManufOrderService.class).getSaleOrderLineFromManufOrder(manufOrder);
+          if (saleOrderLine != null) {
+            lineProductionComment = saleOrderLine.getLineProductionComment();
+            if (Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+              manufOrder.setMoCommentFromSaleOrder(saleOrderLine.getLineProductionComment());
+            } else {
+              manufOrder.setMoCommentFromSaleOrder(
+                  manufOrder
+                      .getMoCommentFromSaleOrder()
+                      .concat(System.lineSeparator())
+                      .concat(saleOrderLine.getLineProductionComment()));
+            }
+            manufOrder = Beans.get(ManufOrderService.class).merge(manufOrder);
+          }
+        }
 
         if (manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()) {
           Beans.get(ManufOrderWorkflowService.class).createPurchaseOrder(manufOrder);
         }
       }
-
       response.setReload(true);
+      if (lineProductionComment != null) {
+        String message =
+            I18n.get(PRODUCTION_COMMENT)
+                .concat(System.lineSeparator())
+                .concat(lineProductionComment);
+        response.setFlash(message);
+        response.setCanClose(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

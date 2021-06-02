@@ -44,6 +44,8 @@ import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -1050,5 +1052,32 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     return true;
+  }
+
+  @Override
+  public SaleOrderLine getSaleOrderLineFromManufOrder(ManufOrder manufOrder)
+      throws AxelorException {
+
+    List<Long> saleOrderIds =
+        manufOrder.getSaleOrderSet().stream()
+            .mapToLong(SaleOrder::getId)
+            .boxed()
+            .collect(Collectors.toList());
+
+    return Beans.get(SaleOrderLineRepository.class)
+        .all()
+        .filter(
+            "self.billOfMaterial.id = ?1 AND self.product.id = ?2"
+                + " AND self.saleOrder.id IN ( ?3 ) AND self.lineProductionComment IS NOT NULL",
+            manufOrder.getBillOfMaterial().getId(),
+            manufOrder.getProduct().getId(),
+            saleOrderIds)
+        .fetchOne();
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public ManufOrder merge(ManufOrder manufOrder) throws AxelorException {
+    return manufOrderRepo.merge(manufOrder);
   }
 }
