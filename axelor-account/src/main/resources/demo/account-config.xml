@@ -89,6 +89,13 @@
 	
 	<input file="account_debtRecoveryMethodLine.csv" separator=";" type="com.axelor.apps.account.db.DebtRecoveryMethodLine" />
 	
+	    
+    <input file="account_fixedAssetType.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.FixedAssetType"/>
+    
+    <input file="account_fixedAssetCategory.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.FixedAssetCategory">
+    	<bind to="computationMethodSelect" eval="'linear'"/>
+    </input>
+	
 	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId">
 		<bind search="self.importId = :company_id" to="company" update="true" />
 		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" if="cashAccount_code"/>
@@ -124,12 +131,6 @@
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
-    </input>
-    
-    <input file="account_fixedAssetType.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.FixedAssetType"/>
-    
-    <input file="account_fixedAssetCategory.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.FixedAssetCategory">
-    	<bind to="computationMethodSelect" eval="'linear'"/>
     </input>
 
     <input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" search="self.importId = :importId">
