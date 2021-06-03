@@ -162,8 +162,8 @@
 					<field name="$totalRealDuration" title="Total Real Duration" type="long" readonly="true" widget="duration" x-seconds="true" x-big="true"/>
 				</panel>
 			</panel>
-			<panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
-				<panel name="stockMoveListPanel" title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
+			<panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3">
+				<panel name="stockMoveListPanel" title="Moves In/Out" readonly="true" colSpan="12">
 					<field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
 					<field name="outStockMoveList" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" colSpan="12"/>
 				</panel>
