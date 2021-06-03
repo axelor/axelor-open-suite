@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.AppStock;
+import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationSaveService;
@@ -70,9 +71,13 @@ public class StockLocationStockRepository extends StockLocationRepository {
         && stockLocation.getSerialNumber() != null) {
       try {
         boolean addPadding = false;
+        BarcodeTypeConfig barcodeTypeConfig = stockLocation.getBarcodeTypeConfig();
+        if (appStock.getEditStockLocationBarcodeType() == false) {
+          barcodeTypeConfig = appStock.getStockLocationBarcodeTypeConfig();
+        }
         InputStream inStream =
             barcodeGeneratorService.createBarCode(
-                stockLocation.getSerialNumber(), stockLocation.getBarcodeTypeConfig(), addPadding);
+                stockLocation.getSerialNumber(), barcodeTypeConfig, addPadding);
         if (inStream != null) {
           MetaFile barcodeFile =
               metaFiles.upload(

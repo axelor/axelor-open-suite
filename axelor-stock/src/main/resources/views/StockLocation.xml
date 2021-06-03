@@ -69,8 +69,8 @@
 			<panel name="barcodePanel" title="Barcode" colSpan="12"
 				   if="__config__.app.getApp('stock').getActivateStockLocationBarCodeGeneration()">
 	        	<field name="barCode" showTitle="false" widget="Image" colSpan="2"/>
-	        	<field name="serialNumber" colSpan="4"/>
-	        	<field name="barcodeTypeConfig" if="__config__.app.getApp('stock').getEditStockLocationBarcodeType()" colSpan="4"/>
+	        	<field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
+	        	<field name="barcodeTypeConfig" readonlyIf="barCode != null" if="__config__.app.getApp('stock').getEditStockLocationBarcodeType()" colSpan="4"/>
 	        </panel>
 		</panel>    
 		<panel-tabs name="mainPanelTab">
