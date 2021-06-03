@@ -14,6 +14,7 @@
 		<field name="address" form-view="address-form" grid-view="address-grid"/>
 		<field name="typeSelect"/>
 		<field name="stockLocationValue"/>
+		<field name="serialNumber"/>
 	</grid>
 
     <grid name="stock-location-light-grid" title="Stock Locations" model="com.axelor.apps.stock.db.StockLocation">
@@ -24,6 +25,7 @@
 		<field name="address" form-view="address-form" grid-view="address-grid"/>
 		<field name="typeSelect"/>
 		<field name="stockLocationValue"/>
+		<field name="serialNumber"/>
 	</grid>
 
     <tree name="stock-location-tree" title="Stock Locations">
@@ -50,7 +52,7 @@
 			<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-stock-location-method-open-print-wizard"/>
 		</toolbar>
 		<panel name="mainPanel">
-			<field name="name"/>
+			<field name="name" onChange="action-stock-location-attrs-set-default-serial-number-with-name"/>
 			<field name="typeSelect" colSpan="3" onChange="action-stock-location-attrs-set-isOutsourcingLocation,action-stock-set-partner-domain-attrs,action-stock-location-attrs-set-is-valued"/>
 			<field name="parentStockLocation" canEdit="false" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
@@ -58,12 +60,18 @@
 			<field name="address" canEdit="false" form-view="address-form" grid-view="address-grid"/>
 			<field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
 			<field name="stockLocationValue" readonly="true" showIf="isValued">
-			<viewer>
+				<viewer>
 					<![CDATA[
 						<h4> {{$fmt('stockLocationValue')}} </h4>
 					]]>
 				</viewer>
 			</field>
+			<panel name="barcodePanel" title="Barcode" colSpan="12"
+				   if="__config__.app.getApp('stock').getActivateStockLocationBarCodeGeneration()">
+	        	<field name="barCode" showTitle="false" widget="Image" colSpan="2"/>
+	        	<field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
+	        	<field name="barcodeTypeConfig" readonlyIf="barCode != null" if="__config__.app.getApp('stock').getEditStockLocationBarcodeType()" colSpan="4"/>
+	        </panel>
 		</panel>    
 		<panel-tabs name="mainPanelTab">
 			<panel name="locationContentPanel" title="Location Content">
@@ -111,6 +119,7 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="usableOnProduction" expr="eval:_productionWorkshop"/>
     	<field name="isWorkshop" expr="eval:_productionWorkshop"/>
+    	<field name="barcodeTypeConfig" expr="eval:__config__.app.getApp('stock')?.getStockLocationBarcodeTypeConfig()" if="eval:__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()"/>
 	</action-record>
 	
 	<action-attrs name="action-stock-location-attrs-set-isOutsourcingLocation" model="com.axelor.apps.stock.db.StockLocation">
@@ -161,6 +170,10 @@
 	<action-attrs name="action-stock-location-attrs-set-is-valued">
 		<attribute name="value" for="isValued"
 			expr="eval: typeSelect == 1 || typeSelect == 2" />
+	</action-attrs>
+	
+	<action-attrs name="action-stock-location-attrs-set-default-serial-number-with-name">
+		<attribute name="value" for="serialNumber" expr="eval: name" if="eval: id == null"/>
 	</action-attrs>
 
     <search-filters name="stock-location-filters" model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">

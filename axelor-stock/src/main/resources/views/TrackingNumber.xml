@@ -26,7 +26,7 @@
 	        <field name="origin"/>
 			<field name="note" colSpan="12"/>
         </panel>
-        <panel name="barcodePanel" title="Barcode" if="__config__.app.getApp('stock').getActivateBarCodeGeneration()">
+        <panel name="barcodePanel" title="Barcode" if="__config__.app.getApp('stock').getActivateTrackingNumberBarCodeGeneration()">
         	<field name="barCode" showTitle="false" widget="Image" colSpan="4"/>
         	<field name="serialNumber" colSpan="4"/>
         	<field name="barcodeTypeConfig" if="__config__.app.getApp('stock').getEditTrackingNumberBarcodeType()" colSpan="4"/>
