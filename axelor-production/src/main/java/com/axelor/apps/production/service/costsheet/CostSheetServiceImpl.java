@@ -802,7 +802,7 @@ public class CostSheetServiceImpl implements CostSheetService {
         Long totalPlannedDuration = 0L;
         for (OperationOrder manufOperationOrder :
             operationOrder.getManufOrder().getOperationOrderList()) {
-          if (manufOperationOrder.getId() == operationOrder.getId()) {
+          if (manufOperationOrder.equals(operationOrder)) {
             totalPlannedDuration += manufOperationOrder.getPlannedDuration();
           }
         }
