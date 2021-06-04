@@ -451,7 +451,7 @@ public class DebtRecoveryService {
       if (accountingSituation.getTradingNameDebtRecoveryList() != null
           && !accountingSituation.getTradingNameDebtRecoveryList().isEmpty()) {
         for (DebtRecovery debtRecovery : accountingSituation.getTradingNameDebtRecoveryList()) {
-          if (debtRecovery.getTradingName().getId() == tradingName.getId()) {
+          if (tradingName.equals(debtRecovery.getTradingName())) {
             return debtRecovery;
           }
         }
