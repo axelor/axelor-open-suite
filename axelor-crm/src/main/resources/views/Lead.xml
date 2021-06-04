@@ -165,11 +165,12 @@
 			</panel>
 
 			<panel name="activitiesPanel" title="Activities" itemSpan="12">
-				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left" icon="fa-tasks" readonlyIf="id == null" onClick="action-lead-view-events"/>
-				<panel-related name="eventListPanel" colSpan="12" field="eventList" form-view="event-form" grid-view="lead-event-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 				<panel-related name="opportunitiesListPanel" colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 				<panel-dashlet name="leadEmailsPanel" action="action-lead-view-emails"/>
 				<panel-dashlet name="leadMarketingCampaignPanel" if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
+			</panel>
+			<panel name="eventPanel" title="Events">
+				<panel-dashlet action="action-lead-view-events" title="Events" colSpan="12" height="1000"/>
 			</panel>
 		</panel-tabs>
 
@@ -341,6 +342,7 @@
 	</action-view>
 
 	<action-view name="action-lead-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
+		<view type="cards" name="event-cards"/>
 		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>self.lead.id = :_id</domain>
