@@ -96,4 +96,6 @@ public interface MoveService {
   public String filterPartner(Move move);
 
   Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException;
+
+  Move updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(Move move) throws AxelorException;
 }

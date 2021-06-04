@@ -422,7 +422,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return false;
     }
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
-      if (purchaseOrderLine.getProduct().getId() == shippingCostProduct.getId()) {
+      if (shippingCostProduct.equals(purchaseOrderLine.getProduct())) {
         return true;
       }
     }

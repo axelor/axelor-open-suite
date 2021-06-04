@@ -167,7 +167,7 @@
 		</toolbar>
 	  <menubar>
 	    <menu name="saleOrderToolsMenu" title="Tools">
-	      <item name="scheduleEventItem" title="Schedule Event" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
+	      <item name="scheduleEventItem" title="saleOrder.scheduleEvent" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
 	      <item name="sendEmailItem" title="Send email" hideIf="clientPartner == null" action="save,action-send-by-email-with-template"/>
 	      <item name="defineAsTemplateItem" title="Define as template" hideIf="clientPartner == null" action="save,action-sale-order-method-generate-template"/>
           <item name="allocateAllItem" title="Allocate all" action="save,action-sale-order-method-allocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>

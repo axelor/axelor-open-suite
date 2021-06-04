@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.advanced.imports;
+package com.axelor.apps.crm.web;
 
-import com.axelor.apps.base.db.AdvancedImport;
-import com.axelor.apps.tool.reader.DataReaderService;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 
-public interface AdvancedImportService {
+public class ICalendarUserController {
 
-  public boolean apply(AdvancedImport advanceImport) throws AxelorException, ClassNotFoundException;
-
-  public Mapper getMapper(String modelFullName) throws ClassNotFoundException;
-
-  public int getTabConfigRowCount(
-      String sheet, DataReaderService reader, int totalLines, String[] objectRow);
-
-  public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException;
+  @CallMethod
+  public ICalendarUser findUser(User user) {
+    if (user != null && user.getiCalendar() != null && user.getiCalendar().getUser() != null) {
+      return Beans.get(ICalendarService.class).findOrCreateUser(user);
+    }
+    return null;
+  }
 }

@@ -10,7 +10,7 @@
   
   <form name="selection-builder-form" title="Selection builder" model="com.axelor.studio.db.SelectionBuilder" width="large">
   	  <panel name="mainPanel">
-  	  	  <field name="metaSelect" domain="self.isCustom = false and self.priority = (select min(ms.priority) from MetaSelect ms where ms.name = self.name))" onChange="action-selection-builder-method-fill-selection-text"/>
+  	  	  <field name="metaSelect" domain="self.isCustom = false and self.priority = (select min(ms.priority) from MetaSelect ms where ms.name = self.name)" onChange="action-selection-builder-method-fill-selection-text"/>
   	  	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
 	  	  <field name="name" readonlyIf="metaSelect != null"/>
   		  <field name="selectionText" colSpan="12"/>
