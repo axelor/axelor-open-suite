@@ -31,6 +31,8 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -41,6 +43,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 public class LeadServiceImpl implements LeadService {
@@ -56,6 +59,8 @@ public class LeadServiceImpl implements LeadService {
   @Inject protected LeadRepository leadRepo;
 
   @Inject protected EventRepository eventRepo;
+
+  @Inject private MessageRepository messageRepository;
 
   /**
    * Convert lead into a partner
@@ -76,9 +81,28 @@ public class LeadServiceImpl implements LeadService {
       partner.getContactPartnerSet().add(contactPartner);
       contactPartner.setMainPartner(partner);
     }
+
     if (partner != null) {
       partner = partnerRepo.save(partner);
       lead.setPartner(partner);
+
+      List<Message> messages =
+          messageRepository
+              .all()
+              .filter(
+                  "self.relatedTo1Select = ?1 and self.relatedTo1SelectId = ?2",
+                  Lead.class.getName(),
+                  lead.getId())
+              .fetch();
+
+      for (Message message : messages) {
+        message.setRelatedTo1Select(Partner.class.getName());
+        message.setRelatedTo1SelectId(partner.getId());
+        if (contactPartner != null) {
+          message.setRelatedTo2Select(Partner.class.getName());
+          message.setRelatedTo2SelectId(contactPartner.getId());
+        }
+      }
     }
 
     for (Event event : lead.getEventList()) {
