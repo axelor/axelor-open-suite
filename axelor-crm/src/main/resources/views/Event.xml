@@ -213,6 +213,26 @@
 		</panel-mail>
 	</form>
 	
+	<cards name="event-cards" title="Events" css="rect-image" width="100%" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
+	  <field name="subject"/>
+	  <field name="description"/>
+	  <field name="startDateTime"/>
+	  <field name="endDateTime"/>
+	  <template><![CDATA[
+		<div>
+		  <div class="span8">
+		  	<span>
+			   <strong>{{subject}}</strong><br/>
+				{{$fmt('startDateTime')}} - {{$fmt('endDateTime')}}
+	      </span>
+				<br/></br/>
+				<span x-translate>Description </span> :<br/>
+				<section ng-bind-html="description"></section>
+	    </div>
+	  <div>
+	 ]]></template>
+	</cards>
+	
 	<action-group name="action-group-crm-event-onnew">
         <action name="action-icalendar-event-default-record"/>
 		<action name="action-event-new-record"/>
