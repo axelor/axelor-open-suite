@@ -28,8 +28,8 @@
         </panel>
         <panel name="barcodePanel" title="Barcode" if="__config__.app.getApp('stock').getActivateTrackingNumberBarCodeGeneration()">
         	<field name="barCode" showTitle="false" widget="Image" colSpan="4"/>
-        	<field name="serialNumber" colSpan="4"/>
-        	<field name="barcodeTypeConfig" if="__config__.app.getApp('stock').getEditTrackingNumberBarcodeType()" colSpan="4"/>
+        	<field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
+        	<field name="barcodeTypeConfig" readonlyIf="barCode != null" if="__config__.app.getApp('stock').getEditTrackingNumberBarcodeType()" colSpan="4"/>
         </panel>
     </form>
 
