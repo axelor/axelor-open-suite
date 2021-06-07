@@ -83,7 +83,7 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
     AppStock appStock = appStockService.getAppStock();
 
     if (appStock != null
-        && appStock.getActivateBarCodeGeneration()
+        && appStock.getActivateTrackingNumberBarCodeGeneration()
         && trackingNumber.getBarCode() == null
         && trackingNumber.getBarcodeTypeConfig() != null
         && trackingNumber.getSerialNumber() != null) {

@@ -140,7 +140,7 @@ public class TrackingNumberService {
 
     // In case of barcode generation, retrieve the one set on tracking number configuration
     AppStock appStock = appStockService.getAppStock();
-    if (appStock != null && appStock.getActivateBarCodeGeneration()) {
+    if (appStock != null && appStock.getActivateTrackingNumberBarCodeGeneration()) {
       trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
       if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
         trackingNumber.setSerialNumber(seq);

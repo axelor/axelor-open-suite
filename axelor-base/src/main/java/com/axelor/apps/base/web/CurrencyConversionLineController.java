@@ -17,14 +17,18 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.base.service.currency.CurrencyConversionService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,7 +39,10 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.time.LocalDate;
 import java.util.Map;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -48,41 +55,21 @@ public class CurrencyConversionLineController {
   public void checkDate(ActionRequest request, ActionResponse response) {
 
     CurrencyConversionLine ccl = request.getContext().asType(CurrencyConversionLine.class);
+    Context parentContext = request.getContext().getParent();
 
-    LOG.debug("Currency Conversion Line Id : {}", ccl.getId());
+    if (parentContext != null && AppBase.class.equals(parentContext.getContextClass())) {
+      AppBase appBase = parentContext.asType(AppBase.class);
 
-    if (ccl.getId() != null
-        && Beans.get(CurrencyConversionLineRepository.class)
-                .all()
-                .filter(
-                    "self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3) and self.id != ?4)",
-                    ccl.getStartCurrency().getId(),
-                    ccl.getEndCurrency().getId(),
-                    ccl.getFromDate(),
-                    ccl.getId())
-                .count()
-            > 0) {
-      response.setFlash(I18n.get(IExceptionMessage.CURRENCY_3));
-      //			response.setValue("fromDate", "");
-    } else if (ccl.getId() == null
-        && Beans.get(CurrencyConversionLineRepository.class)
-                .all()
-                .filter(
-                    "self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3))",
-                    ccl.getStartCurrency().getId(),
-                    ccl.getEndCurrency().getId(),
-                    ccl.getFromDate())
-                .count()
-            > 0) {
-      response.setFlash(I18n.get(IExceptionMessage.CURRENCY_3));
-      //			response.setValue("fromDate", "");
-    }
+      LOG.debug("Currency Conversion Line Id : {}", ccl.getId());
 
-    if (ccl.getFromDate() != null
-        && ccl.getToDate() != null
-        && ccl.getFromDate().isAfter(ccl.getToDate())) {
-      response.setFlash(I18n.get(IExceptionMessage.CURRENCY_4));
-      //			response.setValue("fromDate", "");
+      try {
+        Beans.get(CurrencyService.class)
+            .checkOverLappingPeriod(ccl, appBase.getCurrencyConversionLineList());
+      } catch (AxelorException e) {
+        response.setFlash(e.getLocalizedMessage());
+        response.setValue("fromDate", null);
+        response.setValue("toDate", null);
+      }
     }
   }
 
@@ -93,6 +80,7 @@ public class CurrencyConversionLineController {
     Currency fromCurrency = null;
     Currency toCurrency = null;
     CurrencyRepository currencyRepository = Beans.get(CurrencyRepository.class);
+    BigDecimal rate = null;
 
     if (context.get("startCurrency") instanceof Currency) {
       fromCurrency = (Currency) context.get("startCurrency");
@@ -134,11 +122,14 @@ public class CurrencyConversionLineController {
       LOG.debug("Previous currency conversion line: {}", prevLine);
       fromCurrency = currencyRepository.find(fromCurrency.getId());
       toCurrency = currencyRepository.find(toCurrency.getId());
+
       try {
         CurrencyConversionService currencyConversionService =
             Beans.get(CurrencyConversionFactory.class).getCurrencyConversionService();
 
-        BigDecimal rate = currencyConversionService.convert(fromCurrency, toCurrency);
+        Pair<LocalDate, BigDecimal> pair =
+            currencyConversionService.getRateWithDate(fromCurrency, toCurrency);
+        rate = pair.getRight();
         if (rate.compareTo(new BigDecimal(-1)) == 0)
           response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
         else {
@@ -146,14 +137,41 @@ public class CurrencyConversionLineController {
           if (context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
             response.setValue("newExchangeRate", rate);
           else response.setValue("exchangeRate", rate);
-          response.setValue("fromDate", Beans.get(AppBaseService.class).getTodayDateTime());
+          LocalDate todayDate =
+              Beans.get(AppBaseService.class)
+                  .getTodayDate(
+                      Optional.ofNullable(AuthUtils.getUser())
+                          .map(User::getActiveCompany)
+                          .orElse(null));
+          LocalDate rateRetrieveDate = pair.getLeft();
+          Context parentContext = request.getContext().getParent();
+
+          if (parentContext != null && AppBase.class.equals(parentContext.getContextClass())) {
+            AppBase appBase = parentContext.asType(AppBase.class);
+            CurrencyConversionLine currencyConversionLine =
+                context.asType(CurrencyConversionLine.class);
+            currencyConversionLine.setFromDate(rateRetrieveDate);
+
+            Beans.get(CurrencyService.class)
+                .checkOverLappingPeriod(
+                    currencyConversionLine, appBase.getCurrencyConversionLineList());
+          }
+          response.setValue("fromDate", rateRetrieveDate);
           if (prevLine != null)
             response.setValue(
                 "variations",
                 currencyConversionService.getVariations(rate, prevLine.getExchangeRate()));
+
+          if (!rateRetrieveDate.equals(todayDate)) {
+            response.setFlash(
+                String.format(
+                    I18n.get(IExceptionMessage.CURRENCY_10), todayDate, rateRetrieveDate));
+          }
         }
       } catch (AxelorException axelorException) {
         response.setFlash(axelorException.getMessage());
+        response.setValue("fromDate", null);
+        response.setValue("toDate", null);
         response.setCanClose(true);
       }
     }

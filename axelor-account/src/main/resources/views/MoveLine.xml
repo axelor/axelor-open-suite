@@ -5,13 +5,13 @@
     
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine"  canArchive="false" canDelete="false" canNew="false">
   	<toolbar>
-  		<button name="accountingReconcileBtn" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
+  		<button name="accountingReconcileBtn" title="Accounting Reconcile" hideIf="_isSimulatedMoveLine" onClick="action-method-accounting-reconcile"/>
       <button name="calculateBtn" title="Calculation of totals" onClick="action-account-move-line-method-calculate-balance"/>
   	</toolbar>
   	<hilite color="info" if="$get('move.statusSelect') == 1"/>
   	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
     <field name="name" width="135"/>
-    <field name="date" width="90" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+    <field name="date" width="90" onChange="account-move-line-group-date-onchange"/>
  		<field name="move.period" width="100" canView="false"/>
     <field name="move.journal" width="140"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -40,7 +40,7 @@
 		<field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
 		<field name="account.analyticDistributionAuthorized" hidden="true"/>
 		<field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
-		<field name="date" width="100" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+		<field name="date" width="100" onChange="account-move-line-group-date-onchange"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
         <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0"/>
@@ -62,7 +62,7 @@
 		<hilite color="info" if="$get('move.statusSelect') == 1"/>
 		<hilite color="danger" if="$get('move.statusSelect') == 4"/>
     <field name="name" width="135"/>
-    <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+    <field name="date" onChange="account-move-line-group-date-onchange"/>
  		<field name="move.period" canView="false"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
@@ -87,7 +87,7 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name" width="135"/>
-        <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+        <field name="date" onChange="account-move-line-group-date-onchange"/>
 		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
         <field name="description"/>
@@ -145,7 +145,7 @@
 				</viewer>
 			</field>
 			<panel name="datesPanel" colSpan="12">
-				<field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+				<field name="date" onChange="account-move-line-group-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
 			</panel>
@@ -211,6 +211,7 @@
 							<span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 2" x-translate>Accounted</span>
 							<span class="label label-success" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 3" x-translate>Validated</span>
 							<span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 4" x-translate>Canceled</span>
+							<span class="label label-info" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 5" x-translate>Simulated</span>
 						</h4>
 					]]>
 				</viewer>
@@ -246,7 +247,7 @@
 				</viewer>
 			</field>
 			<panel name="datesPanel" colSpan="12">
-				<field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+				<field name="date" onChange="account-move-line-group-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
 			</panel>
@@ -358,6 +359,12 @@
 		<action name="action-account-move-line-method-filter-partner" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
 	    <action name="action-move-line-attrs-domain-partner" if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'"/>
     </action-group>
+
+	<action-group name="account-move-line-group-date-onchange">
+		<action name="account-move-line-record-date-onchange"/>
+		<action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-validate-check-date-in-period"/>
+	</action-group>
 
     <action-method name="action-move-line-method-compute-analytic-distribution">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution"/>
@@ -504,4 +511,16 @@
 		</filter>
 	</search-filters>
 	
+	<action-validate name="action-move-line-validate-check-date-in-period">
+		<error message="The selected date is out of the accounting period."
+			if="eval: (move &amp;&amp; move.period &amp;&amp; (date &lt; move.period.fromDate || date &gt; move.period.toDate))
+			|| (__parent__ &amp;&amp; __parent__.period &amp;&amp; (date &lt; __parent__.period.fromDate || date &gt; __parent__.period.toDate))"
+			action="action-update-move-line-record-update-date-from-move"/>
+	</action-validate>
+
+	<action-record name="action-update-move-line-record-update-date-from-move" model="com.axelor.apps.account.db.MoveLine">
+		<field name="date" expr="eval: move.date" if="move"/>
+		<field name="date" expr="eval: __parent__.date" if="__parent__"/>
+	</action-record>
+
 </object-views>

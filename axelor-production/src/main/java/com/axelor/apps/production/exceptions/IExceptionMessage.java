@@ -113,6 +113,9 @@ public interface IExceptionMessage {
 
   static final String CHARGE_MACHINE_DAYS = /*$$(*/ "Too many days" /*)*/;
 
+  String PROD_PROCESS_LINE_MISSING_WORK_CENTER = /*$$(*/
+      "Work center is missing from prod process line %s-%s." /*)*/;
+
   /** Bill of materials service */
   static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/
       "The product cost cannot be changed because the product cost type is not manual" /*)*/;

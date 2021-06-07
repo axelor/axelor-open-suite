@@ -1125,7 +1125,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           TrackingNumberConfiguration trackingNumberConfiguration =
               stockMoveLine.getProduct().getTrackingNumberConfiguration();
           if (appStock != null
-              && appStock.getActivateBarCodeGeneration()
+              && appStock.getActivateTrackingNumberBarCodeGeneration()
               && trackingNumberConfiguration != null) {
             trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
             if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {

@@ -78,10 +78,12 @@ public class MapperRecord {
       stb.append("def rec = $ctx.create('" + targetModel + "')\n");
     } else {
       stb.append(
-          "def rec = "
+          "def rec = $ctx.find('"
+              + targetModel
+              + "',"
               + targetModel.substring(0, 1).toLowerCase()
               + targetModel.substring(1)
-              + "\n");
+              + "Id)\n");
     }
 
     if (sourceModel != null) {

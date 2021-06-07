@@ -1,7 +1,0 @@
----
-title: "TrackingNumberConfig: Fix required sequence."
-type: fix
-description: |
-  Replace requiredIf and showIf conditions of tracking number configuration's  sequence
-  in order to make sequence showed and required if generatePurchaseAutoTrackingNbr is true and not if
-  isPurchaseTrackingManaged is true.

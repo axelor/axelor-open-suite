@@ -247,7 +247,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList == null) {
-      saleOrderLineList = new ArrayList<SaleOrderLine>();
+      saleOrderLineList = new ArrayList<>();
     }
 
     SaleOrderLine originSoLine = null;
@@ -270,20 +270,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
           originSoLine.getSelectedComplementaryProductList()) {
         // Search if there is already a line for this product to modify or remove
         SaleOrderLine newSoLine = null;
-        if (saleOrderLineList != null) {
-          for (SaleOrderLine soLine : saleOrderLineList) {
-            if (originSoLine.getManualId().equals(soLine.getParentId())) {
-              if (soLine.getProduct() == compProductSelected.getProduct()) {
-                // Edit line if it already exists instead of recreating, otherwise remove if already
-                // exists and is no longer selected
-                if (compProductSelected.getIsSelected()) {
-                  newSoLine = soLine;
-                } else {
-                  saleOrderLineList.remove(soLine);
-                }
-                break;
-              }
+        for (SaleOrderLine soLine : saleOrderLineList) {
+          if (originSoLine.getManualId().equals(soLine.getParentId())
+              && soLine.getProduct() != null
+              && soLine.getProduct().equals(compProductSelected.getProduct())) {
+            // Edit line if it already exists instead of recreating, otherwise remove if already
+            // exists and is no longer selected
+            if (compProductSelected.getIsSelected()) {
+              newSoLine = soLine;
+            } else {
+              saleOrderLineList.remove(soLine);
             }
+            break;
           }
         }
 

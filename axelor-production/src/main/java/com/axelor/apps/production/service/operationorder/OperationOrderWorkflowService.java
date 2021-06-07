@@ -357,7 +357,8 @@ public class OperationOrderWorkflowService {
             .fetchOne();
 
     if (lastOperationOrder != null) {
-      if (lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
+      if (lastOperationOrder.getPriority() != null
+          && lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
         if (lastOperationOrder.getPlannedStartDateT() != null
             && lastOperationOrder
                 .getPlannedStartDateT()
@@ -653,6 +654,15 @@ public class OperationOrderWorkflowService {
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
     long duration = 0;
+    if (prodProcessLine.getWorkCenter() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
+    }
 
     BigDecimal maxCapacityPerCycle = workCenter.getMaxCapacityPerCycle();
 

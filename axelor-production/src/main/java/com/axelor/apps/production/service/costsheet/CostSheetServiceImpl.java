@@ -39,12 +39,15 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -436,9 +439,19 @@ public class CostSheetServiceImpl implements CostSheetService {
       BigDecimal producedQty,
       Unit pieceUnit,
       int bomLevel,
-      CostSheetLine parentCostSheetLine) {
+      CostSheetLine parentCostSheetLine)
+      throws AxelorException {
 
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
+    if (prodProcessLine.getWorkCenter() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
+    }
     int costType = workCenter.getCostTypeSelect();
 
     if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
@@ -800,7 +813,7 @@ public class CostSheetServiceImpl implements CostSheetService {
         Long totalPlannedDuration = 0L;
         for (OperationOrder manufOperationOrder :
             operationOrder.getManufOrder().getOperationOrderList()) {
-          if (manufOperationOrder.getId() == operationOrder.getId()) {
+          if (manufOperationOrder.equals(operationOrder)) {
             totalPlannedDuration += manufOperationOrder.getPlannedDuration();
           }
         }

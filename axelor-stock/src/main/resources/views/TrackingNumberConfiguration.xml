@@ -24,7 +24,7 @@
         <panel name="namePanel">
             <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
         </panel>
-        <panel name="barCodePanel" title="Barcode" if="__config__.app.getApp('stock').getActivateBarCodeGeneration()">
+        <panel name="barCodePanel" title="Barcode" if="__config__.app.getApp('stock').getActivateTrackingNumberBarCodeGeneration()">
         	<field name="useTrackingNumberSeqAsSerialNbr" onChange="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"/>
         	<field name="barcodeTypeConfig" onChange="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"/>
         </panel>
@@ -63,7 +63,7 @@
     	<field name="saleQtyByTracking" expr="0"/>
     	<field name="purchaseQtyByTracking" expr="0"/>
     	<field name="productionQtyByTracking" expr="0"/>
-    	<field name="barcodeTypeConfig" expr="eval:__config__.app.getApp('stock')?.getBarcodeTypeConfig()" if="eval:__config__.app.getApp('stock')?.getActivateBarCodeGeneration()"/>
+    	<field name="barcodeTypeConfig" expr="eval:__config__.app.getApp('stock')?.getTrackingNumberBarcodeTypeConfig()" if="eval:__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()"/>
     </action-record>
     
     

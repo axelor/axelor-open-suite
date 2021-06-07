@@ -95,14 +95,14 @@
     </action-method>
 
     <action-view name="action-debt-recovery-view-recovery-invoices" model="com.axelor.apps.account.db.Invoice" title="Invoice concerned by the debt recovery">
-        <view name="invoice-grid" type="grid" />
+        <view name="invoice-with-payment-delay-grid" type="grid" />
         <view name="invoice-form" type="form" />
         <domain>self.debtRecoveryBlockingOk = false and self.id IN (:_ids)</domain>
         <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}" />
     </action-view>
     
     <action-view name="action-debt-recovery-view-blocked-invoices" model="com.axelor.apps.account.db.Invoice" title="Blocked invoices">
-        <view name="invoice-grid" type="grid" />
+        <view name="invoice-with-payment-delay-grid" type="grid" />
         <view name="invoice-form" type="form" />
         <domain>self.debtRecoveryBlockingOk = true and self.id IN (:_ids)</domain>
         <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}" />
