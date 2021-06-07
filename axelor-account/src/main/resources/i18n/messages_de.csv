@@ -1225,7 +1225,7 @@
 "Invoice.purchaseRefundNo","RÜCKERSTATTUNG DES KAUFPREISES N°.",,
 "Invoice.qtyUnit","Menge / Einheit",,
 "Invoice.refundNo","RÜCKERSTATTUNGS-NR.",,
-"Invoice.shippingDate",,,
+"Invoice.shippingDate","Liefertermin(e)",,
 "Invoice.subscriptionPeriod","Zeitraum von %s bis %s",,
 "Invoice.supplier","Lieferant",,
 "Invoice.supplierPartnerSeq","Lieferantennummer",,

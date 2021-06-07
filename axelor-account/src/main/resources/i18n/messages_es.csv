@@ -1225,7 +1225,7 @@
 "Invoice.purchaseRefundNo","REEMBOLSO DE COMPRA N °",,
 "Invoice.qtyUnit","Cantidad / unidad",,
 "Invoice.refundNo","REEMBOLSO N °",,
-"Invoice.shippingDate",,,
+"Invoice.shippingDate","Fecha(s) de embarque",,
 "Invoice.subscriptionPeriod","Período de %s a %s",,
 "Invoice.supplier","Proveedor",,
 "Invoice.supplierPartnerSeq","Proveedor N °",,

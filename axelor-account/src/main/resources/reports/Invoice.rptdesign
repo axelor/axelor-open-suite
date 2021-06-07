@@ -4743,7 +4743,7 @@ row["message_key"]
                                     <text id="5768">
                                         <property name="marginTop">5pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="MM/dd/yyyy">if(params["Locale"].value == 'en')row["StockMoveRealDate"]</VALUE-OF><VALUE-OF format="dd/MM/yyyy">if(params["Locale"].value == 'fr')row["StockMoveRealDate"]</VALUE-OF> - <VALUE-OF>row["StockMoveSeq"]</VALUE-OF>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="MM/dd/yyyy">if(params["Locale"].value == 'en')row["StockMoveRealDate"]</VALUE-OF><VALUE-OF format="dd/MM/yyyy">if(params["Locale"].value != 'en')row["StockMoveRealDate"]</VALUE-OF> - <VALUE-OF>row["StockMoveSeq"]</VALUE-OF>
 ]]></text-property>
                                     </text>
                                 </cell>

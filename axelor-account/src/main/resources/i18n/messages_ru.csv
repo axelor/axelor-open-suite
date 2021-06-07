@@ -1225,7 +1225,7 @@
 "Invoice.purchaseRefundNo","ВОЗВРАТ ПОКУПОК N°",,
 "Invoice.qtyUnit","Qty / Unit",,
 "Invoice.refundNo","REFUND N°",,
-"Invoice.shippingDate",,,
+"Invoice.shippingDate","Дата(ы) отгрузки",,
 "Invoice.subscriptionPeriod","Период от %s до %s",,
 "Invoice.supplier","Поставщик",,
 "Invoice.supplierPartnerSeq","Поставщик N°",,
