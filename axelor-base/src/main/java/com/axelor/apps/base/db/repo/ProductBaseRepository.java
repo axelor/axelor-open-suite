@@ -62,7 +62,7 @@ public class ProductBaseRepository extends ProductRepository {
     }
 
     product = super.save(product);
-    
+
     // Barcode generation
     if (product.getBarCode() == null
         && appBaseService.getAppBase().getActivateBarCodeGeneration()) {
