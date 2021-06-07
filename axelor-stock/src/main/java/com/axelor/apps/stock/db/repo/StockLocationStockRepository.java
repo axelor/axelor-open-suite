@@ -24,31 +24,21 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationSaveService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
-import javax.validation.ValidationException;
 
 public class StockLocationStockRepository extends StockLocationRepository {
 
   protected AppStockService appStockService;
   protected BarcodeGeneratorService barcodeGeneratorService;
-  protected MetaFiles metaFiles;
 
   @Inject
   public StockLocationStockRepository(
-      AppStockService appStockService,
-      BarcodeGeneratorService barcodeGeneratorService,
-      MetaFiles metaFiles) {
+      AppStockService appStockService, BarcodeGeneratorService barcodeGeneratorService) {
     this.appStockService = appStockService;
     this.barcodeGeneratorService = barcodeGeneratorService;
-    this.metaFiles = metaFiles;
   }
 
   /**
@@ -63,36 +53,23 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
     // Barcode generation
     AppStock appStock = appStockService.getAppStock();
-
-    if (appStock != null && appStock.getActivateStockLocationBarCodeGeneration()) {
-
+    if (appStock != null
+        && appStock.getActivateStockLocationBarCodeGeneration()
+        && stockLocation.getBarCode() == null) {
+      boolean addPadding = false;
       BarcodeTypeConfig barcodeTypeConfig = stockLocation.getBarcodeTypeConfig();
-      // Apply defaulting if needed
-      if (appStock.getEditStockLocationBarcodeType() == false) {
+      if (!appStock.getEditStockLocationBarcodeType()) {
         barcodeTypeConfig = appStock.getStockLocationBarcodeTypeConfig();
       }
-
-      if (stockLocation.getBarCode() == null
-          && barcodeTypeConfig != null
-          && stockLocation.getSerialNumber() != null) {
-        try {
-          boolean addPadding = false;
-          InputStream inStream =
-              barcodeGeneratorService.createBarCode(
-                  stockLocation.getSerialNumber(), barcodeTypeConfig, addPadding);
-          if (inStream != null) {
-            MetaFile barcodeFile =
-                metaFiles.upload(
-                    inStream, String.format("StockLocationBarCode%d.png", stockLocation.getId()));
-            stockLocation.setBarCode(barcodeFile);
-          }
-        } catch (IOException e) {
-          TraceBackService.trace(e);
-          throw new ValidationException(e);
-        } catch (AxelorException e) {
-          TraceBackService.trace(e);
-          throw new ValidationException(e);
-        }
+      MetaFile barcodeFile =
+          barcodeGeneratorService.createBarCode(
+              stockLocation.getId(),
+              "StockLocationBarCode%d.png",
+              stockLocation.getSerialNumber(),
+              barcodeTypeConfig,
+              addPadding);
+      if (barcodeFile != null) {
+        stockLocation.setBarCode(barcodeFile);
       }
     }
 
