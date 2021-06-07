@@ -357,7 +357,8 @@ public class OperationOrderWorkflowService {
             .fetchOne();
 
     if (lastOperationOrder != null) {
-      if (lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
+      if (lastOperationOrder.getPriority() != null
+          && lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
         if (lastOperationOrder.getPlannedStartDateT() != null
             && lastOperationOrder
                 .getPlannedStartDateT()

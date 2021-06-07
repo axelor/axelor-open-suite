@@ -181,4 +181,7 @@
 		<bind to="company" column="company" search="self.importId = :company"/>
 	</input>
 
+	<input file="account_paymentDelayReason.csv" separator=";"
+		type="com.axelor.apps.account.db.PaymentDelayReason" search="self.importId = :importId" />
+
 </csv-inputs>
