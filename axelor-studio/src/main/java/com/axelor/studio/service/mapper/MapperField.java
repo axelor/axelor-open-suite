@@ -35,6 +35,8 @@ public class MapperField {
 
   private String field = null;
 
+  private String processId = null;
+
   public String getDataPath() {
     return dataPath;
   }
@@ -95,12 +97,21 @@ public class MapperField {
     return field;
   }
 
+  public String getProcessId() {
+    return processId;
+  }
+
+  public void setProcessId(String processId) {
+    this.processId = processId;
+  }
+
   public String toScript(String parent) {
 
     this.parent = parent;
     StringBuilder stb = new StringBuilder();
 
     field = parent + "." + name;
+
     stb.append(field + " = " + value.toScript(this));
 
     return stb.toString();
