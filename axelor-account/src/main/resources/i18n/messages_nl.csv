@@ -1225,7 +1225,7 @@
 "Invoice.purchaseRefundNo","TERUGGAVE VAN DE AANKOOPSOM NR.",,
 "Invoice.qtyUnit","Qty / Eenheid",,
 "Invoice.refundNo","REFUND NR.",,
-"Invoice.shippingDate",,,
+"Invoice.shippingDate","Verzenddatum(s)",,
 "Invoice.subscriptionPeriod","Periode van %s tot %s",,
 "Invoice.supplier","Leverancier",,
 "Invoice.supplierPartnerSeq","Leverancier Nr.",,

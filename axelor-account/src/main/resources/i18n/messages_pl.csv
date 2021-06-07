@@ -1225,7 +1225,7 @@
 "Invoice.purchaseRefundNo","ZWROT KOSZTÓW ZAKUPU N°",,
 "Invoice.qtyUnit","Ilość / Jednostka",,
 "Invoice.refundNo","REFUND N°",,
-"Invoice.shippingDate",,,
+"Invoice.shippingDate","Data(-y) wysyłki",,
 "Invoice.subscriptionPeriod","Okres od % do %s",,
 "Invoice.supplier","Dostawca",,
 "Invoice.supplierPartnerSeq","Dostawca nr",,
