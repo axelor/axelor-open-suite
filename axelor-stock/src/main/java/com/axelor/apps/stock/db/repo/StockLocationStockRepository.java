@@ -64,32 +64,35 @@ public class StockLocationStockRepository extends StockLocationRepository {
     // Barcode generation
     AppStock appStock = appStockService.getAppStock();
 
-    if (appStock != null
-        && appStock.getActivateStockLocationBarCodeGeneration()
-        && stockLocation.getBarCode() == null
-        && stockLocation.getBarcodeTypeConfig() != null
-        && stockLocation.getSerialNumber() != null) {
-      try {
-        boolean addPadding = false;
-        BarcodeTypeConfig barcodeTypeConfig = stockLocation.getBarcodeTypeConfig();
-        if (appStock.getEditStockLocationBarcodeType() == false) {
-          barcodeTypeConfig = appStock.getStockLocationBarcodeTypeConfig();
+    if (appStock != null && appStock.getActivateStockLocationBarCodeGeneration()) {
+
+      BarcodeTypeConfig barcodeTypeConfig = stockLocation.getBarcodeTypeConfig();
+      // Apply defaulting if needed
+      if (appStock.getEditStockLocationBarcodeType() == false) {
+        barcodeTypeConfig = appStock.getStockLocationBarcodeTypeConfig();
+      }
+
+      if (stockLocation.getBarCode() == null
+          && barcodeTypeConfig != null
+          && stockLocation.getSerialNumber() != null) {
+        try {
+          boolean addPadding = false;
+          InputStream inStream =
+              barcodeGeneratorService.createBarCode(
+                  stockLocation.getSerialNumber(), barcodeTypeConfig, addPadding);
+          if (inStream != null) {
+            MetaFile barcodeFile =
+                metaFiles.upload(
+                    inStream, String.format("StockLocationBarCode%d.png", stockLocation.getId()));
+            stockLocation.setBarCode(barcodeFile);
+          }
+        } catch (IOException e) {
+          TraceBackService.trace(e);
+          throw new ValidationException(e);
+        } catch (AxelorException e) {
+          TraceBackService.trace(e);
+          throw new ValidationException(e);
         }
-        InputStream inStream =
-            barcodeGeneratorService.createBarCode(
-                stockLocation.getSerialNumber(), barcodeTypeConfig, addPadding);
-        if (inStream != null) {
-          MetaFile barcodeFile =
-              metaFiles.upload(
-                  inStream, String.format("StockLocationBarCode%d.png", stockLocation.getId()));
-          stockLocation.setBarCode(barcodeFile);
-        }
-      } catch (IOException e) {
-        TraceBackService.trace(e);
-        throw new ValidationException(e);
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-        throw new ValidationException(e);
       }
     }
 
