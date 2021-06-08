@@ -21,7 +21,11 @@ import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -36,6 +40,7 @@ import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
+import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +48,39 @@ import org.slf4j.LoggerFactory;
 public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected MetaFiles metaFiles;
+
+  @Inject
+  public BarcodeGeneratorServiceImpl(MetaFiles metaFiles) {
+    this.metaFiles = metaFiles;
+  }
+
+  @Override
+  public MetaFile createBarCode(
+      Long originId,
+      String fileNameFormat,
+      String serialno,
+      BarcodeTypeConfig barcodeTypeConfig,
+      boolean isPadding) {
+    if (barcodeTypeConfig != null && serialno != null) {
+      try {
+        InputStream inStream = createBarCode(serialno, barcodeTypeConfig, isPadding);
+        if (inStream != null) {
+          MetaFile barcodeFile =
+              metaFiles.upload(inStream, String.format(fileNameFormat, originId));
+          return barcodeFile;
+        }
+      } catch (IOException e) {
+        TraceBackService.trace(e);
+        throw new ValidationException(e);
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+        throw new ValidationException(e);
+      }
+    }
+    return null;
+  }
 
   @Override
   public InputStream createBarCode(
@@ -363,57 +401,45 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
       String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
       throws AxelorException {
     if (serialno != null && barcodeTypeConfig != null) {
-      BarcodeFormat barcodeFormat;
       switch (barcodeTypeConfig.getName()) {
         case "AZTEC":
-          barcodeFormat = BarcodeFormat.AZTEC;
           break;
 
         case "CODABAR":
-          barcodeFormat = BarcodeFormat.CODABAR;
-          serialno = checkTypeForCodabar(serialno, barcodeFormat);
+          checkTypeForCodabar(serialno, BarcodeFormat.CODABAR);
           break;
 
         case "CODE_39":
-          barcodeFormat = BarcodeFormat.CODE_39;
-          serialno = checkTypeForCode39(serialno, barcodeFormat);
+          checkTypeForCode39(serialno, BarcodeFormat.CODE_39);
           break;
 
         case "CODE_128":
-          barcodeFormat = BarcodeFormat.CODE_128;
           break;
 
         case "DATA_MATRIX":
-          barcodeFormat = BarcodeFormat.DATA_MATRIX;
           break;
 
         case "EAN_8":
-          barcodeFormat = BarcodeFormat.EAN_8;
-          serialno = checkTypeForEan8(serialno, barcodeFormat, isPadding);
+          checkTypeForEan8(serialno, BarcodeFormat.EAN_8, isPadding);
           break;
 
         case "ITF":
-          barcodeFormat = BarcodeFormat.ITF;
-          serialno = checkTypeForItf(serialno, barcodeFormat, isPadding);
+          checkTypeForItf(serialno, BarcodeFormat.ITF, isPadding);
           break;
 
         case "PDF_417":
-          barcodeFormat = BarcodeFormat.PDF_417;
-          serialno = checkTypeForPdf417(serialno, barcodeFormat, isPadding);
+          checkTypeForPdf417(serialno, BarcodeFormat.PDF_417, isPadding);
           break;
 
         case "QR_CODE":
-          barcodeFormat = BarcodeFormat.QR_CODE;
           break;
 
         case "UPC_A":
-          barcodeFormat = BarcodeFormat.UPC_A;
-          serialno = checkTypeForUpca(serialno, barcodeFormat, isPadding);
+          checkTypeForUpca(serialno, BarcodeFormat.UPC_A, isPadding);
           break;
 
         case "EAN_13":
-          barcodeFormat = BarcodeFormat.EAN_13;
-          serialno = checkTypeForEan13(serialno, barcodeFormat, isPadding);
+          checkTypeForEan13(serialno, BarcodeFormat.EAN_13, isPadding);
           break;
 
         default:
