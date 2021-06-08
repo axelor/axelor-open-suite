@@ -540,6 +540,9 @@
 					form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid"
 					if-module="axelor-sale"
 					if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()" />
+				<panel name="accountblockedPanel">
+					<field name="hasBlockedAccount"/>
+				</panel>
 				<panel name="saleOrderCommentsPanel" title="Comment to display on sale order"
 					colSpan="12">
 					<field name="saleOrderComments" widget="html" colSpan="12"

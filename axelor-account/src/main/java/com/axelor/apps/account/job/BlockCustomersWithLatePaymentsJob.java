@@ -1,6 +1,5 @@
 package com.axelor.apps.account.job;
 
-import org.quartz.JobExecutionContext;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -12,8 +11,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import org.quartz.JobExecutionContext;
 
-public class BlockCustomersWithLatePaymentsJob  extends ThreadedJob {
+public class BlockCustomersWithLatePaymentsJob extends ThreadedJob {
 
   @Override
   public void executeInThread(JobExecutionContext context) {
@@ -31,8 +31,7 @@ public class BlockCustomersWithLatePaymentsJob  extends ThreadedJob {
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
-                String.format(
-                    IExceptionMessage.BATCH_DOES_NOT_EXIST)));
+                String.format(IExceptionMessage.BATCH_DOES_NOT_EXIST)));
       }
     } catch (Exception e) {
       throw new UncheckedJobExecutionException(e);

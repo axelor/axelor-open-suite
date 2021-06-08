@@ -18,10 +18,13 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.DebtRecovery;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryActionService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -49,6 +52,21 @@ public class DebtRecoveryController {
       debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
       Beans.get(DebtRecoveryActionService.class).runManualAction(debtRecovery);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void blockCustomersWithLatePayments(ActionRequest request, ActionResponse response) {
+    try {
+      Batch batch = Beans.get(AccountingBatchService.class)
+          .blockCustomersWithLatePayments(
+              Beans.get(AccountingBatchRepository.class)
+                  .all()
+                  .filter("self.actionSelect = :select")
+                  .bind("select", AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING)
+                  .fetchOne());
+      response.setFlash(batch.getComments());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

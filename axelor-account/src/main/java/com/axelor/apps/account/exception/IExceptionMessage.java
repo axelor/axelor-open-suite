@@ -830,6 +830,6 @@ public interface IExceptionMessage {
 
   static final String BATCH_CLOSE_ANNUAL_ACCOUNT_2 = /*$$(*/
       "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
-  
+
   static final String BATCH_DOES_NOT_EXIST = /*$$(*/ "The batch does not exist." /*)*/;
 }
