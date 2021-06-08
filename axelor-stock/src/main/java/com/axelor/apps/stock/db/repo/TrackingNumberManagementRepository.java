@@ -18,21 +18,16 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.AppStock;
+import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Map;
-import javax.validation.ValidationException;
 
 public class TrackingNumberManagementRepository extends TrackingNumberRepository {
 
@@ -43,8 +38,6 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
   @Inject private AppStockService appStockService;
 
   @Inject private BarcodeGeneratorService barcodeGeneratorService;
-
-  @Inject private MetaFiles metaFiles;
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
@@ -80,32 +73,25 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
   @Override
   public TrackingNumber save(TrackingNumber trackingNumber) {
 
+    // Barcode generation
     AppStock appStock = appStockService.getAppStock();
-
     if (appStock != null
         && appStock.getActivateTrackingNumberBarCodeGeneration()
-        && trackingNumber.getBarCode() == null
-        && trackingNumber.getBarcodeTypeConfig() != null
-        && trackingNumber.getSerialNumber() != null) {
-      try {
-        boolean addPadding = false;
-        InputStream inStream =
-            barcodeGeneratorService.createBarCode(
-                trackingNumber.getSerialNumber(),
-                trackingNumber.getBarcodeTypeConfig(),
-                addPadding);
-        if (inStream != null) {
-          MetaFile barcodeFile =
-              metaFiles.upload(
-                  inStream, String.format("TrackingNumberBarCode%d.png", trackingNumber.getId()));
-          trackingNumber.setBarCode(barcodeFile);
-        }
-      } catch (IOException e) {
-        TraceBackService.trace(e);
-        throw new ValidationException(e);
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-        throw new ValidationException(e);
+        && trackingNumber.getBarCode() == null) {
+      boolean addPadding = false;
+      BarcodeTypeConfig barcodeTypeConfig = trackingNumber.getBarcodeTypeConfig();
+      if (!appStock.getEditTrackingNumberBarcodeType()) {
+        barcodeTypeConfig = appStock.getTrackingNumberBarcodeTypeConfig();
+      }
+      MetaFile barcodeFile =
+          barcodeGeneratorService.createBarCode(
+              trackingNumber.getId(),
+              "TrackingNumberBarCode%d.png",
+              trackingNumber.getSerialNumber(),
+              barcodeTypeConfig,
+              addPadding);
+      if (barcodeFile != null) {
+        trackingNumber.setBarCode(barcodeFile);
       }
     }
 
