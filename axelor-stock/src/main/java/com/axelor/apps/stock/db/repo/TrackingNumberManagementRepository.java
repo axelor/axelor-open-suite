@@ -82,6 +82,10 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       BarcodeTypeConfig barcodeTypeConfig = trackingNumber.getBarcodeTypeConfig();
       if (!appStock.getEditTrackingNumberBarcodeType()) {
         barcodeTypeConfig = appStock.getTrackingNumberBarcodeTypeConfig();
+      } else if (trackingNumber.getProduct() != null
+          && trackingNumber.getProduct().getTrackingNumberConfiguration() != null) {
+        barcodeTypeConfig =
+            trackingNumber.getProduct().getTrackingNumberConfiguration().getBarcodeTypeConfig();
       }
       MetaFile barcodeFile =
           barcodeGeneratorService.createBarCode(
