@@ -126,6 +126,9 @@ public interface IExceptionMessage {
 
   static final String MRP_NO_PRODUCT = /*$$(*/ "Please select an element to run calculation" /*)*/;
 
+  static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
+      "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
+
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this sale order" /*)*/;
