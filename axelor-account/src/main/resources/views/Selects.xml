@@ -199,6 +199,7 @@
 		<option value="20">Realize fixed asset lines</option>
 		<option value="21">Close the annual accounts of the past year</option>
 		<option value="22">Open the annual accounts of the next year</option>
+		<option value="23">Block customer with late payment issues</option>
 	</selection>
 	
 	<selection name="iaccount.account.batch.transfer.type.select">
@@ -336,6 +337,10 @@
 
 	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
+	</selection>
+	
+	<selection name="meta.schedule.job.select" id="account.meta.schedule.job.select">
+		<option value="com.axelor.apps.account.job.BlockCustomersWithLatePaymentsJob">com.axelor.apps.account.job.BlockCustomersWithLatePaymentsJob</option>
 	</selection>
 
 	<selection name="account.subrogation.release.status.select">
