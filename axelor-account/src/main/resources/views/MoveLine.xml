@@ -52,9 +52,11 @@
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized"
         requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="origin" width="120"/>
-        <field name="description"/>
+        <field name="description" requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
         <field name="analyticMoveLineList" hidden="true"/>
         <field name="reconcileGroup" hidden="true"/>
+        <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
+		<field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
 	</grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"
@@ -258,7 +260,8 @@
 			<field name="amountRemaining" colSpan="3"/>
 			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
 			<field name="origin" colSpan="12"/>
-			<field name="description" colSpan="12"/>
+			<field name="description" colSpan="12" requiredIf="$isDescriptionRequired"/>
+			<field name="$isDescriptionRequired" type="boolean" hidden="true"/>
 			<field name="taxAmount" hidden="true"/>
 			<field name="move.statusSelect" hidden="true"/>
 			<field name="account.reconcileOk" hidden="true"/>
@@ -336,6 +339,7 @@
 	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
 	    <action name="action-move-line-method-set-currencyRate"/>
 	    <action name="action-move-line-record-set-currencyAmount"/>
+	    <action name="action-move-line-method-description-required"/>
     </action-group>
 	
 	<action-group name="action-group-account-moveline-debitcredit-onchange">
@@ -348,6 +352,7 @@
      <action-group name="action-account-moveline-onload-group">
 		<action name="action-move-line-attrs-readonly"/>
 		<action name="action-move-line-attrs-show-tax-amount"/>
+		<action name="action-move-line-method-description-required"/>
 	</action-group>
     
     <action-group name="action-group-account-moveline-usher-process-onchange">
@@ -490,6 +495,10 @@
 
 	<action-method name="action-account-move-line-method-filter-partner">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
+	</action-method>
+	
+	<action-method name="action-move-line-method-description-required">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="descriptionRequired"/>
 	</action-method>
 
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">

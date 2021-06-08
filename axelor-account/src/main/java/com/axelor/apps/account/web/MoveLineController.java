@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -24,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Currency;
@@ -226,6 +228,21 @@ public class MoveLineController {
         }
       }
       response.setValue("currencyRate", currencyRate);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void descriptionRequired(ActionRequest request, ActionResponse response) {
+
+    try {
+      Context parentContext = request.getContext().getParent();
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+        response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
