@@ -98,6 +98,9 @@
 				<panel name="accountingReportPanel" title="Accounting reports" colSpan="12">
       	    		<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
       			</panel>
+      			<panel name="moveLinesPanel" title="Move lines" colSpan="12">
+					<field name="isDescriptionRequired" widget="boolean-switch"/>
+				</panel>
 			</panel>
 
 			<panel title="Invoicing" name="invoicingPanel">
