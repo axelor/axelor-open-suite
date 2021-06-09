@@ -59,13 +59,15 @@ public class DebtRecoveryController {
 
   public void blockCustomersWithLatePayments(ActionRequest request, ActionResponse response) {
     try {
-      Batch batch = Beans.get(AccountingBatchService.class)
-          .blockCustomersWithLatePayments(
-              Beans.get(AccountingBatchRepository.class)
-                  .all()
-                  .filter("self.actionSelect = :select")
-                  .bind("select", AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING)
-                  .fetchOne());
+      Batch batch =
+          Beans.get(AccountingBatchService.class)
+              .blockCustomersWithLatePayments(
+                  Beans.get(AccountingBatchRepository.class)
+                      .all()
+                      .filter("self.actionSelect = :select")
+                      .bind(
+                          "select", AccountingBatchRepository.ACTION_LATE_PAYMENT_CUSTOMER_BLOCKING)
+                      .fetchOne());
       response.setFlash(batch.getComments());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

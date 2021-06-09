@@ -26,8 +26,8 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
   private AccountConfigService accountConfigService;
   private InvoiceRepository invoiceRepository;
   private AppBaseService appBaseService;
-  
-  private String result="";
+
+  private String result = "";
 
   @Inject
   public BatchBlockCustomersWithLatePayments(
@@ -69,7 +69,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
           for (Partner partner : partners) {
             if (!customersToBlock.contains(partner.getId())) {
               log.debug("Blocking " + partner.getFullName());
-              result += I18n.get("Blocking") + " " + partner.getFullName()+"</br>";
+              result += I18n.get("Blocking") + " " + partner.getFullName() + "</br>";
               customersToBlock.add(partner.getId());
             }
           }
@@ -82,7 +82,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
 
   @Transactional(rollbackOn = Exception.class)
   protected void blockCustomers(List<Long> customersToBlock) {
-    if(CollectionUtils.isNotEmpty(customersToBlock)) {
+    if (CollectionUtils.isNotEmpty(customersToBlock)) {
       Query.of(Partner.class)
           .filter("self.id in :ids")
           .bind("ids", customersToBlock)
