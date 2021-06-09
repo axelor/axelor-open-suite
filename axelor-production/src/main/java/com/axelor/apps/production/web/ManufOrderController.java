@@ -37,6 +37,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServic
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
@@ -67,8 +68,6 @@ import org.slf4j.LoggerFactory;
 public class ManufOrderController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private static final String PRODUCTION_COMMENT = /*$$(*/
-      "Take good the following comment into account:" /*)*/;
 
   public void start(ActionRequest request, ActionResponse response) {
 
@@ -78,13 +77,20 @@ public class ManufOrderController {
       Beans.get(ManufOrderWorkflowService.class).start(manufOrder);
       response.setReload(true);
       if (manufOrder.getSaleOrderSet() != null && !manufOrder.getSaleOrderSet().isEmpty()) {
-        SaleOrderLine saleOrderLine =
+        List<SaleOrderLine> saleOrderLineList =
             Beans.get(ManufOrderService.class).getSaleOrderLineFromManufOrder(manufOrder);
-        if (saleOrderLine != null) {
+        if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
+          String lineProductionComment = "";
+          for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+            lineProductionComment =
+                lineProductionComment
+                    .concat(saleOrderLine.getLineProductionComment())
+                    .concat(System.lineSeparator());
+          }
           String message =
-              I18n.get(PRODUCTION_COMMENT)
+              I18n.get(ITranslation.PRODUCTION_COMMENT)
                   .concat(System.lineSeparator())
-                  .concat(saleOrderLine.getLineProductionComment());
+                  .concat(lineProductionComment);
           response.setFlash(message);
           response.setCanClose(true);
         }
@@ -222,25 +228,31 @@ public class ManufOrderController {
                 .fetch();
       }
 
-      String lineProductionComment = null;
+      String lineProductionComment = "";
 
       for (ManufOrder manufOrder : manufOrders) {
 
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
 
         if (manufOrder.getSaleOrderSet() != null && !manufOrder.getSaleOrderSet().isEmpty()) {
-          SaleOrderLine saleOrderLine =
+          List<SaleOrderLine> saleOrderLineList =
               Beans.get(ManufOrderService.class).getSaleOrderLineFromManufOrder(manufOrder);
-          if (saleOrderLine != null) {
-            lineProductionComment = saleOrderLine.getLineProductionComment();
+          if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
+            for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+              lineProductionComment =
+                  lineProductionComment
+                      .concat(saleOrderLine.getLineProductionComment())
+                      .concat(System.lineSeparator());
+            }
+
             if (Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-              manufOrder.setMoCommentFromSaleOrder(saleOrderLine.getLineProductionComment());
+              manufOrder.setMoCommentFromSaleOrder(lineProductionComment);
             } else {
               manufOrder.setMoCommentFromSaleOrder(
                   manufOrder
                       .getMoCommentFromSaleOrder()
                       .concat(System.lineSeparator())
-                      .concat(saleOrderLine.getLineProductionComment()));
+                      .concat(lineProductionComment));
             }
             manufOrder = Beans.get(ManufOrderService.class).merge(manufOrder);
           }
@@ -251,9 +263,9 @@ public class ManufOrderController {
         }
       }
       response.setReload(true);
-      if (lineProductionComment != null) {
+      if (!lineProductionComment.isEmpty()) {
         String message =
-            I18n.get(PRODUCTION_COMMENT)
+            I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
                 .concat(lineProductionComment);
         response.setFlash(message);

@@ -265,10 +265,11 @@ public interface ManufOrderService {
    * find a sale order line from a manuf order.
    *
    * @param ManufOrder manufOrder
-   * @return SaleOrderLine
+   * @return List of SaleOrderLine
    * @throws AxelorException
    */
-  public SaleOrderLine getSaleOrderLineFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+  public List<SaleOrderLine> getSaleOrderLineFromManufOrder(ManufOrder manufOrder)
+      throws AxelorException;
 
   /**
    * save a manuf order.

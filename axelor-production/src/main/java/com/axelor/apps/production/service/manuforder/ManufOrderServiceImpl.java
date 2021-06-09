@@ -1055,7 +1055,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  public SaleOrderLine getSaleOrderLineFromManufOrder(ManufOrder manufOrder)
+  public List<SaleOrderLine> getSaleOrderLineFromManufOrder(ManufOrder manufOrder)
       throws AxelorException {
 
     List<Long> saleOrderIds =
@@ -1072,7 +1072,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             manufOrder.getBillOfMaterial().getId(),
             manufOrder.getProduct().getId(),
             saleOrderIds)
-        .fetchOne();
+        .fetch();
   }
 
   @Override
