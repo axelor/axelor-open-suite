@@ -31,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -106,6 +107,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         startDate,
         null,
         null,
+        null,
         ManufOrderService.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);
@@ -121,6 +123,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       LocalDateTime startDate,
       LocalDateTime endDate,
       SaleOrder saleOrder,
+      String moCommentFromSaleOrderLine,
       int originType)
       throws AxelorException {
 
@@ -139,7 +142,14 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       if (saleOrder != null) {
         manufOrder.addSaleOrderSetItem(saleOrder);
         manufOrder.setClientPartner(saleOrder.getClientPartner());
-        manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
+        if (Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
+          manufOrder.setMoCommentFromSaleOrder(moCommentFromSaleOrderLine);
+        } else {
+          manufOrder.setMoCommentFromSaleOrder(
+              saleOrder
+                  .getProductionNote()
+                  .concat(System.lineSeparator().concat(moCommentFromSaleOrderLine)));
+        }
       }
       productionOrder.addManufOrderSetItem(manufOrder);
       manufOrder.addProductionOrderSetItem(productionOrder);

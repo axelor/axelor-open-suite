@@ -50,7 +50,8 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
       Project project,
       LocalDateTime startDate,
       LocalDateTime endDate,
-      SaleOrder saleOrder)
+      SaleOrder saleOrder,
+      String moCommentFromSaleOrderLine)
       throws AxelorException {
 
     ProductionOrder productionOrder = this.createProductionOrder(saleOrder);
@@ -64,6 +65,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
         startDate,
         endDate,
         saleOrder,
+        moCommentFromSaleOrderLine,
         ManufOrderService.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);

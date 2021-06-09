@@ -44,8 +44,6 @@ import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -63,6 +61,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -914,6 +913,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     String note = "";
 
     ManufOrder mergedManufOrder = new ManufOrder();
+    
+    mergedManufOrder.setMoCommentFromSaleOrder("");
 
     for (ManufOrder manufOrder : manufOrderList) {
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_MERGED);
@@ -944,6 +945,13 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       if (manufOrder.getNote() != null && !manufOrder.getNote().equals("")) {
         note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
       }
+      
+      if (Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+    	  mergedManufOrder.setMoCommentFromSaleOrder(
+    			  mergedManufOrder.getMoCommentFromSaleOrder()
+    			  .concat(System.lineSeparator())
+    			  .concat(manufOrder.getMoCommentFromSaleOrder()));
+       }
     }
 
     Optional<LocalDateTime> minDate =
@@ -1052,32 +1060,5 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     return true;
-  }
-
-  @Override
-  public List<SaleOrderLine> getSaleOrderLineFromManufOrder(ManufOrder manufOrder)
-      throws AxelorException {
-
-    List<Long> saleOrderIds =
-        manufOrder.getSaleOrderSet().stream()
-            .mapToLong(SaleOrder::getId)
-            .boxed()
-            .collect(Collectors.toList());
-
-    return Beans.get(SaleOrderLineRepository.class)
-        .all()
-        .filter(
-            "self.billOfMaterial.id = ?1 AND self.product.id = ?2"
-                + " AND self.saleOrder.id IN ( ?3 ) AND self.lineProductionComment IS NOT NULL",
-            manufOrder.getBillOfMaterial().getId(),
-            manufOrder.getProduct().getId(),
-            saleOrderIds)
-        .fetch();
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public ManufOrder merge(ManufOrder manufOrder) throws AxelorException {
-    return manufOrderRepo.merge(manufOrder);
   }
 }

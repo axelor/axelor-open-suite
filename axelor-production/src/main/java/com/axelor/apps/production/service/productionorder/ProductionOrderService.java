@@ -76,6 +76,7 @@ public interface ProductionOrderService {
       LocalDateTime startDate,
       LocalDateTime endDate,
       SaleOrder saleOrder,
+      String moCommentFromSaleOrderLine,
       int originType)
       throws AxelorException;
 
