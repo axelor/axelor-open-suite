@@ -90,17 +90,17 @@ public class MapperValue {
   private void mapNone(StringBuilder stb) {
 
     String target = parentField.getTarget();
-    String jsonModel = parentField.getJsonModel();
+    String targetJsonModel = parentField.getTargetJsonModel();
 
     String value = getSelectedScript();
 
-    if (target != null || jsonModel != null) {
+    if (target != null || targetJsonModel != null) {
 
-      String model = jsonModel != null ? jsonModel : target;
+      String model = targetJsonModel != null ? targetJsonModel : target;
       model = "'" + model + "'";
 
       if (value != null) {
-        stb.append("$ctx.filterOne(" + model + "," + prepareQuery(jsonModel, value) + ")");
+        stb.append("$ctx.filterOne(" + model + "," + prepareQuery(targetJsonModel, value) + ")");
       } else {
         stb.append("$ctx.create(" + model + ")");
       }
@@ -137,6 +137,7 @@ public class MapperValue {
     if (isString) {
       type = "STRING";
     }
+    type = type.toUpperCase();
 
     switch (type) {
       case "STRING":

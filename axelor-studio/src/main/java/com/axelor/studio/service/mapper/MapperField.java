@@ -25,7 +25,7 @@ public class MapperField {
 
   private String target = null;
 
-  private String jsonModel = null;
+  private String targetJsonModel = null;
 
   private String name = null;
 
@@ -85,12 +85,12 @@ public class MapperField {
     this.value = value;
   }
 
-  public String getJsonModel() {
-    return jsonModel;
+  public String getTargetJsonModel() {
+    return targetJsonModel;
   }
 
-  public void setJsonModel(String jsonModel) {
-    this.jsonModel = jsonModel;
+  public void setTargetJsonModel(String targetJsonModel) {
+    this.targetJsonModel = targetJsonModel;
   }
 
   public String getField() {

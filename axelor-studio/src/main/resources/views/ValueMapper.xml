@@ -21,8 +21,36 @@
 	  </panel>
   </form>
   
-  <action-view name="action-value-mapper-open-mapper" title="Mapper">
+  <form name="value-mapper-select-wizard-form" title="Select Mapper" model="com.axelor.studio.db.ValueMapper" width="large" onNew="action-value-mapper-select-wizard-on-new">
+    <panel name="mainPanel" colSpan="12">
+    	<field name="valueMapper" type="many-to-one" target="com.axelor.studio.db.ValueMapper" title="Mapper"/>
+    	<button name="btnExecute" title="Execute" onClick="action-value-mapper-method-execute"/>
+    	<field name="modelName" hidden="true" />
+    	<field name="recordId" hidden="true"/> 
+    </panel>
+  </form>
+  
+  <action-attrs name="action-value-mapper-select-wizard-on-new">
+  	<attribute name="value" for="modelName" expr="eval:_modelName"/>
+  	<attribute name="value" for="recordId" expr="eval:_recordId"/>
+  </action-attrs>
+  
+   <action-view name="action-value-mapper-open-mapper" title="Mapper">
   	<view type="html" name="mapper/?id={{_id}}&amp;model=com.axelor.studio.db.ValueMapper&amp;resultField=script&amp;resultMetaField=scriptMeta&amp;targetField=targetField&amp;sourceField=sourceField"/>
   </action-view>
+  
+  <action-view name="action-value-mapper-select-wizard" title="Select Mapper" model="com.axelor.studio.db.ValueMapper">
+	<view type="form" name="value-mapper-select-wizard-form"/>
+	<view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+	<view-param name="show-confirm" value="false" />
+ 	<view-param name="popup-save" value="false"/>
+ 	<context name="_modelName" expr="eval:_model" />
+ 	<context name="_recordId" expr="eval:id" />
+  </action-view>
+  
+  <action-method name="action-value-mapper-method-execute">
+  	<call class="com.axelor.studio.web.ValueMapperController" method="execute"/>
+  </action-method>
   
 </object-views>

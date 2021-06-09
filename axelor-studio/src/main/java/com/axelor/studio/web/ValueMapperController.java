@@ -17,75 +17,62 @@
  */
 package com.axelor.studio.web;
 
-import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
-import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Request;
-import com.axelor.rpc.Response;
-import com.axelor.script.GroovyScriptHelper;
+import com.axelor.rpc.Context;
 import com.axelor.studio.db.ValueMapper;
 import com.axelor.studio.db.repo.ValueMapperRepository;
-import javax.script.Bindings;
-import javax.script.SimpleBindings;
+import com.axelor.studio.service.mapper.ValueMapperService;
+import java.util.Map;
 
 public class ValueMapperController {
 
-  @CallMethod
-  public Response execute(String mapperName) {
+  public void execute(ActionRequest request, ActionResponse response) {
 
-    if (mapperName == null) {
-      return null;
-    }
+    Context context = request.getContext();
 
-    ValueMapper mapper = Beans.get(ValueMapperRepository.class).findByName(mapperName);
+    Map<String, Object> valueMapperMap = (Map<String, Object>) context.get("valueMapper");
+    ValueMapper mapper =
+        Beans.get(ValueMapperRepository.class)
+            .find(Long.parseLong(valueMapperMap.get("id").toString()));
 
     if (mapper == null || mapper.getScript() == null) {
-      return null;
+      return;
     }
 
-    Request request = Request.current();
-
-    Model model = (Model) ModelTool.toBean(request.getBeanClass(), request.getContext());
-    String modelName = request.getModel();
-    if (model instanceof MetaJsonRecord) {
-      modelName = ((MetaJsonRecord) model).getJsonModel();
-    } else {
-      modelName = modelName.substring(modelName.lastIndexOf(".") + 1);
+    String modelName = (String) context.get("modelName");
+    Model model = null;
+    if (context.get("recordId") != null && modelName != null) {
+      Long recordId = Long.parseLong(context.get("recordId").toString());
+      model = FullContextHelper.getRepository(modelName).find(recordId);
     }
 
-    modelName = modelName.substring(0, 1).toLowerCase() + modelName.substring(1);
+    Object result = Beans.get(ValueMapperService.class).execute(mapper, model);
 
-    Bindings bindings = new SimpleBindings();
-    bindings.put("$ctx", FullContextHelper.class);
-    bindings.put(modelName, new FullContext(JPA.find(model.getClass(), model.getId())));
-
-    Object result = new GroovyScriptHelper(bindings).eval(mapper.getScript());
-
-    ActionResponse response = new ActionResponse();
     if (result != null
         && result instanceof FullContext
         && mapper.getScript().startsWith("def rec = $ctx.create(")) {
       FullContext fullContext = (FullContext) result;
+      Object object = fullContext.getTarget();
+      String title = object.getClass().getSimpleName();
+      if (object instanceof MetaJsonRecord) {
+        title = ((MetaJsonRecord) object).getJsonModel();
+      }
       response.setView(
-          ActionView.define(I18n.get(fullContext.getTarget().getClass().getSimpleName()))
-              .model(fullContext.getTarget().getClass().getName())
+          ActionView.define(I18n.get(title))
+              .model(object.getClass().getName())
               .add("form")
               .add("grid")
               .context("_showRecord", fullContext.get("id"))
               .map());
-
-    } else {
-      response.setReload(true);
     }
-
-    return response;
+    response.setCanClose(true);
   }
 }
