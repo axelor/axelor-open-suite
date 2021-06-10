@@ -913,7 +913,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     String note = "";
 
     ManufOrder mergedManufOrder = new ManufOrder();
-    
+
     mergedManufOrder.setMoCommentFromSaleOrder("");
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -945,13 +945,14 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       if (manufOrder.getNote() != null && !manufOrder.getNote().equals("")) {
         note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
       }
-      
+
       if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-    	  mergedManufOrder.setMoCommentFromSaleOrder(
-    			  mergedManufOrder.getMoCommentFromSaleOrder()
-    			  .concat(System.lineSeparator())
-    			  .concat(manufOrder.getMoCommentFromSaleOrder()));
-       }
+        mergedManufOrder.setMoCommentFromSaleOrder(
+            mergedManufOrder
+                .getMoCommentFromSaleOrder()
+                .concat(System.lineSeparator())
+                .concat(manufOrder.getMoCommentFromSaleOrder()));
+      }
     }
 
     Optional<LocalDateTime> minDate =

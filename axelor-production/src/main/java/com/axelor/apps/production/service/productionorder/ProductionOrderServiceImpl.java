@@ -146,11 +146,12 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
           manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
         }
-        if(!Strings.isNullOrEmpty(moCommentFromSaleOrderLine)) {
-        	manufOrder.setMoCommentFromSaleOrder(
-        			manufOrder.getMoCommentFromSaleOrder()
-                        .concat(System.lineSeparator().concat(moCommentFromSaleOrderLine)));
-        }    
+        if (!Strings.isNullOrEmpty(moCommentFromSaleOrderLine)) {
+          manufOrder.setMoCommentFromSaleOrder(
+              manufOrder
+                  .getMoCommentFromSaleOrder()
+                  .concat(System.lineSeparator().concat(moCommentFromSaleOrderLine)));
+        }
       }
       productionOrder.addManufOrderSetItem(manufOrder);
       manufOrder.addProductionOrderSetItem(productionOrder);
