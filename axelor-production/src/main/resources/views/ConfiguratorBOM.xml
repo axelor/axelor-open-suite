@@ -49,7 +49,7 @@
                 <field name="prodProcess" colSpan="12" showIf="!defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
                 <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
                        showTitle="false" x-code-syntax="groovy" showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
-                <field name="configuratorProdProcess" colSpan="12" showIf="defProdProcessAsConfigurator"/>
+                <field name="configuratorProdProcess" colSpan="12" canNew="true" canEdit="true" showIf="defProdProcessAsConfigurator"/>
             </panel>
         </panel>
       <panel-tabs name="mainPanelTab">
