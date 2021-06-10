@@ -33,6 +33,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -109,5 +110,25 @@ public class OpportunityServiceImpl implements OpportunityService {
           company != null ? company.getName() : null);
     }
     opportunity.setOpportunitySeq(seq);
+  }
+
+  @Override
+  public String computeAndGetName(Opportunity opportunity) {
+    Lead lead = opportunity.getLead();
+    Partner partner = opportunity.getPartner();
+    Partner contact = opportunity.getContact();
+    if (partner != null) {
+      return partner.getFullName();
+
+    } else if (lead != null) {
+      if (!Strings.isNullOrEmpty(lead.getEnterpriseName())) {
+        return lead.getEnterpriseName();
+      }
+      return lead.getFullName();
+
+    } else if (contact != null) {
+      return contact.getFullName();
+    }
+    return null;
   }
 }
