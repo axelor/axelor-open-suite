@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="AccountingReportMoveLine" lang="java">
+       <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" initParam="true"/>
+       <many-to-one ref="com.axelor.apps.account.db.MoveLine" name="moveLine" initParam="true"/>
+       <boolean name="excludeFromDas2Report" title="Exclude from DAS2 report" default="false"/>
+       <boolean name="partiallyReconciliated" title="Partially reconciliated" default="false"/>
+<!--        <decimal name="taxAmount" title="Tax amount"/> -->
+<!--        <decimal name="inTaxTotal" title="Total A.T.I."/> -->
+<!--        <decimal name="exTaxTotal" title="Total W.T."/> -->
+       <decimal name="amountToReport" title="Amount to report (DAS2)"/>
+       <many-to-one ref="com.axelor.apps.account.db.AccountingReport" name="accountingReport" title ="Accounting report"/>
+  </entity>
+</domain-models>

@@ -21,9 +21,14 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.AccountingReportMoveLine;
+import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.JournalType;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -47,6 +52,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -68,9 +74,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected AppBaseService appBaseService;
 
+  protected AccountingReportMoveLineService accountingReportMoveLineService;
+
   protected String query = "";
 
   protected AccountRepository accountRepo;
+
+  protected MoveRepository moveRepo;
 
   protected List<Object> params = new ArrayList<>();
   protected int paramNumber = 1;
@@ -79,10 +89,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public AccountingReportServiceImpl(
       AppAccountService appBaseService,
       AccountingReportRepository accountingReportRepo,
-      AccountRepository accountRepo) {
+      AccountRepository accountRepo,
+      MoveRepository moveRepo,
+      AccountingReportMoveLineService accountingReportMoveLineService) {
     this.accountingReportRepo = accountingReportRepo;
     this.accountRepo = accountRepo;
     this.appBaseService = appBaseService;
+    this.moveRepo = moveRepo;
+    this.accountingReportMoveLineService = accountingReportMoveLineService;
   }
 
   private Boolean compareReportType(AccountingReport accountingReport, int type) {
@@ -211,13 +225,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
       }
       if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
-        this.addParams("self.serviceTypeCode is not null AND self.das2ActivityName is not null");
-      }
-      if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS) {
+              == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT
+          || accountingReport.getReportType().getTypeSelect()
+              == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS) {
         this.addParams(
-            "self.serviceTypeCode is not null AND self.serviceType.amountToReport is not true AND self.das2ActivityName is not null");
+            "self.serviceTypeCode is not null AND self.das2ActivityName is not null AND self.serviceType.isDas2Declarable AND self.move.journal.journalType.code = 'ACH'");
       }
     }
 
@@ -731,6 +743,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.moveLine.date <= ?%d", accountingReport.getDateTo());
     }
 
+    if (accountingReport.getYear() != null) {
+      this.addParams("self.period.year = ?%d", accountingReport.getYear());
+    }
+
     this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
 
     this.addParams(
@@ -744,5 +760,118 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     log.debug("Query : {}", this.query);
     return this.query;
+  }
+
+  public List<Move> getAccountingReportDas2Moves(AccountingReport accountingReport) {
+
+    this.initQuery();
+
+    if (accountingReport.getCompany() != null) {
+      this.addParams("self.company = ?%d", accountingReport.getCompany());
+    }
+
+    if (accountingReport.getCurrency() != null) {
+      this.addParams("self.companyCurrency = ?%d", accountingReport.getCurrency());
+    }
+
+    if (accountingReport.getDateFrom() != null) {
+      this.addParams("self.validationDate >= ?%d", accountingReport.getDateFrom());
+    }
+
+    if (accountingReport.getDateTo() != null) {
+      this.addParams("self.validationDate <= ?%d", accountingReport.getDateTo());
+    }
+
+    if (accountingReport.getDate() != null) {
+      this.addParams("self.validationDate <= ?%d", accountingReport.getDate());
+    }
+
+    if (accountingReport.getYear() != null) {
+      this.addParams("self.period.year = ?%d", accountingReport.getYear());
+    }
+
+    this.addParams(
+        "self.journal.journalType.code = ?%d", "'ACH' AND self.ignoreInAccountingOk is not true");
+
+    return moveRepo.all().filter(buildDomainFromQuery()).fetch();
+  }
+
+  public void processAccountingReportMoveLines(AccountingReport accountingReport)
+      throws AxelorException {
+
+    accountingReport.clearAccountingReportMoveLineList();
+    List<Move> moves = Lists.newArrayList();
+    moves.addAll(getAccountingReportDas2Moves(accountingReport));
+
+    for (Move move : moves) {
+      move = moveRepo.find(move.getId());
+      accountingReport = accountingReportRepo.find(accountingReport.getId());
+      List<MoveLine> inTaxMoveLines = accountingReportMoveLineService.getInTaxMoveLines(move);
+      if (inTaxMoveLines.size() == 0) {
+        continue;
+      }
+      BigDecimal inTaxTotal = BigDecimal.ZERO;
+      BigDecimal reconcileAmount = BigDecimal.ZERO;
+      for (MoveLine inTaxMoveLine : inTaxMoveLines) {
+        reconcileAmount =
+            reconcileAmount.add(
+                accountingReportMoveLineService.getReconcileAmountInPeriod(
+                    inTaxMoveLine, accountingReport.getDateFrom(), accountingReport.getDateTo()));
+        inTaxTotal = inTaxTotal.add(inTaxMoveLine.getDebit().add(inTaxMoveLine.getCredit()));
+      }
+      if (reconcileAmount.compareTo(BigDecimal.ZERO) == 0) {
+        continue;
+      }
+
+      List<MoveLine> moveLinesToReport =
+          accountingReportMoveLineService.getMoveLinesToReport(
+              move, reconcileAmount, inTaxTotal, accountingReport);
+      if (moveLinesToReport.size() == 0) {
+        continue;
+      }
+      accountingReportMoveLineService.processMoveLinesToDisplay(
+          inTaxMoveLines, false, reconcileAmount, inTaxTotal, accountingReport);
+      accountingReportMoveLineService.processMoveLinesToDisplay(
+          moveLinesToReport, true, reconcileAmount, inTaxTotal, accountingReport);
+
+      JPA.clear();
+    }
+  }
+
+  @Transactional
+  public AccountingReport createAccountingExportFromReport(
+      AccountingReport accountingReport, int exportTypeSelect) throws AxelorException {
+
+    AccountingReport accountingExport = new AccountingReport();
+
+    accountingExport.setDate(accountingReport.getDate());
+    AccountingReportType reportType =
+        Beans.get(AccountingReportTypeRepository.class)
+            .all()
+            .filter("self.typeSelect = ?1", exportTypeSelect)
+            .fetchOne();
+    if (reportType == null) {
+      throw new AxelorException(
+          accountingReport,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND));
+    }
+    accountingExport.setReportType(reportType);
+    accountingExport.setCompany(accountingReport.getCompany());
+    accountingExport.setYear(accountingReport.getYear());
+    accountingExport.setDateFrom(accountingReport.getDateFrom());
+    accountingExport.setDateTo(accountingReport.getDateTo());
+
+    for (AccountingReportMoveLine reportMoveLine :
+        accountingReport.getAccountingReportMoveLineList()) {
+      if (reportMoveLine.getAmountToReport().compareTo(BigDecimal.ZERO) == 0
+          || reportMoveLine.getExcludeFromDas2Report()) {
+        continue;
+      }
+      accountingReportMoveLineService.processExportMoveLine(reportMoveLine, accountingExport);
+    }
+
+    setStatus(accountingExport);
+    return accountingExport;
   }
 }

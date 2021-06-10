@@ -75,4 +75,10 @@ public interface AccountingReportService {
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
 
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
+
+  public void processAccountingReportMoveLines(AccountingReport accountingReport)
+      throws AxelorException;
+
+  public AccountingReport createAccountingExportFromReport(
+      AccountingReport accountingReport, int exportTypeSelect) throws AxelorException;
 }

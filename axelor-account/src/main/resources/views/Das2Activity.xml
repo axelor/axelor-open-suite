@@ -5,11 +5,13 @@
 	
 	
     <grid name="das2-activity-grid" title="DAS2 activities" model="com.axelor.apps.account.db.Das2Activity" orderBy="name">
+    	<field name="code"/>
         <field name="name"/>
     </grid>
     
     <form name="das2-activity-form" title="DAS2 activity" model="com.axelor.apps.account.db.Das2Activity">
         <panel name="mainPanel">
+        	<field name="code"/>
         	<field name="name"/>
         </panel>
     </form>

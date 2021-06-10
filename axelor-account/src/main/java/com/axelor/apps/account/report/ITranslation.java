@@ -643,6 +643,8 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ANALYTIC_TEMPLATE =
       /*$$(*/ "AccountingReportType17.total_by_analytic_template"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_19_DAS2_ACTIVITY =
+      /*$$(*/ "AccountingReportType19.das2ActivityName"; /*)*/
   public static final String ACCOUNTING_REPORT_19_COMPANY =
       /*$$(*/ "AccountingReportType19.company"; /*)*/
   public static final String ACCOUNTING_REPORT_19_CURRENCY =
@@ -675,10 +677,10 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType20.currency"; /*)*/
   public static final String ACCOUNTING_REPORT_20_CREATED_ON =
       /*$$(*/ "AccountingReportType20.created_on"; /*)*/
-  public static final String ACCOUNTING_REPORT_20_DAS2_ACTIVITY =
-      /*$$(*/ "AccountingReportType20.das2Activity"; /*)*/
-  public static final String ACCOUNTING_REPORT_20_DUE_DATE =
-      /*$$(*/ "AccountingReportType20.dueDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_CREDIT = /*$$(*/
+      "AccountingReportType20.credit"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_DEBIT = /*$$(*/
+      "AccountingReportType20.debit"; /*)*/
   public static final String ACCOUNTING_REPORT_20_FROM =
       /*$$(*/ "AccountingReportType20.from"; /*)*/
   public static final String ACCOUNTING_REPORT_20_JOURNAL =
@@ -687,8 +689,6 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType20.moveLineDate"; /*)*/
   public static final String ACCOUNTING_REPORT_20_MOVE_LINE_NAME =
       /*$$(*/ "AccountingReportType20.moveLineName"; /*)*/
-  public static final String ACCOUNTING_REPORT_20_SERVICE_TYPE =
-      /*$$(*/ "AccountingReportType20.serviceType"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TITLE =
       /*$$(*/ "AccountingReportType20.title"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TO = /*$$(*/ "AccountingReportType20.to"; /*)*/

@@ -7,7 +7,7 @@
   	
   	<input file="account_fiscalPosition.csv" separator=";" type="com.axelor.apps.account.db.FiscalPosition"/>
   	
-  	<input file="account_serviceType.csv" separator=";" type="com.axelor.apps.account.db.ServiceType"/>
+  	<input file="account_serviceType.csv" separator=";" type="com.axelor.apps.account.db.ServiceType" search="self.importId = :importId"/>
   	
   	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" />
   	

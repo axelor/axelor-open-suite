@@ -104,6 +104,7 @@
 		<option value="1008">Export treasury -> Acc. Soft.</option>
 		<option value="1009">Export purchase -> Acc. Soft.</option>
 		<option value="1010">Export general balance -> Acc. Soft.</option>
+		<option value="1011">Export N4DS</option>
 	</selection>
 
 	<selection name='accounting.report.config.line.type.select'>

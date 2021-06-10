@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+    
+<!--     ACCOUNTING REPORT MOVE LINE-->
+
+	<grid name="accounting-report-move-line-grid" editable="true" title="Accounting report move lines" model="com.axelor.apps.account.db.AccountingReportMoveLine"
+         orderBy="partner,moveLine.move.journal,moveLine.move.reference,moveLine.name" groupBy="partner">
+		<hilite color="danger" if="excludeFromDas2Report"/>
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" readonly="true" />
+		<field name="moveLine.move.journal" form-view="journal-form" grid-view="journal-grid" readonly="true"/>
+		<field name="moveLine.move" readonly="true"/>
+		<field name="moveLine.name" readonly="true"/>
+		<field name="moveLine.date" readonly="true"/>
+		<field name="moveLine.account.code" title="Account" readonly="true"/>
+		<field name="moveLine.serviceType" readonly="true"/>
+		<field name="moveLine.dueDate" readonly="true"/>
+		<field name="moveLine.debit" readonly="true"/>
+		<field name="moveLine.credit" readonly="true"/>
+		<field name="amountToReport" aggregate="sum" readonly="true"/>
+		<field name="excludeFromDas2Report"/>
+	</grid>
+
+	<form name="accounting-report-move-line-form" title="Accounting report move line" model="com.axelor.apps.account.db.AccountingReport">
+		<panel name="mainPanel" readonly="true">
+		   <field name="partner" form-view="partner-form" grid-view="partner-grid" />
+		   <field name="moveLine.move.journal" form-view="journal-form" grid-view="journal-grid"/>
+		   <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+		   <field name="moveLine.move" form-view="move-form" grid-view="move-grid"/>
+		   <field name="excludeFromDas2Report"/>
+		   <field name="amountToReport" />
+		</panel>
+
+	</form>
+	
+</object-views>
