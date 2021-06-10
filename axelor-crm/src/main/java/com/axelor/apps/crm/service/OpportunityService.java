@@ -31,4 +31,6 @@ public interface OpportunityService {
   public Partner createClientFromLead(Opportunity opportunity) throws AxelorException;
 
   public void setSequence(Opportunity opportunity) throws AxelorException;
+
+  public String computeAndGetName(Opportunity opportunity);
 }
