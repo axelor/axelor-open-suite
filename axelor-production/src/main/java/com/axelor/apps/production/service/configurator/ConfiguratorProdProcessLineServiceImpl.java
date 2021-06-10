@@ -49,6 +49,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     String name;
     Integer priority;
     StockLocation stockLocation;
+    String description;
     ProdProcessLine prodProcessLine = new ProdProcessLine();
     BigDecimal minCapacityPerCycle;
     BigDecimal maxCapacityPerCycle;
@@ -92,6 +93,14 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     } else {
       priority = confProdProcessLine.getPriority();
     }
+    if (confProdProcessLine.getDefDescriptionAsFormula()) {
+      description =
+          String.valueOf(
+              configuratorService.computeFormula(
+                  confProdProcessLine.getDescriptionFormula(), attributes));
+    } else {
+      description = confProdProcessLine.getDescription();
+    }
     if (confProdProcessLine.getDefStockLocationAsFormula()) {
       stockLocation =
           (StockLocation)
@@ -133,7 +142,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setWorkCenter(confProdProcessLine.getWorkCenter());
     prodProcessLine.setOutsourcing(confProdProcessLine.getOutsourcing());
     prodProcessLine.setStockLocation(stockLocation);
-    prodProcessLine.setDescription(confProdProcessLine.getDescription());
+    prodProcessLine.setDescription(description);
 
     prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
