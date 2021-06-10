@@ -946,7 +946,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
       }
       
-      if (Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
     	  mergedManufOrder.setMoCommentFromSaleOrder(
     			  mergedManufOrder.getMoCommentFromSaleOrder()
     			  .concat(System.lineSeparator())
