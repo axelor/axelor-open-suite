@@ -100,12 +100,13 @@
 			</menu>
 		</menubar>
 		<panel colSpan="12" name="meetingGeneralPanel">
-			<field name="typeSelect" domain="self.value IN ('0','1','2','3')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
+			<field name="typeSelect" domain="self.value IN ('0','1','2','3','5')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
 	        	<viewer depends="typeSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 0" x-translate>Event</span>
 	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Call</span>
 	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
 	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Task</span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 5" x-translate>Note</span>
 	       		 ]]>
 	        	</viewer>
 	      	</field>
@@ -117,7 +118,7 @@
 	       		 ]]>
 	        	</viewer>
         	</field>
-			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[11, 12, 13, 14, 15]" showIf="typeSelect == 3">
+			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[11, 12, 13, 14, 15]" showIf="typeSelect == 3 || typeSelect == 5">
 				<viewer depends="statusSelect"><![CDATA[
 					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 11" x-translate>Not started</span>
 					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 12" x-translate>On going</span>
@@ -140,8 +141,8 @@
 				</editor>
 			</field>
 			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time,action-event-attrs-show-past-event-text"/>
-			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
-			<field name="allDay" colSpan="2"/>
+			<field name="endDateTime" hideIf="typeSelect == 5" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
+			<field name="allDay" colSpan="2" hideIf="typeSelect == 5"/>
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true" hidden="true"/>
 			<static name="pastEventText" hidden="true" colSpan="12">
 					<![CDATA[<span class='label label-warning'>The selected date is in the past.</span>]]></static>
@@ -151,26 +152,26 @@
 			<panel name="descriptionPanel" title="Description">
 				<field name="description" showTitle="false" widget="html" colSpan="12"/>
 			</panel>
-			<panel name="organizationPanel" title="Organization">
+			<panel name="organizationPanel" title="Organization" hideIf="typeSelect == 5">
 				<field name="location" css="highlight"/>
 				<field name="geo" colSpan="5"/>
 				<button name="viewOnMapBtn" colSpan="1" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
 				<field name="organizer"/>
 			</panel>
-			<panel name="informationPanel" title="Information">
+			<panel name="informationPanel" title="Information" hideIf="typeSelect == 5">
 				<field name="visibilitySelect" readonlyIf="calendar != null"/>
 				<field name="disponibilitySelect" readonlyIf="calendar != null"/>
 				<field name="status"/>
 				<field name="subjectTeam" hidden="true"/>
 				<field name="computedAttendeeList" hidden="true"/>
 			</panel>
-			<panel name="eventRemindersPanel" title="Reminders">
+			<panel name="eventRemindersPanel" title="Reminders" hideIf="typeSelect == 5">
 				<button name="addReminderButton" title="Create a new reminder" onClick="save,action-crm-event-reminder-view-create-reminder" colSpan="4" colOffset="4"/>
 				<panel-dashlet name="eventReminderListPanel" action="action-crm-event-reminder-view-active-user-reminders" colSpan="12"/>
 			</panel>
 		</panel-tabs>
 
-		<panel title="Guests" name="addGuestsPanel" sidebar="true" canCollapse="true">
+		<panel title="Guests" name="addGuestsPanel" sidebar="true" canCollapse="true" hideIf="typeSelect == 5">
 			<field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one" target="com.axelor.apps.message.db.EmailAddress" canNew="true" onChange="action-event-method-add-email-guest"/>
 			<field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
 				<editor layout="table" x-show-titles="false">
@@ -182,11 +183,11 @@
 
 		<panel sidebar="true" name="followupPanel" title="Follow up" canCollapse="true">
 			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" colSpan="6"/>
-			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator" colSpan="6"/>
+			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator" colSpan="6" hideIf="typeSelect == 5"/>
 			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 		</panel>
 
-		<panel sidebar="true" title="Characteristics" name="meetingAttributesPanel" canCollapse="true">
+		<panel sidebar="true" title="Characteristics" name="meetingAttributesPanel" canCollapse="true" hideIf="typeSelect == 5">
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
 			<field name="eventCategory" canEdit="false" domain="self.typeSelect = :typeSelect" colSpan="6"/>
 			<field name="callTypeSelect"  showIf="typeSelect == 1" colSpan="6"/>
@@ -215,20 +216,38 @@
 	
 	<cards name="event-cards" title="Events" css="rect-image" width="100%" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
 	  <field name="subject"/>
+	  <field name="typeSelect"/>
+	  <field name="statusSelect"/>
 	  <field name="description"/>
 	  <field name="startDateTime"/>
 	  <field name="endDateTime"/>
 	  <template><![CDATA[
 		<div>
 		  <div class="span8">
+		  	<div class="span4">
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 0" x-translate>Event</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 1" x-translate>Call</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 3" x-translate>Task</span>
+				
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
+         		<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
+         		<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 11" x-translate>Not started</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 12" x-translate>On going</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 13" x-translate>Pending</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 14" x-translate>Finished</span>
+				<span class="label label-default" style="background-color: #D9534F;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
+			</div>
+			<br/><br/>
 		  	<span>
 			   <strong>{{subject}}</strong><br/>
 				{{$fmt('startDateTime')}} - {{$fmt('endDateTime')}}
-	      </span>
-				<br/></br/>
-				<span x-translate>Description </span> :<br/>
-				<section ng-bind-html="description"></section>
-	    </div>
+	        </span>
+			<br/></br/>
+			<span x-translate>Description </span> :<br/>
+			<section ng-bind-html="description"></section>
+	      </div>
 	  <div>
 	 ]]></template>
 	</cards>
@@ -243,6 +262,7 @@
 		<action name="action-partner-method-check-rights" if="calendar != null"/>
 		<action name="action-event-hide-private" if="typeSelect == 2" />
 		<action name="action-event-attrs-show-past-event-text"/>
+		<action name="action-event-attrs-title-start-date-time"/>
 	</action-group>
 	
 	<action-record name="action-event-record-current-user" model="com.axelor.apps.crm.db.Event">
@@ -378,6 +398,7 @@
     <action-group name="action-event-type-select-onchange-group">
       <action name="action-event-record-reset-status-select"/>
       <action name="action-event-record-reset-category"/>
+      <action name="action-event-attrs-title-start-date-time"/>
     </action-group>
 
     
@@ -399,6 +420,12 @@
     <action-attrs name="action-attrs-client-partner">
     	<attribute name="value" for="partner" expr="eval: contactPartner?.mainPartner"/>
     </action-attrs>
+    
+    <action-attrs name="action-event-attrs-title-start-date-time">
+    	<attribute name="title" for="startDateTime" expr="eval: com.axelor.i18n.I18n.get('Date')" if="typeSelect == 5"/>
+    	<attribute name="title" for="startDateTime" expr="eval: com.axelor.i18n.I18n.get('Start date')" if="typeSelect != 5"/>
+    </action-attrs>
+    
 <!--     ACTION RECORD -->
 
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
@@ -510,8 +537,8 @@
 	</action-record>
 
     <action-record name="action-event-record-reset-status-select" model="com.axelor.apps.crm.db.Event">
-        <field name="statusSelect" expr="eval: 1" if="typeSelect != 3 &amp;&amp; statusSelect &gt; 9"/>
-        <field name="statusSelect" expr="eval: 11" if="typeSelect == 3 &amp;&amp; statusSelect &lt;= 9"/>
+        <field name="statusSelect" expr="eval: 1" if="typeSelect != 3 &amp;&amp; typeSelect != 5 &amp;&amp; statusSelect &gt; 9"/>
+        <field name="statusSelect" expr="eval: 11" if="(typeSelect == 3 || typeSelect == 5) &amp;&amp; statusSelect &lt;= 9"/>
     </action-record>
 
     <action-record name="action-event-record-reset-category" model="com.axelor.apps.crm.db.Event">
@@ -545,7 +572,7 @@
     </action-method>
     
     <action-attrs name="action-event-attrs-show-past-event-text">
-    	<attribute name="hidden" for="pastEventText" expr="eval: startDateTime &gt;= __time__ || __this__.startDateTime == __self__.startDateTime"/>
+    	<attribute name="hidden" for="pastEventText" expr="eval: startDateTime &gt;= __time__ || __this__.startDateTime == __self__.startDateTime" if="startDateTime != null"/>
     </action-attrs>
 
 <!-- 	FILTERS -->

@@ -21,8 +21,8 @@
       </menubar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
-	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
-	    <hilite color="success" if="statusSelect == 4"/>
+	    <hilite color="danger" if="statusSelect == 2 &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
+	    <hilite color="success" if="statusSelect == 3"/>
   	  	<field name="createdOn" hidden="true"/>
     	<field name="updatedOn" hidden="true"/>
         <field name="name"/>
@@ -50,7 +50,7 @@
 			<menu name="leadToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
 			  <item name="scheduleEventItem" title="Schedule Event" action="save,action-lead-view-schedule-event"/>
 			  <item name="createOpportunityItem" title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
-			  <item name="sendEmailItem" title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 5" action="save,action-send-by-email-with-template"/>
+			  <item name="sendEmailItem" title="Send email" readonlyIf="statusSelect == 3" action="save,action-send-by-email-with-template"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel" >
@@ -90,7 +90,7 @@
 			</panel>
 
 			<panel colSpan="9" name="generalInfoPanel" >
-				<field name="$firstNameAndName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5" css="label-bold bold large">
+				<field name="$firstNameAndName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 3" css="label-bold bold large">
                     <viewer depends="firstName,name">
                         <![CDATA[
                             {{record.firstName}} {{record.name}}
@@ -103,20 +103,21 @@
 					</editor>
 				</field>
 				<static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
-				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5">
+				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 3">
 					<editor x-show-titles="false">
 						<field name="enterpriseName" css="label-bold bold large" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
 						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
-						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+						<field name="partner" colSpan="12" showIf="statusSelect == 3" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
 				</field>
 				<field name="jobTitleFunction" colSpan="6" placeholder="Function" showTitle="false" canNew="true"/>
+				<field name="isNurturing" showIf="statusSelect == 2"/>
 			</panel>
 		</panel>
 
 		<panel-tabs name="mainPanelTab">
 			<panel name="contactPanel" title="Contact" colSpan="12">
-				<panel name="contactDetailPanel" title="Contact details" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
+				<panel name="contactDetailPanel" title="Contact details" readonlyIf="statusSelect == 3" colSpan="12">
 					<field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
 					<field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
 					<field name="$viewerCallAndEmail" showIf="$readonly()" colSpan="12" showTitle="false">
@@ -151,7 +152,7 @@
 					</field>
        			</panel>
 				
-				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12" hideIf="$readonly()">
+				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 3" colSpan="12" hideIf="$readonly()">
 					<field name="primaryAddress" colSpan="12"/>
 					<field name="primaryPostalCode" colSpan="6"/>
 					<field name="primaryCity" colSpan="6" form-view="city-form" grid-view="city-grid" onChange="action-attrs-lead-set-primary-state-country-postal-code" canNew="true"/>
@@ -165,7 +166,7 @@
 			</panel>
 
 			<panel name="activitiesPanel" title="Activities" itemSpan="12">
-				<panel-related name="opportunitiesListPanel" colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+				<panel-related name="opportunitiesListPanel" canNew="false" colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 3"/>
 				<panel-dashlet name="leadEmailsPanel" action="action-lead-view-emails"/>
 				<panel-dashlet name="leadMarketingCampaignPanel" if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
 			</panel>
@@ -175,22 +176,23 @@
 		</panel-tabs>
 
 		<panel name="actionsPanel" sidebar="true">
-			<button name="grabLeadBtn" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
-			<button name="startBtn" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start,save"/>
-			<button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
-			<button name="recycleBtn" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle,save"/>
-			<button name="loseBtn" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose,save" css="btn-danger"/>
+			<button name="grabLeadBtn" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 3" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+			<button name="convertBtn" title="Convert" hideIf="statusSelect > 2 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
+			<button name="recycleBtn" title="Recycle" hideIf="statusSelect != 3" icon="fa-recycle" onClick="save,action-lead-record-status-recycle,save"/>
+			<button name="loseBtn" title="Lose" hideIf="statusSelect == 3" icon="fa-times" onClick="save,action-lead-view-lose,save" css="btn-danger"/>
+			<button name="canceledBtn" title="Cancel" hideIf="statusSelect == 3" icon="fa-ban" onClick="save,action-lead-record-status-canceled,save"/>
 			<button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
 		</panel>
 	
 		<panel sidebar="true" name="followUpPanel" title="Follow-up" colSpan="12">
-			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-			<field name="contactDate" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-			<field name="lostReason" colSpan="12" readonlyIf="statusSelect == 5" requiredIf="statusSelect == 5" showIf="statusSelect == 5"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid" readonlyIf="statusSelect == 3"/>
+			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" readonlyIf="statusSelect == 3"/>
+			<field name="contactDate" colSpan="6" readonlyIf="statusSelect == 3"/>
+			<field name="closedReason" readonlyIf="statusSelect == 3" showIf="statusSelect == 3"/>
+			<field name="lostReason" readonlyIf="statusSelect == 3" showIf="statusSelect == 3"/>
 		</panel>
 		
-		<panel sidebar="true" name="marketingPanel" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
+		<panel sidebar="true" name="marketingPanel" title="Marketing" readonlyIf="statusSelect == 3" colSpan="12">
 			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid" canNew="true"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="estimatedBudget" colSpan="6"/>
@@ -227,8 +229,8 @@
 	<grid name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
 		<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
-	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
-	    <hilite color="success" if="statusSelect == 4"/>
+	    <hilite color="danger" if="statusSelect == 2 &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
+	    <hilite color="success" if="statusSelect == 3"/>
 		<field name="createdOn" hidden="true"/>
 		<field name="updatedOn" hidden="true"/>
 		<field name="name"/>
@@ -280,12 +282,17 @@
     </action-record>
 
 	<action-record name="action-lead-record-status-start" model="com.axelor.apps.crm.db.Lead">
-    	<field name="statusSelect" expr="3"/>
+    	<field name="statusSelect" expr="2"/>
     </action-record>
     
    	<action-record name="action-lead-record-status-recycle" model="com.axelor.apps.crm.db.Lead">
-    	<field name="statusSelect" expr="3"/>
+    	<field name="statusSelect" expr="2"/>
     	<field name="isRecycled" expr="true"/>
+    </action-record>
+    
+    <action-record name="action-lead-record-status-canceled" model="com.axelor.apps.crm.db.Lead">
+    	<field name="statusSelect" expr="3"/>
+    	<field name="closedReason" expr="1"/>
     </action-record>
     
     <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
