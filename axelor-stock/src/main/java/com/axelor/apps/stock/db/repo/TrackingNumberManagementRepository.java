@@ -82,23 +82,19 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       boolean addPadding = false;
       /*
        * Barcode type config defaulting rule :
-       * Check if edit barcode type config is enabled
+       * Check if edit barcode type config is enabled and tracking number was generated from configuration
        *    If true
-       *        if generated from configuration, take the type from configuration as default
-       *        else, we keep the one set on tracking number
+       *        we take the type from configuration as default
        *    Else
        *        we take the barcode type config from App Stock as default
        */
       BarcodeTypeConfig barcodeTypeConfig;
-      if (appStock.getEditTrackingNumberBarcodeType()) {
-        if (trackingNumber.getProduct() != null
-            && trackingNumber.getProduct().getTrackingNumberConfiguration() != null) {
-          TrackingNumberConfiguration trackingNumberConfiguration =
-              trackingNumber.getProduct().getTrackingNumberConfiguration();
-          barcodeTypeConfig = trackingNumberConfiguration.getBarcodeTypeConfig();
-        } else {
-          barcodeTypeConfig = trackingNumber.getBarcodeTypeConfig();
-        }
+      if (appStock.getEditTrackingNumberBarcodeType()
+          && trackingNumber.getProduct() != null
+          && trackingNumber.getProduct().getTrackingNumberConfiguration() != null) {
+        TrackingNumberConfiguration trackingNumberConfiguration =
+            trackingNumber.getProduct().getTrackingNumberConfiguration();
+        barcodeTypeConfig = trackingNumberConfiguration.getBarcodeTypeConfig();
       } else {
         barcodeTypeConfig = appStock.getTrackingNumberBarcodeTypeConfig();
       }
