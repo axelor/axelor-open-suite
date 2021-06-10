@@ -566,6 +566,7 @@
 "The invoice's unit is different and inconvertible into the stock move's unit.",,,
 "The product will not be delivered in time for its corresponding need.",,,
 "The proposal has been successfully generated.",,,
+"The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error.",,,
 "The quantity to invoice is greater than the quantity in the purchase order",,,
 "The quantity to invoice is greater than the quantity in the sale order",,,
 "The quantity to invoice is greater than the quantity in the stock move",,,

@@ -245,7 +245,7 @@ public class MrpServiceImpl implements MrpService {
 
       for (Product product : this.getProductList(level)) {
 
-        this.checkInsufficientCumulativeQty(product, true);
+        this.checkInsufficientCumulativeQty(product);
       }
     }
   }
@@ -284,8 +284,20 @@ public class MrpServiceImpl implements MrpService {
     return maxLevel;
   }
 
-  protected void checkInsufficientCumulativeQty(Product product, boolean firstPass)
+  protected void checkInsufficientCumulativeQty(Product product) throws AxelorException {
+    checkInsufficientCumulativeQty(product, 0);
+  }
+
+  protected void checkInsufficientCumulativeQty(Product product, int counter)
       throws AxelorException {
+
+    final int MAX_ITERATION = 1000;
+
+    if (counter > MAX_ITERATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MRP_TOO_MANY_ITERATIONS));
+    }
 
     boolean doASecondPass = false;
 
@@ -309,7 +321,7 @@ public class MrpServiceImpl implements MrpService {
           this.checkInsufficientCumulativeQty(
               mrpLineRepository.find(mrpLine.getId()),
               productRepository.find(product.getId()),
-              firstPass);
+              counter == 0);
       JPA.clear();
       if (doASecondPass) {
         break;
@@ -318,7 +330,7 @@ public class MrpServiceImpl implements MrpService {
 
     if (doASecondPass) {
 
-      this.checkInsufficientCumulativeQty(product, false);
+      this.checkInsufficientCumulativeQty(product, counter + 1);
     }
   }
 
