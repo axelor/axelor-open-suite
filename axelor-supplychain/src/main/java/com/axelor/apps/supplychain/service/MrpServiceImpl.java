@@ -483,15 +483,20 @@ public class MrpServiceImpl implements MrpService {
               null);
       if (createdmrpLine != null) {
         createdmrpLine.setWarnDelayFromSupplier(
-            mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
-                && DAYS.between(initialMaturityDate, maturityDate)
-                    < product.getSupplierDeliveryTime());
+            getWarnDelayFromSupplier(createdmrpLine, initialMaturityDate));
         mrpLine = mrpLineRepository.save(createdmrpLine);
       }
       mrpLine.setRelatedToSelectName(relatedToSelectName);
     }
 
     this.copyMrpLineOrigins(mrpLine, mrpLineOriginList);
+  }
+
+  protected boolean getWarnDelayFromSupplier(MrpLine mrpLine, LocalDate initialMaturityDate) {
+    return mrpLine.getMrpLineType().getElementSelect()
+            == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+        && DAYS.between(initialMaturityDate, mrpLine.getMaturityDate())
+            < mrpLine.getProduct().getSupplierDeliveryTime();
   }
 
   protected BigDecimal getSupplierCatalogMinQty(Product product) {
