@@ -100,32 +100,27 @@
         </menubar>
         <panel name="mainPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
             <field name="salesStageSelect" colSpan="12" widget="NavSelect" showTitle="false" readonly="true"/>
-           <field name="opportunitySeq" showTitle="false" colSpan="2">
-              <viewer depends="opportunitySeq"><![CDATA[
-                 <h3>
-                    <span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.opportunitySeq}}</span>
-                 </h3>
-              ]]></viewer>
-              <editor>
-                 <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
-              </editor>
-           </field>
-            <field name="name" showTitle="false" colSpan="10">
-                <viewer depends="name">
+           	<field name="opportunitySeq" showTitle="false" colSpan="2">
+              	<viewer depends="opportunitySeq"><![CDATA[
+                 	<h3>
+                    	<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.opportunitySeq}}</span>
+                 	</h3>
+              	]]></viewer>
+              	<editor>
+                 	<field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
+              	</editor>
+           	</field>
+            <field name="name" showTitle="false" colSpan="10" readonly="true">
+           		<viewer depends="name">
                     <![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Opportunity</span> {{record.name}}</span>
-						</h3>
+						<span style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
 					]]>
                 </viewer>
-                <editor>
-                    <field name="name" showTitle="true" css="label-bold bold"/>
-                </editor>
             </field>
             <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false" form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
             <field name="source" colSpan="4" canEdit="false" form-view="source-form" grid-view="source-grid"/>
-            <field name="expectedCloseDate" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
-            <field name="nextStep" colSpan="12" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
+            <field name="expectedCloseDate" onChange="action-opportunity-group-onchange-expected-close-date" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
+            <field name="payingDate" onChange="action-opportunity-record-set-start-date" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
             <field name="probability" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" widget="Progress"/>
             <field name="currency" colSpan="4" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
             <panel name="caseDetailsPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12">
@@ -134,14 +129,20 @@
                 <field name="worstCase" colSpan="4"/>
             </panel>
         </panel>
-
+        
         <panel-tabs name="mainPanelTab">
+        	<panel name="recurrentPanel" title="Recurrent" if="__config__.app.getApp('crm')?.isManageRecurrent" colSpan="12" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
+	        	<field name="recurrentAmount"/>
+	        	<field name="periodicitySelect"/>
+	        	<field name="startDate"/>
+	        	<field name="endDate"/>
+        	</panel>
             <panel name="descriptionPanel" title="Description">
                 <field name="description" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12" widget="html"/>
             </panel>
-            	<panel name="customerDescriptionPanel" title="Customer Description" if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
-            		<field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
-            	</panel>
+           	<panel name="customerDescriptionPanel" title="Customer Description" if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
+           		<field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
+           	</panel>
             <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList" form-view="sale-order-form" grid-view="sale-order-opportunity-grid" canNew="false"/>
         </panel-tabs>
 
@@ -159,13 +160,14 @@
 				<panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
 				  <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
          		  <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr" colSpan="12" css="red">
-            <viewer><![CDATA[{{record.lostReasonStr}}]]></viewer>
-          </field>
+            		<viewer><![CDATA[{{record.lostReasonStr}}]]></viewer>
+          			</field>
 				</panel>
 			</panel>
 			<panel name="referencePanel" title="Reference" canCollapse="true">
-				<field name="partner" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid" onChange="action-opportunity-record-set-lead-onchange"/>
-				<field name="lead" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-set-partner-onchange"/>
+				<field name="partner" showIf="opportunityType.code == 'EXCUST'" canEdit="false" requiredIf="contact == null &amp;&amp; lead == null" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid" onChange="action-opportunity-record-set-lead-onchange,action-opportunity-record-set-name"/>
+				<field name="contact" showIf="opportunityType.code == 'EXCUST'" canEdit="false" requiredIf="partner == null &amp;&amp; lead == null" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = true AND :company member of self.companySet" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-opportunity-record-set-contact-onchange,action-opportunity-record-set-name"/>
+				<field name="lead" showIf="opportunityType.code == 'NWLEAD' || opportunityType.code == 'EXLEAD'" canNew="opportunityType.code == 'NWLEAD'" canSelect="opportunityType.code == 'EXLEAD'" canEdit="false" requiredIf="partner == null &amp;&amp; contact == null" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-set-partner-onchange,action-opportunity-record-set-name"/>
 			</panel>
 			<panel name="postitPanel" title="Memo" canCollapse="true">
 				<field name="memo" showTitle="false" colSpan="12"/>
@@ -270,6 +272,11 @@
     	<context name="_opportunity" expr="eval: __this__"/>
 	</action-view>
 
+	<action-record name="action-opportunity-record-set-name" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="name" expr="eval: partner.fullName" if="partner != null"/>
+		<field name="name" expr="eval: lead.enterpriseName != null ? lead.enterpriseName : lead.fullName" if="lead != null &amp;&amp; partner == null"/>
+		<field name="name" expr="eval: contact.fullName" if="contact != null &amp;&amp; lead == null &amp;&amp; partner == null"/>
+	</action-record>
 
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
@@ -277,6 +284,8 @@
     	<field name="salesStageSelect" expr="1"/>
     	<field name="user" expr="eval:__user__"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    	<field name="opportunityType" expr="eval: __repo__(OpportunityType).findByCode('NWLEAD')"/>
+    	<field name="periodicitySelect" expr="eval: 1" if="__config__.app.getApp('crm').isManageRecurrent"/>
     </action-record>
     
     <action-record name="action-opportunity-record-currency" model="com.axelor.apps.crm.db.Opportunity">
@@ -296,6 +305,19 @@
     	<field name="team" expr="eval: _partner.team" if="_partner.user != null || _partner.team != null"/>
     	<field name="currency" expr="eval: _partner.currency"/>
     	<field name="customerDescription" expr="eval: _partner.description"/>
+    </action-record>
+    
+    <action-group name="action-opportunity-group-onchange-expected-close-date">
+    	<action name="action-opportunity-record-set-paying-date"/>
+    	<action name="action-opportunity-record-set-start-date"/>
+    </action-group>
+    
+    <action-record name="action-opportunity-record-set-paying-date" model="com.axelor.apps.crm.db.Opportunity">
+    	<field name="payingDate" expr="eval: expectedCloseDate"/>
+    </action-record>
+    
+    <action-record name="action-opportunity-record-set-start-date" model="com.axelor.apps.crm.db.Opportunity">
+    	<field name="startDate" expr="eval: payingDate" if="__config__.app.getApp('crm').isManageRecurrent"/>
     </action-record>
     
     <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
@@ -340,10 +362,15 @@
 	
 	<action-record name="action-opportunity-record-set-partner-onchange" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="partner" expr="eval: null" if="lead"/>
+		<field name="contact" expr="eval: null" if="lead"/>
 	</action-record>
 
 	<action-record name="action-opportunity-record-set-lead-onchange" model="com.axelor.apps.crm.db.Opportunity">
 		<field name="lead" expr="eval: null" if="partner"/>
+	</action-record>
+	
+	<action-record name="action-opportunity-record-set-contact-onchange" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="lead" expr="eval: null" if="contact"/>
 	</action-record>
 
 	<action-method name="action-show-opportunities-on-map-page">
@@ -358,5 +385,5 @@
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form" />
 	</action-view>
-
+	
 </object-views>

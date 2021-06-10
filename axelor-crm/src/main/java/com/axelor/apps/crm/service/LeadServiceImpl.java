@@ -116,7 +116,8 @@ public class LeadServiceImpl implements LeadService {
       opportunityRepo.save(opportunity);
     }
 
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CONVERTED);
+    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CLOSED);
+    lead.setClosedReason(LeadRepository.CLOSED_REASON_CONVERTED);
 
     return leadRepo.save(lead);
   }
@@ -256,7 +257,8 @@ public class LeadServiceImpl implements LeadService {
 
   @Transactional
   public void loseLead(Lead lead, LostReason lostReason) {
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_LOST);
+    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CLOSED);
+    lead.setClosedReason(LeadRepository.CLOSED_REASON_LOST);
     lead.setLostReason(lostReason);
   }
 
