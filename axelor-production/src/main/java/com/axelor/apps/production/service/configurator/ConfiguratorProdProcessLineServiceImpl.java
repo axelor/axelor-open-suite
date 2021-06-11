@@ -19,23 +19,33 @@ package com.axelor.apps.production.service.configurator;
 
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
+import com.axelor.apps.production.db.repo.ConfiguratorProdProcessLineRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdProcessLineService {
 
   protected ConfiguratorService configuratorService;
+  protected WorkCenterService workCenterService;
 
   @Inject
-  public ConfiguratorProdProcessLineServiceImpl(ConfiguratorService configuratorService) {
+  public ConfiguratorProdProcessLineServiceImpl(
+      ConfiguratorService configuratorService, WorkCenterService workCenterService) {
     this.configuratorService = configuratorService;
+    this.workCenterService = workCenterService;
   }
 
   @Override
@@ -131,10 +141,11 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setName(name);
     prodProcessLine.setPriority(priority);
     prodProcessLine.setWorkCenter(confProdProcessLine.getWorkCenter());
+    prodProcessLine.setWorkCenterTypeSelect(confProdProcessLine.getWorkCenterTypeSelect());
+    prodProcessLine.setWorkCenterGroup(confProdProcessLine.getWorkCenterGroup());
     prodProcessLine.setOutsourcing(confProdProcessLine.getOutsourcing());
     prodProcessLine.setStockLocation(stockLocation);
     prodProcessLine.setDescription(confProdProcessLine.getDescription());
-
     prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
     prodProcessLine.setDurationPerCycle(durationPerCycle);
@@ -163,5 +174,37 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     }
 
     return (boolean) computedConditions;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setWorkCenterGroup(
+      ConfiguratorProdProcessLine confProdProcessLine, WorkCenterGroup workCenterGroup)
+      throws AxelorException {
+    confProdProcessLine = copyWorkCenterGroup(confProdProcessLine, workCenterGroup);
+    WorkCenter workCenter =
+        workCenterService.getMainWorkCenterFromGroup(confProdProcessLine.getWorkCenterGroup());
+    confProdProcessLine.setWorkCenter(workCenter);
+    confProdProcessLine.setDurationPerCycle(
+        workCenterService.getDurationFromWorkCenter(workCenter));
+    confProdProcessLine.setMinCapacityPerCycle(
+        workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
+    confProdProcessLine.setMaxCapacityPerCycle(
+        workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
+  }
+
+  /**
+   * Create a work center group from a template. Since a template is also a work center group, we
+   * copy and set template field to false.
+   */
+  protected ConfiguratorProdProcessLine copyWorkCenterGroup(
+      ConfiguratorProdProcessLine confProdProcessLine, WorkCenterGroup workCenterGroup) {
+    WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
+    workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
+    workCenterGroupCopy.setTemplate(false);
+    workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
+
+    confProdProcessLine.setWorkCenterGroup(workCenterGroupCopy);
+    return Beans.get(ConfiguratorProdProcessLineRepository.class).save(confProdProcessLine);
   }
 }
