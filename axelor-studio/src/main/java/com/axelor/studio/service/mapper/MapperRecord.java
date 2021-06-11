@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.mapper;
 
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +87,7 @@ public class MapperRecord {
               + "Id)\n");
     }
 
-    if (sourceModel != null) {
+    if (!Strings.isNullOrEmpty(sourceModel)) {
       stb.append(
           "def src = "
               + sourceModel.substring(0, 1).toLowerCase()

@@ -25,7 +25,7 @@ public class MapperField {
 
   private String target = null;
 
-  private String jsonModel = null;
+  private String targetJsonModel = null;
 
   private String name = null;
 
@@ -34,6 +34,8 @@ public class MapperField {
   private MapperValue value = null;
 
   private String field = null;
+
+  private String processId = null;
 
   public String getDataPath() {
     return dataPath;
@@ -83,16 +85,24 @@ public class MapperField {
     this.value = value;
   }
 
-  public String getJsonModel() {
-    return jsonModel;
+  public String getTargetJsonModel() {
+    return targetJsonModel;
   }
 
-  public void setJsonModel(String jsonModel) {
-    this.jsonModel = jsonModel;
+  public void setTargetJsonModel(String targetJsonModel) {
+    this.targetJsonModel = targetJsonModel;
   }
 
   public String getField() {
     return field;
+  }
+
+  public String getProcessId() {
+    return processId;
+  }
+
+  public void setProcessId(String processId) {
+    this.processId = processId;
   }
 
   public String toScript(String parent) {
@@ -101,6 +111,7 @@ public class MapperField {
     StringBuilder stb = new StringBuilder();
 
     field = parent + "." + name;
+
     stb.append(field + " = " + value.toScript(this));
 
     return stb.toString();

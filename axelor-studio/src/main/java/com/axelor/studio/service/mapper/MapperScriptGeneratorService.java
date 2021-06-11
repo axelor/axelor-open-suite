@@ -23,4 +23,6 @@ public interface MapperScriptGeneratorService {
 
   @CallMethod
   public String generate(String mapperJson);
+
+  public MapperRecord getMapperRecord(String mapperJson);
 }

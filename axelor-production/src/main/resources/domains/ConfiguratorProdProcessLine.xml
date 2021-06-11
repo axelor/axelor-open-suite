@@ -15,7 +15,10 @@
         <string name="priorityFormula" title="Priority" large="true"/>
         <boolean name="defPriorityAsFormula" title="Define with a script" default="false"/>
         
-        <many-to-one required="true" name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+        <many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+        <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
+   		<many-to-one name="workCenterGroup" ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"/>
+   	
         <boolean name="outsourcing" title="Outsourcing"/>
         
         <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
