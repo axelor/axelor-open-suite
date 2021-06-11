@@ -27,6 +27,7 @@ import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
@@ -94,7 +95,8 @@ public class ProjectManagementRepository extends ProjectRepository {
         project.setCode(seq);
       }
     } catch (AxelorException e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
     setAllProjectFullName(project);
 

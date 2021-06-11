@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -53,7 +54,8 @@ public class ProductBaseRepository extends ProductRepository {
         product.setCode(Beans.get(ProductService.class).getSequence(product));
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
 
     product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
@@ -92,7 +94,8 @@ public class ProductBaseRepository extends ProductRepository {
       } catch (IOException e) {
         e.printStackTrace();
       } catch (AxelorException e) {
-        throw new ValidationException(e.getMessage());
+        TraceBackService.traceExceptionFromSaveMethod(e);
+        throw new ValidationException(e);
       }
     }
     return super.save(product);
@@ -108,7 +111,8 @@ public class ProductBaseRepository extends ProductRepository {
         copy.setCode(Beans.get(ProductService.class).getSequence(product));
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
     return copy;
   }

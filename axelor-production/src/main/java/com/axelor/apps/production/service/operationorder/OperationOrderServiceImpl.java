@@ -509,7 +509,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     } catch (IOException e) {
       e.printStackTrace();
     } catch (AxelorException e) {
-      throw new ValidationException(e.getMessage());
+      throw new ValidationException(e);
     }
   }
 }
