@@ -43,6 +43,14 @@ public class LeadManagementRepository extends LeadRepository {
       entity.setStatusSelect(LEAD_STATUS_NEW);
     }
 
+    if (entity.getStatusSelect() == LEAD_STATUS_CLOSED
+        && entity.getClosedReason() == CLOSED_REASON_CANCELED
+        && CollectionUtils.isNotEmpty(opportunities)) {
+      for (Opportunity opportunity : opportunities) {
+        opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_CLOSED_LOST);
+      }
+    }
+
     return super.save(entity);
   }
 }
