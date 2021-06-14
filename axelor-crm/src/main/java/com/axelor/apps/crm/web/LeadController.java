@@ -39,7 +39,6 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,20 +124,6 @@ public class LeadController {
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
-  }
-
-  public void setSocialNetworkUrl(ActionRequest request, ActionResponse response)
-      throws IOException {
-
-    Lead lead = request.getContext().asType(Lead.class);
-    Map<String, String> urlMap =
-        Beans.get(LeadService.class)
-            .getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
-    response.setAttr("googleLabel", "title", urlMap.get("google"));
-    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
-    response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
   public void getLeadImportConfig(ActionRequest request, ActionResponse response) {

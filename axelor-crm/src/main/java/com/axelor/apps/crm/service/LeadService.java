@@ -53,8 +53,6 @@ public interface LeadService {
    */
   public Partner setPartnerCompany(Partner partner);
 
-  public Map<String, String> getSocialNetworkUrl(String name, String firstName, String companyName);
-
   @Transactional
   public void saveLead(Lead lead);
 
