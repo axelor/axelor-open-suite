@@ -468,6 +468,9 @@
     	<field name="user" expr="eval: _lead.user"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="partner" expr="eval: _lead.partner"/>
+    	<field name="typeSelect" expr="eval: 1" if="_call"/>
+    	<field name="typeSelect" expr="eval: 2" if="_meeting"/>
+    	<field name="typeSelect" expr="eval: 5" if="_note"/>
     </action-record>
     
     <action-record name="action-event-record-event-from-opportunity" model="com.axelor.apps.crm.db.Event">
@@ -494,6 +497,9 @@
     	<field name="description" expr="eval: _partner.description"/>
     	<field name="user" expr="eval: __repo__(User).find(_partner.user.id)" if="_partner.user != null" />
     	<field name="team" expr="eval: _partner.team"/>
+    	<field name="typeSelect" expr="eval: 1" if="_call"/>
+    	<field name="typeSelect" expr="eval: 2" if="_meeting"/>
+    	<field name="typeSelect" expr="eval: 5" if="_note"/>
     </action-record>
     
     <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">

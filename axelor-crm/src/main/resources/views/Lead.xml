@@ -81,11 +81,10 @@
 			<panel name="imagePanel" colSpan="3">
 				<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
 				<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
-					<label name="googleLabel" title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-					<label name="youtubeLabel" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+					<button name="meetingBtn" icon="fa-pencil-square-o" link="" onClick="save,action-lead-view-meeting-event" colSpan="2"/>
+					<button name="callBtn" icon="fa-phone" link="" onClick="save,action-lead-view-call-event" colSpan="2"/>
+					<button name="noteBtn" icon="fa-sticky-note-o" link="" onClick="save,action-lead-view-note-event" colSpan="2"/>
+					<button name="emailBtn" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="2"/>
 				</panel>
 			</panel>
 
@@ -98,14 +97,14 @@
                     </viewer>
 					<editor x-show-titles="false">
 						<field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
-						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5" onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
+						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-crm-lead-method-check-name"/>
+						<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="5" onChange="action-crm-lead-method-check-name"/>
 					</editor>
 				</field>
 				<static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 3">
 					<editor x-show-titles="false">
-						<field name="enterpriseName" css="label-bold bold large" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
+						<field name="enterpriseName" css="label-bold bold large" colSpan="12" showIf="partner == null" placeholder="Enterprise name"/>
 						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
 						<field name="partner" colSpan="12" showIf="statusSelect == 3" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
@@ -258,7 +257,6 @@
 	</action-group>
 	
 	<action-group name="action-group-crm-lead-onload">
-        <action name="action-lead-method-set-social-network-url"/>
         <action name="action-crm-lead-method-check-name"/>
 	</action-group>
 
@@ -336,6 +334,27 @@
     	<view type="form" name="opportunity-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     </action-view>
+    
+    <action-view name="action-lead-view-meeting-event" title="Meeting Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<view type="grid" name="event-grid"/>
+    	<context name="_lead" expr="eval: __this__"/>
+    	<context name="_meeting" expr="eval: true"/>
+    </action-view>
+    
+    <action-view name="action-lead-view-call-event" title="Call Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<view type="grid" name="event-grid"/>
+    	<context name="_lead" expr="eval: __this__"/>
+    	<context name="_call" expr="eval: true"/>
+    </action-view>
+    
+    <action-view name="action-lead-view-note-event" title="Call Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<view type="grid" name="event-grid"/>
+    	<context name="_lead" expr="eval: __this__"/>
+    	<context name="_note" expr="eval: true"/>
+    </action-view>
    	
 <!--    	PORTLET -->
 
@@ -359,10 +378,6 @@
 	  <call method="showLeadsOnMap" class="com.axelor.apps.crm.web.LeadController"/>
 	</action-method>	
 	
-	<action-method name="action-lead-method-set-social-network-url">
-    	<call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl" />
-    </action-method>
-    
 	<action-method name="action-crm-method-lead-import-leads">
 	    <call class="com.axelor.apps.crm.web.LeadController" method="getLeadImportConfig" />
 	</action-method>
