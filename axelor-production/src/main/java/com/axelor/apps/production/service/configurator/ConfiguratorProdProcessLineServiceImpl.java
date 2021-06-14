@@ -59,6 +59,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     String name;
     Integer priority;
     StockLocation stockLocation;
+    WorkCenter workCenter;
     ProdProcessLine prodProcessLine = new ProdProcessLine();
     BigDecimal minCapacityPerCycle;
     BigDecimal maxCapacityPerCycle;
@@ -102,6 +103,34 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     } else {
       priority = confProdProcessLine.getPriority();
     }
+    if (confProdProcessLine.getDefWorkCenterAsFormula()) {
+      Object computedWorkCenter =
+          configuratorService.computeFormula(
+              confProdProcessLine.getWorkCenterFormula(), attributes);
+      if (computedWorkCenter == null) {
+        throw new AxelorException(
+            confProdProcessLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                String.format(
+                    IExceptionMessage
+                        .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_WORK_CENTER_FORMULA,
+                    confProdProcessLine.getId())));
+      } else {
+        workCenter = (WorkCenter) computedWorkCenter;
+      }
+    } else {
+      workCenter = confProdProcessLine.getWorkCenter();
+      if (workCenter == null) {
+        throw new AxelorException(
+            confProdProcessLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                String.format(
+                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER,
+                    confProdProcessLine.getId())));
+      }
+    }
     if (confProdProcessLine.getDefStockLocationAsFormula()) {
       stockLocation =
           (StockLocation)
@@ -140,7 +169,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
 
     prodProcessLine.setName(name);
     prodProcessLine.setPriority(priority);
-    prodProcessLine.setWorkCenter(confProdProcessLine.getWorkCenter());
+    prodProcessLine.setWorkCenter(workCenter);
     prodProcessLine.setWorkCenterTypeSelect(confProdProcessLine.getWorkCenterTypeSelect());
     prodProcessLine.setWorkCenterGroup(confProdProcessLine.getWorkCenterGroup());
     prodProcessLine.setOutsourcing(confProdProcessLine.getOutsourcing());
