@@ -32,6 +32,32 @@
 	        
 	    </menubar>
     </form>
+    
+    <form id="crm-partner-form" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" extension="true">
+    	<extend target="//panel[@name='socialNetworkPanel']">
+    		<replace>
+    			<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
+					<button name="meetingBtn" icon="fa-pencil-square-o" link="" onClick="save,action-partner-view-meeting-event" colSpan="2"/>
+					<button name="callBtn" icon="fa-phone" link="" onClick="save,action-partner-view-call-event" colSpan="2"/>
+					<button name="noteBtn" icon="fa-sticky-note-o" link="" onClick="save,action-partner-view-note-event" colSpan="2"/>
+					<button name="emailBtn" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="2"/>
+				</panel>
+    		</replace>
+    	</extend>
+    </form>
+    
+    <form id="crm-partner-contact-form" name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" extension="true">
+    	<extend target="//panel[@name='socialNetworkPanel']">
+    		<replace>
+    			<panel name="socialNetworkPanel" colSpan="12">
+					<button name="meetingBtn" icon="fa-pencil-square-o" link="" onClick="save,action-partner-view-meeting-event" colSpan="2"/>
+					<button name="callBtn" icon="fa-phone" link="" onClick="save,action-partner-view-call-event" colSpan="2"/>
+					<button name="noteBtn" icon="fa-sticky-note-o" link="" onClick="save,action-partner-view-note-event" colSpan="2"/>
+					<button name="emailBtn" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="2"/>
+				</panel>
+    		</replace>
+    	</extend>
+    </form>
 	
     <!--     CREATE CRM OBJECT FROM PARTNER -->
     
@@ -46,11 +72,28 @@
     	<context name="_contactMainPartner" expr="eval: __this__.mainPartner" />
     </action-view> 
     
-    
     <action-view name="action-partner-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
     	<context name="_partner" expr="eval: __this__"/>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
+    </action-view>
+    
+    <action-view name="action-partner-view-meeting-event" title="Meeting Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<context name="_partner" expr="eval: __this__"/>
+    	<context name="_meeting" expr="eval: true"/>
+    </action-view>
+    
+    <action-view name="action-partner-view-call-event" title="Call Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<context name="_partner" expr="eval: __this__"/>
+    	<context name="_call" expr="eval: true"/>
+    </action-view>
+    
+    <action-view name="action-partner-view-note-event" title="Note Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<context name="_partner" expr="eval: __this__"/>
+    	<context name="_note" expr="eval: true"/>
     </action-view>
     
     <!--  CREATE SALE OBJECT FROM PARTNER -->
