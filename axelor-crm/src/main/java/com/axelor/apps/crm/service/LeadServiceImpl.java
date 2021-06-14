@@ -41,7 +41,6 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -152,59 +151,6 @@ public class LeadServiceImpl implements LeadService {
     }
 
     return partner;
-  }
-
-  public Map<String, String> getSocialNetworkUrl(
-      String name, String firstName, String companyName) {
-
-    Map<String, String> urlMap = new HashMap<String, String>();
-    String searchName =
-        firstName != null && name != null
-            ? firstName + "+" + name
-            : name == null ? firstName : name;
-    searchName = searchName == null ? "" : searchName;
-    urlMap.put(
-        "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
-            + searchName
-            + "&init=public"
-            + "' target='_blank'/>");
-    urlMap.put(
-        "twitter",
-        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
-            + searchName
-            + "' target='_blank' />");
-    urlMap.put(
-        "linkedin",
-        "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
-            + searchName.replace("+", "/")
-            + "' target='_blank' />");
-    if (companyName != null) {
-      urlMap.put(
-          "youtube",
-          "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-              + companyName
-              + "' target='_blank' />");
-      urlMap.put(
-          "google",
-          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
-              + companyName
-              + "+"
-              + searchName
-              + "' target='_blank' />");
-    } else {
-      urlMap.put(
-          "youtube",
-          "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-              + searchName
-              + "' target='_blank' />");
-      urlMap.put(
-          "google",
-          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
-              + searchName
-              + "' target='_blank' />");
-    }
-    return urlMap;
   }
 
   @Transactional
