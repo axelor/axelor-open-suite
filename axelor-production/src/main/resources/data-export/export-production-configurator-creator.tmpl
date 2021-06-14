@@ -245,6 +245,12 @@
 						configProdProcessLine += "${cppl.description}"
 					}
 					configProdProcessLine += """</description>
+					<descriptionFormula>"""
+					if (cppl.descriptionFormula != null) {
+						configProdProcessLine += "${cppl.descriptionFormula}"
+					}
+					configProdProcessLine += """</descriptionFormula>
+					<defDescriptionAsFormula>${cppl.defDescriptionAsFormula}</defDescriptionAsFormula>
 					<minCapacityPerCycle>${cppl.minCapacityPerCycle}</minCapacityPerCycle>
 					<minCapacityPerCycleFormula>"""
 					if (cppl.minCapacityPerCycleFormula != null) {
