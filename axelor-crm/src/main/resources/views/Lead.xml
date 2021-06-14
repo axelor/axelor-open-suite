@@ -81,10 +81,10 @@
 			<panel name="imagePanel" colSpan="3">
 				<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
 				<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
-					<button name="meetingBtn" icon="fa-pencil-square-o" link="" onClick="save,action-lead-view-meeting-event" colSpan="2"/>
-					<button name="callBtn" icon="fa-phone" link="" onClick="save,action-lead-view-call-event" colSpan="2"/>
-					<button name="noteBtn" icon="fa-sticky-note-o" link="" onClick="save,action-lead-view-note-event" colSpan="2"/>
-					<button name="emailBtn" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="2"/>
+					<button name="meetingBtn" help="Create a meeting" icon="fa-pencil-square-o" link="" onClick="save,action-lead-view-meeting-event" colSpan="2"/>
+					<button name="callBtn" help="Create a call" icon="fa-phone" link="" onClick="save,action-lead-view-call-event" colSpan="2"/>
+					<button name="noteBtn" help="Create a note" icon="fa-sticky-note-o" link="" onClick="save,action-lead-view-note-event" colSpan="2"/>
+					<button name="emailBtn" help="Create an email" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="2"/>
 				</panel>
 			</panel>
 
