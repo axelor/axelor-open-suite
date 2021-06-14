@@ -42,6 +42,7 @@
 					<name>Emballage</name>
 					<priority>0</priority>
 					<workCenter>6</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<description></description>
@@ -60,6 +61,7 @@
 					<name>Contrôle qualité</name>
 					<priority>0</priority>
 					<workCenter>4</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<description></description>
@@ -78,6 +80,7 @@
 					<name>Assemblage</name>
 					<priority>0</priority>
 					<workCenter>3</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<description></description>
