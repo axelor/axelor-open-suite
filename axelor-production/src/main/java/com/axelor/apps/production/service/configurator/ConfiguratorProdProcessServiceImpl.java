@@ -69,10 +69,9 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
         throw new AxelorException(
             confProdProcess,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(
-                String.format(
-                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NAME_FORMULA,
-                    confProdProcess.getId())));
+            String.format(
+                I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NAME_FORMULA),
+                confProdProcess.getId()));
       } else {
         name = String.valueOf(computedName);
       }
@@ -82,10 +81,9 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
         throw new AxelorException(
             confProdProcess,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(
-                String.format(
-                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME,
-                    confProdProcess.getId())));
+            String.format(
+                I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME),
+                confProdProcess.getId()));
       }
     }
     if (confProdProcess.getDefCodeAsFormula()) {
