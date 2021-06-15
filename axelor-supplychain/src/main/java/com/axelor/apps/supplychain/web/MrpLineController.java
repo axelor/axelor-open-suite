@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpService;
@@ -69,9 +70,28 @@ public class MrpLineController {
       for (Integer mrpId : mrpLineIds) {
         mrpLine = mrpLineRepo.find(Long.valueOf(mrpId));
 
-        mrpLineService.updateProposalToProcess(mrpLine, proposalToProcess);
+        if (!mrpLine.getProposalGenerated()
+            && (mrpLine.getMrpLineType().getElementSelect()
+                    == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+                || mrpLine.getMrpLineType().getElementSelect()
+                    == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
+                || mrpLine.getMrpLineType().getElementSelect()
+                    == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED)) {
+          mrpLineService.updateProposalToProcess(mrpLine, proposalToProcess);
+        }
       }
     }
+
+    response.setAttr("mrpLinePanel", "refresh", true);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void toggleOne(ActionRequest request, ActionResponse response) {
+    MrpLine mrpLine = request.getContext().asType(MrpLine.class);
+    mrpLine = Beans.get(MrpLineRepository.class).find(mrpLine.getId());
+
+    Beans.get(MrpLineService.class)
+        .updateProposalToProcess(mrpLine, !mrpLine.getProposalToProcess());
 
     response.setAttr("mrpLinePanel", "refresh", true);
   }

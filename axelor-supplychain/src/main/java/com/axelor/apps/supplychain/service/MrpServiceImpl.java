@@ -1142,6 +1142,9 @@ public class MrpServiceImpl implements MrpService {
       if (!mrpLine.getProposalGenerated()) {
         mrpLineService.generateProposal(
             mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
+
+        mrpLine.setProposalToProcess(false);
+        mrpLineRepository.save(mrpLine);
       }
     }
   }
