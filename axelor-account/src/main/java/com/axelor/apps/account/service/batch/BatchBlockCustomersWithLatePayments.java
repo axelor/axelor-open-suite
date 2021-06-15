@@ -48,10 +48,10 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     }
   }
 
-  protected String blockCustomersWithLatePayments() throws AxelorException {
-    String result = "";
+  protected String blockCustomersWithLatePayments() {
+    StringBuilder result = new StringBuilder();
     List<Invoice> invoices;
-    List<Long> customersToBlock = new ArrayList<Long>();
+    List<Long> customersToBlock = new ArrayList<>();
     int offset = 0;
     Query<Invoice> query =
         invoiceRepository
@@ -71,7 +71,11 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
           Partner partner = processInvoice(invoice);
           if (partner != null && !customersToBlock.contains(partner.getId())) {
             log.debug("Blocking {}", partner.getFullName());
-            result += I18n.get("Blocking") + " " + partner.getFullName() + "</br>";
+            result
+                .append(I18n.get("Blocking"))
+                .append(" ")
+                .append(partner.getFullName())
+                .append("</br>");
             customersToBlock.add(partner.getId());
             incrementDone();
           }
@@ -87,7 +91,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
       JPA.clear();
     }
     blockCustomers(customersToBlock);
-    return result;
+    return result.toString();
   }
 
   @Transactional(rollbackOn = Exception.class)
