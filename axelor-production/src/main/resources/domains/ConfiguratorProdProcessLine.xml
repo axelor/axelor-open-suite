@@ -29,6 +29,8 @@
         <boolean name="defStockLocationAsFormula" title="Define with a script" default="false"/>
         
         <string name="description" title="Description" large="true"/>
+        <string name="descriptionFormula" title="Description" large="true"/>
+        <boolean name="defDescriptionAsFormula" title="Define with a script" default="false"/>
 
         <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
         <string name="minCapacityPerCycleFormula" title="Min. capacity / cycle" large="true"/>

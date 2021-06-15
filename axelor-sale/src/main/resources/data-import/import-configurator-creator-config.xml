@@ -82,6 +82,8 @@
            <bind node="defStockLocationAsFormula" to="defStockLocationAsFormula"/>
            <bind node="outsourcing" to="outsourcing"/>
            <bind node="description" to="description"/>
+           <bind node="descriptionFormula" to="descriptionFormula"/>
+       	   <bind node="defDescriptionAsFormula" to="defDescriptionAsFormula"/>
            <bind node="minCapacityPerCycle" to="minCapacityPerCycle"/>
            <bind node="minCapacityPerCycleFormula" to="minCapacityPerCycleFormula"/>
            <bind node="defMinCapacityFormula" to="defMinCapacityFormula"/>
