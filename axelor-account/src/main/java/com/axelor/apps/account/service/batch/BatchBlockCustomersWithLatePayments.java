@@ -64,13 +64,24 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
                 .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .fetch(FETCH_LIMIT, offset))
         .isEmpty()) {
+
       for (Invoice invoice : invoices) {
         ++offset;
-        Partner partner = processInvoice(invoice);
-        if (partner != null && !customersToBlock.contains(partner.getId())) {
-          log.debug("Blocking {}", partner.getFullName());
-          result += I18n.get("Blocking") + " " + partner.getFullName() + "</br>";
-          customersToBlock.add(partner.getId());
+        try {
+          Partner partner = processInvoice(invoice);
+          if (partner != null && !customersToBlock.contains(partner.getId())) {
+            log.debug("Blocking {}", partner.getFullName());
+            result += I18n.get("Blocking") + " " + partner.getFullName() + "</br>";
+            customersToBlock.add(partner.getId());
+            incrementDone();
+          }
+        } catch (Exception e) {
+          TraceBackService.trace(
+              new Exception(String.format("%s %s", "Invoice", invoice.getInvoiceId()), e),
+              null,
+              batch.getId());
+          log.error("Error for invoice {}", invoice.getInvoiceId());
+          incrementAnomaly();
         }
       }
       JPA.clear();
@@ -89,29 +100,19 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     }
   }
 
-  protected Partner processInvoice(Invoice invoice) {
-    try {
-      AccountConfig config = accountConfigService.getAccountConfig(invoice.getCompany());
-      if (!config.getHasLatePaymentAccountBlocking()) {
-        return null;
-      }
-      if (invoice
-              .getDueDate()
-              .compareTo(
-                  appBaseService
-                      .getTodayDate(invoice.getCompany())
-                      .plusDays(config.getNumberOfDaysBeforeAccountBLocking()))
-          < 0) {
-        incrementDone();
-        return invoice.getPartner();
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(
-          new Exception(String.format(("Invoice") + " %s", invoice.getInvoiceId()), e),
-          null,
-          batch.getId());
-      log.error("Error for invoice {}", invoice.getInvoiceId());
-      incrementAnomaly();
+  protected Partner processInvoice(Invoice invoice) throws AxelorException {
+    AccountConfig config = accountConfigService.getAccountConfig(invoice.getCompany());
+    if (!config.getHasLatePaymentAccountBlocking()) {
+      return null;
+    }
+    if (invoice
+            .getDueDate()
+            .compareTo(
+                appBaseService
+                    .getTodayDate(invoice.getCompany())
+                    .plusDays(config.getNumberOfDaysBeforeAccountBLocking()))
+        < 0) {
+      return invoice.getPartner();
     }
     return null;
   }
