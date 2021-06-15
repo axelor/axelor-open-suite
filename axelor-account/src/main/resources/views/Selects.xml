@@ -338,10 +338,6 @@
 	<selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
 	</selection>
-	
-	<selection name="meta.schedule.job.select" id="account.meta.schedule.job.select">
-		<option value="com.axelor.apps.account.job.BlockCustomersWithLatePaymentsJob">com.axelor.apps.account.job.BlockCustomersWithLatePaymentsJob</option>
-	</selection>
 
 	<selection name="account.subrogation.release.status.select">
 		<option value="1">New release</option>

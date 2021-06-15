@@ -110,7 +110,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
 
-    if (stockMove.getTypeSelect().compareTo(StockMoveRepository.TYPE_OUTGOING) == 0
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && stockMove.getPartner().getHasBlockedAccount()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
