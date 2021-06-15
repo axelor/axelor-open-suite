@@ -112,7 +112,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
           new Exception(String.format(("Invoice") + " %s", invoice.getInvoiceId()), e),
           null,
           batch.getId());
-      log.error("Error for invoice {}",invoice.getInvoiceId());
+      log.error("Error for invoice {}", invoice.getInvoiceId());
       incrementAnomaly();
     }
     return null;
