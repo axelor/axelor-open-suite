@@ -20,6 +20,7 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.persistence.PersistenceException;
@@ -35,6 +36,7 @@ public class UnitCostCalculationManagementRepository extends UnitCostCalculation
         entity.setUnitCostCalcSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(entity));
       }
     } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
 

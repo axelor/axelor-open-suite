@@ -39,7 +39,7 @@ public class AppBusinessProjectManagementRepository extends AppBusinessProjectRe
       }
       return super.save(entity);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(I18n.get(IExceptionMessage.INVALID_EXCLUDE_TASK_FILTER));
     }
   }

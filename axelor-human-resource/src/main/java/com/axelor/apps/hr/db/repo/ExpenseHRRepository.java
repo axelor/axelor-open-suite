@@ -19,6 +19,7 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -34,7 +35,8 @@ public class ExpenseHRRepository extends ExpenseRepository {
 
       return expense;
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 }

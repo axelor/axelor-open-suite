@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -47,7 +48,8 @@ public class ProductBaseRepository extends ProductRepository {
         product.setCode(Beans.get(ProductService.class).getSequence(product));
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
 
     product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
@@ -95,7 +97,8 @@ public class ProductBaseRepository extends ProductRepository {
         copy.setCode(Beans.get(ProductService.class).getSequence(product));
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
     return copy;
   }
