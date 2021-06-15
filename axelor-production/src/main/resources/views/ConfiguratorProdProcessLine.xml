@@ -49,7 +49,13 @@
 					domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
 			</panel>
             <field name="outsourcing" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
-            <field name="description"/>
+            <panel name="descriptionPanel" title="Description">
+                <field name="defDescriptionAsFormula" colSpan="6"/>
+                <field name="description" colSpan="12" showIf="!defDescriptionAsFormula"/>
+                <field name="descriptionFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defDescriptionAsFormula"/>
+            </panel>
             <panel name="stockLocationPanel" title="Stock location">
                 <field name="defStockLocationAsFormula" colSpan="6"/>
                 <field name="stockLocation" colSpan="12" showIf="!defStockLocationAsFormula"/>

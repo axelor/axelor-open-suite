@@ -40,11 +40,15 @@
 			<configuratorProdProcessLineList>
 				<configuratorProdProcessLine>
 					<name>Emballage</name>
+					<defNameAsFormula>false</defNameAsFormula>
 					<priority>0</priority>
+					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>6</workCenter>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
+					<defStockLocationAsFormula>false</defStockLocationAsFormula>
 					<description></description>
+					<defDescriptionAsFormula>false</defDescriptionAsFormula>
 					<minCapacityPerCycle>1.00</minCapacityPerCycle>
 					<minCapacityPerCycleFormula></minCapacityPerCycleFormula>
 					<defMinCapacityFormula>false</defMinCapacityFormula>
@@ -58,11 +62,15 @@
 		
 				<configuratorProdProcessLine>
 					<name>Contrôle qualité</name>
+					<defNameAsFormula>false</defNameAsFormula>
 					<priority>0</priority>
+					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>4</workCenter>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
+					<defStockLocationAsFormula>false</defStockLocationAsFormula>
 					<description></description>
+					<defDescriptionAsFormula>false</defDescriptionAsFormula>
 					<minCapacityPerCycle>1.00</minCapacityPerCycle>
 					<minCapacityPerCycleFormula></minCapacityPerCycleFormula>
 					<defMinCapacityFormula>false</defMinCapacityFormula>
@@ -76,11 +84,15 @@
 		
 				<configuratorProdProcessLine>
 					<name>Assemblage</name>
+					<defNameAsFormula>false</defNameAsFormula>
 					<priority>0</priority>
+					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>3</workCenter>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
+					<defStockLocationAsFormula>false</defStockLocationAsFormula>
 					<description></description>
+					<defDescriptionAsFormula>false</defDescriptionAsFormula>
 					<minCapacityPerCycle>1.00</minCapacityPerCycle>
 					<minCapacityPerCycleFormula></minCapacityPerCycleFormula>
 					<defMinCapacityFormula>false</defMinCapacityFormula>
