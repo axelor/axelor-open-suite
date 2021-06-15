@@ -108,7 +108,11 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
         return invoice.getPartner();
       }
     } catch (Exception e) {
-      log.debug(e.getMessage());
+      TraceBackService.trace(
+          new Exception(String.format(("Invoice") + " %s", invoice.getInvoiceId()), e),
+          null,
+          batch.getId());
+      log.error("Error for invoice {}",invoice.getInvoiceId());
       incrementAnomaly();
     }
     return null;
