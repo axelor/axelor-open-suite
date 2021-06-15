@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
-import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpService;
@@ -60,40 +59,32 @@ public class MrpLineController {
   @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
   private void toggle(ActionRequest request, ActionResponse response, boolean proposalToProcess) {
-    List<Integer> mrpLineIds = (List<Integer>) request.getContext().get("_ids");
+    try {
+      List<Integer> mrpLineIds = (List<Integer>) request.getContext().get("_ids");
 
-    if (CollectionUtils.isNotEmpty(mrpLineIds)) {
-      MrpLineRepository mrpLineRepo = Beans.get(MrpLineRepository.class);
-      MrpLineService mrpLineService = Beans.get(MrpLineService.class);
-      MrpLine mrpLine;
-
-      for (Integer mrpId : mrpLineIds) {
-        mrpLine = mrpLineRepo.find(Long.valueOf(mrpId));
-
-        if (!mrpLine.getProposalGenerated()
-            && (mrpLine.getMrpLineType().getElementSelect()
-                    == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
-                || mrpLine.getMrpLineType().getElementSelect()
-                    == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
-                || mrpLine.getMrpLineType().getElementSelect()
-                    == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED)) {
-          mrpLineService.updateProposalToProcess(mrpLine, proposalToProcess);
-        }
+      if (CollectionUtils.isNotEmpty(mrpLineIds)) {
+        Beans.get(MrpLineService.class).updateProposalToProcess(mrpLineIds, proposalToProcess);
       }
-    }
 
-    response.setAttr("mrpLinePanel", "refresh", true);
+      response.setAttr("mrpLinePanel", "refresh", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void toggleOne(ActionRequest request, ActionResponse response) {
-    MrpLine mrpLine = request.getContext().asType(MrpLine.class);
-    mrpLine = Beans.get(MrpLineRepository.class).find(mrpLine.getId());
+    try {
+      MrpLine mrpLine = request.getContext().asType(MrpLine.class);
+      mrpLine = Beans.get(MrpLineRepository.class).find(mrpLine.getId());
 
-    Beans.get(MrpLineService.class)
-        .updateProposalToProcess(mrpLine, !mrpLine.getProposalToProcess());
+      Beans.get(MrpLineService.class)
+          .updateProposalToProcess(mrpLine, !mrpLine.getProposalToProcess());
 
-    response.setAttr("mrpLinePanel", "refresh", true);
+      response.setAttr("mrpLinePanel", "refresh", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})

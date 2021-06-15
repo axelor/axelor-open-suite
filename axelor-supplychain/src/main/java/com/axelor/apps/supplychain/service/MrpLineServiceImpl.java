@@ -61,6 +61,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -367,6 +368,16 @@ public class MrpLineServiceImpl implements MrpLineService {
     return copyMrpLineOrigin;
   }
 
+  @Override
+  public void updateProposalToProcess(List<Integer> mrpLineIds, boolean proposalToProcess) {
+    MrpLine mrpLine;
+    for (Integer mrpId : mrpLineIds) {
+      mrpLine = mrpLineRepo.find(Long.valueOf(mrpId));
+
+      updateProposalToProcess(mrpLine, proposalToProcess);
+    }
+  }
+
   protected String computeRelatedName(Model model) {
 
     if (model instanceof SaleOrderLine) {
@@ -412,7 +423,15 @@ public class MrpLineServiceImpl implements MrpLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateProposalToProcess(MrpLine mrpLine, boolean proposalToProcess) {
-    mrpLine.setProposalToProcess(proposalToProcess);
-    mrpLineRepo.save(mrpLine);
+    if (!mrpLine.getProposalGenerated()
+        && (mrpLine.getMrpLineType().getElementSelect()
+                == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+            || mrpLine.getMrpLineType().getElementSelect()
+                == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
+            || mrpLine.getMrpLineType().getElementSelect()
+                == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED)) {
+      mrpLine.setProposalToProcess(proposalToProcess);
+      mrpLineRepo.save(mrpLine);
+    }
   }
 }
