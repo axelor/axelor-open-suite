@@ -67,12 +67,10 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
       for (Invoice invoice : invoices) {
         ++offset;
         Partner partner = processInvoice(invoice);
-        if (partner != null) {
-          if (!customersToBlock.contains(partner.getId())) {
-            log.debug("Blocking {}", partner.getFullName());
-            result += I18n.get("Blocking") + " " + partner.getFullName() + "</br>";
-            customersToBlock.add(partner.getId());
-          }
+        if (partner != null && !customersToBlock.contains(partner.getId())) {
+          log.debug("Blocking {}", partner.getFullName());
+          result += I18n.get("Blocking") + " " + partner.getFullName() + "</br>";
+          customersToBlock.add(partner.getId());
         }
       }
       JPA.clear();
