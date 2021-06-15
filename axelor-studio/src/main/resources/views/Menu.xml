@@ -105,5 +105,12 @@
 		<domain>self.isCustom = true</domain>
 		<context name="_fromStudio" expr="eval:true"/>
 	</action-view>
+	
+	<menuitem title="Mappers" name="app-builder-config-mappers" parent="app-builder-config" action="action.studio.mapper.view" order="50"/>
+
+	<action-view name="action.studio.mapper.view" title="Mappers" model="com.axelor.studio.db.ValueMapper">
+		<view type="grid" name="value-mapper-grid" />
+		<view type="form" name="value-mapper-form"/>
+	</action-view>
 
 </object-views>
