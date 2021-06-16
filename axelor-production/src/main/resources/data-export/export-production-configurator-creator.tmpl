@@ -227,7 +227,17 @@
 					}
 					configProdProcessLine += """</priorityFormula>
 					<defPriorityAsFormula>${cppl.defPriorityAsFormula}</defPriorityAsFormula>
-					<workCenter>${cppl.workCenter?.id}</workCenter>
+					<workCenter>"""
+					if (cppl.workCenter?.id != null) {
+						configProdProcessLine += "${cppl.workCenter?.id}"
+					}
+					configProdProcessLine += """</workCenter>
+					<workCenterFormula>"""
+					if (cppl.workCenterFormula != null) {
+						configProdProcessLine += "${cppl.workCenterFormula}"
+					}
+					configProdProcessLine += """</workCenterFormula>
+					<defWorkCenterAsFormula>${cppl.defWorkCenterAsFormula}</defWorkCenterAsFormula>
 					<outsourcing>${cppl.outsourcing}</outsourcing>
 					<stockLocation>"""
 					if (cppl.stockLocation?.id != null) {

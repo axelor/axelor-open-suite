@@ -60,6 +60,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     Integer priority;
     StockLocation stockLocation;
     String description;
+    WorkCenter workCenter;
     ProdProcessLine prodProcessLine = new ProdProcessLine();
     BigDecimal minCapacityPerCycle;
     BigDecimal maxCapacityPerCycle;
@@ -72,10 +73,10 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
         throw new AxelorException(
             confProdProcessLine,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(
-                String.format(
-                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA,
-                    confProdProcessLine.getId())));
+            String.format(
+                I18n.get(
+                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA),
+                confProdProcessLine.getId()));
       } else {
         name = String.valueOf(computedName);
       }
@@ -85,10 +86,9 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
         throw new AxelorException(
             confProdProcessLine,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(
-                String.format(
-                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME,
-                    confProdProcessLine.getId())));
+            String.format(
+                I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME),
+                confProdProcessLine.getId()));
       }
     }
     if (confProdProcessLine.getDefPriorityAsFormula()) {
@@ -110,6 +110,34 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
                   confProdProcessLine.getDescriptionFormula(), attributes));
     } else {
       description = confProdProcessLine.getDescription();
+    }
+    if (confProdProcessLine.getDefWorkCenterAsFormula()) {
+      Object computedWorkCenter =
+          configuratorService.computeFormula(
+              confProdProcessLine.getWorkCenterFormula(), attributes);
+      if (computedWorkCenter == null) {
+        throw new AxelorException(
+            confProdProcessLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(
+                I18n.get(
+                    IExceptionMessage
+                        .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_WORK_CENTER_FORMULA),
+                confProdProcessLine.getId()));
+      } else {
+        workCenter = (WorkCenter) computedWorkCenter;
+      }
+    } else {
+      workCenter = confProdProcessLine.getWorkCenter();
+      if (workCenter == null) {
+        throw new AxelorException(
+            confProdProcessLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(
+                I18n.get(
+                    IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER),
+                confProdProcessLine.getId()));
+      }
     }
     if (confProdProcessLine.getDefStockLocationAsFormula()) {
       stockLocation =
@@ -149,7 +177,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
 
     prodProcessLine.setName(name);
     prodProcessLine.setPriority(priority);
-    prodProcessLine.setWorkCenter(confProdProcessLine.getWorkCenter());
+    prodProcessLine.setWorkCenter(workCenter);
     prodProcessLine.setWorkCenterTypeSelect(confProdProcessLine.getWorkCenterTypeSelect());
     prodProcessLine.setWorkCenterGroup(confProdProcessLine.getWorkCenterGroup());
     prodProcessLine.setOutsourcing(confProdProcessLine.getOutsourcing());
@@ -176,10 +204,9 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       throw new AxelorException(
           confProdProcessLine,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(
-              String.format(
-                  IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION,
-                  confProdProcessLine.getId())));
+          String.format(
+              I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION),
+              confProdProcessLine.getId()));
     }
 
     return (boolean) computedConditions;

@@ -44,6 +44,7 @@
 					<priority>0</priority>
 					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>6</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<defStockLocationAsFormula>false</defStockLocationAsFormula>
@@ -66,6 +67,7 @@
 					<priority>0</priority>
 					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>4</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<defStockLocationAsFormula>false</defStockLocationAsFormula>
@@ -88,6 +90,7 @@
 					<priority>0</priority>
 					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>3</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<defStockLocationAsFormula>false</defStockLocationAsFormula>

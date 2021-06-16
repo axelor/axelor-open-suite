@@ -73,6 +73,8 @@
            <bind node="workCenter" to="workCenter" search="self.id = :workCenterId" if="workCenterId">
              <bind node="text()" to="id" alias="workCenterId"/>
            </bind>
+           <bind node="workCenterFormula" to="workCenterFormula"/>
+           <bind node="defWorkCenterFormula" to="defWorkCenterFormula"/>
            <bind node="stockLocation" to="stockLocation" search="self.id = :stockLocationId" if="stockLocationId">
              <bind node="text()" to="id" alias="stockLocationId"/>
            </bind>
