@@ -114,7 +114,7 @@
     
     <action-attrs name="action-configurator-prod-process-line-attrs-default">
     	<attribute name="hidden" for="capacitySettingsPanel" expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
-    	<attribute name="hidden" for="workCenter" expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
+    	<attribute name="hidden" for="workCenterPanel" expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
 		<attribute name="required" for="workCenter" expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup() &amp;&amp; !defWorkCenterAsFormula"/>
 		<attribute name="hidden" for="workCenterGroupPanel" expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup()"/>
     </action-attrs>
