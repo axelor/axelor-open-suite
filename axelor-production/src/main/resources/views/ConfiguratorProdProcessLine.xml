@@ -41,7 +41,7 @@
             </panel>
             <panel name="workCenterPanel" title="Work center">
                 <field name="defWorkCenterAsFormula" colSpan="6" onChange="action-configurator-prod-process-line-change-work-center-required"/>
-                <field name="workCenter" hidden="true" grid-view="work-center-grid" form-view="work-center-form" canNew="true"
+                <field name="workCenter" hidden="true" grid-view="work-center-grid" form-view="work-center-form"
                 	   onChange="action-configurator-prod-process-line-group-work-center-onchange"
                 	   colSpan="12" showIf="!defWorkCenterAsFormula"/>
                 <field name="workCenterFormula" colSpan="12" height="120"
