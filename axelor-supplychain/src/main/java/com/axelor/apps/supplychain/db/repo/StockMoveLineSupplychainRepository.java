@@ -63,7 +63,7 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
         super.remove(stockMoveLine);
       }
     } catch (AxelorException e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 }

@@ -19,7 +19,6 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.RawMaterialRequirement;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
-import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
@@ -38,10 +37,8 @@ public class RawMaterialRequirementProductionRepository extends RawMaterialRequi
 
       return super.save(rawMaterialRequirement);
     } catch (Exception e) {
-      JPA.em().getTransaction().rollback();
-      JPA.runInTransaction(() -> TraceBackService.trace(e));
-      JPA.em().getTransaction().begin();
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 }

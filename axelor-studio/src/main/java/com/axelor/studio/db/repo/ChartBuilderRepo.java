@@ -41,7 +41,7 @@ public class ChartBuilderRepo extends ChartBuilderRepository {
       chartBuilderService.build(chartBuilder);
     } catch (AxelorException | JAXBException e) {
       refresh(chartBuilder);
-      throw new ValidationException(e.getMessage());
+      throw new ValidationException(e);
     }
 
     return super.save(chartBuilder);

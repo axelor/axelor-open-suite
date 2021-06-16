@@ -218,4 +218,10 @@ public interface IExceptionMessage {
 
   String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION = /*$$(*/
       "The condition formula to generate the prod process line returns null value or is not consistent. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_WORK_CENTER_FORMULA = /*$$(*/
+      "The formula script to fill the work center returns null value. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER = /*$$(*/
+      "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
 }

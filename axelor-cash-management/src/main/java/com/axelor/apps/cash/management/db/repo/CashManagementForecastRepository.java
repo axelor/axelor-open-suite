@@ -24,6 +24,7 @@ import com.axelor.apps.cash.management.db.Forecast;
 import com.axelor.apps.cash.management.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
@@ -54,8 +55,9 @@ public class CashManagementForecastRepository extends ForecastRepository {
         }
       }
       return super.save(entity);
-    } catch (AxelorException e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 }
