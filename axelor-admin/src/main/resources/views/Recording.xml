@@ -10,15 +10,23 @@
 
    <form model="com.axelor.apps.base.db.Recording" title="Recording" name="recording-form"
       canDelete="statusSelect != 1" canCopy="statusSelect != 1" canNew="statusSelect != 1">
-      <panel name="generalPanel">
+      <panel name="generalPanel" readonlyIf="statusSelect != 0">
          <field name="statusSelect" widget="NavSelect" colSpan="12" readonly="true" showTitle="false"/>
          <panel name="mainPanel" title="Details" canCollapse="true" collapseIf="statusSelect == 2" colSpan="12">
             <field name="startDateTime" readonly="true"/>
             <field name="stopDateTime" readonly="true"/>
-            <panel-related name="includeModelSetPanel" field="includeModelSet" colSpan="12" canNew="false" readonlyIf="statusSelect != 0"
+            <panel-related name="includeModelSetPanel" field="includeModelSet" colSpan="12" canNew="false"
                form-view="meta-model-form" grid-view="meta-model-grid"/>
-            <panel-related name="excludeModelSetPanel" field="excludeModelSet" colSpan="12" canNew="false" readonlyIf="statusSelect != 0"
+            <panel-related name="excludeModelSetPanel" field="excludeModelSet" colSpan="12" canNew="false"
                form-view="meta-model-form" grid-view="meta-model-grid"/>
+			<panel name="searchConfigurationSetPanel" title="Search configurations" colSpan="12">
+				<field name="searchConfigurationSet" colSpan="12" showTitle="false">
+					<editor x-viewer="true" x-show-on-new="false">
+						<field name="metaModel"/>
+						<field name="metaFieldSet" widget="TagSelect" canEdit="false" domain="self.metaModel = :metaModel"/>
+					</editor>
+				</field>
+			</panel>
             <panel name="modelIdsPanel" title="Model data" colSpan="12" itemSpan="12" readonly="true">
                <field name="modelIds" widget="json-raw" readonly="true" showTitle="false"/>
             </panel>

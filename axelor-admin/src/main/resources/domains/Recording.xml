@@ -15,6 +15,7 @@
 
       <many-to-many name="excludeModelSet" ref="com.axelor.meta.db.MetaModel" title="Exclude models"/>
       <many-to-many name="includeModelSet" ref="com.axelor.meta.db.MetaModel" title="Include models"/>
+      <many-to-many name="searchConfigurationSet" ref="com.axelor.apps.base.db.SearchConfiguration" title="Search configurations"/>
 
       <many-to-one name="recordingData" ref="com.axelor.meta.db.MetaFile" title="Recording data"/>
 
