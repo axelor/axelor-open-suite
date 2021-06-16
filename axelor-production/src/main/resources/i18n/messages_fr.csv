@@ -298,6 +298,7 @@
 "Low","Faible",,
 "MO","N° OF",,
 "MO's comment from sale order","Commentaire production provenant de la commande de vente",,
+"MO's comment from sale order line","Commentaire production provenant de la ligne de commande de vente",,
 "MO's valuation method","Mode de valorisation des OF",,
 "MOs Finished late","OF terminés en retard",,
 "MOs In Progress","OF en cours",,

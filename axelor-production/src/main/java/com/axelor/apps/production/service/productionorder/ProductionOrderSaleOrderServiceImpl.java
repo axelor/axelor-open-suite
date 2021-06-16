@@ -143,7 +143,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
           qty,
           LocalDateTime.now(),
           saleOrderLine.getSaleOrder(),
-          saleOrderLine.getLineProductionComment());
+          saleOrderLine);
     }
 
     return null;
@@ -167,7 +167,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       BigDecimal qtyRequested,
       LocalDateTime startDate,
       SaleOrder saleOrder,
-      String moCommentFromSaleOrderLine)
+      SaleOrderLine saleOrderLine)
       throws AxelorException {
 
     List<BillOfMaterial> childBomList = new ArrayList<>();
@@ -191,7 +191,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 startDate,
                 null,
                 saleOrder,
-                moCommentFromSaleOrderLine,
+                saleOrderLine,
                 ManufOrderService.ORIGIN_TYPE_SALE_ORDER);
         tempChildBomList.addAll(
             childBom.getBillOfMaterialSet().stream()

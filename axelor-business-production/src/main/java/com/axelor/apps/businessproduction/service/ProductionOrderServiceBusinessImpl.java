@@ -26,6 +26,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,7 +52,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
       LocalDateTime startDate,
       LocalDateTime endDate,
       SaleOrder saleOrder,
-      String moCommentFromSaleOrderLine)
+      SaleOrderLine saleOrderLine)
       throws AxelorException {
 
     ProductionOrder productionOrder = this.createProductionOrder(saleOrder);
@@ -65,7 +66,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
         startDate,
         endDate,
         saleOrder,
-        moCommentFromSaleOrderLine,
+        saleOrderLine,
         ManufOrderService.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);

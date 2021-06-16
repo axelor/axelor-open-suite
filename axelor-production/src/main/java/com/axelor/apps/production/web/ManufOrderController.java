@@ -75,11 +75,23 @@ public class ManufOrderController {
       ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
       Beans.get(ManufOrderWorkflowService.class).start(manufOrder);
       response.setReload(true);
+      String message = "";
       if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-        String message =
+        message = manufOrder.getMoCommentFromSaleOrder();
+      }
+
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+        message =
+            message
+                .concat(System.lineSeparator())
+                .concat(manufOrder.getMoCommentFromSaleOrderLine());
+      }
+
+      if (!message.isEmpty()) {
+        message =
             I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
-                .concat(manufOrder.getMoCommentFromSaleOrder());
+                .concat(message);
         response.setFlash(message);
         response.setCanClose(true);
       }
@@ -216,23 +228,27 @@ public class ManufOrderController {
                 .fetch();
       }
 
-      String lineProductionComment = "";
+      String message = "";
 
       for (ManufOrder manufOrder : manufOrders) {
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
         if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-          lineProductionComment =
-              lineProductionComment
-                  .concat(manufOrder.getMoCommentFromSaleOrder())
-                  .concat(System.lineSeparator());
+          message = manufOrder.getMoCommentFromSaleOrder();
+        }
+
+        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+          message =
+              message
+                  .concat(System.lineSeparator())
+                  .concat(manufOrder.getMoCommentFromSaleOrderLine());
         }
       }
       response.setReload(true);
-      if (!lineProductionComment.isEmpty()) {
-        String message =
+      if (!message.isEmpty()) {
+        message =
             I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
-                .concat(lineProductionComment);
+                .concat(message);
         response.setFlash(message);
         response.setCanClose(true);
       }

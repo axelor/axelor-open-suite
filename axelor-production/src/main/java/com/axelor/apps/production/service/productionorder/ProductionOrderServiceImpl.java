@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -123,7 +124,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       LocalDateTime startDate,
       LocalDateTime endDate,
       SaleOrder saleOrder,
-      String moCommentFromSaleOrderLine,
+      SaleOrderLine saleOrderLine,
       int originType)
       throws AxelorException {
 
@@ -143,14 +144,13 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         manufOrder.addSaleOrderSetItem(saleOrder);
         manufOrder.setClientPartner(saleOrder.getClientPartner());
         manufOrder.setMoCommentFromSaleOrder("");
+        manufOrder.setMoCommentFromSaleOrderLine("");
         if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
           manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
         }
-        if (!Strings.isNullOrEmpty(moCommentFromSaleOrderLine)) {
-          manufOrder.setMoCommentFromSaleOrder(
-              manufOrder
-                  .getMoCommentFromSaleOrder()
-                  .concat(System.lineSeparator().concat(moCommentFromSaleOrderLine)));
+        if (saleOrderLine != null
+            && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
+          manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
       }
       productionOrder.addManufOrderSetItem(manufOrder);

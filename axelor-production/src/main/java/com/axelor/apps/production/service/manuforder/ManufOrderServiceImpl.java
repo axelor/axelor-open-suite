@@ -915,6 +915,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     ManufOrder mergedManufOrder = new ManufOrder();
 
     mergedManufOrder.setMoCommentFromSaleOrder("");
+    mergedManufOrder.setMoCommentFromSaleOrderLine("");
 
     for (ManufOrder manufOrder : manufOrderList) {
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_MERGED);
@@ -952,6 +953,14 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 .getMoCommentFromSaleOrder()
                 .concat(System.lineSeparator())
                 .concat(manufOrder.getMoCommentFromSaleOrder()));
+      }
+
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+        mergedManufOrder.setMoCommentFromSaleOrderLine(
+            mergedManufOrder
+                .getMoCommentFromSaleOrderLine()
+                .concat(System.lineSeparator())
+                .concat(manufOrder.getMoCommentFromSaleOrderLine()));
       }
     }
 
