@@ -53,5 +53,9 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
       // compute sale order totals
       Beans.get(SaleOrderComputeService.class)._computeSaleOrder(saleOrder);
     }
+    if (invoice.getPartner().getHasBlockedAccount()
+        && !invoice.getPartner().getHasManuallyBlockedAccount()) {
+      Beans.get(PartnerSupplychainService.class).updateBlockedAccount(invoice.getPartner());
+    }
   }
 }

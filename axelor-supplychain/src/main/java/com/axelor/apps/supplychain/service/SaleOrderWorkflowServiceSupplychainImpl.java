@@ -53,6 +53,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected SaleOrderPurchaseService saleOrderPurchaseService;
   protected AppSupplychain appSupplychain;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected PartnerSupplychainService partnerSupplychainService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -65,7 +66,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      PartnerSupplychainService partnerSupplychainService) {
 
     super(
         sequenceService,
@@ -79,6 +81,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.partnerSupplychainService = partnerSupplychainService;
   }
 
   @Override
@@ -87,7 +90,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
     super.confirmSaleOrder(saleOrder);
 
-    if (saleOrder.getClientPartner().getHasBlockedAccount()) {
+    if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));

@@ -199,6 +199,7 @@
 "Account equivalences","Równoważność rachunków",,
 "Account filters",,,
 "Account management list","Lista zarządzania rachunkami",,
+"Account manually blocked",,,
 "Account missing on configuration for line : %s (company : %s)","Brak konta w konfiguracji dla linii: %s (firma : %s)",,
 "Account missing on the tax line : %s (company : %s)","Brak konta w linii podatkowej: %s (firma: %s)",,
 "Account move","Przeniesienie konta",,

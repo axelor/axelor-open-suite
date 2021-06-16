@@ -541,7 +541,8 @@
 					if-module="axelor-sale"
 					if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()" />
 				<panel name="accountblockedPanel">
-					<field name="hasBlockedAccount"/>
+					<field name="hasBlockedAccount" onChange="action-attrs-update-manually-blocked-account"/>
+					<field name="hasManuallyBlockedAccount" onChange="action-attrs-update-blocked-account"/>
 				</panel>
 				<panel name="saleOrderCommentsPanel" title="Comment to display on sale order"
 					colSpan="12">
@@ -1509,6 +1510,12 @@
 		</filter>
 	</search-filters>
 
-
+	<action-attrs name="action-attrs-update-manually-blocked-account">
+		<attribute name="value" for="hasManuallyBlockedAccount" expr="eval: false" if="!hasBlockedAccount"/>
+	</action-attrs>
+	
+	<action-attrs name="action-attrs-update-blocked-account">
+		<attribute name="value" for="hasBlockedAccount" expr="eval: hasManuallyBlockedAccount"/>
+	</action-attrs>
 
 </object-views>

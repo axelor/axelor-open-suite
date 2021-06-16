@@ -199,6 +199,7 @@
 "Account equivalences",,,
 "Account filters",,,
 "Account management list",,,
+"Account manually blocked",,,
 "Account missing on configuration for line : %s (company : %s)",,,
 "Account missing on the tax line : %s (company : %s)",,,
 "Account move",,,

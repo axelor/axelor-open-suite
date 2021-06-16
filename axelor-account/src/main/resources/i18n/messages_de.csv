@@ -199,6 +199,7 @@
 "Account equivalences","Kontoäquivalenzen",,
 "Account filters",,,
 "Account management list","Liste der Kontoführung",,
+"Account manually blocked",,,
 "Account missing on configuration for line : %s (company : %s)","Konto fehlt bei der Konfiguration für die Leitung : %s (Firma : %s)",,
 "Account missing on the tax line : %s (company : %s)","Konto fehlt in der Steuerzeile : %s (Firma : %s)",,
 "Account move","Kontoumzug",,
