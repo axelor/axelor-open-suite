@@ -427,9 +427,7 @@ public class MrpLineServiceImpl implements MrpLineService {
         && (mrpLine.getMrpLineType().getElementSelect()
                 == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
             || mrpLine.getMrpLineType().getElementSelect()
-                == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
-            || mrpLine.getMrpLineType().getElementSelect()
-                == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED)) {
+                == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)) {
       mrpLine.setProposalToProcess(proposalToProcess);
       mrpLineRepo.save(mrpLine);
     }
