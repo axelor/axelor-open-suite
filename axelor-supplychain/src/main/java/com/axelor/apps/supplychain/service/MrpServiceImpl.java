@@ -1236,20 +1236,10 @@ public class MrpServiceImpl implements MrpService {
         mrpLineRepository
             .all()
             .filter(
-                "("
-                    + " self.mrp.displayProductWithoutProposal = true "
-                    + " AND self.mrp.id = :mrpId"
-                    + ") OR ("
-                    + " self.mrp.displayProductWithoutProposal = false "
-                    + " AND self.mrp.id = :mrpId "
-                    + " AND self.product.id IN ("
-                    + "   select m.product from MrpLine as m "
-                    + "   where m.mrp.id = :mrpId "
-                    + "   AND m.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal, :manufProposalNeed)))")
+                "self.mrp.id = :mrpId AND self.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal)")
             .bind("mrpId", mrp.getId())
             .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
             .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
-            .bind("manufProposalNeed", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED)
             .order("id");
 
     int offset = 0;
