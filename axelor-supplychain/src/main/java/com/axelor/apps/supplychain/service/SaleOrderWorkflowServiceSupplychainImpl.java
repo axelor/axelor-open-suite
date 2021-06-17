@@ -87,6 +87,12 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
     super.confirmSaleOrder(saleOrder);
 
+    if (saleOrder.getClientPartner().getHasBlockedAccount()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+    }
+
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return;
     }

@@ -110,6 +110,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
 
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPartner().getHasBlockedAccount()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+    }
+
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return super.realize(stockMove, check);
     }
