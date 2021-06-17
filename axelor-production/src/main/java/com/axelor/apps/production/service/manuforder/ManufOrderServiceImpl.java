@@ -61,6 +61,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -913,6 +914,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     ManufOrder mergedManufOrder = new ManufOrder();
 
+    mergedManufOrder.setMoCommentFromSaleOrder("");
+    mergedManufOrder.setMoCommentFromSaleOrderLine("");
+
     for (ManufOrder manufOrder : manufOrderList) {
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_MERGED);
 
@@ -941,6 +945,22 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
       if (manufOrder.getNote() != null && !manufOrder.getNote().equals("")) {
         note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
+      }
+
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+        mergedManufOrder.setMoCommentFromSaleOrder(
+            mergedManufOrder
+                .getMoCommentFromSaleOrder()
+                .concat(System.lineSeparator())
+                .concat(manufOrder.getMoCommentFromSaleOrder()));
+      }
+
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+        mergedManufOrder.setMoCommentFromSaleOrderLine(
+            mergedManufOrder
+                .getMoCommentFromSaleOrderLine()
+                .concat(System.lineSeparator())
+                .concat(manufOrder.getMoCommentFromSaleOrderLine()));
       }
     }
 
