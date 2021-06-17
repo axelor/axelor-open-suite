@@ -113,7 +113,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
             .getDueDate()
             .plusDays(config.getNumberOfDaysBeforeAccountBLocking())
             .compareTo(appBaseService.getTodayDate(invoice.getCompany()))
-        < 0) {
+        <= 0) {
       return invoice.getPartner();
     }
     return null;
