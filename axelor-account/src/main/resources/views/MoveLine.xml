@@ -12,7 +12,7 @@
   	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
     <field name="name" width="135"/>
     <field name="date" width="90" onChange="account-move-line-group-date-onchange"/>
- 		<field name="move.period" width="100" canView="false"/>
+ 	<field name="move.period" width="100" canView="false"/>
     <field name="move.journal" width="140"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
@@ -334,6 +334,7 @@
 
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-record-get-move-informations"/>
+	    <action name="action-move-line-method-get-account-informations"/>
 	    <action name="action-move-line-record-get-first-move-line-informations"/>
 	    <action name="action-move-line-record-get-creditdebit-balance"/>
 	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
@@ -386,6 +387,10 @@
     <action-method name="action-account-move-line-method-calculate-balance">
       <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
     </action-method>
+    
+    <action-method name="action-move-line-method-get-account-informations">
+    	<call class="com.axelor.apps.account.web.MoveLineController" method="loadAccountInformation"/>
+    </action-method>
 	
 	<action-attrs name="action-move-line-attrs-readonly">
 		<attribute name="readonly" for="informationsPanel" expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
@@ -415,7 +420,9 @@
 		<field name="partner" expr="eval: __parent__?.partner"/>
 		<field name="date" expr="eval: __parent__?.date"/>
 		<field name="dueDate" expr="eval: __parent__?.date"/>
-		<field name="originDate" expr="eval: date"/>
+		<field name="originDate" expr="eval: __parent__?.originDate"/>
+		<field name="origin" expr="eval: __parent__?.origin"/>
+		<field name="description" expr="eval: __parent__?.description"/>
 	</action-record>
 	
 	<action-record name="action-move-line-record-update-due-date" model="com.axelor.apps.account.db.MoveLine">
