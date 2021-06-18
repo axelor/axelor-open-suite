@@ -752,7 +752,7 @@ public class MrpServiceImpl implements MrpService {
 
       if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
           == MrpLineTypeRepository.ONE_OFF_SALES_EXCLUDED) {
-        filter += "AND self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE";
+        filter += "AND (self.saleOrder.oneoffSale IS NULL OR self.saleOrder.oneoffSale IS FALSE)";
       } else if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
           == MrpLineTypeRepository.ONE_OFF_SALES_ONLY) {
         filter += "AND self.saleOrder.oneoffSale IS TRUE";
