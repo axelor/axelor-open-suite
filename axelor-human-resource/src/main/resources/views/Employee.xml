@@ -54,7 +54,6 @@
 
             <field name="fixedPhone" onChange="action-partner-method-normalize-fixedPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
             <field name="mobilePhone" onChange="action-partner-method-normalize-mobilePhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
-            <field name="fax" onChange="action-partner-method-normalize-fax" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33000000000"/>
           </panel>
         </editor>
       </field>
@@ -193,7 +192,6 @@
 
 	            <field name="fixedPhone" onChange="action-partner-method-normalize-fixedPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
 	            <field name="mobilePhone" onChange="action-partner-method-normalize-mobilePhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
-	            <field name="fax" onChange="action-partner-method-normalize-fax" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33000000000"/>
 	          </panel>
 	        </editor>
 	      </field>
