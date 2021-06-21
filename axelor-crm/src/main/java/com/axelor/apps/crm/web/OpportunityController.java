@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -80,5 +82,29 @@ public class OpportunityController {
       TraceBackService.trace(e);
       response.setError(e.getMessage());
     }
+  }
+
+  public void closeOpportunity(ActionRequest request, ActionResponse response) {
+
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
+    boolean needProcessing = Beans.get(OpportunityService.class).closeLead(opportunity);
+    if (!needProcessing || opportunity.getLead() == null) {
+      return;
+    }
+
+    String title =
+        String.format(
+            I18n.get(IExceptionMessage.CONVERT_LEAD), opportunity.getLead().getFullName());
+    response.setView(
+        ActionView.define(title)
+            .model(Wizard.class.getName())
+            .add("form", "convert-lead-wizard-form")
+            .param("popup", "true")
+            .param("width", "500")
+            .param("popup-save", "false")
+            .context("_lead", opportunity.getLead())
+            .context("_primaryAddress", opportunity.getLead().getPrimaryAddress())
+            .map());
   }
 }

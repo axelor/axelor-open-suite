@@ -33,4 +33,6 @@ public interface OpportunityService {
   public void setSequence(Opportunity opportunity) throws AxelorException;
 
   public String computeAndGetName(Opportunity opportunity);
+
+  public boolean closeLead(Opportunity opportunity);
 }
