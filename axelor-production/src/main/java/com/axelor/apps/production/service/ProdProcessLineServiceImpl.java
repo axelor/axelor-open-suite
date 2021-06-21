@@ -52,6 +52,7 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
         workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     prodProcessLine.setMaxCapacityPerCycle(
         workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
+    prodProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
   }
 
   /**
