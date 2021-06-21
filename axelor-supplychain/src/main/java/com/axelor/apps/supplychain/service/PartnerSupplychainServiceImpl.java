@@ -73,13 +73,13 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
     partnerRepo.save(partner);
     return;
   }
-  
+
   @Override
   public boolean isBlockedPartnerOrParent(Partner partner) {
-    if(partner.getHasBlockedAccount()) {
+    if (partner.getHasBlockedAccount()) {
       return true;
     }
-    if(partner.getParentPartner() != null) {
+    if (partner.getParentPartner() != null) {
       return isBlockedPartnerOrParent(partner);
     }
     return false;
