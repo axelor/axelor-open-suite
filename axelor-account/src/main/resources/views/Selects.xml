@@ -199,6 +199,7 @@
 		<option value="20">Realize fixed asset lines</option>
 		<option value="21">Close the annual accounts of the past year</option>
 		<option value="22">Open the annual accounts of the next year</option>
+		<option value="23">Block customer with late payment issues</option>
 	</selection>
 	
 	<selection name="iaccount.account.batch.transfer.type.select">
@@ -469,7 +470,7 @@
 		<option value='4'>Purchase</option>
 		<option value='5'>Payment</option>
 		<option value='6'>Cut Off</option>
-		<option value='7'>Fixed Asset</option>
+		<option value='7'>Fixed asset</option>
 	</selection>
 	
    <selection name="account.year.period.duration.select">

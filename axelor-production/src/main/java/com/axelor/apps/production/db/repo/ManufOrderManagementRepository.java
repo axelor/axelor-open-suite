@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -66,6 +67,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
         entity.setManufOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(entity));
       }
     } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
 

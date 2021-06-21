@@ -53,6 +53,7 @@
 		<panel colSpan="12" itemSpan="6">
 			<field name="name"/>
 			<field name="workCenterTypeSelect"/>
+			<field name="template" hidden="true"/>
 		</panel>
 		<!-- If workCenterTypeSelect = Machine or Human + Machine -->
 		<panel-related name="detailLinesPanel" field="workCenterSet"

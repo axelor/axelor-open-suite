@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.meta.db.MetaFile;
@@ -79,8 +80,22 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
         && appStock.getActivateTrackingNumberBarCodeGeneration()
         && trackingNumber.getBarCode() == null) {
       boolean addPadding = false;
-      BarcodeTypeConfig barcodeTypeConfig = trackingNumber.getBarcodeTypeConfig();
-      if (!appStock.getEditTrackingNumberBarcodeType()) {
+      /*
+       * Barcode type config defaulting rule :
+       * Check if edit barcode type config is enabled and tracking number was generated from configuration
+       *    If true
+       *        we take the type from configuration as default
+       *    Else
+       *        we take the barcode type config from App Stock as default
+       */
+      BarcodeTypeConfig barcodeTypeConfig;
+      if (appStock.getEditTrackingNumberBarcodeType()
+          && trackingNumber.getProduct() != null
+          && trackingNumber.getProduct().getTrackingNumberConfiguration() != null) {
+        TrackingNumberConfiguration trackingNumberConfiguration =
+            trackingNumber.getProduct().getTrackingNumberConfiguration();
+        barcodeTypeConfig = trackingNumberConfiguration.getBarcodeTypeConfig();
+      } else {
         barcodeTypeConfig = appStock.getTrackingNumberBarcodeTypeConfig();
       }
       MetaFile barcodeFile =

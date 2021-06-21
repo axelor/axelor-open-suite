@@ -30,6 +30,8 @@
 		<boolean name="isFactor" title="Factor" />
 		<boolean name="factorizedCustomer" />
 		<string name="sellerCode" />
+		
+		<boolean name="hasBlockedAccount" title="Account blocked" />
     </entity>
 
 </domain-models>

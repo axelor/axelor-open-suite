@@ -29,6 +29,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -57,4 +58,8 @@ public interface MrpLineService {
   MrpLineOrigin createMrpLineOrigin(Model model);
 
   MrpLineOrigin copyMrpLineOrigin(MrpLineOrigin mrpLineOrigin);
+
+  void updateProposalToProcess(List<Integer> mrpLineIds, boolean proposalToProcess);
+
+  void updateProposalToProcess(MrpLine mrpLine, boolean proposalToProcess);
 }

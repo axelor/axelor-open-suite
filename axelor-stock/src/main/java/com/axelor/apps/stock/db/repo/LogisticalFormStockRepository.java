@@ -78,8 +78,8 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
       return super.save(logisticalForm);
 
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 }

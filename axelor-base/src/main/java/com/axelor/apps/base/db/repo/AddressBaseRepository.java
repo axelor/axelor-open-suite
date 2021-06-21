@@ -19,6 +19,7 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
@@ -33,6 +34,7 @@ public class AddressBaseRepository extends AddressRepository {
     try {
       addressService.updateLatLong(entity);
     } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
 

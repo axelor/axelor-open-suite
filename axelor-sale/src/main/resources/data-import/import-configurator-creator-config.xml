@@ -73,6 +73,8 @@
            <bind node="workCenter" to="workCenter" search="self.id = :workCenterId" if="workCenterId">
              <bind node="text()" to="id" alias="workCenterId"/>
            </bind>
+           <bind node="workCenterFormula" to="workCenterFormula"/>
+           <bind node="defWorkCenterFormula" to="defWorkCenterFormula"/>
            <bind node="stockLocation" to="stockLocation" search="self.id = :stockLocationId" if="stockLocationId">
              <bind node="text()" to="id" alias="stockLocationId"/>
            </bind>
@@ -80,6 +82,8 @@
            <bind node="defStockLocationAsFormula" to="defStockLocationAsFormula"/>
            <bind node="outsourcing" to="outsourcing"/>
            <bind node="description" to="description"/>
+           <bind node="descriptionFormula" to="descriptionFormula"/>
+       	   <bind node="defDescriptionAsFormula" to="defDescriptionAsFormula"/>
            <bind node="minCapacityPerCycle" to="minCapacityPerCycle"/>
            <bind node="minCapacityPerCycleFormula" to="minCapacityPerCycleFormula"/>
            <bind node="defMinCapacityFormula" to="defMinCapacityFormula"/>

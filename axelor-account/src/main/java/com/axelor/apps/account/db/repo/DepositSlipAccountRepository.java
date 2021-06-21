@@ -42,8 +42,8 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
 
       return super.save(entity);
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 
