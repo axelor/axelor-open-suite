@@ -26,6 +26,8 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.LeadManagementRepository;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
@@ -36,6 +38,7 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class OpportunityServiceImpl implements OpportunityService {
 
@@ -130,5 +133,43 @@ public class OpportunityServiceImpl implements OpportunityService {
       return contact.getFullName();
     }
     return null;
+  }
+
+  public boolean closeLead(Opportunity opportunity) {
+
+    if (opportunity.getLead() == null) {
+      return false;
+    }
+
+    Lead lead = opportunity.getLead();
+    List<Opportunity> opportunities = lead.getOpportunitiesList();
+    if (opportunities.size() == 1) {
+      if (opportunity.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST) {
+        setLeadStatus(lead, LeadRepository.LEAD_STATUS_CLOSED);
+      } else if (opportunity.getSalesStageSelect()
+          == OpportunityRepository.SALES_STAGE_CLOSED_WON) {
+        return true;
+      }
+    } else {
+      if (opportunities.stream()
+          .allMatch(
+              opp ->
+                  opp.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST
+                      || opp.getSalesStageSelect()
+                          == OpportunityRepository.SALES_STAGE_CLOSED_WON)) {
+        setLeadStatus(lead, LeadRepository.LEAD_STATUS_CLOSED);
+      } else {
+        setLeadStatus(lead, LeadRepository.LEAD_STATUS_IN_PROCESS);
+      }
+    }
+
+    return false;
+  }
+
+  @Transactional
+  public void setLeadStatus(Lead lead, Integer status) {
+
+    lead.setStatusSelect(status);
+    Beans.get(LeadManagementRepository.class).save(lead);
   }
 }
