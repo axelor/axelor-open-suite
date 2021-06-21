@@ -394,8 +394,26 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLine saleOrderLine =
           Beans.get(SaleOrderLineRepository.class)
               .find(Long.parseLong(soLine.get("id").toString()));
-      copySaleOrder.addSaleOrderLineListItem(saleOrderLine);
-      saleOrder.removeSaleOrderLineListItem(saleOrderLine);
+      if (!copySaleOrder.getSaleOrderLineList().contains(saleOrderLine)) {
+        copySaleOrder.addSaleOrderLineListItem(saleOrderLine);
+        saleOrder.removeSaleOrderLineListItem(saleOrderLine);
+      }
+      if (saleOrderLine.getSelectedComplementaryProductList() != null) {
+        List<SaleOrderLine> compProdSOLineList =
+            saleOrderLineRepo
+                .all()
+                .filter(
+                    "self.parentId = ?1 and self.saleOrder = ?2",
+                    saleOrderLine.getManualId(),
+                    saleOrder)
+                .fetch();
+        if (compProdSOLineList != null) {
+          for (SaleOrderLine sol : compProdSOLineList) {
+            copySaleOrder.addSaleOrderLineListItem(sol);
+            saleOrder.removeSaleOrderLineListItem(sol);
+          }
+        }
+      }
     }
 
     copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
