@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -73,6 +74,7 @@ public class MoveServiceImpl implements MoveService {
   protected MoveExcessPaymentService moveExcessPaymentService;
   protected AccountConfigService accountConfigService;
   protected MoveRepository moveRepository;
+  protected CurrencyService currencyService;
 
   protected AppAccountService appAccountService;
 
@@ -89,7 +91,8 @@ public class MoveServiceImpl implements MoveService {
       PaymentService paymentService,
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      CurrencyService currencyService) {
 
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
@@ -102,6 +105,7 @@ public class MoveServiceImpl implements MoveService {
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
+    this.currencyService = currencyService;
 
     this.appAccountService = appAccountService;
   }
@@ -720,6 +724,23 @@ public class MoveServiceImpl implements MoveService {
       moveLine.setCredit(amount.abs());
     } else {
       moveLine.setDebit(amount.abs());
+    }
+    if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
+      BigDecimal unratedAmount = BigDecimal.ZERO;
+      try {
+        moveLine.setCurrencyRate(
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompany().getCurrency()));
+        if (!moveLine.getDebit().equals(BigDecimal.ZERO)) {
+          unratedAmount = moveLine.getDebit();
+        }
+        if (!moveLine.getCredit().equals(BigDecimal.ZERO)) {
+          unratedAmount = moveLine.getCredit();
+        }
+        moveLine.setCurrencyAmount(unratedAmount.divide(moveLine.getCurrencyRate()));
+      } catch (AxelorException e) {
+        e.printStackTrace();
+      }
     }
 
     return moveLine;

@@ -43,6 +43,8 @@
 		<field name="date" width="100" onChange="account-move-line-group-date-onchange"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
+ 		<field name="currencyAmount" onChange="action-move-line-method-set-debitcredit"/>
+        <field name="currencyRate" onChange="action-move-line-method-set-debitcredit"/>
         <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0"/>
         <field name="credit" onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
@@ -481,6 +483,11 @@
 	
 	<action-record name="account-move-line-record-date-onchange" model="com.axelor.apps.account.db.MoveLine">
 		<field name="originDate" expr="eval: date"/>
+	</action-record>
+	
+	<action-record name="action-move-line-method-set-debitcredit" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="eval: currencyAmount * currencyRate" if="account?.commonPosition = 1"/>
+		<field name="credit" expr="eval: currencyAmount * currencyRate" if="account?.commonPosition = 2"/>
 	</action-record>
 
 	<action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">

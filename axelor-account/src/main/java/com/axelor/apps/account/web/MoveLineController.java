@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -262,67 +263,72 @@ public class MoveLineController {
     if (parentContext != null) {
       Move move = parentContext.asType(Move.class);
       Partner partner = move.getPartner();
-      List<AccountingSituation> accountConfigs =
-          partner.getAccountingSituationList().stream()
-              .filter(
-                  accountingSituation -> accountingSituation.getCompany().equals(move.getCompany()))
-              .collect(Collectors.toList());
-      Account accountingAccount = null;
-      if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
-        if (accountConfigs.size() > 0) {
-          accountingAccount = accountConfigs.get(0).getDefaultExpenseAccount();
-        }
-      } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
-        if (accountConfigs.size() > 0)
-          accountingAccount = accountConfigs.get(0).getDefaultIncomeAccount();
-      } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
-        if (move.getPaymentMode() != null) {
-          if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.IN)) {
-            if (accountConfigs.size() > 0) {
-              accountingAccount = accountConfigs.get(0).getCustomerAccount();
-            }
-          } else if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.OUT)) {
-            if (accountConfigs.size() > 0) {
-              accountingAccount = accountConfigs.get(0).getSupplierAccount();
+
+      if (ObjectUtils.isEmpty(partner)) {
+        response.setError(I18n.get("Please select a partner"));
+      } else {
+        List<AccountingSituation> accountConfigs =
+            partner.getAccountingSituationList().stream()
+                .filter(
+                    accountingSituation ->
+                        accountingSituation.getCompany().equals(move.getCompany()))
+                .collect(Collectors.toList());
+        Account accountingAccount = null;
+        if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+          if (accountConfigs.size() > 0) {
+            accountingAccount = accountConfigs.get(0).getDefaultExpenseAccount();
+          }
+        } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+          if (accountConfigs.size() > 0)
+            accountingAccount = accountConfigs.get(0).getDefaultIncomeAccount();
+        } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
+          if (move.getPaymentMode() != null) {
+            if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.IN)) {
+              if (accountConfigs.size() > 0) {
+                accountingAccount = accountConfigs.get(0).getCustomerAccount();
+              }
+            } else if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.OUT)) {
+              if (accountConfigs.size() > 0) {
+                accountingAccount = accountConfigs.get(0).getSupplierAccount();
+              }
             }
           }
         }
-      }
-      if (accountingAccount != null) {
-        response.setValue("account", accountingAccount);
-        if (!accountingAccount.getUseForPartnerBalance()) {
-          response.setValue("partner", null);
+        if (accountingAccount != null) {
+          response.setValue("account", accountingAccount);
+          if (!accountingAccount.getUseForPartnerBalance()) {
+            response.setValue("partner", null);
+          }
         }
-      }
-      if (partner.getFiscalPosition().equals(null)) {
-        if (accountingAccount != null)
-          if (accountingAccount.getDefaultTax() != null)
-            response.setValue("taxLine", accountingAccount.getDefaultTax());
-      } else {
-        List<TaxLine> taxLineList;
-        TaxLine taxLine = null;
-        for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
-          System.err.println(taxEquiv);
+        if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
           if (accountingAccount != null)
-            if (taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
-              taxLine = taxEquiv.getToTax().getActiveTaxLine();
-              if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-                taxLineList =
-                    taxEquiv.getToTax().getTaxLineList().stream()
-                        .filter(
-                            tl ->
-                                !moveLine.getDate().isBefore(tl.getEndDate())
-                                    && !tl.getStartDate().isAfter(moveLine.getDate()))
-                        .collect(Collectors.toList());
-                if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
+            if (accountingAccount.getDefaultTax() != null)
+              response.setValue("taxLine", accountingAccount.getDefaultTax());
+        } else {
+          List<TaxLine> taxLineList;
+          TaxLine taxLine = null;
+          for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
+            if (accountingAccount != null)
+              if (taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
+                taxLine = taxEquiv.getToTax().getActiveTaxLine();
+                if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+                  taxLineList =
+                      taxEquiv.getToTax().getTaxLineList().stream()
+                          .filter(
+                              tl ->
+                                  !moveLine.getDate().isBefore(tl.getEndDate())
+                                      && !tl.getStartDate().isAfter(moveLine.getDate()))
+                          .collect(Collectors.toList());
+                  if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
+                }
+                break;
               }
-              break;
-            }
+          }
+          if (taxLine != null) response.setValue("taxLine", taxLine);
         }
-        if (taxLine != null) response.setValue("taxLine", taxLine);
       }
     }
   }

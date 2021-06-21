@@ -87,18 +87,20 @@
 					<field name="period" form-view="period-form"
 						grid-view="period-grid" canEdit="false" canView="false" />
 					<field name="date" onChange="action-move-method-get-period"
-						hideIf="statusSelect == 3" />
+						hideIf="statusSelect == 3" colSpan="3"/>
+					<field name="originDate" colSpan="3" />
 					<field name="tradingName"
 						if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
 						form-view="trading-name-form" grid-view="trading-name-grid"
 						canNew="false" onSelect="action-move-set-trading-name-domain" />
-					<field name="originDate" />
+					<field name="partner" colSpan="6" canNew="false"
+						canEdit="false" form-view="partner-form" grid-view="partner-grid"
+						onSelect="action-account-move-method-filter-partner" onChange="action-account-move-record-set-currency,action-account-move-attrs-show-hide-currency" />
+					<field name="paymentMode" colSpan="3"/>
+					<field name="currency" colSpan="3"/>
 					<field name="origin" />
 					<field name="description" />
 				</panel>
-				<field name="partner" colSpan="12" canNew="false"
-					canEdit="false" form-view="partner-form" grid-view="partner-grid"
-					onSelect="action-account-move-method-filter-partner" />
 			</panel>
 
 			<panel name="otherDetailsPanel" colSpan="3">
@@ -331,6 +333,7 @@
 		<action name="action-attrs-move-hide-trading-name" />
 		<action
 			name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status" />
+		<action name="action-account-move-attrs-show-hide-currency"/>
 	</action-group>
 
 	<action-group
@@ -393,6 +396,10 @@
 		<field name="journal"
 			expr="eval: company?.accountConfig?.manualMiscOpeJournal" />
 	</action-record>
+	
+	<action-record name="action-account-move-record-set-currency" model="com.axelor.apps.account.db.Move">
+		<field name="currency" expr="eval: partner?.currency"/>
+	</action-record>
 
 	<!-- ACTION ATTRS -->
 	<action-attrs
@@ -447,7 +454,7 @@
 		<attribute name="value" for="dateOfReversion"
 			expr="eval: _moveDate" />
 	</action-attrs>
-
+	
 	<!-- ACTION METHOD -->
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController"
