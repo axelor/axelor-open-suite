@@ -160,9 +160,6 @@
 		<!-- Account Report -->
 		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of lines minimum before long report generation message appears" min="0" help="Minimal number of lines required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message"  default="10000"/>
 
-		<!-- Late payment blocking  -->
-		<boolean name="hasLatePaymentAccountBlocking" title="Late payment account blocking"/>
-		<integer name="numberOfDaysBeforeAccountBLocking" title="Number of days before account blocking"/>
 
     <finder-method name="findByCompany" using="company"/>
 

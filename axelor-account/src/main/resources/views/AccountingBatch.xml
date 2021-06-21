@@ -96,11 +96,11 @@
 		    <button name="creditTransferBatchBtn" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
 		    <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-group-realize-fixed-asset-lines" colSpan="12"/>
 		    <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21" onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
-			<button name="blockCustomerWithLatePayments" title="Start" showIf="actionSelect == 21" onClick="save,action-accounting-batch-method-block-customers-with-late-payments" colSpan="12"/>
+		
 		</panel>
 	</form>
 
-    <!-- ACTION GROUP -->    
+    <!-- ACTION GROUP -->
 	<action-group name="action-accounting-batch-group-close-annual-accounts">
 		<action name="action-accounting-batch-validate-batchlist-not-empty"/>
 		<action name="action-accounting-batch-method-action-close-annual-accounts"/>
@@ -132,10 +132,6 @@
     </action-record>
     
     <!-- ACTION METHOD -->
-	<action-method name="action-accounting-batch-method-block-customers-with-late-payments">
-		<call class="com.axelor.apps.account.web.AccountingBatchController" method="blockCustomersWithLatePayments"/>
-	</action-method>
-    
 	<action-method name="action-accounting-batch-method-action-reimbursement">
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionReimbursement"/>
 	</action-method>
