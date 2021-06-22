@@ -729,16 +729,20 @@ public class MoveServiceImpl implements MoveService {
     if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
       BigDecimal unratedAmount = BigDecimal.ZERO;
       try {
-        moveLine.setCurrencyRate(
-            currencyService.getCurrencyConversionRate(
-                move.getCurrency(), move.getCompany().getCurrency()));
+        System.err.println(move.getMoveLineList().size());
+        if (move.getMoveLineList().size() == 0)
+          moveLine.setCurrencyRate(
+              currencyService.getCurrencyConversionRate(
+                  move.getCurrency(), move.getCompany().getCurrency()));
+        else moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
         if (!moveLine.getDebit().equals(BigDecimal.ZERO)) {
           unratedAmount = moveLine.getDebit();
         }
         if (!moveLine.getCredit().equals(BigDecimal.ZERO)) {
           unratedAmount = moveLine.getCredit();
         }
-        moveLine.setCurrencyAmount(unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
+        moveLine.setCurrencyAmount(
+            unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
       } catch (AxelorException e) {
         e.printStackTrace();
       }

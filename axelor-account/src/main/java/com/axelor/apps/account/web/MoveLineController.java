@@ -232,8 +232,12 @@ public class MoveLineController {
         Currency currency = move.getCurrency();
         Currency companyCurrency = move.getCompanyCurrency();
         if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-          currencyRate =
-              Beans.get(CurrencyService.class).getCurrencyConversionRate(currency, companyCurrency);
+          System.err.println(move.getMoveLineList().size());
+          if (move.getMoveLineList().size() == 0)
+            currencyRate =
+                Beans.get(CurrencyService.class)
+                    .getCurrencyConversionRate(currency, companyCurrency);
+          else currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
         }
       }
       response.setValue("currencyRate", currencyRate);
