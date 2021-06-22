@@ -51,8 +51,7 @@ public class StockMoveLineController {
     if (moveLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (StockMoveLine line : moveLines) {
-          qty =
-              (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP)).multiply(newKitQty);
+          qty = (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP)).multiply(newKitQty);
           line.setQty(qty.setScale(scale, RoundingMode.HALF_UP));
           line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
         }

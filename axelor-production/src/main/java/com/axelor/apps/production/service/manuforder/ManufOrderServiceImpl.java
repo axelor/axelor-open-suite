@@ -241,8 +241,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 ? prodResidualProduct
                     .getQty()
                     .multiply(manufOrderQty)
-                    .divide(
-                        bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                    .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
         manufOrder.addToProduceProdProductListItem(
