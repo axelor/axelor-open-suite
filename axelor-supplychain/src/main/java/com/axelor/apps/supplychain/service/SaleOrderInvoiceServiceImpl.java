@@ -222,7 +222,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
     if (!isPercent) {
-      amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_EVEN);
+      amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_UP);
     }
     if (amount.compareTo(new BigDecimal("100")) > 0) {
       throw new AxelorException(
@@ -449,7 +449,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                   .divide(
                       new BigDecimal("100"),
                       appBaseService.getNbDecimalDigitForQty(),
-                      RoundingMode.HALF_EVEN);
+                      RoundingMode.HALF_UP);
           qtyToInvoiceMap.put(SOrderId, realQty);
         }
         if (qtyToInvoiceMap.get(SOrderId).compareTo(saleOrderLine.getQty()) > 0) {

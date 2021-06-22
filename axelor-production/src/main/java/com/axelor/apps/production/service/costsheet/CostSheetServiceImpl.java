@@ -419,7 +419,7 @@ public class CostSheetServiceImpl implements CostSheetService {
             .divide(
                 BigDecimal.valueOf(3600),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
-                RoundingMode.HALF_EVEN);
+                RoundingMode.HALF_UP);
 
     costSheetLineService.createWorkCenterHRCostSheetLine(
         prodHumanResource.getWorkCenter(),
