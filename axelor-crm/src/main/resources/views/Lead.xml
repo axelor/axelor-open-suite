@@ -394,6 +394,9 @@
 		<filter title="My Team Leads">
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
+		<filter title="Active Leads">
+			<domain>self.statusSelect = :_statusNewLead OR self.statusSelect = :_statusInProgressLead</domain>
+		</filter>
 	</search-filters>
 
 </object-views>
