@@ -134,7 +134,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     costSheetLine.setCostPrice(
         costPrice.setScale(
-            appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_EVEN));
+            appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
 
     if (parentCostSheetLine != null) {
       parentCostSheetLine.addCostSheetLineListItem(costSheetLine);
@@ -270,7 +270,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 .add(costSheetLine.getCostPrice())
                 .setScale(
                     appProductionService.getNbDecimalDigitForUnitPrice(),
-                    BigDecimal.ROUND_HALF_EVEN));
+                    BigDecimal.ROUND_HALF_UP));
         return costSheetLine;
       }
     }
@@ -402,7 +402,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .divide(
                 new BigDecimal("100"),
                 appBaseService.getNbDecimalDigitForQty(),
-                BigDecimal.ROUND_HALF_EVEN);
+                BigDecimal.ROUND_HALF_UP);
 
     BigDecimal costPrice = null;
     switch (origin) {

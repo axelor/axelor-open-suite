@@ -276,7 +276,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_EVEN);
     } else {
       inTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_EVEN);
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
   }
 

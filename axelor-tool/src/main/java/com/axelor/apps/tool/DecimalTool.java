@@ -77,7 +77,7 @@ public final class DecimalTool {
       return prorataValue;
     } else {
       prorataValue =
-          (days.multiply(value).divide(totalDays, scale, BigDecimal.ROUND_HALF_EVEN))
+          (days.multiply(value).divide(totalDays, scale, BigDecimal.ROUND_HALF_UP))
               .setScale(scale, RoundingMode.HALF_EVEN);
     }
 
