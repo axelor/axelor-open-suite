@@ -49,6 +49,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -737,7 +738,7 @@ public class MoveServiceImpl implements MoveService {
         if (!moveLine.getCredit().equals(BigDecimal.ZERO)) {
           unratedAmount = moveLine.getCredit();
         }
-        moveLine.setCurrencyAmount(unratedAmount.divide(moveLine.getCurrencyRate()));
+        moveLine.setCurrencyAmount(unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
       } catch (AxelorException e) {
         e.printStackTrace();
       }
