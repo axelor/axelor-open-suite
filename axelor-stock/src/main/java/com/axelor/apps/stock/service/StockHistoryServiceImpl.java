@@ -270,12 +270,12 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLine.setSumIncQtyPeriod(
         totalStockHistoryLine
             .getSumIncQtyPeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_UP));
 
     stockHistoryLine.setPriceIncStockMovePeriod(
         totalStockHistoryLine
             .getPriceIncStockMovePeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_UP));
 
     stockHistoryLine.setCountOutMvtStockPeriod(
         totalStockHistoryLine.getCountOutMvtStockPeriod() / sizeOfList);
@@ -283,12 +283,12 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLine.setSumOutQtyPeriod(
         totalStockHistoryLine
             .getSumOutQtyPeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_UP));
 
     stockHistoryLine.setPriceOutStockMovePeriod(
         totalStockHistoryLine
             .getPriceOutStockMovePeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_UP));
 
     return stockHistoryLine;
   }

@@ -661,7 +661,7 @@ public class ManufOrderStockMoveService {
 
     return qtyToUpdate
         .multiply(prodProductQty)
-        .setScale(scale, RoundingMode.HALF_EVEN)
-        .divide(manufOrderQty, scale, RoundingMode.HALF_EVEN);
+        .setScale(scale, RoundingMode.HALF_UP)
+        .divide(manufOrderQty, scale, RoundingMode.HALF_UP);
   }
 }

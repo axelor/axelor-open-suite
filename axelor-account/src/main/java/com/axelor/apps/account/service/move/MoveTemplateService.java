@@ -165,7 +165,7 @@ public class MoveTemplateService {
           BigDecimal amount =
               moveBalance
                   .multiply(moveTemplateLine.getPercentage())
-                  .divide(hundred, RoundingMode.HALF_EVEN);
+                  .divide(hundred, RoundingMode.HALF_UP);
 
           MoveLine moveLine =
               moveLineService.createMoveLine(

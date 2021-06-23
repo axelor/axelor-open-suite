@@ -389,7 +389,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               manufProposalNeedMrpLineType,
               reorderQty
                   .multiply(billOfMaterial.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN),
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
               stockLocation,
               maturityDate,
               mrpLineOriginList,
