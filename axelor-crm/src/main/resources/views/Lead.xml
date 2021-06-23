@@ -384,14 +384,17 @@
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
    		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
-		<filter title="My Leads">
+		<filter title="My Leads" name="my-leads-filter">
 			<domain>self.user = :__user__</domain>
 		</filter>
-		<filter title="Unassigned Leads">
+		<filter title="Unassigned Leads" name="unassigned-leads-filter">
 			<domain>self.user IS NULL</domain>
 		</filter>
-		<filter title="My Team Leads">
+		<filter title="My Team Leads" name="my-team-leads-filter">
 			<domain>self.team = :_myActiveTeam</domain>
+		</filter>
+		<filter title="Active Leads" name="active-team-leads-filter">
+			<domain>self.statusSelect = :_statusNewLead OR self.statusSelect = :_statusInProgressLead</domain>
 		</filter>
 	</search-filters>
 
