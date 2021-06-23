@@ -14,7 +14,7 @@
 		<view type="grid" name="lead-grid"/>
 		<view type="form" name="lead-form"/>
 		<view-param name="search-filters" value="lead-filters"/>
-		<domain>self.statusSelect = :_statusNewLead OR self.statusSelect = :_statusInProgressLead</domain>
+		<view-param name="default-search-filters" value="active-team-leads-filter"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
