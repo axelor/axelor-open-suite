@@ -135,10 +135,10 @@ public class OpportunityServiceImpl implements OpportunityService {
     return null;
   }
 
-  public boolean closeLead(Opportunity opportunity) {
+  public void closeLead(Opportunity opportunity) {
 
     if (opportunity.getLead() == null) {
-      return false;
+      return;
     }
 
     Lead lead = opportunity.getLead();
@@ -146,9 +146,6 @@ public class OpportunityServiceImpl implements OpportunityService {
     if (opportunities.size() == 1) {
       if (opportunity.getSalesStageSelect() == OpportunityRepository.SALES_STAGE_CLOSED_LOST) {
         setLeadStatus(lead, LeadRepository.LEAD_STATUS_CLOSED);
-      } else if (opportunity.getSalesStageSelect()
-          == OpportunityRepository.SALES_STAGE_CLOSED_WON) {
-        return true;
       }
     } else {
       if (opportunities.stream()
@@ -162,8 +159,6 @@ public class OpportunityServiceImpl implements OpportunityService {
         setLeadStatus(lead, LeadRepository.LEAD_STATUS_IN_PROCESS);
       }
     }
-
-    return false;
   }
 
   @Transactional
