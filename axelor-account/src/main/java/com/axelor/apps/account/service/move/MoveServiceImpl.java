@@ -274,13 +274,15 @@ public class MoveServiceImpl implements MoveService {
     if (!debitMoveLines.isEmpty()) {
       MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 
-      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
+      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on
+      // lettre directement
       if (moveToolService.isSameAccount(debitMoveLines, invoiceCustomerMoveLine.getAccount())) {
         List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
         creditMoveLineList.add(invoiceCustomerMoveLine);
         paymentService.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
       }
-      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les
+      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte
+      // sur les
       // trop-perçus
       else {
         this.createMoveUseDebit(invoice, debitMoveLines, invoiceCustomerMoveLine);
@@ -315,13 +317,15 @@ public class MoveServiceImpl implements MoveService {
 
       Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
-      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
+      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on
+      // lettre directement
       if (moveToolService.isSameAccount(creditMoveLineList, account)) {
         List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
         debitMoveLineList.add(invoiceCustomerMoveLine);
         paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
       }
-      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les
+      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte
+      // sur les
       // trop-perçus
       else {
 
@@ -358,7 +362,8 @@ public class MoveServiceImpl implements MoveService {
                   null);
           move.getMoveLineList().add(creditMoveLine);
 
-          // Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
+          // Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de
+          // l'eau
           paymentService.useExcessPaymentWithAmountConsolidated(
               creditMoveLineList,
               amount,
@@ -726,26 +731,25 @@ public class MoveServiceImpl implements MoveService {
     } else {
       moveLine.setDebit(amount.abs());
     }
+    if (move.getMoveLineList().size() == 0)
+      try {
+        moveLine.setCurrencyRate(
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompany().getCurrency()));
+      } catch (AxelorException e1) {
+        e1.printStackTrace();
+      }
+    else moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
       BigDecimal unratedAmount = BigDecimal.ZERO;
-      try {
-        System.err.println(move.getMoveLineList().size());
-        if (move.getMoveLineList().size() == 0)
-          moveLine.setCurrencyRate(
-              currencyService.getCurrencyConversionRate(
-                  move.getCurrency(), move.getCompany().getCurrency()));
-        else moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
-        if (!moveLine.getDebit().equals(BigDecimal.ZERO)) {
-          unratedAmount = moveLine.getDebit();
-        }
-        if (!moveLine.getCredit().equals(BigDecimal.ZERO)) {
-          unratedAmount = moveLine.getCredit();
-        }
-        moveLine.setCurrencyAmount(
-            unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
-      } catch (AxelorException e) {
-        e.printStackTrace();
+      if (!moveLine.getDebit().equals(BigDecimal.ZERO)) {
+        unratedAmount = moveLine.getDebit();
       }
+      if (!moveLine.getCredit().equals(BigDecimal.ZERO)) {
+        unratedAmount = moveLine.getCredit();
+      }
+      moveLine.setCurrencyAmount(
+          unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
     }
 
     return moveLine;
