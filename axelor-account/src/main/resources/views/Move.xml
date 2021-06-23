@@ -108,33 +108,42 @@
                         ]]>
                     </viewer>
             </field>
-			<field name="$totalLines" title="Total lines" type="integer" colSpan="3" readonly="true">
+			<field name="$totalLines" title="Total lines" type="integer" colSpan="1" readonly="true" showIf="currency.code != companyCurrency.code">
 				<viewer>
 					<![CDATA[
 						<h3>{{$fmt('$totalLines')}}</h3>
 					]]>
 				</viewer>				
 			</field>
-	   		<field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true">
+			<field name="$totalCurrency" title="Total Currency" type="integer" colSpan="3" readonly="true" showIf="currency.code != companyCurrency.code">
 				<viewer>
 					<![CDATA[
-						<h3>{{$fmt('$totalDebit')}}</h3>
+						<h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
 					]]>
 				</viewer>				
 			</field>
-	   		<field name="$totalCredit" title="Total credit" type="decimal" colSpan="3" readonly="true">
-				<viewer>
-					<![CDATA[
-						<h3>{{$fmt('$totalCredit')}}</h3>
-					]]>
-				</viewer>				
-			</field>
-	   		<field name="$difference" title="Difference" type="decimal" colSpan="3" readonly="true">
+	   		<field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true" showIf="currency.code != companyCurrency.code">
 				<viewer>
 					<![CDATA[
 						<h3>
-							<span ng-show="record.$difference == 0">{{$fmt('$difference')}}</span>
-							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')}}</span>
+							{{$fmt('$totalDebit')+' '+$fmt('companyCurrency.code')}}
+						</h3>
+					]]>
+				</viewer>				
+			</field>
+	   		<field name="$totalCredit" title="Total credit" type="decimal" colSpan="3" readonly="true" showIf="currency.code != companyCurrency.code">
+				<viewer>
+					<![CDATA[
+						<h3>{{$fmt('$totalCredit')+' '+$fmt('companyCurrency.code')}}</h3>
+					]]>
+				</viewer>				
+			</field>
+	   		<field name="$difference" title="Difference" type="decimal" colSpan="2" readonly="true" showIf="currency.code != companyCurrency.code">
+				<viewer>
+					<![CDATA[
+						<h3>
+							<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('companyCurrency.code')}}</span>
+							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('companyCurrency.code')}}</span>
 						</h3>
 					]]>
 				</viewer>
