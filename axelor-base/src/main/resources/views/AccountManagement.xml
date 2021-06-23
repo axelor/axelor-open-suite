@@ -50,12 +50,12 @@
 		width="large">
 		<panel name="mainAccountManagementPanel">
 			<panel name="mainPanel" colSpan="12">
-				<field name="typeSelect" />
+				<field name="typeSelect" onChange="action-account-management-attrs-onLoad" />
 				<field name="company" widget="SuggestBox"
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
 				<field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
-							 domain="self.dtype = 'Product'" showIf="typeSelect == 1" requiredIf="typeSelect==1 &amp;&amp; !productFamily"/>
+							 domain="self.dtype = 'Product'" requiredIf="typeSelect==1 &amp;&amp; !productFamily"/>
 				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
 							 requiredIf="typeSelect==1 &amp;&amp; !product" showIf="typeSelect == 1"/>
 			</panel>
@@ -213,5 +213,6 @@
 							 for="productFamily"/>
 		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || typeSelect != 1"
 							 for="product"/>
+				 
 	</action-attrs>
 </object-views>
