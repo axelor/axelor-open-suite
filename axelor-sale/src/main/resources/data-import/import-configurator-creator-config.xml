@@ -36,11 +36,11 @@
          <bind node="text()" to="code" alias="prodProcessCode"/>
        </bind>
        
-       <bind node="configuratorProdProcess" to="configuratorProdProcess" update="true" search="self.importId = :importId" if="configProdProcessName || nameFormula">
+       <bind node="configuratorProdProcess" to="configuratorProdProcess" update="true" search="self.importId = :importId" if="configProdProcessName || configProdProcessNameFormula">
        	 <bind node="importId" to="importId"/>
          <bind node="statusSelect" to="statusSelect"/>
          <bind node="name" to="name" alias="configProdProcessName"/>
-         <bind node="nameFormula" to="nameFormula"/>
+         <bind node="nameFormula" to="nameFormula" alias="configProdProcessNameFormula"/>
          <bind node="defNameAsFormula" to="defNameAsFormula"/>
          <bind node="code" to="code"/>
          <bind node="codeFormula" to="codeFormula"/>
