@@ -997,23 +997,27 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       return false;
     }
 
-    // Check if one of the workShopStockLocation is null
-    boolean oneWorkShopIsNull =
-        manufOrderList.stream().anyMatch(x -> x.getWorkshopStockLocation() == null);
-    if (oneWorkShopIsNull) {
-      return false;
-    }
 
-    // I check if all the stockLocation are the same. If not i return false
-    StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
-    boolean allSameLocation =
-        manufOrderList.stream()
-            .allMatch(
-                x ->
-                    x.getWorkshopStockLocation() != null
-                        && x.getWorkshopStockLocation().equals(stockLocation));
-    if (!allSameLocation) {
-      return false;
+    // Workshop management must be enabled to do the checking
+    if (appProductionService.getAppProduction().getManageWorkshop()) {
+      // Check if one of the workShopStockLocation is null
+      boolean oneWorkShopIsNull =
+          manufOrderList.stream().anyMatch(x -> x.getWorkshopStockLocation() == null);
+      if (oneWorkShopIsNull) {
+        return false;
+      }
+
+      // I check if all the stockLocation are the same. If not i return false
+      StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
+      boolean allSameLocation =
+          manufOrderList.stream()
+              .allMatch(
+                  x ->
+                      x.getWorkshopStockLocation() != null
+                          && x.getWorkshopStockLocation().equals(stockLocation));
+      if (!allSameLocation) {
+        return false;
+      }
     }
 
     // Check if one of the billOfMaterial is null
