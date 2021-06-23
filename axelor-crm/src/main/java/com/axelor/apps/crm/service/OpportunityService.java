@@ -34,5 +34,5 @@ public interface OpportunityService {
 
   public String computeAndGetName(Opportunity opportunity);
 
-  public boolean closeLead(Opportunity opportunity);
+  public void closeLead(Opportunity opportunity);
 }
