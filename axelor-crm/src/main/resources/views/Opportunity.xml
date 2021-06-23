@@ -150,7 +150,7 @@
         <panel name="otherDetailsPanel" sidebar="true">
             <button name="previous-stageBtn" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="save,action-opportunity-set-previous-stage,save"/>
             <button name="next-stageBtn" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="save,action-opportunity-set-next-stage,save"/>
-            <button name="closed-wonBtn" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save,action-crm-method-close-opportunity"/>
+            <button name="closed-wonBtn" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save,action-opportunity-group-on-after-closed-won"/>
             <button name="closed-lostBtn" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
             <panel name="followUpPanel" title="Follow-up" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
                 <field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
@@ -264,6 +264,7 @@
     <action-group name="action-group-crm-opportunity-closedwon-click">
     	<action name="action-opportunity-set-closed-won"/>
     	<action name="save"/>
+    	<action name="action-opportunity-group-on-after-closed-won"/>
     </action-group>
     
     <action-group name="action-group-crm-opportunity-closedlost-click">
@@ -277,6 +278,25 @@
     	<action name="action-crm-method-close-opportunity"/>
     	<action name="action-opportunity-method-cancel-saleorders"/>
     </action-group>
+    
+    <action-group name="action-opportunity-group-on-after-closed-won">
+    	<action name="action-crm-method-close-opportunity"/>
+    	<action name="action-opportunity-validate-convert-lead" if="__config__.app.getApp('crm').getIsAutomaticConvertLead()"/>
+    	<action name="action-opportunity-view-convert-lead" if="__config__.app.getApp('crm').getIsAutomaticConvertLead() &amp;&amp; lead?.opportunitiesList?.size() == 1 &amp;&amp; salesStageSelect == 5"/>
+    </action-group>
+    
+    <action-validate name="action-opportunity-validate-convert-lead">
+    	<alert message="Do you want to convert the lead linked to the opportunity into a partner ?" if="lead?.opportunitiesList?.size() == 1 &amp;&amp; salesStageSelect == 5"/>
+    </action-validate>
+    
+    <action-view name="action-opportunity-view-convert-lead" title="Convert lead (${ lead.fullName })" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="convert-lead-wizard-form"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="width" value="500"/>
+		<view-param name="popup-save" value="false"/>
+		<context name="_lead" expr="eval: lead"/>
+		<context name="_primaryAddress" expr="eval: lead?.primaryAddress"/>
+	</action-view>
 
     <action-view name="action-opportunity-view-schedule-event" model="com.axelor.apps.crm.db.Event" title="Create event">
   		<view type="form" name="event-form"/>
