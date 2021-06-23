@@ -307,13 +307,24 @@ public class MoveLineController {
             response.setValue("partner", null);
           }
         }
+        List<TaxLine> taxLineList;
+        TaxLine taxLine = null;
         if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
           if (accountingAccount != null)
-            if (accountingAccount.getDefaultTax() != null)
-              response.setValue("taxLine", accountingAccount.getDefaultTax());
+            if (accountingAccount.getDefaultTax() != null) {
+              taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
+              if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+                taxLineList =
+                    accountingAccount.getDefaultTax().getTaxLineList().stream()
+                        .filter(
+                            tl ->
+                                !moveLine.getDate().isBefore(tl.getEndDate())
+                                    && !tl.getStartDate().isAfter(moveLine.getDate()))
+                        .collect(Collectors.toList());
+                if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
+              }
+            }
         } else {
-          List<TaxLine> taxLineList;
-          TaxLine taxLine = null;
           for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
             if (accountingAccount != null)
               if (taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
@@ -331,8 +342,8 @@ public class MoveLineController {
                 break;
               }
           }
-          if (taxLine != null) response.setValue("taxLine", taxLine);
         }
+        if (taxLine != null) response.setValue("taxLine", taxLine);
       }
     }
   }
