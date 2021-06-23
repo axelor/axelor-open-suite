@@ -241,7 +241,7 @@ public class MoveValidateService {
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
 
     this.updateValidateStatus(move, dayBookMode);
-    
+
     move.setCodeJournal(move.getJournal().getCode());
     move.setNameJournal(move.getJournal().getName());
     move.setCodeCompany(move.getCompany().getCode());
