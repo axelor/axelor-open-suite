@@ -665,6 +665,7 @@ public class MoveServiceImpl implements MoveService {
     moveLine.setOriginDate(move.getOriginDate());
     moveLine.setDescription(move.getDescription());
     moveLine.setPartner(move.getPartner());
+    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
     Account accountingAccount = null;
     if (move.getJournal()
             .getJournalType()

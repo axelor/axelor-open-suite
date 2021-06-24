@@ -33,7 +33,7 @@
     <field name="analyticMoveLineList" hidden="true" />
   </grid>
 
-  <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-group">
+  <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-group" >
     <field name="counter" hidden="true" width="80" />
     <field name="account.isTaxRequiredOnMoveLine" hidden="true" />
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true" />
@@ -43,8 +43,8 @@
     <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0" />
     <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"
       onChange="action-move-line-method-compute-analytic-distribution" />
-    <field name="currencyAmount" onChange="action-move-line-method-set-debitcredit" />
-    <field name="currencyRate" onChange="action-move-line-method-set-debitcredit" />
+    <field name="currencyAmount" onChange="action-move-line-record-set-debitcredit" readonlyIf="!isOtherCurrency"/>
+    <field name="currencyRate" onChange="action-move-line-record-set-debitcredit" readonlyIf="!isOtherCurrency"/>
     <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0" />
     <field name="credit" onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0" />
     <field name="amountRemaining" hidden="true" width="150" />
@@ -62,6 +62,7 @@
     <field name="reconcileGroup" hidden="true" />
     <field name="$isDescriptionRequired" type="boolean" hidden="true" />
     <field name="move.company.accountConfig.isDescriptionRequired" hidden="true" />
+    <field name="isOtherCurrency" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false" groupBy="account" expandable="true" canArchive="false">
@@ -268,9 +269,12 @@
         <field name="dueDate" showIf="dueDate" />
         <field name="originDate" />
       </panel>
-      <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0" />
       <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0"
         onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount" />
+      <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0" />
+      <field name="currencyAmount" onChange="action-move-line-record-set-amount" readonlyIf="!isOtherCurrency" colSpan="3"/>
+      <field name="currencyRate" onChange="action-move-line-record-set-currencyAmount" readonlyIf="!isOtherCurrency" colSpan="3"/>
+      <spacer colSpan="6"/>
       <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" colSpan="3" />
       <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" colSpan="3" />
       <field name="amountRemaining" colSpan="3" />
@@ -351,6 +355,10 @@
   <action-method name="account-move-line-compute-tax-amount-method-on-change" model="com.axelor.apps.account.db.MoveLine">
     <call class="com.axelor.apps.account.web.MoveLineController" method="computeTaxAmount" />
   </action-method>
+  
+  <action-method name="action-move-line-method-set-is-other-currency" model="com.axelor.apps.account.db.MoveLine">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="setIsOtherCurrency"/>
+  </action-method>
 
   <action-group name="action-account-move-line-onnew-group">
     <action name="action-move-line-record-get-move-informations" />
@@ -361,6 +369,7 @@
     <action name="action-move-line-method-set-currencyRate" />
     <action name="action-move-line-record-set-currencyAmount" />
     <action name="action-move-line-method-description-required" />
+    <action name="action-move-line-method-set-is-other-currency"/>
   </action-group>
 
   <action-group name="action-group-account-moveline-debitcredit-onchange">
@@ -477,9 +486,9 @@
   </action-method>
 
   <action-record name="action-move-line-record-set-currencyAmount" model="com.axelor.apps.account.db.MoveLine">
-    <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0" />
-    <field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0" />
-    <field name="currencyAmount" expr="eval: 0" if="debit == 0 &amp;&amp; credit == 0" />
+    <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0 &amp;&amp; isOtherCurrency" />
+    <field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0 &amp;&amp; isOtherCurrency" />
+    <field name="currencyAmount" expr="eval: 0" if="(debit == 0 &amp;&amp; credit == 0) || !isOtherCurrency" />
   </action-record>
 
   <action-record name="action-move-line-record-set-amount" model="com.axelor.apps.account.db.MoveLine">
@@ -502,18 +511,18 @@
   </action-record>
 
   <action-record name="action-record-account-moveline-debit-onchange" model="com.axelor.apps.account.db.MoveLine">
-    <field name="credit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
+    <field name="debit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
   </action-record>
 
   <action-record name="action-record-account-moveline-credit-onchange" model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
+    <field name="credit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
   </action-record>
 
   <action-record name="account-move-line-record-date-onchange" model="com.axelor.apps.account.db.MoveLine">
     <field name="originDate" expr="eval: date" />
   </action-record>
 
-  <action-record name="action-move-line-method-set-debitcredit" model="com.axelor.apps.account.db.MoveLine">
+  <action-record name="action-move-line-record-set-debitcredit" model="com.axelor.apps.account.db.MoveLine">
     <field name="debit" expr="eval: currencyAmount * currencyRate" if="account?.commonPosition = 1" />
     <field name="credit" expr="eval: currencyAmount * currencyRate" if="account?.commonPosition = 2" />
   </action-record>

@@ -347,4 +347,10 @@ public class MoveLineController {
       }
     }
   }
+
+  public void setIsOtherCurrency(ActionRequest request, ActionResponse response) {
+    Context parent = request.getContext().getParent();
+    Move move = parent.asType(Move.class);
+    response.setValue("isOtherCurrency", !move.getCurrency().equals(move.getCompanyCurrency()));
+  }
 }
