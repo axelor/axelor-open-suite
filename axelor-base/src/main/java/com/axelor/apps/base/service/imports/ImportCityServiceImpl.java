@@ -27,6 +27,7 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -81,7 +82,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
   protected static final String CITY_NO_LONGER_EXIST_CODE = "PPLH";
 
-  protected static final String SEPERATOR = "\t";
+  protected static final String SEPARATOR = "\t";
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -106,7 +107,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       this.deleteTempFiles(configXmlFile, dataCsvFile);
 
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
     return importHistory;
   }
@@ -137,7 +138,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+    	TraceBackService.trace(e);
     }
     return configFile;
   }
@@ -158,7 +159,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       Files.copy(MetaFiles.getPath(dataFile).toFile(), csvFile);
 
     } catch (Exception e) {
-      e.printStackTrace();
+    	TraceBackService.trace(e);
     }
     return csvFile;
   }
@@ -181,7 +182,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       importHistory = factoryImporter.createImporter(importConfiguration).run();
 
     } catch (Exception e) {
-      e.printStackTrace();
+    	TraceBackService.trace(e);
     }
     return importHistory;
   }
@@ -203,7 +204,7 @@ public class ImportCityServiceImpl implements ImportCityService {
         dataCsvFile.delete();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+    	TraceBackService.trace(e);
     }
   }
 
@@ -230,7 +231,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
       LOG.debug("path for downloaded zip file : {}", downloadFile.getPath());
 
-      StringBuilder buffer = null;
+      StringBuilder buffer;
       try (ZipFile zipFile = new ZipFile(downloadFile.getPath());
           FileWriter writer = new FileWriter(cityTextFile)) {
 
@@ -274,7 +275,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       return metaFile;
 
     } catch (UnknownHostException hostExp) {
-      throw new Exception(I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR), hostExp);
+      throw new AxelorException(hostExp, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR));
 
     } catch (FileNotFoundException e) {
       throw new AxelorException(
@@ -289,8 +290,8 @@ public class ImportCityServiceImpl implements ImportCityService {
 
   protected MetaFile extractCityZip(MetaFile dataFile) throws IOException {
 
-    ZipEntry entry = null;
-    MetaFile metaFile = null;
+    ZipEntry entry;
+    MetaFile metaFile;
     File txtFile = File.createTempFile("city", ".txt");
     String requiredFileName = dataFile.getFileName().replace(".zip", ".txt");
 
@@ -333,42 +334,42 @@ public class ImportCityServiceImpl implements ImportCityService {
     String line;
 
     while ((line = downloadedCityFileStream.readLine()) != null) {
-      String[] values = line.split(SEPERATOR);
+      String[] cityLine = line.split(SEPARATOR);
 
-      if (values[6].equals(FEATURE_CLASS_FOR_CANTON_REGION_DEPARTMENT)) {
-        switch (values[7]) {
+      if (cityLine[6].equals(FEATURE_CLASS_FOR_CANTON_REGION_DEPARTMENT)) {
+        switch (cityLine[7]) {
           case FEATURE_CLASS_CODE_FOR_REGION:
-            regionMap.put(values[10], values[1]);
+            regionMap.put(cityLine[10], cityLine[1]);
             break;
 
           case FEATURE_CLASS_CODE_FOR_DEPARTMENT:
-            departmentMap.put(values[11], values[1]);
+            departmentMap.put(cityLine[11], cityLine[1]);
             break;
 
           case FEATURE_CLASS_CODE_FOR_CANTON:
-            cantonMap.put(values[12], values[1]);
+            cantonMap.put(cityLine[12], cityLine[1]);
             break;
 
           default:
         }
       }
 
-      if ((values[6].equals(FEATURE_CLASS_FOR_CANTON_REGION_DEPARTMENT)
-              && values[7].equals(FEATURE_CLASS_CODE_FOR_CITY))
-          || (values[6].equals(FEATURE_CLASS_FOR_CITY)
-              && !values[7].equals(CITY_NO_LONGER_EXIST_CODE))) {
+      if ((cityLine[6].equals(FEATURE_CLASS_FOR_CANTON_REGION_DEPARTMENT)
+              && cityLine[7].equals(FEATURE_CLASS_CODE_FOR_CITY))
+          || (cityLine[6].equals(FEATURE_CLASS_FOR_CITY)
+              && !cityLine[7].equals(CITY_NO_LONGER_EXIST_CODE))) {
         cities.add(
             String.format(
                 "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s",
-                values[8], // country code
-                values[13], // insee code
-                values[1], // city name
-                values[10], // region code
-                values[11], // department code
-                values[12], // canton code
-                values[4], // latitude
-                values[5], // longitude
-                values[14])); // population
+                cityLine[8], // country code
+                cityLine[13], // insee code
+                cityLine[1], // city name
+                cityLine[10], // region code
+                cityLine[11], // department code
+                cityLine[12], // canton code
+                cityLine[4], // latitude
+                cityLine[5], // longitude
+                cityLine[14])); // population
       }
     }
 
@@ -383,20 +384,20 @@ public class ImportCityServiceImpl implements ImportCityService {
     String line;
 
     while ((line = downloadedCityFileStream.readLine()) != null) {
-      String[] values = line.split(SEPERATOR);
+      String[] cityLine = line.split(SEPARATOR);
 
       cityList.add(
           String.format(
               "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
-              values[0], // country code
-              values[1], // zip code
-              values[2], // city name
-              values[3], // region name
-              values[4], // region code
-              values[5], // department name
-              values[6], // department code
-              values[7], // canton name
-              values[8])); // canton code
+              cityLine[0], // country code
+              cityLine[1], // zip code
+              cityLine[2], // city name
+              cityLine[3], // region name
+              cityLine[4], // region code
+              cityLine[5], // department name
+              cityLine[6], // department code
+              cityLine[7], // canton name
+              cityLine[8])); // canton code
     }
 
     return this.createCityFileZipImport(cityList);
@@ -408,11 +409,11 @@ public class ImportCityServiceImpl implements ImportCityService {
 
     Set<String> checkDuplicateCitySet = new HashSet<>();
 
-    for (String value : cityList) {
-      String[] values = value.split(SEPERATOR);
+    for (String city : cityList) {
+      String[] cityInfo = city.split(SEPARATOR);
 
-      if (checkDuplicateCitySet.add(values[1].toLowerCase().concat(values[2].toLowerCase()))) {
-        buffer.append(value);
+      if (checkDuplicateCitySet.add(cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
+        buffer.append(city);
       }
     }
 
@@ -429,25 +430,25 @@ public class ImportCityServiceImpl implements ImportCityService {
 
     Set<String> checkDuplicateCitySet = new HashSet<>();
 
-    for (String value : cityList) {
-      String[] values = value.split(SEPERATOR);
+    for (String city : cityList) {
+      String[] cityInfo = city.split(SEPARATOR);
 
-      if (checkDuplicateCitySet.add(values[1].toLowerCase().concat(values[2].toLowerCase()))) {
+      if (checkDuplicateCitySet.add(cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
         buffer.append(
             String.format(
                 "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
-                values[0],
-                values[1],
-                values[2],
-                regionMap.get(values[3]),
-                values[3],
-                departmentMap.get(values[4]),
-                values[4],
-                cantonMap.get(values[5]),
-                values[5],
-                values[6],
-                values[7],
-                values[8]));
+                cityInfo[0],
+                cityInfo[1],
+                cityInfo[2],
+                regionMap.get(cityInfo[3]),
+                cityInfo[3],
+                departmentMap.get(cityInfo[4]),
+                cityInfo[4],
+                cantonMap.get(cityInfo[5]),
+                cityInfo[5],
+                cityInfo[6],
+                cityInfo[7],
+                cityInfo[8]));
       }
     }
 
@@ -456,7 +457,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
   protected String getDownloadUrl(GEONAMES_FILE geonamesFile) throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-    String downloadUrl = null;
+    String downloadUrl;
 
     switch (geonamesFile) {
       case DUMP:
