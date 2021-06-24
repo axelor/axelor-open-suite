@@ -1511,7 +1511,7 @@
 	</search-filters>
 
 	<action-attrs name="action-attrs-update-manually-blocked-account">
-		<attribute name="value" for="hasManuallyBlockedAccount" expr="eval: false" if="!hasBlockedAccount"/>
+		<attribute name="value" for="hasManuallyBlockedAccount" expr="eval: hasBlockedAccount"/>
 	</action-attrs>
 
 </object-views>
