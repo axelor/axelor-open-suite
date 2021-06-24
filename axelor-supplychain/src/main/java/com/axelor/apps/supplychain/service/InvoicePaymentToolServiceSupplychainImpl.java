@@ -32,12 +32,16 @@ import com.google.inject.persist.Transactional;
 
 public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentToolServiceImpl {
 
+  protected PartnerSupplychainService partnerSupplychainService;
+
   @Inject
   public InvoicePaymentToolServiceSupplychainImpl(
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      PartnerSupplychainService partnerSupplychainService) {
     super(invoiceRepo, moveToolService, invoicePaymentRepo);
+    this.partnerSupplychainService = partnerSupplychainService;
   }
 
   @Override
@@ -55,7 +59,7 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
     }
     if (invoice.getPartner().getHasBlockedAccount()
         && !invoice.getPartner().getHasManuallyBlockedAccount()) {
-      Beans.get(PartnerSupplychainService.class).updateBlockedAccount(invoice.getPartner());
+      partnerSupplychainService.updateBlockedAccount(invoice.getPartner());
     }
   }
 }

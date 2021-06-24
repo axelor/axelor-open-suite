@@ -36,7 +36,6 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void updateBlockedAccount(Partner partner) throws AxelorException {
-    System.out.println("Salut");
     List<Invoice> partnerInvoice = new ArrayList<Invoice>();
     int FETCH_LIMIT = 10;
     int offset = 0;
@@ -46,13 +45,10 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
             .filter(
                 "self.operationTypeSelect = :operationTypeSelect "
                     + "AND self.amountRemaining > 0 "
-                    + "AND self.partner = :partner");
-    while (!(partnerInvoice =
-            query
-                .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-                .bind("partner", partner.getId())
-                .fetch(FETCH_LIMIT, offset))
-        .isEmpty()) {
+                    + "AND self.partner = :partner")
+            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            .bind("partner", partner.getId());
+    while (!(partnerInvoice = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       for (Invoice invoice : partnerInvoice) {
         AccountConfig config = accountConfigService.getAccountConfig(invoice.getCompany());
         if (invoice
@@ -60,7 +56,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
                 .compareTo(
                     appBaseService
                         .getTodayDate(invoice.getCompany())
-                        .plusDays(config.getNumberOfDaysBeforeAccountBLocking()))
+                        .plusDays(config.getNumberOfDaysBeforeAccountBlocking()))
             < 0) {
           partner.setHasBlockedAccount(true);
           partnerRepo.save(partner);
