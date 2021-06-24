@@ -71,6 +71,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     BigDecimal minCapacityPerCycle;
     BigDecimal maxCapacityPerCycle;
     long durationPerCycle;
+    long timingOfImplementation;
 
     if (confProdProcessLine.getDefNameAsFormula()) {
       Object computedName =
@@ -126,17 +127,19 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       // In order to prevent synchronization issue when switching multiple time management
       // explicit call is made to make sure that the work center group is taken into account
       // Values impacted are : workCenter, minCapacityPerCycle, maxCapacityPerCycle,
-      // durationPerCycle
+      // durationPerCycle, timingOfImplementation
       this.fillMainWorkCenterFromGroup(
           confProdProcessLine, confProdProcessLine.getWorkCenterGroup());
       workCenter = confProdProcessLine.getWorkCenter();
       minCapacityPerCycle = confProdProcessLine.getMinCapacityPerCycle();
       maxCapacityPerCycle = confProdProcessLine.getMaxCapacityPerCycle();
       durationPerCycle = confProdProcessLine.getDurationPerCycle();
+      timingOfImplementation = confProdProcessLine.getTimingOfImplementation();
 
     } else {
 
-      // Regular cases for : workCenter, minCapacityPerCycle, maxCapacityPerCycle, durationPerCycle
+      // Regular cases for : workCenter, minCapacityPerCycle, maxCapacityPerCycle, durationPerCycle,
+      // timingOfImplementation
       if (confProdProcessLine.getDefWorkCenterAsFormula()) {
         Object computedWorkCenter =
             configuratorService.computeFormula(
@@ -193,6 +196,16 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       } else {
         durationPerCycle = confProdProcessLine.getDurationPerCycle();
       }
+      if (confProdProcessLine.getDefTimingOfImplementationFormula()) {
+        timingOfImplementation =
+            Long.decode(
+                configuratorService
+                    .computeFormula(
+                        confProdProcessLine.getTimingOfImplementationFormula(), attributes)
+                    .toString());
+      } else {
+        timingOfImplementation = confProdProcessLine.getTimingOfImplementation();
+      }
     }
 
     if (confProdProcessLine.getDefStockLocationAsFormula()) {
@@ -215,6 +228,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
     prodProcessLine.setDurationPerCycle(durationPerCycle);
+    prodProcessLine.setTimingOfImplementation(timingOfImplementation);
 
     return prodProcessLine;
   }
@@ -262,6 +276,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
         workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     confProdProcessLine.setMaxCapacityPerCycle(
         workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
+    confProdProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
   }
 
   /**

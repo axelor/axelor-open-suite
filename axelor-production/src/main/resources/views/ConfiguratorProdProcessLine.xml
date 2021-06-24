@@ -95,6 +95,14 @@
                        showIf="defDurationFormula"
                        x-code-syntax="groovy" height="100" colSpan="12"/>
             </panel>
+            <panel name="timingOfImplementationPanel">
+                <field name="defTimingOfImplementationFormula" colSpan="12"/>
+                <field name="timingOfImplementation" colSpan="6" widget="duration"
+                       x-big="true" x-seconds="true" showIf="!defTimingOfImplementationFormula"/>
+                <field name="timingOfImplementationFormula" widget="CodeEditor"
+                       showIf="defTimingOfImplementationFormula"
+                       x-code-syntax="groovy" height="100" colSpan="12"/>
+            </panel>
         </panel>
     </form>
     
@@ -127,6 +135,10 @@
 		<attribute name="required" for="workCenter" expr="eval: !defWorkCenterAsFormula"/>
 	</action-attrs>
 	
+	<action-attrs name="action-configurator-prod-process-line-attrs-set-timing-of-implementation">
+    	<attribute name="value" for="timingOfImplementation" expr="eval: workCenter?.timingOfImplementation"/>
+    </action-attrs>
+	
 	<action-record name="action-configurator-prod-process-line-record-default-workcenter-type-select" model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
 		<field name="workCenterTypeSelect" expr="eval: 1"/>
 	</action-record>
@@ -136,6 +148,7 @@
     
     <action-group name="action-configurator-prod-process-line-group-work-center-onchange">
 		<action name="action-configurator-prod-process-line-method-duration"/>
+		<action name="action-configurator-prod-process-line-attrs-set-timing-of-implementation"/>
 		<action name="action-configurator-prod-process-line-method-capacity-settings"/>
 	</action-group>
 	
