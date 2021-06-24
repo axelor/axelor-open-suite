@@ -1,8 +1,9 @@
 package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -24,17 +25,17 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
   protected final Logger log = LoggerFactory.getLogger(getClass());
 
   private AccountConfigService accountConfigService;
-  private InvoiceRepository invoiceRepository;
   private AppBaseService appBaseService;
+  private DebtRecoveryRepository debtRecoveryRepository;
 
   @Inject
   public BatchBlockCustomersWithLatePayments(
       AccountConfigService accountConfigService,
-      InvoiceRepository invoiceRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      DebtRecoveryRepository debtRecoveryRepository) {
     this.accountConfigService = accountConfigService;
-    this.invoiceRepository = invoiceRepository;
     this.appBaseService = appBaseService;
+    this.debtRecoveryRepository = debtRecoveryRepository;
   }
 
   @Override
@@ -50,46 +51,58 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
 
   protected String blockCustomersWithLatePayments() {
     StringBuilder result = new StringBuilder();
-    List<Invoice> invoices;
-    List<Long> customersToBlock = new ArrayList<>();
+    List<DebtRecovery> debtRecoveries;
+    List<Long> customersToBlock = new ArrayList<Long>();
+    List<Long> customerToUnblock = new ArrayList<Long>();
     int offset = 0;
-    Query<Invoice> query =
-        invoiceRepository
-            .all()
-            .filter(
-                "self.operationTypeSelect = :operationTypeSelect "
-                    + "AND self.amountRemaining > 0");
-    while (!(invoices =
-            query
-                .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-                .fetch(FETCH_LIMIT, offset))
-        .isEmpty()) {
-
-      for (Invoice invoice : invoices) {
+    Query<DebtRecovery> query = debtRecoveryRepository.all().filter("self.isArchived = false");
+    while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+      for (DebtRecovery debtRecovery : debtRecoveries) {
         ++offset;
-        try {
-          Partner partner = processInvoice(invoice);
-          if (partner != null && !customersToBlock.contains(partner.getId())) {
-            log.debug("Blocking {}", partner.getFullName());
-            result
-                .append(I18n.get("Blocking"))
-                .append(" ")
-                .append(partner.getFullName())
-                .append("</br>");
-            customersToBlock.add(partner.getId());
-            incrementDone();
+        if (debtRecovery
+                .getRespiteDateBeforeAccountBlocking()
+                .compareTo(appBaseService.getTodayDate(debtRecovery.getCompany()))
+            >= 1) {
+          for (Invoice invoice : debtRecovery.getInvoiceDebtRecoverySet()) {
+            if (!customerToUnblock.contains(invoice.getPartner().getId())) {
+              log.debug("Unblocking {}", invoice.getPartner());
+              result
+                  .append(I18n.get("Unblocking"))
+                  .append(" ")
+                  .append(invoice.getPartner().getFullName())
+                  .append("</br>");
+              customerToUnblock.add(invoice.getPartner().getId());
+              incrementDone();
+            }
           }
-        } catch (Exception e) {
-          TraceBackService.trace(
-              new Exception(String.format("%s %s", "Invoice", invoice.getInvoiceId()), e),
-              null,
-              batch.getId());
-          log.error("Error for invoice {}", invoice.getInvoiceId());
-          incrementAnomaly();
+          continue;
+        }
+        for (Invoice invoice : debtRecovery.getInvoiceDebtRecoverySet()) {
+          try {
+            Partner partner = processInvoice(invoice);
+            if (partner != null && !customersToBlock.contains(partner.getId())) {
+              log.debug("Blocking {}", partner.getFullName());
+              result
+                  .append(I18n.get("Blocking"))
+                  .append(" ")
+                  .append(partner.getFullName())
+                  .append("</br>");
+              customersToBlock.add(partner.getId());
+              incrementDone();
+            }
+          } catch (Exception e) {
+            TraceBackService.trace(
+                new Exception(String.format("%s %s", "Invoice", invoice.getInvoiceId()), e),
+                null,
+                batch.getId());
+            log.error("Error for invoice {}", invoice.getInvoiceId());
+            incrementAnomaly();
+          }
         }
       }
       JPA.clear();
     }
+    unblockCustomers(customerToUnblock);
     blockCustomers(customersToBlock);
     return result.toString();
   }
@@ -101,6 +114,20 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
           .filter("self.id in :ids")
           .bind("ids", customersToBlock)
           .update("hasBlockedAccount", true);
+    }
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void unblockCustomers(List<Long> customersToUnblock) {
+    if (CollectionUtils.isNotEmpty(customersToUnblock)) {
+      Query.of(Partner.class)
+          .filter("self.id in :ids")
+          .bind("ids", customersToUnblock)
+          .update("hasBlockedAccount", false);
+      //      Query.of(Partner.class)
+      //      .filter("self.id in :ids")
+      //      .bind("ids", customersToUnblock)
+      //      .update("hasManuallyBlockedAccount", false);
     }
   }
 
