@@ -93,14 +93,14 @@
 	<action-view title="Upcoming supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.upcoming.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromStockLocation.typeSelect = 2 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
+		  <domain>self.fromStockLocation.typeSelect = 3 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
 		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 
 	<action-view title="Late supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.late.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromStockLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
+		  <domain>self.fromStockLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
 		  <context name="active_company" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
