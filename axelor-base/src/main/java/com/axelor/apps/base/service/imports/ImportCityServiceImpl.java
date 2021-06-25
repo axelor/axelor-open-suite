@@ -59,11 +59,11 @@ import org.slf4j.LoggerFactory;
 
 public class ImportCityServiceImpl implements ImportCityService {
 
-  @Inject private FactoryImporter factoryImporter;
+  private FactoryImporter factoryImporter;
 
-  @Inject private MetaFiles metaFiles;
+  private MetaFiles metaFiles;
 
-  @Inject protected AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
 
   protected static final String CITYTEXTFILE = "cityTextFile.txt";
 
@@ -88,6 +88,14 @@ public class ImportCityServiceImpl implements ImportCityService {
   public enum GEONAMES_FILE {
     ZIP,
     DUMP;
+  }
+
+  @Inject
+  public ImportCityServiceImpl(
+      FactoryImporter factoryImporter, MetaFiles metaFiles, AppBaseService appBaseService) {
+    this.factoryImporter = factoryImporter;
+    this.metaFiles = metaFiles;
+    this.appBaseService = appBaseService;
   }
 
   /** {@inheritDoc}} */

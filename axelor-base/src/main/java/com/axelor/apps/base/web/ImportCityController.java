@@ -29,7 +29,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -38,8 +37,6 @@ import java.util.Map;
 
 @Singleton
 public class ImportCityController {
-
-  @Inject private ImportCityService importCityService;
 
   /**
    * Import cities
@@ -94,6 +91,7 @@ public class ImportCityController {
    */
   private List<ImportHistory> importFromGeonamesAutoConfig(
       String downloadFileName, String typeSelect) throws AxelorException {
+    ImportCityService importCityService = Beans.get(ImportCityService.class);
     MetaFile zipImportDataFile = importCityService.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
     MetaFile dumpImportDataFile =
         importCityService.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
@@ -120,7 +118,8 @@ public class ImportCityController {
     if (map != null) {
       MetaFile dataFile =
           Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
-      importHistoryList.add(importCityService.importCity(typeSelect + "-dump", dataFile));
+      importHistoryList.add(
+          Beans.get(ImportCityService.class).importCity(typeSelect + "-dump", dataFile));
     }
 
     return importHistoryList;
