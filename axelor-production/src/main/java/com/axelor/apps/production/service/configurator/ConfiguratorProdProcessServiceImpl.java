@@ -61,6 +61,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     StockLocation stockLocation;
     StockLocation producedProductStockLocation;
     StockLocation workshopStockLocation;
+    Boolean isConsProOnOperation;
 
     if (confProdProcess.getDefNameAsFormula()) {
       Object computedName =
@@ -117,6 +118,14 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     } else {
       workshopStockLocation = confProdProcess.getWorkshopStockLocation();
     }
+    if (confProdProcess.getDefIsConsProOnOperationAsFormula()) {
+      isConsProOnOperation =
+          (boolean)
+              configuratorService.computeFormula(
+                  confProdProcess.getIsConsProOnOperationFormula(), attributes);
+    } else {
+      isConsProOnOperation = confProdProcess.getIsConsProOnOperation();
+    }
 
     ProdProcess prodProcess =
         createProdProcessHeader(
@@ -126,6 +135,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
             stockLocation,
             producedProductStockLocation,
             workshopStockLocation,
+            isConsProOnOperation,
             product);
 
     List<ConfiguratorProdProcessLine> confLines =
@@ -150,6 +160,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       StockLocation stockLocation,
       StockLocation producedProductStockLocation,
       StockLocation workshopStockLocation,
+      Boolean isConsProOnOperation,
       Product product) {
     ProdProcess prodProcess = new ProdProcess();
     prodProcess.setName(name);
@@ -159,6 +170,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     prodProcess.setStockLocation(stockLocation);
     prodProcess.setProducedProductStockLocation(producedProductStockLocation);
     prodProcess.setWorkshopStockLocation(workshopStockLocation);
+    prodProcess.setIsConsProOnOperation(isConsProOnOperation);
     prodProcess.setProduct(product);
     return prodProcessRepository.save(prodProcess);
   }

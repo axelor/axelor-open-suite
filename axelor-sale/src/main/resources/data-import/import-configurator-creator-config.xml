@@ -63,6 +63,9 @@
          </bind>
          <bind node="workshopStockLocationFormula" to="workshopStockLocationFormula"/>
          <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
+         <bind node="isConsProOnOperation" to="isConsProOnOperation"/>
+         <bind node="isConsProOnOperationFormula" to="isConsProOnOperationFormula"/>
+         <bind node="defIsConsProOnOperationAsFormula" to="defIsConsProOnOperationAsFormula"/>
          <bind node="configuratorProdProcessLineList/configuratorProdProcessLine" to="configuratorProdProcessLineList">
            <bind node="name" to="name"/>
            <bind node="nameFormula" to="nameFormula"/>

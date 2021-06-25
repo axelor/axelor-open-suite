@@ -44,6 +44,13 @@
                        widget="CodeEditor" x-code-syntax="groovy"
                        showTitle="false" showIf="defWorkshopStockLocationAsFormula"/>
             </panel>
+            <panel name="isConsProOnOperationPanel" title="Consumed products on phases">
+            	<field name="defIsConsProOnOperationAsFormula" colSpan="6"/>
+                <field name="isConsProOnOperation" colSpan="12" showIf="!defIsConsProOnOperationAsFormula"/>
+                <field name="isConsProOnOperationFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defIsConsProOnOperationAsFormula"/>
+            </panel>
             <field name="configuratorProdProcessLineList" colSpan="12"
                    form-view="configurator-prod-process-line-form"
                    grid-view="configurator-prod-process-line-grid"/>

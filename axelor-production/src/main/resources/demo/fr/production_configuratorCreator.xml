@@ -38,6 +38,9 @@
 			<workshopStockLocation>1</workshopStockLocation>
 			<workshopStockLocationFormula></workshopStockLocationFormula>
 			<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
+			<isConsProOnOperation>false</isConsProOnOperation>
+			<isConsProOnOperationFormula></isConsProOnOperationFormula>
+			<defIsConsProOnOperationAsFormula>false</defIsConsProOnOperationAsFormula>
 			<configuratorProdProcessLineList>
 				<configuratorProdProcessLine>
 					<name>Emballage</name>

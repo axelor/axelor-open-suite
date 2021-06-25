@@ -396,6 +396,9 @@
 			<workshopStockLocation>${cb.configuratorProdProcess?.workshopStockLocation?.id}</workshopStockLocation>
 			<workshopStockLocationFormula>${cb.configuratorProdProcess?.workshopStockLocationFormula}</workshopStockLocationFormula>
 			<defWorkshopStockLocationAsFormula>${cb.configuratorProdProcess?.defWorkshopStockLocationAsFormula}</defWorkshopStockLocationAsFormula>
+			<isConsProOnOperation>${cb.configuratorProdProcess?.isConsProOnOperation?.id}</isConsProOnOperation>
+			<isConsProOnOperationFormula>${cb.configuratorProdProcess?.isConsProOnOperationFormula}</isConsProOnOperationFormula>
+			<defIsConsProOnOperationAsFormula>${cb.configuratorProdProcess?.defIsConsProOnOperationAsFormula}</defIsConsProOnOperationAsFormula>
 			<configuratorProdProcessLineList>"""	
 				cb.configuratorProdProcess?.configuratorProdProcessLineList?.each( { cppl ->
 					configBom += retrieveConfiguratorProdProcessLine(cppl)
