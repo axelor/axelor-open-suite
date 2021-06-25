@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -89,10 +90,10 @@ public class ImportCityController {
    * @param downloadFileName
    * @param typeSelect
    * @return
-   * @throws Exception
+   * @throws AxelorException if there is a problem when downloading the zip file
    */
   private List<ImportHistory> importFromGeonamesAutoConfig(
-      String downloadFileName, String typeSelect) throws Exception {
+      String downloadFileName, String typeSelect) throws AxelorException {
     MetaFile zipImportDataFile = importCityService.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
     MetaFile dumpImportDataFile =
         importCityService.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);

@@ -36,7 +36,6 @@ import com.google.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -138,7 +137,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       }
 
     } catch (Exception e) {
-    	TraceBackService.trace(e);
+      TraceBackService.trace(e);
     }
     return configFile;
   }
@@ -159,7 +158,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       Files.copy(MetaFiles.getPath(dataFile).toFile(), csvFile);
 
     } catch (Exception e) {
-    	TraceBackService.trace(e);
+      TraceBackService.trace(e);
     }
     return csvFile;
   }
@@ -182,7 +181,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       importHistory = factoryImporter.createImporter(importConfiguration).run();
 
     } catch (Exception e) {
-    	TraceBackService.trace(e);
+      TraceBackService.trace(e);
     }
     return importHistory;
   }
@@ -204,7 +203,7 @@ public class ImportCityServiceImpl implements ImportCityService {
         dataCsvFile.delete();
       }
     } catch (Exception e) {
-    	TraceBackService.trace(e);
+      TraceBackService.trace(e);
     }
   }
 
@@ -214,11 +213,11 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @param downloadFileName : zip fileName to download from internet
    * @return
    * @return
-   * @throws Exception
+   * @throws AxelorException if hostname is not valid or if file does not exist
    */
   @Override
   public MetaFile downloadZip(String downloadFileName, GEONAMES_FILE geonamesFile)
-      throws Exception {
+      throws AxelorException {
     String downloadUrl = getDownloadUrl(geonamesFile);
 
     try {
@@ -275,16 +274,16 @@ public class ImportCityServiceImpl implements ImportCityService {
       return metaFile;
 
     } catch (UnknownHostException hostExp) {
-      throw new AxelorException(hostExp, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR));
+      throw new AxelorException(
+          hostExp,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR));
 
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.NO_DATA_FILE_FOUND),
           downloadUrl);
-
-    } catch (Exception e) {
-      throw e;
     }
   }
 
