@@ -32,6 +32,7 @@
 		<string name="sellerCode" />
 		
 		<boolean name="hasBlockedAccount" title="Account blocked" />
+		<boolean name="hasManuallyBlockedAccount" title="Account manually blocked" />
     </entity>
 
 </domain-models>
