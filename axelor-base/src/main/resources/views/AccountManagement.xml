@@ -46,7 +46,7 @@
 	<form name="account-management-form" title="Account management"
 		model="com.axelor.apps.account.db.AccountManagement"
 		onNew="action-account-management-group-onNew"
-		onLoad="action-account-management-attrs-display-product-fields, action-account-management-attrs-hide-type"
+		onLoad="action-account-management-attrs-display-product-fields, action-account-management-attrs-hide-type, action-account-management-attrs-display-payment-mode, action-account-management-attrs-display-tax-panel"
 		width="large">
 		<panel name="mainAccountManagementPanel">
 			<panel name="mainPanel" colSpan="12">
@@ -57,7 +57,7 @@
 				<field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
 							 domain="self.dtype = 'Product'" requiredIf="typeSelect==1 &amp;&amp; !productFamily"/>
 				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
-							 requiredIf="typeSelect==1 &amp;&amp; !product" showIf="typeSelect == 1"/>
+							 requiredIf="typeSelect==1 &amp;&amp; !product"/>
 			</panel>
 
 			<!-- PRODUCT -->
@@ -139,7 +139,7 @@
 				<field name="analyticDistributionTemplate" canNew="true"
 					if-module="axelor-account" if="__config__.app.isApp('account')" />
 			</panel>
-			<panel name="taxPanel" title="Tax" showIf="typeSelect == 2"  colSpan="12">
+			<panel name="taxPanel" title="Tax"  colSpan="12">
       			<field name="tax" form-view="tax-form" grid-view="tax-grid" requiredIf="typeSelect == 2"/>
     		</panel>
 
@@ -213,9 +213,19 @@
 	</action-group>
 
 	<action-attrs name="action-account-management-attrs-display-product-fields">
-		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.Product' || typeSelect != 1"
+		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.base.db.Product' || typeSelect != 1"
 							 for="productFamily"/>
-		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || typeSelect != 1"
-							 for="product"/>			 
+		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.base.db.Product' || typeSelect != 1"
+							 for="product"/>		 
+	</action-attrs>
+	
+	<action-attrs name="action-account-management-attrs-display-payment-mode">
+			<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.account.db.PaymentMode'"
+							 for="paymentMode"/>	
+	</action-attrs>
+	
+	<action-attrs name="action-account-management-attrs-display-tax-panel">
+			<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.account.db.Tax' || typeSelect != 2 "
+							 for="taxPanel"/>
 	</action-attrs>
 </object-views>
