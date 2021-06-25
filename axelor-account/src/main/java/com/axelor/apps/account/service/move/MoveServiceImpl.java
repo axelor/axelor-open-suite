@@ -755,4 +755,13 @@ public class MoveServiceImpl implements MoveService {
 
     return moveLine;
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setOriginAndDescriptionOnMoveLineList(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLine.setDescription(move.getDescription());
+      moveLine.setOrigin(move.getOrigin());
+    }
+  }
 }

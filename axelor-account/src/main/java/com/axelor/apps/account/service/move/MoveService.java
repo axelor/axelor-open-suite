@@ -100,4 +100,6 @@ public interface MoveService {
   Move updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(Move move) throws AxelorException;
 
   MoveLine createCounterpartMoveLine(Move move);
+
+  void setOriginAndDescriptionOnMoveLineList(Move move);
 }

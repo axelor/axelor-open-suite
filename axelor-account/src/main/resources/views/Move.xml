@@ -40,7 +40,7 @@
       <button name="deleteMoveBtn" title="delete" icon="fa-trash" onClick="action-move-method-delete-move" showIf="id != null" />
     </toolbar>
 
-    <panel name="mainPanel" readonlyIf="statusSelect == 3" colSpan="12">
+    <panel name="mainPanel" colSpan="12"  readonlyIf="statusSelect == 3">
       <panel name="moveDetailsPanel" colSpan="9">
         <field name="reference" colSpan="12" />
         <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0" colSpan="12">
@@ -53,11 +53,9 @@
           <field name="tradingName" if="__config__.app.getApp('base').getEnableTradingNamesManagement()" form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain" />
           <field name="partner" colSpan="6" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
-            onChange="action-account-move-record-set-currency,action-account-move-attrs-show-hide-currency" />
+            onChange="action-account-move-record-set-currency" />
           <field name="currency" colSpan="3" />
           <field name="paymentMode" colSpan="3" />
-          <field name="origin" />
-          <field name="description" />
         </panel>
       </panel>
 
@@ -96,11 +94,18 @@
         <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch" />
         <field name="validationDate" readonly="true" showIf="statusSelect == 3" />
 
-        <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" />
+        <button name="validateBtn" title="Validate" onClick="action-account-move-group-validate-click" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" />
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 5" />
         <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-method-generate-counterpart,action-account-move-method-compute-totals" colSpan="12" />
       </panel>
+    </panel>
+    
+    <panel name="originDescriptionPanel" colSpan="12">
+      <field name="origin" colSpan="5" />
+      <field name="description" colSpan="5" />
+      <button onClick="action-account-move-group-set-origin-and-description-on-lines" title="Set Origin/Description" name="setOriginDescriptionBtn" icon="fa-copy" showIf="statusSelect == 3" colSpan="2"
+        readonly="false" />
     </panel>
 
     <panel>
@@ -226,14 +231,19 @@
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method" />
     <action name="action-attrs-move-hide-trading-name" />
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status" />
-    <action name="action-account-move-attrs-show-hide-currency" />
   </action-group>
 
-  <action-group name="action-group-account-move-validate-click">
+  <action-group name="action-account-move-group-validate-click">
     <action name="action-account-validate-prompt"
       if="(!company?.accountConfig?.accountingDaybook &amp;&amp;statusSelect == 1) || (company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect == 2 || statusSelect == 5))" />
     <action name="save" />
     <action name="action-move-method-validate" />
+  </action-group>
+
+  <action-group name="action-account-move-group-set-origin-and-description-on-lines">
+    <action name="save" />
+    <action name="action-account-move-validate-origin-description-is-empty" />
+    <action name="action-account-move-method-set-origin-description-on-lines" />
   </action-group>
 
   <action-validate name="action-account-validate-prompt">
@@ -243,6 +253,10 @@
   <action-validate name="action-move-validate-check-date-of-reversion">
     <error message="Reverse move date should not be prior to the original move date (${LocalDate.parse(_moveDate).format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))})."
       if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))" />
+  </action-validate>
+
+  <action-validate name="action-account-move-validate-origin-description-is-empty">
+    <alert message="The move fields origin and description are empty, do you wish to continue ?" if="origin == null &amp;&amp; description == null" />
   </action-validate>
 
   <!-- ACTION RECORD -->
@@ -371,9 +385,16 @@
   <action-method name="action-account-move-method-filter-partner">
     <call class="com.axelor.apps.account.web.MoveController" method="filterPartner" />
   </action-method>
+
   <action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
     <call class="com.axelor.apps.account.web.MoveController" method="isHiddenMoveLineListViewer" />
-  </action-method>	<!-- ACTION VIEW -->
+  </action-method>
+
+  <action-method name="action-account-move-method-set-origin-description-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setOriginAndDescriptionOnLines" />
+  </action-method>
+
+  <!-- ACTION VIEW -->
   <action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
     <view type="form" name="move-wizard-generate-reverse-form" />
     <view-param name="popup" value="reload" />
