@@ -199,6 +199,7 @@
 "Account equivalences","Rekeningequivalenten",,
 "Account filters",,,
 "Account management list","Accountbeheer lijst",,
+"Account manually blocked",,,
 "Account missing on configuration for line : %s (company : %s)","Account ontbreekt bij de configuratie van de lijn: %s (bedrijf: %s)",,
 "Account missing on the tax line : %s (company : %s)","Rekening ontbreekt op de fiscale lijn : %s (bedrijf : %s)",,
 "Account move","Account verplaatsen",,

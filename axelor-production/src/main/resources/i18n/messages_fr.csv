@@ -721,6 +721,7 @@
 "Thursday hours","Heures Jeudi",,
 "Time difference (Minutes)","Écart de temps (Minutes)",,
 "Time difference per manufacturing order","Écart de temps par ordre de fabrication",,
+"Timing of implementation (hh:mm:ss)","Délai de mise en œuvre (hh:mm:ss)",,
 "To","À",,
 "To Date","Date de fin",,
 "To consume manuf order","Consommer sur l’ordre de production",,

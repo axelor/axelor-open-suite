@@ -199,6 +199,7 @@
 "Account equivalences","Эквиваленты счетов",,
 "Account filters",,,
 "Account management list","Список управления учетными записями",,
+"Account manually blocked",,,
 "Account missing on configuration for line : %s (company : %s)","Учетная запись отсутствует в конфигурации для строки : %s (компания : %s)",,
 "Account missing on the tax line : %s (company : %s)","Учетная запись отсутствует в налоговой строке : %s (компания: %s)",,
 "Account move","Переезд аккаунта",,

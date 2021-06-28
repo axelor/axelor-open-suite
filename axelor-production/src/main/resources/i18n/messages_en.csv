@@ -721,6 +721,7 @@
 "Thursday hours",,,
 "Time difference (Minutes)",,,
 "Time difference per manufacturing order",,,
+"Timing of implementation (hh:mm:ss)",,,
 "To",,,
 "To Date",,,
 "To consume manuf order",,,

@@ -44,6 +44,10 @@
         <string name="durationPerCycleFormula" title="Duration / cycle (hh:mm:ss)" large="true"/>
         <boolean name="defDurationFormula" title="Define with a script"/>
         
+        <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"/>
+        <string name="timingOfImplementationFormula" title="Timing of implementation (hh:mm:ss)" large="true"/>
+        <boolean name="defTimingOfImplementationFormula" title="Define with a script"/>
+        
         <string name="useCondition" title="Condition" large="true"/>
     </entity>
 
