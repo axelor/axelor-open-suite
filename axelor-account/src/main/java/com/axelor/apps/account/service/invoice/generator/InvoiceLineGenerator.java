@@ -118,7 +118,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.product = product;
     this.productName = productName;
     this.description = description;
-    this.qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+    this.qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     this.unit = unit;
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
@@ -273,10 +273,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     if (!invoice.getInAti()) {
       exTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_EVEN);
+      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_UP);
     } else {
       inTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_EVEN);
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
     }
   }
 
@@ -408,7 +408,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (value == null || startUnit == null || endUnit == null || startUnit.equals(endUnit)) {
       return value;
     } else {
-      return value.multiply(convertCoef(startUnit, endUnit)).setScale(6, RoundingMode.HALF_EVEN);
+      return value.multiply(convertCoef(startUnit, endUnit)).setScale(6, RoundingMode.HALF_UP);
     }
   }
 

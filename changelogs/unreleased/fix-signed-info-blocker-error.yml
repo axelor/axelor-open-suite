@@ -1,0 +1,4 @@
+---
+title: "SignedInfo - BLOCKER : line 147"
+type: fix
+description: fixed 'Disable access to external entities in XML parsing' error

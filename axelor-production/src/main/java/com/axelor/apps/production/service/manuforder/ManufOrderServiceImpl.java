@@ -136,7 +136,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         qtyRequested.divide(
             billOfMaterial.getQty(),
             appBaseService.getNbDecimalDigitForQty(),
-            RoundingMode.HALF_EVEN);
+            RoundingMode.HALF_UP);
 
     ManufOrder manufOrder =
         this.createManufOrder(
@@ -200,7 +200,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       qty =
           manufOrderQty
               .multiply(lineQty)
-              .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+              .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     }
     return qty;
   }
@@ -244,8 +244,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 ? prodResidualProduct
                     .getQty()
                     .multiply(manufOrderQty)
-                    .divide(
-                        bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+                    .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
         manufOrder.addToProduceProdProductListItem(

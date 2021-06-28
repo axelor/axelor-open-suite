@@ -55,9 +55,9 @@ public class InvoiceLineController {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (InvoiceLine line : invoiceLines) {
           qty =
-              (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_EVEN))
+              (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP))
                   .multiply(newKitQty)
-                  .setScale(scale, RoundingMode.HALF_EVEN);
+                  .setScale(scale, RoundingMode.HALF_UP);
           priceDiscounted = invoiceLineService.computeDiscount(line, invoice.getInAti());
 
           if (line.getTaxLine() != null) {
