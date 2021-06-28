@@ -18,6 +18,11 @@
         <string name="unitFormula" title="Unit" large="true"/>
         <boolean name="defUnitAsFormula" title="Define with a script" default="false"/>
         
+        <many-to-one name="configuratorProdProcessLine" title="Configurator Phase"
+                     ref="com.axelor.apps.production.db.ConfiguratorProdProcessLine"/>
+
+		<string name="useCondition" title="Condition" large="true"/>
+        
     </entity>
 
 </domain-models>

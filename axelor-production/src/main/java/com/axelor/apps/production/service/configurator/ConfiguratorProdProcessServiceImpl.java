@@ -119,10 +119,21 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       workshopStockLocation = confProdProcess.getWorkshopStockLocation();
     }
     if (confProdProcess.getDefIsConsProOnOperationAsFormula()) {
-      isConsProOnOperation =
-          (boolean)
-              configuratorService.computeFormula(
-                  confProdProcess.getIsConsProOnOperationFormula(), attributes);
+      Object computedIsConsProOnOperation =
+          configuratorService.computeFormula(
+              confProdProcess.getIsConsProOnOperationFormula(), attributes);
+      if (computedIsConsProOnOperation == null) {
+        throw new AxelorException(
+            confProdProcess,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(
+                I18n.get(
+                    IExceptionMessage
+                        .CONFIGURATOR_PROD_PROCESS_INCONSISTENT_IS_CONS_PRO_ON_OPERATION_FORMULA),
+                confProdProcess.getId()));
+      } else {
+        isConsProOnOperation = (Boolean) computedIsConsProOnOperation;
+      }
     } else {
       isConsProOnOperation = confProdProcess.getIsConsProOnOperation();
     }
@@ -143,7 +154,8 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     if (confLines != null) {
       for (ConfiguratorProdProcessLine confLine : confLines) {
         ProdProcessLine generatedProdProcessLine =
-            confProdProcessLineService.generateProdProcessLine(confLine, attributes);
+            confProdProcessLineService.generateProdProcessLine(
+                confLine, isConsProOnOperation, attributes);
         if (generatedProdProcessLine != null) {
           prodProcess.addProdProcessLineListItem(generatedProdProcessLine);
         }
