@@ -10,6 +10,9 @@
        <panel name="mainPanel" >
        		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         	<field name="name"/>
+        	<field name="nrbOfAnalyticGrouping"/>
+        	<field name="analyticGroupingList" colSpan="12" canSelect="true" hideIf="nrbOfAnalyticGrouping == 0"/>
+        	<field name="companySet"/>
        </panel>
         
     </form>
