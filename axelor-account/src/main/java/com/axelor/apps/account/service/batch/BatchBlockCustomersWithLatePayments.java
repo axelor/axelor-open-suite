@@ -15,6 +15,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -55,7 +56,8 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     List<Long> customersToBlock = new ArrayList<Long>();
     List<Long> customerToUnblock = new ArrayList<Long>();
     int offset = 0;
-    Query<DebtRecovery> query = debtRecoveryRepository.all().filter("self.isArchived = false");
+    Query<DebtRecovery> query =
+        debtRecoveryRepository.all().filter("self.archived = false or self.archived is null");
     while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       for (DebtRecovery debtRecovery : debtRecoveries) {
         ++offset;
@@ -102,8 +104,8 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
       }
       JPA.clear();
     }
-    unblockCustomers(customerToUnblock);
     blockCustomers(customersToBlock);
+    unblockCustomers(customerToUnblock);
     return result.toString();
   }
 
@@ -124,16 +126,17 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
           .filter("self.id in :ids")
           .bind("ids", customersToUnblock)
           .update("hasBlockedAccount", false);
-      //      Query.of(Partner.class)
-      //      .filter("self.id in :ids")
-      //      .bind("ids", customersToUnblock)
-      //      .update("hasManuallyBlockedAccount", false);
+      Query.of(Partner.class)
+          .filter("self.id in :ids")
+          .bind("ids", customersToUnblock)
+          .update("hasManuallyBlockedAccount", false);
     }
   }
 
   protected Partner processInvoice(Invoice invoice) throws AxelorException {
     AccountConfig config = accountConfigService.getAccountConfig(invoice.getCompany());
-    if (!config.getHasLatePaymentAccountBlocking()) {
+    if (!config.getHasLatePaymentAccountBlocking()
+        || invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) == 0) {
       return null;
     }
     if (invoice
