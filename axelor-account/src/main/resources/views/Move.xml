@@ -40,10 +40,10 @@
       <button name="deleteMoveBtn" title="delete" icon="fa-trash" onClick="action-move-method-delete-move" showIf="id != null" />
     </toolbar>
 
-    <panel name="mainPanel" colSpan="12"  readonlyIf="statusSelect == 3">
+    <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="9">
         <field name="reference" colSpan="12" />
-        <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0" colSpan="12">
+        <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form"
             grid-view="company-grid" />
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false" />
@@ -57,9 +57,15 @@
           <field name="currency" colSpan="3" />
           <field name="paymentMode" colSpan="3" />
         </panel>
+        <panel name="originDescriptionPanel" colSpan="12">
+          <field name="description" colSpan="6" />
+          <field name="origin" colSpan="3" />
+          <button onClick="action-account-move-group-set-origin-and-description-on-lines" name="setOriginDescriptionBtn" icon="fa-copy" showIf="statusSelect == 3" colSpan="1"
+            readonly="false" />
+        </panel>
       </panel>
 
-      <panel name="otherDetailsPanel" colSpan="3">
+      <panel name="otherDetailsPanel" colSpan="3" readonlyIf="statusSelect == 3">
         <field name="$viewerTags" showTitle="false">
           <viewer>
                         <![CDATA[
@@ -100,13 +106,8 @@
         <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-method-generate-counterpart,action-account-move-method-compute-totals" colSpan="12" />
       </panel>
     </panel>
-    
-    <panel name="originDescriptionPanel" colSpan="12">
-      <field name="origin" colSpan="5" />
-      <field name="description" colSpan="5" />
-      <button onClick="action-account-move-group-set-origin-and-description-on-lines" title="Set Origin/Description" name="setOriginDescriptionBtn" icon="fa-copy" showIf="statusSelect == 3" colSpan="2"
-        readonly="false" />
-    </panel>
+
+
 
     <panel>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6"
