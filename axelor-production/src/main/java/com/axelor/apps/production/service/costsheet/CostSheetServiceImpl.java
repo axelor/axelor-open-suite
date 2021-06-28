@@ -421,7 +421,7 @@ public class CostSheetServiceImpl implements CostSheetService {
             .divide(
                 BigDecimal.valueOf(3600),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
-                RoundingMode.HALF_EVEN);
+                RoundingMode.HALF_UP);
 
     costSheetLineService.createWorkCenterHRCostSheetLine(
         prodHumanResource.getWorkCenter(),
@@ -845,7 +845,7 @@ public class CostSheetServiceImpl implements CostSheetService {
             .divide(
                 new BigDecimal(3600),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
-                BigDecimal.ROUND_HALF_EVEN);
+                BigDecimal.ROUND_HALF_UP);
 
     costSheetLineService.createWorkCenterHRCostSheetLine(
         workCenter,
@@ -887,7 +887,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                 .divide(
                     new BigDecimal(3600),
                     appProductionService.getNbDecimalDigitForUnitPrice(),
-                    BigDecimal.ROUND_HALF_EVEN);
+                    BigDecimal.ROUND_HALF_UP);
       } else {
 
         BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
@@ -896,7 +896,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                 .divide(
                     new BigDecimal(3600),
                     appProductionService.getNbDecimalDigitForUnitPrice(),
-                    BigDecimal.ROUND_HALF_EVEN);
+                    BigDecimal.ROUND_HALF_UP);
 
         if (manufOrderQty.compareTo(workCenter.getMinCapacityPerCycle()) == 1) {
           BigDecimal maxCapacityPerCycle =
@@ -908,9 +908,9 @@ public class CostSheetServiceImpl implements CostSheetService {
                   .divide(
                       maxCapacityPerCycle,
                       appProductionService.getNbDecimalDigitForUnitPrice(),
-                      BigDecimal.ROUND_HALF_EVEN)
+                      BigDecimal.ROUND_HALF_UP)
                   .multiply(durationPerCycle)
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_EVEN);
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_UP);
         } else {
           qty = durationPerCycle;
         }
