@@ -205,6 +205,49 @@
 		return authorizedGroup
 	}
 	
+	def retrieveConfiguratorProdProduct = { cpp ->
+		configProdProduct = ""
+		configProdProduct += """
+						<configuratorProdProduct>
+							<product>"""
+							if (cpp.product?.id != null) {
+								configProdProduct += "${cpp.product?.id}"
+							}
+							configProdProduct += """</product>
+							<productFormula>"""
+							if (cpp.productFormula != null) {
+								configProdProduct += "${cpp.productFormula}"
+							}
+							configProdProduct += """</productFormula>
+							<defProductAsFormula>${cpp.defProductAsFormula}</defProductAsFormula>
+							<qty>${cpp.qty}</qty>
+							<qtyFormula>"""
+							if (cpp.qtyFormula != null) {
+								configProdProduct += "${cpp.qtyFormula}"
+							}
+							configProdProduct += """</qtyFormula>
+							<defQtyAsFormula>${cpp.defQtyAsFormula}</defQtyAsFormula>
+							<unit>"""
+							if (cpp.unit?.id != null) {
+								configProdProduct += "${cpp.unit?.id}"
+							}
+							configProdProduct += """</unit>
+							<unitFormula>"""
+							if (cpp.unitFormula != null) {
+								configProdProduct += "${cpp.unitFormula}"
+							}
+							configProdProduct += """</unitFormula>
+							<defUnitAsFormula>${cpp.defUnitAsFormula}</defUnitAsFormula>
+							<useCondition>"""
+							if (cpp.useCondition != null) {
+								configProdProduct += "${cpp.useCondition}"
+							}
+							configProdProduct += """</useCondition>
+						</configuratorProdProduct>
+		"""
+		return configProdProduct
+	}
+	
 	def retrieveConfiguratorProdProcessLine = { cppl ->
 		configProdProcessLine = ""
 		configProdProcessLine += """
@@ -294,6 +337,11 @@
 						configProdProcessLine += "${cppl.useCondition}"
 					}
 					configProdProcessLine += """</useCondition>
+					<configuratorProdProductList>"""	
+						cppl.configuratorProdProductList?.each( { cpp ->
+							configProdProcessLine += retrieveConfiguratorProdProduct(cpp)
+						})			
+						configProdProcessLine += """			</configuratorProdProductList>
 				</configuratorProdProcessLine>
 		"""
 		return configProdProcessLine
@@ -396,7 +444,7 @@
 			<workshopStockLocation>${cb.configuratorProdProcess?.workshopStockLocation?.id}</workshopStockLocation>
 			<workshopStockLocationFormula>${cb.configuratorProdProcess?.workshopStockLocationFormula}</workshopStockLocationFormula>
 			<defWorkshopStockLocationAsFormula>${cb.configuratorProdProcess?.defWorkshopStockLocationAsFormula}</defWorkshopStockLocationAsFormula>
-			<isConsProOnOperation>${cb.configuratorProdProcess?.isConsProOnOperation?.id}</isConsProOnOperation>
+			<isConsProOnOperation>${cb.configuratorProdProcess?.isConsProOnOperation}</isConsProOnOperation>
 			<isConsProOnOperationFormula>${cb.configuratorProdProcess?.isConsProOnOperationFormula}</isConsProOnOperationFormula>
 			<defIsConsProOnOperationAsFormula>${cb.configuratorProdProcess?.defIsConsProOnOperationAsFormula}</defIsConsProOnOperationAsFormula>
 			<configuratorProdProcessLineList>"""	

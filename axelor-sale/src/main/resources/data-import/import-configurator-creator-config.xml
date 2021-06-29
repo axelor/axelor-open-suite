@@ -100,6 +100,21 @@
            <bind node="timingOfImplementationFormula" to="timingOfImplementationFormula"/>
            <bind node="defTimingOfImplementationFormula" to="defTimingOfImplementationFormula"/>
            <bind node="useCondition" to="useCondition"/>
+           <bind node="configuratorProdProductList/configuratorProdProduct" to="configuratorProdProductList">
+			<bind node="product" to="product" search="self.id = :productId" if="productId">
+				<bind node="text()" to="id" alias="productId"/>
+			</bind>
+			<bind node="productFormula" to="productFormula"/>
+			<bind node="defProductAsFormula" to="defProductAsFormula"/>
+			<bind node="qty" to="qty"/>
+			<bind node="qtyFormula" to="qtyFormula"/>
+			<bind node="defQtyAsFormula" to="defQtyAsFormula"/>
+			<bind node="unit" to="unit" search="self.id = :unitId" if="unitId">
+				<bind node="text()" to="id" alias="unitId"/>
+			</bind>
+			<bind node="unitFormula" to="unitFormula"/>
+			<bind node="defUnitAsFormula" to="defUnitAsFormula"/>
+           </bind>
          </bind>
        </bind>
          

@@ -65,6 +65,7 @@
 					<timingOfImplementation></timingOfImplementation>
 					<timingOfImplementationFormula></timingOfImplementationFormula>
 					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 		
 				<configuratorProdProcessLine>
@@ -91,6 +92,7 @@
 					<timingOfImplementation></timingOfImplementation>
 					<timingOfImplementationFormula></timingOfImplementationFormula>
 					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 		
 				<configuratorProdProcessLine>
@@ -117,6 +119,7 @@
 					<timingOfImplementation></timingOfImplementation>
 					<timingOfImplementationFormula></timingOfImplementationFormula>
 					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 			</configuratorProdProcessLineList>
 		</configuratorProdProcess>
