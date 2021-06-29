@@ -155,7 +155,9 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       for (ConfiguratorProdProcessLine confLine : confLines) {
         ProdProcessLine generatedProdProcessLine =
             confProdProcessLineService.generateProdProcessLine(
-                confLine, isConsProOnOperation, attributes);
+                confLine,
+                (isConsProOnOperation != null ? isConsProOnOperation : false),
+                attributes);
         if (generatedProdProcessLine != null) {
           prodProcess.addProdProcessLineListItem(generatedProdProcessLine);
         }
