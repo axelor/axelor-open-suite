@@ -61,10 +61,11 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       for (DebtRecovery debtRecovery : debtRecoveries) {
         ++offset;
-        if (debtRecovery
-                .getRespiteDateBeforeAccountBlocking()
-                .compareTo(appBaseService.getTodayDate(debtRecovery.getCompany()))
-            >= 1) {
+        if (debtRecovery.getRespiteDateBeforeAccountBlocking() != null
+            && debtRecovery
+                    .getRespiteDateBeforeAccountBlocking()
+                    .compareTo(appBaseService.getTodayDate(debtRecovery.getCompany()))
+                >= 0) {
           for (Invoice invoice : debtRecovery.getInvoiceDebtRecoverySet()) {
             if (!customerToUnblock.contains(invoice.getPartner().getId())) {
               log.debug("Unblocking {}", invoice.getPartner());
