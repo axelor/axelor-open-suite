@@ -341,7 +341,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         Beans.get(AppProductionService.class).getAppProduction().getNbDecimalDigitForBomQty();
     return bom.getProduct().getName()
         + " - "
-        + bom.getQty().setScale(nbDecimalDigitForBomQty, RoundingMode.HALF_EVEN)
+        + bom.getQty().setScale(nbDecimalDigitForBomQty, RoundingMode.HALF_UP)
         + " "
         + bom.getUnit().getName()
         + " - "
