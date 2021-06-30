@@ -11,15 +11,17 @@
   </grid>
 
   <form name="configurator-product-formula-form" title="Calculated fields on configurator"
-    model="com.axelor.apps.sale.db.ConfiguratorProductFormula">
+    model="com.axelor.apps.sale.db.ConfiguratorProductFormula" onLoad="action-configurator-product-formula-attr-display-meta-json-field">
     <panel-tabs>
       <panel name="editorPanel" title="Editor" itemSpan="12">
         <panel name="mainPanel">
-          <field name="metaField" title="Product meta field"
+          <field name="metaField" onChange="action-configurator-product-formula-attr-display-meta-json-field" title="Product meta field"
             domain="self.metaModel.name = 'Product' AND self.name != 'configurator'"/>
+          <field name="metaJsonField" hidden="true" title="Custom field"/>
           <field name="formula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
           <field name="showOnConfigurator" readonlyIf="metaField.relationship == 'OneToMany'"/>
       <field name="metaField.relationship" hidden="true"/>
+      	  
         </panel>
         <panel name="actionPanel">
           <button name="checkScriptsBtn" title="Check the script"
@@ -29,5 +31,10 @@
       <panel-include view="incl-help-configurator-formula"/>
     </panel-tabs>
   </form>
+  
+  <action-attrs name="action-configurator-product-formula-attr-display-meta-json-field">
+  	<attribute name="hidden" for="metaJsonField" expr="eval:__this__?.metaField.json == false" if="eval:__this__?.metaField != null"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot; self.model = 'com.axelor.apps.base.db.Product' AND self.modelField = '${metaField?.name}' &quot;" if="eval:__this__?.metaField != null"/>
+  </action-attrs>
 
 </object-views>

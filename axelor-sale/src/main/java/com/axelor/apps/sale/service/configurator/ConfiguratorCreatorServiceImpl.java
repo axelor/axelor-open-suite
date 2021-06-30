@@ -43,6 +43,7 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
@@ -231,7 +232,22 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       }
     }
     String metaModelName = formulaMetaField.getMetaModel().getName();
-    MetaJsonField newField = new MetaJsonField();
+
+    // Specific meta json field can be specified in configurator now
+    // So we check if this field is null or not
+    // If it is not, we apply the formula on this field
+    MetaJsonField newField;
+    if (formula.getMetaJsonField() != null) {
+      newField = Beans.get(MetaJsonFieldRepository.class).copy(formula.getMetaJsonField(), true);
+      newField.setModel(Configurator.class.getName());
+      newField.setModelField("indicators");
+      newField.setName(newField.getName());
+      creator.addIndicator(newField);
+      return;
+    } else {
+      newField = new MetaJsonField();
+    }
+
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
     MetaField metaField =
@@ -269,6 +285,10 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       MetaField formulaMetaField = formula.getMetaField();
       if ((formulaMetaField.getName() + "_" + creator.getId()).equals(field.getName())) {
         return false;
+      }
+      //If it is a specified meta json field
+      if (formula.getMetaJsonField() != null && formula.getMetaJsonField().getName().equals(field.getName())) {
+    	  return false;
       }
     }
     return true;
@@ -346,26 +366,40 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     String fieldName = indicator.getName();
-    fieldName = fieldName.substring(0, fieldName.indexOf('_'));
-
-    MetaField metaField = formula.getMetaField();
-
-    if (!metaField.getName().equals(fieldName)) {
-      return;
+    
+    //Case where meta json field is specified
+    if (formula.getMetaJsonField() != null) {
+    	if (!fieldName.equals(formula.getMetaJsonField().getName())) {
+    		return;
+    	}
     }
+    else {
+    	//This check is necessary since fieldName may not have "_"
+    	if (fieldName.contains("_")) {
+    		fieldName = fieldName.substring(0, fieldName.indexOf('_'));
+    	}
+        
+        MetaField metaField = formula.getMetaField();
+
+        if (!metaField.getName().equals(fieldName)) {
+          return;
+        }
+        if (metaField.getTypeName().equals("BigDecimal")) {
+            indicator.setPrecision(20);
+            indicator.setScale(scale);
+        } else if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
+            indicator.setTargetModel(
+                Beans.get(MetaModelRepository.class).findByName(metaField.getTypeName()).getFullName());
+          }
+    }
+    
     if (formula.getShowOnConfigurator()) {
       indicator.setHidden(false);
       setContextToJsonField(creator, indicator);
     } else {
       indicator.setHidden(true);
     }
-    if (metaField.getTypeName().equals("BigDecimal")) {
-      indicator.setPrecision(20);
-      indicator.setScale(scale);
-    } else if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
-      indicator.setTargetModel(
-          Beans.get(MetaModelRepository.class).findByName(metaField.getTypeName()).getFullName());
-    }
+
   }
 
   public String getConfiguratorCreatorDomain() {

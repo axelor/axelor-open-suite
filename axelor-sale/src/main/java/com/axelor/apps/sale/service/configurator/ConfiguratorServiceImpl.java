@@ -279,9 +279,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     String groovyFormula = null;
     for (ConfiguratorFormula formula : formulas) {
       String fieldName = indicatorName;
-      fieldName = fieldName.substring(0, fieldName.indexOf('_'));
+      if (fieldName.contains("_")) {
+          fieldName = fieldName.substring(0, fieldName.indexOf('_'));
+      }
       MetaField metaField = formula.getMetaField();
-      if (metaField.getName().equals(fieldName)) {
+      //Adding this check since meta json can be specified in ConfiguratorFormula
+      if (formula.getMetaJsonField() != null && formula.getMetaJsonField().getName().equals(fieldName)) {
+    	  groovyFormula = formula.getFormula();
+          break;
+      }
+      else if (metaField.getName().equals(fieldName)) {
         groovyFormula = formula.getFormula();
         break;
       }
@@ -348,7 +355,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   }
 
   /**
-   * Indicator keys have this pattern : {field name}_{id} Transform the keys to have only the {field
+   * Indicator keys may have this pattern : {field name}_{id} Transform the keys to have only the {field
    * name}.
    *
    * @param jsonIndicators
@@ -357,7 +364,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Map<String, Object> newKeyMap = new HashMap<>();
     for (Map.Entry entry : jsonIndicators.entrySet()) {
       String oldKey = entry.getKey().toString();
-      newKeyMap.put(oldKey.substring(0, oldKey.indexOf('_')), entry.getValue());
+      
+      if (oldKey.contains("_")) {
+    	  newKeyMap.put(oldKey.substring(0, oldKey.indexOf('_')), entry.getValue());
+      }
+      //In case there is no "_" it means that this is a custom meta json field
+      //And since there is not setter for custom fields we must not add it to the map
     }
     jsonIndicators.clear();
     jsonIndicators.putAll(newKeyMap);
