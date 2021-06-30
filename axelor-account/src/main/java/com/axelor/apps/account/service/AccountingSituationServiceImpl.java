@@ -265,7 +265,6 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
       GroovyShell shell = new GroovyShell(binding, conf);
       accountCode = shell.evaluate(prefix).toString();
 
-
     } else if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_SEQUENCE) {
       final Sequence sequence = accountConfig.getSupplierAccountSequence();
       if (sequence == null) {
