@@ -183,5 +183,7 @@
 
 	<input file="account_paymentDelayReason.csv" separator=";"
 		type="com.axelor.apps.account.db.PaymentDelayReason" search="self.importId = :importId" />
+		
+	<input file="account_level.csv" separator=";" search="self.number = :number" type="com.axelor.apps.account.db.AnalyticLevel"/>
 
 </csv-inputs>
