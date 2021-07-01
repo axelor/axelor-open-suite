@@ -2,28 +2,66 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    <grid name="analytic-axis-grid" title="Analytic Axis" model="com.axelor.apps.account.db.AnalyticAxis">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="name"/>
-    </grid>
-    <form name="analytic-axis-form" title="Analytic Axis" model="com.axelor.apps.account.db.AnalyticAxis"  onSave="analytic-axis-on-save">
-       <panel name="mainPanel" >
-       		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        	<field name="name"/>
-        	<field name="nrbOfAnalyticGrouping"/>
-        	<field name="analyticGroupingList" colSpan="12" canSelect="true" hideIf="nrbOfAnalyticGrouping == 0"/>
-        	<field name="companySet"/>
-       </panel>
-        
-    </form>
-    
-    <action-group name="analytic-axis-on-save">
-    	<action name="analytic-axis-check-number"/>
-    	<action name="save"/>
-    </action-group>
-    
-    <action-validate name="analytic-axis-check-number">
-    	<error if="nrbOfAnalyticGrouping != analyticGroupingList.size" message="The defined number of Analytic grouping $nrbOfAnalyticGrouping and the number of defined Selected grouping $analyticGroupingList.size in the attached list is inconsistent. By default, the table analyticGroupingList is hidden, if you want to display it, input a number greater than 0."/>
-    </action-validate>
-    
+	<grid name="analytic-axis-grid" title="Analytic Axis"
+		model="com.axelor.apps.account.db.AnalyticAxis">
+		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+		<field name="name" />
+	</grid>
+	<form name="analytic-axis-form" title="Analytic Axis"
+		model="com.axelor.apps.account.db.AnalyticAxis"
+		onSave="analytic-axis-on-save">
+		<panel name="mainPanel">
+			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+			<field name="name" />
+			<field name="nbrOfAnalyticGrouping" />
+			<field name="analyticGroupingList" colSpan="12"
+				canSelect="true" hideIf="nbrOfAnalyticGrouping == 0" />
+			<field name="companySet" colSpan="12" />
+		</panel>
+
+	</form>
+
+	<tree name="analytic-account-tree"
+		title="Analytic accounting account (with axis)">
+		<column name="name" type="string" />
+		<column name="code" type="string" />
+		<node model="com.axelor.apps.account.db.AnalyticAxis">
+			<field name="axis" as="analyticAxis"/>
+			<field name="name" as="name" />
+			<field name="code" as="code" />
+		</node>
+		<node model="com.axelor.apps.account.db.AnalyticAccount"
+			parent="analyticAxis" domain="self.parent is null"
+			onClick="action-analytic-account-view-account-onchange-view"
+			draggable="true">
+			<field name="name" as="name" />
+			<field name="code" as="code" />
+		</node>
+		<node model="com.axelor.apps.account.db.AnalyticAccount"
+			parent="parent" domain="self.parent is not null"
+			onClick="action-analytic-account-view-account-onchange-view"
+			draggable="true">
+			<field name="name" as="name" />
+			<field name="code" as="code" />
+		</node>
+		<node model="com.axelor.apps.account.db.AnalyticAccount"
+			parent="parent" domain="self.parent is not null"
+			onClick="action-analytic-account-view-account-onchange-view"
+			draggable="true">
+			<field name="name" as="name" />
+			<field name="code" as="code" />
+		</node>
+	</tree>
+
+
+	<action-group name="analytic-axis-on-save">
+		<action name="analytic-axis-check-number" />
+		<action name="save" />
+	</action-group>
+
+	<action-validate name="analytic-axis-check-number">
+		<alert if="nbrOfAnalyticGrouping != analyticGroupingList.size"
+			message="The defined number of Analytic grouping $nbrOfAnalyticGrouping and the number of defined Selected grouping $analyticGroupingList.size in the attached list is inconsistent. By default, the table analyticGroupingList is hidden, if you want to display it, input a number greater than 0." />
+	</action-validate>
+
 </object-views>
