@@ -37,6 +37,9 @@
 			<workshopStockLocation>1</workshopStockLocation>
 			<workshopStockLocationFormula></workshopStockLocationFormula>
 			<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
+			<isConsProOnOperation>false</isConsProOnOperation>
+			<isConsProOnOperationFormula></isConsProOnOperationFormula>
+			<defIsConsProOnOperationAsFormula>false</defIsConsProOnOperationAsFormula>
 			<configuratorProdProcessLineList>
 				<configuratorProdProcessLine>
 					<name>Emballage</name>
@@ -62,6 +65,7 @@
 					<timingOfImplementation></timingOfImplementation>
 					<timingOfImplementationFormula></timingOfImplementationFormula>
 					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 		
 				<configuratorProdProcessLine>
@@ -88,6 +92,7 @@
 					<timingOfImplementation></timingOfImplementation>
 					<timingOfImplementationFormula></timingOfImplementationFormula>
 					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 		
 				<configuratorProdProcessLine>
@@ -114,6 +119,7 @@
 					<timingOfImplementation></timingOfImplementation>
 					<timingOfImplementationFormula></timingOfImplementationFormula>
 					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 			</configuratorProdProcessLineList>
 		</configuratorProdProcess>

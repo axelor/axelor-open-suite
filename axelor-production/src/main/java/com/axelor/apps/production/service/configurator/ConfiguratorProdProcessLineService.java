@@ -30,11 +30,14 @@ public interface ConfiguratorProdProcessLineService {
    * the custom values
    *
    * @param confProdProcessLine
+   * @param isConsProOnOperation
    * @param attributes
    * @return
    */
   ProdProcessLine generateProdProcessLine(
-      ConfiguratorProdProcessLine confProdProcessLine, JsonContext attributes)
+      ConfiguratorProdProcessLine confProdProcessLine,
+      boolean isConsProOnOperation,
+      JsonContext attributes)
       throws AxelorException;
 
   public void setWorkCenterGroup(
