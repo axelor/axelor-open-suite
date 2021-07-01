@@ -6,6 +6,7 @@
   <grid name="configurator-soline-formula-grid" title="Calculated fields on configurator"
     model="com.axelor.apps.sale.db.ConfiguratorSOLineFormula">
     <field name="metaField" title="Sale order line field"/>
+    <field name="metaJsonField" title="Custom field"/>
     <field name="formula"/>
     <field name="showOnConfigurator"/>
   </grid>
@@ -34,6 +35,7 @@
   
   <action-attrs name="action-configurator-sale-order-line-formula-attr-display-meta-json-field">
   	<attribute name="hidden" for="metaJsonField" expr="eval:__this__?.metaField.json == false" if="eval:__this__?.metaField != null"/>
+  	<attribute name="value" for="metaJsonField" expr="eval:null" if="eval:__this__?.metaField.json == false"/>
   	<attribute name="domain" for="metaJsonField" expr="eval:&quot; self.model = 'com.axelor.apps.base.db.Product' AND self.modelField = '${metaField?.name}' &quot;" if="eval:__this__?.metaField != null"/>
   </action-attrs>
 
