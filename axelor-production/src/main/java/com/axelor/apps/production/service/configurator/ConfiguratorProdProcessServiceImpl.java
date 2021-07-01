@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,15 +39,18 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
   protected ConfiguratorProdProcessLineService confProdProcessLineService;
   protected ConfiguratorService configuratorService;
   protected ProdProcessRepository prodProcessRepository;
+  protected StockLocationRepository stockLocationRepository;
 
   @Inject
   public ConfiguratorProdProcessServiceImpl(
       ConfiguratorProdProcessLineService confProdProcessLineService,
       ConfiguratorService configuratorService,
-      ProdProcessRepository prodProcessRepository) {
+      ProdProcessRepository prodProcessRepository,
+      StockLocationRepository stockLocationRepository) {
     this.confProdProcessLineService = confProdProcessLineService;
     this.configuratorService = configuratorService;
     this.prodProcessRepository = prodProcessRepository;
+    this.stockLocationRepository = stockLocationRepository;
   }
 
   @Override
@@ -99,6 +103,13 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
           (StockLocation)
               configuratorService.computeFormula(
                   confProdProcess.getStockLocationFormula(), attributes);
+      if (stockLocation != null) {
+        // M2O field define by script
+        // Explicit repo call needed in order to prevent case where formula is referring to
+        // context attribute defined on configurator creator
+        // In this case object is not managed and it causes hibernate issues
+        stockLocation = stockLocationRepository.find(stockLocation.getId());
+      }
     } else {
       stockLocation = confProdProcess.getStockLocation();
     }
@@ -107,6 +118,14 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
           (StockLocation)
               configuratorService.computeFormula(
                   confProdProcess.getProducedProductStockLocationFormula(), attributes);
+      if (producedProductStockLocation != null) {
+        // M2O field define by script
+        // Explicit repo call needed in order to prevent case where formula is referring to
+        // context attribute defined on configurator creator
+        // In this case object is not managed and it causes hibernate issues
+        producedProductStockLocation =
+            stockLocationRepository.find(producedProductStockLocation.getId());
+      }
     } else {
       producedProductStockLocation = confProdProcess.getProducedProductStockLocation();
     }
@@ -115,6 +134,13 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
           (StockLocation)
               configuratorService.computeFormula(
                   confProdProcess.getWorkshopStockLocationFormula(), attributes);
+      if (workshopStockLocation != null) {
+        // M2O field define by script
+        // Explicit repo call needed in order to prevent case where formula is referring to
+        // context attribute defined on configurator creator
+        // In this case object is not managed and it causes hibernate issues
+        workshopStockLocation = stockLocationRepository.find(workshopStockLocation.getId());
+      }
     } else {
       workshopStockLocation = confProdProcess.getWorkshopStockLocation();
     }

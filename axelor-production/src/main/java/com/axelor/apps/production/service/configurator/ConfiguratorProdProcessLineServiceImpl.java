@@ -25,11 +25,13 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ConfiguratorProdProcessLineRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -48,17 +50,23 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
   protected WorkCenterService workCenterService;
   protected AppProductionService appProdService;
   protected ConfiguratorProdProductService confProdProductService;
+  protected StockLocationRepository stockLocationRepository;
+  protected WorkCenterRepository workCenterRepository;
 
   @Inject
   public ConfiguratorProdProcessLineServiceImpl(
       ConfiguratorService configuratorService,
       WorkCenterService workCenterService,
       AppProductionService appProdService,
-      ConfiguratorProdProductService confProdProductService) {
+      ConfiguratorProdProductService confProdProductService,
+      StockLocationRepository stockLocationRepository,
+      WorkCenterRepository workCenterRepository) {
     this.configuratorService = configuratorService;
     this.workCenterService = workCenterService;
     this.appProdService = appProdService;
     this.confProdProductService = confProdProductService;
+    this.stockLocationRepository = stockLocationRepository;
+    this.workCenterRepository = workCenterRepository;
   }
 
   @Override
@@ -163,7 +171,11 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
                           .CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_WORK_CENTER_FORMULA),
                   confProdProcessLine.getId()));
         } else {
-          workCenter = (WorkCenter) computedWorkCenter;
+          // M2O field define by script
+          // Explicit repo call needed in order to prevent case where formula is referring to
+          // context attribute defined on configurator creator
+          // In this case object is not managed and it causes hibernate issues
+          workCenter = workCenterRepository.find(((WorkCenter) computedWorkCenter).getId());
         }
       } else {
         workCenter = confProdProcessLine.getWorkCenter();
@@ -222,6 +234,13 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
           (StockLocation)
               configuratorService.computeFormula(
                   confProdProcessLine.getStockLocationFormula(), attributes);
+      if (stockLocation != null) {
+        // M2O field define by script
+        // Explicit repo call needed in order to prevent case where formula is referring to
+        // context attribute defined on configurator creator
+        // In this case object is not managed and it causes hibernate issues
+        stockLocation = stockLocationRepository.find(stockLocation.getId());
+      }
     } else {
       stockLocation = confProdProcessLine.getStockLocation();
     }
