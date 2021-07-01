@@ -44,8 +44,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
   public ConfiguratorProdProcessServiceImpl(
       ConfiguratorProdProcessLineService confProdProcessLineService,
       ConfiguratorService configuratorService,
-      ProdProcessRepository prodProcessRepository,
-      StockLocationRepository stockLocationRepository) {
+      ProdProcessRepository prodProcessRepository) {
     this.confProdProcessLineService = confProdProcessLineService;
     this.configuratorService = configuratorService;
     this.prodProcessRepository = prodProcessRepository;
