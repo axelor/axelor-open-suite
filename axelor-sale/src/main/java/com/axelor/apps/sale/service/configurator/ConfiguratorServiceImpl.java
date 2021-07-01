@@ -41,6 +41,7 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -49,14 +50,22 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.time.temporal.Temporal;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
@@ -111,19 +120,22 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
     String calculatedValueClassName =
         Beans.get(ConfiguratorFormulaService.class).getCalculatedClassName(calculatedValue);
-    if (wantedType.equals("ManyToOne") || wantedType.equals("Custom-ManyToOne")) {
-      // it is a relational field so we get the target model class
-      String targetName = indicator.getTargetModel();
-      // get only the class without the package
-      wantedClassName = targetName.substring(targetName.lastIndexOf('.') + 1);
-    } else {
-      wantedClassName = wantedType;
+    wantedClassName = MetaTool.getWantedClassName(indicator, wantedType);
+    if (calculatedValueClassName.equals("ZonedDateTime")
+        && wantedClassName.equals("LocalDateTime")) {
+      return;
     }
     if (!areCompatible(wantedClassName, calculatedValueClassName)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CONFIGURATOR_ON_GENERATING_TYPE_ERROR),
-          indicator.getName().substring(0, indicator.getName().indexOf('_')),
+          indicator
+              .getName()
+              .substring(
+                  0,
+                  indicator.getName().indexOf('_') == -1
+                      ? indicator.getName().length()
+                      : indicator.getName().indexOf('_')),
           wantedClassName,
           calculatedValueClassName);
     }
@@ -153,9 +165,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     cleanIndicators(jsonIndicators);
     Mapper mapper = Mapper.of(Product.class);
     Product product = new Product();
+    fillAttrs(generateAttrMap(configurator, jsonIndicators), Product.class, product);
     for (String key : jsonIndicators.keySet()) {
       mapper.set(product, key, jsonIndicators.get(key));
     }
+
     fixRelationalFields(product);
     fillOneToManyFields(configurator, product, jsonAttributes);
     if (product.getProductTypeSelect() == null) {
@@ -178,6 +192,127 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     configurator.setProduct(product);
     product.setConfigurator(configurator);
     Beans.get(ProductRepository.class).save(product);
+  }
+
+  /**
+   * Private method that fill attr type fields of Class type with json string equivalent of
+   * attrValueMap
+   *
+   * @param <T>
+   * @param attrValueMap
+   * @param type
+   * @param product
+   */
+  private <T extends Model> void fillAttrs(
+      Map<String, Map<String, Object>> attrValueMap, Class<T> type, T product) {
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+    attrValueMap.entrySet().stream()
+        .forEach(
+            attr -> {
+              try {
+                Map<String, Object> fieldValue = attr.getValue();
+                Mapper classMapper = Mapper.of(type);
+                classMapper.set(product, attr.getKey(), mapper.writeValueAsString(fieldValue));
+              } catch (JsonProcessingException e) {
+                TraceBackService.trace(e);
+              }
+            });
+  }
+
+  /**
+   * Private method that generate a Map for attrs fields, wich are storing customs fields. A map
+   * entry is <attrNameField, mapOfCustomsFields>, with attrNameField the name of the attrField (for
+   * example 'attr') and mapOfCustomsFields, with entries with the form <customFieldName, value>
+   *
+   * @param configurator
+   * @param jsonIndicators
+   * @return
+   */
+  private Map<String, Map<String, Object>> generateAttrMap(
+      Configurator configurator, JsonContext jsonIndicators) {
+
+    // This map keys are attrs fields
+    // This map values are a map<namefield, object> associated to the attr field
+    // The purpose of this map is to compute it, in order to fill attr fields of Object Product
+    HashMap<String, Map<String, Object>> attrValueMap = new HashMap<>();
+    // Keys to remove from map, because we don't need them afterward
+    List<String> keysToRemove = new ArrayList<>();
+
+    jsonIndicators.entrySet().stream()
+        .map(entry -> entry.getKey())
+        .forEach(
+            nameField -> {
+              configurator
+                  .getConfiguratorCreator()
+                  .getConfiguratorProductFormulaList()
+                  .forEach(
+                      formula -> {
+                        if (formula.getMetaJsonField() != null
+                            && nameField.equals(formula.getMetaJsonField().getName())) {
+                          putFieldValueInMap(
+                              nameField,
+                              jsonIndicators.get(nameField),
+                              formula.getMetaField(),
+                              formula.getMetaJsonField(),
+                              attrValueMap);
+                          keysToRemove.add(nameField);
+                        }
+                      });
+            });
+
+    jsonIndicators.entrySet().removeIf(entry -> keysToRemove.contains(entry.getKey()));
+    return attrValueMap;
+  }
+
+  private void putFieldValueInMap(
+      String nameField,
+      Object object,
+      MetaField metaField,
+      MetaJsonField metaJsonField,
+      Map<String, Map<String, Object>> attrValueMap) {
+
+    if (!attrValueMap.containsKey(metaField.getName())) {
+      attrValueMap.put(metaField.getName(), new HashMap<>());
+    }
+    Entry<String, Object> entry = adaptType(nameField, object, metaJsonField);
+    attrValueMap.get(metaField.getName()).put(entry.getKey(), entry.getValue());
+  }
+
+  /**
+   * Private method that adapt type of object depending on his type.
+   *
+   * @param nameField
+   * @param object
+   * @param metaJsonField
+   * @return
+   */
+  private Map.Entry<String, Object> adaptType(
+      String nameField, Object object, MetaJsonField metaJsonField) {
+    try {
+
+      if (object instanceof Temporal) {
+        return new AbstractMap.SimpleEntry<>(nameField, object.toString());
+      }
+
+      String wantedType = MetaTool.jsonTypeToType(metaJsonField.getType());
+      // Case of many to one object
+      if (wantedType.equals("ManyToOne") || wantedType.equals("Custom-ManyToOne")) {
+
+        Model model =
+            (Model) object; // This should not be a problem since at this point we already made a
+        // checking
+        final Map<String, Object> manyToOneObject = new HashMap<>();
+        manyToOneObject.put("id", model.getId());
+
+        return new AbstractMap.SimpleEntry<>(nameField, manyToOneObject);
+      }
+    } catch (AxelorException | IllegalArgumentException | SecurityException e) {
+
+      TraceBackService.trace(e);
+    }
+    return new AbstractMap.SimpleEntry<>(nameField, object);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -280,15 +415,15 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     for (ConfiguratorFormula formula : formulas) {
       String fieldName = indicatorName;
       if (fieldName.contains("_")) {
-          fieldName = fieldName.substring(0, fieldName.indexOf('_'));
+        fieldName = fieldName.substring(0, fieldName.indexOf('_'));
       }
       MetaField metaField = formula.getMetaField();
-      //Adding this check since meta json can be specified in ConfiguratorFormula
-      if (formula.getMetaJsonField() != null && formula.getMetaJsonField().getName().equals(fieldName)) {
-    	  groovyFormula = formula.getFormula();
-          break;
-      }
-      else if (metaField.getName().equals(fieldName)) {
+      // Adding this check since meta json can be specified in ConfiguratorFormula
+      if (formula.getMetaJsonField() != null
+          && formula.getMetaJsonField().getName().equals(fieldName)) {
+        groovyFormula = formula.getFormula();
+        break;
+      } else if (metaField.getName().equals(fieldName)) {
         groovyFormula = formula.getFormula();
         break;
       }
@@ -338,6 +473,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     cleanIndicators(jsonIndicators);
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
+    fillAttrs(generateAttrMap(configurator, jsonIndicators), SaleOrderLine.class, saleOrderLine);
     fixRelationalFields(saleOrderLine);
     fillOneToManyFields(configurator, saleOrderLine, jsonAttributes);
     this.fillSaleOrderWithProduct(saleOrderLine);
@@ -355,8 +491,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   }
 
   /**
-   * Indicator keys may have this pattern : {field name}_{id} Transform the keys to have only the {field
-   * name}.
+   * Indicator keys may have this pattern : {field name}_{id} Transform the keys to have only the
+   * {field name}.
    *
    * @param jsonIndicators
    */
@@ -364,12 +500,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Map<String, Object> newKeyMap = new HashMap<>();
     for (Map.Entry entry : jsonIndicators.entrySet()) {
       String oldKey = entry.getKey().toString();
-      
+
       if (oldKey.contains("_")) {
-    	  newKeyMap.put(oldKey.substring(0, oldKey.indexOf('_')), entry.getValue());
+        newKeyMap.put(oldKey.substring(0, oldKey.indexOf('_')), entry.getValue());
       }
-      //In case there is no "_" it means that this is a custom meta json field
-      //And since there is not setter for custom fields we must not add it to the map
+      // In case there is no "_" it means that this is a custom meta json field
+      else {
+        newKeyMap.put(oldKey, entry.getValue());
+      }
     }
     jsonIndicators.clear();
     jsonIndicators.putAll(newKeyMap);

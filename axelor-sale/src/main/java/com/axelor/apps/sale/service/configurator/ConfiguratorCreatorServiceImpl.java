@@ -223,30 +223,34 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    */
   protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator)
       throws AxelorException {
-    MetaField formulaMetaField = formula.getMetaField();
-    List<MetaJsonField> fields =
-        Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
-    for (MetaJsonField field : fields) {
-      if (field.getName().equals(formulaMetaField.getName() + "_" + creator.getId())) {
-        return;
-      }
-    }
-    String metaModelName = formulaMetaField.getMetaModel().getName();
 
+    if (!formulaIsMissing(formula, creator)) {
+      return;
+    }
+    ;
     // Specific meta json field can be specified in configurator now
     // So we check if this field is null or not
     // If it is not, we apply the formula on this field
-    MetaJsonField newField;
     if (formula.getMetaJsonField() != null) {
-      newField = Beans.get(MetaJsonFieldRepository.class).copy(formula.getMetaJsonField(), true);
-      newField.setModel(Configurator.class.getName());
-      newField.setModelField("indicators");
-      newField.setName(newField.getName());
-      creator.addIndicator(newField);
+      creator.addIndicator(copyMetaJsonFieldFromFormula(formula, creator));
       return;
-    } else {
-      newField = new MetaJsonField();
     }
+
+    creator.addIndicator(createMetaJsonFieldFromMetaField(formula, creator));
+  }
+
+  /**
+   * Private method that create metaJsonField from {@link ConfiguratorFormula#metaField}
+   *
+   * @param formula
+   * @param creator
+   * @throws AxelorException
+   */
+  private MetaJsonField createMetaJsonFieldFromMetaField(
+      ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException {
+    MetaField formulaMetaField = formula.getMetaField();
+    MetaJsonField newField = new MetaJsonField();
+    String metaModelName = formulaMetaField.getMetaModel().getName();
 
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
@@ -268,7 +272,51 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     newField.setType(MetaTool.typeToJsonType(typeName));
     newField.setName(formulaMetaField.getName() + "_" + creator.getId());
     newField.setTitle(formulaMetaField.getLabel());
-    creator.addIndicator(newField);
+
+    return newField;
+  }
+
+  /**
+   * Private method that copy and modify metajsonfield from {@link
+   * ConfiguratorFormula#metaJsonField}
+   *
+   * @param formula
+   * @param creator
+   */
+  private MetaJsonField copyMetaJsonFieldFromFormula(
+      ConfiguratorFormula formula, ConfiguratorCreator creator) {
+    MetaJsonField newField =
+        Beans.get(MetaJsonFieldRepository.class).copy(formula.getMetaJsonField(), true);
+    newField.setModel(Configurator.class.getName());
+    newField.setModelField("indicators");
+    newField.setName(newField.getName());
+    return newField;
+  }
+
+  /**
+   * Private method to check if {@link ConfiguratorFormula} is missing in {@link
+   * ConfiguratorCreator#indicators}
+   *
+   * @param formula : {@link ConfiguratorFormula}
+   * @param creator : {@link ConfiguratorCreator}
+   * @return true if formula is missing, else false
+   */
+  private boolean formulaIsMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
+
+    MetaField formulaMetaField = formula.getMetaField();
+    List<MetaJsonField> fields =
+        Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
+    for (MetaJsonField field : fields) {
+      if (field.getName().equals(formulaMetaField.getName() + "_" + creator.getId())) {
+        return false;
+      }
+      // Check if metaJsonField is not null and in this case, checking if he is missing
+      else if (formula.getMetaJsonField() != null
+          && field.getName().equals(formula.getMetaJsonField().getName())) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -286,9 +334,10 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       if ((formulaMetaField.getName() + "_" + creator.getId()).equals(field.getName())) {
         return false;
       }
-      //If it is a specified meta json field
-      if (formula.getMetaJsonField() != null && formula.getMetaJsonField().getName().equals(field.getName())) {
-    	  return false;
+      // If it is a specified meta json field
+      if (formula.getMetaJsonField() != null
+          && formula.getMetaJsonField().getName().equals(field.getName())) {
+        return false;
       }
     }
     return true;
@@ -366,40 +415,38 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     String fieldName = indicator.getName();
-    
-    //Case where meta json field is specified
-    if (formula.getMetaJsonField() != null) {
-    	if (!fieldName.equals(formula.getMetaJsonField().getName())) {
-    		return;
-    	}
-    }
-    else {
-    	//This check is necessary since fieldName may not have "_"
-    	if (fieldName.contains("_")) {
-    		fieldName = fieldName.substring(0, fieldName.indexOf('_'));
-    	}
-        
-        MetaField metaField = formula.getMetaField();
 
-        if (!metaField.getName().equals(fieldName)) {
-          return;
-        }
-        if (metaField.getTypeName().equals("BigDecimal")) {
-            indicator.setPrecision(20);
-            indicator.setScale(scale);
-        } else if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
-            indicator.setTargetModel(
-                Beans.get(MetaModelRepository.class).findByName(metaField.getTypeName()).getFullName());
-          }
+    // Case where meta json field is specified
+    if (formula.getMetaJsonField() != null) {
+      if (!fieldName.equals(formula.getMetaJsonField().getName())) {
+        return;
+      }
+    } else {
+      // This check is necessary since fieldName may not have "_"
+      if (fieldName.contains("_")) {
+        fieldName = fieldName.substring(0, fieldName.indexOf('_'));
+      }
+
+      MetaField metaField = formula.getMetaField();
+
+      if (!metaField.getName().equals(fieldName)) {
+        return;
+      }
+      if (metaField.getTypeName().equals("BigDecimal")) {
+        indicator.setPrecision(20);
+        indicator.setScale(scale);
+      } else if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
+        indicator.setTargetModel(
+            Beans.get(MetaModelRepository.class).findByName(metaField.getTypeName()).getFullName());
+      }
     }
-    
+
     if (formula.getShowOnConfigurator()) {
       indicator.setHidden(false);
       setContextToJsonField(creator, indicator);
     } else {
       indicator.setHidden(true);
     }
-
   }
 
   public String getConfiguratorCreatorDomain() {
