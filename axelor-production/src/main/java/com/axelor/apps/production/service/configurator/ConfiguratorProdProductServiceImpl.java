@@ -57,7 +57,7 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
         } else {
           // M2O field define by script
           // Explicit repo call needed in order to prevent case where formula is referring to
-          // context attribute defined on configurator creator
+          // JSON context attribute defined on configurator creator
           // In this case object is not managed and it causes hibernate issues
           product = productRepository.find(((Product) computedProduct).getId());
         }
@@ -111,7 +111,7 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
         } else {
           // M2O field define by script
           // Explicit repo call needed in order to prevent case where formula is referring to
-          // context attribute defined on configurator creator
+          // JSON context attribute defined on configurator creator
           // In this case object is not managed and it causes hibernate issues
           unit = unitRepository.find(((Unit) computedUnit).getId());
         }

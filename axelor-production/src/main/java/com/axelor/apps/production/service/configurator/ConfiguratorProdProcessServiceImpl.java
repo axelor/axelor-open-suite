@@ -106,7 +106,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       if (stockLocation != null) {
         // M2O field define by script
         // Explicit repo call needed in order to prevent case where formula is referring to
-        // context attribute defined on configurator creator
+        // JSON context attribute defined on configurator creator
         // In this case object is not managed and it causes hibernate issues
         stockLocation = stockLocationRepository.find(stockLocation.getId());
       }
@@ -121,7 +121,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       if (producedProductStockLocation != null) {
         // M2O field define by script
         // Explicit repo call needed in order to prevent case where formula is referring to
-        // context attribute defined on configurator creator
+        // JSON context attribute defined on configurator creator
         // In this case object is not managed and it causes hibernate issues
         producedProductStockLocation =
             stockLocationRepository.find(producedProductStockLocation.getId());
@@ -137,7 +137,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       if (workshopStockLocation != null) {
         // M2O field define by script
         // Explicit repo call needed in order to prevent case where formula is referring to
-        // context attribute defined on configurator creator
+        // JSON context attribute defined on configurator creator
         // In this case object is not managed and it causes hibernate issues
         workshopStockLocation = stockLocationRepository.find(workshopStockLocation.getId());
       }
