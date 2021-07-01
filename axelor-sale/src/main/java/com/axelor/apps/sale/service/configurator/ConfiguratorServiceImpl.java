@@ -399,13 +399,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
   }
 
-  /**
-   * Fix relational fields of a product or a sale order line generated from a configurator. This
-   * method may become useless on a future ADK update.
-   *
-   * @param model
-   */
-  protected void fixRelationalFields(Model model) throws AxelorException {
+  @Override
+  public void fixRelationalFields(Model model) throws AxelorException {
     // get all many to one fields
     List<MetaField> manyToOneFields =
         Beans.get(MetaFieldRepository.class)

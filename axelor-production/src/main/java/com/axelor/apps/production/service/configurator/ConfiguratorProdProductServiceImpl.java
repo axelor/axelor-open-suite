@@ -2,8 +2,6 @@ package com.axelor.apps.production.service.configurator;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -20,19 +18,12 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
 
   protected ProdProductService prodProductService;
   protected ConfiguratorService configuratorService;
-  protected ProductRepository productRepository;
-  protected UnitRepository unitRepository;
 
   @Inject
   public ConfiguratorProdProductServiceImpl(
-      ProdProductService prodProductService,
-      ConfiguratorService configuratorService,
-      ProductRepository productRepository,
-      UnitRepository unitRepository) {
+      ProdProductService prodProductService, ConfiguratorService configuratorService) {
     this.prodProductService = prodProductService;
     this.configuratorService = configuratorService;
-    this.productRepository = productRepository;
-    this.unitRepository = unitRepository;
   }
 
   @Override
@@ -55,11 +46,7 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
                       IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_PRODUCT_FORMULA),
                   confProdProduct.getId()));
         } else {
-          // M2O field define by script
-          // Explicit repo call needed in order to prevent case where formula is referring to
-          // JSON context attribute defined on configurator creator
-          // In this case object is not managed and it causes hibernate issues
-          product = productRepository.find(((Product) computedProduct).getId());
+          product = (Product) computedProduct;
         }
       } else {
         product = confProdProduct.getProduct();
@@ -109,11 +96,7 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
                   I18n.get(IExceptionMessage.CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_UNIT_FORMULA),
                   confProdProduct.getId()));
         } else {
-          // M2O field define by script
-          // Explicit repo call needed in order to prevent case where formula is referring to
-          // JSON context attribute defined on configurator creator
-          // In this case object is not managed and it causes hibernate issues
-          unit = unitRepository.find(((Unit) computedUnit).getId());
+          unit = (Unit) computedUnit;
         }
       } else {
         unit = confProdProduct.getUnit();
@@ -126,8 +109,9 @@ public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProdu
                   confProdProduct.getId()));
         }
       }
-
-      return new ProdProduct(product, qty, unit);
+      ProdProduct generatedProdProduct = new ProdProduct(product, qty, unit);
+      configuratorService.fixRelationalFields(generatedProdProduct);
+      return generatedProdProduct;
     }
     return null;
   }

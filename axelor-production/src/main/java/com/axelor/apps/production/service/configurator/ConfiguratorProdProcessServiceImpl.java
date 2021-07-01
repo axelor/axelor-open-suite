@@ -39,7 +39,6 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
   protected ConfiguratorProdProcessLineService confProdProcessLineService;
   protected ConfiguratorService configuratorService;
   protected ProdProcessRepository prodProcessRepository;
-  protected StockLocationRepository stockLocationRepository;
 
   @Inject
   public ConfiguratorProdProcessServiceImpl(
@@ -50,7 +49,6 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     this.confProdProcessLineService = confProdProcessLineService;
     this.configuratorService = configuratorService;
     this.prodProcessRepository = prodProcessRepository;
-    this.stockLocationRepository = stockLocationRepository;
   }
 
   @Override
@@ -103,13 +101,6 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
           (StockLocation)
               configuratorService.computeFormula(
                   confProdProcess.getStockLocationFormula(), attributes);
-      if (stockLocation != null) {
-        // M2O field define by script
-        // Explicit repo call needed in order to prevent case where formula is referring to
-        // JSON context attribute defined on configurator creator
-        // In this case object is not managed and it causes hibernate issues
-        stockLocation = stockLocationRepository.find(stockLocation.getId());
-      }
     } else {
       stockLocation = confProdProcess.getStockLocation();
     }
@@ -118,14 +109,6 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
           (StockLocation)
               configuratorService.computeFormula(
                   confProdProcess.getProducedProductStockLocationFormula(), attributes);
-      if (producedProductStockLocation != null) {
-        // M2O field define by script
-        // Explicit repo call needed in order to prevent case where formula is referring to
-        // JSON context attribute defined on configurator creator
-        // In this case object is not managed and it causes hibernate issues
-        producedProductStockLocation =
-            stockLocationRepository.find(producedProductStockLocation.getId());
-      }
     } else {
       producedProductStockLocation = confProdProcess.getProducedProductStockLocation();
     }
@@ -134,13 +117,6 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
           (StockLocation)
               configuratorService.computeFormula(
                   confProdProcess.getWorkshopStockLocationFormula(), attributes);
-      if (workshopStockLocation != null) {
-        // M2O field define by script
-        // Explicit repo call needed in order to prevent case where formula is referring to
-        // JSON context attribute defined on configurator creator
-        // In this case object is not managed and it causes hibernate issues
-        workshopStockLocation = stockLocationRepository.find(workshopStockLocation.getId());
-      }
     } else {
       workshopStockLocation = confProdProcess.getWorkshopStockLocation();
     }
@@ -189,6 +165,9 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
         }
       }
     }
+
+    configuratorService.fixRelationalFields(prodProcess);
+
     return prodProcess;
   }
 
