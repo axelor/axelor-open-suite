@@ -29,6 +29,7 @@
 	
 <!-- 	Used for Bank reconcile process -->
 	<decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"/>
+  
 
   </entity>
   

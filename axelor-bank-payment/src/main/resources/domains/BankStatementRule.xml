@@ -9,11 +9,11 @@
     <many-to-one ref="com.axelor.apps.account.db.AccountManagement" name="accountManagement" title="Payment account management" required="true"/>
     <many-to-one ref="com.axelor.apps.account.db.Account" name="counterpartAccount" title="Counterpart account"/>
     <many-to-one ref="com.axelor.apps.base.db.Partner" name="partner" title="Partner"/>
+    <many-to-one ref="com.axelor.apps.account.db.BankStatementQuery" name="bankStatementQuery" title="Query"/>
     
     <integer name="ruleType" title="Rule type" selection="bank.payment.bank.statement.rule.rule.type.select" default="0" required="true"/>
     
-    <string name="searchLabel" title="Searched label"/>
-    <string name="testFunction" title="Test function" required="true"/>
+    <string name="searchLabel" title="Searched label" multiline="true" large="true"/>
     
   </entity>
 </domain-models>

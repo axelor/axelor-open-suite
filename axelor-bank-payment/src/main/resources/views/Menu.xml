@@ -231,6 +231,13 @@
     <view type="form" name="bank-statement-rule-form" />
   </action-view>
   
+  <menuitem title="Bank statement queries" name="account-bank-statement-query" parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.query" />
+
+  <action-view name="account.bank.statement.query" title="Bank statement queries" model="com.axelor.apps.account.db.BankStatementQuery">
+    <view type="grid" name="bank-statement-query-grid" />
+    <view type="form" name="bank-statement-query-form" />
+  </action-view>
+  
   <menuitem title="Bank details tree" name="bank-payment-bank-details" parent="account-root-bank-statement" action="bank.payment.bank.detail.tree"/>
   
   <action-view name="bank.payment.bank.detail.tree" title="Bank details tree" model="com.axelor.apps.base.db.BankDetails">
