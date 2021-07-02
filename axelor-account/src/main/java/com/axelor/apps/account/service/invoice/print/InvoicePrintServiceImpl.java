@@ -149,8 +149,13 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
             .bind("invoiceId", invoice.getId())
             .order("-id")
             .fetchOne();
-    invoice.setPrintedPDF(dmsFile.getMetaFile());
-    return MetaFiles.getPath(dmsFile.getMetaFile()).toFile();
+    if (dmsFile != null) {
+      invoice.setPrintedPDF(dmsFile.getMetaFile());
+      return MetaFiles.getPath(dmsFile.getMetaFile()).toFile();
+    }
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(IExceptionMessage.INVOICE_PRINTING_IO_ERROR));
   }
 
   @Override
