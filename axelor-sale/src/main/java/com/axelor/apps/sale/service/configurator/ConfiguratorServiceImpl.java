@@ -125,7 +125,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if ("one-to-many".equals(metaJsonField.getType())) {
       // If the metaJsonField name contains ., that means it is a metaJson associated to a attr
       // field
-      return !metaJsonField.getName().contains(".");
+      return !metaJsonField.getName().contains("$");
     }
 
     return false;
@@ -275,12 +275,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     List<String> keysToRemove = new ArrayList<>();
     jsonIndicators.entrySet().stream()
         .map(entry -> entry.getKey())
-        .filter(fullName -> fullName.contains("."))
+        .filter(fullName -> fullName.contains("$"))
         .forEach(
             fullName -> {
               formulas.forEach(
                   formula -> {
-                    String[] nameFieldInfo = fullName.split("\\.");
+                    String[] nameFieldInfo = fullName.split("\\$");
                     String attrName = nameFieldInfo[0];
                     String fieldName = nameFieldInfo[1];
                     if (formula.getMetaJsonField() != null
@@ -474,7 +474,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       // Adding this check since meta json can be specified in ConfiguratorFormula
       if (formula.getMetaJsonField() != null
           && fieldName.equals(
-              formula.getMetaField().getName() + "." + formula.getMetaJsonField().getName())) {
+              formula.getMetaField().getName() + "$" + formula.getMetaJsonField().getName())) {
         // fieldName should be like attr.fieldName, so we must only keep fieldName
         groovyFormula = formula.getFormula();
         break;

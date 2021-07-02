@@ -289,7 +289,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         Beans.get(MetaJsonFieldRepository.class).copy(formula.getMetaJsonField(), true);
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
-    newField.setName(formula.getMetaField().getName() + "." + newField.getName());
+    newField.setName(formula.getMetaField().getName() + "$" + newField.getName());
     return newField;
   }
 
@@ -315,7 +315,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
           && field
               .getName()
               .equals(
-                  formula.getMetaField().getName() + "." + formula.getMetaJsonField().getName())) {
+                  formula.getMetaField().getName() + "$" + formula.getMetaJsonField().getName())) {
         return false;
       }
     }
@@ -342,7 +342,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
           && field
               .getName()
               .equals(
-                  formula.getMetaField().getName() + "." + formula.getMetaJsonField().getName())) {
+                  formula.getMetaField().getName() + "$" + formula.getMetaJsonField().getName())) {
         return false;
       }
     }
@@ -378,7 +378,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       Field correspondingField =
           Class.forName(
                   metaField.getMetaModel().getPackageName()
-                      + "."
+                      + "-"
                       + metaField.getMetaModel().getName())
               .getDeclaredField(metaField.getName());
       Widget widget = correspondingField.getAnnotation(Widget.class);
@@ -425,7 +425,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     // Case where meta json field is specified
     if (formula.getMetaJsonField() != null) {
       if (!fieldName.equals(
-          formula.getMetaField().getName() + "." + formula.getMetaJsonField().getName())) {
+          formula.getMetaField().getName() + "$" + formula.getMetaJsonField().getName())) {
         return;
       }
     } else {
