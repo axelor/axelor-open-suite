@@ -289,7 +289,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         Beans.get(MetaJsonFieldRepository.class).copy(formula.getMetaJsonField(), true);
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
-    newField.setName(newField.getName());
+    newField.setName(formula.getMetaField().getName() + "." + newField.getName());
     return newField;
   }
 
@@ -312,7 +312,10 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       }
       // Check if metaJsonField is not null and in this case, checking if he is missing
       else if (formula.getMetaJsonField() != null
-          && field.getName().equals(formula.getMetaJsonField().getName())) {
+          && field
+              .getName()
+              .equals(
+                  formula.getMetaField().getName() + "." + formula.getMetaJsonField().getName())) {
         return false;
       }
     }
@@ -336,7 +339,10 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       }
       // If it is a specified meta json field
       if (formula.getMetaJsonField() != null
-          && formula.getMetaJsonField().getName().equals(field.getName())) {
+          && field
+              .getName()
+              .equals(
+                  formula.getMetaField().getName() + "." + formula.getMetaJsonField().getName())) {
         return false;
       }
     }
@@ -418,7 +424,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     // Case where meta json field is specified
     if (formula.getMetaJsonField() != null) {
-      if (!fieldName.equals(formula.getMetaJsonField().getName())) {
+      if (!fieldName.equals(
+          formula.getMetaField().getName() + "." + formula.getMetaJsonField().getName())) {
         return;
       }
     } else {

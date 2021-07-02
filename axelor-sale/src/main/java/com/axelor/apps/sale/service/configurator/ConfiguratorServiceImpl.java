@@ -85,21 +85,50 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       return;
     }
     List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
-    indicators =
-        indicators.stream()
-            .filter(metaJsonField -> !"one-to-many".equals(metaJsonField.getType()))
-            .collect(Collectors.toList());
+    indicators = filterIndicators(configurator, indicators);
     for (MetaJsonField indicator : indicators) {
       try {
-        Object calculatedValue =
-            computeIndicatorValue(configurator, indicator.getName(), jsonAttributes);
+        String indicatorName = indicator.getName();
+
+        Object calculatedValue = computeIndicatorValue(configurator, indicatorName, jsonAttributes);
         checkType(calculatedValue, indicator);
-        jsonIndicators.put(indicator.getName(), calculatedValue);
+        jsonIndicators.put(indicatorName, calculatedValue);
       } catch (MissingPropertyException e) {
         // if a field is missing, the value needs to be set to null
         continue;
       }
     }
+  }
+  /**
+   * Filter indicator lists that matches one the following: - The indicator is a "one-to-many" type
+   * && it is not in one the formula's metaJsonField
+   *
+   * @param configurator
+   * @param indicators
+   * @return a filtered indicator list
+   */
+  private List<MetaJsonField> filterIndicators(
+      Configurator configurator, List<MetaJsonField> indicators) {
+
+    List<ConfiguratorFormula> formulas = new ArrayList<>();
+    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorProductFormulaList());
+    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
+
+    return indicators.stream()
+        .filter(metaJsonField -> !isOneToManyNotInAttr(formulas, metaJsonField))
+        .collect(Collectors.toList());
+  }
+
+  private Boolean isOneToManyNotInAttr(
+      List<ConfiguratorFormula> formulas, MetaJsonField metaJsonField) {
+
+    if ("one-to-many".equals(metaJsonField.getType())) {
+      // If the metaJsonField name contains ., that means it is a metaJson associated to a attr
+      // field
+      return !metaJsonField.getName().contains(".");
+    }
+
+    return false;
   }
 
   @Override
@@ -165,7 +194,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     cleanIndicators(jsonIndicators);
     Mapper mapper = Mapper.of(Product.class);
     Product product = new Product();
-    fillAttrs(generateAttrMap(configurator, jsonIndicators), Product.class, product);
+    fillAttrs(
+        generateAttrMap(
+            configurator.getConfiguratorCreator().getConfiguratorProductFormulaList(),
+            jsonIndicators),
+        Product.class,
+        product);
     for (String key : jsonIndicators.keySet()) {
       mapper.set(product, key, jsonIndicators.get(key));
     }
@@ -224,14 +258,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   /**
    * Private method that generate a Map for attrs fields, wich are storing customs fields. A map
    * entry is <attrNameField, mapOfCustomsFields>, with attrNameField the name of the attrField (for
-   * example 'attr') and mapOfCustomsFields, with entries with the form <customFieldName, value>
+   * example 'attr') and mapOfCustomsFields, with entries with the form of <customFieldName, value>
    *
    * @param configurator
    * @param jsonIndicators
    * @return
    */
-  private Map<String, Map<String, Object>> generateAttrMap(
-      Configurator configurator, JsonContext jsonIndicators) {
+  protected Map<String, Map<String, Object>> generateAttrMap(
+      List<? extends ConfiguratorFormula> formulas, JsonContext jsonIndicators) {
 
     // This map keys are attrs fields
     // This map values are a map<namefield, object> associated to the attr field
@@ -239,27 +273,28 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     HashMap<String, Map<String, Object>> attrValueMap = new HashMap<>();
     // Keys to remove from map, because we don't need them afterward
     List<String> keysToRemove = new ArrayList<>();
-
     jsonIndicators.entrySet().stream()
         .map(entry -> entry.getKey())
+        .filter(fullName -> fullName.contains("."))
         .forEach(
-            nameField -> {
-              configurator
-                  .getConfiguratorCreator()
-                  .getConfiguratorProductFormulaList()
-                  .forEach(
-                      formula -> {
-                        if (formula.getMetaJsonField() != null
-                            && nameField.equals(formula.getMetaJsonField().getName())) {
-                          putFieldValueInMap(
-                              nameField,
-                              jsonIndicators.get(nameField),
-                              formula.getMetaField(),
-                              formula.getMetaJsonField(),
-                              attrValueMap);
-                          keysToRemove.add(nameField);
-                        }
-                      });
+            fullName -> {
+              formulas.forEach(
+                  formula -> {
+                    String[] nameFieldInfo = fullName.split("\\.");
+                    String attrName = nameFieldInfo[0];
+                    String fieldName = nameFieldInfo[1];
+                    if (formula.getMetaJsonField() != null
+                        && attrName.equals(formula.getMetaField().getName())
+                        && fieldName.equals(formula.getMetaJsonField().getName())) {
+                      putFieldValueInMap(
+                          fieldName,
+                          jsonIndicators.get(fullName),
+                          attrName,
+                          formula.getMetaJsonField(),
+                          attrValueMap);
+                      keysToRemove.add(fullName);
+                    }
+                  });
             });
 
     jsonIndicators.entrySet().removeIf(entry -> keysToRemove.contains(entry.getKey()));
@@ -269,15 +304,15 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   private void putFieldValueInMap(
       String nameField,
       Object object,
-      MetaField metaField,
+      String attrName,
       MetaJsonField metaJsonField,
       Map<String, Map<String, Object>> attrValueMap) {
 
-    if (!attrValueMap.containsKey(metaField.getName())) {
-      attrValueMap.put(metaField.getName(), new HashMap<>());
+    if (!attrValueMap.containsKey(attrName)) {
+      attrValueMap.put(attrName, new HashMap<>());
     }
     Entry<String, Object> entry = adaptType(nameField, object, metaJsonField);
-    attrValueMap.get(metaField.getName()).put(entry.getKey(), entry.getValue());
+    attrValueMap.get(attrName).put(entry.getKey(), entry.getValue());
   }
 
   /**
@@ -298,21 +333,39 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       String wantedType = MetaTool.jsonTypeToType(metaJsonField.getType());
       // Case of many to one object
-      if (wantedType.equals("ManyToOne") || wantedType.equals("Custom-ManyToOne")) {
-
-        Model model =
-            (Model) object; // This should not be a problem since at this point we already made a
-        // checking
-        final Map<String, Object> manyToOneObject = new HashMap<>();
-        manyToOneObject.put("id", model.getId());
+      if ("ManyToOne".equals(wantedType) || "Custom-ManyToOne".equals(wantedType)) {
+        // The cast should not be a problem, since at this point it must be a Model
+        final Map<String, Long> manyToOneObject = modelToJson((Model) object);
 
         return new AbstractMap.SimpleEntry<>(nameField, manyToOneObject);
+      } else if ("OneToMany".equals(wantedType)
+          || "Custom-OneToMany".equals(wantedType)
+          || "ManyToMany".equals(wantedType)
+          || "Custom-ManyToMany".equals(wantedType)) {
+
+        @SuppressWarnings("unchecked")
+        List<Model> listModels = (List<Model>) object;
+        List<Map<String, Long>> mappedList =
+            listModels.stream().map(model -> modelToJson(model)).collect(Collectors.toList());
+
+        return new AbstractMap.SimpleEntry<>(nameField, mappedList);
       }
     } catch (AxelorException | IllegalArgumentException | SecurityException e) {
 
       TraceBackService.trace(e);
     }
     return new AbstractMap.SimpleEntry<>(nameField, object);
+  }
+  /**
+   * This method map a model in json that need to be used in a OneToMany type
+   *
+   * @param model
+   * @return
+   */
+  protected Map<String, Long> modelToJson(Model model) {
+    final Map<String, Long> manyToOneObject = new HashMap<>();
+    manyToOneObject.put("id", model.getId());
+    return manyToOneObject;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -420,7 +473,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       MetaField metaField = formula.getMetaField();
       // Adding this check since meta json can be specified in ConfiguratorFormula
       if (formula.getMetaJsonField() != null
-          && formula.getMetaJsonField().getName().equals(fieldName)) {
+          && fieldName.equals(
+              formula.getMetaField().getName() + "." + formula.getMetaJsonField().getName())) {
+        // fieldName should be like attr.fieldName, so we must only keep fieldName
         groovyFormula = formula.getFormula();
         break;
       } else if (metaField.getName().equals(fieldName)) {
@@ -473,7 +528,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     cleanIndicators(jsonIndicators);
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
-    fillAttrs(generateAttrMap(configurator, jsonIndicators), SaleOrderLine.class, saleOrderLine);
+    fillAttrs(
+        generateAttrMap(
+            configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList(),
+            jsonIndicators),
+        SaleOrderLine.class,
+        saleOrderLine);
     fixRelationalFields(saleOrderLine);
     fillOneToManyFields(configurator, saleOrderLine, jsonAttributes);
     this.fillSaleOrderWithProduct(saleOrderLine);
