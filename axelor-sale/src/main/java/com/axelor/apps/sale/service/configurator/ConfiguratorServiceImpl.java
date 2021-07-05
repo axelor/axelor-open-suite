@@ -140,20 +140,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
 
     return indicators.stream()
-        .filter(metaJsonField -> !isOneToManyNotInAttr(formulas, metaJsonField))
+        .filter(metaJsonField -> !isOneToManyNotAttr(formulas, metaJsonField))
         .collect(Collectors.toList());
   }
 
-  private Boolean isOneToManyNotInAttr(
+  private Boolean isOneToManyNotAttr(
       List<ConfiguratorFormula> formulas, MetaJsonField metaJsonField) {
 
-    if ("one-to-many".equals(metaJsonField.getType())) {
-      // If the metaJsonField name contains ., that means it is a metaJson associated to a attr
-      // field
-      return !metaJsonField.getName().contains("$");
-    }
-
-    return false;
+    return "one-to-many".equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
   }
 
   @Override
@@ -305,7 +299,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             fullName -> {
               formulas.forEach(
                   formula -> {
-                    String[] nameFieldInfo = fullName.split("\\$");
+                    String[] nameFieldInfo = fullName.split("[\\$_]");
                     String attrName = nameFieldInfo[0];
                     String fieldName = nameFieldInfo[1];
                     if (formula.getMetaJsonField() != null

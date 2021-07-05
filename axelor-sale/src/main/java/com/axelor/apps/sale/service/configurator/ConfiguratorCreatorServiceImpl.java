@@ -126,6 +126,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       }
     }
     for (MetaJsonField indicatorToRemove : fieldsToRemove) {
+      indicatorToRemove.setHidden(
+          true); // Adding this line to fix field still showing even when removed indictor
       creator.removeIndicator(indicatorToRemove);
     }
 
@@ -255,7 +257,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * @param creator
    * @throws AxelorException
    */
-  private MetaJsonField createMetaJsonFieldFromMetaField(
+  protected MetaJsonField createMetaJsonFieldFromMetaField(
       ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException {
     MetaField formulaMetaField = formula.getMetaField();
     MetaJsonField newField = new MetaJsonField();
@@ -297,7 +299,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     MetaJsonField newField = metaJsonFieldRepository.copy(formula.getMetaJsonField(), true);
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
-    newField.setName(formula.getMetaField().getName() + "$" + newField.getName());
+    newField.setName(
+        formula.getMetaField().getName() + "$" + newField.getName() + "_" + creator.getId());
     return newField;
   }
 
@@ -323,7 +326,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
           && field
               .getName()
               .equals(
-                  formula.getMetaField().getName() + "$" + formula.getMetaJsonField().getName())) {
+                  formula.getMetaField().getName()
+                      + "$"
+                      + formula.getMetaJsonField().getName()
+                      + "_"
+                      + creator.getId())) {
         return false;
       }
     }
@@ -350,7 +357,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
           && field
               .getName()
               .equals(
-                  formula.getMetaField().getName() + "$" + formula.getMetaJsonField().getName())) {
+                  formula.getMetaField().getName()
+                      + "$"
+                      + formula.getMetaJsonField().getName()
+                      + "_"
+                      + creator.getId())) {
         return false;
       }
     }
@@ -433,7 +444,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     // Case where meta json field is specified
     if (formula.getMetaJsonField() != null) {
       if (!fieldName.equals(
-          formula.getMetaField().getName() + "$" + formula.getMetaJsonField().getName())) {
+          formula.getMetaField().getName()
+              + "$"
+              + formula.getMetaJsonField().getName()
+              + "_"
+              + creator.getId())) {
         return;
       }
     } else {
