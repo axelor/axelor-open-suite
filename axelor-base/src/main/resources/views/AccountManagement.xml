@@ -50,13 +50,13 @@
 		width="large">
 		<panel name="mainAccountManagementPanel">
 			<panel name="mainPanel" colSpan="12">
-				<field name="typeSelect" onChange="action-account-management-attrs-display-product-fields" />
+				<field name="typeSelect" onChange="action-account-management-attrs-display-product-fields" hidden="true" />
 				<field name="company" widget="SuggestBox"
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
-				<field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
+				<field name="product" canEdit="false" hidden="true" form-view="product-form" grid-view="product-grid"
 							 domain="self.dtype = 'Product'" requiredIf="typeSelect==1 &amp;&amp; !productFamily"/>
-				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
+				<field name="productFamily" canEdit="false" hidden="true" form-view="product-family-form" grid-view="product-family-grid"
 							 requiredIf="typeSelect==1 &amp;&amp; !product"/>
 			</panel>
 
@@ -187,8 +187,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-account-management-attrs-hide-type">
-		<attribute name="hidden" for="typeSelect" expr="eval: true"
-			if="eval: __parent__?._model == 'com.axelor.apps.account.db.Tax' || __parent__?._model == 'com.axelor.apps.base.db.Product' || __parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'" />
+		<attribute name="hidden" for="typeSelect"
+			expr="eval: __parent__?._model == 'com.axelor.apps.account.db.Tax' || __parent__?._model == 'com.axelor.apps.base.db.Product' || __parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'" />
 	</action-attrs>
 
 	<action-attrs name="action-account-management-attrs-bank-details-on-change">
