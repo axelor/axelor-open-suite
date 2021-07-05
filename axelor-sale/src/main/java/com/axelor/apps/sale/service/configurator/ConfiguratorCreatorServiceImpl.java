@@ -38,7 +38,6 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
@@ -65,12 +64,22 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
   private ConfiguratorCreatorRepository configuratorCreatorRepo;
   private AppBaseService appBaseService;
+  private MetaFieldRepository metaFieldRepository;
+  private MetaJsonFieldRepository metaJsonFieldRepository;
+  private MetaModelRepository metaModelRepository;
 
   @Inject
   public ConfiguratorCreatorServiceImpl(
-      ConfiguratorCreatorRepository configuratorCreatorRepo, AppBaseService appBaseService) {
+      ConfiguratorCreatorRepository configuratorCreatorRepo,
+      AppBaseService appBaseService,
+      MetaFieldRepository metaFieldRepository,
+      MetaJsonFieldRepository metaJsonFieldRepository,
+      MetaModelRepository metaModelRepository) {
     this.configuratorCreatorRepo = configuratorCreatorRepo;
     this.appBaseService = appBaseService;
+    this.metaFieldRepository = metaFieldRepository;
+    this.metaJsonFieldRepository = metaJsonFieldRepository;
+    this.metaModelRepository = metaModelRepository;
   }
 
   @Override
@@ -255,7 +264,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
     MetaField metaField =
-        Beans.get(MetaFieldRepository.class)
+        metaFieldRepository
             .all()
             .filter("self.metaModel.name = :metaModelName AND self.name = :name")
             .bind("metaModelName", metaModelName)
@@ -285,8 +294,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    */
   private MetaJsonField copyMetaJsonFieldFromFormula(
       ConfiguratorFormula formula, ConfiguratorCreator creator) {
-    MetaJsonField newField =
-        Beans.get(MetaJsonFieldRepository.class).copy(formula.getMetaJsonField(), true);
+    MetaJsonField newField = metaJsonFieldRepository.copy(formula.getMetaJsonField(), true);
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
     newField.setName(formula.getMetaField().getName() + "$" + newField.getName());
@@ -419,7 +427,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   protected void updateIndicatorAttrs(
       ConfiguratorCreator creator, MetaJsonField indicator, ConfiguratorFormula formula) {
 
-    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+    int scale = appBaseService.getNbDecimalDigitForUnitPrice();
     String fieldName = indicator.getName();
 
     // Case where meta json field is specified
@@ -444,7 +452,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         indicator.setScale(scale);
       } else if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
         indicator.setTargetModel(
-            Beans.get(MetaModelRepository.class).findByName(metaField.getTypeName()).getFullName());
+            metaModelRepository.findByName(metaField.getTypeName()).getFullName());
       }
     }
 

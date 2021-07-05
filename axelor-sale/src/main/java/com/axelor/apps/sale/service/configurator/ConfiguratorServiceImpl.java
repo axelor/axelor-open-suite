@@ -72,9 +72,34 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   protected AppBaseService appBaseService;
 
+  private ConfiguratorFormulaService configuratorFormulaService;
+
+  private ProductRepository productRepository;
+
+  private SaleOrderLineService saleOrderLineService;
+
+  private SaleOrderLineRepository saleOrderLineRepository;
+
+  private SaleOrderComputeService saleOrderComputeService;
+
+  private MetaFieldRepository metaFieldRepository;
+
   @Inject
-  public ConfiguratorServiceImpl(AppBaseService appBaseService) {
+  public ConfiguratorServiceImpl(
+      AppBaseService appBaseService,
+      ConfiguratorFormulaService configuratorFormulaService,
+      ProductRepository productRepository,
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderComputeService saleOrderComputeService,
+      MetaFieldRepository metaFieldRepository) {
     this.appBaseService = appBaseService;
+    this.configuratorFormulaService = configuratorFormulaService;
+    this.productRepository = productRepository;
+    this.saleOrderLineService = saleOrderLineService;
+    this.saleOrderLineRepository = saleOrderLineRepository;
+    this.saleOrderComputeService = saleOrderComputeService;
+    this.metaFieldRepository = metaFieldRepository;
   }
 
   @Override
@@ -148,7 +173,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       return;
     }
     String calculatedValueClassName =
-        Beans.get(ConfiguratorFormulaService.class).getCalculatedClassName(calculatedValue);
+        configuratorFormulaService.getCalculatedClassName(calculatedValue);
     wantedClassName = MetaTool.getWantedClassName(indicator, wantedType);
     if (calculatedValueClassName.equals("ZonedDateTime")
         && wantedClassName.equals("LocalDateTime")) {
@@ -225,7 +250,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
     configurator.setProduct(product);
     product.setConfigurator(configurator);
-    Beans.get(ProductRepository.class).save(product);
+    productRepository.save(product);
   }
 
   /**
@@ -386,8 +411,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       saleOrderLine.setProduct(configurator.getProduct());
       this.fillSaleOrderWithProduct(saleOrderLine);
-      Beans.get(SaleOrderLineService.class)
-          .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+      saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
 
       String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
       BigDecimal qty = BigDecimal.ONE;
@@ -398,11 +422,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         }
       }
       saleOrderLine.setQty(qty);
-      Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
+      saleOrderLineRepository.save(saleOrderLine);
     } else {
       generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
-    Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
 
     Beans.get(SaleOrderRepository.class).save(saleOrder);
   }
@@ -413,7 +437,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * @param saleOrderLine
    */
   protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
-    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     if (saleOrderLine.getProduct() != null) {
       saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
     }
@@ -544,9 +567,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.CONFIGURATOR_SALE_ORDER_LINE_MISSING_PRODUCT_NAME));
     }
-    saleOrderLine = Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
-    Beans.get(SaleOrderLineService.class)
-        .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    saleOrderLine = saleOrderLineRepository.save(saleOrderLine);
+    saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
     return saleOrderLine;
   }
 
@@ -618,7 +640,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected void fixRelationalFields(Model model) throws AxelorException {
     // get all many to one fields
     List<MetaField> manyToOneFields =
-        Beans.get(MetaFieldRepository.class)
+        metaFieldRepository
             .all()
             .filter("self.metaModel.name = :name " + "AND self.relationship = 'ManyToOne'")
             .bind("name", model.getClass().getSimpleName())

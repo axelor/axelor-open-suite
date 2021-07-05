@@ -18,15 +18,21 @@
 package com.axelor.apps.production.service.app;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -34,8 +40,22 @@ import com.google.inject.persist.Transactional;
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   @Inject
-  public ConfiguratorServiceProductionImpl(AppBaseService appBaseService) {
-    super(appBaseService);
+  public ConfiguratorServiceProductionImpl(
+      AppBaseService appBaseService,
+      ConfiguratorFormulaService configuratorFormulaService,
+      ProductRepository productRepository,
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderComputeService saleOrderComputeService,
+      MetaFieldRepository metaFieldRepository) {
+    super(
+        appBaseService,
+        configuratorFormulaService,
+        productRepository,
+        saleOrderLineService,
+        saleOrderLineRepository,
+        saleOrderComputeService,
+        metaFieldRepository);
   }
 
   /**
