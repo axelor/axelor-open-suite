@@ -386,7 +386,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       Field correspondingField =
           Class.forName(
                   metaField.getMetaModel().getPackageName()
-                      + "-"
+                      + "."
                       + metaField.getMetaModel().getName())
               .getDeclaredField(metaField.getName());
       Widget widget = correspondingField.getAnnotation(Widget.class);
