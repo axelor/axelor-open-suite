@@ -154,7 +154,7 @@
 	</action-attrs>
 	
    	<action-attrs name="action-pv-hide-confirm-button">
-		<attribute name="hidden" for="confirmPaymentVoucherBtn" expr="eval: statusSelect > __repo__(PaymentVoucher).STATUS_DRAFT || (paymentMode?.typeSelect == 6 &amp;&amp; operationTypeSelect == 3)"/>
+		<attribute name="hidden" for="confirmPaymentVoucherBtn" expr="eval: statusSelect > __repo__(PaymentVoucher).STATUS_DRAFT"/>
    	</action-attrs>
    	
 	<action-attrs name="action-attrs-payment-voucher-hidden-receipt">
