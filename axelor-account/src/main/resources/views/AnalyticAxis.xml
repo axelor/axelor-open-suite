@@ -26,7 +26,6 @@
 		<column name="name" type="string" />
 		<column name="code" type="string" />
 		<node model="com.axelor.apps.account.db.AnalyticAxis">
-			<field name="axis" as="analyticAxis"/>
 			<field name="name" as="name" />
 			<field name="code" as="code" />
 		</node>

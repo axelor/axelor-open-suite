@@ -12,7 +12,7 @@
     <integer name="nbrOfAnalyticGrouping" title="Nbr. of Analytic Grouping" default="0" required="true"/>
     <boolean name="manageParentAccount" title="Manage Parent Account" massUpdate="true"/>
     <one-to-many name="analyticGroupingList" ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic Grouping" mappedBy="analyticAxis"/>
-    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Linked Companies"/>
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies"/>
   </entity>
 
 </domain-models>

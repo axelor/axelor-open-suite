@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AnalyticLevel" lang="java">
-  	<string name="numberLevel" title="Number" required="true" namecolumn="true"/>
+  	<integer name="nbr" title="Number" required="true"/>
   </entity>
   
 </domain-models>

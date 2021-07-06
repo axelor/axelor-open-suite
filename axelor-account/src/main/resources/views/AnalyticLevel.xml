@@ -4,12 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<grid name="analytic-level-grid" title="Analytic Level" model="com.axelor.apps.account.db.AnalyticLevel">
-		<field name="numberLevel"/>
+		<field name="nbr"/>
 	</grid>
     
     <form name="analytic-level-form" title="Analytic Level" model="com.axelor.apps.account.db.AnalyticLevel">
         <panel name="mainPanel">
-	        <field name="numberLevel"/>
+	        <field name="nbr"/>
         </panel>      
     </form>
 

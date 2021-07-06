@@ -18,8 +18,10 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.db.JPA;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -43,10 +45,14 @@ public class AccountService {
   public static final int MAX_LEVEL_OF_ACCOUNT = 20;
 
   protected AccountRepository accountRepository;
+  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
 
   @Inject
-  public AccountService(AccountRepository accountRepository) {
+  public AccountService(
+      AccountRepository accountRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository) {
     this.accountRepository = accountRepository;
+    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
   }
 
   /**
@@ -114,5 +120,41 @@ public class AccountService {
         .fetch(0, 0).stream()
         .map(m -> (Long) m.get("id"))
         .collect(Collectors.toList());
+  }
+
+  @CallMethod
+  public Integer checkAnalyticAccount(Account account) {
+    List<Long> accountAnalyticAccountList = new ArrayList<Long>();
+    List<Long> rulesAnalyticAccountList = new ArrayList<Long>();
+    if (account.getAnalyticDistributionTemplate() == null) {
+      return 1;
+    }
+    if (account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList() == null) {
+      return 2;
+    }
+    if (accountAnalyticRulesRepository.findByAccounts(account) == null) {
+      return 3;
+    }
+    account
+        .getAnalyticDistributionTemplate()
+        .getAnalyticDistributionLineList()
+        .forEach(
+            analyticDistributionLine ->
+                accountAnalyticAccountList.add(
+                    analyticDistributionLine.getAnalyticAccount().getId()));
+    accountAnalyticRulesRepository
+        .findByAccounts(account)
+        .forEach(
+            rules ->
+                rules
+                    .getAnalyticAccountSet()
+                    .forEach(
+                        analyticAccount -> rulesAnalyticAccountList.add(analyticAccount.getId())));
+    for (Long analyticAccount : accountAnalyticAccountList) {
+      if (!rulesAnalyticAccountList.contains(analyticAccount)) {
+        return 4;
+      }
+    }
+    return 0;
   }
 }

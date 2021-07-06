@@ -36,7 +36,7 @@
     </tree>
 
 	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large"
-		onNew="action-account-record-new" onLoad="action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company">
+		onNew="action-account-record-new" onLoad="account-action-set-check-analytic-account,action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company,save,account-action-set-check-analytic-account,action-on-change-distribution-template-account">
 		<panel name="mainPanel">
 			<panel name="accountDetailsPanel" colSpan="8">
 				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
@@ -59,12 +59,13 @@
 				<field name="analyticDistributionRequiredOnMoveLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized"/>
 				<field name="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4" onChange="action-account-record-uncheck-tax-required"/>
 				<field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
-				<field name="analyticDistributionTemplate" domain="self.company.id == __this__.company.id" showIf="analyticDistributionAuthorized"/>
+				<field name="analyticDistributionTemplate" domain="self.company = :company" showIf="analyticDistributionAuthorized" onChange="save,account-action-set-check-analytic-account,action-on-change-distribution-template-account"/>
 				<field name="analyticLevel" canNew="true"/>
+				<field name="$checkAnalyticAccount" expr="call:com.axelor.apps.account.service.AccountService:checkAnalyticAccount(__self__)" hidden="true"/>
 			</panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
 				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>
-      </panel>
+      		</panel>
 		</panel>
 		<panel-mail name="mailPanel">
 			<mail-messages limit="4"/>
@@ -175,5 +176,16 @@
     <search-filters name="account-filters" model="com.axelor.apps.account.db.Account" title="Account filters">
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     </search-filters>
+    
+    <action-attrs name="account-action-set-check-analytic-account">
+    	<attribute name="value" for="$checkAnalyticAccount" expr="call:com.axelor.apps.account.service.AccountService:checkAnalyticAccount(__self__)"/>
+    </action-attrs>
+    
+    <action-validate name="action-on-change-distribution-template-account">
+    	<alert if="checkAnalyticAccount == '1'" message="Please put AnalyticDistribution Template"/>
+		<alert if="checkAnalyticAccount == '2'" message="Please put AnalyticDistributionLines in the Analytic Distribution Template"/>
+		<alert if="checkAnalyticAccount == '3'" message="No Analytic Rules find for this account"/>
+    	<alert if="checkAnalyticAccount == '4'" message="The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."/>
+    </action-validate>
     
 </object-views>

@@ -12,6 +12,7 @@
         <panel name="mainPanel">
 	        <field name="code"/>
 			<field name="name"/>
+			<field name="analyticAxis"/>
         </panel>      
     </form>
 

@@ -24,14 +24,16 @@
         </node>
     </tree>
     
-    <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount"  >
+    <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" onLoad="action-record-domain-analytic-level-parent" >
         <panel name="mainPanel">
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="name"/>
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
-	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
-	        <field name="analyticLevel" form-view="analytic-level-form" grid-view="analytic-level-grid"/>
+	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid" domain="self.analyticLevel.nbr = :level"/>
+	        <field name="analyticLevel" form-view="analytic-level-form" grid-view="analytic-level-grid" onChange="action-record-domain-analytic-level-parent"/>
+	        <field name="$level" type="integer" hidden="true"/>
         </panel>
+        <panel-dashlet action="action-analytic-account-tree-view" name="relatedAccountsPanel" title="Related Accounts"/>
     </form>
     
     <form name="analytic-account-info-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" width="large">
@@ -43,6 +45,43 @@
 		</panel>
 	</form>
 	
+	<tree name="analytic-account-tree-2"
+		title="Analytic accounting account (with axis)" >
+		<column name="name" type="string" />
+		<column name="code" type="string" />
+		<node model="com.axelor.apps.account.db.AnalyticAxis">
+			<field name="name" as="name" />
+			<field name="code" as="code" />
+		</node>
+		<node model="com.axelor.apps.account.db.AnalyticAccount"
+			parent="analyticAxis" domain="self.parent is null"
+			onClick="action-analytic-account-view-account-onchange-view"
+			draggable="true">
+			<field name="name" as="name" />
+			<field name="code" as="code" />
+		</node>
+		<node model="com.axelor.apps.account.db.AnalyticAccount"
+			parent="parent" domain="self.parent is not null"
+			onClick="action-analytic-account-view-account-onchange-view"
+			draggable="true">
+			<field name="name" as="name" />
+			<field name="code" as="code" />
+		</node>
+		<node model="com.axelor.apps.account.db.AnalyticAccount"
+			parent="parent" domain="self.parent is not null"
+			onClick="action-analytic-account-view-account-onchange-view"
+			draggable="true">
+			<field name="name" as="name" />
+			<field name="code" as="code" />
+		</node>
+	</tree>
+	
+	<action-view name="action-analytic-account-tree-view" model="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Tree">
+		<view type="tree" name="analytic-account-tree-2"/>
+		<domain>self.analyticAxis = :axis</domain>
+		<context name="axis" expr="eval: self.analysisAxis"/>
+	</action-view>
+	
 	<action-view name="action-analytic-account-view-account-onchange-view" title="Analytic Accounts"
 		model="com.axelor.apps.account.db.AnalyticAccount" >
 		<view type="form" name="analytic-account-info-form" />
@@ -52,5 +91,9 @@
  	  	<view-param name="popup-save" value="false"/>
     	<context name="_showRecord" expr="eval: id"/>
 	</action-view>
+	
+	<action-record name="action-record-domain-analytic-level-parent" model="com.axelor.apps.account.db.AnalyticAccount">
+		<field name="$level" expr="eval: analyticLevel.nbr +1"/>
+	</action-record>
     
 </object-views>

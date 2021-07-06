@@ -1074,9 +1074,20 @@
 		icon="fa-sitemap" order="-1" />
 
 	<action-view name="account.conf.analytic.axis.tree"
-		title="Analytic accounts"
+		title="Analytic Tree"
 		model="com.axelor.apps.account.db.AnalyticAccount">
 		<view type="tree" name="analytic-account-tree" />
+	</action-view>
+	
+	<menuitem name="account-analytic-rules"
+		parent="account-conf-analytic"
+		action="account.conf.analytic.rules" title="Analytic Rules"/>
+
+	<action-view name="account.conf.analytic.rules"
+		title="Analytic Rules"
+		model="com.axelor.apps.account.db.AnalyticRules">
+		<view type="grid" name="analytic-rules-grid"/>
+		<view type="form" name="analytic-rules-form"/>
 	</action-view>
 
 </object-views>
