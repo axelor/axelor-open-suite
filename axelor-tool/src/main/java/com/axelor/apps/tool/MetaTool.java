@@ -102,7 +102,8 @@ public class MetaTool {
    */
   public static String getWantedClassName(MetaJsonField indicator, String wantedType) {
     String wantedClassName;
-    if (wantedType.equals("ManyToOne") || wantedType.equals("Custom-ManyToOne")) {
+    if ((wantedType.equals("ManyToOne") || wantedType.equals("Custom-ManyToOne"))
+        && indicator.getTargetModel() != null) {
       // it is a relational field so we get the target model class
       String targetName = indicator.getTargetModel();
       // get only the class without the package

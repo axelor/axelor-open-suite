@@ -453,9 +453,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       }
     } else {
       // This check is necessary since fieldName may not have "_"
-      if (fieldName.contains("_")) {
-        fieldName = fieldName.substring(0, fieldName.indexOf('_'));
-      }
+      fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
       MetaField metaField = formula.getMetaField();
 

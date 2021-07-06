@@ -59,13 +59,10 @@ import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.time.temporal.Temporal;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
@@ -84,6 +81,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   private MetaFieldRepository metaFieldRepository;
 
+  private ConfiguratorMapService configuratorMapService;
+
   @Inject
   public ConfiguratorServiceImpl(
       AppBaseService appBaseService,
@@ -92,7 +91,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       SaleOrderLineService saleOrderLineService,
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderComputeService saleOrderComputeService,
-      MetaFieldRepository metaFieldRepository) {
+      MetaFieldRepository metaFieldRepository,
+      ConfiguratorMapService configuratorMapService) {
     this.appBaseService = appBaseService;
     this.configuratorFormulaService = configuratorFormulaService;
     this.productRepository = productRepository;
@@ -100,6 +100,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderComputeService = saleOrderComputeService;
     this.metaFieldRepository = metaFieldRepository;
+    this.configuratorMapService = configuratorMapService;
   }
 
   @Override
@@ -214,7 +215,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Mapper mapper = Mapper.of(Product.class);
     Product product = new Product();
     fillAttrs(
-        generateAttrMap(
+        configuratorMapService.generateAttrMap(
             configurator.getConfiguratorCreator().getConfiguratorProductFormulaList(),
             jsonIndicators),
         Product.class,
@@ -272,119 +273,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
                 TraceBackService.trace(e);
               }
             });
-  }
-
-  /**
-   * Private method that generate a Map for attrs fields, wich are storing customs fields. A map
-   * entry is <attrNameField, mapOfCustomsFields>, with attrNameField the name of the attrField (for
-   * example 'attr') and mapOfCustomsFields, with entries with the form of <customFieldName, value>
-   *
-   * @param configurator
-   * @param jsonIndicators
-   * @return
-   */
-  protected Map<String, Map<String, Object>> generateAttrMap(
-      List<? extends ConfiguratorFormula> formulas, JsonContext jsonIndicators) {
-
-    // This map keys are attrs fields
-    // This map values are a map<namefield, object> associated to the attr field
-    // The purpose of this map is to compute it, in order to fill attr fields of Object Product
-    HashMap<String, Map<String, Object>> attrValueMap = new HashMap<>();
-    // Keys to remove from map, because we don't need them afterward
-    List<String> keysToRemove = new ArrayList<>();
-    jsonIndicators.entrySet().stream()
-        .map(entry -> entry.getKey())
-        .filter(fullName -> fullName.contains("$"))
-        .forEach(
-            fullName -> {
-              formulas.forEach(
-                  formula -> {
-                    String[] nameFieldInfo = fullName.split("[\\$_]");
-                    String attrName = nameFieldInfo[0];
-                    String fieldName = nameFieldInfo[1];
-                    if (formula.getMetaJsonField() != null
-                        && attrName.equals(formula.getMetaField().getName())
-                        && fieldName.equals(formula.getMetaJsonField().getName())) {
-                      putFieldValueInMap(
-                          fieldName,
-                          jsonIndicators.get(fullName),
-                          attrName,
-                          formula.getMetaJsonField(),
-                          attrValueMap);
-                      keysToRemove.add(fullName);
-                    }
-                  });
-            });
-
-    jsonIndicators.entrySet().removeIf(entry -> keysToRemove.contains(entry.getKey()));
-    return attrValueMap;
-  }
-
-  private void putFieldValueInMap(
-      String nameField,
-      Object object,
-      String attrName,
-      MetaJsonField metaJsonField,
-      Map<String, Map<String, Object>> attrValueMap) {
-
-    if (!attrValueMap.containsKey(attrName)) {
-      attrValueMap.put(attrName, new HashMap<>());
-    }
-    Entry<String, Object> entry = adaptType(nameField, object, metaJsonField);
-    attrValueMap.get(attrName).put(entry.getKey(), entry.getValue());
-  }
-
-  /**
-   * Private method that adapt type of object depending on his type.
-   *
-   * @param nameField
-   * @param object
-   * @param metaJsonField
-   * @return
-   */
-  private Map.Entry<String, Object> adaptType(
-      String nameField, Object object, MetaJsonField metaJsonField) {
-    try {
-
-      if (object instanceof Temporal) {
-        return new AbstractMap.SimpleEntry<>(nameField, object.toString());
-      }
-
-      String wantedType = MetaTool.jsonTypeToType(metaJsonField.getType());
-      // Case of many to one object
-      if ("ManyToOne".equals(wantedType) || "Custom-ManyToOne".equals(wantedType)) {
-        // The cast should not be a problem, since at this point it must be a Model
-        final Map<String, Long> manyToOneObject = modelToJson((Model) object);
-
-        return new AbstractMap.SimpleEntry<>(nameField, manyToOneObject);
-      } else if ("OneToMany".equals(wantedType)
-          || "Custom-OneToMany".equals(wantedType)
-          || "ManyToMany".equals(wantedType)
-          || "Custom-ManyToMany".equals(wantedType)) {
-
-        @SuppressWarnings("unchecked")
-        List<Model> listModels = (List<Model>) object;
-        List<Map<String, Long>> mappedList =
-            listModels.stream().map(model -> modelToJson(model)).collect(Collectors.toList());
-
-        return new AbstractMap.SimpleEntry<>(nameField, mappedList);
-      }
-    } catch (AxelorException | IllegalArgumentException | SecurityException e) {
-
-      TraceBackService.trace(e);
-    }
-    return new AbstractMap.SimpleEntry<>(nameField, object);
-  }
-  /**
-   * This method map a model in json that need to be used in a OneToMany type
-   *
-   * @param model
-   * @return
-   */
-  protected Map<String, Long> modelToJson(Model model) {
-    final Map<String, Long> manyToOneObject = new HashMap<>();
-    manyToOneObject.put("id", model.getId());
-    return manyToOneObject;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -484,9 +372,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     String groovyFormula = null;
     for (ConfiguratorFormula formula : formulas) {
       String fieldName = indicatorName;
-      if (fieldName.contains("_")) {
-        fieldName = fieldName.substring(0, fieldName.indexOf('_'));
-      }
+      fieldName = fieldName.substring(0, fieldName.indexOf('_'));
+
       MetaField metaField = formula.getMetaField();
       // Adding this check since meta json can be specified in ConfiguratorFormula
       if (formula.getMetaJsonField() != null
@@ -546,7 +433,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
     fillAttrs(
-        generateAttrMap(
+        configuratorMapService.generateAttrMap(
             configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList(),
             jsonIndicators),
         SaleOrderLine.class,
@@ -576,14 +463,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Map<String, Object> newKeyMap = new HashMap<>();
     for (Map.Entry entry : jsonIndicators.entrySet()) {
       String oldKey = entry.getKey().toString();
-
-      if (oldKey.contains("_")) {
-        newKeyMap.put(oldKey.substring(0, oldKey.indexOf('_')), entry.getValue());
-      }
-      // In case there is no "_" it means that this is a custom meta json field
-      else {
-        newKeyMap.put(oldKey, entry.getValue());
-      }
+      newKeyMap.put(oldKey.substring(0, oldKey.indexOf('_')), entry.getValue());
     }
     jsonIndicators.clear();
     jsonIndicators.putAll(newKeyMap);
