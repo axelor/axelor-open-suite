@@ -420,6 +420,17 @@
 		}
 		configBom += """</unitFormula>
 		<defUnitAsFormula>${cb.defUnitAsFormula}</defUnitAsFormula>"""
+			if (cb.workshopStockLocation?.id != null) {
+				configBom += """
+				<workshopStockLocation>${cb.workshopStockLocation?.id}</workshopStockLocation>"""
+			}
+			configBom += """
+		<workshopStockLocationFormula>"""
+		if (cb.workshopStockLocationFormula != null) {
+			configBom += "${cb.workshopStockLocationFormula}"
+		}
+		configBom += """</workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>${cb.defWorkshopStockLocationAsFormula}</defWorkshopStockLocationAsFormula>"""
 			if (cb.prodProcess?.id != null) {
 				configBom += "<prodProcessCode>${cb.prodProcess?.code}</prodProcessCode>"
 			}

@@ -32,6 +32,11 @@
        </bind>
        <bind node="unitFormula" to="unitFormula"/>
        <bind node="defUnitAsFormula" to="defUnitAsFormula"/>
+       <bind node="workshopStockLocation" to="workshopStockLocation" search="self.id = :workshopStockLocationId" if="workshopStockLocationId">
+         <bind node="text()" to="id" alias="workshopStockLocationId"/>
+       </bind>
+       <bind node="workshopStockLocationFormula" to="workshopStockLocationFormula"/>
+       <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
        <bind node="prodProcessCode" to="prodProcess" search="self.code = :prodProcessCode" if="prodProcessCode">
          <bind node="text()" to="code" alias="prodProcessCode"/>
        </bind>
@@ -77,7 +82,7 @@
              <bind node="text()" to="id" alias="workCenterId"/>
            </bind>
            <bind node="workCenterFormula" to="workCenterFormula"/>
-           <bind node="defWorkCenterFormula" to="defWorkCenterFormula"/>
+           <bind node="defWorkCenterAsFormula" to="defWorkCenterAsFormula"/>
            <bind node="stockLocation" to="stockLocation" search="self.id = :stockLocationId" if="stockLocationId">
              <bind node="text()" to="id" alias="stockLocationId"/>
            </bind>
