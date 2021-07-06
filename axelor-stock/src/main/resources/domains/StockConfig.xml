@@ -49,6 +49,7 @@
 	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing" default="true"/>
 	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing" default="true"/>
 	<boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing" default="true"/>
+	<boolean name="isDisplayPurchaseValueInPrinting" title="Display purchase value in location financial data printing" default="true"/>
 	<integer name="stockValuationTypeSelect" title="Stock location value on form view" selection="stock.stock.location.value.type" />
 
 	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing" default="true"/>
