@@ -1,6 +1,5 @@
 package com.axelor.apps.sale.service.configurator;
 
-import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.Model;
@@ -24,8 +23,19 @@ import java.util.stream.Collectors;
 
 public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJsonFieldService {
 
-  @Override
-  public Map<String, Map<String, Object>> generateAttrMap(
+  /**
+   * Method that generate a Map for attrs fields (wich are storing customs fields). A map entry's
+   * form is <attrNameField, mapOfCustomsFields>, with attrNameField the name of the attr field (for
+   * example 'attr') and mapOfCustomsFields are entries with the form of <customFieldName, value>.
+   * Only indicators that have name in form of "attrFieldName$fieldName_*" , with "_*" being
+   * optional, will be treated Note : This method will consume indicators that are attr fields (i.e.
+   * : will be removed from jsonIndicators)
+   *
+   * @param configurator
+   * @param jsonIndicators
+   * @return
+   */
+  protected Map<String, Map<String, Object>> generateAttrMap(
       List<? extends ConfiguratorFormula> formulas, JsonContext jsonIndicators) {
     // This map keys are attrs fields
     // This map values are a map<namefield, object> associated to the attr field
@@ -61,15 +71,27 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
     return attrValueMap;
   }
 
-  @Override
-  public Map<String, Object> modelToJson(Model model) {
+  /**
+   * This method map a Model in json that need to be used in a OneToMany type. Map will be in the
+   * form of <"id", model.id>
+   *
+   * @param model
+   * @return
+   */
+  protected Map<String, Object> modelToJson(Model model) {
     final Map<String, Object> manyToOneObject = new HashMap<>();
     manyToOneObject.put("id", model.getId());
     return manyToOneObject;
   }
 
-  @Override
-  public Map<String, Object> objectMapToJson(Map<String, Object> map) {
+  /**
+   * Method that re-map a Map that is representating a Model object. Map will be in the form of
+   * <"id", model.id>
+   *
+   * @param map
+   * @return
+   */
+  protected Map<String, Object> objectMapToJson(Map<String, Object> map) {
 
     final Map<String, Object> manyToOneObject = new HashMap<>();
     manyToOneObject.put("id", map.getOrDefault("id", null));
@@ -148,8 +170,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
     return new AbstractMap.SimpleEntry<>(nameField, object);
   }
 
-  @Override
-  public <T extends Model> void fillAttrs(
+  protected <T extends Model> void fillAttrs(
       Map<String, Map<String, Object>> attrValueMap, Class<T> type, T targetObject) {
 
     ObjectMapper mapper = new ObjectMapper();
@@ -168,21 +189,12 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
   }
 
   @Override
-  public List<MetaJsonField> filterIndicators(
-      Configurator configurator, List<MetaJsonField> indicators) {
+  public <T extends Model> void fillAttrs(
+      List<? extends ConfiguratorFormula> formulas,
+      JsonContext jsonIndicators,
+      Class<T> type,
+      T targetObject) {
 
-    List<ConfiguratorFormula> formulas = new ArrayList<>();
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorProductFormulaList());
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
-
-    return indicators.stream()
-        .filter(metaJsonField -> !isOneToManyNotAttr(formulas, metaJsonField))
-        .collect(Collectors.toList());
-  }
-
-  protected Boolean isOneToManyNotAttr(
-      List<ConfiguratorFormula> formulas, MetaJsonField metaJsonField) {
-
-    return "one-to-many".equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
+    fillAttrs(generateAttrMap(formulas, jsonIndicators), type, targetObject);
   }
 }

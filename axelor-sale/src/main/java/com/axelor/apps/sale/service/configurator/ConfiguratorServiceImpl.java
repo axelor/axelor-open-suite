@@ -54,6 +54,7 @@ import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       return;
     }
     List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
-    indicators = configuratorMetaJsonFieldService.filterIndicators(configurator, indicators);
+    indicators = filterIndicators(configurator, indicators);
     for (MetaJsonField indicator : indicators) {
       try {
         String indicatorName = indicator.getName();
@@ -118,6 +119,32 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         continue;
       }
     }
+  }
+
+  /**
+   * Filter from indicators list indicator that matches one the following: - The indicator is a
+   * "one-to-many" type && it is not in one the formula's metaJsonField
+   *
+   * @param configurator
+   * @param indicators
+   * @return a filtered indicator list
+   */
+  protected List<MetaJsonField> filterIndicators(
+      Configurator configurator, List<MetaJsonField> indicators) {
+
+    List<ConfiguratorFormula> formulas = new ArrayList<>();
+    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorProductFormulaList());
+    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
+
+    return indicators.stream()
+        .filter(metaJsonField -> !isOneToManyNotAttr(formulas, metaJsonField))
+        .collect(Collectors.toList());
+  }
+
+  protected Boolean isOneToManyNotAttr(
+      List<ConfiguratorFormula> formulas, MetaJsonField metaJsonField) {
+
+    return "one-to-many".equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
   }
 
   @Override
@@ -184,9 +211,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Mapper mapper = Mapper.of(Product.class);
     Product product = new Product();
     configuratorMetaJsonFieldService.fillAttrs(
-        configuratorMetaJsonFieldService.generateAttrMap(
-            configurator.getConfiguratorCreator().getConfiguratorProductFormulaList(),
-            jsonIndicators),
+        configurator.getConfiguratorCreator().getConfiguratorProductFormulaList(),
+        jsonIndicators,
         Product.class,
         product);
     for (String key : jsonIndicators.keySet()) {
@@ -375,9 +401,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
     configuratorMetaJsonFieldService.fillAttrs(
-        configuratorMetaJsonFieldService.generateAttrMap(
-            configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList(),
-            jsonIndicators),
+        configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList(),
+        jsonIndicators,
         SaleOrderLine.class,
         saleOrderLine);
     fixRelationalFields(saleOrderLine);
