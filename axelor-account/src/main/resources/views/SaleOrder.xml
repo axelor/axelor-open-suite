@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+	<form id="account-sale-order-form" name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+		<extend target="//field[@name='directOrderLocation']">
+			<insert position="after">
+				<field name="taxNumber" colSpan="3" canNew="false" canEdit="false" onSelect="action-attrs-account-sale-order-compute-tax-number-domain"/>
+				<field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false" domain=":taxNumber MEMBER OF self.taxNumberSet"/>
+			</insert>
+		</extend>
+		<extend target="//field[@name='company']">
+			<attribute name="onChange" value="action-sale-group-onchange-company,action-record-account-sale-order-set-default-tax-number"/>
+		</extend>
+	</form>
+
+	<action-attrs name="action-attrs-account-sale-order-compute-tax-number-domain">
+		<attribute name="domain" for="taxNumber" expr="eval: company?.taxNumberList?.collect{it.id}?.size > 0 ? &quot;self.id IN (${company?.taxNumberList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"/>
+	</action-attrs>
+
+	<action-record name="action-record-account-sale-order-set-default-tax-number" model="com.axelor.apps.sale.db.SaleOrder">
+    	<field name="taxNumber" expr="eval: company?.taxNumberList?.size() == 1 ? company.taxNumberList.collect{it}[0] : null"/>
+    </action-record>
+
+</object-views>
