@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigInteger;
-import java.util.List;
-
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
@@ -29,11 +26,13 @@ import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigInteger;
+import java.util.List;
 
 public class AccountingReportMoveLineServiceImpl implements AccountingReportMoveLineService {
 
   protected AccountingReportMoveLineRepository accountingReportMoveLineRepo;
-  
+
   protected AccountingReportRepository accountingReportRepo;
 
   protected TaxPaymentMoveLineRepository taxPaymentmoveLineRepo;
@@ -52,15 +51,16 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
   public void createAccountingReportMoveLines(
       List<BigInteger> taxPaymentMoveLineIds, AccountingReport accountingReport) {
 
-	  int i = 0;
+    int i = 0;
     for (BigInteger id : taxPaymentMoveLineIds) {
       TaxPaymentMoveLine taxPaymentMoveLine = taxPaymentmoveLineRepo.find(id.longValue());
       if (taxPaymentMoveLine != null) {
-        createAccountingReportMoveLine(taxPaymentMoveLine, accountingReportRepo.find(accountingReport.getId()));
+        createAccountingReportMoveLine(
+            taxPaymentMoveLine, accountingReportRepo.find(accountingReport.getId()));
         i++;
         if (i % 10 == 0) {
-            JPA.clear();
-          }
+          JPA.clear();
+        }
       }
     }
   }
