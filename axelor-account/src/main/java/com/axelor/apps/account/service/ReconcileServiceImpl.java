@@ -408,7 +408,6 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Change the state
     reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
-    reconcile.setReconciliationCancelDate(appBaseService.getTodayDate(reconcile.getCompany()));
     // Add the reconciled amount to the reconciled amount in the move line
     creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
     debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(reconcile.getAmount()));

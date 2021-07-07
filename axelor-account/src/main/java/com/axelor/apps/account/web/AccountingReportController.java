@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -36,9 +35,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,13 +65,27 @@ public class AccountingReportController {
               == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS
           || accountingReport.getReportType().getTypeSelect()
               == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
-        accountingReportService.processAccountingReportMoveLines(accountingReport);
+
+        if (accountingReportService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
+          response.setError(
+              I18n.get(
+                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+        }
+        if (accountingReportService.isThereAlreadyOngoingDas2ExportInPeriod(accountingReport)) {
+          response.setAlert(
+              I18n.get(
+                  "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
+        }
+
+        List<BigInteger> moveLineIdList =
+            accountingReportService.getAccountingReportDas2Pieces(accountingReport, true);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
-        actionViewBuilder.model(AccountingReportMoveLine.class.getName());
-        actionViewBuilder.add("grid", "accounting-report-move-line-grid");
-        actionViewBuilder.add("form", "accounting-report-move-line-form");
-        actionViewBuilder.domain("self.accountingReport.id = " + accountingReport.getId());
+        actionViewBuilder.model(MoveLine.class.getName());
+        actionViewBuilder.add("grid", "move-line-das2-grid");
+        actionViewBuilder.add("form", "move-line-form");
+        actionViewBuilder.param("search-filters", "move-line-filters");
+        actionViewBuilder.domain("self.id in (" + Joiner.on(",").join(moveLineIdList) + ")");
 
         response.setReload(true);
         response.setView(actionViewBuilder.map());
@@ -192,6 +208,25 @@ public class AccountingReportController {
       }
 
       logger.debug("Type selected : {}", typeSelect);
+
+      if (accountingReport.getReportType().getTypeSelect()
+              == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS
+          || accountingReport.getReportType().getTypeSelect()
+              == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+
+        if (accountingReportService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
+          response.setError(
+              I18n.get(
+                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+        }
+        if (accountingReportService.isThereAlreadyOngoingDas2ExportInPeriod(accountingReport)) {
+          response.setAlert(
+              I18n.get(
+                  "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
+        }
+
+        accountingReportService.processAccountingReportMoveLines(accountingReport);
+      }
 
       if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
           && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {

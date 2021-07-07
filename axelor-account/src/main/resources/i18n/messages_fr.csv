@@ -2057,6 +2057,8 @@
 "The to date is incorrect","La date d’arrivée est incorrecte",,
 "The total amount is greater than the budget distribution total.","Le montant total est supérieur à la totalité de la répartition budgetaire.",,
 "The validation of a move brings irrevocable integration of a move in Moves book","La validation des écritures comptables entraîne l’intégration irréversible d’une écriture comptable dans le Journal des écritures comptables.",,
+"There is already an ongoing accounting report of this type in draft status for this same period.","Il existe déjà un rapport comptable de ce type au statut brouillon et pour cette même période.",,
+"There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?","Attention, il existe déjà un export DAS2 en cours pour cette même période. Souhaitez-vous continuer ?",,
 "Their is at least one invoice selected that it is not validated to pay","Parmi les factures sélectionnées, au moins une n'est pas bonne à payer",,
 "There is at least one advance payment or payment that can be imputed to this invoice.","Il existe au moins un acompte ou un paiement pouvant être imputé sur cette facture.",,
 "There is no configured sequence for final reconcile group","Il n'y a pas de séquence configurée pour les lettrages définitifs",,

@@ -17,13 +17,16 @@
  */
 package com.axelor.apps.account.service;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.util.List;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 public interface AccountingReportService {
 
@@ -76,7 +79,15 @@ public interface AccountingReportService {
 
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
 
-  public void processAccountingReportMoveLines(AccountingReport accountingReport)
+  public List<BigInteger> getAccountingReportDas2Pieces(
+      AccountingReport accountingReport, boolean selectMoveLines);
+
+  public void processAccountingReportMoveLines(AccountingReport accountingReport);
+
+  public boolean isThereAlreadyDraftReportInPeriod(AccountingReport accountingReport)
+      throws AxelorException;
+
+  public boolean isThereAlreadyOngoingDas2ExportInPeriod(AccountingReport accountingReport)
       throws AxelorException;
 
   public AccountingReport createAccountingExportFromReport(

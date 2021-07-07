@@ -17,40 +17,21 @@
  */
 package com.axelor.apps.account.service;
 
+import java.math.BigInteger;
+import java.util.List;
+
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
+import com.axelor.apps.account.db.TaxPaymentMoveLine;
 
 public interface AccountingReportMoveLineService {
 
-  public List<MoveLine> getInTaxMoveLines(Move move);
+  public void createAccountingReportMoveLines(
+      List<BigInteger> taxPaymentMoveLineIds, AccountingReport accountingReport);
 
-  public BigDecimal getReconcileAmountInPeriod(
-      MoveLine moveLine, LocalDate fromDate, LocalDate toDate);
+  public void createAccountingReportMoveLine(
+      TaxPaymentMoveLine taxPaymentMoveLine, AccountingReport accountingReport);
 
-  public List<MoveLine> getMoveLinesToReport(
-      Move move,
-      BigDecimal reconcileAmount,
-      BigDecimal inTaxTotal,
-      AccountingReport accountingReport);
-
-  public void processMoveLinesToDisplay(
-      List<MoveLine> moveLinesToProcess,
-      boolean toReport,
-      BigDecimal reconcileAmount,
-      BigDecimal inTaxTotal,
-      AccountingReport accountingReport);
-
-  public AccountingReportMoveLine createAccountingReportMoveLine(
-      MoveLine moveLine, AccountingReport accountingReport);
-
-  public AccountingReport processExportMoveLine(
-      AccountingReportMoveLine reportMoveLine, AccountingReport accountingReport);
-
-  public BigDecimal computeAmountToReport(
-      MoveLine moveLine, BigDecimal reconcileAmount, BigDecimal inTaxTotal);
+  public void processExportMoveLine(
+      AccountingReportMoveLine reportMoveLine, AccountingReport accountingExport);
 }

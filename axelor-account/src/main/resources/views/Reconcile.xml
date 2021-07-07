@@ -53,7 +53,6 @@
 			<field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 			<field name="statusSelect"/>
 			<field name="reconciliationDate"/>
-			<field name="reconciliationCancelDate" hidden="true" showIf="reconciliationCancelDate"/>
 			<field name="reconcileSeq" colSpan="12" readonly="true"/>
 		</panel>
 	</form>

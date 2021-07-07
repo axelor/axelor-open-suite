@@ -17,6 +17,20 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.Query;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -24,8 +38,6 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.JournalType;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
@@ -52,19 +64,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.persistence.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AccountingReportServiceImpl implements AccountingReportService {
 
@@ -80,8 +81,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected AccountRepository accountRepo;
 
-  protected MoveRepository moveRepo;
-
   protected List<Object> params = new ArrayList<>();
   protected int paramNumber = 1;
 
@@ -90,12 +89,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       AppAccountService appBaseService,
       AccountingReportRepository accountingReportRepo,
       AccountRepository accountRepo,
-      MoveRepository moveRepo,
       AccountingReportMoveLineService accountingReportMoveLineService) {
     this.accountingReportRepo = accountingReportRepo;
     this.accountRepo = accountRepo;
     this.appBaseService = appBaseService;
-    this.moveRepo = moveRepo;
     this.accountingReportMoveLineService = accountingReportMoveLineService;
   }
 
@@ -223,13 +220,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         this.addParams("self.move.paymentMode.typeSelect = ?%d", PaymentModeRepository.TYPE_CASH);
         this.addParams("self.credit > 0");
         this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
-      }
-      if (accountingReport.getReportType().getTypeSelect()
-              == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT
-          || accountingReport.getReportType().getTypeSelect()
-              == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS) {
-        this.addParams(
-            "self.serviceTypeCode is not null AND self.das2ActivityName is not null AND self.serviceType.isDas2Declarable AND self.move.journal.journalType.code = 'ACH'");
       }
     }
 
@@ -743,10 +733,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.moveLine.date <= ?%d", accountingReport.getDateTo());
     }
 
-    if (accountingReport.getYear() != null) {
-      this.addParams("self.period.year = ?%d", accountingReport.getYear());
-    }
-
     this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
 
     this.addParams(
@@ -762,80 +748,150 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return this.query;
   }
 
-  public List<Move> getAccountingReportDas2Moves(AccountingReport accountingReport) {
+  public boolean isThereAlreadyDraftReportInPeriod(AccountingReport accountingReport) {
 
-    this.initQuery();
-
-    if (accountingReport.getCompany() != null) {
-      this.addParams("self.company = ?%d", accountingReport.getCompany());
+    if (accountingReportRepo
+            .all()
+            .filter(
+                "self.id != ?1 AND self.reportType.typeSelect = ?2 "
+                    + "AND self.dateFrom <= ?3 AND self.dateTo >= ?4 AND self.statusSelect = 1",
+                accountingReport.getId(),
+                accountingReport.getReportType().getTypeSelect(),
+                accountingReport.getDateFrom(),
+                accountingReport.getDateTo())
+            .count()
+        > 0) {
+      return true;
+    } else {
+      return false;
     }
-
-    if (accountingReport.getCurrency() != null) {
-      this.addParams("self.companyCurrency = ?%d", accountingReport.getCurrency());
-    }
-
-    if (accountingReport.getDateFrom() != null) {
-      this.addParams("self.validationDate >= ?%d", accountingReport.getDateFrom());
-    }
-
-    if (accountingReport.getDateTo() != null) {
-      this.addParams("self.validationDate <= ?%d", accountingReport.getDateTo());
-    }
-
-    if (accountingReport.getDate() != null) {
-      this.addParams("self.validationDate <= ?%d", accountingReport.getDate());
-    }
-
-    if (accountingReport.getYear() != null) {
-      this.addParams("self.period.year = ?%d", accountingReport.getYear());
-    }
-
-    this.addParams(
-        "self.journal.journalType.code = ?%d", "'ACH' AND self.ignoreInAccountingOk is not true");
-
-    return moveRepo.all().filter(buildDomainFromQuery()).fetch();
   }
 
-  public void processAccountingReportMoveLines(AccountingReport accountingReport)
-      throws AxelorException {
+  public boolean isThereAlreadyOngoingDas2ExportInPeriod(AccountingReport accountingReport) {
+
+    if (accountingReportRepo
+            .all()
+            .filter(
+                "self.reportType.typeSelect = ?1 "
+                    + "AND self.dateFrom <= ?2 AND self.dateTo >= ?3 AND self.statusSelect = 2 AND self.exported != false",
+                AccountingReportRepository.EXPORT_N4DS,
+                accountingReport.getDateFrom(),
+                accountingReport.getDateTo())
+            .count()
+        > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<BigInteger> getAccountingReportDas2Pieces(
+      AccountingReport accountingReport, boolean selectMoveLines) {
+
+    String select = "CMOVELINE.ID ";
+    if (!selectMoveLines) {
+      select = "TMOVELINE.ID ";
+    }
+    String queryStr =
+        "WITH TIERS AS(SELECT PARTNER.ID AS ID "
+            + "FROM ACCOUNT_TAX_PAYMENT_MOVE_LINE TMOVELINE "
+            + "JOIN ACCOUNT_RECONCILE RECONCILE ON TMOVELINE.RECONCILE = RECONCILE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVELINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVELINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE CMOVELINE ON RECONCILE.CREDIT_MOVE_LINE = CMOVELINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE CMOVE ON CMOVELINE.MOVE = CMOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVELINE.MOVE = DMOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_JOURNAL CJOURNAL ON CMOVE.JOURNAL = CJOURNAL.ID "
+            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE CJOURNAL_TYPE ON CJOURNAL.JOURNAL_type = CJOURNAL_TYPE.ID "
+            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON CMOVE.PARTNER = PARTNER.ID "
+            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON CMOVE.COMPANY = COMPANY.ID "
+            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON CMOVE.COMPANY_CURRENCY = CURRENCY.ID "
+            + "WHERE RECONCILE.STATUS_SELECT IN (2,3) "
+            + "AND TMOVELINE.DATE_VAL >= '"
+            + accountingReport.getDateFrom()
+            + "' "
+            + "AND TMOVELINE.DATE_VAL <= '"
+            + accountingReport.getDateTo()
+            + "' "
+            + "AND DMOVELINE.SERVICE_TYPE IS NOT NULL "
+            + "AND CMOVELINE.SERVICE_TYPE IS NOT NULL "
+            + "AND DMOVELINE.DAS2ACTIVITY IS NOT NULL "
+            + "AND CMOVELINE.DAS2ACTIVITY IS NOT NULL "
+            + "AND CJOURNAL_TYPE.CODE = 'ACH' "
+            + "AND COMPANY.ID = "
+            + accountingReport.getCompany().getId()
+            + " AND CURRENCY.ID = "
+            + accountingReport.getCurrency().getId()
+            + " AND CMOVE.IGNORE_IN_ACCOUNTING_OK != true "
+            + "AND TMOVELINE.ID NOT IN (SELECT TPMOVE_LINE.ID "
+            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE T "
+            + "LEFT OUTER JOIN ACCOUNT_TAX_PAYMENT_MOVE_LINE TPMOVE_LINE ON T.TAX_PAYMENT_MOVE_LINE = TPMOVE_LINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON T.ACCOUNTING_REPORT = REPORT.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT_TYPE REPORT_TYPE ON REPORT.REPORT_TYPE = REPORT_TYPE.ID "
+            + "WHERE T.ACCOUNTING_REPORT != "
+            + accountingReport.getId()
+            + " AND REPORT_TYPE.TYPE_SELECT = "
+            + accountingReport.getReportType().getTypeSelect()
+            + " AND (T.EXCLUDE_FROM_DAS2REPORT != true OR T.EXPORTED != true) ) "
+            + "GROUP BY PARTNER.ID "
+            + "HAVING SUM(TMOVELINE.DETAIL_PAYMENT_AMOUNT) >= "
+            + accountingReport.getMinAmountExcl()
+            + " ) "
+            + "SELECT "
+            + select
+            + "FROM ACCOUNT_TAX_PAYMENT_MOVE_LINE TMOVELINE "
+            + "JOIN ACCOUNT_RECONCILE RECONCILE ON TMOVELINE.RECONCILE = RECONCILE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVELINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVELINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE CMOVELINE ON RECONCILE.CREDIT_MOVE_LINE = CMOVELINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE CMOVE ON CMOVELINE.MOVE = CMOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVELINE.MOVE = DMOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_JOURNAL CJOURNAL ON CMOVE.JOURNAL = CJOURNAL.ID "
+            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE CJOURNAL_TYPE ON CJOURNAL.JOURNAL_type = CJOURNAL_TYPE.ID "
+            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON CMOVE.PARTNER = PARTNER.ID "
+            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON CMOVE.COMPANY = COMPANY.ID "
+            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON CMOVE.COMPANY_CURRENCY = CURRENCY.ID "
+            + "WHERE RECONCILE.STATUS_SELECT IN (2,3) "
+            + "AND TMOVELINE.DATE_VAL >= '"
+            + accountingReport.getDateFrom()
+            + "' "
+            + "AND TMOVELINE.DATE_VAL <= '"
+            + accountingReport.getDateTo()
+            + "' "
+            + "AND DMOVELINE.SERVICE_TYPE IS NOT NULL "
+            + "AND CMOVELINE.SERVICE_TYPE IS NOT NULL "
+            + "AND DMOVELINE.DAS2ACTIVITY IS NOT NULL "
+            + "AND CMOVELINE.DAS2ACTIVITY IS NOT NULL "
+            + "AND CJOURNAL_TYPE.CODE = 'ACH' "
+            + "AND COMPANY.ID = "
+            + accountingReport.getCompany().getId()
+            + " AND CURRENCY.ID = "
+            + accountingReport.getCurrency().getId()
+            + " AND CMOVE.IGNORE_IN_ACCOUNTING_OK != true "
+            + "AND PARTNER.ID IN (SELECT ID FROM TIERS) "
+            + "AND TMOVELINE.ID NOT IN (SELECT TPMOVE_LINE.ID "
+            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE T "
+            + "LEFT OUTER JOIN ACCOUNT_TAX_PAYMENT_MOVE_LINE TPMOVE_LINE ON T.TAX_PAYMENT_MOVE_LINE = TPMOVE_LINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON T.ACCOUNTING_REPORT = REPORT.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT_TYPE REPORT_TYPE ON REPORT.REPORT_TYPE = REPORT_TYPE.ID "
+            + "WHERE T.ACCOUNTING_REPORT != "
+            + accountingReport.getId()
+            + " AND REPORT_TYPE.TYPE_SELECT = "
+            + accountingReport.getReportType().getTypeSelect()
+            + " AND (T.EXCLUDE_FROM_DAS2REPORT != true OR T.EXPORTED != true) ) ";
+
+    Query query = JPA.em().createNativeQuery(queryStr);
+
+    return query.getResultList();
+  }
+
+  public void processAccountingReportMoveLines(AccountingReport accountingReport) {
 
     accountingReport.clearAccountingReportMoveLineList();
-    List<Move> moves = Lists.newArrayList();
-    moves.addAll(getAccountingReportDas2Moves(accountingReport));
 
-    for (Move move : moves) {
-      move = moveRepo.find(move.getId());
-      accountingReport = accountingReportRepo.find(accountingReport.getId());
-      List<MoveLine> inTaxMoveLines = accountingReportMoveLineService.getInTaxMoveLines(move);
-      if (inTaxMoveLines.size() == 0) {
-        continue;
-      }
-      BigDecimal inTaxTotal = BigDecimal.ZERO;
-      BigDecimal reconcileAmount = BigDecimal.ZERO;
-      for (MoveLine inTaxMoveLine : inTaxMoveLines) {
-        reconcileAmount =
-            reconcileAmount.add(
-                accountingReportMoveLineService.getReconcileAmountInPeriod(
-                    inTaxMoveLine, accountingReport.getDateFrom(), accountingReport.getDateTo()));
-        inTaxTotal = inTaxTotal.add(inTaxMoveLine.getDebit().add(inTaxMoveLine.getCredit()));
-      }
-      if (reconcileAmount.compareTo(BigDecimal.ZERO) == 0) {
-        continue;
-      }
-
-      List<MoveLine> moveLinesToReport =
-          accountingReportMoveLineService.getMoveLinesToReport(
-              move, reconcileAmount, inTaxTotal, accountingReport);
-      if (moveLinesToReport.size() == 0) {
-        continue;
-      }
-      accountingReportMoveLineService.processMoveLinesToDisplay(
-          inTaxMoveLines, false, reconcileAmount, inTaxTotal, accountingReport);
-      accountingReportMoveLineService.processMoveLinesToDisplay(
-          moveLinesToReport, true, reconcileAmount, inTaxTotal, accountingReport);
-
-      JPA.clear();
-    }
+    List<BigInteger> taxPaymentMoveLineIds = getAccountingReportDas2Pieces(accountingReport, false);
+    accountingReportMoveLineService.createAccountingReportMoveLines(
+        taxPaymentMoveLineIds, accountingReport);
   }
 
   @Transactional
@@ -864,10 +920,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     for (AccountingReportMoveLine reportMoveLine :
         accountingReport.getAccountingReportMoveLineList()) {
-      if (reportMoveLine.getAmountToReport().compareTo(BigDecimal.ZERO) == 0
-          || reportMoveLine.getExcludeFromDas2Report()) {
-        continue;
-      }
       accountingReportMoveLineService.processExportMoveLine(reportMoveLine, accountingExport);
     }
 
