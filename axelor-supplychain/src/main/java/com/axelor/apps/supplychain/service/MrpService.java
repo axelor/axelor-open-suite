@@ -54,4 +54,6 @@ public interface MrpService {
    * @param e the exception thrown during the computation
    */
   void onError(Mrp mrp, Exception e);
+
+  void massUpdateProposalToProcess(Mrp mrp, boolean proposalToProcess);
 }

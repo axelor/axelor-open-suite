@@ -29,6 +29,11 @@
         <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
         <string name="workshopStockLocationFormula" title="Workshop" large="true"/>
         <boolean name="defWorkshopStockLocationAsFormula" title="Define with a script" default="false"/>
+        
+        <boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
+        <string name="isConsProOnOperationFormula" title="Manage consumed products on phases" large="true"/>
+        <boolean name="defIsConsProOnOperationAsFormula" title="Define with a script" default="false"/>
+        
     </entity>
 
 </domain-models>

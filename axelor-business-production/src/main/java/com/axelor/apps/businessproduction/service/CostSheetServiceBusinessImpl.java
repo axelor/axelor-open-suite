@@ -80,7 +80,7 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
               .divide(
                   BigDecimal.valueOf(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN);
+                  BigDecimal.ROUND_HALF_UP);
 
       costSheet.addCostSheetLineListItem(
           costSheetLineService.createWorkCenterHRCostSheetLine(

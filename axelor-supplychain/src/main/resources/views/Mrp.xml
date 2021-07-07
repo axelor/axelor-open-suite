@@ -66,7 +66,8 @@
 	        <field name="statusSelect" hidden="true"/>
       	    <label name="calculationInProgressLabel" title="Calculation in progress" colSpan="12"/>
 	    </panel>
-        <panel-dashlet name="mrpLinePanel" action="action-mrp-view-mrp-line" colSpan="12" showIf="statusSelect == 2" canSearch="true" height="800"/>
+        <panel-dashlet name="mrpLinePanel" action="action-mrp-view-mrp-line" colSpan="12" showIf="statusSelect == 2"
+							  canSearch="true" height="800" x-show-bars="true"/>
 	 </form>
 
 

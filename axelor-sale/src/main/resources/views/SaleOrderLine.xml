@@ -294,8 +294,9 @@
 			<panel name="descriptionPanel" title="Description" colSpan="12">
 				<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 			</panel>
-			<panel name="lineProductionCommentPanel" title="Line production commentary" colSpan="12">
-				<field name="lineProductionComment" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+			<panel name="lineProductionCommentPanel" title="Line production commentary" colSpan="12" if="__config__.app.isApp('production')">
+				<field name="lineProductionComment" showTitle="false" colSpan="12" 
+					   widget="Html" x-lite="true" if="__config__.app.isApp('production')"/>
 			</panel>
 		</panel>
 		<panel-tabs hideIf="typeSelect == 1" name="allPanelTab">

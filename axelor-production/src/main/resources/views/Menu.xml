@@ -293,6 +293,9 @@
 
 	<menuitem name="manufacturing-conf" parent="manufacturing-root"
 		title="Configuration" order="50" icon="fa-cog" />
+	
+	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
+		title="Work centers" action="manufacturing.conf.work.center" />	
 
 	<action-view name="manufacturing.conf.work.center" title="Work centers"
 		model="com.axelor.apps.production.db.WorkCenter" >
@@ -419,6 +422,16 @@
 		<view type="grid" name="configurator-prod-process-line-grid" />
 		<view type="form" name="configurator-prod-process-line-form" />
 	</action-view>
+	
+	<menuitem name="manufacturing-conf-configurators-prod-product"
+		parent="manufacturing-conf-configurators" order="60" title="Configurator prod product"
+		action="manufacturing.conf.configurator.prod.product" />
+
+	<action-view name="manufacturing.conf.configurator.prod.product"
+		title="Configurator prod product" model="com.axelor.apps.production.db.ConfiguratorProdProduct">
+		<view type="grid" name="configurator-prod-product-grid" />
+		<view type="form" name="configurator-prod-product-form" />
+	</action-view>
 
 	<menuitem title="Product approvals" name="manufacturing-conf-product-approvals"
 		parent="manufacturing-conf" action="manufacturing.conf.product.approvals" />
@@ -529,8 +542,8 @@
 
 
 	<menuitem name="manufacturing-conf-work-center-group-model"
-		parent="manufacturing-conf" title="Work center model" action="manufacturing.conf.work.center.group.model"/>
-
+		parent="manufacturing-conf" title="Work center model" action="manufacturing.conf.work.center.group.model"
+		if="__config__.app.getApp('production').getManageWorkCenterGroup()" />
 
 	<action-view name="manufacturing.conf.work.center.group.model" title="Work center model"
 		model="com.axelor.apps.production.db.WorkCenterGroup">

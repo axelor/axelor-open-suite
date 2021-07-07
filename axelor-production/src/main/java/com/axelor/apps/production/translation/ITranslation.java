@@ -23,4 +23,6 @@ public interface ITranslation {
   public static final String WORK_IN_PROGRESS_VALUATION = /*$$(*/
       "Work in progress valuation"; /*)*/
   public static final String MPS_CHARGE = /*$$(*/ "Mps Charge"; /*)*/
+  public static final String PRODUCTION_COMMENT = /*$$(*/
+      "Please take the following comment into account:" /*)*/;
 }

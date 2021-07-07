@@ -437,7 +437,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                 .divide(
                     saleOrderLine.getQty(),
                     Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
-                    RoundingMode.HALF_EVEN);
+                    RoundingMode.HALF_UP);
       }
 
       StockMoveLine stockMoveLine =

@@ -89,6 +89,8 @@ public class XPathParse {
       domFactory.setXIncludeAware(false);
       domFactory.setExpandEntityReferences(false);
       domFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      domFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      domFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
     } catch (ParserConfigurationException e) {
       LOG.error(e.getMessage());
     }

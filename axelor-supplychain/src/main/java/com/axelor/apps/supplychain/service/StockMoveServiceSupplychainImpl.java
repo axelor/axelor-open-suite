@@ -74,6 +74,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected SaleOrderRepository saleOrderRepo;
   protected UnitConversionService unitConversionService;
   protected ReservedQtyService reservedQtyService;
+  protected PartnerSupplychainService partnerSupplychainService;
 
   @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
@@ -90,7 +91,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
-      ProductRepository productRepository) {
+      ProductRepository productRepository,
+      PartnerSupplychainService partnerSupplychainService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -104,11 +106,19 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.saleOrderRepo = saleOrderRepo;
     this.unitConversionService = unitConversionService;
     this.reservedQtyService = reservedQtyService;
+    this.partnerSupplychainService = partnerSupplychainService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && partnerSupplychainService.isBlockedPartnerOrParent(stockMove.getPartner())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+    }
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return super.realize(stockMove, check);

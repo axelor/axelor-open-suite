@@ -163,6 +163,9 @@
 		<!-- Move Line -->
 		<boolean name="isDescriptionRequired" title="Description required"/>
 
+		<!-- Late payment blocking  -->
+		<boolean name="hasLatePaymentAccountBlocking" title="Late payment account blocking"/>
+		<integer name="numberOfDaysBeforeAccountBlocking" title="Number of days before account blocking"/>
 
     <finder-method name="findByCompany" using="company"/>
 

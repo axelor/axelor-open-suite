@@ -21,19 +21,33 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 
 public class MapperScriptGeneratorServiceImpl implements MapperScriptGeneratorService {
 
   @Override
   public String generate(String mapperJson) {
 
+    MapperRecord mapperRecord = getMapperRecord(mapperJson);
+    try {
+      if (mapperRecord != null) {
+        return mapperRecord.toScript();
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public MapperRecord getMapperRecord(String mapperJson) {
+
     ObjectMapper mapper = Beans.get(ObjectMapperProvider.class).get();
     try {
       MapperRecord mapperRecord = mapper.readValue(mapperJson.getBytes(), MapperRecord.class);
-      return mapperRecord.toScript();
+      return mapperRecord;
 
-    } catch (IOException e) {
+    } catch (Exception e) {
       TraceBackService.trace(e);
     }
 

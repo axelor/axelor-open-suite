@@ -36,11 +36,11 @@
          <bind node="text()" to="code" alias="prodProcessCode"/>
        </bind>
        
-       <bind node="configuratorProdProcess" to="configuratorProdProcess" update="true" search="self.importId = :importId" if="configProdProcessName || nameFormula">
+       <bind node="configuratorProdProcess" to="configuratorProdProcess" update="true" search="self.importId = :importId" if="configProdProcessName || configProdProcessNameFormula">
        	 <bind node="importId" to="importId"/>
          <bind node="statusSelect" to="statusSelect"/>
          <bind node="name" to="name" alias="configProdProcessName"/>
-         <bind node="nameFormula" to="nameFormula"/>
+         <bind node="nameFormula" to="nameFormula" alias="configProdProcessNameFormula"/>
          <bind node="defNameAsFormula" to="defNameAsFormula"/>
          <bind node="code" to="code"/>
          <bind node="codeFormula" to="codeFormula"/>
@@ -63,6 +63,9 @@
          </bind>
          <bind node="workshopStockLocationFormula" to="workshopStockLocationFormula"/>
          <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
+         <bind node="isConsProOnOperation" to="isConsProOnOperation"/>
+         <bind node="isConsProOnOperationFormula" to="isConsProOnOperationFormula"/>
+         <bind node="defIsConsProOnOperationAsFormula" to="defIsConsProOnOperationAsFormula"/>
          <bind node="configuratorProdProcessLineList/configuratorProdProcessLine" to="configuratorProdProcessLineList">
            <bind node="name" to="name"/>
            <bind node="nameFormula" to="nameFormula"/>
@@ -73,6 +76,8 @@
            <bind node="workCenter" to="workCenter" search="self.id = :workCenterId" if="workCenterId">
              <bind node="text()" to="id" alias="workCenterId"/>
            </bind>
+           <bind node="workCenterFormula" to="workCenterFormula"/>
+           <bind node="defWorkCenterFormula" to="defWorkCenterFormula"/>
            <bind node="stockLocation" to="stockLocation" search="self.id = :stockLocationId" if="stockLocationId">
              <bind node="text()" to="id" alias="stockLocationId"/>
            </bind>
@@ -80,6 +85,8 @@
            <bind node="defStockLocationAsFormula" to="defStockLocationAsFormula"/>
            <bind node="outsourcing" to="outsourcing"/>
            <bind node="description" to="description"/>
+           <bind node="descriptionFormula" to="descriptionFormula"/>
+       	   <bind node="defDescriptionAsFormula" to="defDescriptionAsFormula"/>
            <bind node="minCapacityPerCycle" to="minCapacityPerCycle"/>
            <bind node="minCapacityPerCycleFormula" to="minCapacityPerCycleFormula"/>
            <bind node="defMinCapacityFormula" to="defMinCapacityFormula"/>
@@ -89,7 +96,25 @@
            <bind node="durationPerCycle" to="durationPerCycle"/>
            <bind node="durationPerCycleFormula" to="durationPerCycleFormula"/>
            <bind node="defDurationFormula" to="defDurationFormula"/>
+           <bind node="timingOfImplementation" to="timingOfImplementation"/>
+           <bind node="timingOfImplementationFormula" to="timingOfImplementationFormula"/>
+           <bind node="defTimingOfImplementationFormula" to="defTimingOfImplementationFormula"/>
            <bind node="useCondition" to="useCondition"/>
+           <bind node="configuratorProdProductList/configuratorProdProduct" to="configuratorProdProductList">
+			<bind node="product" to="product" search="self.id = :productId" if="productId">
+				<bind node="text()" to="id" alias="productId"/>
+			</bind>
+			<bind node="productFormula" to="productFormula"/>
+			<bind node="defProductAsFormula" to="defProductAsFormula"/>
+			<bind node="qty" to="qty"/>
+			<bind node="qtyFormula" to="qtyFormula"/>
+			<bind node="defQtyAsFormula" to="defQtyAsFormula"/>
+			<bind node="unit" to="unit" search="self.id = :unitId" if="unitId">
+				<bind node="text()" to="id" alias="unitId"/>
+			</bind>
+			<bind node="unitFormula" to="unitFormula"/>
+			<bind node="defUnitAsFormula" to="defUnitAsFormula"/>
+           </bind>
          </bind>
        </bind>
          

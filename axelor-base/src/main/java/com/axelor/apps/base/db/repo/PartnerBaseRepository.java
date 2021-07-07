@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.auth.db.User;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -35,6 +36,7 @@ public class PartnerBaseRepository extends PartnerRepository {
       Beans.get(PartnerService.class).onSave(partner);
       return super.save(partner);
     } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
   }
