@@ -1,12 +1,18 @@
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.temporal.Temporal;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -16,7 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-public class ConfiguratorMapServiceImpl implements ConfiguratorMapService {
+public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJsonFieldService {
 
   @Override
   public Map<String, Map<String, Object>> generateAttrMap(
@@ -62,7 +68,8 @@ public class ConfiguratorMapServiceImpl implements ConfiguratorMapService {
     return manyToOneObject;
   }
 
-  protected Map<String, Object> objectMapToJson(Map<String, Object> map) {
+  @Override
+  public Map<String, Object> objectMapToJson(Map<String, Object> map) {
 
     final Map<String, Object> manyToOneObject = new HashMap<>();
     manyToOneObject.put("id", map.getOrDefault("id", null));
@@ -70,7 +77,7 @@ public class ConfiguratorMapServiceImpl implements ConfiguratorMapService {
     return manyToOneObject;
   }
 
-  private void putFieldValueInMap(
+  protected void putFieldValueInMap(
       String nameField,
       Object object,
       String attrName,
@@ -85,7 +92,7 @@ public class ConfiguratorMapServiceImpl implements ConfiguratorMapService {
   }
 
   /**
-   * Private method that adapt type of object depending on his type.
+   * Method that adapt type of object depending on his type.
    *
    * @param nameField
    * @param object
@@ -93,7 +100,7 @@ public class ConfiguratorMapServiceImpl implements ConfiguratorMapService {
    * @return
    */
   @SuppressWarnings("unchecked")
-  private Map.Entry<String, Object> adaptType(
+  protected Map.Entry<String, Object> adaptType(
       String nameField, Object object, MetaJsonField metaJsonField) {
     try {
 
@@ -139,5 +146,43 @@ public class ConfiguratorMapServiceImpl implements ConfiguratorMapService {
       TraceBackService.trace(e);
     }
     return new AbstractMap.SimpleEntry<>(nameField, object);
+  }
+
+  @Override
+  public <T extends Model> void fillAttrs(
+      Map<String, Map<String, Object>> attrValueMap, Class<T> type, T targetObject) {
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+    attrValueMap.entrySet().stream()
+        .forEach(
+            attr -> {
+              try {
+                Map<String, Object> fieldValue = attr.getValue();
+                Mapper classMapper = Mapper.of(type);
+                classMapper.set(targetObject, attr.getKey(), mapper.writeValueAsString(fieldValue));
+              } catch (JsonProcessingException e) {
+                TraceBackService.trace(e);
+              }
+            });
+  }
+
+  @Override
+  public List<MetaJsonField> filterIndicators(
+      Configurator configurator, List<MetaJsonField> indicators) {
+
+    List<ConfiguratorFormula> formulas = new ArrayList<>();
+    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorProductFormulaList());
+    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
+
+    return indicators.stream()
+        .filter(metaJsonField -> !isOneToManyNotAttr(formulas, metaJsonField))
+        .collect(Collectors.toList());
+  }
+
+  protected Boolean isOneToManyNotAttr(
+      List<ConfiguratorFormula> formulas, MetaJsonField metaJsonField) {
+
+    return "one-to-many".equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
   }
 }

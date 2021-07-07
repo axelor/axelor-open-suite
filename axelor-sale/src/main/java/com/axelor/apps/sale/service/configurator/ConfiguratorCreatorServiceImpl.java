@@ -251,7 +251,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   /**
-   * Private method that create metaJsonField from {@link ConfiguratorFormula#metaField}
+   * Method that create metaJsonField from {@link ConfiguratorFormula#metaField}
    *
    * @param formula
    * @param creator
@@ -288,13 +288,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   /**
-   * Private method that copy and modify metajsonfield from {@link
-   * ConfiguratorFormula#metaJsonField}
+   * Method that copy and modify metajsonfield from {@link ConfiguratorFormula#metaJsonField}
    *
    * @param formula
    * @param creator
    */
-  private MetaJsonField copyMetaJsonFieldFromFormula(
+  protected MetaJsonField copyMetaJsonFieldFromFormula(
       ConfiguratorFormula formula, ConfiguratorCreator creator) {
     MetaJsonField newField = metaJsonFieldRepository.copy(formula.getMetaJsonField(), true);
     newField.setModel(Configurator.class.getName());
@@ -305,14 +304,14 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   /**
-   * Private method to check if {@link ConfiguratorFormula} is missing in {@link
+   * Method to check if {@link ConfiguratorFormula} is missing in {@link
    * ConfiguratorCreator#indicators}
    *
    * @param formula : {@link ConfiguratorFormula}
    * @param creator : {@link ConfiguratorCreator}
    * @return true if formula is missing, else false
    */
-  private boolean formulaIsMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
+  protected boolean formulaIsMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
 
     MetaField formulaMetaField = formula.getMetaField();
     List<MetaJsonField> fields =
@@ -452,7 +451,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         return;
       }
     } else {
-      // This check is necessary since fieldName may not have "_"
       fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
       MetaField metaField = formula.getMetaField();

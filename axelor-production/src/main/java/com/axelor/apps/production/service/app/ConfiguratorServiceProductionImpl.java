@@ -27,7 +27,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
-import com.axelor.apps.sale.service.configurator.ConfiguratorMapService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
@@ -49,7 +49,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderComputeService saleOrderComputeService,
       MetaFieldRepository metaFieldRepository,
-      ConfiguratorMapService configuratorMapService) {
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -58,7 +58,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         saleOrderLineRepository,
         saleOrderComputeService,
         metaFieldRepository,
-        configuratorMapService);
+        configuratorMetaJsonFieldService);
   }
 
   /**

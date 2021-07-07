@@ -41,7 +41,6 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -50,16 +49,11 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +75,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   private MetaFieldRepository metaFieldRepository;
 
-  private ConfiguratorMapService configuratorMapService;
+  private ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService;
 
   @Inject
   public ConfiguratorServiceImpl(
@@ -92,7 +86,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderComputeService saleOrderComputeService,
       MetaFieldRepository metaFieldRepository,
-      ConfiguratorMapService configuratorMapService) {
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService) {
     this.appBaseService = appBaseService;
     this.configuratorFormulaService = configuratorFormulaService;
     this.productRepository = productRepository;
@@ -100,7 +94,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderComputeService = saleOrderComputeService;
     this.metaFieldRepository = metaFieldRepository;
-    this.configuratorMapService = configuratorMapService;
+    this.configuratorMetaJsonFieldService = configuratorMetaJsonFieldService;
   }
 
   @Override
@@ -111,7 +105,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       return;
     }
     List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
-    indicators = filterIndicators(configurator, indicators);
+    indicators = configuratorMetaJsonFieldService.filterIndicators(configurator, indicators);
     for (MetaJsonField indicator : indicators) {
       try {
         String indicatorName = indicator.getName();
@@ -124,31 +118,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         continue;
       }
     }
-  }
-  /**
-   * Filter indicator lists that matches one the following: - The indicator is a "one-to-many" type
-   * && it is not in one the formula's metaJsonField
-   *
-   * @param configurator
-   * @param indicators
-   * @return a filtered indicator list
-   */
-  private List<MetaJsonField> filterIndicators(
-      Configurator configurator, List<MetaJsonField> indicators) {
-
-    List<ConfiguratorFormula> formulas = new ArrayList<>();
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorProductFormulaList());
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
-
-    return indicators.stream()
-        .filter(metaJsonField -> !isOneToManyNotAttr(formulas, metaJsonField))
-        .collect(Collectors.toList());
-  }
-
-  private Boolean isOneToManyNotAttr(
-      List<ConfiguratorFormula> formulas, MetaJsonField metaJsonField) {
-
-    return "one-to-many".equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
   }
 
   @Override
@@ -214,8 +183,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     cleanIndicators(jsonIndicators);
     Mapper mapper = Mapper.of(Product.class);
     Product product = new Product();
-    fillAttrs(
-        configuratorMapService.generateAttrMap(
+    configuratorMetaJsonFieldService.fillAttrs(
+        configuratorMetaJsonFieldService.generateAttrMap(
             configurator.getConfiguratorCreator().getConfiguratorProductFormulaList(),
             jsonIndicators),
         Product.class,
@@ -246,33 +215,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     configurator.setProduct(product);
     product.setConfigurator(configurator);
     productRepository.save(product);
-  }
-
-  /**
-   * Private method that fill attr type fields of Class type with json string equivalent of
-   * attrValueMap
-   *
-   * @param <T>
-   * @param attrValueMap
-   * @param type
-   * @param product
-   */
-  private <T extends Model> void fillAttrs(
-      Map<String, Map<String, Object>> attrValueMap, Class<T> type, T product) {
-
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-    attrValueMap.entrySet().stream()
-        .forEach(
-            attr -> {
-              try {
-                Map<String, Object> fieldValue = attr.getValue();
-                Mapper classMapper = Mapper.of(type);
-                classMapper.set(product, attr.getKey(), mapper.writeValueAsString(fieldValue));
-              } catch (JsonProcessingException e) {
-                TraceBackService.trace(e);
-              }
-            });
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -432,8 +374,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     cleanIndicators(jsonIndicators);
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
-    fillAttrs(
-        configuratorMapService.generateAttrMap(
+    configuratorMetaJsonFieldService.fillAttrs(
+        configuratorMetaJsonFieldService.generateAttrMap(
             configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList(),
             jsonIndicators),
         SaleOrderLine.class,
