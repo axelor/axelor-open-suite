@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -61,7 +62,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       PurchaseProductService purchaseProductService,
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AccountConfigRepository accountConfigRepository) {
     super(
         currencyService,
         priceListService,
@@ -70,7 +72,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         accountManagementAccountService,
         productCompanyService,
         invoiceLineRepo,
-        appBaseService);
+        appBaseService,
+        accountConfigRepository);
     this.purchaseProductService = purchaseProductService;
   }
 

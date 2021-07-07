@@ -5,13 +5,16 @@ import com.axelor.exception.service.TraceBackService;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
-public class AccountAnalyticDistributionTemplateRepository extends AnalyticDistributionTemplateRepository {
+public class AccountAnalyticDistributionTemplateRepository
+    extends AnalyticDistributionTemplateRepository {
 
-	@Override
-  public AnalyticDistributionTemplate save(AnalyticDistributionTemplate analyticDistributionTemplate) {
+  @Override
+  public AnalyticDistributionTemplate save(
+      AnalyticDistributionTemplate analyticDistributionTemplate) {
     try {
       if (analyticDistributionTemplate.getId() == null) {
-        return super.save(analyticDistributionTemplate);}
+        return super.save(analyticDistributionTemplate);
+      }
       if (analyticDistributionTemplate.getAnalyticDistributionLineList().size() == 1) {
         analyticDistributionTemplate
             .getAnalyticDistributionLineList()

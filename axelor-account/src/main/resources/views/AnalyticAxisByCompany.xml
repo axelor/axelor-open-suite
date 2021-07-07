@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+	<grid name="analytic-axis-by-company-grid" title="Analytic Axis By Company"
+		model="com.axelor.apps.account.db.AnalyticAxisByCompany" onNew="action-record-analytic-axis-by-company-on-new">
+		<field name="orderSelect" />
+		<field name="analyticAxis" />
+		<field name="accountConfig.company.code" title="Company"/>
+	</grid>
+	
+	<form name="analytic-axis-by-company-form" title="Analytic Axis By company"
+		model="com.axelor.apps.account.db.AnalyticAxisByCompany" onNew="action-record-analytic-axis-by-company-on-new">
+		<panel name="mainPanel">
+			<field name="orderSelect" />
+			<field name="analyticAxis" />
+			<field name="accountConfig.company.code" title="Company"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-record-analytic-axis-by-company-on-new" model="com.axelor.apps.account.db.AnalyticAxisByCompany">
+		<field name="accountConfig" expr="eval: __parent__"/>
+	</action-record>
+
+</object-views>

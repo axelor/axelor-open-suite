@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -44,7 +45,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -92,6 +92,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected UnitConversionService unitConversionService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected ReconcileService reconcileService;
+  protected AccountConfigRepository accountConfigRepository;
   protected int counter = 0;
 
   @Inject
@@ -112,7 +113,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveValidateService moveValidateService,
       UnitConversionService unitConversionService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
-      ReconcileService reconcileService) {
+      ReconcileService reconcileService,
+      AccountConfigRepository accountConfigRepository) {
 
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -131,6 +133,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.unitConversionService = unitConversionService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.reconcileService = reconcileService;
+    this.accountConfigRepository = accountConfigRepository;
   }
 
   public List<StockMove> getStockMoves(
@@ -563,8 +566,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected void getAndComputeAnalyticDistribution(Product product, Move move, MoveLine moveLine) {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigRepository.findByCompany(move.getCompany()).getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return;
     }
 

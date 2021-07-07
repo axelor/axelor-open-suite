@@ -16,7 +16,7 @@
 			ref="com.axelor.apps.account.db.AnalyticAccount"
 			title="Parent Analytic Acc." />
 		<many-to-one name="analyticLevel" ref="com.axelor.apps.account.db.AnalyticLevel"
-			title="Analytic level" massUpdate="true" />
+			title="Analytic level" massUpdate="true" help="This field defines the level in the tree of the analytic account. If the value is set to 0, this means this analytic account is at the bottom level."/>
 		<string name="fullName" title="Full name" required="true"
 			namecolumn="true" search="code,name">
 			<![CDATA[

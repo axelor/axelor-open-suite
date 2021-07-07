@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -39,7 +40,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -72,6 +72,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected ProductCompanyService productCompanyService;
   protected InvoiceLineRepository invoiceLineRepo;
   protected AppBaseService appBaseService;
+  protected AccountConfigRepository accountConfigRepository;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -82,7 +83,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       AccountManagementAccountService accountManagementAccountService,
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AccountConfigRepository accountConfigRepository) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -92,13 +94,15 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.productCompanyService = productCompanyService;
     this.invoiceLineRepo = invoiceLineRepo;
     this.appBaseService = appBaseService;
+    this.accountConfigRepository = accountConfigRepository;
   }
 
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
       InvoiceLine invoiceLine, Invoice invoice) {
-
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigRepository
+            .findByCompany(invoice.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return MoreObjects.firstNonNull(invoiceLine.getAnalyticMoveLineList(), new ArrayList<>());
     }
 
@@ -401,8 +405,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("description", null);
     }
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
+    if (accountConfigRepository
+            .findByCompany(invoice.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
       productInformation.put("analyticMoveLineList", null);
     }
     return productInformation;

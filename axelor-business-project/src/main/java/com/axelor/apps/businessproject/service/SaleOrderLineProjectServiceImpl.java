@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -49,7 +50,8 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
       SaleOrderLineRepository saleOrderLineRepo,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      AccountConfigRepository accountConfigRepository) {
     super(
         currencyService,
         priceListService,
@@ -60,7 +62,8 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
         saleOrderLineRepo,
         appAccountService,
         analyticMoveLineService,
-        appSupplychainService);
+        appSupplychainService,
+        accountConfigRepository);
   }
 
   @Transactional

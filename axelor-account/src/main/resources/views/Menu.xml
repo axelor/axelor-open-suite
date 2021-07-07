@@ -1076,7 +1076,7 @@
 	<action-view name="account.conf.analytic.axis.tree"
 		title="Analytic Tree"
 		model="com.axelor.apps.account.db.AnalyticAccount">
-		<view type="tree" name="analytic-account-tree" />
+		<view type="tree" name="analytic-account-axis-tree" />
 	</action-view>
 	
 	<menuitem name="account-analytic-rules"

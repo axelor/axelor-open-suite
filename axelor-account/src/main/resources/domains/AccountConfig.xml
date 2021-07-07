@@ -166,6 +166,11 @@
 		<!-- Late payment blocking  -->
 		<boolean name="hasLatePaymentAccountBlocking" title="Late payment account blocking"/>
 		<integer name="numberOfDaysBeforeAccountBlocking" title="Number of days before account blocking"/>
+		
+		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
+		<integer name="nbrOfAnalyticAxisSelects" title="Nbr. of analytic axis" selection="account.general.analytic.axis.type.select" default="1"/>
+		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
+		<one-to-many name="analyticAxisByCompanyList" ref="AnalyticAxisByCompany" title="Order of Analytic Axis" mappedBy="accountConfig"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -181,7 +186,10 @@
 		public static final int AUTOMATIC_ACCOUNT_CREATION_NONE = 0;
 		public static final int AUTOMATIC_ACCOUNT_CREATION_PREFIX = 1;
 		public static final int AUTOMATIC_ACCOUNT_CREATION_SEQUENCE = 2;
-	
+
+		public static final int DISTRIBUTION_TYPE_FREE = 1;
+		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
+		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
 	
 	]]></extra-code>
 	

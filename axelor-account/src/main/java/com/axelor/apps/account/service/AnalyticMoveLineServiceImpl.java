@@ -22,12 +22,11 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.AppAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,14 +40,17 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   protected AppAccountService appAccountService;
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
+  protected AccountConfigRepository accountConfigRepository;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
       AppAccountService appAccountService,
-      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl) {
+      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
+      AccountConfigRepository accountConfigRepository) {
 
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
+    this.accountConfigRepository = accountConfigRepository;
   }
 
   @Override
@@ -83,14 +85,14 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
       Partner partner, Product product, Company company) {
 
-    AppAccount appAccount = appAccountService.getAppAccount();
-
-    if (appAccount.getAnalyticDistributionTypeSelect()
-            == AppAccountRepository.DISTRIBUTION_TYPE_PARTNER
-        && partner != null) {
+    if (accountConfigRepository.findByCompany(company).getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
+        && partner != null
+        && company != null) {
       return partner.getAnalyticDistributionTemplate();
-    } else if (appAccount.getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
+    } else if (accountConfigRepository.findByCompany(company).getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
+        && company != null) {
       return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(product, company);
     }
     return null;

@@ -2,6 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+	
     <grid name="analytic-account-grid" title="Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount">
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="name"/>
@@ -29,7 +30,7 @@
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="name"/>
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
-	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid" domain="self.analyticLevel.nbr = :level"/>
+	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid" domain="self.analyticLevel.nbr = :level AND self.analyticAxis = :analyticAxis"/>
 	        <field name="analyticLevel" form-view="analytic-level-form" grid-view="analytic-level-grid" onChange="action-record-domain-analytic-level-parent"/>
 	        <field name="$level" type="integer" hidden="true"/>
         </panel>
@@ -49,7 +50,7 @@
 		title="Analytic accounting account (with axis)" >
 		<column name="name" type="string" />
 		<column name="code" type="string" />
-		<node model="com.axelor.apps.account.db.AnalyticAxis">
+		<node model="com.axelor.apps.account.db.AnalyticAxis" domain="self.id = :_axisId">
 			<field name="name" as="name" />
 			<field name="code" as="code" />
 		</node>
@@ -78,8 +79,7 @@
 	
 	<action-view name="action-analytic-account-tree-view" model="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Tree">
 		<view type="tree" name="analytic-account-tree-2"/>
-		<domain>self.analyticAxis = :axis</domain>
-		<context name="axis" expr="eval: self.analysisAxis"/>
+		<context name="_axisId" expr="eval: analyticAxis?.id"/>
 	</action-view>
 	
 	<action-view name="action-analytic-account-view-account-onchange-view" title="Analytic Accounts"

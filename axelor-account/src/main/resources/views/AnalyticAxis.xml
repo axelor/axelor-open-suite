@@ -2,11 +2,13 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+	
 	<grid name="analytic-axis-grid" title="Analytic Axis"
 		model="com.axelor.apps.account.db.AnalyticAxis">
 		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="name" />
 	</grid>
+	
 	<form name="analytic-axis-form" title="Analytic Axis"
 		model="com.axelor.apps.account.db.AnalyticAxis"
 		onSave="analytic-axis-on-save">
@@ -21,7 +23,7 @@
 
 	</form>
 
-	<tree name="analytic-account-tree"
+	<tree name="analytic-account-axis-tree"
 		title="Analytic accounting account (with axis)">
 		<column name="name" type="string" />
 		<column name="code" type="string" />

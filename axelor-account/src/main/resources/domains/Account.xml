@@ -30,7 +30,6 @@
     	<boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line" massUpdate="true"/>
    	   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
    	   	<many-to-one name="analyticDistributionTemplate" ref="AnalyticDistributionTemplate" title="Analytic Distribution Template" massUpdate="true"/>
-   	   	<many-to-one name="analyticLevel" ref="AnalyticLevel" title="Analytic level" massUpdate="true" help="This field defines the level in the tree of the analytic account. If the value is set to 0, this means this analytic account is at the bottom level."/>
    	   	
    	   	<unique-constraint columns="code,company"/>
 

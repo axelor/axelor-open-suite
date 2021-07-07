@@ -51,7 +51,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
@@ -112,6 +111,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
   protected PaymentModeService paymentModeService;
+  protected AccountConfigRepository accountConfigRepository;
 
   @Inject
   public ExpenseServiceImpl(
@@ -125,7 +125,8 @@ public class ExpenseServiceImpl implements ExpenseService {
       AnalyticMoveLineService analyticMoveLineService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      AccountConfigRepository accountConfigRepository) {
 
     this.moveService = moveService;
     this.expenseRepository = expenseRepository;
@@ -138,13 +139,16 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.paymentModeService = paymentModeService;
+    this.accountConfigRepository = accountConfigRepository;
   }
 
   @Override
   public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense) {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigRepository
+            .findByCompany(expense.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return expenseLine;
     }
 

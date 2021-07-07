@@ -20,11 +20,11 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -53,6 +53,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
   @Inject protected UnitConversionService unitConversionService;
 
   @Inject protected AppAccountService appAccountService;
+
+  @Inject protected AccountConfigRepository accountConfigRepository;
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -104,8 +106,10 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
   public PurchaseOrderLine getAndComputeAnalyticDistribution(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigRepository
+            .findByCompany(purchaseOrder.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return purchaseOrderLine;
     }
 

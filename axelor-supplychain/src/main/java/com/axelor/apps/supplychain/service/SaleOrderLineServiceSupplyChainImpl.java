@@ -19,13 +19,13 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -76,6 +76,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AppAccountService appAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AppSupplychainService appSupplychainService;
+  protected AccountConfigRepository accountConfigRepository;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -88,7 +89,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       SaleOrderLineRepository saleOrderLineRepo,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      AccountConfigRepository accountConfigRepository) {
     super(
         currencyService,
         priceListService,
@@ -100,6 +102,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
+    this.accountConfigRepository = accountConfigRepository;
   }
 
   @Override
@@ -118,8 +121,10 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   public SaleOrderLine getAndComputeAnalyticDistribution(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigRepository
+            .findByCompany(saleOrder.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;
     }
 

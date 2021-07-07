@@ -291,6 +291,7 @@
 		<option value='1'>Free</option>
 		<option value='2'>Per partner</option>
 		<option value='3'>Per product/family</option>
+		<option value="4">Account</option>
 	</selection>
 	
 	<selection name="invoice.payment.type.select">
@@ -499,6 +500,23 @@
         <option value="1">Cheque</option>
         <option value="2">Cash</option>
         <option value="3">Bill of Exchange</option>
+    </selection>
+    
+    <selection name="account.config.analytic.axis.order.select">
+    	<option value="1">1</option>
+    	<option value="2">2</option>
+    	<option value="3">3</option>
+    	<option value="4">4</option>
+    	<option value="5">5</option>
+    </selection>
+    
+    <selection name="account.general.analytic.axis.type.select">
+    	<option value="0">0</option>
+    	<option value="1">1</option>
+    	<option value="2">2</option>
+    	<option value="3">3</option>
+    	<option value="4">4</option>
+    	<option value="5">5</option>
     </selection>
 
 </object-views>
