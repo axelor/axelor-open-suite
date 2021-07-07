@@ -90,7 +90,6 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     findBankStatement();
 
     for (Map<String, Object> structuredContentLine : structuredContentFile) {
-
       try {
         createBankStatementLine(structuredContentLine, sequence++);
       } catch (Exception e) {
@@ -181,7 +180,6 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     List<String> fileContent = FileTool.reader(file.getPath());
 
     for (String lineContent : fileContent) {
-
       log.info("Read line : {}", lineContent);
       String lineData = null;
       int i = 0;
@@ -902,9 +900,6 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   }
 
   protected InterbankCodeLine getInterbankCodeLine(String code) {
-
-    //		return interbankCodeLineRepository.findByCode(code);
-    // TODO Manage reject and operation code
-    return null;
+    return interbankCodeLineRepository.findByCode(code);
   }
 }

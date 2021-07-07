@@ -8,7 +8,7 @@
 
     <string name="name" required="true" title="Name" />
     <integer name="ruleType" title="Rule type" selection="bank.payment.bank.statement.rule.rule.type.select" default="0" required="true" />
-    <string name="query" title="Test function" required="true" />
+    <string name="query" title="Test function" required="true" large="true"/>
 
   </entity>
 </domain-models>

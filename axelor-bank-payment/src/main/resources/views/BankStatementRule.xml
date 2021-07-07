@@ -16,7 +16,7 @@
       <field name="partner" requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleType = 0" domain="self.partnerTypeSelect = 1" readonlyIf="!accountManagement" grid-view="partner-grid" form-view="partner-form"/>
       <field name="counterpartAccount" requiredIf="ruleType == 0" readonlyIf="!accountManagement" domain="self.company = :company"/>
       <field name="searchLabel" readonlyIf="!accountManagement"/>
-      <field name="bankStatementQuery" readonlyIf="!accountManagement" grid-view="bank-statement-query-grid" form-view="bank-statement-query-form"/>
+      <field name="bankStatementQuery" readonlyIf="!accountManagement" domain="self.ruleType = :ruleType" grid-view="bank-statement-query-grid" form-view="bank-statement-query-form"/>
       <field name="$company" type="many-to-one" target="com.axelor.apps.base.db.Company" hidden="true"/>
     </panel>
   </form>

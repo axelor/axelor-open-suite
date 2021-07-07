@@ -15,5 +15,13 @@
     
     <string name="searchLabel" title="Searched label" multiline="true" large="true"/>
     
+    <extra-code><![CDATA[
+    
+    // RULE TYPE
+    public static final int RULE_TYPE_ACCOUNTING_AUTO = 0;
+    public static final int RULE_TYPE_RECONCILIATION_AUTO = 1;
+    
+    ]]></extra-code>
+    
   </entity>
 </domain-models>

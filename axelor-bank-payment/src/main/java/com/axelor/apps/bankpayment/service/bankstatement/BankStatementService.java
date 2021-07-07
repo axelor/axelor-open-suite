@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.BankStatementRule;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.BankStatementRuleRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
@@ -48,15 +49,18 @@ public class BankStatementService {
   protected BankStatementRepository bankStatementRepository;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
+  protected MoveLineRepository moveLineRepository;
 
   @Inject
   public BankStatementService(
       BankStatementRepository bankStatementRepository,
       PeriodService periodService,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      MoveLineRepository moveLineRepository) {
     this.bankStatementRepository = bankStatementRepository;
     this.periodService = periodService;
     this.moveRepository = moveRepository;
+    this.moveLineRepository = moveLineRepository;
   }
 
   public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported)
@@ -186,12 +190,17 @@ public class BankStatementService {
     move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
     move.setFunctionalOriginSelect(MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
     move.clearMoveLineList();
-    move.addMoveLineListItem(generateMoveLine(bankStatementLine, bankStatementRule, move, true));
-    move.addMoveLineListItem(generateMoveLine(bankStatementLine, bankStatementRule, move, false));
+    MoveLine moveLine = generateMoveLine(bankStatementLine, bankStatementRule, move, true);
+    move.addMoveLineListItem(moveLine);
+    moveLine = generateMoveLine(bankStatementLine, bankStatementRule, move, false);
+    moveLine = moveLineRepository.save(moveLine);
+    move.addMoveLineListItem(moveLine);
+    bankStatementLine.setMoveLine(moveLine);
+
     return moveRepository.save(move);
   }
 
-  public MoveLine generateMoveLine(
+  protected MoveLine generateMoveLine(
       BankStatementLine bankStatementLine,
       BankStatementRule bankStatementRule,
       Move move,
