@@ -1,0 +1,232 @@
+"importId";"actionTypeSelect";"target";"value";"input";"isIncludedInContext";"assertTypeSelect";"unitTest.importId";"sequence"
+1;"select";"project";"Project : self.code = ?1";"[""UNIT-TEST""]";;;1;0
+2;"assert";"project";"null";;;"!=";1;1
+3;"assign";"_project";"project";;"true";;1;2
+4;"create";"invoicingProject";"InvoicingProject";;;;1;3
+5;"call_action";"invoicingProject";"action-invoicing-project-group-on-new";"invoicingProject";;;1;4
+6;"assert";"invoicingProject.logTimesSet";"null";;;"!=";1;5
+7;"assign";"invoicingProject.projectTaskSet";"[]";;;;1;6
+8;"assign";"invoicingProject.expenseLineSet";"[]";;;;1;7
+9;"assign";"invoicingProject.saleOrderLineSet";"[]";;;;1;8
+10;"assign";"invoicingProject.purchaseOrderLineSet";"[]";;;;1;9
+11;"assign";"invoicingProject.projectTaskSet";"[]";;;;1;10
+12;"call_action";"invoicingProject";"save,action-invoicing-project-method-generate-invoice";"invoicingProject";;;1;11
+13;"assign";"invoice";"invoicingProject.invoice";;;;1;12
+14;"call_action";"invoice";"action-invoice-method-validate-and-ventilate";"invoice";;;1;13
+15;"assign";"projectTasksToInvoice";"project.projectTaskList.findAll {  it -> it. invoiced }";;;;1;14
+16;"assert";"projectTasksToInvoice.size()";"2";;;"==";1;15
+17;"create";"so";"SaleOrder";;;;2;0
+18;"call_action";"so";"action-group-sale-saleorder-onnew";"so";;;2;1
+19;"assign";"so.clientPartner";"""P0014 - 123 Services""";;;;2;2
+20;"call_action";"so";"action-sale-order-group-client-partner-change";"so";;;2;3
+21;"create";"line";"SaleOrderLine";;;;2;4
+22;"call_action";"line";"action-group-sale-saleorderline-onnew";"line";;;2;5
+23;"assign";"line.saleOrder";"so";;;;2;6
+24;"assign";"line.product";"'[COMP-0001] Hard Disk SATA 1To'";;;;2;7
+25;"assign";"line.productName";"line.product.name";;;;2;8
+26;"call_action";"line";"action-group-sale-saleorderline-product-onchange";"line";;;2;9
+27;"add";"so.saleOrderLineList";"line";;;;2;10
+28;"call_action";"so";"action-sale-order-line-change-group";"so";;;2;11
+29;"create";"line";"SaleOrderLine";;;;2;12
+30;"call_action";"line";"action-group-sale-saleorderline-onnew";"line";;;2;13
+31;"assign";"line.saleOrder";"so";;;;2;14
+32;"assign";"line.product";"'[SERV-0010] General Manager'";;;;2;15
+33;"assign";"line.productName";"line.product.name";;;;2;16
+34;"call_action";"line";"action-group-sale-saleorderline-product-onchange";"line";;;2;17
+35;"add";"so.saleOrderLineList";"line";;;;2;18
+36;"call_action";"so";"action-sale-order-line-change-group";"so";;;2;19
+37;"call_action";"so";"action-group-sale-order-finalize-quotation";"so";;;2;20
+38;"call_action";"so";"save,action-sale-group-confirmed";"so";;;2;21
+39;"select";"so";"SaleOrder : self.id = ?0";"[so.id]";;;2;22
+40;"assert";"so.statusSelect";"__repo__(SaleOrder).STATUS_ORDER_CONFIRMED";"so";;"==";2;23
+41;"assign";"so";"__repo__(SaleOrder).all().filter(""self.statusSelect = ?1"",[3]).order(""-createdOn"").fetchOne()";;;;3;0
+42;"assert";"so";"null";;;"!=";3;1
+43;"assign";"purchaseSaleOrderLine";"so.saleOrderLineList.find { it.saleSupplySelect == 2 }";;;;3;2
+44;"assert";"purchaseSaleOrderLine";"null";;;"!=";3;3
+45;"assert";"purchaseSaleOrderLine.supplierPartner";"null";;;"!=";3;4
+46;"call_service";"purchaseOrder";"com.axelor.apps.supplychain.service.SaleOrderPurchaseService:createPurchaseOrder";"purchaseSaleOrderLine.supplierPartner,[purchaseSaleOrderLine],so";;;3;5
+47;"assert";"purchaseOrder";"null";;;"!=";3;6
+48;"assert";"purchaseOrder.internalReference";"so.saleOrderSeq";;;"==";3;7
+49;"select";"purchaseOrder.budget";"Budget : self.id = ?1";"[1]";;;3;8
+50;"call_action";;"action-purchase-order-budget-distribution-apply-to-all,save";"purchaseOrder";;;3;9
+51;"call_action";"purchaseOrder";"save,action-purchase-order-method-requested";"purchaseOrder";;;3;10
+52;"assert";"purchaseOrder";"null";;;"!=";3;11
+53;"assert";"purchaseOrder.statusSelect";"2";;;"==";3;12
+54;"assign";"so";"__repo__(SaleOrder).all().filter(""self.statusSelect = ?1"",[3]).order(""-createdOn"").fetchOne()";;;;4;0
+55;"call_action";"so";"action-supplychain-sale-order-create-stock-move";"so";;;4;1
+56;"assign";"orderTotalWOService";"so.saleOrderLineList.findAll{ it?.product?.productTypeSelect != 'service' }.inject(0.00){total,line->total+line.exTaxTotal}";;;;4;2
+57;"assign";"move";"__repo__(StockMove).all().filter(""self.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.originId = ?1 AND self.statusSelect != 4"",so.id).order(""createdOn"").fetchOne()";;;;4;3
+58;"assert";"move.exTaxTotal";"orderTotalWOService";;;"==";4;4
+59;"call_action";"move";"action-group-stock-stockmove-realize-click";"move";;;4;5
+60;"assert";"move.statusSelect";"3";;;"==";4;6
+61;"call_service";"invoice";"com.axelor.apps.supplychain.service.StockMoveInvoiceService:createInvoice";"move,1,null";;;4;7
+62;"assert";"invoice.saleOrder";"so";;;"==";4;8
+63;"assert";"invoice.invoiceLineList";"null";;;"!=";4;9
+64;"assert";"invoice.invoiceLineList.find{ line -> line.saleOrderLine == null }";"null";;;"==";4;10
+65;"assert";"invoice.invoiceLineList.find{ line -> line.saleOrderLine.exTaxTotal != line.exTaxTotal }";"null";;;"==";4;11
+66;"create";"project";"Project";;;;5;0
+67;"call_action";"project";"action-project-group-on-new-project";"project";;;5;1
+68;"assign";"project.name";"""Unit testing""";;;;5;2
+69;"assign";"project.code";"""UNIT-TEST""";;;;5;3
+70;"assign";"project.isBusinessProject";"true";;;;5;4
+71;"assign";"project.clientPartner";"""P0014 - 123 Services""";;;;5;5
+72;"assign";"project.isShowTimeSpent";"true";;;;5;6
+73;"call_action";"project";"save";"project";;;5;7
+74;"assign";"currentUser";"__user__";;;;5;8
+75;"assert";"currentUser.employee";"null";;;"!=";5;9
+76;"assert";"currentUser.employee.product";"null";;;"!=";5;10
+77;"add";"project.membersUserSet";"currentUser";;;;5;11
+78;"create";"teamTask";"ProjectTask";;;;6;0
+79;"call_action";"teamTask";"action-project-task-group-onnew";"teamTask";;;6;1
+80;"assign";"teamTask.name";"""UNIT-TEST1""";;;;6;2
+81;"select";"project";"Project : self.code = ?1";"[""UNIT-TEST""]";;;6;3
+82;"assert";"project";"null";;;"!=";6;4
+83;"assign";"teamTask.project";"project";;;;6;5
+84;"call_action";"teamTask";"action-project-task-group-project-onchange";"teamTask";;;6;6
+85;"assign";"teamTask.invoicingType";"__repo__(ProjectTask).INVOICING_TYPE_TIME_SPENT";;;;6;7
+86;"call_action";"teamTask";"action-project-task-attrs-invoice-type-on-change";"teamTask";;;6;8
+87;"assert";"teamTask.toInvoice";"true";;;"==";6;9
+88;"call_action";"teamTask";"save";"teamTask";;;6;10
+89;"add";"project.projectTaskList";"teamTask";;;;6;11
+90;"create";"teamTask";"ProjectTask";;;;6;12
+91;"call_action";"teamTask";"action-project-task-group-onnew";"teamTask";;;6;13
+92;"assign";"teamTask.name";"""UNIT-TEST2""";;;;6;14
+93;"assign";"teamTask.project";"project";;;;6;15
+94;"call_action";"teamTask";"action-project-task-group-project-onchange";"teamTask";;;6;16
+95;"assign";"teamTask.invoicingType";"__repo__(ProjectTask).INVOICING_TYPE_TIME_SPENT";;;;6;17
+96;"call_action";"teamTask";"action-project-task-attrs-invoice-type-on-change";"teamTask";;;6;18
+97;"assert";"teamTask.toInvoice";"true";;;"==";6;19
+98;"call_action";"teamTask";"save";"teamTask";;;6;20
+99;"add";"project.projectTaskList";"teamTask";;;;6;21
+100;"call_action";"project";"save";"project";;;6;22
+101;"select";"project";"Project : self.code = ?1";"[""UNIT-TEST""]";;;7;0
+102;"assert";"project";"null";;;"!=";7;1
+103;"assign";"projectTasks";"project.projectTaskList";;;;7;2
+104;"assert";"projectTasks";"null";;;"!=";7;3
+105;"assign";"currentUser";"__user__";;;;7;4
+106;"assert";"currentUser.employee";"null";;;"!=";7;5
+107;"call_service";"product";"com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct";"currentUser";;;7;6
+108;"assert";"product";"null";;;"!=";7;7
+109;"create";"timesheet";"Timesheet";;;;7;8
+110;"call_action";"timesheet";"action-group-timesheet-onnew";"timesheet";;;7;9
+111;"assign";"timesheet.user";"currentUser";;;;7;10
+112;"assign";"timesheet.fromDate";"__date__";;;;7;11
+113;"assign";"timesheet.toDate";"__date__.plusDays(7)";;;;7;12
+114;"create";"timesheetLine";"TimesheetLine";;;;7;13
+115;"assign";"timesheetLine.user";"currentUser";;;;7;14
+116;"assign";"timesheetLine.product";"product";;;;7;15
+117;"assign";"timesheetLine.timesheet";"timesheet";;;;7;16
+118;"assign";"timesheetLine.project";"project";;;;7;17
+119;"assign";"timesheetLine.projectTask";"projectTasks[0]";;;;7;18
+120;"call_action";"timesheetLine";"action-timesheet-line-method-set-default-to-invoice";"timesheetLine";;;7;19
+121;"assign";"timesheetLine.date";"__date__.plusDays(1)";;;;7;20
+122;"assign";"timesheetLine.duration";"1";;;;7;21
+123;"call_action";"timesheetLine";"action-timesheet-line-method-set-stored-duration";"timesheetLine";;;7;22
+124;"add";"timesheet.timesheetLineList";"timesheetLine";;;;7;23
+125;"create";"timesheetLine";"TimesheetLine";;;;7;24
+126;"assign";"timesheetLine.user";"currentUser";;;;7;25
+127;"assign";"timesheetLine.product";"product";;;;7;26
+128;"assign";"timesheetLine.timesheet";"timesheet";;;;7;27
+129;"assign";"timesheetLine.project";"project";;;;7;28
+130;"assign";"timesheetLine.projectTask";"projectTasks[1]";;;;7;29
+131;"call_action";"timesheetLine";"action-timesheet-line-method-set-default-to-invoice";"timesheetLine";;;7;30
+132;"assign";"timesheetLine.date";"__date__.plusDays(2)";;;;7;31
+133;"assign";"timesheetLine.duration";"1";;;;7;32
+134;"call_action";"timesheetLine";"action-timesheet-line-method-set-stored-duration";"timesheetLine";;;7;33
+135;"add";"timesheet.timesheetLineList";"timesheetLine";;;;7;34
+136;"call_action";"timesheet";"save,action-timesheet-group-confirm,action-timesheet-group-validate";"timesheet";;;7;35
+137;"create";"invoice";"Invoice";;;;8;0
+138;"assign";"_operationTypeSelect";"3";;"true";;8;1
+139;"assign";"todayDate";"__config__.app.getTodayDate(__user__.activeCompany)";;"true";;8;2
+140;"call_action";"invoice";"action-account-invoice-onnew-group";"invoice";;;8;3
+141;"assign";"invoice.partner";"""P0014 - 123 Services""";;;;8;4
+142;"call_action";"invoice";"action-group-account-invoice-partner-onchange,action-method-invoice-address-str";"invoice";;;8;5
+143;"create";"line";"InvoiceLine";;;;8;6
+144;"call_action";"line";"action-account-invoice-line-onnew-group";"line";;;8;7
+145;"assign";"line.product";"""[COMP-0002] Hard Disk SSD 100 Go""";;;;8;8
+146;"assign";"line.invoice";"invoice";;;;8;9
+147;"call_action";"line";"action-group-account-invoice-line-product-onchange";"line";;;8;10
+148;"add";"invoice.invoiceLineList";"line";;;;8;11
+149;"call_action";"invoice";"action-invoice-group-invoice-line-list-on-change";"invoice";;;8;12
+150;"call_action";"invoice";"save";"invoice";;;8;13
+151;"call_action";"invoice";"save,action-invoice-method-validate";"invoice";;;8;14
+152;"call_action";"invoice";"save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save";"invoice";;;8;15
+153;"assign";"_invoice";"[*:com.axelor.db.mapper.Mapper.toMap(invoice),""id"":invoice?.id.intValue()]";;"true";;8;16
+154;"create";"invPayment";"InvoicePayment";;;;8;17
+155;"call_action";"invPayment";"action-invoice-payment-group-new";"invPayment";;;8;18
+156;"assign";"invPayment.amount";"invoice.inTaxTotal*0.5";;;;8;19
+157;"add";"invoice.invoicePaymentList";"invPayment";;;;8;20
+158;"call_action";"invoice";"save";"invoice";;;8;21
+159;"call_action";"invPayment";"save";"invPayment";;;8;22
+160;"assert";"invoice.amountRemaining";"0";;;"!=";8;23
+161;"assert";"invoice.amountPaid";"0";;;"!=";8;24
+162;"assign";"_invoice";"[*:com.axelor.db.mapper.Mapper.toMap(invoice),""id"":invoice?.id.intValue()]";;"true";;8;25
+163;"create";"invPayment";"InvoicePayment";;;;8;26
+164;"call_action";"invPayment";"action-invoice-payment-group-new";"invPayment";;;8;27
+165;"add";"invoice.invoicePaymentList";"invPayment";;;;8;28
+166;"call_action";"invPayment";"save";"invPayment";;;8;29
+167;"call_action";"invoice";"save";"invoice";;;8;30
+168;"assert";"invoice.amountRemaining";"0";;;"==";8;31
+169;"assert";"invoice.amountPaid";"invoice.inTaxTotal";;;"==";8;32
+170;"create";"purchaseOrder";"PurchaseOrder";;;;9;0
+171;"call_action";"purchaseOrder";"action-group-purchase-order-on-new-actions,supplychain-action-create-shipment-cost-line-purchase";"purchaseOrder";;;9;1
+172;"assign";"purchaseOrder.supplierPartner";"""P0026 - TOP Components""";;;;9;2
+173;"call_action";"purchaseOrder";"action-group-purchase-order-partner-onchange";"purchaseOrder";;;9;3
+174;"create";"poLine";"PurchaseOrderLine";;;;9;4
+175;"call_action";"poLine";"action-group-purchase-purchase-orderline-onnew";"poLine";;;9;5
+176;"assign";"poLine.product";"""[COMP-0002] Hard Disk SSD 100 Go""";;;;9;6
+177;"assign";"poLine.budgetDistributionList";"[]";;;;9;7
+178;"assign";"poLine.purchaseOrder";"purchaseOrder";;;;9;8
+179;"call_action";"poLine";"action-group-purchase-purchase-orderline-product-onchange";"poLine";;;9;9
+180;"add";"purchaseOrder.purchaseOrderLineList";"poLine";;;;9;10
+181;"call_action";"purchaseOrder";"action-purchase-order-method-compute,supplychain-action-create-shipment-cost-line-purchase";"purchaseOrder";;;9;11
+182;"call_service";"currentStockQty";"com.axelor.apps.stock.service.StockLocationService:getRealQty";"poLine.product.id,null,null";;;9;12
+183;"call_action";"purchaseOrder";"save,action-purchase-order-method-requested";"purchaseOrder";;;9;13
+184;"call_action";"purchaseOrder";"action-group-purchase-order-on-validate-actions";"purchaseOrder";;;9;14
+185;"call_service";"stockMovesIdList";"com.axelor.apps.supplychain.service.PurchaseOrderStockService:createStockMoveFromPurchaseOrder";"purchaseOrder";;;9;15
+186;"select";"stockMove";"StockMove : self.id in ?1";"stockMovesIdList";;;9;16
+187;"assert";"stockMove.originId";"purchaseOrder.id";;;"==";9;17
+188;"assert";"stockMove.originTypeSelect";"'com.axelor.apps.purchase.db.PurchaseOrder'";;;"==";9;18
+189;"call_action";"stockMove";"action-group-stock-stockmove-realize-click";"stockMove";;;9;19
+190;"call_service";"updatedStockQty";"com.axelor.apps.stock.service.StockLocationService:getRealQty";"poLine.product.id,null,null";;;9;20
+191;"assert";"currentStockQty";"updatedStockQty-poLine.qty";;;"==";9;21
+192;"call_service";"invoice";"com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService:generateInvoice";"purchaseOrder";;;9;22
+193;"assert";"invoice.purchaseOrder";"purchaseOrder";;;"==";9;23
+194;"assert";"purchaseOrder.inTaxTotal";"invoice.inTaxTotal";;;"==";9;24
+195;"create";"so";"SaleOrder";;;;10;0
+196;"call_action";"so";"action-group-sale-saleorder-onnew";"so";;;10;1
+197;"assign";"so.clientPartner";"""P0014 - 123 Services""";;;;10;2
+198;"call_action";"so";"action-sale-order-group-client-partner-change";"so";;;10;3
+199;"create";"line";"SaleOrderLine";;;;10;4
+200;"call_action";"line";"action-group-sale-saleorderline-onnew";"line";;;10;5
+201;"assign";"line.saleOrder";"so";;;;10;6
+202;"select";"product";"Product : self.saleSupplySelect = ?1";"[3]";;;10;7
+203;"assert";"product";"null";;;"!=";10;8
+204;"assign";"line.product";"product";;;;10;9
+205;"assign";"line.productName";"product.name";;;;10;10
+206;"call_action";"line";"action-group-sale-saleorderline-product-onchange";"line";;;10;11
+207;"assert";"line.billOfMaterial";"null";;;"!=";10;12
+208;"assign";"line.qty";"2";;;;10;13
+209;"call_action";"line";"action-group-sale-saleorderline-qty-onchange";"line";;;10;14
+210;"add";"so.saleOrderLineList";"line";;;;10;15
+211;"call_action";"so";"action-sale-order-line-change-group";"so";;;10;16
+212;"call_action";"so";"action-group-sale-order-finalize-quotation";"so";;;10;17
+213;"call_action";"so";"save,action-sale-group-confirmed";"so";;;10;18
+214;"select";"so";"SaleOrder : self.id = ?0";"[so.id]";;;10;19
+215;"assert";"so.statusSelect";"__repo__(SaleOrder).STATUS_ORDER_CONFIRMED";"so";;"==";10;20
+216;"call_action";"so";"action-sale-order-method-create-production-order";"so";;;10;21
+217;"select";"prodOrder";"ProductionOrder : self.saleOrder.id =?1";"[so.id]";;;10;22
+218;"assert";"prodOrder.manufOrderSet?.size()";"0";;;"!=";10;23
+219;"assert";"prodOrder.saleOrder";"so";;;"==";10;24
+220;"assign";"manufOrder";"prodOrder.manufOrderSet[0]";;;;10;25
+221;"assert";"manufOrder.qty";"line.qty";;;"==";10;26
+222;"assert";;"manufOrder.saleOrderSet.contains(so)";;;"==";10;27
+223;"call_action";"manufOrder";"action-manuf-order-method-plan";"manufOrder";;;10;28
+224;"assign";"stockLocation";"manufOrder.outStockMoveList[0].toStockLocation";;;;10;29
+225;"call_service";"productQty";"com.axelor.apps.stock.service.StockLocationService:getRealQty";"manufOrder.product.id,stockLocation.id,manufOrder.company.id";;;10;30
+226;"call_action";"manufOrder";"action-manuf-order-method-start";"manufOrder";;;10;31
+227;"assign";"manufOrder.costSheetList";"[]";;;;10;32
+228;"call_action";"manufOrder";"action-manuf-order-group-finish";"manufOrder";;;10;33
+229;"assert";"manufOrder.statusSelect";"6";;;"==";10;34
+230;"call_service";"afterUpdateProductQty";"com.axelor.apps.stock.service.StockLocationService:getRealQty";"manufOrder.product.id,stockLocation.id,manufOrder.company.id";;;10;35
+231;"assert";"productQty";"afterUpdateProductQty - manufOrder.qty";;;"==";10;36
