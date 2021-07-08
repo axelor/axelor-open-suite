@@ -72,7 +72,9 @@
 				<field name="weeklyPlanning" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
 				<field name="publicHolidayEventsPlanning" form-view="events-planning-form" grid-view="events-planning-grid" canNew="true" />
 				<field name="language" colSpan="6" canEdit="false"/>
-					<field name="timezone" colSpan="6"/>
+				<field name="timezone" colSpan="6"/>
+				<field name="taxNumberList" colSpan="12" canSelect="true" canNew="false" canEdit="false"
+					   domain="self.company.id = :id" if="__config__.app.isApp('account')"/>
 	  		</panel>
 	    	<panel name="bankDetailsPanel" title="Bank details">
                 <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>

@@ -87,7 +87,7 @@
         <action name="action-sale-order-attrs-interco"/>
 		<action name="action-sale-order-record-interco"/>
 		<action name="supplychain-action-create-shipment-cost-line"/>
-		<action name="action-record-account-sale-order-set-default-tax-number"/>
+		<action name="action-sale-order-record-set-default-tax-number"/>
 	</action-group>
 	
 	<action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
