@@ -1,4 +1,27 @@
 # Changelog
+## [5.3.16] - 2021-07-08
+
+#### Fixed
+
+* Accounting move printing: fix issue where lines were duplicated.
+* SaleOrder: fix NPE on product selection when the current user does not have an active company.
+* Stock move multi invoicing: fix IndexOutOfBoundsException when trying to invoice a stock move with no lines.
+* Configurator creator: fix issue where attributes from a non active configurator model are displayed in others configurators.
+* Invoice: fix rounding error on advance payment imputation.
+* DATA BACKUP: Improve exception management & fix cases where the backup failed.
+* Forecast recap type: fix sale order french translation to 'Commande client' instead of 'Commande'.
+* Move line export: fix issue when exporting lines with special char in description.
+* Stocks : Fixed an issue where dashboards 'Upcoming supplier arrivals' and 'Late supplier arrivals' would either be empty or displaying unrelevant data.
+* Sale order report: qty column is displayed regardless of the line type.
+* Sale order: fix button to print invoices from invoicing dashlet.
+* Mrp: fix MRP process being stuck in a loop with wrong mrp line type configuration.
+* Invoice: fix printing when cancelling advance.
+* LeaveRequest: Block the approval when a leave request is already validated.
+* MailMessage: fix sender user always being the same for all sent messages.
+* Configurator creator attributes: fix issue where `onChange` field could not be emptied.
+* Purchase order: fix error due to missing parameter when generating a purchase order printing for an email.
+* Expense: fix ConstraintViolationException when validating an expense.
+
 ## [5.3.15] - 2021-02-16
 
 #### Fixed
@@ -574,6 +597,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
+[5.3.16]: https://github.com/axelor/axelor-open-suite/compare/v5.3.15...v5.3.16
 [5.3.15]: https://github.com/axelor/axelor-open-suite/compare/v5.3.14...v5.3.15
 [5.3.14]: https://github.com/axelor/axelor-open-suite/compare/v5.3.13...v5.3.14
 [5.3.13]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...v5.3.13
