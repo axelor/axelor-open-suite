@@ -1,3 +1,24 @@
+## [6.0.12] (2021-07-08)
+
+#### Features
+
+* STOCK LOCATION: Stock valuation by purchase value.
+
+#### Fixed
+
+* Exception: improve exception management when an issue occurs on save.
+* French translation: Translate all occurences of 'Expense' to 'Note de frais' in french.
+* ROUNDING MODE: In computations, replaced half even rounding mode by half up rounding mode to prevent rounding inconsistencies.
+* Product: Add unicity on serial number.
+* PURCHASE ORDER: fix an issue where purchase order line list was empty when accessing it from Historical menu entry.
+* Account management form: Fixed issues where Tax/Product/Product Family/Payment mode were displayed and not filled.
+* Stocks: Fixed an issue where dashboards 'Upcoming supplier arrivals' and 'Late supplier arrivals' would either be empty or displaying unrelevant data.
+* ManufOrder: Fix an issue were generate waste butten was not clickable.
+* Mrp: fix MRP process being stuck in a loop with wrong mrp line type configuration.
+* DEMO DATA: Add permission and menus for purchase user.
+* InvoicePayment: Fix NPE on payment cancel.
+* Product family: fixed product field and type display in account management form.
+
 ## [6.0.11] (2021-06-02)
 
 #### Fixed
@@ -534,6 +555,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.12]: https://github.com/axelor/axelor-open-suite/compare/v6.0.11...v6.0.12
 [6.0.11]: https://github.com/axelor/axelor-open-suite/compare/v6.0.10...v6.0.11
 [6.0.10]: https://github.com/axelor/axelor-open-suite/compare/v6.0.9...v6.0.10
 [6.0.9]: https://github.com/axelor/axelor-open-suite/compare/v6.0.8...v6.0.9
