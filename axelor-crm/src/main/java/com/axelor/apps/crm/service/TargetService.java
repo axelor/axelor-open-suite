@@ -172,7 +172,7 @@ public class TargetService {
           eventRepo
               .all()
               .filter(
-                  "self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
+                  "self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.eventTypeSelect = 2",
                   EventRepository.TYPE_CALL,
                   user,
                   fromDateTime,
@@ -237,7 +237,7 @@ public class TargetService {
           eventRepo
               .all()
               .filter(
-                  "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
+                  "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.eventTypeSelect = 2",
                   EventRepository.TYPE_CALL,
                   team,
                   fromDateTime,
