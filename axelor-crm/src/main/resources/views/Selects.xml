@@ -45,11 +45,6 @@
 		<option value="2">Each year</option>
 	</selection>
 	
-	<selection name="crm.event.call.type.select">
-		<option value="1">Incoming</option>
-		<option value="2">Outgoing</option>
-	</selection>
-	
 	<selection id="crm.icalendar.event.type.select" name="icalendar.event.type.select">
 		<option value="5">Note</option>
 	</selection>
@@ -65,6 +60,13 @@
 		<option value="13">Pending</option>
 		<option value="14">Finished</option>
 		<option value="15">Reported</option>
+	</selection>
+	
+	<selection name="crm.event.type.select">
+		<option value="1" icon="fa-phone" color="green">Inbound call</option>
+		<option value="2" icon="fa-phone" color="red">Outbound call</option>
+		<option value="3" icon="fa-handshake-o" color="orange">Meeting</option>
+		<option value="4" icon="fa-calendar" color="blue">Appointment</option>
 	</selection>
 	
 	<selection name="crm.event.attendee.status.select">

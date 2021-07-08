@@ -11,6 +11,7 @@
     	<field name="startDateTime"/>
     	<field name="partner" />
     	<field name="lead" />
+    	<field name="eventTypeSelect"/>
     	<field name="typeSelect"/>
     	<field name="subject"/>
         <field name="statusSelect" />
@@ -18,6 +19,7 @@
     </grid>
 
     <grid name="list-event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime"  x-row-height="80">
+    	<field name="eventTypeSelect"/>
 		<field name="typeSelect"/>
 		<field name="statusSelect" />
 		<field name="startDateTime"/>
@@ -45,6 +47,7 @@
     	<hilite color="danger" if="statusSelect == 3"/>
 		<field name="startDateTime"/>
 		<field name="subject"/>
+		<field name="eventTypeSelect"/>
 		<field name="typeSelect"/>
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
@@ -56,6 +59,7 @@
     	<hilite color="danger" if="statusSelect == 3"/>
 		<field name="startDateTime"/>
 		<field name="subject"/>
+		<field name="eventTypeSelect"/>
 		<field name="typeSelect"/>
 		<field name="duration" widget="duration" x-big="true"/>
 		<field name="team" hidden="true"/>
@@ -68,6 +72,7 @@
     	<hilite color="danger" if="statusSelect == 3"/>
 		<field name="startDateTime"/>
 		<field name="subject"/>
+		<field name="eventTypeSelect"/>
 		<field name="typeSelect"/>
 		<field name="duration" widget="duration" x-big="true"/>
 		<field name="user" hidden="true"/>
@@ -87,7 +92,7 @@
 	<form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
 	onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew" onSave="action-event-group-on-save">
 		<toolbar>
-			<button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
+			<button name="grabEventBtn" icon="fa-suitcase" help="Assign to me" onClick="save,action-method-crm-event-assign-tome"/>
 			<button name="viewOnMapBtn" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
 			<button name="startBtn" readonlyIf="statusSelect == 12 || statusSelect == 14" icon="fa-play"  showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
 			<button name="pauseBtn" readonlyIf="statusSelect == 14 || statusSelect == 13" icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
@@ -100,6 +105,26 @@
 			</menu>
 		</menubar>
 		<panel colSpan="12" name="meetingGeneralPanel">
+			<panel name="namePanel" colSpan="12">
+				<field name="$fullName" showTitle="false" readonly="true" colSpan="12">
+					<viewer>
+						<![CDATA[
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.lead == null">{{record.contactPartner.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.contactPartner == null &amp;&amp; record.lead == null">{{record.partner.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.lead != null">{{record.lead.fullName}}</span>
+						]]>
+					</viewer>
+				</field>
+			</panel>
+			<field name="eventTypeSelect" showTitle="false" colSpan="3" widget="ImageSelect">
+				<viewer depends="eventTypeSelect"><![CDATA[
+					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventTypeSelect == 1"><i class="fa fa-phone fa-lg"></i><span>&nbsp;&nbsp;</span><span x-translate>Inbound call</span></span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventTypeSelect == 2"><i class="fa fa-phone fa-lg"></i><span>&nbsp;&nbsp;</span><span x-translate>Outbound call</span></span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventTypeSelect == 3"><i class="fa fa-handshake-o fa-lg"></i><span>&nbsp;&nbsp;</span><span x-translate>Meeting</span></span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventTypeSelect == 4"><i class="fa fa-calendar fa-lg"></i><span>&nbsp;&nbsp;</span><span x-translate>Appointment</span></span>
+				]]>
+				</viewer>
+			</field>
 			<field name="typeSelect" domain="self.value IN ('0','1','2','3','5')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
 	        	<viewer depends="typeSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 0" x-translate>Event</span>
@@ -137,9 +162,13 @@
 				]]>
 				</viewer>
 				<editor>
-					<field name="subject" showTitle="true" colSpan="12"/>
+					<field name="subject" showTitle="true" colSpan="12" height="2px"/>
 				</editor>
 			</field>
+			<field name="partner" hideIf="lead != null" canEdit="false" onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange" form-view="partner-form" grid-view="partner-grid" />
+			<field name="contactPartner" canEdit="false" hideIf="partner.partnerTypeSelect == 2 || lead != null" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			<field name="lead" hideIf="partner != null || contactPartner != null" canEdit="false" onChange="action-meeting-set-location-lead, action-event-method-add-guest" form-view="lead-form" grid-view="lead-grid"/>
+			<spacer/>
 			<field name="startDateTime" colSpan="3" onChange="action-event-method-compute-from-start-date-time,action-event-attrs-show-past-event-text"/>
 			<field name="endDateTime" hideIf="typeSelect == 5" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			<field name="allDay" colSpan="2" hideIf="typeSelect == 5"/>
@@ -190,14 +219,10 @@
 		<panel sidebar="true" title="Characteristics" name="meetingAttributesPanel" canCollapse="true" hideIf="typeSelect == 5">
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
 			<field name="eventCategory" canEdit="false" domain="self.typeSelect = :typeSelect" colSpan="6"/>
-			<field name="callTypeSelect"  showIf="typeSelect == 1" colSpan="6"/>
 			<field name="prioritySelect" showIf="typeSelect == 3" colSpan="6"/>
 		</panel>
 		
 		<panel sidebar="true" title="References" name="meetingLinkedPanel" canCollapse="true">
-			<field name="partner" canEdit="false" colSpan="6" onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange" form-view="partner-form" grid-view="partner-grid" />
-			<field name="contactPartner" canEdit="false" colSpan="6" hideIf="partner.partnerTypeSelect == 2" onChange="action-group-crm-meeting-contactpartner-onchange" onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-			<field name="lead" canEdit="false" colSpan="6" onChange="action-meeting-set-location-lead, action-event-method-add-guest" form-view="lead-form" grid-view="lead-grid"/>
 			<field name="campaign" canEdit="false" colSpan="6" form-view="campaign-form" grid-view="campaign-grid"/>
 			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 			<field name="relatedToSelectId" hidden="true" />
@@ -433,7 +458,6 @@
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
       <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
       <field name="typeSelect" expr="0" if="_typeSelect == null"/>
-    	<field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
     	<field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>
     	<field name="partner" expr="eval: _partner"/>
