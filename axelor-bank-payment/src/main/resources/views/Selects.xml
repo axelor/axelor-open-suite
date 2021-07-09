@@ -252,5 +252,11 @@
         <option value="0">Accounting auto</option>
         <option value="1">Reconciliation auto</option>
     </selection>
+    
+    <selection name="bank.payment.bank.statement.query.confidence.index.select">
+      <option value="1">Green</option>
+      <option value="2">Orange</option>
+      <option value="3">Red</option>
+    </selection>
 
 </object-views>

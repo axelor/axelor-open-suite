@@ -20,6 +20,7 @@
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2" onClick="action-bank-statement-method-print" />
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation" readonlyIf="statusSelect &lt; 2" onClick="action-bank-statement-method-run-bank-reconciliation" />
+      <button name="generateMovesFromBankStatement" title="Generate moves" onClick="action-bank-statement-method-generate-moves-from-bank-statement" />
     </toolbar>
 
     <panel name="bankStatementPanel" colSpan="12" readonlyIf="statusSelect == 2">
@@ -54,14 +55,12 @@
     <panel-dashlet name="moveLinePanel" action="action-bank-statement-view-move-lines" canAttach="false" />
   </form>
 
+  <!-- ACTION VIEW -->
+
   <action-view name="account-bank-statement-view-bank-statement-lines" title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLine">
     <view type="grid" name="bank-statement-line-grid" />
     <view type="form" name="bank-statement-line-form" />
   </action-view>
-
-  <action-method name="action-bank-statement-method-run-import">
-    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runImport" />
-  </action-method>
 
   <action-view name="action-bank-statement-view-bank-statement-lines" title="Bank statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLine">
     <view type="grid" name="bank-statement-line-bank-statement-grid" />
@@ -91,6 +90,12 @@
     <context name="_id" expr="eval: id" />
   </action-view>
 
+  <!-- ACTION METHOD -->
+
+  <action-method name="action-bank-statement-method-run-import">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runImport" />
+  </action-method>
+
   <action-method name="action-bank-statement-method-print">
     <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="print" />
   </action-method>
@@ -98,6 +103,12 @@
   <action-method name="action-bank-statement-method-run-bank-reconciliation">
     <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runBankReconciliation" />
   </action-method>
+
+  <action-method name="action-bank-statement-method-generate-moves-from-bank-statement">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="generateMovesFromBankStatement" />
+  </action-method>
+  
+  <!-- SEARCH FILTERS -->
 
   <search-filters name="bank-statement-filters" model="com.axelor.apps.bankpayment.db.BankStatement" title="Bank Statement filters">
     <field name="ebicsPartner.ebicsBank" hidden="true" if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule" />

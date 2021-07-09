@@ -226,14 +226,14 @@
 
   <menuitem title="Bank statement rules" name="account-bank-statement-rule" parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.rule" />
 
-  <action-view name="account.bank.statement.rule" title="Bank statement rules" model="com.axelor.apps.account.db.BankStatementRule">
+  <action-view name="account.bank.statement.rule" title="Bank statement rules" model="com.axelor.apps.bankpayment.db.BankStatementRule">
     <view type="grid" name="bank-statement-rule-grid" />
     <view type="form" name="bank-statement-rule-form" />
   </action-view>
   
   <menuitem title="Bank statement queries" name="account-bank-statement-query" parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.query" />
 
-  <action-view name="account.bank.statement.query" title="Bank statement queries" model="com.axelor.apps.account.db.BankStatementQuery">
+  <action-view name="account.bank.statement.query" title="Bank statement queries" model="com.axelor.apps.bankpayment.db.BankStatementQuery">
     <view type="grid" name="bank-statement-query-grid" />
     <view type="form" name="bank-statement-query-form" />
   </action-view>
