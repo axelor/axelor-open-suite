@@ -12,13 +12,13 @@
   </grid>
 
   <form name="configurator-product-formula-form" title="Calculated fields on configurator"
-    model="com.axelor.apps.sale.db.ConfiguratorProductFormula" onLoad="action-configurator-product-formula-attr-display-meta-json-field">
+    model="com.axelor.apps.sale.db.ConfiguratorProductFormula" onLoad="action-configurator-formula-attr-display-meta-json-field">
     <panel-tabs>
       <panel name="editorPanel" title="Editor" itemSpan="12">
         <panel name="mainPanel">
-          <field name="metaField" onChange="action-configurator-product-formula-attr-display-meta-json-field" title="Product meta field"
+          <field name="metaField" onChange="action-configurator-formula-attr-display-meta-json-field" title="Product meta field"
             domain="self.metaModel.name = 'Product' AND self.name != 'configurator'"/>
-          <field name="metaJsonField" hidden="true" title="Custom field"/>
+          <field name="metaJsonField" hidden="true" title="Custom field" onSelect="action-configurator-product-formula-attr-on-select-meta-json-field"/>
           <field name="formula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
           <field name="showOnConfigurator" readonlyIf="metaField.relationship == 'OneToMany'"/>
       <field name="metaField.relationship" hidden="true"/>
@@ -33,10 +33,8 @@
     </panel-tabs>
   </form>
   
-  <action-attrs name="action-configurator-product-formula-attr-display-meta-json-field">
-  	<attribute name="hidden" for="metaJsonField" expr="eval:__this__?.metaField.json == false" if="eval:__this__?.metaField != null"/>
-  	<attribute name="value" for="metaJsonField" expr="eval:null" if="eval:__this__?.metaField == null || __this__?.metaField.json == false"/>
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot; self.model = 'com.axelor.apps.base.db.Product' AND self.modelField = '${metaField?.name}' &quot;" if="eval:__this__?.metaField != null"/>
+  <action-attrs name="action-configurator-product-formula-attr-on-select-meta-json-field">
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot; self.type NOT IN ('panel', 'button', 'label', 'spacer', 'separator') AND self.model = 'com.axelor.apps.base.db.Product' AND self.modelField = '${metaField?.name}' &quot;"/>
   </action-attrs>
 
 </object-views>
