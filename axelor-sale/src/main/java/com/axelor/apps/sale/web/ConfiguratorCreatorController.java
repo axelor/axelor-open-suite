@@ -19,11 +19,13 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
-import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorIEService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -68,8 +70,7 @@ public class ConfiguratorCreatorController {
   public void importConfiguratorCreators(ActionRequest request, ActionResponse response) {
     try {
       String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
-      String importLog =
-          Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
+      String importLog = Beans.get(ConfiguratorIEService.class).importXMLToConfigurators(pathDiff);
       response.setValue("importLog", importLog);
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -95,7 +96,20 @@ public class ConfiguratorCreatorController {
       List<ConfiguratorCreator> ccList =
           ids.stream().map(id -> ccRepository.find(id.longValue())).collect(Collectors.toList());
 
-      Beans.get(ConfiguratorIEService.class).exportConfiguratorsToXML(ccList);
+      MetaFile dataFile = Beans.get(ConfiguratorIEService.class).exportConfiguratorsToXML(ccList);
+
+      if (dataFile != null) {
+        response.setView(
+            ActionView.define(I18n.get("Data"))
+                .add(
+                    "html",
+                    "ws/rest/com.axelor.meta.db.MetaFile/"
+                        + dataFile.getId()
+                        + "/content/download?v="
+                        + dataFile.getVersion())
+                .param("download", "true")
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

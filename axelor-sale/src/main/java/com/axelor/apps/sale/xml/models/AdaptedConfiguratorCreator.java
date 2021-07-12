@@ -5,6 +5,9 @@ import com.axelor.apps.base.xml.adapters.UserXmlAdapter;
 import com.axelor.apps.base.xml.models.ExportedModel;
 import com.axelor.apps.sale.db.ConfiguratorProductFormula;
 import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
+import com.axelor.apps.sale.xml.adapters.ConfiguratorProductFormulaXmlAdapter;
+import com.axelor.apps.sale.xml.adapters.ConfiguratorSOLineFormulaXmlAdapter;
+import com.axelor.apps.sale.xml.adapters.MetaJsonFieldXmlAdapter;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaJsonField;
@@ -15,22 +18,28 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "configurator-creator")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ExportedConfiguratorCreator extends ExportedModel {
+public class AdaptedConfiguratorCreator extends ExportedModel {
 
   private String name;
-  
+
   @XmlElement(name = "attribute")
   @XmlElementWrapper(name = "attributes")
+  @XmlJavaTypeAdapter(value = MetaJsonFieldXmlAdapter.class)
   private List<MetaJsonField> attributes;
 
-  @XmlTransient private List<ConfiguratorProductFormula> configuratorProductFormulaList;
+  @XmlElement(name = "configuratorProductFormula")
+  @XmlElementWrapper(name = "configuratorProductFormulaList")
+  @XmlJavaTypeAdapter(value = ConfiguratorProductFormulaXmlAdapter.class)
+  private List<ConfiguratorProductFormula> configuratorProductFormulaList;
 
-  @XmlTransient private List<ConfiguratorSOLineFormula> configuratorSOLineFormulaList;
+  @XmlElement(name = "configuratorSOLineFormula")
+  @XmlElementWrapper(name = "configuratorProductFormulaList")
+  @XmlJavaTypeAdapter(value = ConfiguratorSOLineFormulaXmlAdapter.class)
+  private List<ConfiguratorSOLineFormula> configuratorSOLineFormulaList;
 
   @XmlElement(name = "authorizedUser")
   @XmlElementWrapper(name = "authorizedUserSet")

@@ -73,8 +73,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
-import com.axelor.apps.sale.xml.mappers.ExportedConfiguratorCreatorMapper;
-import com.axelor.apps.sale.xml.mappers.ExportedConfiguratorCreatorMapperImpl;
 
 public class SaleModule extends AxelorModule {
 
@@ -109,6 +107,5 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
     bind(ConfiguratorCreatorRepository.class).to(ConfiguratorCreatorSaleRepository.class);
     bind(ConfiguratorIEService.class).to(ConfiguratorIEServiceImpl.class);
-    bind(ExportedConfiguratorCreatorMapper.class).to(ExportedConfiguratorCreatorMapperImpl.class);
   }
 }
