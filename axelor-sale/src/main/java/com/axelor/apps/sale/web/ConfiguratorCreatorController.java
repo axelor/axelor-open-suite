@@ -21,13 +21,16 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorIEService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +82,20 @@ public class ConfiguratorCreatorController {
       creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
       Beans.get(ConfiguratorCreatorService.class).updateAttributes(creator);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void exportConfiguratorCreator(ActionRequest request, ActionResponse response) {
+
+    try {
+      List<Integer> ids = (List<Integer>) request.getContext().get("_ids");
+      ConfiguratorCreatorRepository ccRepository = Beans.get(ConfiguratorCreatorRepository.class);
+      List<ConfiguratorCreator> ccList =
+          ids.stream().map(id -> ccRepository.find(id.longValue())).collect(Collectors.toList());
+
+      Beans.get(ConfiguratorIEService.class).exportConfiguratorsToXML(ccList);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

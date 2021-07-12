@@ -53,6 +53,8 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorIEService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorIEServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
@@ -71,6 +73,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
+import com.axelor.apps.sale.xml.mappers.ExportedConfiguratorCreatorMapper;
+import com.axelor.apps.sale.xml.mappers.ExportedConfiguratorCreatorMapperImpl;
 
 public class SaleModule extends AxelorModule {
 
@@ -104,5 +108,7 @@ public class SaleModule extends AxelorModule {
     bind(ProductCategoryServiceImpl.class).to(ProductCategoryServiceSaleImpl.class);
     bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
     bind(ConfiguratorCreatorRepository.class).to(ConfiguratorCreatorSaleRepository.class);
+    bind(ConfiguratorIEService.class).to(ConfiguratorIEServiceImpl.class);
+    bind(ExportedConfiguratorCreatorMapper.class).to(ExportedConfiguratorCreatorMapperImpl.class);
   }
 }
