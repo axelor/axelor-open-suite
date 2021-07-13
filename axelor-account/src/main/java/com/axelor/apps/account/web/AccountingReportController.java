@@ -27,6 +27,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
+import com.axelor.exception.db.TraceBack;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -41,6 +42,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,6 +249,40 @@ public class AccountingReportController {
                   .param("download", "true")
                   .map());
         }
+      }
+      if (typeSelect == AccountingReportRepository.EXPORT_N4DS) {
+
+        // check mandatory datas
+        List<Long> traceBackIds =
+            accountingReportService.checkMandatoryDataForDas2Export(accountingReport);
+
+        if (!CollectionUtils.isEmpty(traceBackIds)) {
+          ActionViewBuilder actionViewBuilder =
+              ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANOMALIES));
+          actionViewBuilder.model(TraceBack.class.getName());
+          actionViewBuilder.add("grid", "trace-back-lite-grid");
+          actionViewBuilder.add("form", "trace-back-form");
+          actionViewBuilder.domain("self.id in (" + Joiner.on(",").join(traceBackIds) + ")");
+
+          response.setView(actionViewBuilder.map());
+
+        } else {
+          // If all controls ok, export file
+          MetaFile accesssFile = accountingReportService.launchN4DSExport(accountingReport);
+
+          response.setView(
+              ActionView.define(I18n.get("Export file"))
+                  .model(App.class.getName())
+                  .add(
+                      "html",
+                      "ws/rest/com.axelor.meta.db.MetaFile/"
+                          + accesssFile.getId()
+                          + "/content/download?v="
+                          + accesssFile.getVersion())
+                  .param("download", "true")
+                  .map());
+        }
+
       } else {
         accountingReportService.setPublicationDateTime(accountingReport);
 

@@ -160,6 +160,42 @@ public interface IExceptionMessage {
       "%s : Error : You must configure an analytic report sequence for the company %s" /*)*/;
   static final String ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND = /*$$(*/
       "Report type not found" /*)*/;
+  static final String ACCOUNTING_REPORT_ANOMALIES = /*$$(*/ "Anomalies generated" /*)*/;
+  
+  static final String ACCOUNTING_REPORT_DAS2_ACTIVE_NORM = /*$$(*/
+  "DAS2 active norm is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_MISSING = /*$$(*/
+      "DAS2 contact partner is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING = /*$$(*/
+      "DAS2 contact partner : first name is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING = /*$$(*/
+      "DAS2 contact partner : title is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING = /*$$(*/
+      "DAS2 contact partner : email is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_PHONE_MISSING = /*$$(*/
+      "DAS2 contact partner : phone is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE = /*$$(*/
+      "DAS2 contact partner : title must be of type M. or MS." /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_REGISTRATION_CODE = /*$$(*/
+      "DAS2 declarant company %s : Registration code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF = /*$$(*/
+      "DAS2 declarant company %s : Activity code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS = /*$$(*/
+	   "DAS2 declarant company %s : Address is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_MOVE_LINE_PARTNER_MISSING = /*$$(*/
+      "Partner is missing on the move %s" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING = /*$$(*/
+      "DAS2 declared partner %s %s : title is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE = /*$$(*/
+      "DAS2 declared partner %s %s : title must be of type M. or MS." /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE = /*$$(*/
+      "DAS2 declared partner %s %s : Registration code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS = /*$$(*/
+      "DAS2 declared partner %s %s : address is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE = /*$$(*/
+      "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_YEAR_MISSING = /*$$(*/
+	  "DAS2 accounting export : Fiscal year or closure date of fiscal year are missing" /*)*/;
 
   /** Move line service */
   static final String MOVE_LINE_1 = /*$$(*/ "Partner is missing on the invoice %s" /*)*/;

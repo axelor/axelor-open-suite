@@ -17,11 +17,15 @@
  */
 package com.axelor.apps.account.service;
 
+import java.math.BigInteger;
+import java.util.List;
+
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
-import java.math.BigInteger;
-import java.util.List;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 
 public interface AccountingReportMoveLineService {
 
@@ -33,4 +37,15 @@ public interface AccountingReportMoveLineService {
 
   public void processExportMoveLine(
       AccountingReportMoveLine reportMoveLine, AccountingReport accountingExport);
+
+  public List<Partner> getDasToDeclarePartnersFromAccountingExport(
+      AccountingReport accountingExport) throws AxelorException;
+  
+  public MetaFile generateN4DSFile(AccountingReport accountingExport,String fileName) throws AxelorException;
+
+  public List<AccountingReportMoveLine> getDasToDeclareLinesFromAccountingExport(AccountingReport accountingExport);
+  
+  public List<String> generateN4DSLines(AccountingReport accountingExport) throws AxelorException;
+  
+  public List<List> getN4DSDeclaredPartnersData(AccountingReport accountingExport);
 }

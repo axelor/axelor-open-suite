@@ -27,7 +27,9 @@
         
         <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
         
+        <!-- DAS2 - N4DS -->
         <many-to-one name="defaultServiceTypeTypology" ref="com.axelor.apps.account.db.ServiceType" title="Default service type" />
+        <string name="dasActiveNorm" title="Current version of N4DS standard"/>
         
 		<extra-code><![CDATA[
 	

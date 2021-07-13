@@ -16,6 +16,9 @@
 				<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 			</panel>
+			<panel name="accountingExportPanel" title="Accounting exports">
+			    <field name="dasActiveNorm"/>
+			</panel>
             <field name="partnerBalConfigSelect"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">

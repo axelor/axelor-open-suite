@@ -17,6 +17,22 @@
  */
 package com.axelor.apps.account.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.Query;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -39,6 +55,8 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -47,22 +65,15 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.persistence.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AccountingReportServiceImpl implements AccountingReportService {
 
@@ -70,7 +81,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected AccountingReportRepository accountingReportRepo;
 
-  protected AppBaseService appBaseService;
+  protected AppAccountService appBaseService;
+
+  protected AccountConfigService accountConfigService;
 
   protected AccountingReportMoveLineService accountingReportMoveLineService;
 
@@ -80,17 +93,21 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected List<Object> params = new ArrayList<>();
   protected int paramNumber = 1;
+  
+  protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
   @Inject
   public AccountingReportServiceImpl(
       AppAccountService appBaseService,
       AccountingReportRepository accountingReportRepo,
       AccountRepository accountRepo,
-      AccountingReportMoveLineService accountingReportMoveLineService) {
+      AccountingReportMoveLineService accountingReportMoveLineService,
+      AccountConfigService accountConfigService) {
     this.accountingReportRepo = accountingReportRepo;
     this.accountRepo = accountRepo;
     this.appBaseService = appBaseService;
     this.accountingReportMoveLineService = accountingReportMoveLineService;
+    this.accountConfigService = accountConfigService;
   }
 
   private Boolean compareReportType(AccountingReport accountingReport, int type) {
@@ -892,6 +909,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   }
 
   @Transactional
+  @Override
   public AccountingReport createAccountingExportFromReport(
       AccountingReport accountingReport, int exportTypeSelect) throws AxelorException {
 
@@ -910,6 +928,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           I18n.get(IExceptionMessage.ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND));
     }
     accountingExport.setReportType(reportType);
+    accountingExport.setExportTypeSelect(ReportSettings.FORMAT_PDF);
     accountingExport.setCompany(accountingReport.getCompany());
     accountingExport.setYear(accountingReport.getYear());
     accountingExport.setDateFrom(accountingReport.getDateFrom());
@@ -922,5 +941,223 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     setStatus(accountingExport);
     return accountingExport;
+  }
+
+  @Override
+  public List<Long> checkMandatoryDataForDas2Export(AccountingReport accountingExport)
+      throws AxelorException {
+
+    if (!checkDasToDeclarePartners(accountingExport)) {
+      return null;
+    }
+    checkDasContactPartner(accountingExport);
+
+    checkDasDeclarantCompany(accountingExport);
+
+    return Beans.get(TraceBackRepository.class).all()
+        .filter("self.refId = ?1", accountingExport.getId()).select("id").fetch(0, 0).stream()
+        .map(m -> (Long) m.get("id"))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public void checkDasContactPartner(AccountingReport accountingExport) throws AxelorException {
+
+    AccountConfig accountConfig =
+        accountConfigService.getAccountConfig(accountingExport.getCompany());
+    Partner partner = accountConfig.getDasContactPartner();
+    if (partner == null) {
+      TraceBackService.trace(
+          new AxelorException(
+              accountingExport,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_MISSING)),
+              ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+    } else {
+      if (partner.getTitleSelect() == null) {
+        TraceBackService.trace(
+            new AxelorException(
+                accountingExport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING)),
+                ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+      }
+      if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
+          && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
+        TraceBackService.trace(
+            new AxelorException(
+                accountingExport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE)),
+                ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+      }
+      if (partner.getFirstName() == null) {
+        TraceBackService.trace(
+            new AxelorException(
+                accountingExport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING)),
+                ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+      }
+      if (partner.getEmailAddress() == null) {
+        TraceBackService.trace(
+            new AxelorException(
+                accountingExport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING)),
+                ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+      }
+      if (Strings.isNullOrEmpty(partner.getFixedPhone()) && Strings.isNullOrEmpty(partner.getMobilePhone()) ) {
+        TraceBackService.trace(
+            new AxelorException(
+                accountingExport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING)),
+                ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+      }
+    }
+  }
+
+  @Override
+  public void checkDasDeclarantCompany(AccountingReport accountingExport) {
+
+    Partner companyPartner = accountingExport.getCompany().getPartner();
+    
+    if (Strings.isNullOrEmpty(appBaseService.getAppAccount().getDasActiveNorm())) {
+    	TraceBackService.trace(
+    	          new AxelorException(
+    	              accountingExport,
+    	              TraceBackRepository.CATEGORY_MISSING_FIELD,
+    	              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_ACTIVE_NORM)),
+    	              ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+    }
+    if (accountingExport.getYear() == null || accountingExport.getYear().getClosureDateTime() == null) {
+    	TraceBackService.trace(
+  	          new AxelorException(
+  	              accountingExport,
+  	              TraceBackRepository.CATEGORY_MISSING_FIELD,
+  	              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_YEAR_MISSING)),
+  	              ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+    }
+
+    if (Strings.isNullOrEmpty(companyPartner.getRegistrationCode())) {
+      TraceBackService.trace(
+          new AxelorException(
+              accountingExport,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_REGISTRATION_CODE),
+              accountingExport.getCompany().getName()),
+              ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+    }
+    if (Strings.isNullOrEmpty(companyPartner.getMainActivityCode())) {
+      TraceBackService.trace(
+          new AxelorException(
+              accountingExport,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF),
+              accountingExport.getCompany().getName()),
+              ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+    }
+    
+    if (companyPartner.getMainAddress() == null) {
+    	TraceBackService.trace(
+    	          new AxelorException(
+    	              accountingExport,
+    	              TraceBackRepository.CATEGORY_MISSING_FIELD,
+    	              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS),
+    	              accountingExport.getCompany().getName()),
+    	              ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+    }
+  }
+
+  @Override
+  @Transactional
+  public boolean checkDasToDeclarePartners(AccountingReport accountingExport)
+      throws AxelorException {
+
+    List<Partner> partners =
+        accountingReportMoveLineService.getDasToDeclarePartnersFromAccountingExport(
+            accountingExport);
+
+    if (CollectionUtils.isEmpty(partners)) {
+      return false;
+    }
+
+    for (Partner partner : partners) {
+      checkDasToDeclarePartner(partner, accountingExport);
+    }
+    return true;
+  }
+
+  @Override
+  @Transactional
+  public void checkDasToDeclarePartner(Partner partner, AccountingReport accountingExport)
+      throws AxelorException {
+
+    if (partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY) {
+      if (partner.getMainAddress() == null) {
+        TraceBackService.trace(
+            new AxelorException(
+                accountingExport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS),
+                partner.getPartnerSeq(),
+                partner.getSimpleFullName()),
+                ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+      } else if (!partner.getMainAddress().getAddressL7Country().getAlpha2Code().equals("FR")) {
+        throw new AxelorException(
+            accountingExport,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE),
+            partner.getPartnerSeq(),
+            partner.getSimpleFullName());
+      } else {
+        if (Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+          TraceBackService.trace(
+              new AxelorException(
+                  accountingExport,
+                  TraceBackRepository.CATEGORY_MISSING_FIELD,
+                  I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE),
+                  partner.getPartnerSeq(),
+                  partner.getSimpleFullName()),
+                  ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+        }
+      }
+    } else {
+      if (partner.getTitleSelect() == null) {
+        TraceBackService.trace(
+            new AxelorException(
+                accountingExport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING),
+                partner.getPartnerSeq(),
+                partner.getSimpleFullName()),
+                ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+      }
+      if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
+          && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
+        TraceBackService.trace(
+            new AxelorException(
+                accountingExport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE),
+                partner.getPartnerSeq(),
+                partner.getSimpleFullName()),
+                ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
+      }
+    }
+  }
+  
+  public MetaFile launchN4DSExport(AccountingReport accountingExport) throws AxelorException{
+	  
+	  String fileName =
+		        "N4ds_"
+			        + accountingExport.getCompany().getCode() 
+			        + "_"
+		            + appBaseService.getTodayDateTime()
+		                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
+		            + ".txt";
+	  
+	  return accountingReportMoveLineService.generateN4DSFile(accountingExport,fileName);
   }
 }
