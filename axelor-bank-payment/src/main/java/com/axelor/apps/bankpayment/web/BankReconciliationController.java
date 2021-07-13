@@ -74,7 +74,7 @@ public class BankReconciliationController {
     Context context = request.getContext();
     BankReconciliation br = context.asType(BankReconciliation.class);
     BankReconciliationLine bankReconciliationLine;
-    List<MoveLine> moveLines = moveLineRepository.all().filter("self.move.journal = :journal AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconcileAmount < self.credit))").bind("cashAccount", br.getCashAccount()).bind("statusSelect", MoveRepository.STATUS_CANCELED).bind("journal", br.getJournal()).fetch();
+    List<MoveLine> moveLines = moveLineRepository.all().filter("self.isSelectedBankReconciliation AND self.move.journal = :journal AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconcileAmount < self.credit))").bind("cashAccount", br.getCashAccount()).bind("statusSelect", MoveRepository.STATUS_CANCELED).bind("journal", br.getJournal()).fetch();
     if(br.getBankReconciliationLineList().stream().filter(line -> line.isSelected()).count() == 0 || moveLines.size() == 0)
     {
     	if(br.getBankReconciliationLineList().stream().filter(line -> line.isSelected()).count() == 0 && moveLines.size() == 0)
