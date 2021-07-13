@@ -1288,4 +1288,11 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
     return moveLine;
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
+    moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    return moveLineRepository.save(moveLine);
+  }
 }

@@ -43,6 +43,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
@@ -52,9 +53,12 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.velocity.app.event.ReferenceInsertionEventHandler.referenceInsertExecutor;
+
 public class BankStatementService {
 
-  protected BankStatementRepository bankStatementRepository;
+  private static final int DESCRIPTION_SIZE_LIMIT = 235;
+protected BankStatementRepository bankStatementRepository;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
   protected MoveLineRepository moveLineRepository;
@@ -228,8 +232,7 @@ public class BankStatementService {
           try {
             moveService.getMoveValidateService().validate(move);
           } catch (AxelorException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            TraceBackService.trace(e);
           }
           break;
         }
@@ -299,7 +302,11 @@ public class BankStatementService {
     }
 
     moveLine.setOrigin(bankStatementLine.getOrigin());
-    moveLine.setDescription(bankStatementLine.getDescription());
+    String description = bankStatementLine.getDescription();
+    if(description.length() > DESCRIPTION_SIZE_LIMIT)
+    	description = description.substring(0,DESCRIPTION_SIZE_LIMIT-1);
+    description = description.concat("ref:").concat(bankStatementLine.getReference());
+    moveLine.setDescription(description);
 
     return moveLine;
   }

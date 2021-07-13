@@ -26,6 +26,8 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.persist.Transactional;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -49,9 +51,9 @@ public class BankReconciliationLineService {
     bankReconciliationLine.setBankStatementLine(bankStatementLine);
     bankReconciliationLine.setIsPosted(false);
     if (debit.compareTo(BigDecimal.ZERO) == 0) {
-    	bankReconciliationLine.setTypeSelect(BankReconciliationLineRepository.TYPE_SELECT_CUSTOMER);
+      bankReconciliationLine.setTypeSelect(BankReconciliationLineRepository.TYPE_SELECT_CUSTOMER);
     } else {
-    	bankReconciliationLine.setTypeSelect(BankReconciliationLineRepository.TYPE_SELECT_SUPPLIER);
+      bankReconciliationLine.setTypeSelect(BankReconciliationLineRepository.TYPE_SELECT_SUPPLIER);
     }
     if (ObjectUtils.notEmpty(moveLine)) {
       bankReconciliationLine.setMoveLine(moveLine);
@@ -111,4 +113,12 @@ public class BankReconciliationLineService {
               : "");
     }
   }
+
+  @Transactional
+public BankReconciliationLine setMoveLine(BankReconciliationLine bankReconciliationLine, MoveLine moveLine) {
+	moveLine.setIsSelectedBankReconciliation(false);
+	bankReconciliationLine.setMoveLine(moveLine);
+	return bankReconciliationLine;
+}
+
 }

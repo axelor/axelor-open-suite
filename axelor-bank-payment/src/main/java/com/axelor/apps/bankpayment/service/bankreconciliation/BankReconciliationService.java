@@ -20,21 +20,31 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
+import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,22 +53,29 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BankReconciliationService {
 
   protected BankReconciliationRepository bankReconciliationRepository;
   protected AccountService accountService;
   protected AccountManagementRepository accountManagementRepository;
+  protected BankStatementQueryRepository bankStatementQueryRepository;
+  protected MoveLineRepository moveLineRepository;
 
   @Inject
   public BankReconciliationService(
       BankReconciliationRepository bankReconciliationRepository,
       AccountService accountService,
-      AccountManagementRepository accountManagementRepository) {
+      AccountManagementRepository accountManagementRepository,
+      BankStatementQueryRepository bankStatementQueryRepository,
+      MoveLineRepository moveLineRepository) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
     this.accountManagementRepository = accountManagementRepository;
+    this.bankStatementQueryRepository = bankStatementQueryRepository;
+    this.moveLineRepository = moveLineRepository;
   }
 
   @Transactional
@@ -231,5 +248,47 @@ public class BankReconciliationService {
       cashAccount = Beans.get(AccountRepository.class).find(Long.parseLong(cashAccountIds));
     }
     return cashAccount;
+  }
+
+  public void reconciliateAccordingToQueries(BankReconciliation bankReconciliation) {
+    List<BankStatementQuery> bankStatementQueries =
+        bankStatementQueryRepository
+            .findByRuleType(BankStatementRuleRepository.RULE_TYPE_RECONCILIATION_AUTO)
+            .fetch();
+    List<BankReconciliationLine> bankReconciliationLines =
+        bankReconciliation.getBankReconciliationLineList();
+    List<MoveLine> moveLines =
+        moveLineRepository
+            .all()
+            .filter(
+                "self.move.journal.id = :journal AND self.account = :cashAccount AND self.move.statusSelect != :statusSelect AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
+            .bind("statusSelect", MoveRepository.STATUS_CANCELED)
+            .bind("journal", bankReconciliation.getJournal())
+            .bind("cashAccount", bankReconciliation.getCashAccount())
+            .fetch();
+    bankReconciliationLines =
+        bankReconciliationLines.stream()
+            .filter(line -> line.getMoveLine() == null)
+            .collect(Collectors.toList());
+    Context scriptContext;
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+      for (BankStatementQuery query : bankStatementQueries) {
+        for (MoveLine moveLine : moveLines) {
+          bankReconciliationLine.setMoveLine(moveLine);
+          scriptContext =
+              new Context(
+                  Mapper.toMap(bankReconciliationLine), BankStatementLineAFB120.class.getClass());
+          if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query.getQuery()))) {
+            bankReconciliationLine.setBankStatementQuery(query);
+            bankReconciliationLine.setConfidenceIndex(query.getConfidenceIndex());
+            moveLines.remove(moveLine);
+            break;
+          } else {
+            bankReconciliationLine.setMoveLine(null);
+          }
+        }
+        if (bankReconciliationLine.getMoveLine() != null) break;
+      }
+    }
   }
 }

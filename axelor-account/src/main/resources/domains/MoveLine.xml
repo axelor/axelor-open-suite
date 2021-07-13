@@ -63,6 +63,8 @@
     
     <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
+    
+    <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
       
     <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
     <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine" ref="com.axelor.apps.account.db.TaxPaymentMoveLine"/>
