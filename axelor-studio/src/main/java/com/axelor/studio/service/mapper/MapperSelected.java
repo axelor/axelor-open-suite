@@ -17,6 +17,9 @@
  */
 package com.axelor.studio.service.mapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MapperSelected {
 
   private String value = null;
