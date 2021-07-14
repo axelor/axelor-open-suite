@@ -41,6 +41,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -52,6 +53,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.mail.MessagingException;
@@ -101,7 +103,9 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       String addressBlock,
       int mediaTypeSelect,
       EmailAccount emailAccount,
-      String signature) {
+      String signature,
+      String relatedTo2Select,
+      long relatedTo2SelectId) {
 
     emailAccount =
         emailAccount != null
@@ -113,8 +117,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             fromEmailAddress,
             model,
             id,
-            null,
-            0,
+            relatedTo2Select,
+            relatedTo2SelectId,
             false,
             MessageRepository.STATUS_DRAFT,
             subject,
@@ -151,7 +155,9 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount,
       String signature,
-      Boolean isForTemporaryMessage) {
+      Boolean isForTemporaryMessage,
+      String relatedTo2Select,
+      long relatedTo2SelectId) {
 
     if (!isForTemporaryMessage) {
       return createMessage(
@@ -168,7 +174,9 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
           addressBlock,
           mediaTypeSelect,
           emailAccount,
-          signature);
+          signature,
+          relatedTo2Select,
+          relatedTo2SelectId);
     }
 
     emailAccount =
@@ -181,8 +189,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             fromEmailAddress,
             model,
             id,
-            null,
-            0,
+            relatedTo2Select,
+            relatedTo2SelectId,
             false,
             MessageRepository.STATUS_DRAFT,
             subject,
@@ -568,4 +576,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   public String getFullEmailAddress(EmailAddress emailAddress) {
     return emailAddress.getAddress();
   }
+
+  @Override
+  public void fillContext(
+      ActionViewBuilder builder, Map<String, Object> contextMap, String model, Long objectId) {}
 }

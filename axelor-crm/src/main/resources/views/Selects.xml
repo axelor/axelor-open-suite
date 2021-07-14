@@ -62,13 +62,6 @@
 		<option value="15">Reported</option>
 	</selection>
 	
-	<selection name="crm.event.type.select">
-		<option value="1" icon="fa-phone" color="green">Inbound call</option>
-		<option value="2" icon="fa-phone" color="red">Outbound call</option>
-		<option value="3" icon="fa-handshake-o" color="orange">Meeting</option>
-		<option value="4" icon="fa-calendar" color="blue">Appointment</option>
-	</selection>
-	
 	<selection name="crm.event.attendee.status.select">
 		<option value="1">Non-participant</option>
 		<option value="2">Optional participant</option>

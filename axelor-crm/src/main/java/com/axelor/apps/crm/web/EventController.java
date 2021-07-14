@@ -214,17 +214,6 @@ public class EventController {
     response.setReload(true);
   }
 
-  public void manageFollowers(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-      Event event = request.getContext().asType(Event.class);
-      event = Beans.get(EventRepository.class).find(event.getId());
-      Beans.get(EventService.class).manageFollowers(event);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   public void generateRecurrentEvents(ActionRequest request, ActionResponse response)
       throws AxelorException {
