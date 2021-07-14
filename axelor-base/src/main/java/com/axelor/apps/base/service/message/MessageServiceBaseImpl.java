@@ -98,7 +98,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
       String addressBlock,
       int mediaTypeSelect,
       EmailAccount emailAccount,
-      String signature) {
+      String signature,
+      String relatedTo2Select,
+      long relatedTo2SelectId) {
 
     Message message =
         super.createMessage(
@@ -115,7 +117,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
             addressBlock,
             mediaTypeSelect,
             emailAccount,
-            signature);
+            signature,
+            relatedTo2Select,
+            relatedTo2SelectId);
 
     message.setSenderUser(AuthUtils.getUser());
     message.setCompany(userService.getUserActiveCompany());

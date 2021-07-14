@@ -36,16 +36,12 @@
         selection="crm.event.priority.select" default="2"/>
 
   	<many-to-one name="recurrenceConfiguration" ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
-  	<integer name="eventTypeSelect" title="Event type" selection="crm.event.type.select"/>
 	
   	<extra-code>
       	<![CDATA[
       		// TYPE SELECT
-      		public static final int TYPE_EVENT = 0;
-	  		public static final int TYPE_CALL = 1;
-	  		public static final int TYPE_MEETING = 2;
-	  		public static final int TYPE_TASK = 3;
-	  		
+      		public static final int TYPE_NOTE = 5;
+      		
 	  		// STATUS SELECT
 	  		public static final int STATUS_PLANNED = 1;
 	  		public static final int STATUS_REALIZED = 2;

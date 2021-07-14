@@ -31,8 +31,8 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.MultiRelated;
+import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -59,7 +59,7 @@ public class LeadServiceImpl implements LeadService {
 
   @Inject protected EventRepository eventRepo;
 
-  @Inject private MessageRepository messageRepository;
+  @Inject private MultiRelatedRepository multiRelatedRepository;
 
   /**
    * Convert lead into a partner
@@ -85,8 +85,8 @@ public class LeadServiceImpl implements LeadService {
       partner = partnerRepo.save(partner);
       lead.setPartner(partner);
 
-      List<Message> messages =
-          messageRepository
+      List<MultiRelated> multiRelateds =
+          multiRelatedRepository
               .all()
               .filter(
                   "self.relatedTo1Select = ?1 and self.relatedTo1SelectId = ?2",
@@ -94,12 +94,16 @@ public class LeadServiceImpl implements LeadService {
                   lead.getId())
               .fetch();
 
-      for (Message message : messages) {
-        message.setRelatedTo1Select(Partner.class.getName());
-        message.setRelatedTo1SelectId(partner.getId());
+      for (MultiRelated multiRelated : multiRelateds) {
+        multiRelated.setRelatedToSelect(Partner.class.getName());
+        multiRelated.setRelatedToSelectId(partner.getId());
+        multiRelatedRepository.save(multiRelated);
         if (contactPartner != null) {
-          message.setRelatedTo2Select(Partner.class.getName());
-          message.setRelatedTo2SelectId(contactPartner.getId());
+          MultiRelated contactMultiRelated = new MultiRelated();
+          contactMultiRelated.setRelatedToSelect(Partner.class.getName());
+          contactMultiRelated.setRelatedToSelectId(contactPartner.getId());
+          contactMultiRelated.setMessage(multiRelated.getMessage());
+          multiRelatedRepository.save(contactMultiRelated);
         }
       }
     }

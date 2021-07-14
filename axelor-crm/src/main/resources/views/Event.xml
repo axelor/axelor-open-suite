@@ -11,7 +11,6 @@
     	<field name="startDateTime"/>
     	<field name="partner" />
     	<field name="lead" />
-    	<field name="eventTypeSelect"/>
     	<field name="typeSelect"/>
     	<field name="subject"/>
         <field name="statusSelect" />
@@ -19,7 +18,6 @@
     </grid>
 
     <grid name="list-event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime"  x-row-height="80">
-    	<field name="eventTypeSelect"/>
 		<field name="typeSelect"/>
 		<field name="statusSelect" />
 		<field name="startDateTime"/>
@@ -47,7 +45,6 @@
     	<hilite color="danger" if="statusSelect == 3"/>
 		<field name="startDateTime"/>
 		<field name="subject"/>
-		<field name="eventTypeSelect"/>
 		<field name="typeSelect"/>
 		<field name="duration" widget="duration" x-big="true"/>
 	</grid>
@@ -59,7 +56,6 @@
     	<hilite color="danger" if="statusSelect == 3"/>
 		<field name="startDateTime"/>
 		<field name="subject"/>
-		<field name="eventTypeSelect"/>
 		<field name="typeSelect"/>
 		<field name="duration" widget="duration" x-big="true"/>
 		<field name="team" hidden="true"/>
@@ -72,7 +68,6 @@
     	<hilite color="danger" if="statusSelect == 3"/>
 		<field name="startDateTime"/>
 		<field name="subject"/>
-		<field name="eventTypeSelect"/>
 		<field name="typeSelect"/>
 		<field name="duration" widget="duration" x-big="true"/>
 		<field name="user" hidden="true"/>
@@ -116,26 +111,18 @@
 					</viewer>
 				</field>
 			</panel>
-			<field name="eventTypeSelect" showTitle="false" colSpan="3" widget="ImageSelect">
-				<viewer depends="eventTypeSelect"><![CDATA[
-					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventTypeSelect == 1"><i class="fa fa-phone fa-lg"></i><span>&nbsp;&nbsp;</span><span x-translate>Inbound call</span></span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventTypeSelect == 2"><i class="fa fa-phone fa-lg"></i><span>&nbsp;&nbsp;</span><span x-translate>Outbound call</span></span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventTypeSelect == 3"><i class="fa fa-handshake-o fa-lg"></i><span>&nbsp;&nbsp;</span><span x-translate>Meeting</span></span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventTypeSelect == 4"><i class="fa fa-calendar fa-lg"></i><span>&nbsp;&nbsp;</span><span x-translate>Appointment</span></span>
-				]]>
-				</viewer>
-			</field>
-			<field name="typeSelect" domain="self.value IN ('0','1','2','3','5')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
+			<field name="typeSelect" domain="self.value IN ('0','1','2','3','5','6')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
 	        	<viewer depends="typeSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 0" x-translate>Event</span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Call</span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Inbound call</span>
 	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
 	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Task</span>
 	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 5" x-translate>Note</span>
+	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 6" x-translate>Outbound call</span>
 	       		 ]]>
 	        	</viewer>
 	      	</field>
-			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 0" >
+			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]" showIf="typeSelect == 1 || typeSelect == 6 || typeSelect == 2 || typeSelect == 0" >
 	        	<viewer depends="statusSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
 	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
@@ -182,15 +169,17 @@
 				<field name="description" showTitle="false" widget="html" colSpan="12"/>
 			</panel>
 			<panel name="organizationPanel" title="Organization" hideIf="typeSelect == 5">
-				<field name="location" css="highlight"/>
-				<field name="geo" colSpan="5"/>
-				<button name="viewOnMapBtn" colSpan="1" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
-				<field name="organizer"/>
+				<field name="location" css="highlight" height="5px"/>
+				<panel name="mapPanel">
+					<field name="geo" colSpan="10"/>
+					<button name="viewOnMapBtn" colSpan="2" icon="fa-map-marker" onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
+					<field name="organizer" colSpan="12"/>
+				</panel>
+				
 			</panel>
 			<panel name="informationPanel" title="Information" hideIf="typeSelect == 5">
 				<field name="visibilitySelect" readonlyIf="calendar != null"/>
 				<field name="disponibilitySelect" readonlyIf="calendar != null"/>
-				<field name="status"/>
 				<field name="subjectTeam" hidden="true"/>
 				<field name="computedAttendeeList" hidden="true"/>
 			</panel>
@@ -251,9 +240,10 @@
 		  <div class="span8">
 		  	<div class="span4">
 				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 0" x-translate>Event</span>
-				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 1" x-translate>Call</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 1" x-translate>Inbound call</span>
 				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
 				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 3" x-translate>Task</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.typeSelect == 6" x-translate>Outbound call</span>
 				
 				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
          		<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
@@ -359,8 +349,6 @@
 		<action name="action-event-record-compute-attendee-list"/>
 		<action name="action-event-record-subjectTeam"/>
 		<action name="action-event-view-modifications-recurrence" if="recurrenceConfiguration &amp;&amp; id > 0"/>
-		<action name="save"/>
-		<action name="action-event-method-manage-followers"/>
 		<action name="action-event-attrs-show-past-event-text"/>
 	</action-group>
 	
@@ -483,7 +471,7 @@
     </action-record>
 
     <action-record name="action-event-default-record-user" model="com.axelor.apps.crm.db.Event">
-    	<field name="user" expr="eval:__user__" if="typeSelect == 1 || typeSelect == 2 || typeSelect == 3"/>
+    	<field name="user" expr="eval:__user__" if="typeSelect == 1 || typeSelect == 6 || typeSelect == 2 || typeSelect == 3"/>
    		<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>
 
