@@ -49,7 +49,6 @@
 			</menu>
 			<menu name="leadToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
 			  <item name="scheduleEventItem" title="Schedule Event" action="save,action-lead-view-schedule-event"/>
-			  <item name="createOpportunityItem" title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
 			  <item name="sendEmailItem" title="Send email" readonlyIf="statusSelect == 3" action="save,action-send-by-email-with-template"/>
 			</menu>
 		</menubar>
@@ -195,6 +194,7 @@
 			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid" canNew="true"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="estimatedBudget" colSpan="6"/>
+			<button name="createOpportunityBtn" title="Create opportunity" onClick="save,action-lead-view-create-opportunity" colSpan="6"/>
 		</panel>
  		
  		<panel-mail name="mailPanel">
@@ -332,6 +332,8 @@
     
     <action-view name="action-lead-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
+    	<view-param name="popup" value="true"/>
+    	<view-param name="show-toolbar" value="false"/>
     	<context name="_lead" expr="eval: __self__"/>
     </action-view>
     

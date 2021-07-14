@@ -114,7 +114,8 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
           continue;
         }
         Message message =
-            templateMessageService.generateMessage(employee.getId(), model, tag, template);
+            templateMessageService.generateMessage(
+                employee.getId(), model, tag, template, null, 0L);
         messageService.sendByEmail(message);
         incrementDone();
       } catch (Exception e) {
@@ -168,7 +169,8 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
       }
       try {
         Message message =
-            templateMessageService.generateMessage(employee.getId(), model, tag, template);
+            templateMessageService.generateMessage(
+                employee.getId(), model, tag, template, null, 0L);
         messageService.sendByEmail(message);
         incrementDone();
       } catch (Exception e) {
