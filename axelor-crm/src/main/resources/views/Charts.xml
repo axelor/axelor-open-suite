@@ -428,7 +428,7 @@
                     meta_select AS _selection
                 JOIN
                     meta_select_item AS _item
-                    ON _selection.name = 'crm.event.type.select'
+                    ON _selection.name = 'icalendar.event.type.select'
                     AND _item.select_id = _selection.id
                 LEFT JOIN
                     meta_translation ON _item.select_id = _selection.id
@@ -441,9 +441,9 @@
                     _item.value, message_value, message_key
                 ) AS _meta
             ON
-                _meta._select_value = _event.event_type_select
+                _meta._select_value = _event.type_select
             WHERE
-                _event.type_select = 1 AND
+                (_event.type_select = 1 OR _event.type_select = 6) AND
                 _event.start_date_time BETWEEN (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC') AND (cast(:toDateT as TIMESTAMP) AT TIME ZONE 'UTC')
             GROUP BY
                 _user_name, _event_type
@@ -478,7 +478,7 @@
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
-						ON _selection.name = 'crm.event.type.select'
+						ON _selection.name = 'icalendar.event.type.select'
 						AND _item.select_id = _selection.id
                     LEFT JOIN
                         meta_translation ON _item.select_id = _selection.id
@@ -491,9 +491,9 @@
                         _item.value, message_value, message_key
 					) AS _meta
 				ON
-					_meta._select_value = _event.event_type_select	
+					_meta._select_value = _event.type_select	
 				WHERE
-        			_event.type_select = 1 AND
+        			(_event.type_select = 1 OR _event.type_select = 6) AND
         			_event.start_date_time BETWEEN (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC') AND (cast(:toDateT as TIMESTAMP) AT TIME ZONE 'UTC')
 				GROUP BY
 					_user_name, _event_type
@@ -528,7 +528,7 @@
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
-						ON _selection.name = 'crm.event.type.select'
+						ON _selection.name = 'icalendar.event.type.select'
 						AND _item.select_id = _selection.id
 					LEFT JOIN
                         meta_translation ON _item.select_id = _selection.id
@@ -541,9 +541,9 @@
                         _item.value, message_value, message_key
 					) AS _meta
 				ON
-					_meta._select_value = _event.event_type_select
+					_meta._select_value = _event.type_select
 				WHERE
-        			_event.type_select = 1 AND
+        			(_event.type_select = 1 OR _event.type_select = 6) AND
         			_event.start_date_time BETWEEN (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC') AND (cast(:toDateT as TIMESTAMP) AT TIME ZONE 'UTC')
 				GROUP BY
 					_team_name, _event_type
@@ -578,7 +578,7 @@
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
-						ON _selection.name = 'crm.event.type.select'
+						ON _selection.name = 'icalendar.event.type.select'
 						AND _item.select_id = _selection.id
                     LEFT JOIN
                         meta_translation ON _item.select_id = _selection.id
@@ -591,9 +591,9 @@
                         _item.value, message_value, message_key
 					) AS _meta
 				ON
-					_meta._select_value = _event.event_type_select
+					_meta._select_value = _event.type_select
 				WHERE
-        			_event.type_select = 1 AND
+        			(_event.type_select = 1 OR _event.type_select = 6) AND
         			_event.start_date_time BETWEEN (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC') AND (cast(:toDateT as TIMESTAMP) AT TIME ZONE 'UTC')
 				GROUP BY
 					_team_name, _event_type
@@ -629,7 +629,7 @@
 						meta_select AS _selection		
 					JOIN
 						meta_select_item AS _item
-						ON _selection.name = 'crm.event.type.select'
+						ON _selection.name = 'icalendar.event.type.select'
 						AND _item.select_id = _selection.id
 					LEFT JOIN
                         meta_translation ON _item.select_id = _selection.id
@@ -642,10 +642,10 @@
                         _item.value, message_value, message_key
 					) AS _meta
 				ON
-					_meta._select_value = _event.event_type_select    
+					_meta._select_value = _event.type_select    
 			    
 			    WHERE
-			      _event.type_select = 1 AND
+			      (_event.type_select = 1 OR _event.type_select = 6) AND
 			      _event.team = :activeTeam AND
 			      _event.start_date_time >= (cast(:fromDateT as TIMESTAMP) AT TIME ZONE 'UTC')
 			    GROUP BY        
@@ -670,7 +670,7 @@
 	Event self,    
 	User salesMan
 	WHERE
-	self.typeSelect = 1 AND
+	(self.typeSelect = 1 OR self.typeSelect = 6) AND
 	self.user = salesMan AND
 	self.team = :activeTeam AND
 	DATE(self.startDateTime) = DATE(:toDateT)
@@ -1531,7 +1531,7 @@
 		           ical_event as _event 
 		             ON _event.type_select=cast(selection_item.value as int) AND _event.contact_partner=:id  
 		      WHERE 
-		            selection.name = 'crm.event.type.select'
+		            selection.name = 'icalendar.event.type.select'
 		      GROUP BY
 		            _type
 		  </dataset>
