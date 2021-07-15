@@ -9,7 +9,7 @@
 	<entity name="AnalyticAxisByCompany" lang="java">
 
 		<string name="fullName" title="Full name" required="true"
-					namecolumn="true" search="code,name">
+					namecolumn="true" search="code,name" max="550">
 		<![CDATA[
 		return orderSelect+ "_" + accountConfig.getCompany().getCode() + " - " + analyticAxis.getCode();
 		]]>
