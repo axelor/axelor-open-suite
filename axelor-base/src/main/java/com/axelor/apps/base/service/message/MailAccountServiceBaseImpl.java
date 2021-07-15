@@ -54,9 +54,13 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
       String query = "self.isDefault = true";
       Map<String, Object> params = new HashMap<>();
 
-      if (appBaseService.getAppBase().getEmailAccountByUser() && mailAccount.getUser() != null) {
-        query += " AND self.user = :user";
-        params.put("user", mailAccount.getUser());
+      if (appBaseService.getAppBase().getEmailAccountByUser()) {
+        if (mailAccount.getUser() != null) {
+          query += " AND self.user = :user";
+          params.put("user", mailAccount.getUser());
+        } else {
+          query += " AND self.user IS NULL";
+        }
       }
 
       if (mailAccount.getId() != null) {
@@ -64,10 +68,13 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
         params.put("mailAccountId", mailAccount.getId());
       }
 
-      if (appBaseService.getAppBase().getEmailAccountByCompany()
-          && mailAccount.getCompany() != null) {
-        query += " AND self.company = :company";
-        params.put("company", mailAccount.getCompany());
+      if (appBaseService.getAppBase().getEmailAccountByCompany()) {
+        if (mailAccount.getCompany() != null) {
+          query += " AND self.company = :company";
+          params.put("company", mailAccount.getCompany());
+        } else {
+          query += " AND self.company IS NULL";
+        }
       }
 
       Integer serverTypeSelect = mailAccount.getServerTypeSelect();
