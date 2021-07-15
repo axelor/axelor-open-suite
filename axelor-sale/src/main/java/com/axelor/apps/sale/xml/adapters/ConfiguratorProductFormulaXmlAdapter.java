@@ -1,23 +1,16 @@
 package com.axelor.apps.sale.xml.adapters;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 import com.axelor.apps.sale.db.ConfiguratorProductFormula;
 import com.axelor.apps.sale.xml.models.AdaptedConfiguratorProductFormula;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.google.inject.Inject;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ConfiguratorProductFormulaXmlAdapter
     extends XmlAdapter<AdaptedConfiguratorProductFormula, ConfiguratorProductFormula> {
 
-  private MetaFieldRepository metaFieldRepository;
-  
   public ConfiguratorProductFormulaXmlAdapter() {}
-  
-  @Inject
-  public ConfiguratorProductFormulaXmlAdapter(MetaFieldRepository metaFieldRepository) {
-
-    this.metaFieldRepository = metaFieldRepository;
-  }
 
   @Override
   public AdaptedConfiguratorProductFormula marshal(
@@ -29,8 +22,11 @@ public class ConfiguratorProductFormulaXmlAdapter
         configuratorProductFormula.getMetaField().getName());
     adaptedConfiguratorProductFormula.setShowOnConfigurator(
         configuratorProductFormula.getShowOnConfigurator());
-    adaptedConfiguratorProductFormula.setConfiguratorCreatorImportId(
-        configuratorProductFormula.getProductCreator().getId());
+    if (configuratorProductFormula.getProductCreator() != null) {
+        adaptedConfiguratorProductFormula.setConfiguratorCreatorImportId(
+                configuratorProductFormula.getProductCreator().getId());
+    }
+
     return adaptedConfiguratorProductFormula;
   }
 
@@ -40,10 +36,10 @@ public class ConfiguratorProductFormulaXmlAdapter
     ConfiguratorProductFormula configuratorProductFormula = new ConfiguratorProductFormula();
     configuratorProductFormula.setFormula(adaptedConfiguratorProductFormula.getFormula());
     configuratorProductFormula.setMetaField(
-        metaFieldRepository.findByName(adaptedConfiguratorProductFormula.getMetaFieldName()));
+        Beans.get(MetaFieldRepository.class)
+            .findByName(adaptedConfiguratorProductFormula.getMetaFieldName()));
     configuratorProductFormula.setShowOnConfigurator(
         adaptedConfiguratorProductFormula.getShowOnConfigurator());
-    configuratorProductFormula.setImportId(adaptedConfiguratorProductFormula.getId().toString());
     return configuratorProductFormula;
   }
 }

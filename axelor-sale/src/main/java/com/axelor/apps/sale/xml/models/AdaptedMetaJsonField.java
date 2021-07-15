@@ -1,8 +1,9 @@
 package com.axelor.apps.sale.xml.models;
 
-import com.axelor.apps.base.xml.models.ExportedModel;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import com.axelor.apps.base.xml.models.ExportedModel;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdaptedMetaJsonField extends ExportedModel {
@@ -19,7 +20,7 @@ public class AdaptedMetaJsonField extends ExportedModel {
 
   private String modelField;
 
-  private String jsonModel;
+  private String jsonModelCode;
 
   private String selection;
 
@@ -139,12 +140,12 @@ public class AdaptedMetaJsonField extends ExportedModel {
     this.modelField = modelField;
   }
 
-  public String getJsonModel() {
-    return jsonModel;
+  public String getJsonModelCode() {
+    return jsonModelCode;
   }
 
-  public void setJsonModel(String jsonModel) {
-    this.jsonModel = jsonModel;
+  public void setJsonModelCode(String jsonModelCode) {
+    this.jsonModelCode = jsonModelCode;
   }
 
   public String getSelection() {

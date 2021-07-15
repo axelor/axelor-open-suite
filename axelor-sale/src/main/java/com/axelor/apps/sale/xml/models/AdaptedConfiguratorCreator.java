@@ -1,8 +1,19 @@
 package com.axelor.apps.sale.xml.models;
 
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import com.axelor.apps.base.xml.adapters.GroupXmlAdapter;
 import com.axelor.apps.base.xml.adapters.UserXmlAdapter;
 import com.axelor.apps.base.xml.models.ExportedModel;
+import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorProductFormula;
 import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
 import com.axelor.apps.sale.xml.adapters.ConfiguratorProductFormulaXmlAdapter;
@@ -11,14 +22,6 @@ import com.axelor.apps.sale.xml.adapters.MetaJsonFieldXmlAdapter;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaJsonField;
-import java.util.List;
-import java.util.Set;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "configurator-creator")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -37,7 +40,7 @@ public class AdaptedConfiguratorCreator extends ExportedModel {
   private List<ConfiguratorProductFormula> configuratorProductFormulaList;
 
   @XmlElement(name = "configuratorSOLineFormula")
-  @XmlElementWrapper(name = "configuratorProductFormulaList")
+  @XmlElementWrapper(name = "configuratorSOLineFormulaList")
   @XmlJavaTypeAdapter(value = ConfiguratorSOLineFormulaXmlAdapter.class)
   private List<ConfiguratorSOLineFormula> configuratorSOLineFormulaList;
 
@@ -60,6 +63,43 @@ public class AdaptedConfiguratorCreator extends ExportedModel {
   private Boolean copyNeedingUpdate = Boolean.FALSE;
 
   private String attrs;
+
+  public AdaptedConfiguratorCreator() {}
+
+  public AdaptedConfiguratorCreator(ConfiguratorCreator configuratorCreator) {
+    this.setImportId(configuratorCreator.getId());
+    this.setName(configuratorCreator.getName());
+    this.setAttributes(configuratorCreator.getAttributes());
+    this.setConfiguratorProductFormulaList(configuratorCreator.getConfiguratorProductFormulaList());
+    this.setConfiguratorSOLineFormulaList(configuratorCreator.getConfiguratorSOLineFormulaList());
+    this.setAuthorizedUserSet(configuratorCreator.getAuthorizedUserSet());
+    this.setAuthorizedGroupSet(configuratorCreator.getAuthorizedGroupSet());
+    this.setGenerateProduct(configuratorCreator.getGenerateProduct());
+    this.setQtyFormula(configuratorCreator.getQtyFormula());
+    this.setIsActive(configuratorCreator.getIsActive());
+    this.setCopyNeedingUpdate(configuratorCreator.getCopyNeedingUpdate());
+    this.setAttrs(configuratorCreator.getAttrs());
+  }
+  
+  public ConfiguratorCreator toConfiguratorCreator() {
+	  ConfiguratorCreator configuratorCreator = new ConfiguratorCreator();
+
+	    configuratorCreator.setImportId(this.getImportId().toString());
+	    configuratorCreator.setName(this.getName());
+	    configuratorCreator.setAttributes(this.getAttributes());
+	    configuratorCreator.setConfiguratorProductFormulaList(
+	        this.getConfiguratorProductFormulaList());
+	    configuratorCreator.setConfiguratorSOLineFormulaList(
+	        this.getConfiguratorSOLineFormulaList());
+	    configuratorCreator.setAuthorizedUserSet(this.getAuthorizedUserSet());
+	    configuratorCreator.setAuthorizedGroupSet(this.getAuthorizedGroupSet());
+	    configuratorCreator.setGenerateProduct(this.getGenerateProduct());
+	    configuratorCreator.setQtyFormula(this.getQtyFormula());
+	    configuratorCreator.setIsActive(this.getIsActive());
+	    configuratorCreator.setCopyNeedingUpdate(this.getCopyNeedingUpdate());
+	    configuratorCreator.setAttrs(this.getAttrs());
+	    return configuratorCreator; 
+  }
 
   public String getName() {
     return name;
@@ -150,4 +190,6 @@ public class AdaptedConfiguratorCreator extends ExportedModel {
   public void setAttrs(String attrs) {
     this.attrs = attrs;
   }
+
+  
 }

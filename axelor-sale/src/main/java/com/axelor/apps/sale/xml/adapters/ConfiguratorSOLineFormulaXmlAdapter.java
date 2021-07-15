@@ -1,22 +1,16 @@
 package com.axelor.apps.sale.xml.adapters;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
 import com.axelor.apps.sale.xml.models.AdaptedConfiguratorSOLineFormula;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.google.inject.Inject;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ConfiguratorSOLineFormulaXmlAdapter
     extends XmlAdapter<AdaptedConfiguratorSOLineFormula, ConfiguratorSOLineFormula> {
 
-  private MetaFieldRepository metaFieldRepository;
-  
   public ConfiguratorSOLineFormulaXmlAdapter() {}
-  @Inject
-  public ConfiguratorSOLineFormulaXmlAdapter(MetaFieldRepository metaFieldRepository) {
-
-    this.metaFieldRepository = metaFieldRepository;
-  }
 
   @Override
   public AdaptedConfiguratorSOLineFormula marshal(
@@ -24,14 +18,19 @@ public class ConfiguratorSOLineFormulaXmlAdapter
     AdaptedConfiguratorSOLineFormula adaptedConfiguratorSOLineFormula =
         new AdaptedConfiguratorSOLineFormula();
     adaptedConfiguratorSOLineFormula.setFormula(configuratorSOLineFormula.getFormula());
-    adaptedConfiguratorSOLineFormula.setMetaFieldName(
-        configuratorSOLineFormula.getMetaField().getName());
+    if (configuratorSOLineFormula.getMetaField() != null ) {
+        adaptedConfiguratorSOLineFormula.setMetaFieldName(
+                configuratorSOLineFormula.getMetaField().getName());
+    }
     adaptedConfiguratorSOLineFormula.setShowOnConfigurator(
         configuratorSOLineFormula.getShowOnConfigurator());
     adaptedConfiguratorSOLineFormula.setUpdateFromSelect(
         configuratorSOLineFormula.getUpdateFromSelect());
-    adaptedConfiguratorSOLineFormula.setConfiguratorCreatorImportId(
-        configuratorSOLineFormula.getSoLineCreator().getId());
+    if (configuratorSOLineFormula.getSoLineCreator() != null) {
+    	adaptedConfiguratorSOLineFormula.setConfiguratorCreatorImportId(
+    	        configuratorSOLineFormula.getSoLineCreator().getId());
+    }
+
     return adaptedConfiguratorSOLineFormula;
   }
 
@@ -39,16 +38,16 @@ public class ConfiguratorSOLineFormulaXmlAdapter
   public ConfiguratorSOLineFormula unmarshal(
       AdaptedConfiguratorSOLineFormula adaptedConfiguratorSOLineFormula) throws Exception {
 
-    ConfiguratorSOLineFormula configuratorSOLineForumla = new ConfiguratorSOLineFormula();
-    configuratorSOLineForumla.setFormula(adaptedConfiguratorSOLineFormula.getFormula());
-    configuratorSOLineForumla.setMetaField(
-        metaFieldRepository.findByName(adaptedConfiguratorSOLineFormula.getMetaFieldName()));
-    configuratorSOLineForumla.setShowOnConfigurator(
+    ConfiguratorSOLineFormula configuratorSOLineFormula = new ConfiguratorSOLineFormula();
+    configuratorSOLineFormula.setFormula(adaptedConfiguratorSOLineFormula.getFormula());
+    configuratorSOLineFormula.setMetaField(
+        Beans.get(MetaFieldRepository.class)
+            .findByName(adaptedConfiguratorSOLineFormula.getMetaFieldName()));
+    configuratorSOLineFormula.setShowOnConfigurator(
         adaptedConfiguratorSOLineFormula.getShowOnConfigurator());
-    configuratorSOLineForumla.setImportId(adaptedConfiguratorSOLineFormula.getId().toString());
-    configuratorSOLineForumla.setUpdateFromSelect(
+    configuratorSOLineFormula.setUpdateFromSelect(
         adaptedConfiguratorSOLineFormula.getUpdateFromSelect());
 
-    return configuratorSOLineForumla;
+    return configuratorSOLineFormula;
   }
 }

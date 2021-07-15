@@ -10,8 +10,9 @@ public class ConfiguratorFormulaXmlAdapter
     extends XmlAdapter<AdaptedConfiguratorFormula, ConfiguratorFormula> {
 
   private MetaFieldRepository metaFieldRepository;
-  
+
   public ConfiguratorFormulaXmlAdapter() {}
+
   @Inject
   public ConfiguratorFormulaXmlAdapter(MetaFieldRepository metaFieldRepository) {
 

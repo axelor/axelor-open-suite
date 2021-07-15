@@ -1,68 +1,73 @@
 package com.axelor.apps.sale.xml.adapters;
 
-import com.axelor.apps.sale.xml.models.AdaptedMetaJsonField;
-import com.axelor.meta.db.MetaJsonField;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+import com.axelor.apps.sale.xml.models.AdaptedMetaJsonField;
+import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 
 public class MetaJsonFieldXmlAdapter extends XmlAdapter<AdaptedMetaJsonField, MetaJsonField> {
 
   @Override
-  public AdaptedMetaJsonField marshal(MetaJsonField m) throws Exception {
-    AdaptedMetaJsonField em = new AdaptedMetaJsonField();
+  public AdaptedMetaJsonField marshal(MetaJsonField metaJsonField) throws Exception {
+    AdaptedMetaJsonField adaptedMetaJsonField = new AdaptedMetaJsonField();
 
-    em.setId(m.getId());
-    em.setName(m.getName());
-    em.setTitle(m.getTitle());
-    em.setType(m.getType());
-    em.setDefaultValue(m.getDefaultValue());
-    em.setModel(m.getModel());
-    em.setModelField(m.getModelField());
-    // TODO: MetaJsonModel
-    em.setSelection(m.getSelection());
-    em.setWidget(m.getWidget());
-    em.setHelp(m.getHelp());
-    em.setShowIf(m.getShowIf());
-    em.setHideIf(m.getHideIf());
-    em.setRequiredIf(m.getRequiredIf());
-    em.setIncludeIf(m.getIncludeIf());
-    em.setContextField(m.getContextField());
-    em.setContextFieldTarget(m.getContextFieldTarget());
-    em.setContextFieldTargetName(m.getContextFieldTargetName());
-    em.setContextFieldValue(m.getContextFieldValue());
-    em.setContextFieldTitle(m.getContextFieldTitle());
-    em.setHidden(m.getHidden());
-    em.setRequired(m.getRequired());
-    em.setReadonly(m.getReadonly());
-    em.setNameField(m.getNameField());
-    em.setVisibleInGrid(m.getVisibleInGrid());
-    em.setMinSize(m.getMinSize());
-    em.setMaxSize(m.getMaxSize());
-    em.setPrecision(m.getPrecision());
-    em.setScale(m.getScale());
-    em.setSequence(m.getSequence());
-    em.setColumnSequence(m.getColumnSequence());
-    em.setRegex(m.getRegex());
-    em.setValueExpr(m.getValueExpr());
-    em.setTargetModel(m.getTargetModel());
-    em.setEnumType(m.getEnumType());
-    em.setFormView(m.getFormView());
-    em.setGridView(m.getGridView());
-    em.setDomain(m.getDomain());
+    adaptedMetaJsonField.setName(metaJsonField.getName());
+    adaptedMetaJsonField.setTitle(metaJsonField.getTitle());
+    adaptedMetaJsonField.setType(metaJsonField.getType());
+    adaptedMetaJsonField.setDefaultValue(metaJsonField.getDefaultValue());
+    adaptedMetaJsonField.setModel(metaJsonField.getModel());
+    adaptedMetaJsonField.setModelField(metaJsonField.getModelField());
+    if (metaJsonField.getJsonModel() != null) {
+    	adaptedMetaJsonField.setJsonModelCode(metaJsonField.getJsonModel().getName());
+    }
+    
+    adaptedMetaJsonField.setSelection(metaJsonField.getSelection());
+    adaptedMetaJsonField.setWidget(metaJsonField.getWidget());
+    adaptedMetaJsonField.setHelp(metaJsonField.getHelp());
+    adaptedMetaJsonField.setShowIf(metaJsonField.getShowIf());
+    adaptedMetaJsonField.setHideIf(metaJsonField.getHideIf());
+    adaptedMetaJsonField.setRequiredIf(metaJsonField.getRequiredIf());
+    adaptedMetaJsonField.setIncludeIf(metaJsonField.getIncludeIf());
+    adaptedMetaJsonField.setContextField(metaJsonField.getContextField());
+    adaptedMetaJsonField.setContextFieldTarget(metaJsonField.getContextFieldTarget());
+    adaptedMetaJsonField.setContextFieldTargetName(metaJsonField.getContextFieldTargetName());
+    adaptedMetaJsonField.setContextFieldValue(metaJsonField.getContextFieldValue());
+    adaptedMetaJsonField.setContextFieldTitle(metaJsonField.getContextFieldTitle());
+    adaptedMetaJsonField.setHidden(metaJsonField.getHidden());
+    adaptedMetaJsonField.setRequired(metaJsonField.getRequired());
+    adaptedMetaJsonField.setReadonly(metaJsonField.getReadonly());
+    adaptedMetaJsonField.setNameField(metaJsonField.getNameField());
+    adaptedMetaJsonField.setVisibleInGrid(metaJsonField.getVisibleInGrid());
+    adaptedMetaJsonField.setMinSize(metaJsonField.getMinSize());
+    adaptedMetaJsonField.setMaxSize(metaJsonField.getMaxSize());
+    adaptedMetaJsonField.setPrecision(metaJsonField.getPrecision());
+    adaptedMetaJsonField.setScale(metaJsonField.getScale());
+    adaptedMetaJsonField.setSequence(metaJsonField.getSequence());
+    adaptedMetaJsonField.setColumnSequence(metaJsonField.getColumnSequence());
+    adaptedMetaJsonField.setRegex(metaJsonField.getRegex());
+    adaptedMetaJsonField.setValueExpr(metaJsonField.getValueExpr());
+    adaptedMetaJsonField.setTargetModel(metaJsonField.getTargetModel());
+    adaptedMetaJsonField.setEnumType(metaJsonField.getEnumType());
+    adaptedMetaJsonField.setFormView(metaJsonField.getFormView());
+    adaptedMetaJsonField.setGridView(metaJsonField.getGridView());
+    adaptedMetaJsonField.setDomain(metaJsonField.getDomain());
 
-    return em;
+    return adaptedMetaJsonField;
   }
 
   @Override
   public MetaJsonField unmarshal(AdaptedMetaJsonField adaptedMetaJsonField) throws Exception {
     MetaJsonField metaJsonField = new MetaJsonField();
-    metaJsonField.setId(adaptedMetaJsonField.getId());
+
     metaJsonField.setName(adaptedMetaJsonField.getName());
     metaJsonField.setTitle(adaptedMetaJsonField.getTitle());
     metaJsonField.setType(adaptedMetaJsonField.getType());
     metaJsonField.setDefaultValue(adaptedMetaJsonField.getDefaultValue());
     metaJsonField.setModel(adaptedMetaJsonField.getModel());
     metaJsonField.setModelField(adaptedMetaJsonField.getModelField());
-    // TODO: MetaJsonModel
+    metaJsonField.setJsonModel(Beans.get(MetaJsonModelRepository.class).findByName(adaptedMetaJsonField.getJsonModelCode()));
     metaJsonField.setSelection(adaptedMetaJsonField.getSelection());
     metaJsonField.setWidget(adaptedMetaJsonField.getWidget());
     metaJsonField.setHelp(adaptedMetaJsonField.getHelp());

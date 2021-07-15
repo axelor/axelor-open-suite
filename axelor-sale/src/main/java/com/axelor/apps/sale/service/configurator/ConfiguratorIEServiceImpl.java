@@ -1,5 +1,13 @@
 package com.axelor.apps.sale.service.configurator;
 
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.xml.bind.JAXBException;
+
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.export.xml.IEXmlService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -10,30 +18,24 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.xml.bind.JAXBException;
 
 public class ConfiguratorIEServiceImpl implements ConfiguratorIEService {
 
-  private static final String XML_NAME_TEMPLATE = "ConfiguratorCreatorExport-%s";
+  public static final String XML_NAME_TEMPLATE = "ConfiguratorCreatorExport-%s";
 
-  private IEXmlService ieXmlService;
+  protected IEXmlService ieXmlService;
 
-  private AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
 
-  private ConfiguratorCreatorRepository configuratorCreatorRepository;
+  protected ConfiguratorCreatorRepository configuratorCreatorRepository;
 
   @Inject
   public ConfiguratorIEServiceImpl(
-      IEXmlService exportXmlService,
+      IEXmlService ieXmlService,
       AppBaseService appBaseService,
       ConfiguratorCreatorRepository configuratorCreatorRepository) {
 
-    this.ieXmlService = exportXmlService;
+    this.ieXmlService = ieXmlService;
     this.appBaseService = appBaseService;
     this.configuratorCreatorRepository = configuratorCreatorRepository;
   }
@@ -67,9 +69,45 @@ public class ConfiguratorIEServiceImpl implements ConfiguratorIEService {
       ConfiguratorExport configuratorExport =
           ieXmlService.importXMLToModel(pathDiff, ConfiguratorExport.class);
       StringBuilder importLog = new StringBuilder();
-      AtomicInteger totalImport = new AtomicInteger(0);
-      configuratorExport.getConfiguratorsCreators().stream()
+      linkConfiguratorFormulaToCC(configuratorExport.getConfiguratorsCreators());
+      
+      int totalImport = saveConfiguratorCreators(configuratorExport.getConfiguratorsCreators(),importLog);
+      importLog.append(
+          "Total records: "
+              + configuratorExport.getConfiguratorsCreators().size()
+              + ", Total imported: "
+              + totalImport);
+      return importLog.toString();
+
+    } catch (Exception e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+  }
+
+  protected void linkConfiguratorFormulaToCC(List<ConfiguratorCreator> configuratorCreators) {
+	  configuratorCreators
           .forEach(
+              configuratorCreator -> {
+                configuratorCreator
+                    .getConfiguratorProductFormulaList()
+                    .forEach(
+                        productFormula -> {
+                          productFormula.setProductCreator(configuratorCreator);
+                        });
+                configuratorCreator
+                    .getConfiguratorSOLineFormulaList()
+                    .forEach(
+                        SOLineFormula -> {
+                          SOLineFormula.setSoLineCreator(configuratorCreator);
+                        });
+              });
+  }
+ 
+  protected int saveConfiguratorCreators(List<ConfiguratorCreator> configuratorsCreators, StringBuilder importLog) {
+	  
+	  AtomicInteger totalImport = new AtomicInteger(0);
+	  
+	  configuratorsCreators.forEach(
               configuratorCreator -> {
                 try {
                   configuratorCreatorRepository.save(configuratorCreator);
@@ -78,15 +116,7 @@ public class ConfiguratorIEServiceImpl implements ConfiguratorIEService {
                   importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
                 }
               });
-      importLog.append(
-          "Total records: "
-              + configuratorExport.getConfiguratorsCreators().size()
-              + ", Total imported: "
-              + totalImport.get());
-      return importLog.toString();
-
-    } catch (Exception e) {
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
-    }
+	  
+	  return totalImport.get();
   }
 }

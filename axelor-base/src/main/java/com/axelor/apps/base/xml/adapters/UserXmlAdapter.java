@@ -2,17 +2,12 @@ package com.axelor.apps.base.xml.adapters;
 
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class UserXmlAdapter extends XmlAdapter<String, User> {
 
-  private UserRepository userRepository;
   public UserXmlAdapter() {}
-  @Inject
-  public UserXmlAdapter(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
 
   @Override
   public String marshal(User user) throws Exception {
@@ -23,6 +18,6 @@ public class UserXmlAdapter extends XmlAdapter<String, User> {
   @Override
   public User unmarshal(String code) throws Exception {
 
-    return userRepository.findByCode(code);
+    return Beans.get(UserRepository.class).findByCode(code);
   }
 }

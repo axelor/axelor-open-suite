@@ -2,19 +2,17 @@ package com.axelor.apps.base.xml.models;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ExportedModel {
 
-  @XmlElement(name = "importId")
-  private Long id;
+  private Long importId;
 
-  public Long getId() {
-    return id;
+  public Long getImportId() {
+    return importId;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setImportId(Long id) {
+    this.importId = id;
   }
 }
