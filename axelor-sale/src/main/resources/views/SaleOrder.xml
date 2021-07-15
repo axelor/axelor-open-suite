@@ -400,11 +400,11 @@
 	    <panel-include if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder()" if-module="axelor-supplychain" view="incl-sale-order-subscrption-form"/>
 		<panel-dashlet if="__config__.app.isApp('supplychain')" name="generatedPurchaseOrderPanel" title="Generated purchase orders" action="action-sale-order-view-show-generated-po" hideIf="statusSelect &lt;= 2"/>
 		<panel name="eventPanel" title="Events">
-			<button name="scheduleEventBtn" title="saleOrder.scheduleEvent" onClick="action-sale-order-view-schedule-event" icon="fa-tasks"  hideIf="clientPartner == null"/>
+			<button name="scheduleEventBtn" title="saleOrder.scheduleEvent" onClick="save,action-sale-order-view-schedule-event" icon="fa-tasks"  hideIf="clientPartner == null" colSpan="3"/>
 			<panel-dashlet name="eventsPanelDashlet" action="action-sale-order-events-dashlet" title="Events" colSpan="12"/>
 		</panel>
 		<panel name="emailPanel" title="Emails">
-			<button onClick="save,action-send-by-email-with-template" name="sendEmailBtn" title="Send email" icon="fa-envelope" hideIf="clientPartner == null"/>
+			<button onClick="save,action-send-by-email-with-template" name="sendEmailBtn" title="Send email" icon="fa-envelope" hideIf="clientPartner == null" colSpan="3" />
 			<panel-dashlet name="emailPanelDashlet" action="action-sale-order-view-email-message-dashlet" title="Emails" colSpan="12"/>
 		</panel>
 	  </panel-tabs>
@@ -1480,12 +1480,14 @@
 	</action-view>
 
 	<action-view name="action-sale-order-events-dashlet" title="Events" model="com.axelor.apps.crm.db.Event">
+		<view type="cards" name="event-cards"/>
 		<view type="grid" name="list-event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder'  AND self.relatedToSelectId = :id</domain>
 	</action-view>
 
 	<action-view name="action-sale-order-view-email-message-dashlet" title="Emails" model="com.axelor.apps.message.db.Message">
+		<view type="cards" name="message-cards"/>
 		<view type="grid" name="message-grid" />
 		<view type="form" name="message-form" />
 		<domain>self.mediaTypeSelect = 2 AND ((self.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND self.relatedTo1SelectId = :id)
