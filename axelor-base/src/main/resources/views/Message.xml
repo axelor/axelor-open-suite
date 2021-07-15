@@ -68,7 +68,7 @@
     	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE"/>
     	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE AND self.company = :company" if="eval: __config__.app.getApp('base').getEmailAccountByCompany() &amp;&amp; company != null"/>
     	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE AND self.user = :__user__" if="eval: __config__.app.getApp('base').getEmailAccountByUser()"/>
-    	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE AND self.user = :__user__ AND self.company = :company" 
+    	<attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE AND (self.user IS NULL OR self.user = :__user__) AND (self.company IS NULL OR self.company = :company)" 
     		if="eval: __config__.app.getApp('base').getEmailAccountByUser() &amp;&amp; __config__.app.getApp('base').getEmailAccountByCompany() &amp;&amp; company != null"/>
     </action-attrs>
 	
