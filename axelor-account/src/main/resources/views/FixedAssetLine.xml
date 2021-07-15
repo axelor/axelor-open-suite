@@ -25,11 +25,28 @@
 	        	<field name="cumulativeDepreciation"/>
 	        	<field name="residualValue"/>
 	        	<field name="depreciationAccountMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
+	        	<field name="typeSelect"/>
+	        	<field name="depreciationBase"/>
 	        </panel>
 	        <panel name="actionsPanel" hideIf="statusSelect == 2">
 		    	<button name="realizeBtn" title="Realize" onClick="save,action-fixed-asset-line-method-realize"/>	
 		    </panel>
         </panel>
+        <panel-tabs name="mainPanelTab">
+    		<panel name="impairmentPanel" title="Impairment information">
+		    	<field name="correctedAccountingValue"/>
+	        	<field name="impairmentValue"/>
+	        	<field name="impairmentAccountMove"/>
+    		</panel>
+    		<panel name="fiscalPanel" title="Fiscal Information">
+    			<field name="depreciationAmount"/>
+    			<field name="fiscalDepreciationAmount"/>
+    			<field name="derogatoryAmount"/>
+    			<field name="incomeDepreciationAmount"/>
+    			<field name="derogatoryBalanceAmount"/>
+    			<field name="derogatoryDepreciationMove"/>
+    		</panel>
+        </panel-tabs>
     </form>
     
     <action-record name="action-fixed-asset-line-record-default" model="com.axelor.apps.account.db.FixedAssetLine">

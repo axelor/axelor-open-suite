@@ -27,6 +27,13 @@
         		<field name="journal" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
         		<field name="chargeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" form-view="account-form" grid-view="account-grid"/>
         		<field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
+        		<field name="expenseDepreciationDerogatoryAccount" form-view="account-form"/>
+        		<field name="capitalDepreciationDerogatoryAccount" form-view="account-form"/>
+        		<field name="incomeDepreciationDerogatoryAccount" form-view="account-form"/>
+        		<field name="realisedAssetsValueAccount" form-view="account-form"/>
+        		<field name="realisedAssetsIncomeAccount" form-view="account-form"/>
+        		<field name="debtReceivableAccount" form-view="account-form"/>
+        		<field name="provisionTangibleFixedAssetAccount" form-view="account-form"/>
         	</panel>
         	<panel name="periodicityPanel" title="Periodicity">
 	        	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>

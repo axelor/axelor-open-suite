@@ -457,4 +457,54 @@
 		<option value="reportedBalance">Reported balance</option>
 	</selection>
 
+	<selection name="account.fixed.asset.transfer.reason">
+		<option value="1">Scrapping</option>
+		<option value="2">Cession</option>
+		<option value="3">Partial cession</option>
+	</selection>
+
+	<selection name="account.fixed.asset.depreciation.plan">
+		<option value="1">Economic</option>
+		<option value="2">Fiscal</option>
+		<option value="3">Derogation</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.origin">
+		<option value="1">Manual</option>
+		<option value="2">Invoice</option>
+		<option value="3">Writing</option>
+		<option value="4">Scission</option>
+	</selection>
+	
+	<selection name="account.fixed.type.category.fiscal.computation.method.select">
+		<option value="linear">Linear</option>
+		<option value="degressive">Degressive</option>
+	</selection>
+	
+	
+	<selection name="account.fixed.asset.periodicity.type">
+		<option value="1">Month</option>
+		<option value="2">Year</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.fiscal.periodicity.type">
+		<option value="1">Month</option>
+		<option value="2">Year</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.line.type.select">
+		<option value="1">Economic</option>
+		<option value="2">Fiscal</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.disposal.type.select">
+		<option value="1">Scrapping</option>
+		<option value="2">Cession</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.disposal.quantity.select">
+		<option value="1">Total</option>
+		<option value="2">Partial</option>
+	</selection>
+
 </object-views>

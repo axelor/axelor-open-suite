@@ -31,6 +31,14 @@
 	
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="expenseDepreciationDerogatoryAccount" title="Expense Depreciation Derogatory Account"/>
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="capitalDepreciationDerogatoryAccount" title="Capital Depreciation Derogatory Account"/>
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="incomeDepreciationDerogatoryAccount" title="Income Depreciation Derogatory Account"/>
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="realisedAssetsValueAccount" title="Realised Assets Value Account"/>
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="realisedAssetsIncomeAccount" title="Realised Assets Income Account"/>
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="debtReceivableAccount" title="Debt Receivable Account"/>
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="provisionTangibleFixedAssetAccount" title="Provision Tangible Fixed Asset Account"/>
+
   </entity>
  
 </domain-models>

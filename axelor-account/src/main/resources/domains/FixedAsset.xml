@@ -41,6 +41,36 @@
 	<many-to-one name="disposalMove" ref="com.axelor.apps.account.db.Move" title="Disposal move"/>
 	
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+	
+	
+	<integer name="transferredReasonSelect" title="Transferred Reason" selection="account.fixed.asset.transfer.reason"/>
+	<string name="fixedAssetSeq" title="Fixed Asset Sequence"/>
+	<many-to-one ref="com.axelor.apps.account.db.Move" name="purchaseAccountMove" title="Purchase Account Move"/>
+	<integer name="depreciationPlanSelect" title="Depreciation Plan" selection="account.fixed.asset.depreciation.plan"/>
+	<integer name="originSelect" title="Origin" selection="account.fixed.asset.origin"/>
+	
+	<date name="firstServiceDate" title="First Service Date"/>
+	<date name="failoverDate" title="Failover Date"/>
+	<decimal name="pastDepreciation" title="Past Depreciation"/>
+	<decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+	<decimal name="accountingValue" title="Accounting Value"/>
+	<decimal name="correctedResidualValue" title="Corrected Residual Value"/>
+	
+	<boolean name="isEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
+	<integer name="periodicityTypeSelect" title="Periodicity Type" selection="account.fixed.asset.periodicity.type" default="12"/>
+	<string name="fiscalComputationMethodSelect" title="Fiscal Computation Method Select" selection="account.fixed.type.category.fiscal.computation.method.select"/>
+	<decimal name="fiscalDegressiveCoef" title="Fiscal Degressive Coef"/>
+	<integer name="fiscalNumberOfDepreciation" title="Fiscal Number Of Depreciation"/>
+	<integer name="fiscalPeriodicityTypeSelect" title="Fiscal Periodicity Type" selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
+	<integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month"/>
+	<integer name="fiscalDurationInMonth" title="Fiscal Duration In Month"/>
+	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"/>
+	<many-to-many ref="com.axelor.apps.account.db.FixedAsset" name="associatedFixedAssetsSet" title="Associated Fixed Assets Set"/>
+	<string name="comments" title="Comments"/>
+	<integer name="disposalTypeSelect" title="Disposal Type" selection="account.fixed.asset.disposal.type.select" default="1"/>
+	<integer name="disposalQtySelect" title="Disposal Quantity" selection="account.fixed.asset.disposal.quantity.select" default="1"/>
+	<integer name="disposalQty" title="Disposal Quantity"/>
+	
 	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT

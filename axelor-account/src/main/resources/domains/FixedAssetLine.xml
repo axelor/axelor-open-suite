@@ -15,6 +15,19 @@
   	<integer name="statusSelect" title="Status" selection="account.fixed.asset.line.status.select"/>
   	<many-to-one name="depreciationAccountMove" ref="com.axelor.apps.account.db.Move" title="Depreciation account move" readonly="true"/>
   	
+  	<integer name="typeSelect" title="Type" selection="account.fixed.asset.line.type.select" default="1"/>
+  	<decimal name="depreciationBase" title="Depreciation Base"/>
+  	<decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
+  	<decimal name="impairmentValue" title="Impairment Value"/>
+  	<many-to-one ref="com.axelor.apps.account.db.Move" name="impairmentAccountMove" title="Impairment Account Move"/>
+  	<decimal name="depreciationAmount" title="Depreciation Amount"/>
+  	<decimal name="fiscalDepreciationAmount" title="Fiscal Depreciation Amount"/>
+  	<decimal name="derogatoryAmount" title="Derogatory Amount"/>
+  	<decimal name="incomeDepreciationAmount" title="Income Depreciation Amount"/>
+  	<decimal name="derogatoryBalanceAmount" title="Derogatory Balance Amount"/>
+  	<many-to-one ref="com.axelor.apps.account.db.Move" name="derogatoryDepreciationMove" title="Derogatory Depreciation Move"/>
+
+  	
   	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
