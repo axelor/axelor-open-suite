@@ -44,6 +44,7 @@
     <many-to-one name="partnerReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Contact/Partner reminder template"/>
     <many-to-one name="leadReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Lead reminder template"/>
     <boolean name="isAllowEditingOfTargets" title="Allow the editing of the targets" default="true"/>
+    <string name="description" title="Description" large="true"/>
 
   </entity>
 

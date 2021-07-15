@@ -34,6 +34,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -340,43 +341,58 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public List<Long> findPartnerMails(Partner partner) {
+  public List<Long> findPartnerMails(Partner partner, int emailType) {
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
+    idList.addAll(this.findMailsFromPartner(partner, emailType));
+
+    if (partner.getIsContact()) {
+      return idList;
+    }
 
     Set<Partner> contactSet = partner.getContactPartnerSet();
     if (contactSet != null && !contactSet.isEmpty()) {
       for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact));
+        idList.addAll(this.findMailsFromPartner(contact, emailType));
       }
     }
     return idList;
   }
 
-  @Override
-  public List<Long> findContactMails(Partner partner) {
-    List<Long> idList = new ArrayList<Long>();
-
-    idList.addAll(this.findMailsFromPartner(partner));
-
-    return idList;
-  }
-
   @SuppressWarnings("unchecked")
   @Override
-  public List<Long> findMailsFromPartner(Partner partner) {
+  public List<Long> findMailsFromPartner(Partner partner, int emailType) {
     String query =
         "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "
-            + "(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "
+            + "((email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "
             + partner.getId()
             + ") "
             + "OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "
             + partner.getId()
-            + ")";
+            + "))";
 
     if (partner.getEmailAddress() != null) {
-      query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
+      if (emailType == MessageRepository.TYPE_RECEIVED) {
+        query =
+            query.substring(0, query.length() - 1)
+                + " OR (:emailAddress MEMBER OF email.toEmailAddressSet)) AND email.typeSelect = "
+                + emailType;
+
+        return JPA.em()
+            .createQuery(query)
+            .setParameter("emailAddress", partner.getEmailAddress())
+            .getResultList();
+
+      } else {
+        query =
+            query.substring(0, query.length() - 1)
+                + " OR (email.fromEmailAddress.id = "
+                + partner.getEmailAddress().getId()
+                + ")) AND email.typeSelect = "
+                + emailType;
+      }
+    } else {
+      query += " AND email.typeSelect = " + emailType;
     }
 
     return JPA.em().createQuery(query).getResultList();
