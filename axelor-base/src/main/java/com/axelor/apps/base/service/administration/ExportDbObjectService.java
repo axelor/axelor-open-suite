@@ -119,8 +119,6 @@ public class ExportDbObjectService {
       saxParserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
       SAXParser parser = saxParserFactory.newSAXParser();
-      parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 
       updateObjectMap(Arrays.asList(moduleDir.listFiles()), parser, new XmlHandler());
 
