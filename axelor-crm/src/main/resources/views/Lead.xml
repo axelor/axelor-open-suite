@@ -47,10 +47,6 @@
             <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
 			  <item name="printItem" title="Print" action="save,action-crm-lead-method-print"/>
 			</menu>
-			<menu name="leadToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-			  <item name="scheduleEventItem" title="Schedule Event" action="save,action-lead-view-schedule-event"/>
-			  <item name="sendEmailItem" title="Send email" readonlyIf="statusSelect == 3" action="save,action-send-by-email-with-template"/>
-			</menu>
 		</menubar>
 		<panel name="mainPanel" >
 			<panel name="statusPanel" colSpan="12">
@@ -157,20 +153,18 @@
 					<field name="primaryState" colSpan="6" form-view="region-form" grid-view="region-grid" canNew="true"/>
 					<field name="primaryCountry" colSpan="6" form-view="country-form" grid-view="country-grid"/>
 				</panel>
-
 				<panel name="descriptionPanel" title="Description" colSpan="12">
 					<field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
 				</panel>
 			</panel>
 
-			<panel name="activitiesPanel" title="Activities" itemSpan="12">
-				<panel-related name="opportunitiesListPanel" canNew="false" colSpan="12" field="opportunitiesList" form-view="opportunity-form" grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 3"/>
-				<panel-dashlet name="leadEmailsPanel" action="action-lead-view-emails"/>
-				<panel-dashlet name="leadMarketingCampaignPanel" if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns"/>
+			<panel-dashlet name="eventPanel" action="action-lead-view-events" title="Events" height="500"/>
+			<panel-dashlet name="opportunityPanel" title="Opportunity" action="action-lead-view-opportunities" height="500"/>
+			<panel name="emailPanel" title="Emails">
+				<panel-dashlet name="leadSentEmailsPanel" title="Sent emails" action="action-lead-view-sent-emails" colSpan="12" height="500"/>
+				<panel-dashlet name="leadReceivedEmailsPanel" title="Received emails" action="action-lead-view-received-emails" colSpan="12" height="500"/>
 			</panel>
-			<panel name="eventPanel" title="Events">
-				<panel-dashlet action="action-lead-view-events" title="Events" colSpan="12" height="1000"/>
-			</panel>
+			<panel-dashlet name="leadMarketingCampaignPanel" title="Marketing Campaign" if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns" colSpan="12" height="500"/>
 		</panel-tabs>
 
 		<panel name="actionsPanel" sidebar="true">
@@ -340,6 +334,8 @@
     <action-view name="action-lead-view-meeting-event" title="Meeting Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
     	<view type="grid" name="event-grid"/>
+    	<view-param name="popup" value="reload"/>
+    	<view-param name="show-toolbar" value="false" />
     	<context name="_lead" expr="eval: __this__"/>
     	<context name="_meeting" expr="eval: true"/>
     </action-view>
@@ -347,20 +343,25 @@
     <action-view name="action-lead-view-call-event" title="Call Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
     	<view type="grid" name="event-grid"/>
+    	<view-param name="popup" value="reload"/>
+    	<view-param name="show-toolbar" value="false" />
     	<context name="_lead" expr="eval: __this__"/>
     	<context name="_call" expr="eval: true"/>
     </action-view>
     
-    <action-view name="action-lead-view-note-event" title="Call Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <action-view name="action-lead-view-note-event" title="Note Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
     	<view type="grid" name="event-grid"/>
+    	<view-param name="popup" value="reload"/>
+    	<view-param name="show-toolbar" value="false" />
     	<context name="_lead" expr="eval: __this__"/>
     	<context name="_note" expr="eval: true"/>
     </action-view>
    	
 <!--    	PORTLET -->
 
-	<action-view name="action-lead-view-emails" title="Emails" model="com.axelor.apps.message.db.Message">
+	<action-view name="action-lead-view-sent-emails" title="Sent emails" model="com.axelor.apps.message.db.Message">
+		<view type="cards" name="message-cards"/>
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
 		<domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND 
@@ -368,11 +369,29 @@
 		<context name="id" expr="eval: id"/>
 		<context name="idEmail" expr="eval: emailAddress?.id"/>
 	</action-view>
+	
+	<action-view name="action-lead-view-received-emails" title="Received emails" model="com.axelor.apps.message.db.Message">
+		<view type="cards" name="message-cards"/>
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.mediaTypeSelect = 2 AND self.typeSelect = 1 AND ((self.relatedTo1Select = 'com.axelor.apps.crm.db.Lead' AND self.relatedTo1SelectId = :id)
+					OR (self.relatedTo2Select = 'com.axelor.apps.crm.db.Lead' AND self.relatedTo2SelectId = :id)
+					OR (:email MEMBER OF self.toEmailAddressSet))</domain>
+		<context name="id" expr="eval: id"/>
+		<context name="email" expr="eval: emailAddress"/>
+	</action-view>
 
 	<action-view name="action-lead-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
 		<view type="cards" name="event-cards"/>
 		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
+		<domain>self.lead.id = :_id</domain>
+	</action-view>
+	
+	<action-view name="action-lead-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+		<view type="cards" name="opportunity-cards"/>
+		<view type="grid" name="opportunity-dashlet-grid"/>
+		<view type="form" name="opportunity-form"/>
 		<domain>self.lead.id = :_id</domain>
 	</action-view>
 
