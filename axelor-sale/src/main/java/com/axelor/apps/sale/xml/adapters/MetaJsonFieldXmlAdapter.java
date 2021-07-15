@@ -1,11 +1,10 @@
 package com.axelor.apps.sale.xml.adapters;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import com.axelor.apps.sale.xml.models.AdaptedMetaJsonField;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class MetaJsonFieldXmlAdapter extends XmlAdapter<AdaptedMetaJsonField, MetaJsonField> {
 
@@ -20,9 +19,9 @@ public class MetaJsonFieldXmlAdapter extends XmlAdapter<AdaptedMetaJsonField, Me
     adaptedMetaJsonField.setModel(metaJsonField.getModel());
     adaptedMetaJsonField.setModelField(metaJsonField.getModelField());
     if (metaJsonField.getJsonModel() != null) {
-    	adaptedMetaJsonField.setJsonModelCode(metaJsonField.getJsonModel().getName());
+      adaptedMetaJsonField.setJsonModelCode(metaJsonField.getJsonModel().getName());
     }
-    
+
     adaptedMetaJsonField.setSelection(metaJsonField.getSelection());
     adaptedMetaJsonField.setWidget(metaJsonField.getWidget());
     adaptedMetaJsonField.setHelp(metaJsonField.getHelp());
@@ -67,7 +66,9 @@ public class MetaJsonFieldXmlAdapter extends XmlAdapter<AdaptedMetaJsonField, Me
     metaJsonField.setDefaultValue(adaptedMetaJsonField.getDefaultValue());
     metaJsonField.setModel(adaptedMetaJsonField.getModel());
     metaJsonField.setModelField(adaptedMetaJsonField.getModelField());
-    metaJsonField.setJsonModel(Beans.get(MetaJsonModelRepository.class).findByName(adaptedMetaJsonField.getJsonModelCode()));
+    metaJsonField.setJsonModel(
+        Beans.get(MetaJsonModelRepository.class)
+            .findByName(adaptedMetaJsonField.getJsonModelCode()));
     metaJsonField.setSelection(adaptedMetaJsonField.getSelection());
     metaJsonField.setWidget(adaptedMetaJsonField.getWidget());
     metaJsonField.setHelp(adaptedMetaJsonField.getHelp());

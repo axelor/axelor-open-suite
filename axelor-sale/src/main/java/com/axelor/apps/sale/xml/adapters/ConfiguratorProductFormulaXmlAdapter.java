@@ -1,11 +1,10 @@
 package com.axelor.apps.sale.xml.adapters;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import com.axelor.apps.sale.db.ConfiguratorProductFormula;
 import com.axelor.apps.sale.xml.models.AdaptedConfiguratorProductFormula;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ConfiguratorProductFormulaXmlAdapter
     extends XmlAdapter<AdaptedConfiguratorProductFormula, ConfiguratorProductFormula> {
@@ -23,8 +22,8 @@ public class ConfiguratorProductFormulaXmlAdapter
     adaptedConfiguratorProductFormula.setShowOnConfigurator(
         configuratorProductFormula.getShowOnConfigurator());
     if (configuratorProductFormula.getProductCreator() != null) {
-        adaptedConfiguratorProductFormula.setConfiguratorCreatorImportId(
-                configuratorProductFormula.getProductCreator().getId());
+      adaptedConfiguratorProductFormula.setConfiguratorCreatorImportId(
+          configuratorProductFormula.getProductCreator().getId());
     }
 
     return adaptedConfiguratorProductFormula;

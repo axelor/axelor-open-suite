@@ -1,11 +1,10 @@
 package com.axelor.apps.sale.xml.adapters;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import com.axelor.apps.sale.db.ConfiguratorSOLineFormula;
 import com.axelor.apps.sale.xml.models.AdaptedConfiguratorSOLineFormula;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ConfiguratorSOLineFormulaXmlAdapter
     extends XmlAdapter<AdaptedConfiguratorSOLineFormula, ConfiguratorSOLineFormula> {
@@ -18,17 +17,17 @@ public class ConfiguratorSOLineFormulaXmlAdapter
     AdaptedConfiguratorSOLineFormula adaptedConfiguratorSOLineFormula =
         new AdaptedConfiguratorSOLineFormula();
     adaptedConfiguratorSOLineFormula.setFormula(configuratorSOLineFormula.getFormula());
-    if (configuratorSOLineFormula.getMetaField() != null ) {
-        adaptedConfiguratorSOLineFormula.setMetaFieldName(
-                configuratorSOLineFormula.getMetaField().getName());
+    if (configuratorSOLineFormula.getMetaField() != null) {
+      adaptedConfiguratorSOLineFormula.setMetaFieldName(
+          configuratorSOLineFormula.getMetaField().getName());
     }
     adaptedConfiguratorSOLineFormula.setShowOnConfigurator(
         configuratorSOLineFormula.getShowOnConfigurator());
     adaptedConfiguratorSOLineFormula.setUpdateFromSelect(
         configuratorSOLineFormula.getUpdateFromSelect());
     if (configuratorSOLineFormula.getSoLineCreator() != null) {
-    	adaptedConfiguratorSOLineFormula.setConfiguratorCreatorImportId(
-    	        configuratorSOLineFormula.getSoLineCreator().getId());
+      adaptedConfiguratorSOLineFormula.setConfiguratorCreatorImportId(
+          configuratorSOLineFormula.getSoLineCreator().getId());
     }
 
     return adaptedConfiguratorSOLineFormula;

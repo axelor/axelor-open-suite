@@ -1,17 +1,15 @@
 package com.axelor.apps.production.xml.models;
 
+import com.axelor.apps.base.xml.models.ExportedModel;
+import com.axelor.apps.production.db.ConfiguratorBOM;
+import com.axelor.apps.production.xml.adapters.ConfiguratorBOMXmlAdapter;
 import java.math.BigDecimal;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import com.axelor.apps.base.xml.models.ExportedModel;
-import com.axelor.apps.production.db.ConfiguratorBOM;
-import com.axelor.apps.production.xml.adapters.ConfiguratorBOMXmlAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdaptedConfiguratorBOM extends ExportedModel {
@@ -228,5 +226,4 @@ public class AdaptedConfiguratorBOM extends ExportedModel {
   public void setBillOfMaterialId(Long billOfMaterialId) {
     this.billOfMaterialId = billOfMaterialId;
   }
-  
 }

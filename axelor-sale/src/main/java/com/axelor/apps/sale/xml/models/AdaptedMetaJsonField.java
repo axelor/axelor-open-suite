@@ -1,9 +1,8 @@
 package com.axelor.apps.sale.xml.models;
 
+import com.axelor.apps.base.xml.models.ExportedModel;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
-import com.axelor.apps.base.xml.models.ExportedModel;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdaptedMetaJsonField extends ExportedModel {

@@ -1,9 +1,8 @@
 package com.axelor.apps.sale.xml.adapters;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.xml.models.AdaptedConfiguratorCreator;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ConfiguratorCreatorXmlAdapter
     extends XmlAdapter<AdaptedConfiguratorCreator, ConfiguratorCreator> {

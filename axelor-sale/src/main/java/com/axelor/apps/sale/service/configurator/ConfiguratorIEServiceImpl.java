@@ -1,13 +1,5 @@
 package com.axelor.apps.sale.service.configurator;
 
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.xml.bind.JAXBException;
-
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.export.xml.IEXmlService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -18,6 +10,12 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.xml.bind.JAXBException;
 
 public class ConfiguratorIEServiceImpl implements ConfiguratorIEService {
 
@@ -70,8 +68,9 @@ public class ConfiguratorIEServiceImpl implements ConfiguratorIEService {
           ieXmlService.importXMLToModel(pathDiff, ConfiguratorExport.class);
       StringBuilder importLog = new StringBuilder();
       linkConfiguratorFormulaToCC(configuratorExport.getConfiguratorsCreators());
-      
-      int totalImport = saveConfiguratorCreators(configuratorExport.getConfiguratorsCreators(),importLog);
+
+      int totalImport =
+          saveConfiguratorCreators(configuratorExport.getConfiguratorsCreators(), importLog);
       importLog.append(
           "Total records: "
               + configuratorExport.getConfiguratorsCreators().size()
@@ -85,38 +84,38 @@ public class ConfiguratorIEServiceImpl implements ConfiguratorIEService {
   }
 
   protected void linkConfiguratorFormulaToCC(List<ConfiguratorCreator> configuratorCreators) {
-	  configuratorCreators
-          .forEach(
-              configuratorCreator -> {
-                configuratorCreator
-                    .getConfiguratorProductFormulaList()
-                    .forEach(
-                        productFormula -> {
-                          productFormula.setProductCreator(configuratorCreator);
-                        });
-                configuratorCreator
-                    .getConfiguratorSOLineFormulaList()
-                    .forEach(
-                        SOLineFormula -> {
-                          SOLineFormula.setSoLineCreator(configuratorCreator);
-                        });
-              });
+    configuratorCreators.forEach(
+        configuratorCreator -> {
+          configuratorCreator
+              .getConfiguratorProductFormulaList()
+              .forEach(
+                  productFormula -> {
+                    productFormula.setProductCreator(configuratorCreator);
+                  });
+          configuratorCreator
+              .getConfiguratorSOLineFormulaList()
+              .forEach(
+                  SOLineFormula -> {
+                    SOLineFormula.setSoLineCreator(configuratorCreator);
+                  });
+        });
   }
- 
-  protected int saveConfiguratorCreators(List<ConfiguratorCreator> configuratorsCreators, StringBuilder importLog) {
-	  
-	  AtomicInteger totalImport = new AtomicInteger(0);
-	  
-	  configuratorsCreators.forEach(
-              configuratorCreator -> {
-                try {
-                  configuratorCreatorRepository.save(configuratorCreator);
-                  totalImport.addAndGet(1);
-                } catch (Exception e) {
-                  importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
-                }
-              });
-	  
-	  return totalImport.get();
+
+  protected int saveConfiguratorCreators(
+      List<ConfiguratorCreator> configuratorsCreators, StringBuilder importLog) {
+
+    AtomicInteger totalImport = new AtomicInteger(0);
+
+    configuratorsCreators.forEach(
+        configuratorCreator -> {
+          try {
+            configuratorCreatorRepository.save(configuratorCreator);
+            totalImport.addAndGet(1);
+          } catch (Exception e) {
+            importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
+          }
+        });
+
+    return totalImport.get();
   }
 }
