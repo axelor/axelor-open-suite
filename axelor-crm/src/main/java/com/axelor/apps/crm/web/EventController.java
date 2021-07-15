@@ -529,4 +529,28 @@ public class EventController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void realizeEvent(ActionRequest request, ActionResponse response) {
+    try {
+      Event event = request.getContext().asType(Event.class);
+      event = Beans.get(EventRepository.class).find(event.getId());
+      event.setStatusSelect(EventRepository.STATUS_REALIZED);
+      Beans.get(EventService.class).saveEvent(event);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelEvent(ActionRequest request, ActionResponse response) {
+    try {
+      Event event = request.getContext().asType(Event.class);
+      event = Beans.get(EventRepository.class).find(event.getId());
+      event.setStatusSelect(EventRepository.STATUS_CANCELED);
+      Beans.get(EventService.class).saveEvent(event);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

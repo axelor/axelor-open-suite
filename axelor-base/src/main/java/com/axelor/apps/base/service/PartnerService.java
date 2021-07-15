@@ -62,11 +62,9 @@ public interface PartnerService {
 
   Map<String, String> getSocialNetworkUrl(String name, String firstName, Integer typeSelect);
 
-  List<Long> findPartnerMails(Partner partner);
+  List<Long> findPartnerMails(Partner partner, int emailType);
 
-  List<Long> findContactMails(Partner partner);
-
-  List<Long> findMailsFromPartner(Partner partner);
+  List<Long> findMailsFromPartner(Partner partner, int emailType);
 
   void resetDefaultAddress(Partner partner, String addrTypeQuery);
 
