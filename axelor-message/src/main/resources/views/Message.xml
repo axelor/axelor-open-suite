@@ -76,6 +76,39 @@
 			</panel>
 		</panel>
 	</form>
+	
+	<cards name="message-cards" model="com.axelor.apps.message.db.Message" title="Emails" orderBy="-sentDateT" css="rect-image" width="100%">
+		<field name="statusSelect"/>
+		<field name="mediaTypeSelect"/>
+		<field name="senderUser"/>
+		<field name="sentDateT"/>
+		<field name="subject"/>
+		<field name="senderUser.name"/>
+		<template><![CDATA[
+			<div>
+			  <div class="span12">
+			  	<div class="span4">
+					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.mediaTypeSelect == 1" x-translate>Mail</span>
+					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.mediaTypeSelect == 2" x-translate>Email</span>
+					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.mediaTypeSelect == 3" x-translate>Chat</span>
+					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.mediaTypeSelect == 4" x-translate>SMS</span>
+					
+					<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Draft</span>
+					<span class="label label-important" ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>In progress</span>
+					<span class="label label-success" ng-show="record.statusSelect == 3 &amp;&amp; record.sentDateT != null" x-translate>Sent</span>
+				</div>
+				<br/><br/>
+			  	<span>
+					<strong>{{subject}}</strong><br/>
+					{{$fmt('sentDateT')}}
+		        </span>
+				<br/></br/>
+				<strong><span ng-show="record.senderUser" x-translate>Sender </span> :</strong><br/>
+				<span ng-show="record.senderUser">{{record.senderUser.name}}</span>
+		      </div>
+		  <div>
+		]]></template>
+	</cards>
     
 	<action-group name="action-group-message-message-onnew">
 		<action name="action-message-record-default"/>
