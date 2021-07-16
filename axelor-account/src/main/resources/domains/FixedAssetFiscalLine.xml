@@ -14,5 +14,6 @@
 		<decimal name="fiscalDepreciationAmount" title="Fiscal Depreciation Amount"/>
 		<decimal name="incomeDepreciationAmount" title="Income Depreciation Amount"/>
   		<many-to-one ref="com.axelor.apps.account.db.Move" name="derogatoryDepreciationMove" title="Derogatory Depreciation Move"/>
+  		<many-to-one ref="com.axelor.apps.account.db.FixedAsset" name="fixedAsset" title="Fixed Asset"/>
 	</entity>
 </domain-models>
