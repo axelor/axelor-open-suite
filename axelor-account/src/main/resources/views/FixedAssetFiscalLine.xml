@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+	<grid name="fixed-asset-fiscal-line-grid"
+		title="Fixed asset fiscal lines"
+		model="com.axelor.apps.account.db.FixedAssetFiscalLine">
+		<field name="depreciationAmount" />
+		<field name="derogatoryAmount" />
+		<field name="derogatoryBalanceAmount" />
+		<field name="derogatoryDepreciationAmount" />
+		<field name="fiscalDepreciationAmount" />
+		<field name="incomeDepreciationAmount" />
+	</grid>
+
+	<form name="fixed-asset-fiscal-line-form"
+		title="Fixed asset fiscal line"
+		model="com.axelor.apps.account.db.FixedAssetFiscalLine">
+		<panel name="mainPanel" colSpan="12">
+			<field name="depreciationAmount" />
+			<field name="derogatoryAmount" />
+			<field name="derogatoryBalanceAmount" />
+			<field name="derogatoryDepreciationAmount" />
+			<field name="fiscalDepreciationAmount" />
+			<field name="incomeDepreciationAmount" />
+		</panel>
+		<panel name="movePanel">
+			<field name="derogatoryDepreciationMove" grid-view="move-grid" form-view="move-form"/>
+		</panel>
+	</form>
+
+</object-views>

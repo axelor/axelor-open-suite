@@ -36,15 +36,10 @@
     		<panel name="impairmentPanel" title="Impairment information">
 		    	<field name="correctedAccountingValue"/>
 	        	<field name="impairmentValue"/>
-	        	<field name="impairmentAccountMove"/>
+	        	<field name="impairmentAccountMove" grid-view="move-grid" form-view="move-form"/>
     		</panel>
     		<panel name="fiscalPanel" title="Fiscal Information">
-    			<field name="depreciationAmount"/>
-    			<field name="fiscalDepreciationAmount"/>
-    			<field name="derogatoryAmount"/>
-    			<field name="incomeDepreciationAmount"/>
-    			<field name="derogatoryBalanceAmount"/>
-    			<field name="derogatoryDepreciationMove"/>
+    			<field name="derogatoryDepreciationMove" grid-view="move-grid" form-view="move-form"/>
     		</panel>
         </panel-tabs>
     </form>

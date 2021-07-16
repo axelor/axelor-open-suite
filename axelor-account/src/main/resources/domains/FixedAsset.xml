@@ -67,10 +67,11 @@
 	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"/>
 	<many-to-many ref="com.axelor.apps.account.db.FixedAsset" name="associatedFixedAssetsSet" title="Associated Fixed Assets Set"/>
 	<string name="comments" title="Comments"/>
-	<integer name="disposalTypeSelect" title="Disposal Type" selection="account.fixed.asset.disposal.type.select" default="1"/>
-	<integer name="disposalQtySelect" title="Disposal Quantity" selection="account.fixed.asset.disposal.quantity.select" default="1"/>
-	<integer name="disposalQty" title="Disposal Quantity"/>
-	
+	<integer name="disposalTypeSelect" title="Disposal Type" selection="account.fixed.asset.disposal.type.select" default="1" />
+	<integer name="disposalQtySelect" title="Disposal Quantity" selection="account.fixed.asset.disposal.quantity.select" default="1" />
+	<integer name="disposalQty" title="Disposal Quantity" />
+	<one-to-many name="fixedAssetFiscalLineList" ref="com.axelor.apps.account.db.FixedAssetFiscalLine" title="Fiscal Fixed Asset Line List" mappedBy="fixedAsset"/>
+
 	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
