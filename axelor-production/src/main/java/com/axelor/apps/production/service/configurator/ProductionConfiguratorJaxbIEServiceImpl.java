@@ -114,9 +114,15 @@ public class ProductionConfiguratorJaxbIEServiceImpl extends ConfiguratorJaxbIES
     configuratorsCreators.forEach(
         configuratorCreator -> {
           try {
-            configuratorCreatorRepository.save(configuratorCreator);
-            totalImport.addAndGet(1);
-          } catch (PersistenceException e) {
+            if (configuratorCreatorRepository.findByName(configuratorCreator.getName()) != null) {
+              importLog.append(
+                  "\nError in import: "
+                      + String.format(CONFIGURATOR_ALREADY_EXIST, configuratorCreator.getName()));
+            } else {
+              configuratorCreatorRepository.save(configuratorCreator);
+              totalImport.addAndGet(1);
+            }
+          } catch (Exception e) {
             importLog.append(
                 "\nError in import: "
                     + configuratorCreator.getName()

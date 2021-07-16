@@ -24,6 +24,9 @@ import javax.xml.bind.JAXBException;
  */
 public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService {
 
+  public static final String CONFIGURATOR_ALREADY_EXIST =
+      "ConfiguratorCreator %s already exist and can not be imported";
+
   public static final String XML_NAME_TEMPLATE = "ConfiguratorCreatorExport-%s";
 
   protected IEXmlService ieXmlService;
@@ -65,7 +68,6 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
   }
 
   @Override
-  @Transactional
   public String importXMLToConfigurators(String pathDiff) throws AxelorException {
 
     try {
@@ -106,6 +108,7 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
         });
   }
 
+  @Transactional
   protected int saveConfiguratorCreators(
       List<ConfiguratorCreator> configuratorsCreators, StringBuilder importLog) {
 
@@ -114,8 +117,14 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
     configuratorsCreators.forEach(
         configuratorCreator -> {
           try {
-            configuratorCreatorRepository.save(configuratorCreator);
-            totalImport.addAndGet(1);
+            if (configuratorCreatorRepository.findByName(configuratorCreator.getName()) != null) {
+              importLog.append(
+                  "\nError in import: "
+                      + String.format(CONFIGURATOR_ALREADY_EXIST, configuratorCreator.getName()));
+            } else {
+              configuratorCreatorRepository.save(configuratorCreator);
+              totalImport.addAndGet(1);
+            }
           } catch (Exception e) {
             importLog.append("Error in import: " + Arrays.toString(e.getStackTrace()));
           }
