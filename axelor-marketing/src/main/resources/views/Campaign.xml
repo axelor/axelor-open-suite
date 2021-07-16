@@ -30,7 +30,12 @@
 			</field>
 			<spacer name="nameSpacer"/>
 			<panel name="informationPanel" title="Information" colSpan="12">
-				<field name="campaignType" canEdit="false" colSpan="4"/>
+				<field name="campaignType" canEdit="false" colSpan="4" showIf="!$readonly()"/>
+				<field name="campaignType" showTitle="false" colSpan="4" showIf="$readonly()">
+					<viewer depends="name"><![CDATA[
+						<span class="label label-default" style="background-color: #8806CE;">{{record.name}}</span>
+					]]></viewer>
+				</field>
 				<field name="eventStartDateT" colSpan="4" validIf="eventStartDateT == null || eventEndDateT == null || eventStartDateT &lt; eventEndDateT"/>
 				<field name="eventEndDateT" colSpan="4" validIf="eventStartDateT == null || eventEndDateT == null || eventStartDateT &lt; eventEndDateT"/>
 				<field name="emailing" colSpan="4" widget="boolean-switch" />
@@ -135,12 +140,12 @@
 			  <div class="span12">
 			  	<div class="span4">
 					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.stageSelect == 0" x-translate>Draft</span>
-	         		<span class="label label-default" style="background-color: #0285D8;" ng-show="record.stageSelect == 1" x-translate>Planned</span>
-	         		<span class="label label-default" style="background-color: #0285D8;" ng-show="record.stageSelect == 2" x-translate>Started</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.stageSelect == 3" x-translate>Suspended</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.stageSelect == 4" x-translate>Ended</span>
+	         		<span class="label label-warning" ng-show="record.stageSelect == 1" x-translate>Planned</span>
+	         		<span class="label label-info" ng-show="record.stageSelect == 2" x-translate>Started</span>
+					<span class="label label-important" ng-show="record.stageSelect == 3" x-translate>Suspended</span>
+					<span class="label label-success" ng-show="record.stageSelect == 4" x-translate>Ended</span>
 
-					<span class="label label-default" style="background-color: #0285D8;" x-translate>{{record.campaignType.name}}</span>
+					<span class="label label-default" style="background-color: #8806CE;" x-translate>{{record.campaignType.name}}</span>
 				</div>
 				<br/><br/>
 			  	<span>
