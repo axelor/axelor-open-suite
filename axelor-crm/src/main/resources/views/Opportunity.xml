@@ -311,6 +311,7 @@
     	<action name="action-opportunity-record-default" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
     	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
+    	<action name="action-opportunity-record-set-name" if="_lead != null || _partner != null"/>
     </action-group>
     
     <action-group name="action-group-crm-opportunity-nextstage-click">
