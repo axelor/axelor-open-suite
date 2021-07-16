@@ -188,7 +188,9 @@
 			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid" canNew="true"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="estimatedBudget" colSpan="6"/>
-			<button name="createOpportunityBtn" title="Create opportunity" onClick="save,action-lead-view-create-opportunity" colSpan="6"/>
+			<panel name="createOppBtnPanel" colSpan="6">
+				<button name="createOpportunityBtn" title="Create opportunity" onClick="save,action-lead-view-create-opportunity" colSpan="12"/>
+			</panel>
 		</panel>
  		
  		<panel-mail name="mailPanel">
