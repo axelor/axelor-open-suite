@@ -185,6 +185,7 @@
 
        <bind node="configuratorProductFormulaList/configuratorProductFormula" to="configuratorProductFormulaList">
          <bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = 'Product'" />
+         <bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.modelField = :metaField"/>
          <bind node="formula" to="formula"/>
          <bind node="showOnConfigurator" to="showOnConfigurator"/>
          <bind node="configuratorCreatorImportId" to="productCreator" search="self.importId = :configCreatorImportId" create="false">
@@ -194,6 +195,7 @@
 
        <bind node="configuratorSOLineFormulaList/configuratorSOLineFormula" to="configuratorSOLineFormulaList">
          <bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = 'SaleOrderLine'"/>
+         <bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.modelField = :metaField"/>     
          <bind node="formula" to="formula"/>
          <bind node="showOnConfigurator" to="showOnConfigurator"/>
          <bind node="updateFromSelect" to="updateFromSelect"/>
