@@ -17,7 +17,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.bind.JAXBException;
 
-public class ConfiguratorIEServiceImpl implements ConfiguratorIEService {
+/**
+ * This class is a implementation on ConfiguratorIEService. It uses library jaxb in order to export
+ * or import xml of Configurators creators. This class does not manage ConfiguratorBOM that may be
+ * located in ConfiguratorCreator.
+ */
+public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService {
 
   public static final String XML_NAME_TEMPLATE = "ConfiguratorCreatorExport-%s";
 
@@ -28,7 +33,7 @@ public class ConfiguratorIEServiceImpl implements ConfiguratorIEService {
   protected ConfiguratorCreatorRepository configuratorCreatorRepository;
 
   @Inject
-  public ConfiguratorIEServiceImpl(
+  public ConfiguratorJaxbIEServiceImpl(
       IEXmlService ieXmlService,
       AppBaseService appBaseService,
       ConfiguratorCreatorRepository configuratorCreatorRepository) {

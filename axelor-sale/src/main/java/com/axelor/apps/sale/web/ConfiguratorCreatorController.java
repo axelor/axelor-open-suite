@@ -20,7 +20,7 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.apps.sale.service.configurator.ConfiguratorIEService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorJaxbIEService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -70,7 +70,8 @@ public class ConfiguratorCreatorController {
   public void importConfiguratorCreators(ActionRequest request, ActionResponse response) {
     try {
       String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
-      String importLog = Beans.get(ConfiguratorIEService.class).importXMLToConfigurators(pathDiff);
+      String importLog =
+          Beans.get(ConfiguratorJaxbIEService.class).importXMLToConfigurators(pathDiff);
       response.setValue("importLog", importLog);
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -96,7 +97,8 @@ public class ConfiguratorCreatorController {
       List<ConfiguratorCreator> ccList =
           ids.stream().map(id -> ccRepository.find(id.longValue())).collect(Collectors.toList());
 
-      MetaFile dataFile = Beans.get(ConfiguratorIEService.class).exportConfiguratorsToXML(ccList);
+      MetaFile dataFile =
+          Beans.get(ConfiguratorJaxbIEService.class).exportConfiguratorsToXML(ccList);
 
       if (dataFile != null) {
         response.setView(

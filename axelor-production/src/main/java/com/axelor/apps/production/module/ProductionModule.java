@@ -77,7 +77,7 @@ import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessSe
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessServiceImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProductService;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProductServiceImpl;
-import com.axelor.apps.production.service.configurator.ProductionConfiguratorIEServiceImpl;
+import com.axelor.apps.production.service.configurator.ProductionConfiguratorJaxbIEServiceImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineServiceImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -101,7 +101,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderService
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
-import com.axelor.apps.sale.service.configurator.ConfiguratorIEServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorJaxbIEServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -169,7 +169,7 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderReservedQtyService.class).to(ManufOrderReservedQtyServiceImpl.class);
     bind(WorkCenterService.class).to(WorkCenterServiceImpl.class);
     bind(ConfiguratorProdProductService.class).to(ConfiguratorProdProductServiceImpl.class);
-    bind(ConfiguratorIEServiceImpl.class).to(ProductionConfiguratorIEServiceImpl.class);
+    bind(ConfiguratorJaxbIEServiceImpl.class).to(ProductionConfiguratorJaxbIEServiceImpl.class);
     bind(ConfiguratorBOMRepository.class).to(ProductionConfiguratorBOMRepository.class);
   }
 }
