@@ -11,7 +11,7 @@
         <field name="country"/>
     </grid>
     
-    <form name="main-activity-form" title="Main Activity" model="com.axelor.apps.base.db.MainActivity" onSave="save,action-method-main-activity-compute-all-full-name">
+    <form name="main-activity-form" title="Main Activity" model="com.axelor.apps.base.db.MainActivity">
         <panel name="mainPanel">
         	<field name="fullName" colSpan="6"/>
 	        <field name="code" colSpan="6"/>
@@ -23,7 +23,4 @@
         </panel>
     </form>
     
-    <action-method name="action-method-main-activity-compute-all-full-name">
-    	<call class="com.axelor.apps.base.web.MainActivityController" method="computeFullName"/>
-    </action-method>
 </object-views>

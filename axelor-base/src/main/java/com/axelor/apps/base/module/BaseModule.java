@@ -75,8 +75,6 @@ import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
-import com.axelor.apps.base.service.MainActivityService;
-import com.axelor.apps.base.service.MainActivityServiceImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -229,6 +227,5 @@ public class BaseModule extends AxelorModule {
     bind(PrintService.class).to(PrintServiceImpl.class);
     bind(PrintTemplateLineService.class).to(PrintTemplateLineServiceImpl.class);
     bind(AdvancedImportRepository.class).to(AdvancedImportBaseRepository.class);
-    bind(MainActivityService.class).to(MainActivityServiceImpl.class);
   }
 }

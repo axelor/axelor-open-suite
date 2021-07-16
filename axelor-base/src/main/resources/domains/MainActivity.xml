@@ -11,18 +11,14 @@
 		<string name="code" title="Code" required="true" />
 		<string name="shortName" title="Short Name" required="true" />
 		<string name="longName" title="Long Name" />
-		<string name="fullName" title="Full Name"
-			search="code,shortName" namecolumn="true">
-	  		<![CDATA[
-    		return code + " - " + shortName;
-    	]]>
-		</string>
+		<string name="fullName" title="Full Name" namecolumn="true" readonly="true"/>
 		<many-to-one ref="com.axelor.apps.base.db.MainActivity"
 			name="parentMainActivity" title="Parent" />
 		<many-to-one ref="com.axelor.apps.base.db.Country"
 			name="country" title="Country" />
 		<boolean name="isFinal" title="Is Final" />
-
+		<entity-listener class="com.axelor.apps.base.db.repo.MainActivityBaseRepository"/>
 	</entity>
+
 
 </domain-models>
