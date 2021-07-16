@@ -88,11 +88,6 @@
 			<div>
 			  <div class="span12">
 			  	<div class="span4">
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.mediaTypeSelect == 1" x-translate>Mail</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.mediaTypeSelect == 2" x-translate>Email</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.mediaTypeSelect == 3" x-translate>Chat</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.mediaTypeSelect == 4" x-translate>SMS</span>
-					
 					<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Draft</span>
 					<span class="label label-important" ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>In progress</span>
 					<span class="label label-success" ng-show="record.statusSelect == 3 &amp;&amp; record.sentDateT != null" x-translate>Sent</span>
