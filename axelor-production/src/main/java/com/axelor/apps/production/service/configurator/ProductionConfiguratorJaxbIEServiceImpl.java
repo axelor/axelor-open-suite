@@ -1,14 +1,5 @@
 package com.axelor.apps.production.service.configurator;
 
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.persistence.PersistenceException;
-import javax.xml.bind.JAXBException;
-
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.export.xml.IEXmlService;
 import com.axelor.apps.production.db.ConfiguratorBOM;
@@ -21,6 +12,13 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.persistence.PersistenceException;
+import javax.xml.bind.JAXBException;
 
 /**
  * This class is a implementation on ConfiguratorIEService. It uses library jaxb in order to export
