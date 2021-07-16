@@ -118,7 +118,14 @@
                 </viewer>
             </field>
             <field name="opportunityRating" widget="ImageSelect" x-labels="false" colSpan="2" selection-in="[0.00,1.00,2.00,3.00]"/>
-            <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false" form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
+            <field name="opportunityType" colSpan="4" canEdit="false" showIf="!$readonly()" form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
+            <field name="opportunityType" colSpan="4" showTitle="false" showIf="$readonly()" form-view="opportunity-type-form" grid-view="opportunity-type-grid">
+            	<viewer depends="code,name"><![CDATA[
+            		<span class="label label-default" style="background-color: #9932CC;" ng-show="record.code == 'NWLEAD'">{{record.name}}</span>
+            		<span class="label label-default" style="background-color: #87421F;" ng-show="record.code == 'EXLEAD'">{{record.name}}</span>
+            		<span class="label label-default" style="background-color: #004225;" ng-show="record.code == 'EXCUST'">{{record.name}}</span>
+            	]]></viewer>
+            </field>
             <field name="source" colSpan="4" canEdit="false" form-view="source-form" grid-view="source-grid"/>
             <field name="expectedCloseDate" onChange="action-opportunity-group-onchange-expected-close-date" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
             <field name="payingDate" onChange="action-opportunity-record-set-start-date" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
@@ -253,13 +260,15 @@
 			  <div class="span12">
 			  	<div class="span4">
 					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.salesStageSelect == 1" x-translate>New</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.salesStageSelect == 2" x-translate>Qualification</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.salesStageSelect == 3" x-translate>Proposition</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.salesStageSelect == 4" x-translate>Negotiation</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.salesStageSelect == 5" x-translate>Closed won</span>
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.salesStageSelect == 6" x-translate>Closed lost</span>
+					<span class="label label-default" style="background-color: #7CB9E8" ng-show="record.salesStageSelect == 2" x-translate>Qualification</span>
+					<span class="label label-warning" ng-show="record.salesStageSelect == 3" x-translate>Proposition</span>
+					<span class="label label-info" ng-show="record.salesStageSelect == 4" x-translate>Negotiation</span>
+					<span class="label label-success" ng-show="record.salesStageSelect == 5" x-translate>Closed won</span>
+					<span class="label label-important" ng-show="record.salesStageSelect == 6" x-translate>Closed lost</span>
 
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="['NWLEAD', 'EXLEAD', 'EXCUST'].includes(record.opportunityType.code)" x-translate>{{record.opportunityType.name}}</span>
+					<span class="label label-default" style="background-color: #9932CC;" ng-show="record.opportunityType.code == 'NWLEAD'">{{record.opportunityType.name}}</span>
+            		<span class="label label-default" style="background-color: #87421F;" ng-show="record.opportunityType.code == 'EXLEAD'">{{record.opportunityType.name}}</span>
+            		<span class="label label-default" style="background-color: #004225;" ng-show="record.opportunityType.code == 'EXCUST'">{{record.opportunityType.name}}</span>
 				</div>
 				<br/><br/>
 			  	<span>

@@ -158,7 +158,10 @@
 				</panel>
 			</panel>
 
-			<panel-dashlet name="eventPanel" action="action-lead-view-events" title="Events" height="500"/>
+			<panel name="eventPanel" title="Events">
+				<panel-dashlet name="upcomingEventsPanel" action="action-lead-view-upcoming-events" title="Upcoming events" height="500" colSpan="12"/>
+				<panel-dashlet name="historicalEventsPanel" action="action-lead-view-historical-events" title="Historical events completed" height="500" colSpan="12"/>
+			</panel>
 			<panel-dashlet name="opportunityPanel" title="Opportunity" action="action-lead-view-opportunities" height="500"/>
 			<panel name="emailPanel" title="Emails">
 				<panel-dashlet name="leadSentEmailsPanel" title="Sent emails" action="action-lead-view-sent-emails" colSpan="12" height="500"/>
@@ -383,11 +386,20 @@
 		<context name="email" expr="eval: emailAddress"/>
 	</action-view>
 
-	<action-view name="action-lead-view-events" title="Events" model="com.axelor.apps.crm.db.Event">
+	<action-view name="action-lead-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
 		<view type="cards" name="event-cards"/>
 		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>self.lead.id = :_id</domain>
+		<domain>self.lead.id = :_id and self.startDateTime &gt; :_todayTime</domain>
+		<context name="_todayTime" expr="eval: __datetime__"/>
+	</action-view>
+	
+	<action-view name="action-lead-view-historical-events" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
+		<view type="cards" name="event-cards"/>
+		<view type="grid" name="list-event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>self.lead.id = :_id and self.endDateTime &lt; :_todayTime</domain>
+		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
 	
 	<action-view name="action-lead-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
