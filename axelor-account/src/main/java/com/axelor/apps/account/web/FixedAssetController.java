@@ -19,7 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -42,7 +42,7 @@ public class FixedAssetController {
         if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
           fixedAsset.getFixedAssetLineList().clear();
         }
-        fixedAsset = Beans.get(FixedAssetService.class).generateAndcomputeLines(fixedAsset);
+        fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
 
       } else {
         fixedAsset.getFixedAssetLineList().clear();

@@ -347,7 +347,7 @@
 					<field name="subrogationReleaseMove" readonly="true" showIf="subrogationReleaseMove"/>
 				</panel>
 				<panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
-					<button name="createRefundBtn" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
+					<button name="createRefundBtn" title="Generate refund" colSpan="3" showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-create-refund,save" />
 					<field name="originalInvoice" readonly="true" showIf="originalInvoice" form-view="invoice-form" grid-view="invoice-grid"/>
 					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
 				</panel>
@@ -578,7 +578,7 @@ InvoiceSet.length > 0))"
 				<field name="$format" title="Format" type="integer" selection="invoice.report.format" colSpan="12" required="true"/>
 			</panel>
 			<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" showIf="$reportType ==1 || $reportType==3"/>
-			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print" readonlyIf="$reportType==null || $format==null"/>
+			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print,close" readonlyIf="$reportType==null || $format==null"/>
 		</panel>
 	</form>
 

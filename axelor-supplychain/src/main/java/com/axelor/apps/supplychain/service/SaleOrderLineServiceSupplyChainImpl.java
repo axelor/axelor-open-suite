@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -38,7 +39,9 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -46,6 +49,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -291,5 +295,36 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     }
 
     return qty;
+  }
+
+  @Override
+  public SaleOrderLine createSaleOrderLine(
+      PackLine packLine,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      BigDecimal conversionRate,
+      Integer sequence) {
+
+    SaleOrderLine soLine =
+        super.createSaleOrderLine(packLine, saleOrder, packQty, conversionRate, sequence);
+
+    if (soLine != null && soLine.getProduct() != null) {
+      soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
+      getAndComputeAnalyticDistribution(soLine, saleOrder);
+      if (ObjectUtils.notEmpty(soLine.getAnalyticMoveLineList())) {
+        soLine.getAnalyticMoveLineList().stream()
+            .forEach(analyticMoveLine -> analyticMoveLine.setSaleOrderLine(soLine));
+      }
+      try {
+        SupplyChainConfig supplyChainConfig =
+            Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
+        if (supplyChainConfig.getAutoRequestReservedQty()) {
+          Beans.get(ReservedQtyService.class).requestQty(soLine);
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+      }
+    }
+    return soLine;
   }
 }

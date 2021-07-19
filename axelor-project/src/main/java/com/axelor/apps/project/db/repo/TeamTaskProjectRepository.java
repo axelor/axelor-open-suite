@@ -77,7 +77,7 @@ public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
             && savedTask.getDurationHours().intValue() != durationHours.intValue()) {
           logger.debug(
               "Updating taskDuration: {}",
-              durationHours.divide(new BigDecimal(24), RoundingMode.HALF_EVEN).intValue());
+              durationHours.divide(new BigDecimal(24), RoundingMode.HALF_UP).intValue());
           json.put("taskDuration", durationHours.multiply(new BigDecimal(3600)).intValue());
         }
       } else if (json.get("taskDuration") != null) {

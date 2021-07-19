@@ -335,7 +335,7 @@
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-					domain="self.isActivity = true AND dtype = 'Product'" form-view="product-activity-form"
+					domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
 					grid-view="product-activity-grid" />
 				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
@@ -347,7 +347,7 @@
 				<field name="imputable" colSpan="4" widget="boolean-switch"
 					if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
 			</panel>
-			<panel title="Contracts" name="contractPanel" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+			<panel title="Contracts" name="contractPanel" showIf="isBusinessProject" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
 				<button name="createNewCustomerContract" title="Create new customer contract" colSpan="6" onClick="save,action-project-view-create-new-customer-contract"/>
 				<button name="createNewSupplierContract" title="Create new supplier contract" colSpan="6" onClick="save,action-project-view-create-new-supplier-contract"/>
 				<panel-dashlet name="customerContractPanel" title="Customer contracts" action="action-project-dashlet-customer-contracts" colSpan="12" canSearch="true"/>

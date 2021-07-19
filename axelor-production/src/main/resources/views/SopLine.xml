@@ -102,7 +102,7 @@
 	</action-record>
 
 	<action-record name="action-sop-line-record-compute-qty" model="com.axelor.apps.base.db.Wizard">
-		<field name="qty" expr="eval: new BigDecimal(totalPrice).divide(new BigDecimal(unitPrice),0,java.math.RoundingMode.HALF_EVEN)" if="new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) != 0" />
+		<field name="qty" expr="eval: new BigDecimal(totalPrice).divide(new BigDecimal(unitPrice),0,java.math.RoundingMode.HALF_UP)" if="new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) != 0" />
 		<field name="qty" expr="eval: 0" if="new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) == 0" />
 	</action-record>
 

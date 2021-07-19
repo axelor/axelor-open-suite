@@ -1,3 +1,76 @@
+## [6.0.12] (2021-07-08)
+
+#### Features
+
+* STOCK LOCATION: Stock valuation by purchase value.
+
+#### Fixed
+
+* Exception: improve exception management when an issue occurs on save.
+* French translation: Translate all occurences of 'Expense' to 'Note de frais' in french.
+* ROUNDING MODE: In computations, replaced half even rounding mode by half up rounding mode to prevent rounding inconsistencies.
+* Product: Add unicity on serial number.
+* PURCHASE ORDER: fix an issue where purchase order line list was empty when accessing it from Historical menu entry.
+* Account management form: Fixed issues where Tax/Product/Product Family/Payment mode were displayed and not filled.
+* Stocks: Fixed an issue where dashboards 'Upcoming supplier arrivals' and 'Late supplier arrivals' would either be empty or displaying unrelevant data.
+* ManufOrder: Fix an issue were generate waste butten was not clickable.
+* Mrp: fix MRP process being stuck in a loop with wrong mrp line type configuration.
+* DEMO DATA: Add permission and menus for purchase user.
+* InvoicePayment: Fix NPE on payment cancel.
+* Product family: fixed product field and type display in account management form.
+
+## [6.0.11] (2021-06-02)
+
+#### Fixed
+
+* ManufOrder: make linked sale order sequence appears a origin in printing.
+* Move reversion: Fill reversal date in analytical moveline on reversed move.
+* Inventory Line: Update gap, gap value and real value while importing demo data.
+* Year: fix not being able to adjust fiscal year when fiscal year is closed and make sidebar readonly for new records.
+* Year: fix reported balance date becoming empty after clicking 'close year' button.
+* Configurator creator: fix import error on Windows.
+* Sale order line: Do not check for multiple quantities when the configuration is disabled.
+* StockLocation: content lines and detail lines are no longer duplicated on copy.
+* ProductCategory: remove wrongly added field `dtype`.
+* TrackingNumberConfig: Fix sequence being required even if we do not generate automatically a tracking number for purchase.
+* Email sending: fix NPE when sending email from scheduler.
+* SaleOrder: fix button to print invoices from invoicing dashlet.
+* Fixed asset: fix fixed asset linear and degressive computation.
+* Project: show contract panel tab only on a business project.
+* CostSheetLine: display the correct icon in the tree view's dropdown list.
+* Move line: remove the possibility to select a date for a move line out of the move period.
+* Translation: Add missing french translations and fix incorrect existing ones in all modules.
+* Configurator: fix issue preventing generation of product or sale order line when trying to fill a date field with the configurator.
+* Stock correction: make stock correction reason field required.
+* GeoNames Import: Improve import process, avoid importing duplicated elements.
+
+## [6.0.10] (2021-04-29)
+
+#### Changes
+
+* PrintTemplate: add fields on print template.
+  * Add new field to display the text on multiples columns.
+  * Add new field to display a docusign signature.
+
+#### Fixed
+
+* SaleOrder: fix NPE on product selection when the current user does not have an active company.
+* Mail message: The fields to/bcc/cc recipients in email templates are now correctly used in generated emails.
+* Contract: add missing translations.
+* Demo data: fix XML configuration to import partner.
+* Invoice Line: fix product description not retrieved for sale invoices.
+* Invoice: fix rounding error on advance payment imputation.
+* Bank details: fix BBAN check on other countries than France.
+* User: Do not block by default users created from external authentication.
+* AppDocuSign: Fix error on trying to access the app configuration.
+* Product company: add database constraint to prevent having multiple lines in a product with the same company.
+* Forecast recap line type: fix data-init.
+* Action builder: Fix issue where the user was unable to save.
+* Invoice Line: Fix filter on supplier in supplier invoice.
+* Purchase order line: fill supplier code and name on generated purchase order lines.
+* Fix errors in CSV files that might cause parsing issues.
+* Fix missing and wrong french translations.
+
 ## [6.0.9] (2021-04-02)
 
 #### Fixed
@@ -482,6 +555,9 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.12]: https://github.com/axelor/axelor-open-suite/compare/v6.0.11...v6.0.12
+[6.0.11]: https://github.com/axelor/axelor-open-suite/compare/v6.0.10...v6.0.11
+[6.0.10]: https://github.com/axelor/axelor-open-suite/compare/v6.0.9...v6.0.10
 [6.0.9]: https://github.com/axelor/axelor-open-suite/compare/v6.0.8...v6.0.9
 [6.0.8]: https://github.com/axelor/axelor-open-suite/compare/v6.0.7...v6.0.8
 [6.0.7]: https://github.com/axelor/axelor-open-suite/compare/v6.0.6...v6.0.7

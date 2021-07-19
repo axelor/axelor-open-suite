@@ -24,7 +24,7 @@ public interface IExceptionMessage {
       "Please provide unique code. The code '%s' is already used" /*)*/;
 
   /** Check if chart name doesn't contains any space. */
-  static final String CHART_BUILDER_1 = /*$$(*/ "Name must not contains space" /*)*/;
+  static final String CHART_BUILDER_1 = /*$$(*/ "The name must not contain spaces" /*)*/;
 
   /** Message to display on click of edit icon of node or transition if workflow is not saved. */
   static final String WKF_1 = /*$$(*/ "Workflow is not saved" /*)*/;

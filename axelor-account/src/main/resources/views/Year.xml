@@ -27,14 +27,14 @@
 		</panel>
 		<panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
 		<panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet" name="linkedAdjustingMovesPanel" showIf="statusSelect &gt; 1"/>
-		<panel name="actionsPanel" sidebar="true" readonlyIf="statusSelect == 2">
+		<panel name="actionsPanel" sidebar="true">
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
-			<field name="closureDateTime" showIf="statusSelect == 2"/>
-			<button name="closeBtn" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book"/>
+			<field name="closureDateTime" showIf="statusSelect == 2" readonlyIf="statusSelect == 2"/>
+			<button name="closeBtn" title="Close fiscal year" onClick="action-group-account-year-close-click" hideIf="statusSelect == 2" prompt="The closing of a fiscal year brings irrevocable integration of a move in Moves book" readonlyIf="!id"/>
 			<button name="adjustBtn" title="Adjust fiscal year" onClick="action-group-account-year-adjust-click" showIf="statusSelect == 2"/>
 		</panel>
-		<panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2">
+		<panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2" readonlyIf="!id">
 			<field name="periodDurationSelect"/>
 			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-year-group-generate-period-click" />
 		</panel>
@@ -52,6 +52,7 @@
     
     <action-group name="action-group-account-year-close-click">
     	<action name="action-year-check-date"/>
+    	<action name="save"/>
     	<action name="action-year-close-method"/>
     	<action name="save"/>
     </action-group>

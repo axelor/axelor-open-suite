@@ -148,6 +148,7 @@
 		<option value="1">WAP value</option>
 		<option value="2">Accounting value</option>
 		<option value="3">Sale value</option>
+		<option value="4">Purchase value</option>
 	</selection>
   
     <selection name="stock.stock.location.printing.type">

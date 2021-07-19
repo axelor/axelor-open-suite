@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.service.batch;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -34,11 +33,12 @@ import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -149,20 +149,17 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
 
     String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
-    String filePath = AppSettings.get().get("file.upload.dir");
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    MetaFile metaFile = new MetaFile();
-    metaFile.setFileName(fileName);
-    metaFile.setFilePath(fileName);
-    metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
-
-    new File(filePath).mkdirs();
     CsvTool.csvWriter(
-        filePath,
-        fileName,
+        file.getParent(),
+        file.getName(),
         ';',
         Beans.get(PayrollPreparationService.class).getPayrollPreparationExportHeader(),
         list);
+
+    FileInputStream inStream = new FileInputStream(file);
+    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
 
     return metaFile;
   }
@@ -181,21 +178,18 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
 
     String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
-    String filePath = AppSettings.get().get("file.upload.dir");
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    MetaFile metaFile = new MetaFile();
-    metaFile.setFileName(fileName);
-    metaFile.setFilePath(fileName);
-    metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
-
-    new File(filePath).mkdirs();
     CsvTool.csvWriter(
-        filePath,
-        fileName,
+        file.getParent(),
+        file.getName(),
         ';',
         Beans.get(PayrollPreparationService.class)
             .getPayrollPreparationMeilleurGestionExportHeader(),
         list);
+
+    FileInputStream inStream = new FileInputStream(file);
+    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
 
     return metaFile;
   }
@@ -225,21 +219,17 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
 
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
-    String filePath = AppSettings.get().get("file.upload.dir");
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    MetaFile metaFile = new MetaFile();
-    metaFile.setFileName(fileName);
-    metaFile.setFilePath(fileName);
-    metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
-
-    new File(filePath).mkdirs();
     CsvTool.csvWriter(
-        filePath,
-        fileName,
+        file.getParent(),
+        file.getName(),
         ';',
         payrollPreparationService.getPayrollPreparationSilaeExportHeader(),
         list);
 
+    FileInputStream inStream = new FileInputStream(file);
+    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
     return metaFile;
   }
 }
