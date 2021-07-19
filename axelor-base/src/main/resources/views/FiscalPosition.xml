@@ -16,6 +16,8 @@
             <field name="customerSpecificNoteText" colSpan="12" showIf="customerSpecificNote" showTitle="false" if-module="axelor-account"/>
 	        <panel-related name="accountEquivListPanel" field="accountEquivList" form-view="account-equiv-form" grid-view="account-equiv-grid" colSpan="12" if-module="axelor-account" />
 	        <panel-related name="taxEquivListPanel" field="taxEquivList" form-view="tax-equiv-form" grid-view="tax-equiv-grid" colSpan="12" />
+	        <panel-related name="taxNumberPanel" colSpan="12" field="taxNumberSet" form-view="tax-number-form" grid-view="tax-number-grid"
+						   canNew="false" canEdit="false" canSelect="true" if="__config__.app.isApp('account')"/>
         </panel>
     </form>
 
