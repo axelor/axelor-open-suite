@@ -42,7 +42,7 @@
 		</panel>
 		<panel-dashlet
 			action="action-view-period-linked-adjusting-moves-dashlet"
-			name="linkedAdjustingMovesPanel" />
+			name="linkedAdjustingMovesPanel" hidden="true"/>
 		<panel name="actionsPanel" sidebar="true">
 			<field name="statusSelect" colSpan="6" />
 			<field name="closureDateTime" colSpan="6"
@@ -88,7 +88,7 @@
 	<action-attrs
 		name="action-attrs-period-hide-linked-adjusting-moves-dashlet">
 		<attribute for="linkedAdjustingMovesPanel" name="hidden"
-			expr="eval: __repo__(AdjustHistory).all().filter('self.period.id = ?', id).fetch().size() == 0" />
+			expr="eval: __repo__(AdjustHistory).all().filter('self.period.id = ?', id).fetch().size() == 0" if="id" />
 	</action-attrs>
 
 
