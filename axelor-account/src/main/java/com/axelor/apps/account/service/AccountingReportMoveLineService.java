@@ -17,15 +17,15 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigInteger;
-import java.util.List;
-
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.List;
 
 public interface AccountingReportMoveLineService {
 
@@ -40,12 +40,24 @@ public interface AccountingReportMoveLineService {
 
   public List<Partner> getDasToDeclarePartnersFromAccountingExport(
       AccountingReport accountingExport) throws AxelorException;
-  
-  public MetaFile generateN4DSFile(AccountingReport accountingExport,String fileName) throws AxelorException;
 
-  public List<AccountingReportMoveLine> getDasToDeclareLinesFromAccountingExport(AccountingReport accountingExport);
-  
+  public MetaFile generateN4DSFile(AccountingReport accountingExport, String fileName)
+      throws AxelorException, IOException;
+
+  public List<AccountingReportMoveLine> getDasToDeclareLinesFromAccountingExport(
+      AccountingReport accountingExport);
+
   public List<String> generateN4DSLines(AccountingReport accountingExport) throws AxelorException;
-  
-  public List<List> getN4DSDeclaredPartnersData(AccountingReport accountingExport);
+
+  public List<Object[]> getN4DSDeclaredPartnersData(AccountingReport accountingExport);
+
+  public String manageDAS2ServiceTypeToDeclare(String serviceTypeCode);
+
+  public String computeNic(String registrationCode, String countryAlpha2Code);
+
+  public String computeSiren(String registrationCode, String countryAlpha2Code);
+
+  public String setN4DSLine(String heading, String value);
+
+  public void updateN4DSExportStatus(AccountingReport accountingExport);
 }

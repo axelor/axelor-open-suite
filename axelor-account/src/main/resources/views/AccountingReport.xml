@@ -116,7 +116,7 @@
 			<field name="ref" readonly="true"/>
 			<field name="date" title="Export Date fixed to" readonlyIf="statusSelect == 2"/>
 			<field name="reportType" onChange="action-group-account-accounting-report-reporttype-onchange"
-						 domain="self.reportExportTypeSelect = 2 AND self.company = :company"/>
+						 domain="self.reportExportTypeSelect = 2 AND self.company = :company AND self.typeSelect != 1011"/>
 			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-group-account-accounting-report-company-onchange" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="!$contains([1000, 1010, 1001, 1011], reportType.typeSelect)" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="$contains([1000, 1010,1011], reportType.typeSelect)" grid-view="year-account-grid" form-view="year-account-form" />
 			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" hideIf="reportType.typeSelect == 1000 || reportType.typeSelect == 1011" requiredIf="!$contains([1000, 1010, 1001, 1011], reportType.typeSelect)" form-view="period-form" grid-view="period-grid" canView="false"/>
@@ -130,10 +130,11 @@
 		<panel sidebar="true" name="infoPanel" title="Info">
 			<field name="statusSelect"/>
 			<button name="searchBtn" title="Search" showIf="(statusSelect != 2 &amp;&amp; reportType.typeSelect != 1011) || $contains([1000, 1010, 1001], reportType.typeSelect)" onClick="save,action-accounting-report-method-search-move-line,save"/>
-			<button name="exportBtn" title="Export" showIf="(statusSelect != 2 &amp;&amp; reportType.typeSelect != 1011) || $contains([1000, 1010, 1001], reportType.typeSelect) || (reportType.typeSelect == 1011 &amp;&amp; !exported)" onClick="action-group-account-accounting-report-export-click"/>
+			<button name="exportBtn" title="Export" showIf="(statusSelect != 2 &amp;&amp; reportType.typeSelect != 1011) || $contains([1000, 1010, 1001], reportType.typeSelect) || (statusSelect == 2 &amp;&amp; reportType.typeSelect == 1011 &amp;&amp; !exported)" onClick="action-group-account-accounting-report-export-click"/>
 			<button name="showMoveExportedBtn" title="Exported moves" hideIf="statusSelect != 2 || $contains([1000, 1010, 1011], reportType.typeSelect)" onClick="save,action-accounting-report-method-show-move-exported"/>
-			<button name="replayExportBtn" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010], reportType.typeSelect) || (reportType.typeSelect == 1011 &amp;&amp; !exported)" onClick="save,action-accounting-report-method-replay-export"/>
+			<button name="replayExportBtn" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010, 1011], reportType.typeSelect)" onClick="save,action-accounting-report-method-replay-export"/>
 			<field name="exported" readonly="true" hideIf="reportType.typeSelect != 1011"/>
+			<field name="complementaryExport" readonly="true" hideIf="reportType.typeSelect != 1011"/>
 		</panel>
 		
 		<panel sidebar="true" name="balancePanel" title="Balance" hideIf="reportType.typeSelect == 1011">

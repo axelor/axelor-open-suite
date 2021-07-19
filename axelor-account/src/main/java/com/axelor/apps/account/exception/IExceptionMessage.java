@@ -161,9 +161,9 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND = /*$$(*/
       "Report type not found" /*)*/;
   static final String ACCOUNTING_REPORT_ANOMALIES = /*$$(*/ "Anomalies generated" /*)*/;
-  
+
   static final String ACCOUNTING_REPORT_DAS2_ACTIVE_NORM = /*$$(*/
-  "DAS2 active norm is missing" /*)*/;
+      "DAS2 active norm is missing" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_CONTACT_MISSING = /*$$(*/
       "DAS2 contact partner is missing" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING = /*$$(*/
@@ -181,7 +181,7 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF = /*$$(*/
       "DAS2 declarant company %s : Activity code is missing" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS = /*$$(*/
-	   "DAS2 declarant company %s : Address is missing" /*)*/;
+      "DAS2 declarant company %s : Address is missing" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_MOVE_LINE_PARTNER_MISSING = /*$$(*/
       "Partner is missing on the move %s" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING = /*$$(*/
@@ -194,8 +194,8 @@ public interface IExceptionMessage {
       "DAS2 declared partner %s %s : address is missing" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE = /*$$(*/
       "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual" /*)*/;
-  static final String ACCOUNTING_REPORT_DAS2_YEAR_MISSING = /*$$(*/
-	  "DAS2 accounting export : Fiscal year or closure date of fiscal year are missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING = /*$$(*/
+      "DAS2 declared partner %s %s : first name is missing" /*)*/;
 
   /** Move line service */
   static final String MOVE_LINE_1 = /*$$(*/ "Partner is missing on the invoice %s" /*)*/;

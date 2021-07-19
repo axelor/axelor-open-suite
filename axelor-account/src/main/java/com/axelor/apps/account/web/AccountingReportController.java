@@ -73,7 +73,7 @@ public class AccountingReportController {
               I18n.get(
                   "There is already an ongoing accounting report of this type in draft status for this same period."));
         }
-        if (accountingReportService.isThereAlreadyOngoingDas2ExportInPeriod(accountingReport)) {
+        if (accountingReportService.isThereAlreadyDas2ExportInPeriod(accountingReport, false)) {
           response.setAlert(
               I18n.get(
                   "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
@@ -221,7 +221,7 @@ public class AccountingReportController {
               I18n.get(
                   "There is already an ongoing accounting report of this type in draft status for this same period."));
         }
-        if (accountingReportService.isThereAlreadyOngoingDas2ExportInPeriod(accountingReport)) {
+        if (accountingReportService.isThereAlreadyDas2ExportInPeriod(accountingReport, false)) {
           response.setAlert(
               I18n.get(
                   "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
@@ -307,10 +307,17 @@ public class AccountingReportController {
     accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
 
     AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+    boolean complementaryExport = false;
     try {
+      if (accountingReportService.isThereAlreadyDas2ExportInPeriod(accountingReport, true)) {
+        complementaryExport = true;
+        response.setNotify(
+            I18n.get(
+                "There is already N4DS export for this period. The accounting export created will generate complementary N4DS export."));
+      }
       AccountingReport accountingExport =
           accountingReportService.createAccountingExportFromReport(
-              accountingReport, AccountingReportRepository.EXPORT_N4DS);
+              accountingReport, AccountingReportRepository.EXPORT_N4DS, complementaryExport);
 
       response.setView(
           ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_8))
