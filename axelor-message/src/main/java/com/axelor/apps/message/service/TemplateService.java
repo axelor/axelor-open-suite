@@ -18,20 +18,32 @@
 package com.axelor.apps.message.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -96,5 +108,47 @@ public class TemplateService {
     maker.setTemplate(template.getContent());
     maker.setContext(bean, context, beanName);
     return maker.make();
+  }
+
+  public void addItemToReferenceSelection(MetaModel model) {
+    MetaSelect metaSelect =
+        Beans.get(MetaSelectRepository.class)
+            .findByName("print.template.line.test.reference.select");
+    List<MetaSelectItem> items = metaSelect.getItems();
+    if (items != null && !items.stream().anyMatch(x -> x.getValue().equals(model.getFullName()))) {
+      MetaSelectItem metaSelectItem = new MetaSelectItem();
+      metaSelectItem.setTitle(model.getName());
+      metaSelectItem.setValue(model.getFullName());
+      metaSelectItem.setSelect(metaSelect);
+      saveMetaSelectItem(metaSelectItem);
+    }
+  }
+
+  @Transactional
+  public void saveMetaSelectItem(MetaSelectItem metaSelectItem) {
+    Beans.get(MetaSelectItemRepository.class).save(metaSelectItem);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public Message generateDraftMessage(Template template, MetaModel metaModel)
+      throws ClassNotFoundException, AxelorException {
+
+    if (metaModel == null) {
+      return null;
+    }
+    String model = metaModel.getFullName();
+    Model modelObject = null;
+
+    if (StringUtils.notEmpty(model)) {
+      Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(model);
+      modelObject = JPA.find(modelClass, Long.valueOf(template.getReferenceId().toString()));
+    }
+    try {
+      return Beans.get(TemplateMessageService.class).generateMessage(modelObject, template, true);
+    } catch (InstantiationException | IllegalAccessException | IOException e) {
+      TraceBackService.trace(e);
+    }
+    return null;
   }
 }

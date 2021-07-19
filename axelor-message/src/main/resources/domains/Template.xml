@@ -30,6 +30,9 @@
     <boolean name="addSignature" title="Add Signature"/>
 
 		<integer name="templateEngineSelect" title="Template engine" selection="template.engine.select" default="1"/>
+	
+	<string name="reference" title="Reference" />
+    <integer name="referenceId" title="Reference Id" />
 
 		<extra-code><![CDATA[
 			// MEDIA TYPE SELECT

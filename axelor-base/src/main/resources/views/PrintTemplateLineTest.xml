@@ -13,13 +13,9 @@
 		</panel>
 		<panel sidebar="true">
 			<field name="$metaModel" title="Model" colSpan="12" type="many-to-one" target="com.axelor.meta.db.MetaModel" x-target-name="name" />
-			<button name="addToSelectBtn" title="Add to reference selection" colSpan="12" onClick="action-print-template-line-method-add-item-to-ref-select" />
+			<button name="addToSelectBtn" title="Add to reference selection" colSpan="12" onClick="action-template-method-add-item-to-ref-select" />
 		</panel>
 	</form>
-
-	<action-method name="action-print-template-line-method-add-item-to-ref-select">
-		<call class="com.axelor.apps.base.web.PrintTemplateLineController" method="addItemToReferenceSelection"/>
-	</action-method>
 
 	<action-method name="action-print-template-line-method-check-expression">
 		<call class="com.axelor.apps.base.web.PrintTemplateLineController" method="checkTemplateLineExpression" />
