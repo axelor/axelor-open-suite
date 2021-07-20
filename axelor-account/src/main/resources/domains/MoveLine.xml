@@ -36,6 +36,8 @@
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5" initParam="true"/>
     <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
     
+    <long name="postedNbr" title="Posted number"/>
+    
     <!-- 	Field not displayed, used during the payment voucher input -->
 	<decimal name="maxAmountToReconcile" title="Max Amount to reconcile" />
 	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment Schedule line"/>

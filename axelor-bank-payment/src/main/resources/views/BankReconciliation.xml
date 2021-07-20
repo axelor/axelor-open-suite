@@ -31,8 +31,8 @@
         <field name="bankDetails" canEdit="false" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true"
           onChange="action-bank-reconciliation-method-set-journal,action-bank-reconciliation-method-set-cash-account" />
         <field name="includeOtherBankStatements" />
-        <field name="fromDate" />
-        <field name="toDate" />
+        <field name="fromDate" requiredIf="includeOtherBankStatements" />
+        <field name="toDate" requiredIf="includeOtherBankStatements" />
         <field name="journal" canEdit="false" form-view="journal-form" grid-view="journal-grid" onChange="action-bank-reconciliation-method-set-cash-account"
           onSelect="action-bank-reconciliation-method-set-journal-domain" />
         <field name="cashAccount" canEdit="false" form-view="account-form" grid-view="account-grid" onSelect="action-bank-reconciliation-method-set-cash-account-domain" />
@@ -50,6 +50,13 @@
       <panel name="balancePanel" title="Balance" colSpan="12">
         <field name="totalPaid" />
         <field name="totalCashed" />
+        <field name="$balances" showTitle="false">
+          <viewer depends="statementReconciledLineBalance,movesReconciledLineBalance,statementUnreconciledLineBalance,movesUnreconciledLineBalance,statementOngoingReconciledBalance,movesOngoingReconciledBalance,statementAmountRemainingToReconcile,movesAmountRemainingToReconcile,statementTheoreticalBalance,movesTheoreticalBalance">
+            <![CDATA[
+              
+            ]]>
+          </viewer>
+        </field>
         <separator title="Bank statements" />
         <separator title="Account" />
         <field name="startingBalance" colSpan="3" readonlyIf="bankStatement" />
@@ -59,11 +66,11 @@
         <label name="balanceEqualLabel" colSpan="12" css="label-danger" title="Computed balance and Ending Balance should be equal" showIf="computedBalance = endingBalance" />
         <button name="computeBtn" title="Compute" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-compute-click" colSpan="3" />
         <button name="multipleReconcileBtn" title="Multiple reconciles" onClick="save,action-bank-reconciliation-view-multiple-reconcile-wizard" colSpan="3" />
-        <button name="reconcileBtn" onClick="action-bank-reconciliation-method-validate-reconcile" title="Reconcile selected" colSpan="3" />
-        <button name="unpoint" onClick="action-bank-reconciliation-method-unreconcile" title="Unreconcile selected" colSpan="3" />
       </panel>
       <panel-related name="bankReconciliationLineListPanel" editable="true" field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid"
         form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click" />
+        <button name="reconcileBtn" onClick="action-bank-reconciliation-method-validate-reconcile" title="Reconcile selected" colSpan="3" />
+        <button name="unreconcileBtn" onClick="action-bank-reconciliation-method-unreconcile" title="Unreconcile selected" colSpan="3" />
       <panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12" />
     </panel>
   </form>
@@ -208,6 +215,10 @@
 
   <action-method name="action-bank-reconciliation-method-validate-reconcile">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="reconcile" />
+  </action-method>
+  
+  <action-method name="action-bank-reconciliation-method-unreconcile">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="unreconcile" />
   </action-method>
 
   <action-validate name="action-bank-reconciliation-check-incomplete-bankreconciliation-line">

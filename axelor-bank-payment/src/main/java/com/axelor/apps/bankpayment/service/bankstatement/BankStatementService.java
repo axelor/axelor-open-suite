@@ -53,12 +53,10 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.velocity.app.event.ReferenceInsertionEventHandler.referenceInsertExecutor;
-
 public class BankStatementService {
 
   private static final int DESCRIPTION_SIZE_LIMIT = 235;
-protected BankStatementRepository bankStatementRepository;
+  protected BankStatementRepository bankStatementRepository;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
   protected MoveLineRepository moveLineRepository;
@@ -303,8 +301,8 @@ protected BankStatementRepository bankStatementRepository;
 
     moveLine.setOrigin(bankStatementLine.getOrigin());
     String description = bankStatementLine.getDescription();
-    if(description.length() > DESCRIPTION_SIZE_LIMIT)
-    	description = description.substring(0,DESCRIPTION_SIZE_LIMIT-1);
+    if (description.length() > DESCRIPTION_SIZE_LIMIT)
+      description = description.substring(0, DESCRIPTION_SIZE_LIMIT - 1);
     description = description.concat("ref:").concat(bankStatementLine.getReference());
     moveLine.setDescription(description);
 
