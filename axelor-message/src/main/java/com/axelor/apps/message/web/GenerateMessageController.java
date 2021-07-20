@@ -47,9 +47,10 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class GenerateMessageController {
 
-  private static final String RELATED_TO2_SELECT_ID = "_relatedTo2SelectId";
-  private static final String RELATED_TO2_SELECT = "_relatedTo2Select";
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected static final String RELATED_TO2_SELECT_ID = "_relatedTo2SelectId";
+  protected static final String RELATED_TO2_SELECT = "_relatedTo2Select";
 
   public void callMessageWizard(ActionRequest request, ActionResponse response) {
 
@@ -73,26 +74,14 @@ public class GenerateMessageController {
 
       if (templateNumber == 0) {
         ActionViewBuilder builder =
-            ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))
-                .model(Message.class.getName())
-                .add("form", "message-form")
-                .param("forceEdit", "true")
-                .context("_mediaTypeSelect", MessageRepository.MEDIA_TYPE_EMAIL)
-                .context("_templateContextModel", model)
-                .context("_objectId", context.getId().toString());
+            getActionView(templateNumber, context, model, simpleModel, null);
+
         msgService.fillContext(builder, null, model, context.getId());
         response.setView(builder.map());
 
       } else if (templateNumber > 1) {
-
         ActionViewBuilder builder =
-            ActionView.define(I18n.get(IExceptionMessage.MESSAGE_2))
-                .model(Wizard.class.getName())
-                .add("form", "generate-message-wizard-form")
-                .param("show-confirm", "false")
-                .context("_objectId", context.getId().toString())
-                .context("_templateContextModel", model)
-                .context("_tag", simpleModel);
+            getActionView(templateNumber, context, model, simpleModel, null);
 
         msgService.fillContext(builder, null, model, context.getId());
         response.setView(builder.map());
@@ -195,11 +184,39 @@ public class GenerateMessageController {
                   realtedTo2SelectId);
     }
 
-    return ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))
-        .model(Message.class.getName())
-        .add("form", "message-form")
-        .param("forceEdit", "true")
-        .context("_showRecord", message.getId().toString())
-        .map();
+    ActionViewBuilder builder = getActionView(1, null, model, null, message);
+    return builder.map();
+  }
+
+  public ActionViewBuilder getActionView(
+      long templateNumber, Model context, String model, String simpleModel, Message message) {
+
+    if (templateNumber > 1) {
+      return ActionView.define(I18n.get(IExceptionMessage.MESSAGE_2))
+          .model(Wizard.class.getName())
+          .add("form", "generate-message-wizard-form")
+          .param("show-confirm", "false")
+          .context("_objectId", context.getId().toString())
+          .context("_templateContextModel", model)
+          .context("_tag", simpleModel);
+
+    } else {
+      ActionViewBuilder builder =
+          ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))
+              .model(Message.class.getName())
+              .add("form", "message-form")
+              .param("forceEdit", "true");
+
+      if (templateNumber == 0) {
+        builder
+            .context("_mediaTypeSelect", MessageRepository.MEDIA_TYPE_EMAIL)
+            .context("_templateContextModel", model)
+            .context("_objectId", context.getId().toString());
+
+      } else {
+        builder.context("_showRecord", message.getId().toString());
+      }
+      return builder;
+    }
   }
 }
