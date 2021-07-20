@@ -186,7 +186,7 @@ public class SaleOrderController {
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.isSelected()) {
+            if (saleOrderLine.isSelected() && saleOrderLine.getProduct() != null) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
               }
