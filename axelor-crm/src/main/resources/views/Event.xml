@@ -136,7 +136,7 @@
 					<span class="label label-warning" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 12" x-translate>On going</span>
 					<span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 13" x-translate>Pending</span>
 					<span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 14" x-translate>Finished</span>
-					<span class="label label-default" style="background-color: #228B22; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
+					<span class="label label-default" style="background-color: #AB274F; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
 				]]>
 				</viewer>
 			</field>
@@ -254,7 +254,7 @@
 				<span class="label label-warning" ng-show="record.statusSelect == 12" x-translate>On going</span>
 				<span class="label label-important" ng-show="record.statusSelect == 13" x-translate>Pending</span>
 				<span class="label label-success" ng-show="record.statusSelect == 14" x-translate>Finished</span>
-				<span class="label label-default" style="background-color: #228B22;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
+				<span class="label label-default" style="background-color: #AB274F;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
 			</div>
 			<br/><br/>
 		  	<span>
@@ -266,9 +266,9 @@
 			<div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
 			<div ng-show="!description" ng-bind-html="description"></div>
 			<br/><br/>
-			<div class="pull-right">
-				<button type="button" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent">Done</button>
-				<button type="button" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent">Cancel</button>
+			<div>
+				<button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.statusSelect != 14" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent">Done</button>
+				<button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.statusSelect != 15" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent">Cancel</button>
 			</div>
 	      </div>
 	  <div>
@@ -598,7 +598,7 @@
     </action-method>
     
     <action-attrs name="action-event-attrs-show-past-event-text">
-    	<attribute name="hidden" for="pastEventText" expr="eval: startDateTime &gt;= __time__ || __this__.startDateTime == __self__.startDateTime" if="startDateTime != null"/>
+    	<attribute name="hidden" for="pastEventText" expr="eval: startDateTime &gt;= __time__ || __this__?.startDateTime == __self__?.startDateTime" if="startDateTime != null"/>
     </action-attrs>
 
 <!-- 	FILTERS -->
