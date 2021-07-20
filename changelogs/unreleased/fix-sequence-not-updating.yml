@@ -1,0 +1,3 @@
+---
+title: "Sequence: fix an issue where a change in sequence configuration was not correctly taken into account without restarting the application."
+type: fix
