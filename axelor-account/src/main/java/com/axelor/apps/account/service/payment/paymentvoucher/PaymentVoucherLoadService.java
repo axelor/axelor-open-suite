@@ -17,6 +17,13 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
@@ -40,12 +47,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class PaymentVoucherLoadService {
 
@@ -118,10 +119,12 @@ public class PaymentVoucherLoadService {
     if (paymentVoucher.getPayVoucherDueElementList() != null) {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
-
+    int sequence = 0;
     for (MoveLine moveLine : this.getMoveLines(paymentVoucher)) {
-
-      paymentVoucher.addPayVoucherDueElementListItem(this.createPayVoucherDueElement(moveLine));
+    	
+    	PayVoucherDueElement payVoucherDueElement = this.createPayVoucherDueElement(moveLine);
+    	payVoucherDueElement.setSequence(sequence++);
+      paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
     }
 
     paymentVoucherRepository.save(paymentVoucher);
@@ -194,8 +197,7 @@ public class PaymentVoucherLoadService {
   public void completeElementToPay(
       PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext) throws AxelorException {
 
-    int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
-
+	  paymentVoucherContext.getPayVoucherDueElementList().sort((payVoucherDueElem1, payVoucherDueElem2) -> payVoucherDueElem1.getSequence().compareTo(payVoucherDueElem2.getSequence()));
     for (PayVoucherDueElement payVoucherDueElementContext :
         paymentVoucherContext.getPayVoucherDueElementList()) {
       PayVoucherDueElement payVoucherDueElement =
@@ -204,7 +206,7 @@ public class PaymentVoucherLoadService {
       if (payVoucherDueElementContext.isSelected()) {
 
         paymentVoucher.addPayVoucherElementToPayListItem(
-            this.createPayVoucherElementToPay(payVoucherDueElement, sequence++));
+            this.createPayVoucherElementToPay(payVoucherDueElement, payVoucherDueElementContext.getSequence()));
 
         // Remove the line from the due elements lists
         paymentVoucher.removePayVoucherDueElementListItem(payVoucherDueElement);
