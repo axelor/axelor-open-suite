@@ -4,3 +4,4 @@ type: fix
 description: |
   Added a field sequence in payVoucherDueElement in order to choose the imputation order when loading lines. 
   User can now change imputation order by changing sequence before loading lines.
+  Sequence can be change by moving line or by editing it.
