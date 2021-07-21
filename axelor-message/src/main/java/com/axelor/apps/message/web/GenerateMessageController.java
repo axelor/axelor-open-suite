@@ -39,7 +39,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +47,6 @@ import org.slf4j.LoggerFactory;
 public class GenerateMessageController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected static final String RELATED_TO2_SELECT_ID = "_relatedTo2SelectId";
-  protected static final String RELATED_TO2_SELECT = "_relatedTo2Select";
 
   public void callMessageWizard(ActionRequest request, ActionResponse response) {
 
@@ -65,45 +61,19 @@ public class GenerateMessageController {
         Beans.get(TemplateRepository.class)
             .all()
             .filter("self.metaModel.fullName = ?1 AND self.isSystem != true", model);
-    MessageService msgService = Beans.get(MessageService.class);
     try {
 
       long templateNumber = templateQuery.count();
 
       LOG.debug("Template number : {} ", templateNumber);
 
-      if (templateNumber == 0) {
+      if (templateNumber > 1 || templateNumber == 0) {
         ActionViewBuilder builder =
             getActionView(templateNumber, context, model, simpleModel, null);
-
-        msgService.fillContext(builder, null, model, context.getId());
         response.setView(builder.map());
-
-      } else if (templateNumber > 1) {
-        ActionViewBuilder builder =
-            getActionView(templateNumber, context, model, simpleModel, null);
-
-        msgService.fillContext(builder, null, model, context.getId());
-        response.setView(builder.map());
-
       } else {
-        Map<String, Object> contextMap = new HashMap<>();
-        msgService.fillContext(null, contextMap, model, context.getId());
-        String relatedTo2Select = null;
-        long relatedTo2SelectId = 0L;
-        if (contextMap.get(RELATED_TO2_SELECT) != null
-            && contextMap.get(RELATED_TO2_SELECT_ID) != null) {
-          relatedTo2Select = (String) contextMap.get(RELATED_TO2_SELECT);
-          relatedTo2SelectId = (long) contextMap.get(RELATED_TO2_SELECT_ID);
-        }
         response.setView(
-            generateMessage(
-                context.getId(),
-                model,
-                simpleModel,
-                templateQuery.fetchOne(),
-                relatedTo2Select,
-                relatedTo2SelectId));
+            generateMessage(context.getId(), model, simpleModel, templateQuery.fetchOne()));
       }
 
     } catch (Exception e) {
@@ -126,16 +96,8 @@ public class GenerateMessageController {
     String model = (String) context.get("_templateContextModel");
     String tag = (String) context.get("_tag");
 
-    String relatedTo2Select = null;
-    long relatedTo2SelectId = 0L;
-    if (context.get(RELATED_TO2_SELECT) != null && context.get(RELATED_TO2_SELECT_ID) != null) {
-      relatedTo2Select = (String) context.get(RELATED_TO2_SELECT);
-      relatedTo2SelectId = Long.parseLong(((String) context.get(RELATED_TO2_SELECT_ID)));
-    }
-
     try {
-      response.setView(
-          generateMessage(objectId, model, tag, template, relatedTo2Select, relatedTo2SelectId));
+      response.setView(generateMessage(objectId, model, tag, template));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -143,12 +105,7 @@ public class GenerateMessageController {
   }
 
   public Map<String, Object> generateMessage(
-      long objectId,
-      String model,
-      String tag,
-      Template template,
-      String relatedTo2Select,
-      long realtedTo2SelectId)
+      long objectId, String model, String tag, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
 
@@ -159,9 +116,7 @@ public class GenerateMessageController {
     Message message = null;
     if (template != null) {
       message =
-          Beans.get(TemplateMessageService.class)
-              .generateMessage(
-                  objectId, model, tag, template, relatedTo2Select, realtedTo2SelectId);
+          Beans.get(TemplateMessageService.class).generateMessage(objectId, model, tag, template);
     } else {
       message =
           Beans.get(MessageService.class)
@@ -179,9 +134,7 @@ public class GenerateMessageController {
                   null,
                   MessageRepository.MEDIA_TYPE_EMAIL,
                   null,
-                  null,
-                  relatedTo2Select,
-                  realtedTo2SelectId);
+                  null);
     }
 
     ActionViewBuilder builder = getActionView(1, null, model, null, message);
