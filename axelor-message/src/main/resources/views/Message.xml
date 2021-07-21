@@ -135,8 +135,6 @@
 		<field name="senderUser" expr="eval:__user__"/>
 		<field name="relatedTo1Select" expr="eval: _templateContextModel" if="_templateContextModel"/>
 		<field name="relatedTo1SelectId" expr="eval: Long.parseLong(_objectId)" if="_objectId"/>
-		<field name="relatedTo2Select" expr="eval: _relatedTo2Select" if="_relatedTo2Select"/>
-		<field name="relatedTo2SelectId" expr="eval: Long.parseLong(_relatedTo2SelectId)" if="_relatedTo2SelectId"/>
 	</action-record>
     
 	<action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">
