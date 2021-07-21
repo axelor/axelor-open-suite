@@ -1,9 +1,10 @@
 package com.axelor.apps.sale.service.configurator;
 
+import java.util.List;
+
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
-import java.util.List;
 
 /** Interface for import and export methods that use xml files by using jaxb library */
 public interface ConfiguratorJaxbIEService {
@@ -23,4 +24,13 @@ public interface ConfiguratorJaxbIEService {
    * @throws AxelorException
    */
   String importXMLToConfigurators(String pathDiff) throws AxelorException;
+  
+  /**
+   * When exported, attribute name finish with '_XX' where XX is the id of the creator. After
+   * importing or copying, we need to fix these values.
+   *
+   * @param creator a saved configurator creator
+   * @throws AxelorException
+   */
+  void fixAttributesName(ConfiguratorCreator creator) throws AxelorException;
 }

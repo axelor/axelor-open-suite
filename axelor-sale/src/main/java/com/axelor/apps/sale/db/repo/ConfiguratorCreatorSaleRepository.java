@@ -17,14 +17,15 @@
  */
 package com.axelor.apps.sale.db.repo;
 
+import javax.persistence.PersistenceException;
+
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorJaxbIEService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import javax.persistence.PersistenceException;
 
 public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorRepository {
 
@@ -42,7 +43,7 @@ public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorReposi
       if (entity.getCopyNeedingUpdate()) {
         entity = super.save(entity);
         entity.setCopyNeedingUpdate(false);
-        Beans.get(ConfiguratorCreatorImportService.class).fixAttributesName(entity);
+        Beans.get(ConfiguratorJaxbIEService.class).fixAttributesName(entity);
         ConfiguratorCreatorService configuratorCreatorService =
             Beans.get(ConfiguratorCreatorService.class);
         configuratorCreatorService.updateAttributes(entity);

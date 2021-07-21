@@ -1,21 +1,31 @@
 package com.axelor.apps.sale.service.configurator;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.export.xml.IEXmlService;
-import com.axelor.apps.sale.db.ConfiguratorCreator;
-import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
-import com.axelor.apps.sale.xml.models.ConfiguratorExport;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 import javax.xml.bind.JAXBException;
+
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.export.xml.IEXmlService;
+import com.axelor.apps.sale.db.ConfiguratorCreator;
+import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
+import com.axelor.apps.sale.xml.models.ConfiguratorExport;
+import com.axelor.common.StringUtils;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonField;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 /**
  * This class is a implementation on ConfiguratorIEService. It uses library jaxb in order to export
@@ -34,16 +44,20 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
   protected AppBaseService appBaseService;
 
   protected ConfiguratorCreatorRepository configuratorCreatorRepository;
+  
+  protected ConfiguratorCreatorService configuratorCreatorService;
 
   @Inject
   public ConfiguratorJaxbIEServiceImpl(
       IEXmlService ieXmlService,
       AppBaseService appBaseService,
-      ConfiguratorCreatorRepository configuratorCreatorRepository) {
+      ConfiguratorCreatorRepository configuratorCreatorRepository,
+      ConfiguratorCreatorService configuratorCreatorService) {
 
     this.ieXmlService = ieXmlService;
     this.appBaseService = appBaseService;
     this.configuratorCreatorRepository = configuratorCreatorRepository;
+    this.configuratorCreatorService = configuratorCreatorService;
   }
 
   @Override
@@ -123,6 +137,7 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
                       + String.format(CONFIGURATOR_ALREADY_EXIST, configuratorCreator.getName()));
             } else {
               configuratorCreatorRepository.save(configuratorCreator);
+              completeAfterImport(configuratorCreator);
               totalImport.addAndGet(1);
             }
           } catch (Exception e) {
@@ -132,4 +147,100 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
 
     return totalImport.get();
   }
+  
+  @Override
+  public void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
+    List<MetaJsonField> attributes = creator.getAttributes();
+    if (attributes == null) {
+      return;
+    }
+    for (MetaJsonField attribute : attributes) {
+      String name = attribute.getName();
+      if (name != null && name.contains("_")) {
+        attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
+      }
+      updateOtherFieldsInAttribute(creator, attribute);
+      updateAttributeNameInFormulas(creator, name, attribute.getName());
+    }
+  }
+  
+  /**
+   * Update the configurator id in other fields of the attribute.
+   *
+   * @param creator
+   * @param attribute attribute to update
+   */
+  protected void updateOtherFieldsInAttribute(
+      ConfiguratorCreator creator, MetaJsonField attribute) {
+    try {
+      List<Field> fieldsToUpdate =
+          Arrays.stream(attribute.getClass().getDeclaredFields())
+              .filter(field -> field.getType().equals(String.class))
+              .collect(Collectors.toList());
+      for (Field field : fieldsToUpdate) {
+        Mapper mapper = Mapper.of(attribute.getClass());
+        Method getter = mapper.getGetter(field.getName());
+        String fieldString = (String) getter.invoke(attribute);
+        if (fieldString != null && fieldString.contains("_")) {
+          Method setter = mapper.getSetter(field.getName());
+          String updatedFieldString =
+              fieldString.substring(0, fieldString.lastIndexOf('_')) + '_' + creator.getId();
+          setter.invoke(attribute, updatedFieldString);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  /**
+   * Update the changed attribute in all formula O2M.
+   *
+   * @param creator
+   * @param oldName
+   * @param newName
+   */
+  protected void updateAttributeNameInFormulas(
+      ConfiguratorCreator creator, String oldName, String newName) throws AxelorException {
+    if (creator.getConfiguratorProductFormulaList() != null) {
+      updateAttributeNameInFormulas(creator.getConfiguratorProductFormulaList(), oldName, newName);
+    }
+    if (creator.getConfiguratorSOLineFormulaList() != null) {
+      updateAttributeNameInFormulas(creator.getConfiguratorSOLineFormulaList(), oldName, newName);
+    }
+  }
+
+  /**
+   * Update the changed attribute in formulas.
+   *
+   * @param formulas
+   * @param oldAttributeName
+   * @param newAttributeName
+   */
+  protected void updateAttributeNameInFormulas(
+      List<? extends ConfiguratorFormula> formulas,
+      String oldAttributeName,
+      String newAttributeName) {
+
+    formulas.forEach(
+        configuratorFormula -> {
+          if (!StringUtils.isEmpty(configuratorFormula.getFormula())) {
+            configuratorFormula.setFormula(
+                configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName));
+          }
+        });
+  }
+  
+  /**
+   * Complete import by fixing attribute name (name_XX where XX is id of ConfiguratorCreator in Database)
+   * Update attributes and indicators
+   * All fields that are related to id of ConfiguratorCreator in Database will be also fixed
+   * @param creator
+   * @throws AxelorException
+   */
+  protected void completeAfterImport(ConfiguratorCreator creator) throws AxelorException {
+	    fixAttributesName(creator);
+	    configuratorCreatorService.updateAttributes(creator);
+	    configuratorCreatorService.updateIndicators(creator);
+	  }
 }

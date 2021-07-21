@@ -148,11 +148,6 @@
 		<field name="isActive" expr="eval: false"/>
 	</action-record>
 	
-	<!-- 19 is the index of the ZoneTime part of the ZonedDateTime __datetime__ and there's no need to display it to the user -->
-	<action-export name="action-configurator-creator-export" output="${date}${time}" download="true">
-  		<export name="ConfiguratorCreatorExport-${__datetime__.toString().substring(0, 19)}.xml" template="data-export/export-configurator-creator.tmpl" engine="groovy"/>
-	</action-export>
-	
 	<action-view name="action-configurator-creator-view-import" model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Import configurator creators">
 		<view name="import-configurator-creator-form" type="form"/>
 		<view-param name="popup" value="true"/>
