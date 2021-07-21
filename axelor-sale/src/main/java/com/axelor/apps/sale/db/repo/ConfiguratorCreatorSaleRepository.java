@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.sale.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
@@ -26,6 +24,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorJaxbIEService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorRepository {
 

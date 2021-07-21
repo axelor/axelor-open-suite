@@ -1,16 +1,5 @@
 package com.axelor.apps.sale.service.configurator;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBException;
-
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.export.xml.IEXmlService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -26,6 +15,15 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import javax.xml.bind.JAXBException;
 
 /**
  * This class is a implementation on ConfiguratorIEService. It uses library jaxb in order to export
@@ -44,7 +42,7 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
   protected AppBaseService appBaseService;
 
   protected ConfiguratorCreatorRepository configuratorCreatorRepository;
-  
+
   protected ConfiguratorCreatorService configuratorCreatorService;
 
   @Inject
@@ -147,7 +145,7 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
 
     return totalImport.get();
   }
-  
+
   @Override
   public void fixAttributesName(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> attributes = creator.getAttributes();
@@ -163,7 +161,7 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
       updateAttributeNameInFormulas(creator, name, attribute.getName());
     }
   }
-  
+
   /**
    * Update the configurator id in other fields of the attribute.
    *
@@ -230,17 +228,18 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
           }
         });
   }
-  
+
   /**
-   * Complete import by fixing attribute name (name_XX where XX is id of ConfiguratorCreator in Database)
-   * Update attributes and indicators
-   * All fields that are related to id of ConfiguratorCreator in Database will be also fixed
+   * Complete import by fixing attribute name (name_XX where XX is id of ConfiguratorCreator in
+   * Database) Update attributes and indicators All fields that are related to id of
+   * ConfiguratorCreator in Database will be also fixed
+   *
    * @param creator
    * @throws AxelorException
    */
   protected void completeAfterImport(ConfiguratorCreator creator) throws AxelorException {
-	    fixAttributesName(creator);
-	    configuratorCreatorService.updateAttributes(creator);
-	    configuratorCreatorService.updateIndicators(creator);
-	  }
+    fixAttributesName(creator);
+    configuratorCreatorService.updateAttributes(creator);
+    configuratorCreatorService.updateIndicators(creator);
+  }
 }

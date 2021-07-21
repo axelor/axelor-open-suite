@@ -1,21 +1,5 @@
 package com.axelor.apps.production.service.configurator;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import javax.persistence.PersistenceException;
-import javax.xml.bind.JAXBException;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.export.xml.IEXmlService;
 import com.axelor.apps.production.db.ConfiguratorBOM;
@@ -37,6 +21,19 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import javax.persistence.PersistenceException;
+import javax.xml.bind.JAXBException;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * This class is a implementation on ConfiguratorIEService. It uses library jaxb in order to export
@@ -46,15 +43,18 @@ import com.google.inject.persist.Transactional;
 public class ProductionConfiguratorJaxbIEServiceImpl extends ConfiguratorJaxbIEServiceImpl {
 
   private static int MAX_DEPTH = 50;
-  
-  
+
   @Inject
   public ProductionConfiguratorJaxbIEServiceImpl(
       IEXmlService exportXmlService,
       AppBaseService appBaseService,
       ConfiguratorCreatorRepository configuratorCreatorRepository,
       ConfiguratorCreatorService configuratorCreatorService) {
-    super(exportXmlService, appBaseService, configuratorCreatorRepository, configuratorCreatorService);
+    super(
+        exportXmlService,
+        appBaseService,
+        configuratorCreatorRepository,
+        configuratorCreatorService);
   }
 
   @Override
@@ -142,7 +142,7 @@ public class ProductionConfiguratorJaxbIEServiceImpl extends ConfiguratorJaxbIES
                       + String.format(CONFIGURATOR_ALREADY_EXIST, configuratorCreator.getName()));
             } else {
               configuratorCreatorRepository.save(configuratorCreator);
-              //Complete import 
+              // Complete import
               completeAfterImport(configuratorCreator);
               totalImport.addAndGet(1);
             }
@@ -157,7 +157,7 @@ public class ProductionConfiguratorJaxbIEServiceImpl extends ConfiguratorJaxbIES
 
     return totalImport.get();
   }
-  
+
   /**
    * Update the changed attribute in all formula O2M. This implementation also update formulas in
    * configurator BOM and configurator prod process.
