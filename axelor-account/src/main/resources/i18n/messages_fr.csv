@@ -1866,7 +1866,6 @@
 "Sequence to be used to generate customer accounts' codes","Séquence à utiliser pour la codification des comptes clients",,
 "Sequence to be used to generate employee accounts' codes","Séquence à utiliser pour la codification des comptes salariés",,
 "Sequence to be used to generate supplier accounts' codes","Séquence à utiliser pour les comptes fournisseurs",,
-"Set Origin/Description","Initialiser l'origine/description",,
 "Settings","Configurations",,
 "Shift Reason (long term debt)","Motif de passage (créance + 6 mois)",,
 "Shift Reason (short term debt)","Motif de passage (créance + 3 mois)",,

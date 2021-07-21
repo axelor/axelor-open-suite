@@ -15,7 +15,8 @@
 		<many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
 		<many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account" title="Employee account"/>
 		<many-to-one name="defaultExpenseAccount" ref="com.axelor.apps.account.db.Account" title="Default expense account"/>
-		<many-to-one name="defaultIncomeAccount" ref="com.axelor.apps.account.db.Account" title="Default income account"/>
+		<many-to-one name="defaultIncomeAccount" ref="com.axelor.apps.account.db.Account" title="Default income account" 
+    help="Lors de la saisie des OD sur un journal de type Vente, lorsque la Société et le Tiers seront sélectionnés au niveau de l’Ecriture, ce compte sera prérempli automatiquement dans la première Ligne d’écriture."/>
 
 		<!-- PAGE Compte Client -->
 		<decimal name="balanceCustAccount" title="Total balance" readonly="true"/>

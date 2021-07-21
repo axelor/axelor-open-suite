@@ -39,7 +39,7 @@
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true" />
     <field name="account.analyticDistributionAuthorized" hidden="true" />
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true" />
-    <field name="date" width="100" onChange="account-move-line-group-date-onchange" />
+    <field name="date" width="100" onChange="account-move-line-group-date-onchange"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0" />
     <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"
       onChange="action-move-line-method-compute-analytic-distribution" />
@@ -56,7 +56,7 @@
       form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
       readonlyIf="!account.analyticDistributionAuthorized"
       requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines" />
-    <field name="origin" width="120" />
+    <field name="origin" width="120" hidden="true"/>
     <field name="description" requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired" />
     <field name="analyticMoveLineList" hidden="true" />
     <field name="reconcileGroup" hidden="true" />
@@ -393,6 +393,7 @@
   <action-group name="action-account-move-line-partner-group">
     <action name="action-account-move-line-method-filter-partner" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'" />
     <action name="action-move-line-attrs-domain-partner" if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'" />
+    <action name="action-account-move-line-attrs-set-partner-readonlyIf"/>
   </action-group>
 
   <action-group name="account-move-line-group-date-onchange">
@@ -582,5 +583,9 @@
     <field name="date" expr="eval: move.date" if="move" />
     <field name="date" expr="eval: __parent__.date" if="__parent__" />
   </action-record>
-
+  
+  <action-attrs name="action-account-move-line-attrs-set-partner-readonlyIf">
+    <attribute name="readonlyIf" for="partner" expr="eval: account?.useForPartnerBalance &amp;&amp; amountPaid &gt; 0"/>
+  </action-attrs>
+  
 </object-views>

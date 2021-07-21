@@ -1866,7 +1866,6 @@
 "Sequence to be used to generate customer accounts' codes",,,
 "Sequence to be used to generate employee accounts' codes",,,
 "Sequence to be used to generate supplier accounts' codes",,,
-"Set Origin/Description",,,
 "Settings","Impostazioni",,
 "Shift Reason (long term debt)","Shift Reason (debito a lungo termine)",,
 "Shift Reason (short term debt)","Shift Reason (debito a breve termine)",,

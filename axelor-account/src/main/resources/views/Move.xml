@@ -58,10 +58,8 @@
           <field name="paymentMode" colSpan="3" />
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
-          <field name="description" colSpan="6" />
-          <field name="origin" colSpan="3" />
-          <button onClick="action-account-move-group-set-origin-and-description-on-lines" name="setOriginDescriptionBtn" icon="fa-copy" showIf="statusSelect == 3" colSpan="1"
-            readonly="false" />
+          <field name="description" colSpan="6" onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+          <field name="origin" colSpan="3" onChange="action-account-move-group-set-origin-and-description-on-lines"/>
         </panel>
       </panel>
 
