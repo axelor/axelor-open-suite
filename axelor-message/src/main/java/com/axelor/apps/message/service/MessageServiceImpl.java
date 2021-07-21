@@ -106,9 +106,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       String addressBlock,
       int mediaTypeSelect,
       EmailAccount emailAccount,
-      String signature,
-      String relatedTo2Select,
-      long relatedTo2SelectId) {
+      String signature) {
 
     emailAccount =
         emailAccount != null
@@ -155,9 +153,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount,
       String signature,
-      Boolean isForTemporaryMessage,
-      String relatedTo2Select,
-      long relatedTo2SelectId) {
+      Boolean isForTemporaryMessage) {
 
     if (!isForTemporaryMessage) {
       return createMessage(
@@ -174,9 +170,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
           addressBlock,
           mediaTypeSelect,
           emailAccount,
-          signature,
-          relatedTo2Select,
-          relatedTo2SelectId);
+          signature);
     }
 
     emailAccount =
@@ -593,6 +587,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     message.addMultiRelatedListItem(multiRelated);
     Beans.get(MultiRelatedRepository.class).save(multiRelated);
   }
+  
+  @Override
   public void fillContext(
       ActionViewBuilder builder, Map<String, Object> contextMap, String model, Long objectId) {}
 }

@@ -95,8 +95,7 @@ public class ActionEmailBuilderService {
           AxelorException, IOException, MessagingException {
 
     Template template = templateRepo.find(templateId);
-    Message message =
-        templateMessageService.generateMessage(objectId, model, tag, template, null, 0L);
+    Message message = templateMessageService.generateMessage(objectId, model, tag, template);
     ActionResponse response = new ActionResponse();
 
     if (sendOption == 0) {

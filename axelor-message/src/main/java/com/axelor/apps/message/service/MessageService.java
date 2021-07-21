@@ -49,9 +49,7 @@ public interface MessageService {
       String addressBlock,
       int mediaTypeSelect,
       EmailAccount emailAccount,
-      String signature,
-      String relatedTo2Select,
-      long relatedTo2SelectId);
+      String signature);
 
   @Transactional(rollbackOn = {Exception.class})
   /**
@@ -91,9 +89,7 @@ public interface MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount,
       String signature,
-      Boolean isTemporaryMessage,
-      String relatedTo2Select,
-      long relatedTo2SelectId);
+      Boolean isTemporaryMessage);
 
   @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles);

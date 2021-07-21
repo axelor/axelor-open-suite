@@ -85,16 +85,11 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   public Message generateMessage(Model model, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
-    return generateMessage(model, template, false, null, 0L);
+    return generateMessage(model, template, false);
   }
 
   @Override
-  public Message generateMessage(
-      Model model,
-      Template template,
-      Boolean isTemporaryMessage,
-      String relatedTo2Select,
-      long relatedTo2SelectId)
+  public Message generateMessage(Model model, Template template, Boolean isTemporaryMessage)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
 
@@ -105,36 +100,21 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
         klass.getCanonicalName(),
         klass.getSimpleName(),
         template,
-        isTemporaryMessage,
-        relatedTo2Select,
-        relatedTo2SelectId);
+        isTemporaryMessage);
   }
 
   @Override
-  public Message generateMessage(
-      Long objectId,
-      String model,
-      String tag,
-      Template template,
-      String relatedTo2Select,
-      long relatedTo2SelectId)
+  public Message generateMessage(Long objectId, String model, String tag, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
 
-    return generateMessage(
-        objectId, model, tag, template, false, relatedTo2Select, relatedTo2SelectId);
+    return generateMessage(objectId, model, tag, template, false);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message generateMessage(
-      Long objectId,
-      String model,
-      String tag,
-      Template template,
-      Boolean isForTemporaryEmail,
-      String relatedTo2Select,
-      long relatedTo2SelectId)
+      Long objectId, String model, String tag, Template template, Boolean isForTemporaryEmail)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
 
@@ -191,14 +171,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
     Message message =
         generateMessage(
-            model,
-            objectId,
-            template,
-            templates,
-            templatesContext,
-            isForTemporaryEmail,
-            relatedTo2Select,
-            relatedTo2SelectId);
+            model, objectId, template, templates, templatesContext, isForTemporaryEmail);
 
     if (!isForTemporaryEmail) {
       message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
@@ -215,9 +188,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       Template template,
       Templates templates,
       Map<String, Object> templatesContext,
-      Boolean isForTemporaryEmail,
-      String relatedTo2Select,
-      Long relatedTo2SelectId) {
+      Boolean isForTemporaryEmail) {
 
     String content = "";
     String subject = "";
@@ -298,9 +269,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             mediaTypeSelect,
             mailAccount,
             signature,
-            isForTemporaryEmail,
-            relatedTo2Select,
-            relatedTo2SelectId);
+            isForTemporaryEmail);
 
     return message;
   }
@@ -321,7 +290,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       throws MessagingException, IOException, AxelorException, ClassNotFoundException,
           InstantiationException, IllegalAccessException, JSONException {
 
-    Message message = this.generateMessage(model, template, true, null, 0L);
+    Message message = this.generateMessage(model, template, true);
     messageService.sendMessage(message, true);
 
     return message;

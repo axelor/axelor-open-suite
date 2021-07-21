@@ -86,9 +86,7 @@ public class DMSFileServiceImpl implements DMSFileService {
             null,
             MessageRepository.MEDIA_TYPE_EMAIL,
             emailAccount,
-            null,
-            null,
-            0L);
+            null);
 
     messageService.sendByEmail(message);
   }

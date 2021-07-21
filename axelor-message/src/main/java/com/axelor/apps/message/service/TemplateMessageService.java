@@ -59,8 +59,6 @@ public interface TemplateMessageService {
    * @param model
    * @param template
    * @param isTemporaryMessage
-   * @param relatedTo2Select
-   * @param relatedTo2SelectId
    * @return
    * @throws ClassNotFoundException
    * @throws InstantiationException
@@ -68,12 +66,7 @@ public interface TemplateMessageService {
    * @throws AxelorException
    * @throws IOException
    */
-  public Message generateMessage(
-      Model model,
-      Template template,
-      Boolean isTemporaryMessage,
-      String relatedTo2Select,
-      long relatedTo2SelectId)
+  public Message generateMessage(Model model, Template template, Boolean isTemporaryMessage)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException;
 
@@ -84,8 +77,6 @@ public interface TemplateMessageService {
    * @param model
    * @param tag
    * @param template
-   * @param relatedTo2Select
-   * @param relatedTo2SelectIdy
    * @return
    * @throws ClassNotFoundException
    * @throws InstantiationException
@@ -93,13 +84,7 @@ public interface TemplateMessageService {
    * @throws AxelorException
    * @throws IOException
    */
-  public Message generateMessage(
-      Long objectId,
-      String model,
-      String tag,
-      Template template,
-      String relatedTo2Select,
-      long relatedTo2SelectId)
+  public Message generateMessage(Long objectId, String model, String tag, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException;
 
@@ -115,8 +100,6 @@ public interface TemplateMessageService {
    * @param tag
    * @param template
    * @param isForTemporaryMessage
-   * @param relatedTo2Select
-   * @param relatedTo2SelectId
    * @return
    * @throws ClassNotFoundException
    * @throws InstantiationException
@@ -125,13 +108,7 @@ public interface TemplateMessageService {
    * @throws IOException
    */
   public Message generateMessage(
-      Long objectId,
-      String model,
-      String tag,
-      Template template,
-      Boolean isForTemporaryMessage,
-      String relatedTo2Select,
-      long relatedTo2SelectId)
+      Long objectId, String model, String tag, Template template, Boolean isForTemporaryMessage)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException;
 
