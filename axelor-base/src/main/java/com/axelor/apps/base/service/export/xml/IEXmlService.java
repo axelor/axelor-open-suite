@@ -2,6 +2,7 @@ package com.axelor.apps.base.service.export.xml;
 
 import com.axelor.apps.base.xml.models.ExportedModel;
 import com.axelor.meta.db.MetaFile;
+import java.io.InputStream;
 
 /** Interface for import and export of xml into a MetaFile or Model java. */
 public interface IEXmlService {
@@ -10,5 +11,8 @@ public interface IEXmlService {
       throws Exception;
 
   <T extends ExportedModel> T importXMLToModel(String pathFile, Class<T> classObject)
+      throws Exception;
+
+  <T extends ExportedModel> T importXMLToModel(InputStream xmlInputStream, Class<T> classObjects)
       throws Exception;
 }

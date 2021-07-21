@@ -11,13 +11,17 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -80,11 +84,10 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
   }
 
   @Override
-  public String importXMLToConfigurators(String pathDiff) throws AxelorException {
-
+  public String importXMLToConfigurators(InputStream inputStream) throws AxelorException {
     try {
       ConfiguratorExport configuratorExport =
-          ieXmlService.importXMLToModel(pathDiff, ConfiguratorExport.class);
+          ieXmlService.importXMLToModel(inputStream, ConfiguratorExport.class);
       StringBuilder importLog = new StringBuilder();
       linkConfiguratorFormulaToCC(configuratorExport.getConfiguratorsCreators());
 
@@ -97,6 +100,18 @@ public class ConfiguratorJaxbIEServiceImpl implements ConfiguratorJaxbIEService 
               + totalImport);
       return importLog.toString();
 
+    } catch (Exception e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+  }
+
+  @Override
+  public String importXMLToConfigurators(String pathDiff) throws AxelorException {
+
+    Path path = MetaFiles.getPath(pathDiff);
+
+    try (FileInputStream fileInputStream = new FileInputStream(path.toFile())) {
+      return importXMLToConfigurators(fileInputStream);
     } catch (Exception e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }

@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.file.Path;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -48,20 +49,25 @@ public class IEXmlServiceImpl implements IEXmlService {
     Path path = MetaFiles.getPath(pathFile);
 
     try (FileInputStream fileInputStream = new FileInputStream(path.toFile())) {
-
-      // File temporary importation to the server
-      File tempDir = Files.createTempDir();
-      File importFile = new File(tempDir, "configurator-creator.xml");
-      FileUtils.copyInputStreamToFile(fileInputStream, importFile);
-
-      JAXBContext jc = JAXBContext.newInstance(classObject);
-      Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-
-      T resultObject = classObject.cast(jaxbUnmarshaller.unmarshal(importFile));
-
-      FileUtils.forceDelete(tempDir);
-
-      return resultObject;
+      return importXMLToModel(fileInputStream, classObject);
     }
+  }
+
+  @Override
+  public <T extends ExportedModel> T importXMLToModel(
+      InputStream xmlInputStream, Class<T> classObject) throws Exception {
+    // File temporary importation to the server
+    File tempDir = Files.createTempDir();
+    File importFile = new File(tempDir, "configurator-creator.xml");
+    FileUtils.copyInputStreamToFile(xmlInputStream, importFile);
+
+    JAXBContext jc = JAXBContext.newInstance(classObject);
+    Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+
+    T resultObject = classObject.cast(jaxbUnmarshaller.unmarshal(importFile));
+
+    FileUtils.forceDelete(tempDir);
+
+    return resultObject;
   }
 }

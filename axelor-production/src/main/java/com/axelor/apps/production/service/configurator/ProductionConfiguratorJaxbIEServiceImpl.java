@@ -24,6 +24,7 @@ import com.google.inject.persist.Transactional;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.time.format.DateTimeFormatter;
@@ -81,11 +82,11 @@ public class ProductionConfiguratorJaxbIEServiceImpl extends ConfiguratorJaxbIES
   }
 
   @Override
-  public String importXMLToConfigurators(String pathDiff) throws AxelorException {
+  public String importXMLToConfigurators(InputStream inputStream) throws AxelorException {
 
     try {
       ProductionConfiguratorExport configuratorExport =
-          ieXmlService.importXMLToModel(pathDiff, ProductionConfiguratorExport.class);
+          ieXmlService.importXMLToModel(inputStream, ProductionConfiguratorExport.class);
       StringBuilder importLog = new StringBuilder();
       super.linkConfiguratorFormulaToCC(configuratorExport.getConfiguratorsCreators());
       List<ConfiguratorCreator> configuratorsCreators =

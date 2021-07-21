@@ -3,6 +3,7 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
+import java.io.InputStream;
 import java.util.List;
 
 /** Interface for import and export methods that use xml files by using jaxb library */
@@ -23,6 +24,8 @@ public interface ConfiguratorJaxbIEService {
    * @throws AxelorException
    */
   String importXMLToConfigurators(String pathDiff) throws AxelorException;
+
+  String importXMLToConfigurators(InputStream inputStream) throws AxelorException;
 
   /**
    * When exported, attribute name finish with '_XX' where XX is the id of the creator. After
