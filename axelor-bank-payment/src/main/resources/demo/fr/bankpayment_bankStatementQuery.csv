@@ -1,11 +1,35 @@
-"importId";"name";"ruleType";"query"
-10;"Description contenant & Code 01 (Chèque émis)";0;"descripton?.contains(%s) && interbankCodeLine?.code.equals('01')"
-11;"Description contenant";0;"descripton?.contains(%s)"
-12;"Description commencant par";0;"description?.startsWith(%s)"
-13;"Description Finissant par";0;"description?.endsWith(%s)"
-20;"Origine contenant";0;"origin?.contains(%s)"
-21;"Origine commencant par";0;"origin?.startsWith(%s)"
-22;"Origine finissant par";0;"origin?.endsWith(%s)"
-30;"Référence contenant";0;"reference?.contains(%s)"
-31;"Référence commencant par";0;"reference?.startsWith(%s)"
-32;"Référence finissant par";0;"reference?.endsWith(%s)"
+"importId";"name";"ruleType";"query";"confidenceIndex";"sequence"
+10;"Description contenant & Code 01 (Chèque émis)";0;"descripton?.contains(%s) && interbankCodeLine?.code.equals('01')";;
+11;"Description contenant";0;"descripton?.contains(%s)";;
+12;"Description commencant par";0;"description?.startsWith(%s)";;
+13;"Description Finissant par";0;"description?.endsWith(%s)";;
+20;"Origine contenant";0;"origin?.contains(%s)";;
+21;"Origine commencant par";0;"origin?.startsWith(%s)";;
+22;"Origine finissant par";0;"origin?.endsWith(%s)";;
+30;"Référence contenant";0;"reference?.contains(%s)";;
+31;"Référence commencant par";0;"reference?.startsWith(%s)";;
+32;"Référence finissant par";0;"reference?.endsWith(%s)";;
+40;;1;"moveLine?.origin.equals(origin) && moveLine?.debit.equals(debit) && moveLine?.credit.equals(credit)";1;1
+41;;1;"moveLine?.move?.paymentMode.equals(paymentMode?) && moveLine?.debit.equals(debit) && moveLine?.credit.equals(credit)";1;2
+42;;1;;1;3
+43;;1;;1;4
+44;;1;;1;5
+45;;1;;2;6
+46;;1;;2;7
+47;;1;;2;8
+48;;1;;3;9
+49;;1;;3;10
+50;;1;;3;11
+51;;1;;3;12
+52;;1;;3;13
+53;;1;;3;14
+54;;1;;3;15
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;"moveLine?.debit.equals(debit) && moveLine?.credit.equals(credit)";;
+;;;"moveLine?.move?.paymentMode.equals(paymentMode?)";;
+;;;"moveLine?.date?.equals(operationDate?) || moveLine?.date?.equals(valueDate?) || moveLine?.dueDate?.equals(operationDate?) || moveLine?.dueDate?.equals(valueDate?)";;
+;;;"moveLine?.date?.before(operationDate?.plus(15)) && moveLine?.date?.after(operationDate?.minus(15)) || moveLine?.date?.before(valueDate?.plus(15)) && moveLine?.date?.after(valueDate?.minus(15)) || moveLine?.dueDate?.before(operationDate?.plus(15)) && moveLine?.dueDate?.after(operationDate?.minus(15)) || moveLine?.dueDate?.before(valueDate?.plus(15)) && moveLine?.dueDate?.after(valueDate?.minus(15))";;

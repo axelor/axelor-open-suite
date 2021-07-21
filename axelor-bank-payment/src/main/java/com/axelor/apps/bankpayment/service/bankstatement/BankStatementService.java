@@ -308,4 +308,17 @@ public class BankStatementService {
 
     return moveLine;
   }
+
+  @Transactional
+	public void deleteBankStatementLines(BankStatement bankStatement) {
+	  List<BankStatementLineAFB120> bankStatementLines;
+	  bankStatementLines = bankStatementLineAFB120Repository.all().filter("self.bankStatement = :bankStatement")
+			  .bind("bankStatement", bankStatement)
+			  .fetch();
+	  for(BankStatementLineAFB120 bsl : bankStatementLines)
+	  {
+		  bankStatementLineAFB120Repository.remove(bsl);
+	  }
+	  bankStatement.setStatusSelect(BankStatementRepository.STATUS_RECEIVED);
+	}
 }

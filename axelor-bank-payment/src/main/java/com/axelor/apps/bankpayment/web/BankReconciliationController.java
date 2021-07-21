@@ -133,8 +133,6 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       bankReconciliationService.loadBankStatement(
           bankReconciliationRepository.find(bankReconciliation.getId()));
-      bankReconciliationService.setPostedNumber(
-          bankReconciliationRepository.find(bankReconciliation.getId()));
       bankReconciliationService.reconciliateAccordingToQueries(
           bankReconciliationRepository.find(bankReconciliation.getId()));
       response.setReload(true);

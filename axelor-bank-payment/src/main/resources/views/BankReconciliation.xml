@@ -25,14 +25,14 @@
         <field name="validatedByUser" colSpan="2" />
         <field name="validatedDate" colSpan="2" />
         <field name="name" />
-        <field name="bankStatement" domain="self.statusSelect = 2" />
-        <field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid" required="true" />
-        <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" required="true" />
+        <field name="bankStatement" domain="self.statusSelect = 2" colSpan="4" />
+        <field name="includeOtherBankStatements" colSpan="2" />
+        <field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid" required="true" colSpan="3" />
+        <field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" required="true" colSpan="3" />
         <field name="bankDetails" canEdit="false" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true"
           onChange="action-bank-reconciliation-method-set-journal,action-bank-reconciliation-method-set-cash-account" />
-        <field name="includeOtherBankStatements" />
-        <field name="fromDate" requiredIf="includeOtherBankStatements" />
-        <field name="toDate" requiredIf="includeOtherBankStatements" />
+        <field name="fromDate" requiredIf="includeOtherBankStatements" colSpan="3" />
+        <field name="toDate" requiredIf="includeOtherBankStatements" colSpan="3" />
         <field name="journal" canEdit="false" form-view="journal-form" grid-view="journal-grid" onChange="action-bank-reconciliation-method-set-cash-account"
           onSelect="action-bank-reconciliation-method-set-journal-domain" />
         <field name="cashAccount" canEdit="false" form-view="account-form" grid-view="account-grid" onSelect="action-bank-reconciliation-method-set-cash-account-domain" />
@@ -51,7 +51,8 @@
         <field name="totalPaid" />
         <field name="totalCashed" />
         <field name="$balances" showTitle="false">
-          <viewer depends="statementReconciledLineBalance,movesReconciledLineBalance,statementUnreconciledLineBalance,movesUnreconciledLineBalance,statementOngoingReconciledBalance,movesOngoingReconciledBalance,statementAmountRemainingToReconcile,movesAmountRemainingToReconcile,statementTheoreticalBalance,movesTheoreticalBalance">
+          <viewer
+            depends="statementReconciledLineBalance,movesReconciledLineBalance,statementUnreconciledLineBalance,movesUnreconciledLineBalance,statementOngoingReconciledBalance,movesOngoingReconciledBalance,statementAmountRemainingToReconcile,movesAmountRemainingToReconcile,statementTheoreticalBalance,movesTheoreticalBalance">
             <![CDATA[
               
             ]]>
@@ -69,9 +70,30 @@
       </panel>
       <panel-related name="bankReconciliationLineListPanel" editable="true" field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid"
         form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click" />
-        <button name="reconcileBtn" onClick="action-bank-reconciliation-method-validate-reconcile" title="Reconcile selected" colSpan="3" />
-        <button name="unreconcileBtn" onClick="action-bank-reconciliation-method-unreconcile" title="Unreconcile selected" colSpan="3" />
+      <button name="reconcileBtn" onClick="action-bank-reconciliation-method-validate-reconcile" title="Reconcile selected" colSpan="3" />
+      <button name="unreconcileBtn" onClick="action-bank-reconciliation-method-unreconcile" title="Unreconcile selected" colSpan="3" />
       <panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12" />
+      <spacer colSpan="6"/>
+      <panel name="balancesPanel" colSpan="6" readonly="true"> 
+        <label colSpan="4" name="bankStatementLabel" title="Bank statement"/>
+        <spacer colSpan="4"/>
+        <label colSpan="4" name="accountingLabel" title="Accounting"/>
+        <field name="statementReconciledLineBalance" colSpan="4" showTitle="false" />
+        <label colSpan="4" name="alreadyPointedLabel" title="Already pointed"/>
+        <field name="movesReconciledLineBalance" colSpan="4" showTitle="false"/>
+        <field name="statementUnreconciledLineBalance" colSpan="4" showTitle="false"/>
+        <label colSpan="4" name="notPointedLabel" title="Not pointed"/>
+        <field name="movesUnreconciledLineBalance" colSpan="4" showTitle="false"/>
+        <field name="statementOngoingReconciledBalance" colSpan="4" showTitle="false"/>
+        <label colSpan="4" name="balanceLabel" title="Balance"/>
+        <field name="movesOngoingReconciledBalance" colSpan="4" showTitle="false"/>
+        <field name="statementAmountRemainingToReconcile" colSpan="4" showTitle="false"/>
+        <label colSpan="4" name="selectedLabel" title="Selected"/>
+        <field name="movesAmountRemainingToReconcile" colSpan="4" showTitle="false"/>
+        <field name="statementTheoreticalBalance" colSpan="4" showTitle="false"/>
+        <label colSpan="4" name="newBankBalanceLabel" title="New bank balance"/>
+        <field name="movesTheoreticalBalance" colSpan="4" showTitle="false"/>
+      </panel>
     </panel>
   </form>
 
@@ -156,9 +178,9 @@
 
   <action-view name="action-bank-reconciliation-view-show-unreconciled-move-lines" title="Unreconciled move lines" model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-bank-reconciliation-grid" />
-    <view type="form" name="move-line-form" /> 
+    <view type="form" name="move-line-form" />
     <domain>self.move.journal.id = :journal and ((self.debit &gt; 0 and self.bankReconciledAmount &lt; self.debit) or (self.credit &gt; 0 and self.bankReconciledAmount &lt; self.credit)) and self.account.id = :cashAccount and self.move.statusSelect &lt; 4</domain>
-  
+
   </action-view>
 
   <action-view name="action-bank-reconciliation-view-show-reconciled-move-lines" title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
@@ -216,7 +238,7 @@
   <action-method name="action-bank-reconciliation-method-validate-reconcile">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="reconcile" />
   </action-method>
-  
+
   <action-method name="action-bank-reconciliation-method-unreconcile">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="unreconcile" />
   </action-method>
