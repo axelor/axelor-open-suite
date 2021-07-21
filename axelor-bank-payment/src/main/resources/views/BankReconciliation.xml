@@ -73,26 +73,26 @@
       <button name="reconcileBtn" onClick="action-bank-reconciliation-method-validate-reconcile" title="Reconcile selected" colSpan="3" />
       <button name="unreconcileBtn" onClick="action-bank-reconciliation-method-unreconcile" title="Unreconcile selected" colSpan="3" />
       <panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12" />
-      <spacer colSpan="6"/>
-      <panel name="balancesPanel" colSpan="6" readonly="true"> 
-        <label colSpan="4" name="bankStatementLabel" title="Bank statement"/>
-        <spacer colSpan="4"/>
-        <label colSpan="4" name="accountingLabel" title="Accounting"/>
+      <spacer colSpan="6" />
+      <panel name="balancesPanel" colSpan="6" readonly="true">
+        <label colSpan="4" name="bankStatementLabel" title="Bank statement" />
+        <spacer colSpan="4" />
+        <label colSpan="4" name="accountingLabel" title="Accounting" />
         <field name="statementReconciledLineBalance" colSpan="4" showTitle="false" />
-        <label colSpan="4" name="alreadyPointedLabel" title="Already pointed"/>
-        <field name="movesReconciledLineBalance" colSpan="4" showTitle="false"/>
-        <field name="statementUnreconciledLineBalance" colSpan="4" showTitle="false"/>
-        <label colSpan="4" name="notPointedLabel" title="Not pointed"/>
-        <field name="movesUnreconciledLineBalance" colSpan="4" showTitle="false"/>
-        <field name="statementOngoingReconciledBalance" colSpan="4" showTitle="false"/>
-        <label colSpan="4" name="balanceLabel" title="Balance"/>
-        <field name="movesOngoingReconciledBalance" colSpan="4" showTitle="false"/>
-        <field name="statementAmountRemainingToReconcile" colSpan="4" showTitle="false"/>
-        <label colSpan="4" name="selectedLabel" title="Selected"/>
-        <field name="movesAmountRemainingToReconcile" colSpan="4" showTitle="false"/>
-        <field name="statementTheoreticalBalance" colSpan="4" showTitle="false"/>
-        <label colSpan="4" name="newBankBalanceLabel" title="New bank balance"/>
-        <field name="movesTheoreticalBalance" colSpan="4" showTitle="false"/>
+        <label colSpan="4" name="alreadyPointedLabel" title="Already pointed" />
+        <field name="movesReconciledLineBalance" colSpan="4" showTitle="false" />
+        <field name="statementUnreconciledLineBalance" colSpan="4" showTitle="false" />
+        <label colSpan="4" name="notPointedLabel" title="Not pointed" />
+        <field name="movesUnreconciledLineBalance" colSpan="4" showTitle="false" />
+        <field name="statementOngoingReconciledBalance" colSpan="4" showTitle="false" />
+        <label colSpan="4" name="balanceLabel" title="Balance" />
+        <field name="movesOngoingReconciledBalance" colSpan="4" showTitle="false" />
+        <field name="statementAmountRemainingToReconcile" colSpan="4" showTitle="false" />
+        <label colSpan="4" name="selectedLabel" title="Selected" />
+        <field name="movesAmountRemainingToReconcile" colSpan="4" showTitle="false" />
+        <field name="statementTheoreticalBalance" colSpan="4" showTitle="false" />
+        <label colSpan="4" name="newBankBalanceLabel" title="New bank balance" />
+        <field name="movesTheoreticalBalance" colSpan="4" showTitle="false" />
       </panel>
     </panel>
   </form>
