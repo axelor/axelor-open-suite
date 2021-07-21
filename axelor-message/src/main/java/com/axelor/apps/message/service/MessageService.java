@@ -23,11 +23,9 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.mail.MessagingException;
 import wslite.json.JSONException;
@@ -49,9 +47,7 @@ public interface MessageService {
       String addressBlock,
       int mediaTypeSelect,
       EmailAccount emailAccount,
-      String signature,
-      String relatedTo2Select,
-      long relatedTo2SelectId);
+      String signature);
 
   @Transactional(rollbackOn = {Exception.class})
   /**
@@ -91,9 +87,7 @@ public interface MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount,
       String signature,
-      Boolean isTemporaryMessage,
-      String relatedTo2Select,
-      long relatedTo2SelectId);
+      Boolean isTemporaryMessage);
 
   @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles);
@@ -173,7 +167,4 @@ public interface MessageService {
   Message regenerateMessage(Message message) throws Exception;
 
   public String getFullEmailAddress(EmailAddress emailAddress);
-
-  public void fillContext(
-      ActionViewBuilder builder, Map<String, Object> contextMap, String model, Long objectId);
 }
