@@ -1089,5 +1089,16 @@
 		<view type="grid" name="analytic-rules-grid"/>
 		<view type="form" name="analytic-rules-form"/>
 	</action-view>
+	
+	<menuitem name="account-analytic-grouping-value"
+		parent="account-conf-analytic"
+		action="account.conf.analytic.grouping.values" title="Analytic Regrouping Values" order="90"/>
+
+	<action-view name="account.conf.analytic.grouping.values"
+		title="Analytic Regrouping Values"
+		model="com.axelor.apps.account.db.AnalyticGroupingValue">
+		<view type="grid" name="analytic-grouping-value-grid"/>
+		<view type="form" name="analytic-grouping-value-form"/>
+	</action-view>
 
 </object-views>

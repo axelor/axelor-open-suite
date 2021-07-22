@@ -11,9 +11,10 @@
   	<many-to-one ref="com.axelor.apps.account.db.AnalyticAxis" name="analyticAxis"/>
   	<string name="fullName" title="Full name" required="true" namecolumn="true" search="code,name">
 		<![CDATA[
-	return code+"_" + " - " + name;
+	return code+"_"+ name;
 	]]>
 	</string>
+	<one-to-many name="analyticGroupingValueList" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping values" mappedBy="analyticGrouping"/>
   </entity>
   
 </domain-models>

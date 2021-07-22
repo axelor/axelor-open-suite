@@ -23,6 +23,16 @@
 		return code+" - " + name;
 		]]>
 		</string>
+		<many-to-one name="analyticGroupingValue1" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 1"/>
+		<many-to-one name="analyticGroupingValue2" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 2"/>
+		<many-to-one name="analyticGroupingValue3" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 3"/>
+		<many-to-one name="analyticGroupingValue4" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 4"/>
+		<many-to-one name="analyticGroupingValue5" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 5"/>
+		<many-to-one name="analyticGroupingValue6" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 6"/>
+		<many-to-one name="analyticGroupingValue7" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 7"/>
+		<many-to-one name="analyticGroupingValue8" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 8"/>
+		<many-to-one name="analyticGroupingValue9" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 9"/>
+		<many-to-one name="analyticGroupingValue10" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 10"/>
 		<unique-constraint columns="code,name,analyticAxis" />
 	</entity>
 
