@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -353,5 +352,5 @@ public class MoveLineController {
     Context parent = request.getContext().getParent();
     Move move = parent.asType(Move.class);
     response.setValue("isOtherCurrency", !move.getCurrency().equals(move.getCompanyCurrency()));
-  }  
+  }
 }

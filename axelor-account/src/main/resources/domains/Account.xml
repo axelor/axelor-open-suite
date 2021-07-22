@@ -14,8 +14,10 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
     <many-to-many name="compatibleAccountSet" ref="com.axelor.apps.account.db.Account" title="Compatible Accounts" />
     <boolean name="useForPartnerBalance" title="Use for partner balance" massUpdate="true" />
-    <integer name="commonPosition" selection="account.account.common.position.select" required="true" massUpdate="true" />
-    <many-to-one name="defaultTax" ref="com.axelor.apps.account.db.Tax" />
+    <integer name="commonPosition" title="Common position" selection="account.account.common.position.select" required="true" massUpdate="true" 
+    help="Field allowing to alert the user when, during manual input of a move line, the user inputs an amount in a different position compared to the usual for this account"/>
+    <many-to-one name="defaultTax" ref="com.axelor.apps.account.db.Tax" title="Default tax"
+    help="Field allowing to fill automaticaly, during manual input of a move line and when the accounting account is selected, the tax field. Selected tax can be replaced depending on the fiscal position of the partner and the company linked to the move"/>
     <string name="label" namecolumn="true" search="code,name,company" title="Full name">
             <![CDATA[
 	    if(company != null)
