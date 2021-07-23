@@ -411,12 +411,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
           @Override
           public int compare(AdvancedExportLine line1, AdvancedExportLine line2) {
-            if (line1.getSequence() == line2.getSequence()) {
-              if (line1.getId() > line2.getId()) {
-                return 1;
-              } else {
-                return -1;
-              }
+            if (line1.getSequence().equals(line2.getSequence())) {
+              return line1.getId().compareTo(line2.getId());
             }
             return line1.getSequence() - line2.getSequence();
           }

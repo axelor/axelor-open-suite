@@ -206,7 +206,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       }
     }
     sum = accountingSituation.getBalanceCustAccount().add(sum);
-    accountingSituation.setUsedCredit(sum.setScale(2, RoundingMode.HALF_EVEN));
+    accountingSituation.setUsedCredit(sum.setScale(2, RoundingMode.HALF_UP));
 
     return accountingSituation;
   }

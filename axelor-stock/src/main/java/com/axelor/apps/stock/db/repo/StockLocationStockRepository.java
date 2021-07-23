@@ -52,4 +52,14 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
     return super.populate(json, context);
   }
+
+  @Override
+  public StockLocation copy(StockLocation entity, boolean deep) {
+
+    StockLocation copy = super.copy(entity, deep);
+
+    copy.clearDetailsStockLocationLineList();
+    copy.clearStockLocationLineList();
+    return copy;
+  }
 }

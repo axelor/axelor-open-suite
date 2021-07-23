@@ -294,7 +294,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       return false;
     }
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      if (saleOrderLine.getProduct().getId() == shippingCostProduct.getId()) {
+      if (shippingCostProduct.equals(saleOrderLine.getProduct())) {
         return true;
       }
     }

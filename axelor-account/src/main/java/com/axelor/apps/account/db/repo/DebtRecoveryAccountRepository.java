@@ -18,6 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.DebtRecovery;
+import com.axelor.exception.service.TraceBackService;
 import javax.persistence.PersistenceException;
 
 public class DebtRecoveryAccountRepository extends DebtRecoveryRepository {
@@ -32,7 +33,8 @@ public class DebtRecoveryAccountRepository extends DebtRecoveryRepository {
       }
       return super.save(debtRecovery);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 }

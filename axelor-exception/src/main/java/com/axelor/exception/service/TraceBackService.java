@@ -118,6 +118,29 @@ public class TraceBackService {
   }
 
   /**
+   * Trace an exception when the exception occurs inside a JPA repository save method. We have to
+   * rollback the transaction before we can save the traceback.
+   *
+   * @param e any traceable exception
+   */
+  public static void traceExceptionFromSaveMethod(Throwable e) {
+    traceExceptionFromSaveMethod(e, null);
+  }
+
+  /**
+   * Trace an exception when the exception occurs inside a JPA repository save method. We have to
+   * rollback the transaction before we can save the traceback.
+   *
+   * @param e any traceable exception
+   * @param origin origin of the exception
+   */
+  public static void traceExceptionFromSaveMethod(Throwable e, final String origin) {
+    JPA.em().getTransaction().rollback();
+    trace(e, origin);
+    JPA.em().getTransaction().begin();
+  }
+
+  /**
    * Tracer une exception dans Traceback correspondant à un bug.
    *
    * @param e L'exception cible.

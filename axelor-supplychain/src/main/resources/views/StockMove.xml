@@ -178,7 +178,7 @@
 		<field name="pfpValidateStatusSelect" expr="eval: 3"/>
 	</action-record>
 
-	<action-view name="action-stock-move-view-account-moves" title="Moves" model="com.axelor.apps.account.db.Move" if-module="axelor-supplychain">
+	<action-view name="action-stock-move-view-account-moves" title="Dashlet.Moves" model="com.axelor.apps.account.db.Move" if-module="axelor-supplychain">
 		<view type="grid" name="move-grid"/>
 		<view type="form" name="move-form"/>
 		<domain>self.stockMove.id = :id</domain>

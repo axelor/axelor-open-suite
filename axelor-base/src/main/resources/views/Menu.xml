@@ -493,11 +493,11 @@
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-department"
-		parent="admin-root-organisation-territory" title="Departments"
+		parent="admin-root-organisation-territory" title="territory.departments"
 		action="admin.root.organisation.territory.department" />
 
 	<action-view name="admin.root.organisation.territory.department"
-		title="Departments" model="com.axelor.apps.base.db.Department">
+		title="territory.departments" model="com.axelor.apps.base.db.Department">
 		<view type="grid" name="department-grid" />
 		<view type="form" name="department-form" />
 	</action-view>

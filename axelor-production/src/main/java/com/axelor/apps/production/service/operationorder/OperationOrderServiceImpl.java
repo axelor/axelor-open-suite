@@ -80,6 +80,16 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
+
+    if (prodProcessLine.getWorkCenter() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
+    }
     OperationOrder operationOrder =
         this.createOperationOrder(
             manufOrder,
@@ -499,7 +509,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     } catch (IOException e) {
       e.printStackTrace();
     } catch (AxelorException e) {
-      throw new ValidationException(e.getMessage());
+      throw new ValidationException(e);
     }
   }
 }

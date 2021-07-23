@@ -9,7 +9,7 @@
 
 		<string name="name" title="Name" initParam="true"
 			translatable="true" />
-		<string name="serialNumber" title="Serial Nbr"/>
+		<string name="serialNumber" title="Serial Nbr" unique="true"/>
 		<string name="code" title="Code" initParam="true" unique="true"/>
 
 		<string name="description" large="true" title="Description"
@@ -146,6 +146,8 @@
         <string name="productAttrs" title="Fields" json="true" />
         
         <boolean name="expense" title="Expense"/>
+
+		<unique-constraint columns="product,company"/>
 
 		<extra-code>
 	   		<![CDATA[

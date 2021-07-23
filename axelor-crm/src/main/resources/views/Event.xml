@@ -432,10 +432,12 @@
     
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
-	    <field name="partner" expr="eval:_partner?.id != null ? __repo__(Partner).find(_partner.id) : _partner"/>
+	    <field name="partner" expr="eval:_clientPartner?.id != null ? __repo__(Partner).find(_clientPartner.id) : _clientPartner"/>
 		<field name="contactPartner" expr="eval:_contactPartner?.id != null ? __repo__(Partner).find(_contactPartner.id) : _contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
 	    <field name="relatedToSelectId" expr="eval:_saleOrder.id" />
+	    <field name="team" expr="eval:_saleOrder.team" if="_saleOrder != null"/> 
+	    <field name="organizer" expr="call:com.axelor.apps.crm.web.ICalendarUserController:findUser(__user__)"/>
 	</action-record>
     
     <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">

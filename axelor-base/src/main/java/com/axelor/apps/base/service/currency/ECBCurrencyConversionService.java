@@ -150,7 +150,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
                   Optional.ofNullable(AuthUtils.getUser())
                       .map(User::getActiveCompany)
                       .orElse(null)));
-      rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_EVEN);
+      rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_UP);
     } else LOG.trace("Currency from and to must be filled to get rate");
     LOG.trace("Currerncy conversion rate: {}", new Object[] {rate});
     return rate;

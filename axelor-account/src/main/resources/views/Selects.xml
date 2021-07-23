@@ -464,8 +464,13 @@
 	<selection name='iaccount.move.functional.origin.select'>
 		<option value='1'>Opening</option>
 		<option value='2'>Closure</option>
+		<option value='3'>Sale</option>
+		<option value='4'>Purchase</option>
+		<option value='5'>Payment</option>
+		<option value='6'>Cut Off</option>
+		<option value='7'>Fixed asset</option>
 	</selection>
-
+	
    <selection name="account.year.period.duration.select">
       <option value="0">One time global period</option>
       <option value="1">1 Month</option>

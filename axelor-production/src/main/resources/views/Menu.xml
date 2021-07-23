@@ -293,6 +293,9 @@
 
 	<menuitem name="manufacturing-conf" parent="manufacturing-root"
 		title="Configuration" order="50" icon="fa-cog" />
+	
+	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
+		title="Work centers" action="manufacturing.conf.work.center" />	
 
 	<action-view name="manufacturing.conf.work.center" title="Work centers"
 		model="com.axelor.apps.production.db.WorkCenter" >
@@ -529,8 +532,8 @@
 
 
 	<menuitem name="manufacturing-conf-work-center-group-model"
-		parent="manufacturing-conf" title="Work center model" action="manufacturing.conf.work.center.group.model"/>
-
+		parent="manufacturing-conf" title="Work center model" action="manufacturing.conf.work.center.group.model"
+		if="__config__.app.getApp('production').getManageWorkCenterGroup()" />
 
 	<action-view name="manufacturing.conf.work.center.group.model" title="Work center model"
 		model="com.axelor.apps.production.db.WorkCenterGroup">

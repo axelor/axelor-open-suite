@@ -136,7 +136,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         qtyRequested.divide(
             billOfMaterial.getQty(),
             appBaseService.getNbDecimalDigitForQty(),
-            RoundingMode.HALF_EVEN);
+            RoundingMode.HALF_UP);
 
     ManufOrder manufOrder =
         this.createManufOrder(
@@ -200,7 +200,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       qty =
           manufOrderQty
               .multiply(lineQty)
-              .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+              .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     }
     return qty;
   }
@@ -244,8 +244,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 ? prodResidualProduct
                     .getQty()
                     .multiply(manufOrderQty)
-                    .divide(
-                        bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+                    .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
         manufOrder.addToProduceProdProductListItem(
@@ -997,23 +996,26 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       return false;
     }
 
-    // Check if one of the workShopStockLocation is null
-    boolean oneWorkShopIsNull =
-        manufOrderList.stream().anyMatch(x -> x.getWorkshopStockLocation() == null);
-    if (oneWorkShopIsNull) {
-      return false;
-    }
+    // Workshop management must be enabled to do the checking
+    if (appProductionService.getAppProduction().getManageWorkshop()) {
+      // Check if one of the workShopStockLocation is null
+      boolean oneWorkShopIsNull =
+          manufOrderList.stream().anyMatch(x -> x.getWorkshopStockLocation() == null);
+      if (oneWorkShopIsNull) {
+        return false;
+      }
 
-    // I check if all the stockLocation are the same. If not i return false
-    StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
-    boolean allSameLocation =
-        manufOrderList.stream()
-            .allMatch(
-                x ->
-                    x.getWorkshopStockLocation() != null
-                        && x.getWorkshopStockLocation().equals(stockLocation));
-    if (!allSameLocation) {
-      return false;
+      // I check if all the stockLocation are the same. If not i return false
+      StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
+      boolean allSameLocation =
+          manufOrderList.stream()
+              .allMatch(
+                  x ->
+                      x.getWorkshopStockLocation() != null
+                          && x.getWorkshopStockLocation().equals(stockLocation));
+      if (!allSameLocation) {
+        return false;
+      }
     }
 
     // Check if one of the billOfMaterial is null

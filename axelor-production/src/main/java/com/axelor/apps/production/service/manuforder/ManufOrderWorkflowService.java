@@ -331,7 +331,7 @@ public class ManufOrderWorkflowService {
     BigDecimal qty = manufOrder.getQty();
     if (qty.signum() != 0) {
       int scale = Beans.get(AppProductionService.class).getNbDecimalDigitForUnitPrice();
-      return manufOrder.getCostPrice().divide(qty, scale, BigDecimal.ROUND_HALF_EVEN);
+      return manufOrder.getCostPrice().divide(qty, scale, BigDecimal.ROUND_HALF_UP);
     } else {
       return BigDecimal.ZERO;
     }
@@ -582,12 +582,7 @@ public class ManufOrderWorkflowService {
 
       purchaseOrderLine =
           purchaseOrderLineService.createPurchaseOrderLine(
-              purchaseOrder,
-              product,
-              product.getName(),
-              product.getDescription(),
-              quantity,
-              purchaseUnit);
+              purchaseOrder, product, null, null, quantity, purchaseUnit);
 
       purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
     }

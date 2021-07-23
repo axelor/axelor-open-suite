@@ -159,7 +159,10 @@ public final class FileTool {
    */
   public static void copy(String fileSrc, String fileDest) throws IOException {
 
-    IOUtils.copy(new FileInputStream(fileSrc), new FileOutputStream(fileDest));
+    try (FileInputStream fileInputStream = new FileInputStream(fileSrc);
+        FileOutputStream fileOutputStream = new FileOutputStream(fileDest)) {
+      IOUtils.copy(fileInputStream, fileOutputStream);
+    }
   }
 
   /**

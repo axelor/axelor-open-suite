@@ -143,7 +143,8 @@ public class MoveTemplateService {
                     partner,
                     moveDate,
                     null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
+                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                    0);
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
@@ -165,7 +166,7 @@ public class MoveTemplateService {
           BigDecimal amount =
               moveBalance
                   .multiply(moveTemplateLine.getPercentage())
-                  .divide(hundred, RoundingMode.HALF_EVEN);
+                  .divide(hundred, RoundingMode.HALF_UP);
 
           MoveLine moveLine =
               moveLineService.createMoveLine(
@@ -231,7 +232,8 @@ public class MoveTemplateService {
                     null,
                     moveDate,
                     null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
+                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                    0);
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {

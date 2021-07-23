@@ -216,7 +216,7 @@ public class PurchaseOrderSupplierService {
 
     LOG.debug(
         "Création d'une ligne de commande fournisseur pour le produit : {}",
-        new Object[] {purchaseOrderLine.getProductName()});
+        purchaseOrderLine.getProductName());
 
     return purchaseOrderLineService.createPurchaseOrderLine(
         purchaseOrder,

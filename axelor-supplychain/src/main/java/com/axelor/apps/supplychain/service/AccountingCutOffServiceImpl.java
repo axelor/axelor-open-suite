@@ -295,7 +295,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             partner,
             moveDate,
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF);
 
     counter = 0;
 
@@ -432,8 +433,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       return null;
     }
 
-    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_EVEN);
-    amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_EVEN);
+    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_UP);
+    amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_UP);
 
     if (amountInCurrency == null || amountInCurrency.compareTo(BigDecimal.ZERO) == 0) {
       return null;
