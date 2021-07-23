@@ -45,13 +45,11 @@ public interface AccountingReportMoveLineService {
       throws AxelorException, IOException;
 
   public List<AccountingReportMoveLine> getDasToDeclareLinesFromAccountingExport(
-      AccountingReport accountingExport);
+      AccountingReport accountingExport, boolean checkN4DSCode);
 
   public List<String> generateN4DSLines(AccountingReport accountingExport) throws AxelorException;
 
   public List<Object[]> getN4DSDeclaredPartnersData(AccountingReport accountingExport);
-
-  public String manageDAS2ServiceTypeToDeclare(String serviceTypeCode);
 
   public String computeNic(String registrationCode, String countryAlpha2Code);
 

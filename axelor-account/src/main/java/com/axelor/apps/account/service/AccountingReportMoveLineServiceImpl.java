@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import javax.persistence.Query;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
-
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
@@ -55,6 +42,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class AccountingReportMoveLineServiceImpl implements AccountingReportMoveLineService {
 
@@ -128,7 +125,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
       AccountingReport accountingExport) throws AxelorException {
 
     List<AccountingReportMoveLine> reportMoveLines =
-        getDasToDeclareLinesFromAccountingExport(accountingExport);
+        getDasToDeclareLinesFromAccountingExport(accountingExport, false);
 
     List<Partner> partners = Lists.newArrayList();
 
@@ -165,14 +162,15 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
   @Override
   public List<AccountingReportMoveLine> getDasToDeclareLinesFromAccountingExport(
-      AccountingReport accountingExport) {
+      AccountingReport accountingExport, boolean checkN4DSCode) {
 
-    return accountingReportMoveLineRepo
-        .all()
-        .filter(
-            "self.accountingExport = ?1 AND self.excludeFromDas2Report != true AND self.exported != true",
-            accountingExport)
-        .fetch();
+    String query =
+        "self.accountingExport = ?1 AND self.excludeFromDas2Report != true AND self.exported != true";
+    if (checkN4DSCode) {
+      query += "AND self.taxPaymentMoveLine.reconcile.creditMove.serviceType.n4dsCode is not null";
+    }
+
+    return accountingReportMoveLineRepo.all().filter(query, accountingExport).fetch();
   }
 
   @Override
@@ -197,7 +195,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     Partner companyPartner = accountingExport.getCompany().getPartner();
     Address address = companyPartner.getMainAddress();
     String alpha2code = address.getAddressL7Country().getAlpha2Code();
-    String registrationCode = companyPartner.getRegistrationCode().replaceAll(" " , "");
+    String registrationCode = companyPartner.getRegistrationCode().replaceAll(" ", "");
     String siren = computeSiren(registrationCode, alpha2code);
     String nic = computeNic(registrationCode, alpha2code);
 
@@ -209,14 +207,14 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     lines.add(setN4DSLine("S10.G01.00.002", companyPartner.getName()));
     String addressL2L3 = null;
     if (!Strings.isNullOrEmpty(address.getAddressL2())) {
-    	addressL2L3 = address.getAddressL2().trim();
+      addressL2L3 = address.getAddressL2().trim();
     }
-    if(!Strings.isNullOrEmpty(address.getAddressL3())) {
-    	if (Strings.isNullOrEmpty(addressL2L3))  {
-    		addressL2L3 = address.getAddressL3().trim();
-    	}else {
-    		addressL2L3 += " " +address.getAddressL3().trim();
-    	}
+    if (!Strings.isNullOrEmpty(address.getAddressL3())) {
+      if (Strings.isNullOrEmpty(addressL2L3)) {
+        addressL2L3 = address.getAddressL3().trim();
+      } else {
+        addressL2L3 += " " + address.getAddressL3().trim();
+      }
     }
     if (!Strings.isNullOrEmpty(addressL2L3)) {
       lines.add(setN4DSLine("S10.G01.00.003.001", addressL2L3));
@@ -229,7 +227,6 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
       lines.add(setN4DSLine("S10.G01.00.003.012", address.getCity().getName()));
     } else {
       lines.add(setN4DSLine("S10.G01.00.003.013", alpha2code));
-      lines.add(setN4DSLine("S10.G01.00.003.016", address.getAddressL7Country().getCog()));
     }
     lines.add(setN4DSLine("S10.G01.00.004", "0"));
     lines.add(setN4DSLine("S10.G01.00.005", "AXELOR OPEN SUITE"));
@@ -283,8 +280,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     lines.add(setN4DSLine("S20.G01.00.004.001", "12"));
     lines.add(
         setN4DSLine("S20.G01.00.004.001", accountingExport.getComplementaryExport() ? "52" : "51"));
-    // TODO Numéro de fraction de déclaration
-    //	  lines.add(setN4DSLine("S20.G01.00.005",null));
+    lines.add(setN4DSLine("S20.G01.00.005", "11"));
     lines.add(setN4DSLine("S20.G01.00.007", "01"));
     lines.add(setN4DSLine("S20.G01.00.008", nic));
     if (!Strings.isNullOrEmpty(addressL2L3)) {
@@ -299,10 +295,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     } else {
       lines.add(setN4DSLine("S20.G01.00.009.013", alpha2code));
     }
-    // TODO Identité du destinataire
-    //	  lines.add(setN4DSLine("S20.G01.00.009.017",null));
-    // TODO Numéro d'ordre de la déclaration
-    lines.add(setN4DSLine("S20.G01.00.013.002","12"));
+    lines.add(setN4DSLine("S20.G01.00.013.002", "12"));
     lines.add(setN4DSLine("S20.G01.00.018", "A00"));
 
     // S70.G05.00
@@ -311,15 +304,15 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         setN4DSLine(
             "S70.G05.00.002",
             accountingExport
-            .getDateTo()
-            .format(DateTimeFormatter.ofPattern(DATE_FORMAT_DDMMYYYY))));
+                .getDateTo()
+                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_DDMMYYYY))));
 
     List<Object[]> dataList = getN4DSDeclaredPartnersData(accountingExport);
     for (Object[] listObj : dataList) {
       // S70.G10.00 Bénéficiaire des honoraires
       lines.add(setN4DSLine("S70.G10.00.001", listObj[0].toString()));
       String title = listObj[1].toString();
-      String countryAlpha2code = listObj[10].toString();
+      String countryAlpha2code = listObj[9].toString();
       if (title.equals(String.valueOf(PartnerRepository.PARTNER_TYPE_COMPANY))) {
         String declarantRegistrationCode = listObj[4].toString().replaceAll(" ", "");
 
@@ -339,29 +332,16 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         lines.add(setN4DSLine("S70.G10.00.004.006", listObj[6].toString()));
       }
       if (countryAlpha2code.equals("FR")) {
-        lines.add(setN4DSLine("S70.G10.00.004.010", listObj[8].toString()));
-        lines.add(setN4DSLine("S70.G10.00.004.012", listObj[9].toString()));
+        lines.add(setN4DSLine("S70.G10.00.004.010", listObj[7].toString()));
+        lines.add(setN4DSLine("S70.G10.00.004.012", listObj[8].toString()));
       } else {
         lines.add(setN4DSLine("S70.G10.00.004.013", countryAlpha2code));
       }
-      String serviceTypeCode = listObj[12].toString();
-      String amount = listObj[13].toString();
-      String serviceType = manageDAS2ServiceTypeToDeclare(serviceTypeCode);
-      if (serviceType.equals("ANAT")) {
-        // TODO quel code avantage mettre ?
-        // S70.G10.05 Avantages en nature
-        lines.add(setN4DSLine("S70.G10.05.001", "09"));
-        lines.add(setN4DSLine("S70.G10.05.002", amount));
-      } else if (serviceType.equals("IDTR")) {
-        // TODO quel code mettre ?
-        // S70.G10.10 Prise en charge des indemnités
-        lines.add(setN4DSLine("S70.G10.10.001", "02"));
-        lines.add(setN4DSLine("S70.G10.10.001", amount));
-      } else {
-        // S70.G10.15 Rémunérations
-        lines.add(setN4DSLine("S70.G10.15.001", serviceType));
-        lines.add(setN4DSLine("S70.G10.15.001", amount));
-      }
+      String serviceTypeCode = listObj[10].toString();
+      String amount = listObj[11].toString();
+      // S70.G10.15 Rémunérations
+      lines.add(setN4DSLine("S70.G10.15.001", serviceTypeCode));
+      lines.add(setN4DSLine("S70.G10.15.001", amount));
     }
     // S80.G01.00
     lines.add(setN4DSLine("S80.G01.00.001.002", nic));
@@ -419,38 +399,8 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     return registrationCode.substring(registrationCode.length() - 5);
   }
 
-  @Override
-  public String manageDAS2ServiceTypeToDeclare(String serviceTypeCode) {
-
-    switch (serviceTypeCode) {
-      case "HONO":
-        return "01";
-      case "COMM":
-        return "02";
-      case "COUR":
-        return "03";
-      case "RIST":
-        return "04";
-      case "JETO":
-        return "05";
-      case "DAUT":
-        return "06";
-      case "DINV":
-        return "07";
-      case "AREM":
-        return "08";
-      case "RSOU":
-        return "11";
-      case "FRAI":
-        // TODO
-        return null;
-      default:
-        return serviceTypeCode;
-    }
-  }
-
   @SuppressWarnings("unchecked")
-@Override
+  @Override
   public List<Object[]> getN4DSDeclaredPartnersData(AccountingReport accountingExport) {
 
     String queryStr =
@@ -462,12 +412,10 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "PARTNER.REGISTRATION_CODE as REGISTRATION_CODE, "
             + "TRIM(CONCAT(ADDRESS.ADDRESSL2,' ',ADDRESS.ADDRESSL3)) AS ADDRESS_CONSTRUCTION, "
             + "ADDRESS.ADDRESSL4 AS ADDRESSL4, "
-            + "ADDRESS.ADDRESSL5 as ADDRESSL5, "
-            + "ADDRESS.ZIP AS ZIP, "
+            + "CITY.ZIP AS ZIP, "
             + "CITY.NAME AS CITY, "
             + "COUNTRY.ALPHA2CODE AS COUNTRY, "
-            + "COUNTRY.COG AS COG, "
-            + "MOVELINE.SERVICE_TYPE_CODE AS SERVICE_TYPE, "
+            + "SERVICETYPE.N4DS_CODE AS SERVICE_TYPE, "
             + "SUM(TMOVELINE.DETAIL_PAYMENT_AMOUNT) AS AMOUNT "
             + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE T "
             + "JOIN ACCOUNT_TAX_PAYMENT_MOVE_LINE TMOVELINE ON T.TAX_PAYMENT_MOVE_LINE = TMOVELINE.ID "
@@ -482,8 +430,8 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + accountingExport.getId()
             + " AND T.EXCLUDE_FROM_DAS2REPORT != true "
             + "AND SERVICETYPE.IS_DAS2DECLARABLE = true "
-            + "GROUP BY PARTNER_TYPE_SELECT,DAS2ACTIVITY_NAME,PARTNER.NAME,PARTNER.FIRST_NAME,PARTNER.FIRST_NAME,PARTNER.REGISTRATION_CODE, "
-            + "ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,ADDRESS.ADDRESSL5,ADDRESS.ZIP,CITY.NAME,COUNTRY.ALPHA2CODE,COUNTRY.COG,MOVELINE.SERVICE_TYPE_CODE,SERVICETYPE.NAME";
+            + "GROUP BY PARTNER_TYPE_SELECT,DAS2ACTIVITY_NAME,PARTNER.NAME,PARTNER.FIRST_NAME,PARTNER.REGISTRATION_CODE, "
+            + "ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,CITY.ZIP,CITY.NAME,COUNTRY.ALPHA2CODE,SERVICETYPE.N4DS_CODE";
 
     Query query = JPA.em().createNativeQuery(queryStr);
     return query.getResultList();
@@ -495,7 +443,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     int i = 0;
     List<AccountingReportMoveLine> accountingReportMoveLines =
-        getDasToDeclareLinesFromAccountingExport(accountingExport);
+        getDasToDeclareLinesFromAccountingExport(accountingExport, false);
     if (CollectionUtils.isEmpty(accountingReportMoveLines)) {
       return;
     }

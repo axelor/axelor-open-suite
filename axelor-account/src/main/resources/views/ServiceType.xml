@@ -7,6 +7,7 @@
     <grid name="service-type-grid" title="Service types" model="com.axelor.apps.account.db.ServiceType" orderBy="name">
         <field name="name"/>
         <field name="code"/>
+        <field name="n4dsCode"/>
         <field name="isDas2Declarable"/>
     </grid>
     
@@ -14,6 +15,7 @@
         <panel name="mainPanel">
         	<field name="name"/>
         	<field name="code"/>
+        	<field name="n4dsCode"/>
         	<field name="isDas2Declarable"/>
         </panel>
     </form>

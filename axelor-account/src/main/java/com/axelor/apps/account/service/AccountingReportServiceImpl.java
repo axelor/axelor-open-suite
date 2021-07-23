@@ -62,7 +62,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -962,7 +961,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     checkDasDeclarantCompany(accountingExport);
 
     return Beans.get(TraceBackRepository.class).all()
-        .filter("self.refId = ?1 AND self.archived != true", accountingExport.getId()).select("id").fetch(0, 0).stream()
+        .filter("self.refId = ?1 AND self.archived != true", accountingExport.getId()).select("id")
+        .fetch(0, 0).stream()
         .map(m -> (Long) m.get("id"))
         .collect(Collectors.toList());
   }
@@ -1165,10 +1165,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public MetaFile launchN4DSExport(AccountingReport accountingExport)
       throws AxelorException, IOException {
 
-    String fileName =
-        "N4DS_"
-            + accountingExport.getCompany().getCode()
-            + ".txt";
+    String fileName = "N4DS_" + accountingExport.getCompany().getCode() + ".txt";
     MetaFile metaFile =
         accountingReportMoveLineService.generateN4DSFile(accountingExport, fileName);
     setExported(accountingExport);
