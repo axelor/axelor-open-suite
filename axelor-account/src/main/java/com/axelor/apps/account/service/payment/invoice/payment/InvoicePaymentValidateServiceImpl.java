@@ -230,7 +230,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             invoicePayment.getDescription());
 
     move.addMoveLineListItem(customerMoveLine);
-
+    move.setDescription(customerMoveLine.getDescription());
+    move.setOrigin(customerMoveLine.getOrigin());
     moveService.getMoveValidateService().validate(move);
 
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {

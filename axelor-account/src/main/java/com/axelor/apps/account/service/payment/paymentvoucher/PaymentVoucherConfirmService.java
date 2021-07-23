@@ -267,7 +267,6 @@ public class PaymentVoucherConfirmService {
                 moveLineNo++,
                 paymentVoucher.getRef(),
                 null);
-
         Reconcile reconcile =
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
@@ -289,6 +288,8 @@ public class PaymentVoucherConfirmService {
                 null);
       }
       move.getMoveLineList().add(moveLine);
+      move.setOrigin(moveLine.getOrigin());
+      move.setDescription(moveLine.getDescription());
       // Check if the paid amount is > paid lines total
       // Then Use Excess payment on old invoices / moveLines
       if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0) {
