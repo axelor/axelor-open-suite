@@ -93,7 +93,7 @@ public class BankReconciliationService {
     BigDecimal totalPaid = BigDecimal.ZERO;
     BigDecimal totalCashed = BigDecimal.ZERO;
 
-    /*
+    /* DONE
      * Charger tous les rapprochements, ajouter le débit de toutes bankReconciliationLine where isPosted = true;
      * soustraire le crédit de ces même lignes
      */
@@ -102,13 +102,13 @@ public class BankReconciliationService {
      * Charger tous les moveLines where account = bankReconciliation.cashAccount (if bankReonciliation.cashAccount == null, on compte 0)
      */
     BigDecimal movesReconciledLineBalance = BigDecimal.ZERO;
-    /*
+    /* DONE
      * Charger tous les rapprochements, ajouter le débit de toutes bankReconciliationLine where isPosted = false;
      * soustraire le crédit de ces même lignes
      */
     BigDecimal statementUnreconciledLineBalance = BigDecimal.ZERO;
     /*
-     * Charger les movelines dont le montant rapproché est différent du crédit ou débit en foncion, et ajouter / soustraire la différence
+     * Charger les movelines dont le montant rapproché est différent du crédit ou débit en fonction, et ajouter / soustraire la différence
      */
     BigDecimal movesUnreconciledLineBalance = BigDecimal.ZERO;
     /*
@@ -137,13 +137,36 @@ public class BankReconciliationService {
       bankReconciliations = bankReconciliationRepository.all().fetch(limit, offset);
     } while (bankReconciliations.size() != 0);
 
+    offset = 0;
     moveLines =
         moveLineRepository
             .all()
             .filter("self.account = :cashAccount")
             .bind("cashAccount", bankReconciliation.getCashAccount())
-            .fetch();
-    do {} while (moveLines.size() != 0);
+            .fetch(limit, offset);
+    do {
+    	for(MoveLine moveLine : moveLines)
+    	{
+    		if(moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0)
+    		{// Debit line
+    			
+    		}
+
+    		if(moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0)
+    		{// Credit line
+    			
+    		}
+    		
+    	}
+        offset += limit;
+        JPA.clear();
+        moveLines =
+                moveLineRepository
+                    .all()
+                    .filter("self.account = :cashAccount")
+                    .bind("cashAccount", bankReconciliation.getCashAccount())
+                    .fetch(limit, offset);
+    } while (moveLines.size() != 0);
 
     for (BankReconciliationLine bankReconciliationLine :
         bankReconciliation.getBankReconciliationLineList()) {
