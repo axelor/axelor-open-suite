@@ -39,7 +39,7 @@
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true" />
     <field name="account.analyticDistributionAuthorized" hidden="true" />
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true" />
-    <field name="date" width="100" onChange="account-move-line-group-date-onchange"/>
+    <field name="date" width="100" onChange="account-move-line-group-date-onchange" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0" />
     <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"
       onChange="action-move-line-method-compute-analytic-distribution" />

@@ -205,6 +205,9 @@ public class MoveServiceImpl implements MoveService {
                     journal.getIsInvoiceMoveConsolidated(),
                     isPurchase,
                     isDebitCustomer));
+        
+        move.setOrigin(move.getMoveLineList().get(0).getOrigin());
+        move.setDescription(move.getMoveLineList().get(0).getDescription());
 
         moveRepository.save(move);
 
