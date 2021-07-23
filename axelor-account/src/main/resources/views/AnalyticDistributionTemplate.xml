@@ -28,7 +28,7 @@
     </action-group>
     
     <action-validate name="action-validate-analytic-distribution-template-check-company">
-    	<alert if="company != null &amp;&amp; analyticDistributionLineList.any{!(it.analyticAxis.companySet.contains(company))}" message="Selected AnalyticAxis doesn't belong to the select company."/>
+    	<alert if="company != null &amp;&amp; analyticDistributionLineList.any{!(it.analyticAxis.company == company)}" message="Selected AnalyticAxis doesn't belong to the select company."/>
     </action-validate>
     
     <search-filters name="analytic-distribution-template-filters" model="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic distribution template filters">

@@ -29,7 +29,7 @@
         <panel name="mainPanel">
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="name"/>
-	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-attrs-analytic-account-change-axis,save,action-record-analytic-account-set-values,save"/>
+	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-record-analytic-account-set-values,action-attrs-analytic-account-change-axis,save"/>
 	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid" domain="self.analyticLevel.nbr = :level AND self.analyticAxis = :analyticAxis"/>
 	        <field name="analyticLevel" form-view="analytic-level-form" grid-view="analytic-level-grid" onChange="action-record-domain-analytic-level-parent"/>
 	        <field name="$level" type="integer" hidden="true"/>
@@ -142,7 +142,6 @@
 		<attribute name="hidden" for="analyticGroupingValue10" expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping10)"/>
 		
 		<attribute name="hidden" for="parent" expr="eval: !analyticAxis.manageParentAccount"/>
-		<attribute name="value" for="parent" expr="eval: null" if="analyticAxis.manageParentAccount = false"/>
 	</action-attrs>
 	
 	<action-record name="action-record-analytic-account-set-values" model="com.axelor.apps.account.db.AnalyticAccount">
@@ -156,7 +155,7 @@
 		<field name="analyticGroupingValue8" expr="eval: null" if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping8)"/>
 		<field name="analyticGroupingValue9" expr="eval: null" if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping9)"/>
 		<field name="analyticGroupingValue10" expr="eval: null" if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping10)"/>
-		<field name="parent" expr="eval: null" if="analyticAxis.manageParentAccount = false"/>
+		<field name="parent" expr="eval: null" if="!analyticAxis.manageParentAccount"/>
 	</action-record>
     
 </object-views>

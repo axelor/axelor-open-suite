@@ -53,7 +53,7 @@
         requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
         <field name="origin" width="120"/>
         <field name="description" requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
-        <field name="analyticMoveLineList" hidden="true"/>
+        <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid" form-view="analytic-move-line-move-line-form"/>
         <field name="reconcileGroup" hidden="true"/>
         <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
 		<field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>

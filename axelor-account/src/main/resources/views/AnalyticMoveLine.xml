@@ -33,6 +33,24 @@
         <field name="typeSelect"/>
     </grid>
     
+    <grid name="analytic-move-line-move-line-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis">
+        <field name="analyticJournal"/>
+        <field name="analyticAxis"/>
+        <field name="analyticAccount"/>
+        <field name="accountType" />
+        <field name="percentage"/>
+        <field name="amount"/>
+    </grid>
+    
+    <form name="analytic-move-line-move-line-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onLoad="action-analytic-move-line-attrs-hide-fields" onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
+        <panel name="mainPanel" >
+   	        <field name="analyticJournal"/>
+	        <field name="analyticAxis"/>
+	        <field name="analyticAccount"/>
+	        <field name="percentage"/>
+        </panel>      
+    </form>
+    
     <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
     	onLoad="action-analytic-move-line-attrs-title-project" width="large">
        <panel name="mainPanel" >
