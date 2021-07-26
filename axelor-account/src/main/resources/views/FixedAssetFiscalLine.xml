@@ -17,17 +17,17 @@
 	<form name="fixed-asset-fiscal-line-form"
 		title="Fixed asset fiscal line"
 		model="com.axelor.apps.account.db.FixedAssetFiscalLine">
-		<panel name="mainPanel" colSpan="12">
-			<field name="depreciationAmount" />
-			<field name="derogatoryAmount" />
-			<field name="derogatoryBalanceAmount" />
-			<field name="derogatoryDepreciationAmount" />
-			<field name="fiscalDepreciationAmount" />
-			<field name="incomeDepreciationAmount" />
-		</panel>
-		<panel name="movePanel">
-			<field name="derogatoryDepreciationMove" grid-view="move-grid" form-view="move-form"/>
-		</panel>
+		<panel name="mainPanel">
+	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
+	      <field name="fiscalDepreciationAmount"/>
+	      <field name="derogatoryAmount"/>
+	      <field name="incomeDepreciationAmount"/>
+	      <field name="derogatoryBalanceAmount"/>
+	      <field name="derogatoryDepreciationMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
+	    </panel>
+	    <panel name="actionsPanel" hideIf="statusSelect == 2">
+	      <button name="realizeBtn" title="Realize" onClick="save;action-fixed-asset-line-method-realize"/>
+	    </panel>
 	</form>
 
 </object-views>

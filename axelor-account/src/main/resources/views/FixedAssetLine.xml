@@ -13,36 +13,34 @@
     	<button name="realizeBtn" title="Realize" icon="fa-check-circle" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
     </grid>
     
-    <form name="fixed-asset-line-form" title="Fixed asset line" model="com.axelor.apps.account.db.FixedAssetLine" 
-    	onNew="action-fixed-asset-line-record-default,action-fixed-asset-line-attrs-onnew-onload" onLoad="action-fixed-asset-line-attrs-onnew-onload">
-    	<panel>
-    		<panel name="statusSelectPanel" colSpan="12">
-				<field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false" colSpan="12"/>
-			</panel>
-	        <panel name="mainPanel" colSpan="12">
-	        	<field name="depreciationDate"/>
-	        	<field name="depreciation"/>
-	        	<field name="cumulativeDepreciation"/>
-	        	<field name="residualValue"/>
-	        	<field name="depreciationAccountMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
-	        	<field name="typeSelect"/>
-	        	<field name="depreciationBase"/>
-	        </panel>
-	        <panel name="actionsPanel" hideIf="statusSelect == 2">
-		    	<button name="realizeBtn" title="Realize" onClick="save,action-fixed-asset-line-method-realize"/>	
-		    </panel>
-        </panel>
-        <panel-tabs name="mainPanelTab">
-    		<panel name="impairmentPanel" title="Impairment information">
-		    	<field name="correctedAccountingValue"/>
-	        	<field name="impairmentValue"/>
-	        	<field name="impairmentAccountMove" grid-view="move-grid" form-view="move-form"/>
-    		</panel>
-    		<panel name="fiscalPanel" title="Fiscal Information">
-    			<field name="derogatoryDepreciationMove" grid-view="move-grid" form-view="move-form"/>
-    		</panel>
-        </panel-tabs>
-    </form>
+    <form name="fixed-asset-line-form" title="Fixed asset line" model="com.axelor.apps.account.db.FixedAssetLine" onLoad="action-fixed-asset-line-attrs-onnew-onload" onNew="action-fixed-asset-line-record-default,action-fixed-asset-line-attrs-onnew-onload">
+	  <panel>
+	    <panel name="statusSelectPanel" colSpan="12">
+	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
+	      <panel name="actionsPanel" hideIf="statusSelect == 2" colSpan="6">
+	      	<button name="realizeBtn" title="Realize" onClick="save,action-fixed-asset-line-method-realize"/>
+	    	</panel>
+	      <field name="typeSelect"/>
+	    </panel>
+	    <panel name="mainPanel" colSpan="12">
+	      <field name="depreciationDate"/>
+	      <field name="depreciationBase"/>
+	      <field name="depreciation"/>
+	      <field name="cumulativeDepreciation"/>
+	      <field name="residualValue"/>
+	      <field name="depreciationAccountMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
+	    </panel>
+	    
+	  </panel>
+	  <panel-tabs name="mainPanelTab">
+	    <panel name="impairmentPanel" title="Impairment information">
+	      <field name="correctedAccountingValue"/>
+	      <field name="impairmentValue"/>
+	      <field name="impairmentAccountMove"/>
+	    </panel>
+	  </panel-tabs>
+</form>
+
     
     <action-record name="action-fixed-asset-line-record-default" model="com.axelor.apps.account.db.FixedAssetLine">
     	<field name="statusSelect" expr="1"/>

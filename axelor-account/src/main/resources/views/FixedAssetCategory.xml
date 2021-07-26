@@ -13,44 +13,45 @@
 	  <field name="depreciationAccount" form-view="account-form" grid-view="account-grid"/>
 	</grid>
 
-	<form name="fixed-asset-category-form" title="Fixed asset category" model="com.axelor.apps.account.db.FixedAssetCategory" width="large"
-		onNew="action-fixed-asset-category-record-default" onSave="action-fixed-asset-category-record-compute-duration">
-        <panel name="mainPanel">
-        	<field name="name"/>
-        	<field name="company" form-view="company-form" grid-view="company-grid"/>
-        	<field name="fixedAssetType" form-view="fixed-asset-type-form" grid-view="fixed-asset-type-grid"/>
-        	<field name="isValidateFixedAsset"/>
-        </panel>
-        
-        <panel-tabs name="mainPanelTab">
-        	<panel name="accountingInfoPanel" title="Accounting information">
-        		<field name="journal" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-        		<field name="chargeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" form-view="account-form" grid-view="account-grid"/>
-        		<field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
-        		<field name="expenseDepreciationDerogatoryAccount" form-view="account-form"/>
-        		<field name="capitalDepreciationDerogatoryAccount" form-view="account-form"/>
-        		<field name="incomeDepreciationDerogatoryAccount" form-view="account-form"/>
-        		<field name="realisedAssetsValueAccount" form-view="account-form"/>
-        		<field name="realisedAssetsIncomeAccount" form-view="account-form"/>
-        		<field name="debtReceivableAccount" form-view="account-form"/>
-        		<field name="provisionTangibleFixedAssetAccount" form-view="account-form"/>
-        	</panel>
-        	<panel name="periodicityPanel" title="Periodicity">
-	        	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
-	        	<field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration"/>
-	        	<field name="durationInMonth" readonly="true"/>
-        	</panel>
-        	<panel name="depreciationPanel" title="Depreciation method">
-        		<field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef" required="true"/>
-	        	<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'" validIf="computationMethodSelect == 'linear' || (computationMethodSelect == 'degressive' &amp;&amp; degressiveCoef != 0.00)"/>
-	        	<field name="isProrataTemporis"/>
-	        	<field name="isUSProrataTemporis" showIf="isProrataTemporis"/>
-        	</panel>
-        	<panel name="analyticPanel" title="Analytic" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
-        		<field name="analyticDistributionTemplate" canEdit="false" domain="self.company = :company" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" />
-        	</panel>
-        </panel-tabs>
-    </form>
+	<form name="fixed-asset-category-form" title="Fixed asset category" model="com.axelor.apps.account.db.FixedAssetCategory" width="large" onSave="action-fixed-asset-category-record-compute-duration" onNew="action-fixed-asset-category-record-default">
+	  <panel name="mainPanel">
+	    <field name="name"/>
+	    <field name="company" form-view="company-form" grid-view="company-grid"/>
+	    <field name="fixedAssetType" form-view="fixed-asset-type-form" grid-view="fixed-asset-type-grid"/>
+	    <field name="isValidateFixedAsset"/>
+	  </panel>
+	  <panel-tabs name="mainPanelTab">
+	    <panel name="accountingInfoPanel" title="Accounting information">
+	      <field name="journal" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+	      <field name="chargeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" form-view="account-form" grid-view="account-grid"/>
+	      <field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
+	      <field name="expenseDepreciationDerogatoryAccount" form-view="account-form"/>
+	      <field name="capitalDepreciationDerogatoryAccount" form-view="account-form"/>
+	      <field name="incomeDepreciationDerogatoryAccount" form-view="account-form"/>
+	      <field name="debtReceivableAccount" form-view="account-form"/>
+	      <field name="provisionTangibleFixedAssetAccount" form-view="account-form"/>
+	      <panel name="exitAccountPanel" title="Assets cession" colspan="12">
+	      	<field name="realisedAssetsValueAccount" form-view="account-form"/>
+	        <field name="realisedAssetsIncomeAccount" form-view="account-form"/>
+	    	</panel>
+	    </panel>
+	    <panel name="depreciationPanel" title="Depreciation method" colspan="12">
+	      <field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef" required="true"/>
+	      <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'" validIf="computationMethodSelect == 'linear' || (computationMethodSelect == 'degressive' &amp;&amp; degressiveCoef != 0.00)"/>
+	      <field name="isProrataTemporis"/>
+	      <field name="isUSProrataTemporis" showIf="isProrataTemporis"/>
+	      <panel name="periodicityPanel" title="Periodicity" colspan="12">
+	      	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
+	      	<field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration"/>
+	      	<field name="durationInMonth" readonly="true"/>
+	    	</panel>
+	    </panel>
+	    <panel if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" name="analyticPanel" title="Analytic">
+	      <field name="analyticDistributionTemplate" canEdit="false" domain="self.company = :company" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>
+	    </panel>
+	  </panel-tabs>
+	</form>
+
     
     <action-record name="action-fixed-asset-category-record-default" model="com.axelor.apps.account.db.FixedAssetCategory">
     	<field name="company" expr="eval: __user__.activeCompany"/>

@@ -14,90 +14,93 @@
 	</grid>
     
     <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date" onNew="action-fixed-asset-record-default">
-  <panel>
-    <panel name="statusSelectPanel" colSpan="12">
-      <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
-      <field name="reference" colSpan="3"/>
-      <field name="fixedAssetSeq" colSpan="3"/>
-      <field name="transferredReasonSelect" showIf="statusSelect == 4"/>
-    </panel>
-    <panel name="mainPanel" colSpan="12">
-      <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
-      <field name="company" readonlyIf="statusSelect > 1" canEdit="false" form-view="company-form" grid-view="company-grid" colSpan="3"/>
-      <field name="company.currency" title="Currency" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
-      <field name="fixedAssetCategory" readonlyIf="statusSelect > 1" canEdit="false" onChange="action-fixed-asset-record-onchange-set-values" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"/>
-      <field if-module="axelor-supplychain" name="stockLocation" canNew="false" canEdit="false" domain="self.company = :company" form-view="stock-location-form" grid-view="stock-location-grid"/>
-      <field if-module="axelor-supplychain" name="trackingNumber" canNew="false" canEdit="false" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
-    </panel>
-  </panel>
-  <panel name="otherDetailsPanel">
-    <field name="partner" readonlyIf="statusSelect > 1" canEdit="false" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-supplier-grid"/>
-    <field name="invoiceLine" colSpan="3" domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
-    <field name="purchaseAccountMove" colSpan="3" />
-    <field name="journal" readonlyIf="statusSelect > 1" canEdit="false" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-    <field name="purchaseAccount" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
-    <field if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" name="analyticDistributionTemplate" canEdit="false" onChange="action-fixed-asset-method-create-analytic-distribution" domain="self.company = :company" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>
-    <field name="depreciationPlanSelect"/>
-  </panel>
-  <panel-tabs name="mainPanelTab">
-    <panel name="fiscalPanel" title="Fiscal information">
-      <field name="fiscalComputationMethodSelect"/>
-      <field name="fiscalDegressiveCoef"/>
-      <field name="fiscalNumberOfDepreciation"/>
-      <field name="fiscalPeriodicityTypeSelect"/>
-      <field name="fiscalPeriodicityInMonth"/>
-      <field name="fiscalDurationInMonth"/>
-      <field name="fiscalFixedAssetLineList" colSpan="12" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid"/>
-    </panel>
-    
-    <panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect > 1">
-      <field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef" required="true"/>
-      <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
-      <field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
-      <field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration" min="1"/>
-      <field name="durationInMonth" readonly="true"/>
-      <field name="fixedAssetCategory.isProrataTemporis"/>
-      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
-      <field name="isEqualToFiscalDepreciation" widget="boolean"/>
-      <field name="periodicityTypeSelect"/>
-      <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
-    </panel>
-    
-    <panel name="derogatoryPanel" title="Dérogatoire">
-    	<field name="fixedAssetFiscalLineList" grid-view="fixed-asset-fiscal-line-grid" form-view="fixed-asset-fiscal-line-form"/>
-    </panel>
-    <panel name="associatedFixedAssets" title="Associated Fixed Assets">
-      <field name="associatedFixedAssetsSet" colSpan="12" widget="many-to-many" form-view="fixed-asset-form" grid-view="fixed-asset-grid"/>
-    </panel>
-    <panel name="commentsPanel">
-      <field name="originSelect"/>
-    	<field name="comments" colSpan="12"/>
-  	</panel>
-  </panel-tabs>
-  
-  <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true">
-    <button name="computeDepreciationBtn" title="Compute depreciation" hideIf="statusSelect > 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="action-fixed-asset-group-compute-depreciation-click"/>
-    <button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="save,action-fixed-asset-method-compute-depreciation,action-fixed-asset-record-status-validated,save"/>
-    <button name="disposalBtn" title="Disposal" showIf="statusSelect > 1 &amp;&amp; statusSelect != 4" onClick="save,action-fixed-asset-group-disposal-click"/>
-  </panel>
-  <panel name="datesPanel" readonlyIf="statusSelect > 1" sidebar="true">
-    <field name="acquisitionDate" onChange="action-fixed-asset-validate-check-first-depreciation-date,action-attrs-fixed-asset-initialize-first-service-date" required="true"/>
-    <field name="firstDepreciationDate" onChange="action-fixed-asset-validate-check-first-depreciation-date" required="true"/>
-    <field name="disposalDate" readonly="true" showIf="statusSelect == 4"/>
-    <field name="firstServiceDate"/>
-    <field name="failoverDate"/>
-  </panel>
-  <panel name="allValuesPanel" sidebar="true">
-    <field name="pastDepreciation"/>
-    <field name="grossValue" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
-    <field name="residualValue" readonly="true"/>
-    <field name="correctedResidualValue" readonlyIf="residualValue == null || residualValue &lt;= 0"/>
-    <field name="accountingValue"/>
-    <field name="alreadyDepreciatedAmount"/>
-    <field name="disposalValue" readonly="true" showIf="statusSelect == 4"/>
-    <field name="disposalMove" readonly="true" showIf="statusSelect == 4" form-view="move-form" grid-view="move-grid"/>
-  </panel>
-</form>
+	  <panel>
+	    <panel name="statusSelectPanel" colSpan="12">
+	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
+	      <field name="reference" colSpan="3"/>
+	      <field name="fixedAssetSeq" colSpan="3"/>
+	    </panel>
+	    <panel name="mainPanel" colSpan="12">
+	      <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
+	      <field name="company" readonlyIf="statusSelect > 1" colSpan="3" canEdit="false" form-view="company-form" grid-view="company-grid"/>
+	      <field name="company.currency" title="Currency" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
+	      <field name="fixedAssetCategory" readonlyIf="statusSelect > 1" canEdit="false" onChange="action-fixed-asset-record-onchange-set-values" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"/>
+	      <field if-module="axelor-supplychain" name="stockLocation" canNew="false" canEdit="false" domain="self.company = :company" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	      <field if-module="axelor-supplychain" name="trackingNumber" canNew="false" canEdit="false" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+	    </panel>
+	  </panel>
+	  <panel name="otherDetailsPanel">
+	    <field name="partner" readonlyIf="statusSelect > 1" canEdit="false" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-supplier-grid"/>
+	    <field name="invoiceLine" colSpan="3" domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
+	    <field name="purchaseAccountMove" colSpan="3" domain="self.company = :company"/>
+	    <field name="journal" readonlyIf="statusSelect > 1" canEdit="false" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+	    <field name="purchaseAccount" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
+	    <field if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" name="analyticDistributionTemplate" canEdit="false" onChange="action-fixed-asset-method-create-analytic-distribution" domain="self.company = :company" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>
+	    <field name="depreciationPlanSelect"/>
+	  </panel>
+	  <panel-tabs name="mainPanelTab">
+	    <panel name="fiscalPanel" title="Fiscal information" showIf="depreciationPlanSelect == 2 || depreciationPlanSelect == 3">
+	      <field name="fiscalComputationMethodSelect"/>
+	      <field name="fiscalDegressiveCoef"/>
+	      <field name="fiscalNumberOfDepreciation"/>
+	      <field name="fiscalPeriodicityTypeSelect"/>
+	      <field name="fiscalPeriodicityInMonth"/>
+	      <field name="fiscalDurationInMonth"/>
+	      <field name="fiscalFixedAssetLineList" colSpan="12" canNew="false" domain="self.typeSelect = 2 " form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid"/>
+	    </panel>
+	    <panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect > 1">
+	      <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
+	      <field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef" required="true"/>
+	      <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
+	      <field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
+	      <field name="periodicityTypeSelect"/>
+	      <field name="periodicityInMonth" showIf="periodicityTypeSelect == 1" onChange="action-fixed-asset-category-record-compute-duration" min="1"/>
+	      <field name="durationInMonth" readonly="true" showIf="periodicityTypeSelect == 1"/>
+	      <field name="fixedAssetCategory.isProrataTemporis"/>
+	      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
+	      <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
+	    </panel>
+	    <panel name="derogatoryPanel" title="Derogatory" showIf="depreciationPlanSelect == 3">
+	      <field name="fixedAssetFiscalLineList" colSpan="12" form-view="fixed-asset-fiscal-line-form" grid-view="fixed-asset-fiscal-line-grid"/>
+	    </panel>
+	    <panel name="associatedFixedAssets" title="Associated Fixed Assets">
+	      <field name="associatedFixedAssetsSet" colSpan="12" widget="many-to-many" canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid" domain="self.company = :company"/>
+	    </panel>
+	    <panel name="commentsPanel">
+	      <field name="originSelect"/>
+	      <field name="comments" colSpan="12"/>
+	    </panel>
+	  </panel-tabs>
+	  <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true">
+	    <button name="computeDepreciationBtn" title="Compute depreciation" hideIf="statusSelect > 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="action-fixed-asset-group-compute-depreciation-click"/>
+	    <button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="save,action-fixed-asset-method-compute-depreciation,action-fixed-asset-record-status-validated,save"/>
+	    <button name="disposalBtn" title="Disposal" showIf="statusSelect > 1 &amp;&amp; statusSelect != 4" onClick="save,action-fixed-asset-group-disposal-click"/>
+	  </panel>
+	  <panel name="datesPanel" readonlyIf="statusSelect > 1" sidebar="true">
+	    <field name="acquisitionDate" onChange="action-fixed-asset-validate-check-first-depreciation-date,action-record-fixed-asset-initialize-first-dates" required="true"/>
+	    <field name="firstServiceDate"/>
+	    <field name="firstDepreciationDate" onChange="action-fixed-asset-validate-check-first-depreciation-date" required="true"/>
+	    <field name="disposalDate" readonly="true" showIf="statusSelect == 4"/>
+	    <field name="failoverDate"/>
+	  </panel>
+	  <panel name="allValuesPanel" sidebar="true">
+	    <field name="pastDepreciation"/>
+	    <field name="alreadyDepreciatedAmount"/>
+	    <field name="grossValue" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
+	    <field name="residualValue" readonly="true"/>
+	    <field name="accountingValue"/>
+	    <field name="correctedResidualValue" readonlyIf="residualValue == null || residualValue &lt;= 0"/>
+	  </panel>
+	  <panel name="transferredPanel" title="Exit" showIf="statusSelect == 4" sidebar="true">
+	    <field name="transferredReasonSelect" showIf="statusSelect == 4"/>
+	    <field name="failoverDate" title="Date de sortie" showIf="statusSelect == 4"/>
+	    <field name="disposalValue" readonly="true" showIf="statusSelect == 4"/>
+	    <field name="disposalMove" title="Ecriture de vente" readonly="true" showIf="statusSelect == 4" form-view="move-form" grid-view="move-grid"/>
+	    <field name="saleAccountMove" domain="self.company = :company"/>
+	  </panel>
+	</form>
+
+
     
     <form model="com.axelor.apps.base.db.Wizard" title="disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew">
     	<panel name="mainPanel">
@@ -107,6 +110,9 @@
 	    	<field name="disposalQty"/>
     		<field name="disposalAmount" type="decimal" title="Disposal amount" min="0"/>
     		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-fixed-asset-disposal-wizard-method-disposal"/>
+    		<field name="$generateSaleMove" title="Generate Sale Move" widget="boolean" showIf="disposalTypeSelect == 2"/>
+    		<field name="invoiceLine.taxLine" title="Taxline" widget="many-to-one" showIf="invoiceLine.taxLine"/>
+    		<field name="comments" colSpan="12" widget="text"/>
     	</panel>
     </form>
     
@@ -161,7 +167,7 @@
     
     <action-validate name="action-fixed-asset-validate-check-first-depreciation-date">
     	<error if="acquisitionDate &amp;&amp; firstDepreciationDate &amp;&amp; firstDepreciationDate.isBefore(acquisitionDate)" message="First depreciation date cannot be before Acquisition date."/>
-    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt;= periodicityInMonth" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
+    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt; fiscalPeriodicityInMonth &amp;&amp; fiscalPeriodicityTypeSelect == 1" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
     </action-validate>
     
     <action-validate name="action-fixed-asset-validate-check-puchase-account">
@@ -189,8 +195,25 @@
     	<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
     </search-filters>
     
-    <action-attrs name="action-attrs-fixed-asset-initialize-first-service-date">
-    	<attribute name="value" for="firstServiceDate" expr="eval: acquisitionDate" if="!firstServiceDate &amp;&amp; acquisitionDate"/>
+    <action-record name="action-record-fixed-asset-initialize-first-dates" model="com.axelor.apps.account.db.FixedAsset">
+    	<field name="firstServiceDate" expr="eval: acquisitionDate" if="!firstServiceDate &amp;&amp; acquisitionDate"/>
+    	<field name="firstDepreciationDate" expr="call: com.axelor.apps.account.service.AnalyticFixedAssetService:computeFirstDepreciationDate(__this__,acquisitionDate)" if="id &amp;&amp; acquisitionDate &amp;&amp; statusSelect == 1"/>
+    </action-record>
+    
+    <action-attrs name="action-attrs-fixed-asset-fiscal-depreciation-equal">
+    	<attribute name="value" for="computationMethodSelect" expr="eval: fiscalComputationMethodSelect" if="isEqualToFiscalDepreciation &amp;&amp; fiscalComputationMethodSelect"/>
+    	<attribute name="value" for="degressiveCoef" expr="eval: fiscalDegressiveCoef" if="isEqualToFiscalDepreciation &amp;&amp; fiscalDegressiveCoef"/>
+    	<attribute name="value" for="numberOfDepreciation" expr="eval: fiscalNumberOfDepreciation" if="isEqualToFiscalDepreciation &amp;&amp; fiscalNumberOfDepreciation"/>
+    	<attribute name="value" for="periodicityTypeSelect" expr="eval: fiscalPeriodicityTypeSelect" if="isEqualToFiscalDepreciation &amp;&amp; fiscalPeriodicityTypeSelect"/>
+    	<attribute name="value" for="periodicityInMonth" expr="eval: fiscalPeriodicityInMonth" if="isEqualToFiscalDepreciation &amp;&amp; fiscalPeriodicityInMonth"/>
+    	<attribute name="value" for="durationInMonth" expr="eval: fiscalDurationInMonth" if="isEqualToFiscalDepreciation &amp;&amp; fiscalDurationInMonth"/>
+    	
+    	<attribute name="readonly" for="computationMethodSelect" expr="eval: isEqualToFiscalDepreciation"/>
+    	<attribute name="readonly" for="degressiveCoef" expr="eval: isEqualToFiscalDepreciation"/>
+    	<attribute name="readonly" for="numberOfDepreciation" expr="eval: isEqualToFiscalDepreciation"/>
+    	<attribute name="readonly" for="periodicityTypeSelect" expr="eval: isEqualToFiscalDepreciation"/>
+    	<attribute name="readonly" for="periodicityInMonth" expr="eval: isEqualToFiscalDepreciation"/>
+    	<attribute name="readonly" for="durationInMonth" expr="eval: isEqualToFiscalDepreciation"/>
     </action-attrs>
 
 </object-views>
