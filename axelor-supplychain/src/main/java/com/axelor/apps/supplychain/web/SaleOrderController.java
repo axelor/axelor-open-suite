@@ -634,9 +634,11 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
-      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
-    }
+    response.setAttr(
+        "operationSelect",
+        "value",
+        operationSelectValues.stream().min(Integer::compareTo).orElse(null));
+
     response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 
