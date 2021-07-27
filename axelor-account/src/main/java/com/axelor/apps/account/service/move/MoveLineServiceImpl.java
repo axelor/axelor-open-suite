@@ -132,6 +132,28 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
+  public MoveLine balanceCreditDebit(MoveLine moveLine, Move move) {
+    if (move.getMoveLineList() != null) {
+      BigDecimal totalCredit =
+          move.getMoveLineList().stream()
+              .map(it -> it.getCredit())
+              .reduce((a, b) -> a.add(b))
+              .orElse(BigDecimal.ZERO);
+      BigDecimal totalDebit =
+          move.getMoveLineList().stream()
+              .map(it -> it.getDebit())
+              .reduce((a, b) -> a.add(b))
+              .orElse(BigDecimal.ZERO);
+      if (totalCredit.compareTo(totalDebit) < 0) {
+        moveLine.setCredit(totalDebit.subtract(totalCredit));
+      } else if (totalCredit.compareTo(totalDebit) > 0) {
+        moveLine.setDebit(totalCredit.subtract(totalDebit));
+      }
+    }
+    return moveLine;
+  }
+
+  @Override
   public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList =
@@ -308,7 +330,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         currencyRate = BigDecimal.ONE;
       } else {
         currencyRate =
-            amountInCompanyCurrency.divide(amountInSpecificMoveCurrency, 5, RoundingMode.HALF_EVEN);
+            amountInCompanyCurrency.divide(amountInSpecificMoveCurrency, 5, RoundingMode.HALF_UP);
       }
     }
 
@@ -328,7 +350,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         StringTool.cutTooLongString(
             this.determineDescriptionMoveLine(move.getJournal(), origin, description)),
         origin,
-        currencyRate.setScale(5, RoundingMode.HALF_EVEN),
+        currencyRate.setScale(5, RoundingMode.HALF_UP),
         amountInSpecificMoveCurrency,
         originDate);
   }
@@ -1236,7 +1258,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       BigDecimal detailPaymentAmount =
           baseAmount
               .multiply(paymentAmount)
-              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_EVEN)
+              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_UP)
               .setScale(2, RoundingMode.HALF_UP);
 
       TaxPaymentMoveLine taxPaymentMoveLine =

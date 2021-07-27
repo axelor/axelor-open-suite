@@ -25,6 +25,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -43,7 +44,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections4.ListUtils;
 
 @Singleton
 public class MoveController {
@@ -61,11 +61,14 @@ public class MoveController {
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) {
+
     Move move = request.getContext().asType(Move.class);
+
     try {
-      ListUtils.emptyIfNull(move.getMoveLineList())
-          .forEach(moveLine -> moveLine.setDate(move.getDate()));
-      response.setValues(move);
+
+      move = Beans.get(MoveService.class).updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -77,11 +80,13 @@ public class MoveController {
 
     try {
       if (move.getDate() != null && move.getCompany() != null) {
-
-        response.setValue(
-            "period",
+        Period period =
             Beans.get(PeriodService.class)
-                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+        if (period != null && (move.getPeriod() == null || !period.equals(move.getPeriod()))) {
+
+          response.setValue("period", period);
+        }
       } else {
         response.setValue("period", null);
       }

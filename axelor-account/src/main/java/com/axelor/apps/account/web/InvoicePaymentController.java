@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -54,8 +55,11 @@ public class InvoicePaymentController {
 
     invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
     try {
+      Move move = invoicePayment.getMove();
       Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
-      Beans.get(MoveCustAccountService.class).updateCustomerAccount(invoicePayment.getMove());
+      if (ObjectUtils.notEmpty(move)) {
+        Beans.get(MoveCustAccountService.class).updateCustomerAccount(move);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

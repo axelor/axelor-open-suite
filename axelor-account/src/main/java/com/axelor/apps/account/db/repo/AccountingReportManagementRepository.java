@@ -19,7 +19,6 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.service.AccountingReportService;
-import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -41,10 +40,8 @@ public class AccountingReportManagementRepository extends AccountingReportReposi
 
       return super.save(accountingReport);
     } catch (Exception e) {
-      JPA.em().getTransaction().rollback();
-      JPA.runInTransaction(() -> TraceBackService.trace(e));
-      JPA.em().getTransaction().begin();
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 

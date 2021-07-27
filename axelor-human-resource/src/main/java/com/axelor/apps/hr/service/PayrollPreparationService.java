@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.service;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -58,8 +57,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -314,15 +311,12 @@ public class PayrollPreparationService {
     }
 
     String fileName = this.getPayrollPreparationExportName();
-    String filePath = AppSettings.get().get("file.upload.dir");
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    new File(filePath).mkdirs();
-    CsvTool.csvWriter(filePath, fileName, ';', headerLine, list);
+    CsvTool.csvWriter(file.getParent(), file.getName(), ';', headerLine, list);
 
-    Path path = Paths.get(filePath + System.getProperty("file.separator") + fileName);
-
-    try (InputStream is = new FileInputStream(path.toFile())) {
-      Beans.get(MetaFiles.class).attach(is, fileName, payrollPreparation);
+    try (InputStream is = new FileInputStream(file)) {
+      Beans.get(MetaFiles.class).attach(is, file.getName(), payrollPreparation);
     }
 
     payrollPreparation.setExported(true);
@@ -330,7 +324,7 @@ public class PayrollPreparationService {
         Beans.get(AppBaseService.class).getTodayDate(payrollPreparation.getCompany()));
     payrollPreparationRepo.save(payrollPreparation);
 
-    return filePath + System.getProperty("file.separator") + fileName;
+    return file.getPath();
   }
 
   public String[] createExportFileLine(PayrollPreparation payrollPreparation) {
@@ -430,8 +424,7 @@ public class PayrollPreparationService {
   public String getPayrollPreparationExportName() {
     return I18n.get("Payroll preparation")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toString()
-        + ".csv";
+        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toString();
   }
 
   public String[] getPayrollPreparationExportHeader() {

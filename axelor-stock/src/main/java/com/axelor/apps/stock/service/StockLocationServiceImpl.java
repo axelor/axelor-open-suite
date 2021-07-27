@@ -271,8 +271,9 @@ public class StockLocationServiceImpl implements StockLocationService {
                 "SELECT SUM( self.currentQty * CASE WHEN (location.company.stockConfig.stockValuationTypeSelect = 1) THEN "
                     + "(self.avgPrice)  WHEN (location.company.stockConfig.stockValuationTypeSelect = 2) THEN "
                     + "CASE WHEN (self.product.costTypeSelect = 3) THEN (self.avgPrice) ELSE (self.product.costPrice) END "
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 3) THEN "
-                    + "(self.product.salePrice) ELSE (self.avgPrice) END ) AS value "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 3) THEN (self.product.salePrice) "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 4) THEN (self.product.purchasePrice) "
+                    + "ELSE (self.avgPrice) END ) AS value "
                     + "FROM StockLocationLine AS self "
                     + "LEFT JOIN StockLocation AS location "
                     + "ON location.id= self.stockLocation "
@@ -282,7 +283,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     List<?> result = query.getResultList();
     return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
         ? BigDecimal.ZERO
-        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_UP);
   }
 
   @Override
@@ -305,7 +306,8 @@ public class StockLocationServiceImpl implements StockLocationService {
     return printType == StockLocationRepository.PRINT_TYPE_LOCATION_FINANCIAL_DATA
         && (stockConfig == null
             || (!stockConfig.getIsDisplayAccountingValueInPrinting()
-                && !stockConfig.getIsDisplayAgPriceInPrinting()
-                && !stockConfig.getIsDisplaySaleValueInPrinting()));
+                    && !stockConfig.getIsDisplayAgPriceInPrinting()
+                    && !stockConfig.getIsDisplaySaleValueInPrinting())
+                && !stockConfig.getIsDisplayPurchaseValueInPrinting());
   }
 }

@@ -232,7 +232,7 @@ public class MrpServiceImpl implements MrpService {
 
       for (Product product : this.getProductList(level)) {
 
-        this.checkInsufficientCumulativeQty(product, true);
+        this.checkInsufficientCumulativeQty(product);
       }
     }
   }
@@ -271,8 +271,20 @@ public class MrpServiceImpl implements MrpService {
     return maxLevel;
   }
 
-  protected void checkInsufficientCumulativeQty(Product product, boolean firstPass)
+  protected void checkInsufficientCumulativeQty(Product product) throws AxelorException {
+    checkInsufficientCumulativeQty(product, 0);
+  }
+
+  protected void checkInsufficientCumulativeQty(Product product, int counter)
       throws AxelorException {
+
+    final int MAX_ITERATION = 1000;
+
+    if (counter > MAX_ITERATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MRP_TOO_MANY_ITERATIONS));
+    }
 
     boolean doASecondPass = false;
 
@@ -296,7 +308,7 @@ public class MrpServiceImpl implements MrpService {
           this.checkInsufficientCumulativeQty(
               mrpLineRepository.find(mrpLine.getId()),
               productRepository.find(product.getId()),
-              firstPass);
+              counter == 0);
       JPA.clear();
       if (doASecondPass) {
         break;
@@ -305,7 +317,7 @@ public class MrpServiceImpl implements MrpService {
 
     if (doASecondPass) {
 
-      this.checkInsufficientCumulativeQty(product, false);
+      this.checkInsufficientCumulativeQty(product, counter + 1);
     }
   }
 
@@ -961,7 +973,7 @@ public class MrpServiceImpl implements MrpService {
                       + "AND self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
@@ -980,7 +992,7 @@ public class MrpServiceImpl implements MrpService {
                       + "self.excludeFromMrp = false "
                       + "AND self.stockManaged = true "
                       + "AND (?3 is true OR self.productSubTypeSelect = ?4) "
-                      + "AND dtype = 'Product'",
+                      + "AND self.dtype = 'Product'",
                   mrp.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,

@@ -89,7 +89,6 @@
     
     <action-group name="action-account-payment-voucher-onnew-group">	    
 	    <action name="action-record-payment-voucher-default-record"/>
-	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-payment-voucher-getDate"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
@@ -101,7 +100,6 @@
 	</action-group>
     
     <action-group name="action-account-payment-voucher-onload-group">	    
-	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
@@ -118,7 +116,6 @@
     
     <action-group name="action-group-account-payment-voucher-paymentmode-onchange">
     	<action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
-    	<action name="action-pv-hide-confirm-button"/>
     	<action name="action-attrs-payment-voucher-hidden-receipt"/>
     	<action name="action-attrs-payment-voucher-readonly-status"/>
         <action name="action-payment-voucher-method-fill-bank-details"/>
@@ -149,11 +146,7 @@
 	<action-attrs name="action-pv-moveLine-attrs">
 		<attribute name="readonly" for="paidAmount" expr="eval: moveLine != null"/>
 	</action-attrs>
-	
-   	<action-attrs name="action-pv-hide-confirm-button">
-		<attribute name="hidden" for="confirmPaymentVoucherBtn" expr="eval: statusSelect > __repo__(PaymentVoucher).STATUS_DRAFT || (paymentMode?.typeSelect == 6 &amp;&amp; operationTypeSelect == 3)"/>
-   	</action-attrs>
-   	
+	 	
 	<action-attrs name="action-attrs-payment-voucher-hidden-receipt">
 		<attribute name="hidden" for="receiptNo" expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != __repo__(PaymentVoucher).STATUS_CONFIRMED"  if="paymentMode != null"/>
 		<attribute name="hidden" for="printPaymentVoucherBtn" expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != __repo__(PaymentVoucher).STATUS_CONFIRMED"  if="paymentMode != null"/>

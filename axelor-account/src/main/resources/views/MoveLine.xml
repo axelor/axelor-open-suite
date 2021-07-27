@@ -11,7 +11,7 @@
   	<hilite color="info" if="$get('move.statusSelect') == 1"/>
   	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
     <field name="name" width="135"/>
-    <field name="date" width="90" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+    <field name="date" width="90" onChange="account-move-line-group-date-onchange"/>
  		<field name="move.period" width="100" canView="false"/>
     <field name="move.journal" width="140"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -40,7 +40,7 @@
 		<field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
 		<field name="account.analyticDistributionAuthorized" hidden="true"/>
 		<field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
-		<field name="date" width="100" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+		<field name="date" width="100" onChange="account-move-line-group-date-onchange"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
         <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0"/>
@@ -61,7 +61,7 @@
 		<hilite color="info" if="$get('move.statusSelect') == 1"/>
 		<hilite color="danger" if="$get('move.statusSelect') == 4"/>
     <field name="name" width="135"/>
-    <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+    <field name="date" onChange="account-move-line-group-date-onchange"/>
  		<field name="move.period" canView="false"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
@@ -86,7 +86,7 @@
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name" width="135"/>
-        <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+        <field name="date" onChange="account-move-line-group-date-onchange"/>
 		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
         <field name="description"/>
@@ -144,7 +144,7 @@
 				</viewer>
 			</field>
 			<panel name="datesPanel" colSpan="12">
-				<field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+				<field name="date" onChange="account-move-line-group-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
 			</panel>
@@ -243,7 +243,7 @@
 				</viewer>
 			</field>
 			<panel name="datesPanel" colSpan="12">
-				<field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+				<field name="date" onChange="account-move-line-group-date-onchange"/>
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
 			</panel>
@@ -328,7 +328,7 @@
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-record-get-move-informations"/>
 	    <action name="action-move-line-record-get-first-move-line-informations"/>
-	    <action name="action-move-line-record-get-creditdebit-balance"/>
+	    <action name="action-move-line-method-get-creditdebit-balance"/>
 	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
 	    <action name="action-move-line-method-set-currencyRate"/>
 	    <action name="action-move-line-record-set-currencyAmount"/>
@@ -355,6 +355,12 @@
 		<action name="action-account-move-line-method-filter-partner" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
 	    <action name="action-move-line-attrs-domain-partner" if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'"/>
     </action-group>
+
+	<action-group name="account-move-line-group-date-onchange">
+		<action name="account-move-line-record-date-onchange"/>
+		<action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-validate-check-date-in-period"/>
+	</action-group>
 
     <action-method name="action-move-line-method-compute-analytic-distribution">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution"/>
@@ -414,11 +420,10 @@
 		<field name="partner" expr="eval: __parent__?.moveLineList.get(0).partner" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
 		<field name="origin" expr="eval: __parent__?.moveLineList.get(0).origin" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
 	</action-record>
-	
-	<action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">
-		<field name="debit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &gt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" />
-		<field name="credit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
-	</action-record>
+
+	<action-method name="action-move-line-method-get-creditdebit-balance">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="balanceCreditDebit"/>
+	</action-method>
 
 	<action-method name="action-move-line-method-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="computeCurrentRate"/>
@@ -493,5 +498,17 @@
 			<domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
 		</filter>
 	</search-filters>
-	
+
+	<action-validate name="action-move-line-validate-check-date-in-period">
+		<error message="The selected date is out of the accounting period."
+			if="eval: (move &amp;&amp; move.period &amp;&amp; (date &lt; move.period.fromDate || date &gt; move.period.toDate))
+			|| (__parent__ &amp;&amp; __parent__.period &amp;&amp; (date &lt; __parent__.period.fromDate || date &gt; __parent__.period.toDate))"
+			action="action-update-move-line-record-update-date-from-move"/>
+	</action-validate>
+
+	<action-record name="action-update-move-line-record-update-date-from-move" model="com.axelor.apps.account.db.MoveLine">
+		<field name="date" expr="eval: move.date" if="move"/>
+		<field name="date" expr="eval: __parent__.date" if="__parent__"/>
+	</action-record>
+
 </object-views>

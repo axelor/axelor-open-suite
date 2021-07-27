@@ -405,7 +405,7 @@ public class InvoiceLineController {
 
       Optional<AccountManagement> optionalFixedAssetCategory =
           product.getAccountManagementList().stream()
-              .filter(am -> am.getCompany() == invoice.getCompany())
+              .filter(am -> invoice.getCompany().equals(am.getCompany()))
               .findFirst();
 
       fixedAssetCategory =

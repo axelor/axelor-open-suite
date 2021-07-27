@@ -222,7 +222,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
     if (!isPercent) {
-      amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_EVEN);
+      amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_UP);
     }
     if (amount.compareTo(new BigDecimal("100")) > 0) {
       throw new AxelorException(
@@ -329,7 +329,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         BigDecimal lineAmountToInvoice =
             percentToInvoice
                 .multiply(saleOrderLineTax.getExTaxBase())
-                .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_EVEN);
+                .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
         TaxLine taxLine = saleOrderLineTax.getTaxLine();
         BigDecimal lineAmountToInvoiceInclTax =
             (taxLine != null)
@@ -387,7 +387,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     BigDecimal lineAmountToInvoice =
         percentToInvoice
             .multiply(saleOrder.getInTaxTotal())
-            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_EVEN);
+            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -449,7 +449,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                   .divide(
                       new BigDecimal("100"),
                       appBaseService.getNbDecimalDigitForQty(),
-                      RoundingMode.HALF_EVEN);
+                      RoundingMode.HALF_UP);
           qtyToInvoiceMap.put(SOrderId, realQty);
         }
         if (qtyToInvoiceMap.get(SOrderId).compareTo(saleOrderLine.getQty()) > 0) {
@@ -900,7 +900,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     } else {
       return inTaxTotal
           .multiply(exTaxAmountInvoiced)
-          .divide(exTaxTotal, 2, BigDecimal.ROUND_HALF_EVEN);
+          .divide(exTaxTotal, 2, BigDecimal.ROUND_HALF_UP);
     }
   }
 
@@ -914,24 +914,27 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
     Invoice invoice =
         Query.of(Invoice.class)
-            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .filter(
+                " self.saleOrder.id = :saleOrderId "
+                    + "AND self.statusSelect != :invoiceStatus "
+                    + "AND self.operationSubTypeSelect != :advancePaymentSubType")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .bind("advancePaymentSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
             .fetchOne();
     List<Integer> operationSelectList = new ArrayList<>();
-    operationSelectList.add(0);
     if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_LINES));
+      operationSelectList.add(SaleOrderRepository.INVOICE_LINES);
     }
     if (manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT));
+      operationSelectList.add(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT);
     }
     if (allowTimetableInvoicing) {
-      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_TIMETABLES));
+      operationSelectList.add(SaleOrderRepository.INVOICE_TIMETABLES);
     }
     if (invoice == null && amountInvoiced.compareTo(BigDecimal.ZERO) == 0
         || exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
-      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ALL));
+      operationSelectList.add(SaleOrderRepository.INVOICE_ALL);
     }
 
     return operationSelectList;
@@ -951,7 +954,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     if (isPercent) {
       amountToInvoice =
           (amountToInvoice.multiply(saleOrder.getExTaxTotal()))
-              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_EVEN);
+              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
     }
     BigDecimal sumInvoices = computeSumInvoices(invoices);
     sumInvoices = sumInvoices.add(amountToInvoice);

@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.service;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Department;
@@ -39,8 +38,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,18 +74,15 @@ public class EmploymentContractService {
 
     this.employmentContractExportSilae(employmentContract, list);
 
-    String fileName = this.employmentContractExportName() + ".csv";
-    String filePath = AppSettings.get().get("file.upload.dir");
-    new File(filePath).mkdirs();
+    String fileName = this.employmentContractExportName();
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     String[] headers = employmentContractExportHeaders();
 
-    CsvTool.csvWriter(filePath, fileName, ';', headers, list);
+    CsvTool.csvWriter(file.getParent(), file.getName(), ';', headers, list);
 
-    Path path = Paths.get(filePath + System.getProperty("file.separator") + fileName);
-
-    try (InputStream is = new FileInputStream(path.toFile())) {
-      Beans.get(MetaFiles.class).attach(is, fileName, employmentContract);
+    try (InputStream is = new FileInputStream(file)) {
+      Beans.get(MetaFiles.class).attach(is, file.getName(), employmentContract);
     }
   }
 

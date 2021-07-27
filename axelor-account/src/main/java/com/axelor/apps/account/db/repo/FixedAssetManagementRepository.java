@@ -18,8 +18,9 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.service.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
@@ -34,7 +35,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
       computeDepreciation(fixedAsset);
       return super.save(fixedAsset);
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
   }
@@ -47,7 +48,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
             Beans.get(SequenceService.class).getDraftSequenceNumber(fixedAsset));
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 
@@ -55,7 +56,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     if ((fixedAsset.getFixedAssetLineList() == null || fixedAsset.getFixedAssetLineList().isEmpty())
         && fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
-      Beans.get(FixedAssetService.class).generateAndcomputeLines(fixedAsset);
+      Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
     }
   }
 

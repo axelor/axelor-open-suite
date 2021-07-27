@@ -75,23 +75,20 @@ public class InvoicePaymentValidateProjectServiceImpl
   public void validate(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
     super.validate(invoicePayment, force);
+    Invoice invoice = invoicePayment.getInvoice();
 
-    if (invoicePayment != null) {
-      Invoice invoice = invoicePayment.getInvoice();
+    InvoicingProject invoicingProject =
+        invoicingProjectRepo
+            .all()
+            .filter(
+                "self.invoice.id = ?1 AND self.project.invoicingSequenceSelect = ?2",
+                invoice.getId(),
+                ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK)
+            .fetchOne();
 
-      InvoicingProject invoicingProject =
-          invoicingProjectRepo
-              .all()
-              .filter(
-                  "self.invoice.id = ?1 AND self.project.invoicingSequenceSelect = ?2",
-                  invoice.getId(),
-                  ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK)
-              .fetchOne();
-
-      if (invoicingProject != null) {
-        for (TeamTask teamTask : invoicingProject.getTeamTaskSet()) {
-          teamTask.setIsPaid(invoice.getHasPendingPayments());
-        }
+    if (invoicingProject != null) {
+      for (TeamTask teamTask : invoicingProject.getTeamTaskSet()) {
+        teamTask.setIsPaid(invoice.getHasPendingPayments());
       }
     }
   }

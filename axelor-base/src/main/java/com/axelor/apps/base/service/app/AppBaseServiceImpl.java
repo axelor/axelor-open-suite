@@ -178,7 +178,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       if (timePref.equals("days")) {
         duration = duration.multiply(appBase.getDailyWorkHours());
       } else if (timePref.equals("minutes")) {
-        duration = duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_EVEN);
+        duration = duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
       }
     }
 
@@ -202,7 +202,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       if (timePref.equals("days")
           && dailyWorkHrs != null
           && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0) {
-        duration = duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_EVEN);
+        duration = duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);
       } else if (timePref.equals("minutes")) {
         duration = duration.multiply(new BigDecimal(60));
       }

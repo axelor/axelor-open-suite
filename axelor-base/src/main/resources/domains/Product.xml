@@ -9,7 +9,7 @@
 
 		<string name="name" title="Name" initParam="true"
 			translatable="true" />
-		<string name="serialNumber" title="Serial Nbr"/>
+		<string name="serialNumber" title="Serial Nbr" unique="true"/>
 		<string name="code" title="Code" initParam="true" unique="true"/>
 
 		<string name="description" large="true" title="Description"
@@ -133,8 +133,10 @@
 		
 		<one-to-many name="productCompanyList" ref="com.axelor.apps.base.db.ProductCompany" title="Products per companies"
 			mappedBy="product"/>
-      
-        <!-- Json field -->
+
+		<string name="dtype" insertable="false" updatable="false"/>
+
+		<!-- Json field -->
         <string name="productAttrs" title="Fields" json="true" />
 
 		<unique-constraint columns="product,company"/>

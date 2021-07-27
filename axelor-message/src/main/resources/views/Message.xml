@@ -94,7 +94,6 @@
     </action-group>
     
 	<action-record name="action-message-record-default-media-type" model="com.axelor.apps.message.db.Message">
-    	<field name="mediaTypeSelect" expr="eval:defaultMediaType"/>
     	<field name="mediaTypeSelect" expr="eval: _mediaTypeSelect" if="_mediaTypeSelect"/>
     </action-record>
 

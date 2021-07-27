@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -58,8 +57,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -139,11 +136,9 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       list.add(item);
     }
 
-    String filePath = AppSettings.get().get("file.upload.dir");
-    Path path = Paths.get(filePath, fileName);
-    File file = path.toFile();
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    log.debug("File located at: {}", path);
+    log.debug("File located at: {}", file.getPath());
 
     String[] headers = {
       I18n.get("Product_code"),
@@ -153,10 +148,10 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       I18n.get("Cost_to_apply")
     };
 
-    CsvTool.csvWriter(filePath, fileName, ';', '"', headers, list);
+    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
-      DMSFile dmsFile = Beans.get(MetaFiles.class).attach(is, fileName, unitCostCalculation);
+      DMSFile dmsFile = Beans.get(MetaFiles.class).attach(is, file.getName(), unitCostCalculation);
       return dmsFile.getMetaFile();
     }
   }
@@ -179,7 +174,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected File getConfigXmlFile() {
     File configFile = null;
     try {
-      configFile = File.createTempFile("input-config", ".xml");
+      configFile = MetaFiles.createTempFile("input-config", ".xml").toFile();
       InputStream bindFileInputStream =
           this.getClass().getResourceAsStream("/import-configs/" + "csv-config.xml");
       if (bindFileInputStream == null) {
@@ -291,7 +286,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .filter(
                   "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
                       + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
-                      + " AND dtype = 'Product'",
+                      + " AND self.dtype = 'Product'",
                   unitCostCalculation.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
@@ -309,7 +304,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .filter(
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
                       + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
-                      + " AND dtype = 'Product'",
+                      + " AND self.dtype = 'Product'",
                   unitCostCalculation.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,

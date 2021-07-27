@@ -146,7 +146,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal amount =
         quantity
             .multiply(price)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     LOG.debug(
         "Calcul du montant HT avec une quantité de {} pour {} : {}",
@@ -494,7 +494,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (product != null) {
       purchaseOrderLine.setProduct(product);
       fill(purchaseOrderLine, purchaseOrder);
-      compute(purchaseOrderLine, purchaseOrder);
     }
 
     if (description != null) {
@@ -516,6 +515,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (productName != null) {
       purchaseOrderLine.setProductName(productName);
     }
+
+    compute(purchaseOrderLine, purchaseOrder);
 
     return purchaseOrderLine;
   }

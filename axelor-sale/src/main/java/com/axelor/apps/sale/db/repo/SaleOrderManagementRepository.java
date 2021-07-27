@@ -26,6 +26,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -87,7 +88,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
       return super.save(saleOrder);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 
@@ -104,7 +106,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
 
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 
@@ -118,7 +120,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
         saleOrder.setFullName(fullName);
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 

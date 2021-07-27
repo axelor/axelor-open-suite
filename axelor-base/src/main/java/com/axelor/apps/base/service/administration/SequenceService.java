@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
-import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.event.Observes;
 import com.axelor.events.ShutdownEvent;
@@ -41,6 +40,7 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -194,26 +194,24 @@ public class SequenceService {
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
 
     try {
-      Future<String> newSeq =
-          executor.submit(
-              () -> {
-                Sequence seq = sequenceRepo.find(sequence.getId());
-                SequenceVersion sequenceVersion = getVersion(seq, refDate);
-                String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
-                JPA.runInTransaction(
-                    () -> {
-                      sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
-                      if (sequenceVersion.getId() == null) {
-                        sequenceVersionRepository.save(sequenceVersion);
-                      }
-                    });
-                return nextSeq;
-              });
+      Future<String> newSeq = executor.submit(() -> getSequenceNumberInExecutor(sequence, refDate));
       return newSeq.get();
     } catch (Exception e) {
       TraceBackService.trace(e);
       throw new RuntimeException(e);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected String getSequenceNumberInExecutor(Sequence sequence, LocalDate refDate) {
+    Sequence seq = sequenceRepo.find(sequence.getId());
+    SequenceVersion sequenceVersion = getVersion(seq, refDate);
+    String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
+    sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
+    if (sequenceVersion.getId() == null) {
+      sequenceVersionRepository.save(sequenceVersion);
+    }
+    return nextSeq;
   }
 
   private String computeNextSeq(
