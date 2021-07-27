@@ -33,7 +33,7 @@
     <one-to-many name="tradingNamePrintingSettingsList" ref="com.axelor.apps.base.db.TradingNamePrintingSettings" mappedBy="company"/>
     
    	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" massUpdate="true"/>
-    <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
+    <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Schedule" massUpdate="true"/>
     <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language" massUpdate="true"/>
 
     <integer name="width" title="Width" min="0"/>
