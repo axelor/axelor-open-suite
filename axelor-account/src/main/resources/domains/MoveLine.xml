@@ -98,6 +98,7 @@
     </decimal>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
+    <finder-method name="findByAccount" all="true" using="account"/>
 
   	<extra-code><![CDATA[
 

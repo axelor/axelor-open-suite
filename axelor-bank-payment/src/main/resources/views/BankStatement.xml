@@ -20,7 +20,6 @@
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2" onClick="action-bank-statement-method-print" />
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation" readonlyIf="statusSelect &lt; 2" onClick="action-bank-statement-method-run-bank-reconciliation" />
-      <button name="generateMovesFromBankStatement" title="Generate moves" onClick="action-bank-statement-method-generate-moves-from-bank-statement" />
     </toolbar>
 
     <panel name="bankStatementPanel" colSpan="12" readonlyIf="statusSelect == 2">
@@ -102,10 +101,6 @@
 
   <action-method name="action-bank-statement-method-run-bank-reconciliation">
     <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runBankReconciliation" />
-  </action-method>
-
-  <action-method name="action-bank-statement-method-generate-moves-from-bank-statement">
-    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="generateMovesFromBankStatement" />
   </action-method>
   
   <!-- SEARCH FILTERS -->

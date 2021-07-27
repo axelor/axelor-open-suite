@@ -42,7 +42,7 @@
           showIf="bankStatement &amp;&amp; !bankReconciliationLineList.length > 0" colSpan="3" />
         <button name="loadOtherBankStatementBtn" title="Load other bank statements" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" readonlyIf="statusSelect == 2"
           showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements" colSpan="3" />
-        <button name="validateBtn" title="Validate" hideIf="statusSelect == 2" onClick="save,action-group-bankreconciliation-validate-click" colSpan="3" />
+        <button name="validateBtn" title="Validate" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-validate-click" colSpan="3" />
         <button name="showReconciledMoveLineBtn" title="Show reconciled move lines" showIf="statusSelect == 2" onClick="action-bank-reconciliation-view-show-reconciled-move-lines" colSpan="3" />
       </panel>
     </panel>
@@ -74,7 +74,8 @@
       <button name="unreconcileBtn" onClick="action-bank-reconciliation-method-unreconcile" title="Unreconcile selected" colSpan="3" />
       <panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12" />
       <spacer colSpan="6" />
-      <panel name="balancesPanel" colSpan="6" readonly="true">
+      <panel name="balancesPanel" colSpan="6">
+        <button onClick="action-bank-reconciliation-method-compute-balances" name="computeBalances" title="Compute balances" colSpan="12" />
         <label colSpan="4" name="bankStatementLabel" title="Bank statement" />
         <spacer colSpan="4" />
         <label colSpan="4" name="accountingLabel" title="Accounting" />
@@ -130,6 +131,7 @@
     <action name="save" />
     <action name="action-bank-reconciliation-method-compute" />
     <action name="action-bank-reconciliation-check-incomplete-bankreconciliation-line" />
+    <action name="action-bank-reconciliation-method-auto-accounting" />
     <action name="action-bank-reconciliation-method-validate" />
   </action-group>
 
@@ -168,12 +170,20 @@
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="compute" />
   </action-method>
 
+  <action-method name="action-bank-reconciliation-method-compute-balances">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="computeBalances" />
+  </action-method>
+
   <action-method name="action-bank-reconciliation-method-validate">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validate" />
   </action-method>
 
   <action-method name="action-bank-reconciliation-method-print-bank-reconciliation">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="printBankReconciliation" />
+  </action-method>
+
+  <action-method name="action-bank-reconciliation-method-auto-accounting">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="autoAccounting" />
   </action-method>
 
   <action-view name="action-bank-reconciliation-view-show-unreconciled-move-lines" title="Unreconciled move lines" model="com.axelor.apps.account.db.MoveLine">

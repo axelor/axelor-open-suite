@@ -68,8 +68,6 @@ public class BankStatementController {
       bankStatement = bankStatementRepo.find(bankStatement.getId());
       bankStatementService.runImport(bankStatement, true);
 
-      // Vérification d'unicité des lignes de solde initial / final (date)
-
       // Load lines
       initialLines =
           bankStatementLineAFB120Repo
@@ -154,14 +152,12 @@ public class BankStatementController {
                 .order("-id")
                 .fetchOne();
         if (ObjectUtils.notEmpty(finalBankStatementLineAFB120))
-          if (initialBankStatementLineAFB120
+          if (!(initialBankStatementLineAFB120
                   .getCredit()
                   .equals(finalBankStatementLineAFB120.getCredit())
               && initialBankStatementLineAFB120
                   .getDebit()
-                  .equals(finalBankStatementLineAFB120.getDebit()))
-            bankStatementService.generateMoves(bankStatement);
-          else {
+                  .equals(finalBankStatementLineAFB120.getDebit()))) {
             // delete imported
             response.setError(
                 I18n.get(
@@ -226,11 +222,5 @@ public class BankStatementController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
-  }
-
-  public void generateMovesFromBankStatement(ActionRequest request, ActionResponse response) {
-    BankStatement bankStatement =
-        bankStatementRepo.find(request.getContext().asType(BankStatement.class).getId());
-    bankStatementService.generateMoves(bankStatement);
   }
 }
