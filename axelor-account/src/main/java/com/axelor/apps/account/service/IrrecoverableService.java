@@ -864,6 +864,10 @@ public class IrrecoverableService {
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
       amount =
           (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
+      // do not generate move line with amount equal to zero
+      if (amount.signum() == 0) {
+        continue;
+      }
       debitMoveLine =
           moveLineService.createMoveLine(
               move,
