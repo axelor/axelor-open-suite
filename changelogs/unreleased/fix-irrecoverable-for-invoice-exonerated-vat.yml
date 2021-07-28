@@ -1,3 +1,0 @@
----
-title: "Irrecoverable: fix shifting to irrecoverable an invoice with exonerated vat raising an exception."
-type: fix

@@ -1,3 +1,21 @@
+## [6.0.13] (2021-07-28)
+
+#### Fixed
+
+* JOURNAL: Changed title of descriptionIdentificationOk field to 'Add accounting document N°' (English only).
+* Lead: Make validate button readonly when name is empty.
+* Irrecoverable: fix shifting to irrecoverable an invoice with exonerated vat raising an exception.
+* Sale order invoicing wizard: it is now possible to select 'invoice all' option after creating an advance payment.
+* Accounting Report: Grid view for accounting report is now sorted by newest.
+* Supplier Quote: fix total price calculation for the supplier quote.
+* Invoice line: fix budget display in advance search.
+* Sale order line: Set product's analytic and supply informations.
+* Move: fix rounding issue display on totals during manual creation of a move line.
+* Fix wrong translation in english.
+* Fix some french translations.
+* Sequence: fix an issue where a change in sequence configuration was not correctly taken into account without restarting the application.
+* Invoice: prevent the creation of a refund advance payment invoice.
+
 ## [6.0.12] (2021-07-08)
 
 #### Features
@@ -555,6 +573,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.13]: https://github.com/axelor/axelor-open-suite/compare/v6.0.12...v6.0.13
 [6.0.12]: https://github.com/axelor/axelor-open-suite/compare/v6.0.11...v6.0.12
 [6.0.11]: https://github.com/axelor/axelor-open-suite/compare/v6.0.10...v6.0.11
 [6.0.10]: https://github.com/axelor/axelor-open-suite/compare/v6.0.9...v6.0.10
