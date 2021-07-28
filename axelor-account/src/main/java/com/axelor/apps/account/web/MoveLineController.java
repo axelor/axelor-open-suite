@@ -60,6 +60,18 @@ public class MoveLineController {
     }
   }
 
+  public void balanceCreditDebit(ActionRequest request, ActionResponse response) {
+
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = request.getContext().getParent().asType(Move.class);
+    try {
+      moveLine = Beans.get(MoveLineService.class).balanceCreditDebit(moveLine, move);
+      response.setValues(moveLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
