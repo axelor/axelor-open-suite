@@ -20,14 +20,12 @@ package com.axelor.apps.account.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
-import com.axelor.apps.account.db.repo.AccountAnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.AnalyticRulesRepository;
@@ -69,6 +67,8 @@ import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.AnalyticDistributionTemplateServiceImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
@@ -281,7 +281,7 @@ public class AccountModule extends AxelorModule {
 
     bind(AnalyticRulesRepository.class).to(AccountAnalyticRulesRepository.class);
 
-    bind(AnalyticDistributionTemplateRepository.class)
-        .to(AccountAnalyticDistributionTemplateRepository.class);
+    bind(AnalyticDistributionTemplateService.class)
+        .to(AnalyticDistributionTemplateServiceImpl.class);
   }
 }

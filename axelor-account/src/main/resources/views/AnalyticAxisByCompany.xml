@@ -6,7 +6,7 @@
 		model="com.axelor.apps.account.db.AnalyticAxisByCompany" onNew="action-record-analytic-axis-by-company-on-new">
 		<field name="orderSelect" />
 		<field name="analyticAxis" />
-		<field name="accountConfig.company.code" title="Company"/>
+		<field name="accountConfig.company.code" title="Company" hidden="true"/>
 	</grid>
 	
 	<form name="analytic-axis-by-company-form" title="Analytic Axis By company"
@@ -14,7 +14,7 @@
 		<panel name="mainPanel">
 			<field name="orderSelect" />
 			<field name="analyticAxis" />
-			<field name="accountConfig.company.code" title="Company"/>
+			<field name="accountConfig.company.code" title="Company" hidden="true"/>
 		</panel>
 	</form>
 	

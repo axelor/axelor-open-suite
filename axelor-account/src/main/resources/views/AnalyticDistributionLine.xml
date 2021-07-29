@@ -4,15 +4,15 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
      <grid name="analytic-distribution-line-grid" title="Analytic distribution lines" model="com.axelor.apps.account.db.AnalyticDistributionLine" groupBy="analyticAxis">
-        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" hidden="true"/>
         <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
         <field name="percentage"/>
         <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
     </grid>
     
-    <form name="analytic-distribution-line-form" title="Analytic distribution line" model="com.axelor.apps.account.db.AnalyticDistributionLine"  >
+    <form name="analytic-distribution-line-form" title="Analytic distribution line" model="com.axelor.apps.account.db.AnalyticDistributionLine" onNew="action-group-analytic-distribution-line-set-on-new" onLoad="action-group-analytic-distribution-line-set-on-new">
         <panel name="mainPanel" >
-	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-axis-change-remove-account"/>
+	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-axis-change-remove-account" required="true"/>
 	        <field name="analyticAccount" grid-view="analytic-acount-grid" form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change" domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR (:analyticAxis IS NULL)"/>
 	        <field name="percentage"/>
 	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
@@ -25,6 +25,21 @@
     
     <action-attrs name="action-axis-change-remove-account">
     	<attribute name="value" for="analyticAccount" expr="eval: null"/>
+    </action-attrs>
+    
+    <action-group name="action-group-analytic-distribution-line-set-on-new">
+    	<action name="action-attrs-domain-axis-distribution-line"/>
+    	<action name="action-attrs-domain-journal-distribution-line"/>
+    </action-group>
+
+    <action-attrs name="action-attrs-domain-axis-distribution-line">
+    	<attribute name="domain" for="analyticAxis" expr="eval: &quot;self.company.id = ${__parent__?.company?.id} &quot;" if="__parent__ &amp;&amp; __parent__.company"/>
+    	<attribute name="domain" for="analyticAxis" expr="eval: null" if="!(__parent__ &amp;&amp; __parent__.company)"/>
+    </action-attrs>
+    
+    <action-attrs name="action-attrs-domain-journal-distribution-line">
+    	<attribute name="domain" for="analyticJournal" expr="eval: &quot;self.company.id = ${__parent__?.company?.id} &quot;" if="__parent__ &amp;&amp; __parent__.company"/>
+    	<attribute name="domain" for="analyticJournal" expr="eval: null" if="!(__parent__ &amp;&amp; __parent__.company)"/>
     </action-attrs>
     
 </object-views>

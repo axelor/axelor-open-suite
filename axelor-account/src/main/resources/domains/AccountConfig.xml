@@ -168,7 +168,7 @@
 		<integer name="numberOfDaysBeforeAccountBlocking" title="Number of days before account blocking"/>
 		
 		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
-		<integer name="nbrOfAnalyticAxisSelects" title="Nbr. of analytic axis" selection="account.general.analytic.axis.type.select" default="1"/>
+		<integer name="nbrOfAnalyticAxisSelect" title="Nbr. of analytic axis" selection="account.general.analytic.axis.type.select" default="1"/>
 		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
 		<one-to-many name="analyticAxisByCompanyList" ref="AnalyticAxisByCompany" title="Order of Analytic Axis" mappedBy="accountConfig"/>
 
