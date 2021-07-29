@@ -27,6 +27,8 @@
         
         <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
         
+        <boolean name="manageCreditDiscount" title="Manage credit discount"/>
+        
 		<extra-code><![CDATA[
 	
 	   

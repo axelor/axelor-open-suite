@@ -97,6 +97,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl;
 
+  protected InvoiceTermService invoiceTermService;
+  
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppBaseService appBaseService,
@@ -106,7 +108,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceService invoiceService,
       SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
-      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl) {
+      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl,
+      InvoiceTermService invoiceTermService) {
 
     this.appBaseService = appBaseService;
     this.appSupplychainService = appSupplychainService;
@@ -116,6 +119,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.stockMoveRepository = stockMoveRepository;
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderWorkflowServiceImpl = saleOrderWorkflowServiceImpl;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -192,6 +196,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 
+    invoiceTermService.computeInvoiceTerms(invoice);
     invoice = invoiceRepo.save(invoice);
 
     return invoice;

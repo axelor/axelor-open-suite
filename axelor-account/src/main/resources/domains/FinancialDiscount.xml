@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://axelor.com/xml/ns/domain-models"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db" />
+
+  <entity name="FinancialDiscount" lang="java" cacheable="true">
+
+    <string name="name" title="Label" namecolumn="true" required="true"/>
+    <integer name="discountDelay" title="Discount delay" required="true" help="Application's time limit in days for the discount based on due date"/>
+    <integer name="discountBaseSelect" title="Discount base" selection="account.financial.discount.discount.base.select" required="true" default="0"/>
+    <decimal name="discountRate" title="Discount rate (%)" required="true" help="Discount amount in % on discount base if the payment of an invoice is made before due date"/>
+    <string name="legalNotice" title="Legal notice" large="true" required="true" help="Legal notice displayed on invoices where a discount was granted"/>
+    <one-to-many ref="com.axelor.apps.base.db.Partner" name="partnerList" title="Linked partners"/>
+  
+  </entity>
+  </domain-models>
