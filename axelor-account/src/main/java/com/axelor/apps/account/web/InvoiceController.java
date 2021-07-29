@@ -71,7 +71,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -232,46 +231,45 @@ public class InvoiceController {
     response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
     response.setReload(true);
   }
-  
+
   public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
-	    Invoice invoice = request.getContext().asType(Invoice.class);
-	    try {
-	      if (invoice.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0
-	          || invoice.getPaymentCondition() == null) {
-	        return;
-	      }
-	      invoice = Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
-	      response.setValues(invoice);
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0
+          || invoice.getPaymentCondition() == null) {
+        return;
+      }
+      invoice = Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
+      response.setValues(invoice);
 
-	    } catch (Exception e) {
-	      TraceBackService.trace(response, e);
-	    }
-	  }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-	  public void computeInvoiceTermsDueDates(ActionRequest request, ActionResponse response) {
-	    Invoice invoice = request.getContext().asType(Invoice.class);
-	    try {
-	      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-	        return;
-	      }
-	      if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
+  public void computeInvoiceTermsDueDates(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        return;
+      }
+      if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
 
-	        invoice = Beans.get(InvoiceTermService.class).setDueDates(invoice, invoice.getOriginDate());
+        invoice = Beans.get(InvoiceTermService.class).setDueDates(invoice, invoice.getOriginDate());
 
-	      } else if (!InvoiceToolService.isPurchase(invoice) && invoice.getInvoiceDate() != null) {
+      } else if (!InvoiceToolService.isPurchase(invoice) && invoice.getInvoiceDate() != null) {
 
-	        invoice =
-	            Beans.get(InvoiceTermService.class).setDueDates(invoice, invoice.getInvoiceDate());
-	      } else {
-	        return;
-	      }
-	      response.setValues(invoice);
+        invoice =
+            Beans.get(InvoiceTermService.class).setDueDates(invoice, invoice.getInvoiceDate());
+      } else {
+        return;
+      }
+      response.setValues(invoice);
 
-	    } catch (Exception e) {
-	      TraceBackService.trace(response, e);
-	    }
-	  }
-
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   /**
    * Function returning both the paymentMode and the paymentCondition

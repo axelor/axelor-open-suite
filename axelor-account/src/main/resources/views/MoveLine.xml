@@ -163,6 +163,9 @@
 			<field name="account.reconcileOk" hidden="true" />
 		</panel>
 		<panel-tabs name="mainPanelTab">
+            <panel name="invoiceTermPanel" colSpan="12" showIf="account.useForPartnerBalance">
+                <field name="invoiceTermList" grid-view="invoice-term-grid" form-view="invoice-term-form"/>
+            </panel>
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="taxPaymentMoveLinePanel" showIf="taxPaymentMoveLineList != null &amp;&amp; taxPaymentMoveLineList.length > 0" readonlyIf="move.statusSelect &gt; 2" field="taxPaymentMoveLineList" canNew="false" canRemove="false" onChange="account-move-line-compute-tax-amount-method-on-change"/>
@@ -267,6 +270,9 @@
 			<field name="account.reconcileOk" hidden="true"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
+            <panel name="invoiceTermPanel" colSpan="12" showIf="account.useForPartnerBalance">
+                <field name="invoiceTermList" grid-view="invoice-term-grid" form-view="invoice-term-form"/>
+            </panel>
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="taxPaymentMoveLinePanel" showIf="taxPaymentMoveLineList != null &amp;&amp; taxPaymentMoveLineList.length > 0" readonlyIf="move.statusSelect &gt; 2" field="taxPaymentMoveLineList" canNew="false" canRemove="false" onChange="account-move-line-compute-tax-amount-method-on-change"/>

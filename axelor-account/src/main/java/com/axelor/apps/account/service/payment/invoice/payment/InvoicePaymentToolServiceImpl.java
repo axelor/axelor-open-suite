@@ -43,7 +43,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,29 +82,28 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   public void updateHasPendingPayments(Invoice invoice) {
     invoice.setHasPendingPayments(checkPendingPayments(invoice));
   }
-  
+
   protected BigDecimal computeAmountRemaining(Invoice invoice) throws AxelorException {
 
-	    BigDecimal amountRemaining = BigDecimal.ZERO;
+    BigDecimal amountRemaining = BigDecimal.ZERO;
 
-	    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-	      return amountRemaining;
-	    }
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return amountRemaining;
+    }
 
-	    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-	      amountRemaining = amountRemaining.add(invoiceTerm.getAmountRemaining());
-	    }
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      amountRemaining = amountRemaining.add(invoiceTerm.getAmountRemaining());
+    }
 
-	    boolean isMinus = moveToolService.isMinus(invoice);
-	    if (isMinus) {
-	      amountRemaining = amountRemaining.negate();
-	    }
+    boolean isMinus = moveToolService.isMinus(invoice);
+    if (isMinus) {
+      amountRemaining = amountRemaining.negate();
+    }
 
-	    log.debug("Amount remaining total : {}", amountRemaining);
+    log.debug("Amount remaining total : {}", amountRemaining);
 
-	    return amountRemaining;
-	  }
-
+    return amountRemaining;
+  }
 
   protected BigDecimal computeAmountPaid(Invoice invoice) throws AxelorException {
 

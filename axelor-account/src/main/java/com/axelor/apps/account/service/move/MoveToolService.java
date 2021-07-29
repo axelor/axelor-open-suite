@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,41 +136,40 @@ public class MoveToolService {
     } else {
       return moveLineService.getCreditCustomerMoveLine(invoice);
     }
-  }  
-  
+  }
+
   /**
    * Method that returns all move lines of an invoice payment that are not completely lettered
-  *
-  * @param invoicePayment Invoice payment
-  * @return
-  * @throws AxelorException
-  */
- public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment)
-     throws AxelorException {
-   List<MoveLine> moveLines = Lists.newArrayList();
-       if (!CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
-         for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList())
-         {
-           moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
-         }
-       }
-   return moveLines;
- }
- 
- /**
-  * Method that returns all the move lines of an invoice that are not completely lettered
-  *
-  * @param invoice Invoice
-  * @return
-  * @throws AxelorException
-  */
- public List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException {
-   if (this.isDebitCustomer(invoice, true)) {
-     return moveLineService.getDebitCustomerMoveLines(invoice);
-   } else {
-     return moveLineService.getCreditCustomerMoveLines(invoice);
-   }
- }
+   *
+   * @param invoicePayment Invoice payment
+   * @return
+   * @throws AxelorException
+   */
+  public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException {
+    List<MoveLine> moveLines = Lists.newArrayList();
+    if (!CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+      for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+        moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
+      }
+    }
+    return moveLines;
+  }
+
+  /**
+   * Method that returns all the move lines of an invoice that are not completely lettered
+   *
+   * @param invoice Invoice
+   * @return
+   * @throws AxelorException
+   */
+  public List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException {
+    if (this.isDebitCustomer(invoice, true)) {
+      return moveLineService.getDebitCustomerMoveLines(invoice);
+    } else {
+      return moveLineService.getCreditCustomerMoveLines(invoice);
+    }
+  }
 
   /**
    * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte
@@ -390,9 +388,9 @@ public class MoveToolService {
       // MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
 
       if (!CollectionUtils.isEmpty(moveLines)) {
-          for (MoveLine moveLine : moveLines) {
-            inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
-          }
+        for (MoveLine moveLine : moveLines) {
+          inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
+        }
 
         if (isMinus) {
           inTaxTotalRemaining = inTaxTotalRemaining.negate();
@@ -466,6 +464,4 @@ public class MoveToolService {
 
     return moveLineList;
   }
-
-
 }

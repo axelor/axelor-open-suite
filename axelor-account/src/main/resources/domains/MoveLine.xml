@@ -52,6 +52,8 @@
     <one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="moveLine"/>
     <many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm" mappedBy="moveLine" title="Invoice terms" />
+    
     <string name="accountCode" readonly="true"/>
     <string name="accountName" readonly="true"/>
     <string name="partnerFullName" readonly="true"/>

@@ -51,8 +51,8 @@ public interface InvoicePaymentCreateService {
    * @return
    */
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
-	      throws AxelorException;
-  
+      throws AxelorException;
+
   /**
    * Create an invoice payment for each invoice
    *

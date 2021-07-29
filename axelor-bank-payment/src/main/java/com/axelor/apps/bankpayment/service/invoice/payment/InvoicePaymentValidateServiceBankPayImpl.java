@@ -72,7 +72,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
-        invoicePaymentToolService, invoiceTermService);
+        invoicePaymentToolService,
+        invoiceTermService);
 
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;

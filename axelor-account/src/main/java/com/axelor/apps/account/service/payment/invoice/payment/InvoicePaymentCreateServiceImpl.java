@@ -56,7 +56,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected AppBaseService appBaseService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
-  
+
   @Inject
   public InvoicePaymentCreateServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
@@ -257,7 +257,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   @Override
   @Transactional
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
-	      throws AxelorException {
+      throws AxelorException {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoice,
@@ -266,7 +266,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
-    invoicePayment.setCompanyBankDetails(companyBankDetails);    
+    invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment);
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     return invoicePaymentRepository.save(invoicePayment);
@@ -274,7 +274,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   @Transactional
   public InvoicePayment createInvoicePayment(
-	      InvoiceTerm invoiceTerm,
+      InvoiceTerm invoiceTerm,
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
@@ -283,18 +283,18 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       throws AxelorException {
     InvoicePayment invoicePayment =
         createInvoicePayment(
-                invoiceTerm.getInvoice(),
-                invoiceTerm.getAmountRemaining(),
+            invoiceTerm.getInvoice(),
+            invoiceTerm.getAmountRemaining(),
             paymentDate,
             invoiceTerm.getInvoice().getCurrency(),
             paymentMode,
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoicePayment.setBankDepositDate(bankDepositDate);
-    invoicePayment.setChequeNumber(chequeNumber);    
+    invoicePayment.setChequeNumber(chequeNumber);
     invoicePayment.addInvoiceTermPaymentListItem(
-    invoiceTermPaymentService.createInvoiceTermPayment(
-			invoicePayment, invoiceTerm, invoiceTerm.getAmountRemaining()));
+        invoiceTermPaymentService.createInvoiceTermPayment(
+            invoicePayment, invoiceTerm, invoiceTerm.getAmountRemaining()));
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     return invoicePaymentRepository.save(invoicePayment);
   }
@@ -318,17 +318,17 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
       Invoice invoice = invoiceRepository.find(invoiceId);
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-          InvoicePayment invoicePayment =
-              this.createInvoicePayment(
-                  invoiceTerm,
-                  paymentMode,
-                  companyBankDetails,
-                  paymentDate,
-                  bankDepositDate,
-                  chequeNumber);
-          invoicePaymentList.add(invoicePayment);
-          invoice.addInvoicePaymentListItem(invoicePayment);
-        }
+        InvoicePayment invoicePayment =
+            this.createInvoicePayment(
+                invoiceTerm,
+                paymentMode,
+                companyBankDetails,
+                paymentDate,
+                bankDepositDate,
+                chequeNumber);
+        invoicePaymentList.add(invoicePayment);
+        invoice.addInvoicePaymentListItem(invoicePayment);
+      }
       invoicePaymentToolService.updateAmountPaid(invoice);
     }
 

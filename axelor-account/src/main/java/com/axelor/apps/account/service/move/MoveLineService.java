@@ -108,16 +108,16 @@ public interface MoveLineService {
 
   public List<MoveLine> getCreditCustomerMoveLines(Invoice invoice);
 
-  public MoveLine getCreditCustomerMoveLine(Move move);  
-  
+  public MoveLine getCreditCustomerMoveLine(Move move);
+
   public List<MoveLine> getCreditCustomerMoveLines(Move move);
 
   public MoveLine getDebitCustomerMoveLine(Invoice invoice);
-  
+
   public List<MoveLine> getDebitCustomerMoveLines(Invoice invoice);
 
   public MoveLine getDebitCustomerMoveLine(Move move);
-  
+
   public List<MoveLine> getDebitCustomerMoveLines(Move move);
 
   public String determineDescriptionMoveLine(Journal journal, String origin, String description);

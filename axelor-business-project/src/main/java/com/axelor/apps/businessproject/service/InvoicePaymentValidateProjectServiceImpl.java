@@ -68,7 +68,8 @@ public class InvoicePaymentValidateProjectServiceImpl
         reconcileService,
         bankOrderCreateService,
         bankOrderService,
-        invoicePaymentToolService, invoiceTermService);
+        invoicePaymentToolService,
+        invoiceTermService);
     this.invoicingProjectRepo = invoicingProjectRepo;
   }
 

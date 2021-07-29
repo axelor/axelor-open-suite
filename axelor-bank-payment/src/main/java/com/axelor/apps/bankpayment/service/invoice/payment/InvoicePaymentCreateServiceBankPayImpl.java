@@ -56,7 +56,13 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService) {
 
-    super(invoicePaymentRepository, invoicePaymentToolService, currencyService, appBaseService, invoiceTermPaymentService, invoiceTermService);
+    super(
+        invoicePaymentRepository,
+        invoicePaymentToolService,
+        currencyService,
+        appBaseService,
+        invoiceTermPaymentService,
+        invoiceTermService);
   }
 
   @Override

@@ -119,7 +119,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     }
 
     invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-    
+
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
@@ -164,7 +164,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
 
     List<MoveLine> invoiceMoveLines =
-            moveService.getMoveToolService().getInvoiceCustomerMoveLines(invoicePayment);
+        moveService.getMoveToolService().getInvoiceCustomerMoveLines(invoicePayment);
 
     if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
 
@@ -172,10 +172,10 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
       customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
     } else {
-        if (CollectionUtils.isEmpty(invoiceMoveLines)) {
+      if (CollectionUtils.isEmpty(invoiceMoveLines)) {
         return null;
       }
-        customerAccount = invoiceMoveLines.get(0).getAccount();
+      customerAccount = invoiceMoveLines.get(0).getAccount();
     }
     String origin = invoicePayment.getInvoice().getInvoiceId();
     if (invoicePayment.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_CHEQUE

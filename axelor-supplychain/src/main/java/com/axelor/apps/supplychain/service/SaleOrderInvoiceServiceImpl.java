@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
@@ -98,7 +99,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl;
 
   protected InvoiceTermService invoiceTermService;
-  
+
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppBaseService appBaseService,
