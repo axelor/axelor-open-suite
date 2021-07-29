@@ -448,6 +448,7 @@ InvoiceSet.length > 0))"
         <panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note" colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
           <field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12" showTitle="false" />
         </panel>
+        <field name="financialDiscountLabel" widget="html"/>
       </panel>
       <panel name="automaticMailPanel" title="Automatic mail" hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail &amp;&amp; !invoiceAutomaticMailOnValidate">
         <panel name="afterValidationAutomaticMailPanel" hideIf="statusSelect &gt;= 2 &amp;&amp; !invoiceAutomaticMailOnValidate" colSpan="12">

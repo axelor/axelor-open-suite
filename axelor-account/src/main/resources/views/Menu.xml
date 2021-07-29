@@ -866,5 +866,11 @@
 		<view type="form" name="payment-delay-reason-form"/>
 	</action-view>
 	
+  <menuitem title="Financial discount" name="action-financial-discount-menu" parent="account-conf-payment" action="action.account.financial.discount"/>
+  
+  <action-view name="action.account.financial.discount" title="Financial discount" model="com.axelor.apps.account.db.FinancialDiscount">
+    <view type="grid" name="financial-discount-grid"/>
+    <view type="form" name="financial-discount-form"/>
+  </action-view>
 		
 </object-views>

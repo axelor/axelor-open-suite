@@ -107,9 +107,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     LocalDate nDaysDate = null;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      //      LocalDate dueDate =
-      //          InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
-      LocalDate dueDate = LocalDate.now();
+            LocalDate dueDate =
+                InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
       invoiceTerm.setDueDate(dueDate);
 
       if (nDaysDate == null || dueDate.isBefore(nDaysDate)) {

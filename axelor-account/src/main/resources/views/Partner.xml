@@ -103,7 +103,7 @@
 
   <form name="partner-form" id="account-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
     onSave="action-partner-iban-check-on-save,save,action-partner-method-set-user-partner" width="large" extension="true">
-    <extend target="//panel-tabs[@name='mainPanelTab']/panel[@name='paymentPanel']">
+    <extend target="//panel-tabs[@name='mainPanelTab']/panel[@name='paymentPanel']/panel-related[@view='incl-invoice-payment-partner-form']">
       <insert position="inside">
         <field name="financialDiscount"/>
       </insert>

@@ -15,6 +15,7 @@
     <boolean name="isHoldBack" title="Holdback" default="false" />
     <decimal name="amount" title="Amount" />
     <decimal name="amountRemaining" title="Amount remaining" />
+    <decimal name="discountRate" title="Discount rate" />
     <many-to-one ref="com.axelor.apps.account.db.PaymentMode" name="paymentMode" title="Payment mode"/>
     <many-to-one ref="com.axelor.apps.account.db.FinancialDiscount" name="fiancialDiscount" title="Financial discount"/>
     <many-to-one name="paymentConditionLine" ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line" required="true" />
