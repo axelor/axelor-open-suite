@@ -30,7 +30,9 @@ public interface IExceptionMessage {
 
   static final String PURCHASE_ORDER_2 = /*$$(*/
       "Error : you have exceeded the budget %s for this period" /*)*/;
-
+  
+  static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
+	      "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
   /** Sale order Invoice Service */
   static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 
@@ -47,6 +49,8 @@ public interface IExceptionMessage {
       "Please configure the advance payment product" /*)*/;
   static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/
       "You must configure an advance payment account for the company %s" /*)*/;
+  static final String PO_INVOICE_MISSING_SUPPLIER_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/
+      "You must configure an supplier advance payment account for the company %s" /*)*/;
   static final String SO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The sale order %s invoiced amount cannot be greater than its total amount." /*)*/;
   static final String SO_INVOICE_GENERATE_ALL_INVOICES = /*$$(*/

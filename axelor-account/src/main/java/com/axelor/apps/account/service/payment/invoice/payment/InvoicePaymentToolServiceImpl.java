@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
@@ -38,12 +46,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService {
 
@@ -167,14 +169,20 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  public List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments) {
+  public List<MoveLine> getMoveLinesFromPayments(List<InvoicePayment> payments, boolean getCreditLines) {
     List<MoveLine> moveLines = new ArrayList<>();
     for (InvoicePayment payment : payments) {
       Move move = payment.getMove();
       if (move == null || move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
         continue;
       }
-      moveLines.addAll(moveToolService.getToReconcileCreditMoveLines(move));
+      if (getCreditLines) {
+          moveLines.addAll(moveToolService.getToReconcileCreditMoveLines(move));
+      }
+      else {
+    	  moveLines.addAll(moveToolService.getToReconcileDebitMoveLines(move));
+      }
+
     }
     return moveLines;
   }

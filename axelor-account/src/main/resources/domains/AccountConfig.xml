@@ -36,6 +36,7 @@
 		<many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
 		<many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
 		<many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
+		<many-to-one name="supplierAdvancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Supplier advance payment account"/>
 		<many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
 		<many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
 		<many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account" title="Year opening account"/>

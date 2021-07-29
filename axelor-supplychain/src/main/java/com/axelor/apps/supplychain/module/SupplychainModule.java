@@ -82,6 +82,8 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
+import com.axelor.apps.supplychain.service.CommonInvoiceService;
+import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
@@ -254,5 +256,6 @@ public class SupplychainModule extends AxelorModule {
         .to(OpportunitySaleOrderSupplychainServiceImpl.class);
     bind(PartnerSaleServiceImpl.class).to(PartnerSupplychainServiceImpl.class);
     bind(PartnerSupplychainService.class).to(PartnerSupplychainServiceImpl.class);
+    bind(CommonInvoiceService.class).to(CommonInvoiceServiceImpl.class);
   }
 }

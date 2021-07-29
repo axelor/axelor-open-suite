@@ -17,6 +17,13 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -34,11 +41,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public interface InvoiceService {
@@ -209,8 +211,9 @@ public interface InvoiceService {
    *
    * @param invoice
    * @return
+ * @throws AxelorException 
    */
-  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice);
+  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) throws AxelorException;
 
   /**
    * Return the move line from the advance payment from related sale order lines.

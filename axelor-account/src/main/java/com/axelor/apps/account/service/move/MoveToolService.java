@@ -17,6 +17,17 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
@@ -36,14 +47,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MoveToolService {
 
@@ -408,10 +411,16 @@ public class MoveToolService {
 
   public List<MoveLine> getToReconcileCreditMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
-
+    log.debug("Move Statut select = " + move.getStatusSelect());
+    log.debug("Move moveline list = " + move.getMoveLineList());
     if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
         || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
       for (MoveLine moveLine : move.getMoveLineList()) {
+    	  log.debug("Move line credit =  " + moveLine.getCredit());
+    	  log.debug("Move line debit = " + moveLine.getDebit()); 
+    	  log.debug("MoveLine amount remaining = " + moveLine.getAmountRemaining());
+    	  log.debug("Move line account = " + moveLine.getAccount());
+    	  log.debug("Move line account get use for ParnterBalance = " + moveLine.getAccount().getUseForPartnerBalance());
         if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAccount().getUseForPartnerBalance()) {
@@ -422,4 +431,27 @@ public class MoveToolService {
 
     return moveLineList;
   }
+
+public Collection<? extends MoveLine> getToReconcileDebitMoveLines(Move move) {
+    List<MoveLine> moveLineList = new ArrayList<>();
+    log.debug("Move Statut select = " + move.getStatusSelect());
+    log.debug("Move moveline list = " + move.getMoveLineList());
+    if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
+        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+    	  log.debug("Move line credit =  " + moveLine.getCredit());
+    	  log.debug("Move line debit = " + moveLine.getDebit()); 
+    	  log.debug("MoveLine amount remaining = " + moveLine.getAmountRemaining());
+    	  log.debug("Move line account = " + moveLine.getAccount());
+    	  log.debug("Move line account get use for ParnterBalance = " + moveLine.getAccount().getUseForPartnerBalance());
+        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAccount().getUseForPartnerBalance()) {
+          moveLineList.add(moveLine);
+        }
+      }
+    }
+
+    return moveLineList;
+}
 }

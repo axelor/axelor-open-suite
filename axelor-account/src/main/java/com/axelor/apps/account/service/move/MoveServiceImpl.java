@@ -17,6 +17,19 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -45,17 +58,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MoveServiceImpl implements MoveService {
 
@@ -264,7 +266,12 @@ public class MoveServiceImpl implements MoveService {
     // Récupération des dûs
     List<MoveLine> debitMoveLines =
         moveDueService.getInvoiceDue(invoice, accountConfig.getAutoReconcileOnInvoice());
-
+    
+    // Récupération des acomptes de la facture
+    debitMoveLines.addAll(moveExcessPaymentService.getAdvancePaymentMoveList(invoice));
+    // Récupération des trop-perçus
+    debitMoveLines.addAll(moveExcessPaymentService.getExcessPayment(invoice));
+    
     if (!debitMoveLines.isEmpty()) {
       MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 
@@ -413,7 +420,7 @@ public class MoveServiceImpl implements MoveService {
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
       BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit());
-
+      
       // Création de la ligne au débit
       MoveLine debitMoveLine =
           moveLineService.createMoveLine(

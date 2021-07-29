@@ -17,7 +17,7 @@
 	</form>
     
     <action-method name="action-purchase-order-method-generate-control-invoice">
- 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="generateInvoice"/>
+ 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="showPopUpInvoicingWizard"/>
 	</action-method>
 	
 	<action-method name="action-purchase-order-create-stock-move">

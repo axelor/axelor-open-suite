@@ -17,6 +17,22 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
@@ -73,20 +89,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturation. */
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService {
@@ -694,7 +696,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) {
+  public List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) throws AxelorException {
     List<MoveLine> advancePaymentMoveLines = new ArrayList<>();
 
     Set<Invoice> advancePayments = invoice.getAdvancePaymentInvoiceSet();
@@ -706,9 +708,23 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         Beans.get(InvoicePaymentToolService.class);
     for (Invoice advancePayment : advancePayments) {
       invoicePayments = advancePayment.getInvoicePaymentList();
-      List<MoveLine> creditMoveLines =
-          invoicePaymentToolService.getCreditMoveLinesFromPayments(invoicePayments);
-      advancePaymentMoveLines.addAll(creditMoveLines);
+      //Since purchase order can have advance payment we check if it is a purchase or not
+      // If it is a purchase, we must add debit lines from payment and not credit line.
+      if (moveToolService.isDebitCustomer(invoice, true)) {
+          List<MoveLine> creditMoveLines =
+                  invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, true);
+              advancePaymentMoveLines.addAll(creditMoveLines);
+      }
+      else {
+    	  List<MoveLine> debitMoveLines = 
+    			  invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, false);
+    	 debitMoveLines.forEach(debitMoveLine-> {
+    		 //It may prevent a NPE later
+    		 debitMoveLine.getMove().setInvoice(advancePayment);
+    	 });
+    		  advancePaymentMoveLines.addAll(debitMoveLines);
+      }
+
     }
     return advancePaymentMoveLines;
   }

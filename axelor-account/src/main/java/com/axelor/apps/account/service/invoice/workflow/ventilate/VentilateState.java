@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -41,13 +50,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class VentilateState extends WorkflowInvoice {
@@ -167,21 +169,27 @@ public class VentilateState extends WorkflowInvoice {
     }
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    
+
     if (isPurchase && invoice.getOriginDate() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
-    }
-    if (isPurchase && invoice.getOriginDate().isAfter(todayDate)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
+      }
+      if (isPurchase && invoice.getOriginDate().isAfter(todayDate)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
+      }
+      
+      if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
+    	        || invoice.getDueDate() == null) {
+    	      invoice.setDueDate(this.getDueDate());
     }
 
-    if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
-        || invoice.getDueDate() == null) {
-      invoice.setDueDate(this.getDueDate());
-    }
+
+
+
   }
 
   /**
