@@ -391,12 +391,10 @@
 
 	<selection name="icalendar.event.type.select">
 		<option value="0">Event</option>
-		<option value="1">Inbound call</option>
+		<option value="1">Call</option>
 		<option value="2">Meeting</option>
 		<option value="3">Task</option>
 		<option value="4">Leave</option>
-		<!-- <option value="5">Note</option> in crm -->
-		<option value="6">Outbound call</option>
 	</selection>
 
 	<selection name="icalendar.synchronization.select">

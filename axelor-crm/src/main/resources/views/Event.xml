@@ -111,18 +111,16 @@
 					</viewer>
 				</field>
 			</panel>
-			<field name="typeSelect" domain="self.value IN ('0','1','2','3','5','6')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
+			<field name="typeSelect" domain="self.value IN ('1','2','3','5')" showTitle="false" colSpan="3" onChange="action-event-type-select-onchange-group">
 	        	<viewer depends="typeSelect"><![CDATA[
-	           		<span class="label label-default" style="background-color: #B284BE; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 0" x-translate>Event</span>
-	          		<span class="label label-warning" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Inbound call</span>
+	          		<span class="label label-warning" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Call</span>
 	          		<span class="label label-default" style="background-color: #58427C; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
 	          		<span class="label label-default" style="background-color: #DA3287; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Task</span>
 	          		<span class="label label-default" style="background-color: #FF7E00; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 5" x-translate>Note</span>
-	          		<span class="label label-info" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 6" x-translate>Outbound call</span>
 	       		 ]]>
 	        	</viewer>
 	      	</field>
-			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]" showIf="typeSelect == 1 || typeSelect == 6 || typeSelect == 2 || typeSelect == 0" >
+			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]" showIf="typeSelect == 1 || typeSelect == 2" >
 	        	<viewer depends="statusSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
 	          		<span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
@@ -208,6 +206,7 @@
 		<panel sidebar="true" title="Characteristics" name="meetingAttributesPanel" canCollapse="true" hideIf="typeSelect == 5">
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
 			<field name="eventCategory" canEdit="false" domain="self.typeSelect = :typeSelect" colSpan="6"/>
+			<field name="callTypeSelect"  showIf="typeSelect == 1" colSpan="6"/>
 			<field name="prioritySelect" showIf="typeSelect == 3" colSpan="6"/>
 		</panel>
 		
@@ -239,13 +238,11 @@
 		<div>
 		  <div class="span12">
 		  	<div class="span4">
-				<span class="label label-default" style="background-color: #B284BE;" ng-show="record.typeSelect == 0" x-translate>Event</span>
 				<span class="label label-default" style="background-color: #58427C;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
 				<span class="label label-default" style="background-color: #DA3287;" ng-show="record.typeSelect == 3" x-translate>Task</span>
 				<span class="label label-default" style="background-color: #FF7E00;" ng-show="record.typeSelect == 5" x-translate>Note</span>
 				
-				<span class="label label-warning" ng-show="record.typeSelect == 1" x-translate>Inbound call</span>
-				<span class="label label-info" ng-show="record.typeSelect == 6" x-translate>Outbound call</span>
+				<span class="label label-warning" ng-show="record.typeSelect == 1" x-translate>Call</span>
 				
 				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
          		<span class="label label-success" ng-show="record.statusSelect == 2" x-translate>Realized</span>
@@ -452,8 +449,7 @@
    	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
    		<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
-      <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
-      <field name="typeSelect" expr="0" if="_typeSelect == null"/>
+      	<field name="typeSelect" expr="eval: _typeSelect != null ? _typeSelect : ICalendarEventRepository.TYPE_MEETING" />
     	<field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     	<field name="relatedToSelect" expr="eval:_relatedToSelect"/>
     	<field name="partner" expr="eval: _partner"/>
@@ -462,7 +458,7 @@
     	<field name="lead" expr="eval: __parent__" if="__parent__?._model == 'com.axelor.apps.crm.db.Lead' " />
     	<field name="lead" expr="eval: _eventLead" if="_eventLead != null"/>
     	<field name="relatedToSelect" expr="eval: _relatedToSelect"/>
-    	<field name="typeSelect" expr="eval: _typeSelect"/>
+    	<field name="callTypeSelect" expr="eval:EventRepository.CALL_TYPE_OUTBOUND" if="_typeSelect == '1'"/>
     	<field name="relatedToSelectId" expr="eval: _relatedToSelectId"/>
     </action-record>
     
@@ -479,7 +475,7 @@
     </action-record>
 
     <action-record name="action-event-default-record-user" model="com.axelor.apps.crm.db.Event">
-    	<field name="user" expr="eval:__user__" if="typeSelect == 1 || typeSelect == 6 || typeSelect == 2 || typeSelect == 3"/>
+    	<field name="user" expr="eval:__user__" if="typeSelect == 1 || typeSelect == 2 || typeSelect == 3"/>
    		<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>
 
