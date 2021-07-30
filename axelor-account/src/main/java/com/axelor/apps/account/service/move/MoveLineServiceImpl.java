@@ -643,8 +643,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         invoiceTerm.setMoveLine(holdBackMoveLine);
         move.addMoveLineListItem(holdBackMoveLine);
       } else {
-        if (moveLine == null)
-        {
+        if (moveLine == null) {
           moveLine =
               this.createMoveLine(
                   move,
@@ -666,8 +665,7 @@ public class MoveLineServiceImpl implements MoveLineService {
                   moveLineId++,
                   origin,
                   null);
-        }
-        else {
+        } else {
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
             // Debit
             moveLine.setDebit(

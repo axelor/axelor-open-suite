@@ -216,6 +216,8 @@
 "Account types","Types de compte",,
 "AccountConfig.Customers","Clients",,
 "AccountConfig.Employees","Salariés",,
+"AccountConfig.FinancialDiscount","Escomptes",,
+"AccountConfig.LegalNotice","Mention légale",,
 "AccountConfig.Suppliers","Fournisseurs",,
 "Accounted","Comptabilisé",,
 "Accounted move","Écriture comptabilisée",,

@@ -62,6 +62,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     while (iterator.hasNext()) {
       PaymentConditionLine paymentConditionLine = iterator.next();
       InvoiceTerm invoiceTerm = computeInvoiceTerm(invoice, paymentConditionLine);
+      invoiceTerm.setPaymentMode(invoice.getPartner().getInPaymentMode());
+      invoiceTerm.setDiscountRate(paymentConditionLine.getPaymentPercentage());
+      invoiceTerm.setFinancialDiscount(invoice.getPartner().getFinancialDiscount());
+      invoiceTerm.setDiscountBaseSelect(
+          invoice.getPartner().getFinancialDiscount().getDiscountBaseSelect());
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));

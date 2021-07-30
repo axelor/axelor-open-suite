@@ -19,9 +19,12 @@
     <field name="name" />
     <field name="dueDate" />
     <field name="amount" />
+    <field name="paymentMode"/>
     <field name="amountRemaining" />
     <field name="isPaid" />
     <field name="isHoldBack" />
+    <field name="discountRate"/>
+    <field name="finDiscountDeadlineDate"/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">

@@ -8,7 +8,7 @@
 
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <integer name="sequence" required="true"/>
-    <integer name="discountBaseSelect" title="Discount base"/>
+    <integer name="discountBaseSelect" title="Discount base" selection="account.financial.discount.discount.base.select"/>
     <date name="dueDate" title="Due date" required="true"/>
     <date name="finDiscountDeadlineDate" title="Financial discount deadline date" />
     <boolean name="isPaid" title="Paid" default="false" />

@@ -155,7 +155,7 @@
     <string name="paymentDelayReasonComments" title="Payment delay reason comments" large="true" />
     <date name="nextActionDate" title="Next action date" />
     
-    <string name="financialDiscountLabel" large="true"/>
+    <string name="financialDiscountLabel" large="true" title="AccountConfig.LegalNotice"/>
 
     <unique-constraint columns="invoiceId,company" />
 
