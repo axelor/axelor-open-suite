@@ -257,7 +257,7 @@
 			</panel>
 			<panel name="analyticPanel" showIf="AppAccount.manageAnalyticAccounting = true" title="Analytic">
 				<field name="manageAnalyticAccounting"/>
-				<field name="nbrOfAnalyticAxisSelects" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
+				<field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
 				<field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
 				<field name="analyticAxisByCompanyList" colSpan="12" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" canNew="true" form-view="analytic-axis-by-company-form" grid-view="analytic-axis-by-company-grid"/>
 			</panel>
