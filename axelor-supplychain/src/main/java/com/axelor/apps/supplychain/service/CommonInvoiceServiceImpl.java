@@ -1,10 +1,5 @@
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -16,6 +11,10 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommonInvoiceServiceImpl implements CommonInvoiceService {
 
@@ -91,17 +90,17 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
 
     return invoiceLineList;
   }
-  
-  public  BigDecimal computeSumInvoices(List<Invoice> invoices) {
-	    BigDecimal sumInvoices = BigDecimal.ZERO;
-	    for (Invoice invoice : invoices) {
-	      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-	          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-	        sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
-	      } else {
-	        sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
-	      }
-	    }
-	    return sumInvoices;
-	  }
+
+  public BigDecimal computeSumInvoices(List<Invoice> invoices) {
+    BigDecimal sumInvoices = BigDecimal.ZERO;
+    for (Invoice invoice : invoices) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
+      } else {
+        sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
+      }
+    }
+    return sumInvoices;
+  }
 }

@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Query;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -63,6 +50,16 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceService {
 
@@ -79,7 +76,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   @Inject protected AccountConfigService accountConfigService;
 
   @Inject protected CommonInvoiceService commonInvoiceService;
-  
+
   @Inject protected AddressService addressService;
 
   @Override
@@ -487,12 +484,14 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             advancePaymentAccount);
 
     if (invoice.getInvoiceLineList() != null) {
-      invoice.getInvoiceLineList().forEach(invoiceLine -> {
-    	  
-    	  invoiceLine.setPurchaseOrderLine(null);
-      });
+      invoice
+          .getInvoiceLineList()
+          .forEach(
+              invoiceLine -> {
+                invoiceLine.setPurchaseOrderLine(null);
+              });
     }
-   
+
     invoice.setPurchaseOrder(purchaseOrder);
     invoice.setAddressStr(addressService.computeAddressStr(invoice.getAddress()));
     invoiceService.setDraftSequence(invoice);
@@ -601,31 +600,31 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     return createdInvoiceLineList;
   }
 
-@Override
-public void displayErrorMessageIfPurchaseOrderIsInvoiceable(PurchaseOrder purchaseOrder, BigDecimal amountToInvoice,
-		boolean isPercent) throws AxelorException {
+  @Override
+  public void displayErrorMessageIfPurchaseOrderIsInvoiceable(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
+      throws AxelorException {
     List<Invoice> invoices =
-    		com.axelor.db.Query.of(Invoice.class)
-                .filter(
-                    " self.purchaseOrder.id = :purchaseOrderId AND self.statusSelect != :invoiceStatus AND self.operationTypeSelect = :operationTypeSelect")
-                .bind("purchaseOrderId", purchaseOrder.getId())
-                .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-                .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
-                .fetch();
-        if (isPercent) {
-          amountToInvoice =
-              (amountToInvoice.multiply(purchaseOrder.getExTaxTotal()))
-                  .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
-        }
-        BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
-        sumInvoices = sumInvoices.add(amountToInvoice);
-        if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) > 0) {
-          throw new AxelorException(
-              purchaseOrder,
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.PO_INVOICE_TOO_MUCH_INVOICED),
-              purchaseOrder.getPurchaseOrderSeq());
-        }
-	
-	}
+        com.axelor.db.Query.of(Invoice.class)
+            .filter(
+                " self.purchaseOrder.id = :purchaseOrderId AND self.statusSelect != :invoiceStatus AND self.operationTypeSelect = :operationTypeSelect")
+            .bind("purchaseOrderId", purchaseOrder.getId())
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+            .fetch();
+    if (isPercent) {
+      amountToInvoice =
+          (amountToInvoice.multiply(purchaseOrder.getExTaxTotal()))
+              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
+    }
+    BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
+    sumInvoices = sumInvoices.add(amountToInvoice);
+    if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          purchaseOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PO_INVOICE_TOO_MUCH_INVOICED),
+          purchaseOrder.getPurchaseOrderSeq());
+    }
+  }
 }

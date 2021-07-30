@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.supplychain.service.invoice;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
@@ -34,6 +43,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -46,14 +56,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
@@ -111,9 +113,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     }
 
     SaleOrder saleOrder = invoice.getSaleOrder();
+    PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
     Company company = invoice.getCompany();
     Currency currency = invoice.getCurrency();
-    if (company == null || saleOrder == null) {
+    if (company == null || (saleOrder == null && purchaseOrder == null)) {
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
     boolean generateMoveForInvoicePayment =
@@ -122,7 +125,12 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
             .getGenerateMoveForInvoicePayment();
 
     String filter = writeGeneralFilterForAdvancePayment();
-    filter += " AND self.saleOrder = :_saleOrder";
+    if (saleOrder != null) {
+        filter += " AND self.saleOrder = :_saleOrder";
+    }
+    else if (purchaseOrder != null) {
+    	filter += " AND self.purchaseOrder = :_purchaseOrder";
+    }
 
     if (!generateMoveForInvoicePayment) {
       filter += " AND self.currency = :_currency";
@@ -132,9 +140,13 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
             .all()
             .filter(filter)
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)
-            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-            .bind("_saleOrder", saleOrder);
-
+            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
+    if (saleOrder != null) {
+    	query.bind("_saleOrder", saleOrder);
+    }
+    else if (purchaseOrder != null) {
+    	query.bind("_purchaseOrder", purchaseOrder);
+    }
     if (!generateMoveForInvoicePayment) {
       if (currency == null) {
         return new HashSet<>();

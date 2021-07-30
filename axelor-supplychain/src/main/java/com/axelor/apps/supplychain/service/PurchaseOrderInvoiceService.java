@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -27,6 +24,8 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface PurchaseOrderInvoiceService {
 
@@ -67,14 +66,16 @@ public interface PurchaseOrderInvoiceService {
   Invoice generateSupplierAdvancePayment(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException;
-  
+
   /**
    * Throws an axelor exception if PurchaseOrder is not invoiceable.
+   *
    * @param purchaseOrder
    * @param amountToInvoice
    * @param isPercent
    * @throws AxelorException
    */
   void displayErrorMessageIfPurchaseOrderIsInvoiceable(
-	      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException ;
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
+      throws AxelorException;
 }

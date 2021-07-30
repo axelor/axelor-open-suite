@@ -411,16 +411,9 @@ public class MoveToolService {
 
   public List<MoveLine> getToReconcileCreditMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
-    log.debug("Move Statut select = " + move.getStatusSelect());
-    log.debug("Move moveline list = " + move.getMoveLineList());
     if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
         || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
       for (MoveLine moveLine : move.getMoveLineList()) {
-    	  log.debug("Move line credit =  " + moveLine.getCredit());
-    	  log.debug("Move line debit = " + moveLine.getDebit()); 
-    	  log.debug("MoveLine amount remaining = " + moveLine.getAmountRemaining());
-    	  log.debug("Move line account = " + moveLine.getAccount());
-    	  log.debug("Move line account get use for ParnterBalance = " + moveLine.getAccount().getUseForPartnerBalance());
         if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAccount().getUseForPartnerBalance()) {
@@ -432,18 +425,11 @@ public class MoveToolService {
     return moveLineList;
   }
 
-public Collection<? extends MoveLine> getToReconcileDebitMoveLines(Move move) {
+  public Collection<? extends MoveLine> getToReconcileDebitMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
-    log.debug("Move Statut select = " + move.getStatusSelect());
-    log.debug("Move moveline list = " + move.getMoveLineList());
     if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
         || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
       for (MoveLine moveLine : move.getMoveLineList()) {
-    	  log.debug("Move line credit =  " + moveLine.getCredit());
-    	  log.debug("Move line debit = " + moveLine.getDebit()); 
-    	  log.debug("MoveLine amount remaining = " + moveLine.getAmountRemaining());
-    	  log.debug("Move line account = " + moveLine.getAccount());
-    	  log.debug("Move line account get use for ParnterBalance = " + moveLine.getAccount().getUseForPartnerBalance());
         if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAccount().getUseForPartnerBalance()) {
@@ -453,5 +439,5 @@ public Collection<? extends MoveLine> getToReconcileDebitMoveLines(Move move) {
     }
 
     return moveLineList;
-}
+  }
 }

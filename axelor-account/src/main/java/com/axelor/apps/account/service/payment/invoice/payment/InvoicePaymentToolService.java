@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.MoveLine;
@@ -26,6 +24,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public interface InvoicePaymentToolService {
 
@@ -43,9 +42,11 @@ public interface InvoicePaymentToolService {
       Company company, InvoicePayment invoicePayment);
 
   List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment);
-  
+
   /**
-   * Method to get move lines from payment. The move lines are either credit or debit depending on the value of getCreditLine
+   * Method to get move lines from payment. The move lines are either credit or debit depending on
+   * the value of getCreditLine
+   *
    * @param payments
    * @param getCreditLine
    * @return

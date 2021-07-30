@@ -1,13 +1,12 @@
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface CommonInvoiceService {
 
@@ -39,6 +38,6 @@ public interface CommonInvoiceService {
   List<InvoiceLine> createInvoiceLinesFromOrder(
       Invoice invoice, BigDecimal inTaxTotal, Product invoicingProduct, BigDecimal percentToInvoice)
       throws AxelorException;
-  
-   BigDecimal computeSumInvoices(List<Invoice> invoices);
+
+  BigDecimal computeSumInvoices(List<Invoice> invoices);
 }
