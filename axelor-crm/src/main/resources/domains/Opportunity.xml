@@ -40,7 +40,7 @@
 	<integer name="periodicitySelect" title="Periodicity" selection="crm.opportunity.periodicity.select"/>
 	<date name="startDate" title="Start date"/>
 	<date name="endDate" title="End date"/>
-	<decimal name="opportunityRating" title="Opportunity score" selection="rating.icon.select"/>
+	<integer name="opportunityRating" title="Opportunity score" selection="yellow.rating.icon.select"/>
 
 	<extra-code>
 		<![CDATA[
