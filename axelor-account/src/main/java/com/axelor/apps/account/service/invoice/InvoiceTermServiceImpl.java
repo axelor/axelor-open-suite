@@ -91,6 +91,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
+    invoiceTerm.setDueDate(LocalDate.now().minusDays(paymentConditionLine.getDaySelect()));
 
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
@@ -107,8 +108,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     LocalDate nDaysDate = null;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-            LocalDate dueDate =
-                InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
+      LocalDate dueDate =
+          InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
       invoiceTerm.setDueDate(dueDate);
 
       if (nDaysDate == null || dueDate.isBefore(nDaysDate)) {

@@ -63,10 +63,10 @@
             <field name="forecastedInvCustAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <field name="forecastedInvSuppAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
           </panel>
-          <panel name="discountAccountsPanel">
+          <panel name="discountAccountsPanel" colSpan="12">
             <field name="purchFinancialDiscountAccount" domain="self.company = :company" />
             <field name="saleFinancialDiscountAccount" domain="self.company = :company" />
-            <field name="purchFinancialDistaxcountTaxAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" />
+            <field name="purchFinancialDiscountTaxAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" />
             <field name="saleFinancialDiscountTaxAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'" />
           </panel>
 

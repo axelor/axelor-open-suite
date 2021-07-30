@@ -10,7 +10,7 @@
   	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" />
   	
   	<input file="account_accountEquiv.csv" separator=";" type="com.axelor.apps.account.db.AccountEquiv" />
-  	
+    
   	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"  search="self.importId = :importId" update="true">
 		<bind to="importId" column="importId" />
 		<bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1" update="true">
@@ -34,9 +34,11 @@
 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType"/>
      
 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode"  search="self.importId = :importId" />
-	
+	      
 	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" />
-	
+
+    <input file="account_paymentConditionLine.csv" separator=";" type="com.axelor.apps.account.db.PaymentConditionLine" search="self.importId = :importId" />
+  
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" />
 	
 	<input file="account_analyticJournal.csv" separator=";" type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId" />
@@ -184,5 +186,6 @@
 
 	<input file="account_paymentDelayReason.csv" separator=";"
 		type="com.axelor.apps.account.db.PaymentDelayReason" search="self.importId = :importId" />
-
+    
+      <input file="account_financialDiscount.csv" separator=";" type="com.axelor.apps.account.db.FinancialDiscount" search="self.importId = :importId" />
 </csv-inputs>

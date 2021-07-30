@@ -27,9 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -37,7 +35,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -52,24 +49,6 @@ import org.slf4j.LoggerFactory;
 public class MoveToolService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected MoveLineService moveLineService;
-  protected MoveLineRepository moveLineRepository;
-  protected AccountCustomerService accountCustomerService;
-  protected AccountConfigService accountConfigService;
-
-  @Inject
-  public MoveToolService(
-      MoveLineService moveLineService,
-      MoveLineRepository moveLineRepository,
-      AccountCustomerService accountCustomerService,
-      AccountConfigService accountConfigService) {
-
-    this.moveLineService = moveLineService;
-    this.moveLineRepository = moveLineRepository;
-    this.accountCustomerService = accountCustomerService;
-    this.accountConfigService = accountConfigService;
-  }
 
   public boolean isMinus(Invoice invoice) {
     // Si le montant est négatif, alors on doit inverser le signe du montant
@@ -132,9 +111,9 @@ public class MoveToolService {
    */
   public MoveLine getInvoiceCustomerMoveLineByLoop(Invoice invoice) throws AxelorException {
     if (this.isDebitCustomer(invoice, true)) {
-      return moveLineService.getDebitCustomerMoveLine(invoice);
+      return Beans.get(MoveLineService.class).getDebitCustomerMoveLine(invoice);
     } else {
-      return moveLineService.getCreditCustomerMoveLine(invoice);
+      return Beans.get(MoveLineService.class).getCreditCustomerMoveLine(invoice);
     }
   }
 
@@ -165,9 +144,9 @@ public class MoveToolService {
    */
   public List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException {
     if (this.isDebitCustomer(invoice, true)) {
-      return moveLineService.getDebitCustomerMoveLines(invoice);
+      return Beans.get(MoveLineService.class).getDebitCustomerMoveLines(invoice);
     } else {
-      return moveLineService.getCreditCustomerMoveLines(invoice);
+      return Beans.get(MoveLineService.class).getCreditCustomerMoveLines(invoice);
     }
   }
 
@@ -183,7 +162,7 @@ public class MoveToolService {
   public MoveLine getInvoiceCustomerMoveLineByQuery(Invoice invoice) throws AxelorException {
 
     if (this.isDebitCustomer(invoice, true)) {
-      return moveLineRepository
+      return Beans.get(MoveLineRepository.class)
           .all()
           .filter(
               "self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0",
@@ -191,7 +170,7 @@ public class MoveToolService {
               invoice.getPartnerAccount())
           .fetchOne();
     } else {
-      return moveLineRepository
+      return Beans.get(MoveLineRepository.class)
           .all()
           .filter(
               "self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0",

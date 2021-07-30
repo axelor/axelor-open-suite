@@ -610,40 +610,86 @@ public class MoveLineServiceImpl implements MoveLineService {
       throws AxelorException {
     int moveLineId = 1;
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
-
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+    MoveLine moveLine = null;
+    MoveLine holdBackMoveLine;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
 
       Account account = partnerAccount;
+      System.err.println(invoiceTerm.getIsHoldBack());
       if (invoiceTerm.getIsHoldBack()) {
         account = invoiceService.getPartnerAccount(invoice, true);
+        holdBackMoveLine =
+            this.createMoveLine(
+                move,
+                partner,
+                account,
+                invoiceTerm.getAmount(),
+                currencyService
+                    .getAmountCurrencyConvertedAtDate(
+                        invoice.getCurrency(),
+                        companyCurrency,
+                        invoiceTerm.getAmount(),
+                        invoice.getInvoiceDate())
+                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                null,
+                isDebitCustomer,
+                invoice.getInvoiceDate(),
+                invoice.getDueDate(),
+                invoice.getOriginDate(),
+                moveLineId++,
+                origin,
+                null);
+        invoiceTerm.setMoveLine(holdBackMoveLine);
+        move.addMoveLineListItem(holdBackMoveLine);
+      } else {
+        if (moveLine == null)
+        {
+          moveLine =
+              this.createMoveLine(
+                  move,
+                  partner,
+                  account,
+                  invoiceTerm.getAmount(),
+                  currencyService
+                      .getAmountCurrencyConvertedAtDate(
+                          invoice.getCurrency(),
+                          companyCurrency,
+                          invoiceTerm.getAmount(),
+                          invoice.getInvoiceDate())
+                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                  null,
+                  isDebitCustomer,
+                  invoice.getInvoiceDate(),
+                  invoiceTerm.getDueDate(),
+                  invoice.getOriginDate(),
+                  moveLineId++,
+                  origin,
+                  null);
+        }
+        else {
+          if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+            // Debit
+            moveLine.setDebit(
+                moveLine
+                    .getDebit()
+                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+          } else {
+            // Credit
+            moveLine.setCredit(
+                moveLine
+                    .getCredit()
+                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+          }
+        }
       }
-
-      Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
-      MoveLine moveLine1 =
-          this.createMoveLine(
-              move,
-              partner,
-              account,
-              invoiceTerm.getAmount(),
-              currencyService
-                  .getAmountCurrencyConvertedAtDate(
-                      invoice.getCurrency(),
-                      companyCurrency,
-                      invoiceTerm.getAmount(),
-                      invoice.getInvoiceDate())
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-              null,
-              isDebitCustomer,
-              invoice.getInvoiceDate(),
-              invoiceTerm.getDueDate(),
-              invoice.getOriginDate(),
-              moveLineId++,
-              origin,
-              null);
-      moveLines.add(moveLine1);
-
-      invoiceTerm.setMoveLine(moveLine1);
     }
+
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      if (!invoiceTerm.getIsHoldBack()) invoiceTerm.setMoveLine(moveLine);
+    }
+    System.err.println(moveLine);
+    move.addMoveLineListItem(moveLine);
     return moveLines;
   }
 

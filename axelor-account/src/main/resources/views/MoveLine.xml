@@ -12,7 +12,7 @@
   	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
     <field name="name" width="135"/>
     <field name="date" width="90" onChange="account-move-line-group-date-onchange"/>
- 		<field name="move.period" width="100" canView="false"/>
+    <field name="move.period" width="100" canView="false"/>
     <field name="move.journal" width="140"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
@@ -163,9 +163,6 @@
 			<field name="account.reconcileOk" hidden="true" />
 		</panel>
 		<panel-tabs name="mainPanelTab">
-            <panel name="invoiceTermPanel" colSpan="12" showIf="account.useForPartnerBalance">
-                <field name="invoiceTermList" grid-view="invoice-term-grid" form-view="invoice-term-form"/>
-            </panel>
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="taxPaymentMoveLinePanel" showIf="taxPaymentMoveLineList != null &amp;&amp; taxPaymentMoveLineList.length > 0" readonlyIf="move.statusSelect &gt; 2" field="taxPaymentMoveLineList" canNew="false" canRemove="false" onChange="account-move-line-compute-tax-amount-method-on-change"/>
@@ -268,10 +265,11 @@
 			<field name="taxAmount" hidden="true"/>
 			<field name="move.statusSelect" hidden="true"/>
 			<field name="account.reconcileOk" hidden="true"/>
+            <field name="account.useForPartnerBalance" hidden="true"/>
 		</panel>
-		<panel-tabs name="mainPanelTab">
-            <panel name="invoiceTermPanel" colSpan="12" showIf="account.useForPartnerBalance">
-                <field name="invoiceTermList" grid-view="invoice-term-grid" form-view="invoice-term-form"/>
+		<panel-tabs name="mainPanelTab" colSpan="12">
+            <panel name="invoiceTermPanel" colSpan="12" showIf="account.useForPartnerBalance" title="Invoice term">
+                <field name="invoiceTermList" grid-view="invoice-term-grid" form-view="invoice-term-form" colSpan="12"/>
             </panel>
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>

@@ -9,14 +9,14 @@
     <field name="discountRate"/>
   </grid>
   
-  <form model="com.axelor.apps.account.db.FinancialDiscount" title="Financial discounts" name="financial-discount-form">
+  <form model="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount" name="financial-discount-form">
     <panel name="mainPanel" colSpan="12">
       <field name="name"/>
       <field name="discountBaseSelect"/>
       <field name="discountDelay"/>
       <field name="discountRate"/>
       <field name="legalNotice" colSpan="12" widget="html"/>
-      <field name="partnerList" colSpan="12"/>
+      <panel-related field="partnerList" grid-view="partner-grid" form-view="partner-form" colSpan="12" canNew="false"/>
     </panel>
   </form>
 

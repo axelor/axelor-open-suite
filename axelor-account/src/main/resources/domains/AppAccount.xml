@@ -52,6 +52,8 @@
 			<field name="partnerBalConfigSelect" on="UPDATE"/>
 			<field name="manageAdvancePaymentInvoice" on="UPDATE"/>
 			<field name="paymentVouchersOnInvoice" on="UPDATE"/>
+      
+            <field name="manageCreditDiscount" on="UPDATE"/>
 		</track>
 	</entity>
 
