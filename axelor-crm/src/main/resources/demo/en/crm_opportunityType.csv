@@ -1,4 +1,4 @@
-"name";"code"
-"New lead";"NWLEAD"
-"Existing customer";"EXCUST"
-"Existing lead";"EXLEAD"
+name;code
+New;NEW
+Recurring;RCR
+Existing;EXT

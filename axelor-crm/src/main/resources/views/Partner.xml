@@ -4,13 +4,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
  	
     <form name="incl-activities-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-	    <panel-dashlet name="partnerUpcomingEventsPanel" colSpan="12" action="action-partner-view-upcoming-events" height="550"/>
-	    <panel-dashlet name="partnerHistoricalEventsPanel" colSpan="12" action="action-partner-view-historical-events" height="550"/>
+	    <panel-dashlet name="partnerEventsPanel" colSpan="12" action="action-partner-view-all-events" height="550"/>
 	</form>
 	
 	<form name="incl-activities-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" >
-	    <panel-dashlet name="contactUpcomingEventsPanel" colSpan="12" action="action-contact-view-upcoming-events" height="550"/>
-	    <panel-dashlet name="contactHistoricalEventsPanel" colSpan="12" action="action-contact-view-historical-events" height="550"/>
+	    <panel-dashlet name="contactEventsPanel" colSpan="12" action="action-contact-view-all-events" height="550"/>
 	</form>
 	
     <form name="incl-events-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
@@ -26,45 +24,6 @@
 	    </menubar>
     </form>
     
-    <form id="crm-partner-form" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" extension="true">
-    	<extend target="//panel[@name='socialNetworkPanel']">
-    		<replace>
-    			<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
-					<button name="meetingBtn" help="Create a meeting" icon="fa-pencil-square-o" link="" onClick="save,action-partner-view-meeting-event" colSpan="2"/>
-					<button name="callBtn" help="Create a call" icon="fa-phone" link="" onClick="save,action-partner-view-call-event" colSpan="2"/>
-					<button name="noteBtn" help="Create a note" icon="fa-sticky-note-o" link="" onClick="save,action-partner-view-note-event" colSpan="2"/>
-					<button name="emailBtn" help="Create an email" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="2"/>
-				</panel>
-    		</replace>
-    	</extend>
-    </form>
-    
-    <form id="crm-partner-contact-form" name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" extension="true">
-    	<extend target="//panel[@name='socialNetworkPanel']">
-    		<replace>
-    			<panel name="socialNetworkPanel" colSpan="12">
-					<button name="meetingBtn" help="Create a meeting" icon="fa-pencil-square-o" link="" onClick="save,action-partner-view-meeting-event" colSpan="2"/>
-					<button name="callBtn" help="Create a call" icon="fa-phone" link="" onClick="save,action-partner-view-call-event" colSpan="2"/>
-					<button name="noteBtn" help="Create a note" icon="fa-sticky-note-o" link="" onClick="save,action-partner-view-note-event" colSpan="2"/>
-					<button name="emailBtn" help="Create an email" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="2"/>
-				</panel>
-    		</replace>
-    	</extend>
-    </form>
-    
-    <form id="crm-partner-employee-form" name="partner-employee-form" title="Employee" model="com.axelor.apps.base.db.Partner" extension="true">
-    	<extend target="//panel[@name='socialNetworkPanel']">
-    		<replace>
-    			<panel name="socialNetworkPanel" colSpan="12">
-					<button name="meetingBtn" help="Create a meeting" icon="fa-pencil-square-o" link="" onClick="save,action-partner-view-meeting-event" colSpan="2"/>
-					<button name="callBtn" help="Create a call" icon="fa-phone" link="" onClick="save,action-partner-view-call-event" colSpan="2"/>
-					<button name="noteBtn" help="Create a note" icon="fa-sticky-note-o" link="" onClick="save,action-partner-view-note-event" colSpan="2"/>
-					<button name="emailBtn" help="Create an email" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="2"/>
-				</panel>
-    		</replace>
-    	</extend>
-    </form>
-	
     <!--     CREATE CRM OBJECT FROM PARTNER -->
     
     <action-view name="action-partner-view-schedule-event" title="Schedule Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
@@ -100,6 +59,14 @@
     	<context name="_call" expr="eval: true"/>
     </action-view>
     
+    <action-view name="action-partner-view-task-event" title="Task Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="event-form"/>
+    	<view-param name="popup" value="reload"/>
+    	<view-param name="show-toolbar" value="false" />
+    	<context name="_partner" expr="eval: __this__"/>
+    	<context name="_task" expr="eval: true"/>
+    </action-view>
+    
     <action-view name="action-partner-view-note-event" title="Note Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
     	<view-param name="popup" value="reload"/>
@@ -124,40 +91,20 @@
 
     <!--     PORTLET -->
     
-    <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
-    	<view type="cards" name="event-cards"/>
-		<view type="grid" name="list-event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime and (self.statusSelect = 1 OR self.statusSelect IN (11,12,13))</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_todayTime" expr="eval: __datetime__"/>
-	</action-view>
-	
-	<action-view name="action-contact-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
+	<action-view name="action-partner-view-all-events" title="Events" model="com.axelor.apps.crm.db.Event">
 		<view type="cards" name="event-cards"/>
 		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>(self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime and (self.statusSelect = 1 OR self.statusSelect IN (11,12,13))</domain>
+		<domain>self.partner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
 	
-	<action-view name="action-partner-view-historical-events" title="Historical events" model="com.axelor.apps.crm.db.Event">
+	<action-view name="action-contact-view-all-events" title="Events" model="com.axelor.apps.crm.db.Event">
 		<view type="cards" name="event-cards"/>
 		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>(self.partner.id = :id OR self.contactPartner.id = :id) and (self.startDateTime &lt; :_todayTime OR (self.statusSelect != 1 AND self.statusSelect NOT IN (11,12,13)))</domain>
+		<domain>self.contactPartner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_todayTime" expr="eval: __datetime__"/>
-	</action-view>
-	
-	<action-view name="action-contact-view-historical-events" title="Historical events" model="com.axelor.apps.crm.db.Event">
-		<view type="cards" name="event-cards"/>
-		<view type="grid" name="list-event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>(self.contactPartner.id = :id) and (self.startDateTime &lt; :_todayTime OR (self.statusSelect != 1 AND self.statusSelect NOT IN (11,12,13)))</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_todayTime" expr="eval: __datetime__"/>
 	</action-view>
    	
    	<action-view name="action-partner-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">

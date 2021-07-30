@@ -500,13 +500,18 @@
 				onSelect="action-account-accounting-situation-method-update-customer-account" />
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" if="__config__.app.isApp('account')" />
 			<panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')">
+				<button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o" onClick="save,action-partner-view-meeting-event" colSpan="3"/>
+				<button name="callBtn" title="Create a call" link="" icon="fa-phone" onClick="save,action-partner-view-call-event" colSpan="3"/>
+				<button name="taskBtn" title="Create a task" link="" icon="fa-tasks" onClick="save,action-partner-view-task-event" colSpan="3"/>
+				<button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o" onClick="save,action-partner-view-note-event" colSpan="3"/>
    				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null" />
 				<panel-include view="incl-activities-partner-form"/>
    			</panel>
-   			<panel-dashlet name="partnerOpportunitiesPanel" title="Opportunity" colSpan="12" action="action-partner-view-opportunities" height="500" showIf="id != null" if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
+   			<panel-dashlet name="partnerOpportunitiesPanel" title="Opportunity" colSpan="12" action="action-partner-view-opportunities" height="550" showIf="id != null" if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
    			<panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')">
-   				<panel-dashlet name="sentEmailsPanel" title="Sent emails" action="action-partner-method-view-sent-emails" colSpan="12" height="500"/>
-   				<panel-dashlet name="receivedEmailsPanel" title="Received emails" action="action-partner-method-view-received-emails" colSpan="12" height="500"/>
+   				<button name="emailBtn" title="Create an email" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="3"/>
+   				<panel-dashlet name="sentEmailsPanel" title="Sent emails" action="action-partner-method-view-sent-emails" colSpan="12" height="550"/>
+   				<panel-dashlet name="receivedEmailsPanel" title="Received emails" action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
    			</panel>
    			<panel name="marketingCampaignPanel" title="Marketing Campaign" showIf="id != null" if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('marketing')">
 				<panel-dashlet name="marketingCampaignsPanel" action="action-partner-view-marketing-campaigns" colSpan="12" height="800"/>	    				
@@ -803,16 +808,21 @@
 				<field name="timeSlot" colSpan="12" />
 			</panel>
 			<panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm" if="__config__.app.isApp('crm')">
+				<button name="meetingBtn" title="Create a meeting" icon="fa-pencil-square-o" link="" onClick="save,action-partner-view-meeting-event" colSpan="3"/>
+				<button name="callBtn" title="Create a call" icon="fa-phone" link="" onClick="save,action-partner-view-call-event" colSpan="3"/>
+				<button name="taskBtn" title="Create a task" icon="fa-tasks" link="" onClick="save,action-partner-view-task-event" colSpan="3"/>
+				<button name="noteBtn" title="Create a note" icon="fa-sticky-note-o" link="" onClick="save,action-partner-view-note-event" colSpan="3"/>
    				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null" />
 				<panel-include view="incl-activities-contact-form"/>
    			</panel>
-   			<panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12" action="action-contact-view-opportunities" height="500" showIf="id != null" if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
+   			<panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12" action="action-contact-view-opportunities" height="550" showIf="id != null" if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
    			<panel name="saleOrderContactPanel" title="Sales orders" showIf="id != null" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
    				<panel-include view="incl-sales-contact-form" />
    			</panel>
    			<panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm" if="__config__.app.isApp('crm')">
-   				<panel-dashlet name="sentEmailsPanel" title="Sent emails" action="action-partner-method-view-sent-emails" colSpan="12" height="500"/>
-   				<panel-dashlet name="receivedEmailsPanel" title="Received emails" action="action-partner-method-view-received-emails" colSpan="12" height="500"/>
+   				<button name="emailBtn" title="Create an email" icon="fa-envelope-o" link="" onClick="save,action-send-by-email-with-template" colSpan="3"/>
+   				<panel-dashlet name="sentEmailsPanel" title="Sent emails" action="action-partner-method-view-sent-emails" colSpan="12" height="550"/>
+   				<panel-dashlet name="receivedEmailsPanel" title="Received emails" action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
    			</panel>
 			<panel-dashlet name="contactPartnerPanel" action="action-contact-partner-dashlet"
 				title="Partners" />

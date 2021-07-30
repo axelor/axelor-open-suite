@@ -130,7 +130,7 @@
 	       		 ]]>
 	        	</viewer>
         	</field>
-			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[11, 12, 13, 14, 15]" showIf="typeSelect == 3 || typeSelect == 5">
+			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[11, 12, 13, 14, 15]" showIf="typeSelect == 3">
 				<viewer depends="statusSelect"><![CDATA[
 					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 11" x-translate>Not started</span>
 					<span class="label label-warning" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 12" x-translate>On going</span>
@@ -267,8 +267,8 @@
 			<div ng-show="!description" ng-bind-html="description"></div>
 			<br/><br/>
 			<div>
-				<button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.statusSelect != 14" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent">Done</button>
-				<button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.statusSelect != 15" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent">Cancel</button>
+				<button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.statusSelect != 14 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent">Done</button>
+				<button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.statusSelect != 15 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent">Cancel</button>
 			</div>
 	      </div>
 	  <div>
@@ -490,6 +490,7 @@
     	<field name="partner" expr="eval: _lead.partner"/>
     	<field name="typeSelect" expr="eval: 1" if="_call"/>
     	<field name="typeSelect" expr="eval: 2" if="_meeting"/>
+    	<field name="typeSelect" expr="eval: 3" if="_task"/>
     	<field name="typeSelect" expr="eval: 5" if="_note"/>
     </action-record>
     
@@ -519,6 +520,7 @@
     	<field name="team" expr="eval: _partner.team"/>
     	<field name="typeSelect" expr="eval: 1" if="_call"/>
     	<field name="typeSelect" expr="eval: 2" if="_meeting"/>
+    	<field name="typeSelect" expr="eval: 3" if="_task"/>
     	<field name="typeSelect" expr="eval: 5" if="_note"/>
     </action-record>
     
