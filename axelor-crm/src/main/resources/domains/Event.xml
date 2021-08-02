@@ -28,6 +28,9 @@
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
 	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
 	
+<!-- Call -->
+    <integer name="callTypeSelect" title="Call type" selection="crm.event.call.type.select"/>  
+
 <!-- Task -->
   	<boolean name="isRecurrent" title="Recurrent"/>
   	<many-to-one name="parentEvent" ref="com.axelor.apps.crm.db.Event"/>
@@ -41,6 +44,10 @@
       	<![CDATA[
       		// TYPE SELECT
       		public static final int TYPE_NOTE = 5;
+      		
+      		// CALL TYPE SELECT
+      		public static final int CALL_TYPE_INBOUND = 1;
+      		public static final int CALL_TYPE_OUTBOUND = 2;
       		
 	  		// STATUS SELECT
 	  		public static final int STATUS_PLANNED = 1;
