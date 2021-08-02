@@ -46,6 +46,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -62,6 +63,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -78,6 +80,16 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InvoiceController {
+
+  protected InvoiceTermService invoiceTermService;
+  protected InvoiceRepository invoiceRepository;
+
+  @Inject
+  public InvoiceController(
+      InvoiceTermService invoiceTermService, InvoiceRepository invoiceRepository) {
+    this.invoiceTermService = invoiceTermService;
+    this.invoiceRepository = invoiceRepository;
+  }
 
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -111,7 +123,7 @@ public class InvoiceController {
   public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     try {
       // we have to inject TraceBackService to use non static methods
@@ -146,7 +158,7 @@ public class InvoiceController {
   public void ventilate(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     try {
       // we have to inject TraceBackService to use non static methods
@@ -180,7 +192,7 @@ public class InvoiceController {
   public void validateAndVentilate(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     try {
       // we have to inject TraceBackService to use non static methods
@@ -215,7 +227,7 @@ public class InvoiceController {
   public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         && invoice.getCompany().getAccountConfig() != null
@@ -239,7 +251,7 @@ public class InvoiceController {
           || invoice.getPaymentCondition() == null) {
         return;
       }
-      invoice = Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
+      invoice = invoiceTermService.computeInvoiceTerms(invoice);
       response.setValues(invoice);
 
     } catch (Exception e) {
@@ -253,17 +265,28 @@ public class InvoiceController {
       if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
         return;
       }
-      if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
+      if (InvoiceToolService.isPurchase(invoice)) {
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+          if (invoice.getOriginDate() != null)
+            invoice = invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
+        } else if (invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+          invoice =
+              invoiceTermService.setDueDates(
+                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
+        } else return;
 
-        invoice = Beans.get(InvoiceTermService.class).setDueDates(invoice, invoice.getOriginDate());
-
-      } else if (!InvoiceToolService.isPurchase(invoice) && invoice.getInvoiceDate() != null) {
-
-        invoice =
-            Beans.get(InvoiceTermService.class).setDueDates(invoice, invoice.getInvoiceDate());
       } else {
-        return;
+
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+          if (invoice.getInvoiceDate() != null)
+            invoice = invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+        } else if (invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+          invoice =
+              invoiceTermService.setDueDates(
+                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
+        } else return;
       }
+
       response.setValues(invoice);
 
     } catch (Exception e) {
@@ -294,7 +317,7 @@ public class InvoiceController {
 
   public void checkNotImputedRefunds(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     try {
       String msg = Beans.get(InvoiceService.class).checkNotImputedRefunds(invoice);
@@ -309,7 +332,7 @@ public class InvoiceController {
   public void checkNotLetteredAdvancePaymentMoveLines(
       ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     try {
       String msg = Beans.get(InvoiceService.class).checkNotLetteredAdvancePaymentMoveLines(invoice);
@@ -333,7 +356,7 @@ public class InvoiceController {
 
     try {
 
-      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+      invoice = invoiceRepository.find(invoice.getId());
       Invoice refund = Beans.get(InvoiceService.class).createRefund(invoice);
       response.setReload(true);
       response.setNotify(I18n.get(IExceptionMessage.INVOICE_2));
@@ -357,7 +380,7 @@ public class InvoiceController {
   public void usherProcess(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     try {
       Beans.get(InvoiceService.class).usherProcess(invoice);
@@ -369,7 +392,7 @@ public class InvoiceController {
   public void passInIrrecoverable(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     try {
       Beans.get(IrrecoverableService.class).passInIrrecoverable(invoice, true);
@@ -382,7 +405,7 @@ public class InvoiceController {
   public void notPassInIrrecoverable(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    invoice = invoiceRepository.find(invoice.getId());
 
     try {
       Beans.get(IrrecoverableService.class).notPassInIrrecoverable(invoice);
@@ -433,8 +456,7 @@ public class InvoiceController {
         fileLink =
             Beans.get(InvoicePrintService.class)
                 .printInvoice(
-                    Beans.get(InvoiceRepository.class)
-                        .find(Long.parseLong(context.get("id").toString())),
+                    invoiceRepository.find(Long.parseLong(context.get("id").toString())),
                     false,
                     format,
                     reportType,
@@ -452,8 +474,7 @@ public class InvoiceController {
 
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    Invoice invoice =
-        Beans.get(InvoiceRepository.class).find(Long.parseLong(context.get("id").toString()));
+    Invoice invoice = invoiceRepository.find(Long.parseLong(context.get("id").toString()));
     Integer reportType =
         context.get("reportType") != null
             ? Integer.parseInt(context.get("reportType").toString())
@@ -587,7 +608,7 @@ public class InvoiceController {
     Invoice invoiceTemp;
     int count = 1;
     for (Long invoiceId : invoiceIdList) {
-      invoiceTemp = Beans.get(InvoiceRepository.class).find(invoiceId);
+      invoiceTemp = invoiceRepository.find(invoiceId);
       invoiceList.add(invoiceTemp);
       if (count == 1) {
         commonCompany = invoiceTemp.getCompany();
@@ -989,7 +1010,7 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     Beans.get(InvoiceService.class)
         .refusalToPay(
-            Beans.get(InvoiceRepository.class).find(invoice.getId()),
+            invoiceRepository.find(invoice.getId()),
             invoice.getReasonOfRefusalToPay(),
             invoice.getReasonOfRefusalToPayStr());
     response.setCanClose(true);

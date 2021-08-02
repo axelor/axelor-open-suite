@@ -616,7 +616,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
 
       Account account = partnerAccount;
-      System.err.println(invoiceTerm.getIsHoldBack());
       if (invoiceTerm.getIsHoldBack()) {
         account = invoiceService.getPartnerAccount(invoice, true);
         holdBackMoveLine =
@@ -686,7 +685,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       if (!invoiceTerm.getIsHoldBack()) invoiceTerm.setMoveLine(moveLine);
     }
-    System.err.println(moveLine);
     move.addMoveLineListItem(moveLine);
     return moveLines;
   }

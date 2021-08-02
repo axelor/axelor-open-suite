@@ -34,14 +34,15 @@
       <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" readonly="true" />
       <field name="isPaid" readonly="true" />
       <field name="isHoldBack" readonly="true" />
-      <field name="dueDate" />
+      <field name="dueDate" readonlyIf="(invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3 ||
+       ((invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid)"/>
       <field name="estimatedPaymentDate" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')" />
       <field name="amount" readonly="true" />
       <field name="amountRemaining" readonly="true" />
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
       <field name="discountRate"/>
       <field name="discountBaseSelect"/>
-      <field name="finDiscountDeadlineDate"/>
+      <field name="finDiscountDeadlineDate" readonlyIf=""/>
       <field name="financialDiscount"/>
       <field name="paymentMode"/>
       <field name="invoice.company" hidden="true" />

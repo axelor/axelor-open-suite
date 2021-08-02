@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -39,10 +41,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   protected InvoiceTermRepository invoiceTermRepo;
+  protected InvoiceRepository invoiceRepo;
 
   @Inject
-  public InvoiceTermServiceImpl(InvoiceTermRepository invoiceTermRepo) {
+  public InvoiceTermServiceImpl(
+      InvoiceTermRepository invoiceTermRepo, InvoiceRepository invoiceRepo) {
     this.invoiceTermRepo = invoiceTermRepo;
+    this.invoiceRepo = invoiceRepo;
   }
 
   @Override
@@ -62,11 +67,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     while (iterator.hasNext()) {
       PaymentConditionLine paymentConditionLine = iterator.next();
       InvoiceTerm invoiceTerm = computeInvoiceTerm(invoice, paymentConditionLine);
-      invoiceTerm.setPaymentMode(invoice.getPartner().getInPaymentMode());
-      invoiceTerm.setDiscountRate(paymentConditionLine.getPaymentPercentage());
-      invoiceTerm.setFinancialDiscount(invoice.getPartner().getFinancialDiscount());
-      invoiceTerm.setDiscountBaseSelect(
-          invoice.getPartner().getFinancialDiscount().getDiscountBaseSelect());
+
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
@@ -96,8 +97,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-    invoiceTerm.setDueDate(LocalDate.now().minusDays(paymentConditionLine.getDaySelect()));
-
+    invoiceTerm.setDueDate(LocalDate.now());
+    invoiceTerm.setPaymentMode(invoice.getPartner().getInPaymentMode());
+    invoiceTerm.setDiscountRate(paymentConditionLine.getPaymentPercentage());
+    invoiceTerm.setFinancialDiscount(invoice.getPartner().getFinancialDiscount());
+    invoiceTerm.setDiscountBaseSelect(
+        invoice.getPartner().getFinancialDiscount().getDiscountBaseSelect());
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
     return invoiceTerm;
@@ -116,7 +121,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       LocalDate dueDate =
           InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
       invoiceTerm.setDueDate(dueDate);
-
+      if (ObjectUtils.notEmpty(invoiceTerm.getFinancialDiscount())) {
+        invoiceTerm.setFinDiscountDeadlineDate(
+            invoiceTerm
+                .getDueDate()
+                .minusDays(invoiceTerm.getFinancialDiscount().getDiscountDelay()));
+      }
       if (nDaysDate == null || dueDate.isBefore(nDaysDate)) {
         nDaysDate = dueDate;
       }

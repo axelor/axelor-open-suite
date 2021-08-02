@@ -1042,6 +1042,8 @@ InvoiceSet.length > 0))"
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
     <action name="action-invoice-method-validate"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates" />
+    <action name="save"/>
   </action-group>
 
   <action-attrs name="action-invoice-attrs-in-ati">
