@@ -166,7 +166,10 @@
 				<button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o" onClick="save,action-lead-view-note-event" colSpan="3"/>
 				<panel-dashlet name="eventPanelDashlet" action="action-lead-view-events" title="Events" height="550" colSpan="12"/>
 			</panel>
-			<panel-dashlet name="opportunityPanel" title="Opportunity" action="action-lead-view-opportunities" height="500"/>
+			<panel name="opportunityPanel" colSpan="12" title="Opportunity">
+				<button name="createOpportunityBtn" title="Create opportunity" onClick="save,action-lead-view-create-opportunity" colSpan="3"/>
+				<panel-dashlet name="opportunityPanelDashlet" title="Opportunity" action="action-lead-view-opportunities" height="500" colSpan="12"/>
+			</panel>
 			<panel name="emailPanel" title="Emails">
 				<button name="emailBtn" title="Create an email" link="" icon="fa-envelope-o" onClick="save,action-send-by-email-with-template" colSpan="3"/>
 				<panel-dashlet name="leadSentEmailsPanel" title="Sent emails" action="action-lead-view-sent-emails" colSpan="12" height="550"/>
@@ -200,10 +203,6 @@
 		<panel sidebar="true" name="marketingPanel" title="Marketing" readonlyIf="statusSelect == 3" colSpan="12">
 			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid" canNew="true"/>
 			<field name="referredBy" colSpan="6"/>
-			<field name="estimatedBudget" colSpan="6"/>
-			<panel name="createOppBtnPanel" colSpan="6">
-				<button name="createOpportunityBtn" title="Create opportunity" onClick="save,action-lead-view-create-opportunity" colSpan="12"/>
-			</panel>
 		</panel>
  		
  		<panel-mail name="mailPanel">
@@ -342,7 +341,7 @@
     
     <action-view name="action-lead-view-create-opportunity" title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     	<view type="form" name="opportunity-form"/>
-    	<view-param name="popup" value="true"/>
+    	<view-param name="popup" value="reload"/>
     	<view-param name="show-toolbar" value="false"/>
     	<context name="_lead" expr="eval: __self__"/>
     </action-view>

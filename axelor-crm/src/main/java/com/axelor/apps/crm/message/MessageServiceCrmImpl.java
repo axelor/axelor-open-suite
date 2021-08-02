@@ -68,8 +68,7 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
                 .getEventTemplate();
         break;
 
-      case ICalendarEventRepository.TYPE_IN_BOUND_CALL:
-      case ICalendarEventRepository.TYPE_OUT_BOUND_CALL:
+      case ICalendarEventRepository.TYPE_CALL:
         template =
             Beans.get(CrmConfigService.class)
                 .getCrmConfig(event.getUser().getActiveCompany())

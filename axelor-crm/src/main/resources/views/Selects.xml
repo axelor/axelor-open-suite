@@ -49,6 +49,11 @@
 		<option value="5">Note</option>
 	</selection>
 	
+	<selection name="crm.event.call.type.select">
+		<option value="1">Inbound</option>
+		<option value="2">Outbound</option>
+	</selection>
+	
 	<selection name="crm.event.status.select">
 		<option value="1">Planned</option>
 		<option value="2">Realized</option>

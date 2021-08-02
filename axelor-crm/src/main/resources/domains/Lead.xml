@@ -35,7 +35,6 @@
 	<boolean name="isRecycled" title="Recycled"/>
 	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
   	<string name="statusDescription" title="Status description" large="true"/>
-    <decimal name="estimatedBudget" title="Estimated budget"/>
  	<string name="sourceDescription" title="Source description" large="true"/>
     <string name="referredBy" title="Referred by"/>
     <boolean name="isDoNotCall" title="Rejection of calls"/>

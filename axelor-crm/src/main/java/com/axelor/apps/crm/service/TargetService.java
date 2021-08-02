@@ -173,12 +173,12 @@ public class TargetService {
           eventRepo
               .all()
               .filter(
-                  "self.typeSelect = ?1 OR self.typeSelect = ?2 AND self.user = ?3 AND self.startDateTime >= ?4 AND self.endDateTime <= ?5",
-                  ICalendarEventRepository.TYPE_IN_BOUND_CALL,
-                  ICalendarEventRepository.TYPE_OUT_BOUND_CALL,
+                  "self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = ?5",
+                  ICalendarEventRepository.TYPE_CALL,
                   user,
                   fromDateTime,
-                  toDateTime)
+                  toDateTime,
+                  EventRepository.CALL_TYPE_OUTBOUND)
               .count();
 
       target.setCallEmittedNumber(callEmittedNumber.intValue());
@@ -239,12 +239,12 @@ public class TargetService {
           eventRepo
               .all()
               .filter(
-                  "self.typeSelect = ?1 OR self.typeSelect = ?2 AND self.team = ?3 AND self.startDateTime >= ?4 AND self.endDateTime <= ?5",
-                  ICalendarEventRepository.TYPE_IN_BOUND_CALL,
-                  ICalendarEventRepository.TYPE_OUT_BOUND_CALL,
+                  "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = ?5",
+                  ICalendarEventRepository.TYPE_CALL,
                   team,
                   fromDateTime,
-                  toDateTime)
+                  toDateTime,
+                  EventRepository.CALL_TYPE_OUTBOUND)
               .count();
 
       target.setCallEmittedNumber(callEmittedNumber.intValue());
