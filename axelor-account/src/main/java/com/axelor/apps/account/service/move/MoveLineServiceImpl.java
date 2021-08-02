@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -89,6 +90,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected CompanyConfigService companyConfigService;
   protected MoveLineRepository moveLineRepository;
   protected TaxPaymentMoveLineService taxPaymentMoveLineService;
+  protected AnalyticJournalRepository analyticJournalRepository;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public MoveLineServiceImpl(
@@ -100,7 +103,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       CurrencyService currencyService,
       CompanyConfigService companyConfigService,
       MoveLineRepository moveLineRepository,
-      TaxPaymentMoveLineService taxPaymentMoveLineService) {
+      TaxPaymentMoveLineService taxPaymentMoveLineService,
+      AnalyticJournalRepository analyticJournalRepository,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -110,6 +115,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.companyConfigService = companyConfigService;
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
+    this.analyticJournalRepository = analyticJournalRepository;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -1287,5 +1294,88 @@ public class MoveLineServiceImpl implements MoveLineService {
       }
     }
     return moveLine;
+  }
+
+  public AnalyticMoveLine computeAnalyticMoveLine(MoveLine moveLine, Integer position) {
+    AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
+    if (analyticJournalRepository.find((long) 1) != null) {
+      analyticMoveLine.setAnalyticJournal(analyticJournalRepository.find((long) 1));
+    }
+
+    analyticMoveLine.setDate(moveLine.getDate());
+    analyticMoveLine.setPercentage(new BigDecimal(100));
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+    analyticMoveLine.setMoveLine(moveLine);
+    if (moveLine.getAccount() != null) {
+      analyticMoveLine.setAccount(moveLine.getAccount());
+      if (moveLine.getAccount().getAccountType() != null) {
+        analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
+      }
+    }
+
+    switch (position) {
+      case 1:
+        analyticMoveLine.setAnalyticAxis(moveLine.getAxis1AnalyticAccount().getAnalyticAxis());
+        analyticMoveLine.setAnalyticAccount(moveLine.getAxis1AnalyticAccount());
+        break;
+      case 2:
+        analyticMoveLine.setAnalyticAxis(moveLine.getAxis2AnalyticAccount().getAnalyticAxis());
+        analyticMoveLine.setAnalyticAccount(moveLine.getAxis2AnalyticAccount());
+        break;
+      case 3:
+        analyticMoveLine.setAnalyticAxis(moveLine.getAxis3AnalyticAccount().getAnalyticAxis());
+        analyticMoveLine.setAnalyticAccount(moveLine.getAxis3AnalyticAccount());
+        break;
+      case 4:
+        analyticMoveLine.setAnalyticAxis(moveLine.getAxis4AnalyticAccount().getAnalyticAxis());
+        analyticMoveLine.setAnalyticAccount(moveLine.getAxis4AnalyticAccount());
+        break;
+      case 5:
+        analyticMoveLine.setAnalyticAxis(moveLine.getAxis5AnalyticAccount().getAnalyticAxis());
+        analyticMoveLine.setAnalyticAccount(moveLine.getAxis5AnalyticAccount());
+        break;
+    }
+    if (moveLine.getCredit().intValue() > 0) {
+      analyticMoveLine.setAmount(moveLine.getCredit());
+    } else if (moveLine.getDebit().intValue() > 0) {
+      analyticMoveLine.setAmount(moveLine.getDebit());
+    }
+    return analyticMoveLine;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void analyzeMoveLine(MoveLine moveLine, Integer position) {
+    if (moveLine != null && position > 0) {
+      AnalyticAccount analyticAccount = null;
+      switch (position) {
+        case 1:
+          analyticAccount = moveLine.getAxis1AnalyticAccount();
+          break;
+        case 2:
+          analyticAccount = moveLine.getAxis2AnalyticAccount();
+          break;
+        case 3:
+          analyticAccount = moveLine.getAxis3AnalyticAccount();
+          break;
+        case 4:
+          analyticAccount = moveLine.getAxis4AnalyticAccount();
+          break;
+        case 5:
+          analyticAccount = moveLine.getAxis5AnalyticAccount();
+          break;
+      }
+      if (analyticAccount != null) {
+        List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
+        for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+          if (analyticMoveLine.getAnalyticAccount() == analyticAccount) {
+            analyticMoveLineRepository.remove(analyticMoveLine);
+          }
+        }
+      }
+      AnalyticMoveLine analyticMoveLine = computeAnalyticMoveLine(moveLine, position);
+      analyticMoveLineRepository.save(analyticMoveLine);
+      moveLineRepository.save(moveLine);
+    }
   }
 }

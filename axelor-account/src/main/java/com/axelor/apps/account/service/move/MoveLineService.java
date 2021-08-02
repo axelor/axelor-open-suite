@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -143,4 +144,7 @@ public interface MoveLineService {
       throws AxelorException;
 
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
+
+  @CallMethod
+  void analyzeMoveLine(MoveLine moveLine, Integer position);
 }
