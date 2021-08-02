@@ -34,7 +34,7 @@
 
     <form name="move-form" title="Account move" canArchive="false" model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
           onNew="action-account-move-onnew-group"
-          onLoad="action-account-move-group-onload,action-attrs-hide-axis-analytic-account-move-line" 
+          onLoad="action-account-move-group-onload" 
           onSave="action-move-method-check-remove-lines,save,action-move-method-update-in-day-book-mode">
 
         <toolbar>
@@ -207,6 +207,7 @@
 		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
 		<action name="action-attrs-move-hide-trading-name"/>
 		<action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
+		<action name="action-attrs-hide-axis-analytic-account-move-line"/>
 	</action-group>
 	
 	<action-group name="action-account-move-group-onload">
@@ -217,6 +218,7 @@
 		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
 		<action name="action-attrs-move-hide-trading-name"/>
 		<action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
+		<action name="action-attrs-hide-axis-analytic-account-move-line"/>
 	</action-group>
 
     <action-group name="action-group-account-move-validate-click">
@@ -424,6 +426,11 @@
 		<attribute name="title" for="moveLineList.axis4AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 4 }?.analyticAxis?.name" if="(4 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
 		<attribute name="title" for="moveLineList.axis5AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 5 }?.analyticAxis?.name" if="(5 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
 		
+		<attribute name="domain" for="moveLineList.axis1AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis?.id} &quot;" if="(1 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="domain" for="moveLineList.axis2AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 2 }?.analyticAxis?.id} &quot;" if="(2 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="domain" for="moveLineList.axis3AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 3 }?.analyticAxis?.id} &quot;" if="(3 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="domain" for="moveLineList.axis4AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 4 }?.analyticAxis?.id} &quot;" if="(4 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="domain" for="moveLineList.axis5AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 5 }?.analyticAxis?.id} &quot;" if="(5 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
 		
 		</action-attrs>
    
