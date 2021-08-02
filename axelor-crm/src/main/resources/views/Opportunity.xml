@@ -117,8 +117,8 @@
 					]]>
                 </viewer>
             </field>
-            <field name="opportunityRating" widget="ImageSelect" x-labels="false" colSpan="2" selection-in="[0.00,1.00,2.00,3.00]"/>
             <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false" form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
+            <field name="opportunityRating" widget="ImageSelect" x-labels="false" colSpan="2"/>
             <field name="source" colSpan="4" canEdit="false" form-view="source-form" grid-view="source-grid"/>
             <field name="expectedCloseDate" onChange="action-opportunity-group-onchange-expected-close-date" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
             <field name="payingDate" onChange="action-opportunity-record-set-start-date" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
@@ -214,10 +214,12 @@
                     <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{$fmt('amount') | currency : record.currency.symbol}}</dd>
                     <dt ng-show="record.probability" x-translate>Probability</dt><dd ng-show="record.probability">{{record.probability}}</dd>
                     <dt><i class='fa fa-clock-o'></i> <span>{{$fmt('expectedCloseDate')}}</span></dt>
-                    <dt x-translate>Score</dt> <dd ng-show="!record.opportunityRating"><i class='fa fa-star-o'></i><span><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 1.00"><i class='fa fa-star'></i><span><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 2.00"><i class='fa fa-star'></i><span><i class='fa fa-star'></i><i class='fa fa-star-o'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 3.00"><i class='fa fa-star'></i><span><i class='fa fa-star'></i><i class='fa fa-star'></i></span></dd>
+                    <dt x-translate>Score</dt> <dd ng-show="!record.opportunityRating"<i class='fa fa-star-o' style='color:yellow;'></i><span><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 1.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 2.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 3.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 4.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></dd>
+                    <dd ng-show="record.opportunityRating && opportunityRating == 5.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i></span></dd>
                 </dl>
             </div>
 			<div class="card-summary popover">
@@ -269,10 +271,12 @@
 	                <span ng-show="record.probability">{{record.probability}}</span><br/>
 	                <span><i class='fa fa-clock-o'></i> <span>{{$fmt('expectedCloseDate')}}</span></span><br/>
 	                <strong><span x-translate>Score : </span></strong> 
-	                <span ng-show="!record.opportunityRating"><i class='fa fa-star-o'></i><span><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i></span></span>
-                    <span ng-show="record.opportunityRating && opportunityRating == 1.00"><i class='fa fa-star'></i><span><i class='fa fa-star-o'></i><i class='fa fa-star-o'></i></span></span>
-                    <span ng-show="record.opportunityRating && opportunityRating == 2.00"><i class='fa fa-star'></i><span><i class='fa fa-star'></i><i class='fa fa-star-o'></i></span></span>
-                    <span ng-show="record.opportunityRating && opportunityRating == 3.00"><i class='fa fa-star'></i><span><i class='fa fa-star'></i><i class='fa fa-star'></i></span></span>
+	                <span ng-show="!record.opportunityRating"><i class='fa fa-star-o' style='color:yellow;'></i><span><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></span>
+                    <span ng-show="record.opportunityRating && opportunityRating == 1.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></span>
+                    <span ng-show="record.opportunityRating && opportunityRating == 2.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></span>
+                    <span ng-show="record.opportunityRating && opportunityRating == 3.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></span>
+                    <span ng-show="record.opportunityRating && opportunityRating == 4.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star-o' style='color:yellow;'></i></span></span>
+                    <span ng-show="record.opportunityRating && opportunityRating == 5.00"><i class='fa fa-star' style='color:yellow;'></i><span><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i><i class='fa fa-star' style='color:yellow;'></i></span></span>
 	            </div>
 				<br/>
 				<strong><span x-translate>Description </span> :</strong><br/>
