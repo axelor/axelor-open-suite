@@ -25,7 +25,7 @@
 			<field name="senderUser" canNew="false" canEdit="false" canView="false"/>
 			<field name="sentDateT" colSpan="4" showIf="sentDateT"/>
 			<panel name="emailDetailsPanel" colSpan="12" showIf="mediaTypeSelect == 2">
-			    <field name="fromEmailAddress" hidden="true" widget="SuggestBox" form-view="email-address-form" grid-view="email-address-grid"/>
+			    <field name="fromEmailAddress" widget="SuggestBox" form-view="email-address-form" grid-view="email-address-grid"/>
 				<field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature" onSelect="action-message-attribute-mail-account" requiredIf="mediaTypeSelect == 2"  form-view="mail-account-form" grid-view="mail-account-grid"/>
         		<field name="replyToEmailAddressSet" hidden="true" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid"/>			
         	</panel>

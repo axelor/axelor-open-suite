@@ -254,11 +254,11 @@
 				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
          		<span class="label label-success" ng-show="record.statusSelect == 2" x-translate>Realized</span>
          		<span class="label label-important" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
-				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 11" x-translate>Not started</span>
-				<span class="label label-warning" ng-show="record.statusSelect == 12" x-translate>On going</span>
-				<span class="label label-important" ng-show="record.statusSelect == 13" x-translate>Pending</span>
-				<span class="label label-success" ng-show="record.statusSelect == 14" x-translate>Finished</span>
-				<span class="label label-default" style="background-color: #AB274F;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 11 &amp;&amp; record.typeSelect != 5" x-translate>Not started</span>
+				<span class="label label-warning" ng-show="record.statusSelect == 12 &amp;&amp; record.typeSelect != 5" x-translate>On going</span>
+				<span class="label label-important" ng-show="record.statusSelect == 13 &amp;&amp; record.typeSelect != 5" x-translate>Pending</span>
+				<span class="label label-success" ng-show="record.statusSelect == 14 &amp;&amp; record.typeSelect != 5" x-translate>Finished</span>
+				<span class="label label-default" style="background-color: #AB274F;" ng-show="record.statusSelect == 15 &amp;&amp; record.typeSelect != 5" x-translate>Reported</span>
 			</div>
 			<br/><br/>
 		  	<span>
