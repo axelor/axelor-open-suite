@@ -4,7 +4,10 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppMobile" lang="java" extends="App">
+	<entity name="AppMobile" lang="java" >
+		
+		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+		
 		<boolean name="isSaleAppEnable" default="true" title="Sale"/>
 		<boolean name="isCrmAppEnable" default="true" title="CRM"/>
 		<boolean name="isTimesheetAppEnable" default="true" title="Timesheet"/>

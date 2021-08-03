@@ -15,7 +15,7 @@
 		<bind to="name" column="name"/>
 		<bind to="reportExportTypeSelect" column="docType"/>
 		<bind to="typeSelect" column="type"/>
-		<bind to="company" column="company" search="self.importId = :company"/>
+		<bind to="company" column="company" search="self.importId = :company" update="true"/>
 	</input>
     
 </csv-inputs>

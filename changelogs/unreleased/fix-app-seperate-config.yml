@@ -1,0 +1,3 @@
+---
+title: "Separate App from config instead of extending it."
+type: fix
