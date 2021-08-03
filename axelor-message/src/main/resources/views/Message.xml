@@ -79,28 +79,34 @@
 	
 	<cards name="message-cards" model="com.axelor.apps.message.db.Message" title="Emails" orderBy="-sentDateT" css="rect-image" width="100%">
 		<field name="statusSelect"/>
+		<field name="typeSelect"/>
 		<field name="mediaTypeSelect"/>
-		<field name="senderUser"/>
+		<field name="fromEmailAddress"/>
 		<field name="sentDateT"/>
 		<field name="subject"/>
-		<field name="senderUser.name"/>
+		<field name="toEmailAddressSet"/>
+		<field name="fromEmailAddress.address"/>
 		<template><![CDATA[
 			<div>
 			  <div class="span12">
-			  	<div class="span4">
+			  	<div class="span4 pull-right">
 					<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Draft</span>
 					<span class="label label-important" ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>In progress</span>
-					<span class="label label-success" ng-show="record.statusSelect == 3 &amp;&amp; record.sentDateT != null" x-translate>Sent</span>
 					<span class="label label-warning" ng-show="record.statusSelect == 4" x-translate>Deleted</span>
 				</div>
-				<br/><br/>
 			  	<span>
-					<strong>{{subject}}</strong><br/>
-					{{$fmt('sentDateT')}}
+					<strong>{{subject}}</strong><br/><br/>
+					<span><i class='fa fa-clock-o'></i> <span>{{$fmt('sentDateT')}}</span></span>
 		        </span>
 				<br/></br/>
-				<strong><span ng-show="record.senderUser" x-translate>Sender </span> :</strong><br/>
-				<span ng-show="record.senderUser">{{record.senderUser.name}}</span>
+				<div ng-show="record.toEmailAddressSet &amp;&amp; typeSelect == 2">
+					<strong><span x-translate>To :</span></strong><br/>
+					<span>{{toEmailAddresses}}</span>
+				</div>
+				<div ng-show="record.fromEmailAddress &amp;&amp; typeSelect == 1">
+					<strong><span x-translate>From :</span></strong><br/>
+					<span>{{record.fromEmailAddress.address}}</span>
+				</div>
 		      </div>
 		  <div>
 		]]></template>
