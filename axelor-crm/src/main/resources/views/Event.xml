@@ -120,6 +120,14 @@
 	       		 ]]>
 	        	</viewer>
 	      	</field>
+	      	
+	      	<field name="callTypeSelect"  showIf="typeSelect == 1" colSpan="3" showTitle="false">
+	      		<viewer depends="statusSelect"><![CDATA[
+	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.callTypeSelect == 1" x-translate>Inbound</span>
+	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.callTypeSelect == 2" x-translate>Outbound</span>
+	       		 ]]>
+	        	</viewer>
+	      	</field>
 			<field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]" showIf="typeSelect == 1 || typeSelect == 2" >
 	        	<viewer depends="statusSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
@@ -206,7 +214,6 @@
 		<panel sidebar="true" title="Characteristics" name="meetingAttributesPanel" canCollapse="true" hideIf="typeSelect == 5">
 			<field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false" onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
 			<field name="eventCategory" canEdit="false" domain="self.typeSelect = :typeSelect" colSpan="6"/>
-			<field name="callTypeSelect"  showIf="typeSelect == 1" colSpan="6"/>
 			<field name="prioritySelect" showIf="typeSelect == 3" colSpan="6"/>
 		</panel>
 		
