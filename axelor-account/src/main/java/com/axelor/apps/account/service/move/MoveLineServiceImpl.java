@@ -30,7 +30,9 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -92,6 +94,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected TaxPaymentMoveLineService taxPaymentMoveLineService;
   protected AnalyticJournalRepository analyticJournalRepository;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected AnalyticAccountRepository analyticAccountRepository;
+  protected AccountRepository accountRepository;
 
   @Inject
   public MoveLineServiceImpl(
@@ -105,7 +109,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       MoveLineRepository moveLineRepository,
       TaxPaymentMoveLineService taxPaymentMoveLineService,
       AnalyticJournalRepository analyticJournalRepository,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      AnalyticAccountRepository analyticAccountRepository,
+      AccountRepository accountRepository) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -117,6 +123,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
     this.analyticJournalRepository = analyticJournalRepository;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
+    this.analyticAccountRepository = analyticAccountRepository;
+    this.accountRepository = accountRepository;
   }
 
   @Override
@@ -1311,28 +1319,39 @@ public class MoveLineServiceImpl implements MoveLineService {
       if (moveLine.getAccount().getAccountType() != null) {
         analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
       }
+    } else {
+      analyticMoveLine.setAccount(accountRepository.find((long) 1));
     }
-
     switch (position) {
       case 1:
-        analyticMoveLine.setAnalyticAxis(moveLine.getAxis1AnalyticAccount().getAnalyticAxis());
-        analyticMoveLine.setAnalyticAccount(moveLine.getAxis1AnalyticAccount());
+        if (moveLine.getAxis1AnalyticAccount() != null) {
+          analyticMoveLine.setAnalyticAxis(moveLine.getAxis1AnalyticAccount().getAnalyticAxis());
+          analyticMoveLine.setAnalyticAccount(moveLine.getAxis1AnalyticAccount());
+        }
         break;
       case 2:
-        analyticMoveLine.setAnalyticAxis(moveLine.getAxis2AnalyticAccount().getAnalyticAxis());
-        analyticMoveLine.setAnalyticAccount(moveLine.getAxis2AnalyticAccount());
+        if (moveLine.getAxis2AnalyticAccount() != null) {
+          analyticMoveLine.setAnalyticAxis(moveLine.getAxis2AnalyticAccount().getAnalyticAxis());
+          analyticMoveLine.setAnalyticAccount(moveLine.getAxis2AnalyticAccount());
+        }
         break;
       case 3:
-        analyticMoveLine.setAnalyticAxis(moveLine.getAxis3AnalyticAccount().getAnalyticAxis());
-        analyticMoveLine.setAnalyticAccount(moveLine.getAxis3AnalyticAccount());
+        if (moveLine.getAxis3AnalyticAccount() != null) {
+          analyticMoveLine.setAnalyticAxis(moveLine.getAxis3AnalyticAccount().getAnalyticAxis());
+          analyticMoveLine.setAnalyticAccount(moveLine.getAxis3AnalyticAccount());
+        }
         break;
       case 4:
-        analyticMoveLine.setAnalyticAxis(moveLine.getAxis4AnalyticAccount().getAnalyticAxis());
-        analyticMoveLine.setAnalyticAccount(moveLine.getAxis4AnalyticAccount());
+        if (moveLine.getAxis4AnalyticAccount() != null) {
+          analyticMoveLine.setAnalyticAxis(moveLine.getAxis4AnalyticAccount().getAnalyticAxis());
+          analyticMoveLine.setAnalyticAccount(moveLine.getAxis4AnalyticAccount());
+        }
         break;
       case 5:
-        analyticMoveLine.setAnalyticAxis(moveLine.getAxis5AnalyticAccount().getAnalyticAxis());
-        analyticMoveLine.setAnalyticAccount(moveLine.getAxis5AnalyticAccount());
+        if (moveLine.getAxis5AnalyticAccount() != null) {
+          analyticMoveLine.setAnalyticAxis(moveLine.getAxis5AnalyticAccount().getAnalyticAxis());
+          analyticMoveLine.setAnalyticAccount(moveLine.getAxis5AnalyticAccount());
+        }
         break;
     }
     if (moveLine.getCredit().intValue() > 0) {
@@ -1350,19 +1369,29 @@ public class MoveLineServiceImpl implements MoveLineService {
       AnalyticAccount analyticAccount = null;
       switch (position) {
         case 1:
-          analyticAccount = moveLine.getAxis1AnalyticAccount();
+          if (moveLine.getAxis1AnalyticAccount() != null) {
+            analyticAccount = moveLine.getAxis1AnalyticAccount();
+          }
           break;
         case 2:
-          analyticAccount = moveLine.getAxis2AnalyticAccount();
+          if (moveLine.getAxis2AnalyticAccount() != null) {
+            analyticAccount = moveLine.getAxis2AnalyticAccount();
+          }
           break;
         case 3:
-          analyticAccount = moveLine.getAxis3AnalyticAccount();
+          if (moveLine.getAxis3AnalyticAccount() != null) {
+            analyticAccount = moveLine.getAxis3AnalyticAccount();
+          }
           break;
         case 4:
-          analyticAccount = moveLine.getAxis4AnalyticAccount();
+          if (moveLine.getAxis4AnalyticAccount() != null) {
+            analyticAccount = moveLine.getAxis4AnalyticAccount();
+          }
           break;
         case 5:
-          analyticAccount = moveLine.getAxis5AnalyticAccount();
+          if (moveLine.getAxis5AnalyticAccount() != null) {
+            analyticAccount = moveLine.getAxis5AnalyticAccount();
+          }
           break;
       }
       if (analyticAccount != null) {
@@ -1372,10 +1401,11 @@ public class MoveLineServiceImpl implements MoveLineService {
             analyticMoveLineRepository.remove(analyticMoveLine);
           }
         }
+        AnalyticMoveLine analyticMoveLine = computeAnalyticMoveLine(moveLine, position);
+        moveLine.getAnalyticMoveLineList().add(analyticMoveLine);
+        analyticMoveLineRepository.save(analyticMoveLine);
+        moveLineRepository.save(moveLine);
       }
-      AnalyticMoveLine analyticMoveLine = computeAnalyticMoveLine(moveLine, position);
-      analyticMoveLineRepository.save(analyticMoveLine);
-      moveLineRepository.save(moveLine);
     }
   }
 }
