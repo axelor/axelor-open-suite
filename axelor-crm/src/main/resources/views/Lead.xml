@@ -175,11 +175,6 @@
 				<panel-dashlet name="leadSentEmailsPanel" title="Sent emails" action="action-lead-view-sent-emails" colSpan="12" height="550"/>
 				<panel-dashlet name="leadReceivedEmailsPanel" title="Received emails" action="action-lead-view-received-emails" colSpan="12" height="550"/>
 			</panel>
-			<panel-dashlet name="opportunityPanel" title="Opportunity" action="action-lead-view-opportunities" height="500"/>
-			<panel name="emailPanel" title="Emails">
-				<panel-dashlet name="leadSentEmailsPanel" title="Sent emails" action="action-lead-view-sent-emails" colSpan="12" height="550"/>
-				<panel-dashlet name="leadReceivedEmailsPanel" title="Received emails" action="action-lead-view-received-emails" colSpan="12" height="550"/>
-			</panel>
 			<panel-dashlet name="leadMarketingCampaignPanel" title="Marketing Campaign" if="__config__.app.isApp('marketing')" if-module="axelor-marketing" action="action-lead-view-marketing-campaigns" colSpan="12" height="500"/>
 		</panel-tabs>
 
@@ -405,16 +400,7 @@
 		<view type="cards" name="event-cards"/>
 		<view type="grid" name="list-event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>self.lead.id = :_id and self.startDateTime &gt; :_todayTime and (self.statusSelect = 1 OR self.statusSelect IN (11,12,13))</domain>
-		<context name="_todayTime" expr="eval: __datetime__"/>
-	</action-view>
-	
-	<action-view name="action-lead-view-historical-events" title="Historical events" model="com.axelor.apps.crm.db.Event">
-		<view type="cards" name="event-cards"/>
-		<view type="grid" name="list-event-grid"/>
-		<view type="form" name="event-form"/>
-		<domain>self.lead.id = :_id and (self.startDateTime &lt; :_todayTime OR (self.statusSelect != 1 and self.statusSelect NOT IN (11,12,13)))</domain>
-		<context name="_todayTime" expr="eval: __datetime__"/>
+		<domain>self.lead.id = :_id</domain>
 	</action-view>
 	
 	<action-view name="action-lead-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
