@@ -251,7 +251,7 @@
 				
 				<span class="label label-warning" ng-show="record.typeSelect == 1" x-translate>Call</span>
 				
-				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
+				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1 &amp;&amp; record.typeSelect != 5" x-translate>Planned</span>
          		<span class="label label-success" ng-show="record.statusSelect == 2" x-translate>Realized</span>
          		<span class="label label-important" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
 				<span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 11 &amp;&amp; record.typeSelect != 5" x-translate>Not started</span>
