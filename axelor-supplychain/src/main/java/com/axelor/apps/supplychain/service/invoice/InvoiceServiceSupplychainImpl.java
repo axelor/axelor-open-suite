@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.supplychain.service.invoice;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
@@ -56,6 +47,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
@@ -126,10 +125,9 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
 
     String filter = writeGeneralFilterForAdvancePayment();
     if (saleOrder != null) {
-        filter += " AND self.saleOrder = :_saleOrder";
-    }
-    else if (purchaseOrder != null) {
-    	filter += " AND self.purchaseOrder = :_purchaseOrder";
+      filter += " AND self.saleOrder = :_saleOrder";
+    } else if (purchaseOrder != null) {
+      filter += " AND self.purchaseOrder = :_purchaseOrder";
     }
 
     if (!generateMoveForInvoicePayment) {
@@ -142,10 +140,9 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)
             .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
     if (saleOrder != null) {
-    	query.bind("_saleOrder", saleOrder);
-    }
-    else if (purchaseOrder != null) {
-    	query.bind("_purchaseOrder", purchaseOrder);
+      query.bind("_saleOrder", saleOrder);
+    } else if (purchaseOrder != null) {
+      query.bind("_purchaseOrder", purchaseOrder);
     }
     if (!generateMoveForInvoicePayment) {
       if (currency == null) {

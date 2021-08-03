@@ -17,22 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
@@ -89,6 +73,20 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturation. */
 public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceService {
@@ -595,7 +593,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return new HashSet<>();
     }
     String filter = writeGeneralFilterForAdvancePayment();
-    filter += " AND self.partner = :_partner AND self.currency = :_currency AND self.operationTypeSelect = :_operationTypeSelect";
+    filter +=
+        " AND self.partner = :_partner AND self.currency = :_currency AND self.operationTypeSelect = :_operationTypeSelect";
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo

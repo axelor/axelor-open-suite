@@ -129,6 +129,7 @@
 		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
     <field name="originDate"/>
     <field name="invoiceDate"/>
