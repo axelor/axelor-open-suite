@@ -464,8 +464,9 @@
 	</selection>
 
 	<selection name="account.fixed.asset.depreciation.plan">
-		<option value="1">Economic</option>
-		<option value="2">Fiscal</option>
+		<option value="0">None</option>
+		<option value="1">Fiscal</option>
+		<option value="2">Economic</option>
 		<option value="3">Derogation</option>
 	</selection>
 	

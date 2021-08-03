@@ -21,6 +21,8 @@
 	<integer name="periodicityInMonth" title="Periodicity in month" default="12"/>
 	<integer name="numberOfDepreciation" title="Number of depreciation" default="1"/>
 	<integer name="durationInMonth" title="Duration in month"/>
+	<integer name="depreciationPlanSelect" title="Depreciation Plan" selection="account.fixed.asset.depreciation.plan"/>
+	<integer name="periodicityTypeSelect" title="Periodicity Type" selection="account.fixed.asset.periodicity.type" default="12"/>
 	
 	<boolean name="isProrataTemporis" title="Prorata temporis"/>
 	<boolean name="isUSProrataTemporis" title="Use US prorata temoris" default="false"/>

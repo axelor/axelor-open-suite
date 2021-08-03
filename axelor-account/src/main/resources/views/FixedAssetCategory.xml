@@ -40,6 +40,8 @@
 	      <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'" validIf="computationMethodSelect == 'linear' || (computationMethodSelect == 'degressive' &amp;&amp; degressiveCoef != 0.00)"/>
 	      <field name="isProrataTemporis"/>
 	      <field name="isUSProrataTemporis" showIf="isProrataTemporis"/>
+	      <field name="depreciationPlanSelect"/>
+	      <field name="periodicityTypeSelect"/>
 	      <panel name="periodicityPanel" title="Periodicity" colspan="12">
 	      	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
 	      	<field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration"/>

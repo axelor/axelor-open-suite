@@ -47,7 +47,7 @@
 	<string name="fixedAssetSeq" title="Fixed Asset Sequence"/>
 	<many-to-one ref="com.axelor.apps.account.db.Move" name="purchaseAccountMove" title="Purchase Account Move"/>
 	<many-to-one ref="com.axelor.apps.account.db.Move" name="saleAccountMove" title="Sale Account Move"/>
-	<integer name="depreciationPlanSelect" title="Depreciation Plan" selection="account.fixed.asset.depreciation.plan"/>
+	<string name="depreciationPlanSelect" title="Depreciation Plan" selection="account.fixed.asset.depreciation.plan"/>
 	<integer name="originSelect" title="Origin" selection="account.fixed.asset.origin"/>
 	
 	<date name="firstServiceDate" title="First Service Date"/>
