@@ -56,6 +56,6 @@
 		<bind column="birtTemplateSet_importId" to="birtTemplateSet" search="self.importId in :birtTemplateSet_importId" eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
 	</input>
 	
-	<input file="base_appStock.csv" separator=";" type="com.axelor.apps.base.db.AppStock" search="self.code = :code"/>
+	<input file="base_appStock.csv" separator=";" type="com.axelor.apps.base.db.AppStock" search="self.app.code = :code"/>
 	
 </csv-inputs>
