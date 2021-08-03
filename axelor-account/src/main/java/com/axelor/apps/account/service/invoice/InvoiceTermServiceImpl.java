@@ -100,9 +100,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setDueDate(LocalDate.now());
     invoiceTerm.setPaymentMode(invoice.getPartner().getInPaymentMode());
     invoiceTerm.setDiscountRate(paymentConditionLine.getPaymentPercentage());
-    invoiceTerm.setFinancialDiscount(invoice.getPartner().getFinancialDiscount());
-    invoiceTerm.setDiscountBaseSelect(
-        invoice.getPartner().getFinancialDiscount().getDiscountBaseSelect());
+    if (ObjectUtils.notEmpty(invoice.getPartner().getFinancialDiscount())) {
+      invoiceTerm.setFinancialDiscount(invoice.getPartner().getFinancialDiscount());
+      invoiceTerm.setDiscountBaseSelect(
+          invoice.getPartner().getFinancialDiscount().getDiscountBaseSelect());
+    }
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
     return invoiceTerm;
