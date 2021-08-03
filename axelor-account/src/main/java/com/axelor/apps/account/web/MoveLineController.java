@@ -248,12 +248,13 @@ public class MoveLineController {
 
     try {
       Context parentContext = request.getContext().getParent();
-      if (parentContext != null) {
-        Move move = parentContext.asType(Move.class);
-        AccountConfig accountConfig =
-            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-        response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
-      }
+      if (parentContext.getClass().equals(Move.class))
+        if (parentContext != null) {
+          Move move = parentContext.asType(Move.class);
+          AccountConfig accountConfig =
+              Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+          response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
+        }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
@@ -263,7 +264,6 @@ public class MoveLineController {
     MoveLine moveLine =
         moveLineRepository.find(request.getContext().asType(MoveLine.class).getId());
     moveLine = moveLineService.setIsSelectedBankReconciliation(moveLine);
-    System.err.println(moveLine.getIsSelectedBankReconciliation());
     response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
     response.setReload(true);
   }

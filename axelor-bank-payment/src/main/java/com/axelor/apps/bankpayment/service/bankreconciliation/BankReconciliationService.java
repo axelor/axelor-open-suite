@@ -265,22 +265,22 @@ public class BankReconciliationService {
             statementUnreconciledLineBalance = statementUnreconciledLineBalance.add(brl.getDebit());
             statementUnreconciledLineBalance =
                 statementUnreconciledLineBalance.subtract(brl.getCredit());
-            if(brl.getPostedNbr() != 0L)
-            {
-            	statementOngoingReconciledBalance = statementOngoingReconciledBalance.add(brl.getDebit());
-            	statementOngoingReconciledBalance = statementOngoingReconciledBalance.subtract(brl.getCredit());
-            	tempMoveLine = brl.getMoveLine();
-            	if(tempMoveLine != null)
-            	{
-            		if(tempMoveLine.getDebit().compareTo(BigDecimal.ZERO) != 0)
-            		{
-            			movesOngoingReconciledBalance = movesOngoingReconciledBalance.add(tempMoveLine.getBankReconciledAmount());
-            		}
-            		else
-            		{
-            			movesOngoingReconciledBalance = movesOngoingReconciledBalance.subtract(tempMoveLine.getBankReconciledAmount());	
-            		}
-            	}
+            if (brl.getPostedNbr() != 0L) {
+              statementOngoingReconciledBalance =
+                  statementOngoingReconciledBalance.add(brl.getDebit());
+              statementOngoingReconciledBalance =
+                  statementOngoingReconciledBalance.subtract(brl.getCredit());
+              tempMoveLine = brl.getMoveLine();
+              if (tempMoveLine != null) {
+                if (tempMoveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+                  movesOngoingReconciledBalance =
+                      movesOngoingReconciledBalance.add(tempMoveLine.getBankReconciledAmount());
+                } else {
+                  movesOngoingReconciledBalance =
+                      movesOngoingReconciledBalance.subtract(
+                          tempMoveLine.getBankReconciledAmount());
+                }
+              }
             }
           }
         }
@@ -301,13 +301,19 @@ public class BankReconciliationService {
     do {
       for (MoveLine moveLine : moveLines) {
         if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) { // Debit line
-        	movesReconciledLineBalance = movesReconciledLineBalance.add(moveLine.getBankReconciledAmount());
-        	movesUnreconciledLineBalance = movesUnreconciledLineBalance.add(moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()));
+          movesReconciledLineBalance =
+              movesReconciledLineBalance.add(moveLine.getBankReconciledAmount());
+          movesUnreconciledLineBalance =
+              movesUnreconciledLineBalance.add(
+                  moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()));
         }
-        
+
         if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0) { // Credit line
-        	movesReconciledLineBalance = movesReconciledLineBalance.subtract(moveLine.getBankReconciledAmount());
-        	movesUnreconciledLineBalance = movesUnreconciledLineBalance.subtract(moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()));
+          movesReconciledLineBalance =
+              movesReconciledLineBalance.subtract(moveLine.getBankReconciledAmount());
+          movesUnreconciledLineBalance =
+              movesUnreconciledLineBalance.subtract(
+                  moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()));
         }
       }
       offset += limit;

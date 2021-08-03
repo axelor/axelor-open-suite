@@ -90,7 +90,7 @@ public class BankReconciliationController {
         moveLineRepository
             .all()
             .filter(
-                "self.isSelectedBankReconciliation AND self.move.journal = :journal AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconcileAmount < self.credit))")
+                "self.isSelectedBankReconciliation AND self.move.journal = :journal AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
             .bind("cashAccount", br.getCashAccount())
             .bind("statusSelect", MoveRepository.STATUS_CANCELED)
             .bind("journal", br.getJournal())

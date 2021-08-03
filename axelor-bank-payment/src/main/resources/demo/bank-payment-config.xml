@@ -21,8 +21,8 @@
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded" />
   </input>
   
-  <input file="bankpayment_bankStatementQuery.csv" separator=";" type="com.axelor.apps.account.db.BankStatementQuery" search="self.importId = :importId" />
+  <input file="bankpayment_bankStatementQuery.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatementQuery" search="self.importId = :importId" />
 
-  <input file="bankpayment_bankStatementRule.csv" separator=";" type="com.axelor.apps.account.db.BankStatementRule" search="self.importId = :importId" />
+  <input file="bankpayment_bankStatementRule.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatementRule" search="self.importId = :importId" />
 
 </csv-inputs>
