@@ -16,6 +16,7 @@
   	<many-to-one name="depreciationAccountMove" ref="com.axelor.apps.account.db.Move" title="Depreciation account move" readonly="true"/>
   	
   	<integer name="typeSelect" title="Type" selection="account.fixed.asset.line.type.select" default="1"/>
+  	<decimal name="grossValue" title="Gross value"/>
   	<decimal name="depreciationBase" title="Depreciation Base"/>
   	<decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
   	<decimal name="impairmentValue" title="Impairment Value"/>
@@ -27,6 +28,9 @@
 	   	// STATUS SELECT
 		public static final int STATUS_PLANNED = 1;
 		public static final int STATUS_REALIZED = 2;
+		
+		public static final int TYPE_SELECT_ECONOMIC = 1;
+		public static final int TYPE_SELECT_FISCAL = 2;
 		
 	]]></extra-code>
 	

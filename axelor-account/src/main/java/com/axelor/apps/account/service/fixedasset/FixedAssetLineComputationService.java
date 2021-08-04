@@ -27,17 +27,19 @@ public interface FixedAssetLineComputationService {
    * Compute the first fixed asset line from an empty fixed asset.
    *
    * @param fixedAsset a fixed asset with no lines
+   * @param typeSelect typeSelect of the fixedAssetLine
    * @return the created fixed asset line
    */
-  FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset);
+  FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect);
 
   /**
    * Compute the next fixed asset line from a fixed asset and the previous line.
    *
    * @param fixedAsset a fixed asset with existing lines
    * @param previousFixedAssetLine the previous line
+   * @param typeSelect typeSelect of the fixedAssetLine
    * @return the created fixed asset line
    */
   FixedAssetLine computePlannedFixedAssetLine(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine);
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect);
 }

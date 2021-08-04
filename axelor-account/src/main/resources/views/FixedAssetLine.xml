@@ -8,6 +8,8 @@
     	<field name="depreciation"/>
     	<field name="cumulativeDepreciation"/>
     	<field name="residualValue"/>
+    	<field name="grossValue"/>
+    	<field name="typeSelect"/>
     	<field name="statusSelect"/>
     	<field name="fixedAsset.statusSelect" hidden="true"/>
     	<button name="realizeBtn" title="Realize" icon="fa-check-circle" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>

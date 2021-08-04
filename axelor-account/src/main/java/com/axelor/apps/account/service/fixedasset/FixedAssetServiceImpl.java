@@ -17,6 +17,17 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -34,15 +45,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -75,20 +77,41 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) {
-    FixedAssetLine initialFixedAssetLine =
-        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-    fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
-    // counter to avoid too many iterations in case of a current or future mistake
-    int c = 0;
-    final int MAX_ITERATION = 1000;
-    FixedAssetLine fixedAssetLine = initialFixedAssetLine;
-    while (c < MAX_ITERATION && fixedAssetLine.getResidualValue().signum() != 0) {
-      fixedAssetLine =
-          fixedAssetLineComputationService.computePlannedFixedAssetLine(fixedAsset, fixedAssetLine);
-      fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
-      c++;
-    }
+	  
+	if (fixedAsset.getDepreciationPlanSelect().contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+	    FixedAssetLine initialFixedAssetLine =
+	            fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+	        fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
+	   
+        fixedAsset.getFixedAssetLineList().addAll(generateComputedPlannedFixedAssetLine(fixedAsset, initialFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC));    
+	}
+	if (fixedAsset.getDepreciationPlanSelect().contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+	    FixedAssetLine initialFiscalFixedAssetLine =
+	            fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
+	    fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine);
+	    
+	    fixedAsset.getFiscalFixedAssetLineList().addAll(generateComputedPlannedFixedAssetLine(fixedAsset, initialFiscalFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_FISCAL));
+	}
+
     return fixedAsset;
+  }
+  
+  private List<FixedAssetLine> generateComputedPlannedFixedAssetLine(FixedAsset fixedAsset, FixedAssetLine initialFixedAssetLine, int typeSelect){
+	  
+	  ArrayList<FixedAssetLine> result = new ArrayList<FixedAssetLine>();
+	  // counter to avoid too many iterations in case of a current or future mistake
+      int c = 0;
+      final int MAX_ITERATION = 1000;
+      FixedAssetLine fixedAssetLine = initialFixedAssetLine;
+      while (c < MAX_ITERATION && fixedAssetLine.getResidualValue().signum() != 0) {
+          fixedAssetLine =
+              fixedAssetLineComputationService.computePlannedFixedAssetLine(fixedAsset, fixedAssetLine, typeSelect);
+          result.add(fixedAssetLine);
+          c++;
+      } 
+     
+      return result;
+	  
   }
 
   @Override

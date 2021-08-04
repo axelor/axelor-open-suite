@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.account.web;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
@@ -27,8 +30,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Singleton
 public class FixedAssetController {
@@ -36,22 +37,34 @@ public class FixedAssetController {
   public void computeDepreciation(ActionRequest request, ActionResponse response) {
 
     FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+    // There is nothing to do if depreciation plan is None.
+    if (fixedAsset.getDepreciationPlanSelect() == null
+        || fixedAsset
+            .getDepreciationPlanSelect()
+            .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+      return;
+    }
     try {
       if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
         if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
           fixedAsset.getFixedAssetLineList().clear();
         }
+        if (!fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
+        	fixedAsset.getFiscalFixedAssetLineList().clear();
+        }
         fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
 
       } else {
         fixedAsset.getFixedAssetLineList().clear();
+        fixedAsset.getFiscalFixedAssetLineList().clear();
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
     response.setValue("residualValue", fixedAsset.getGrossValue());
     response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
+    response.setValue("fiscalFixedAssetLineList", fixedAsset.getFiscalFixedAssetLineList());
   }
 
   public void disposal(ActionRequest request, ActionResponse response) throws AxelorException {
