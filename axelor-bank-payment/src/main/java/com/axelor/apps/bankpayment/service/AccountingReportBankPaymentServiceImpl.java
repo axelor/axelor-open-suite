@@ -47,7 +47,8 @@ public class AccountingReportBankPaymentServiceImpl extends AccountingReportServ
         accountingReportRepo,
         accountRepo,
         accountingReportMoveLineService,
-        accountConfigService);
+        accountConfigService,
+        appBaseService);
   }
 
   @Override
