@@ -246,6 +246,12 @@
     	<attribute name="value" for="fiscalPeriodicityInMonth" expr="eval:null"/>
     	<attribute name="value" for="fiscalDurationInMonth" expr="eval:null"/>
     	<attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:false"/>
+    	<attribute name="readonly" for="computationMethodSelect" expr="eval: false"/>
+    	<attribute name="readonly" for="degressiveCoef" expr="eval: false"/>
+    	<attribute name="readonly" for="numberOfDepreciation" expr="eval: false"/>
+    	<attribute name="readonly" for="periodicityTypeSelect" expr="eval: false"/>
+    	<attribute name="readonly" for="periodicityInMonth" expr="eval: false"/>
+    	<attribute name="readonly" for="durationInMonth" expr="eval: false"/>
     </action-attrs>
     
     <action-attrs name="action-account-attrs-fill-fiscal-panel">
