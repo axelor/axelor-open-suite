@@ -41,9 +41,9 @@
 	      <field name="isProrataTemporis"/>
 	      <field name="isUSProrataTemporis" showIf="isProrataTemporis"/>
 	      <field name="depreciationPlanSelect" widget="MultiSelect"/>
+	      <field name="periodicityTypeSelect"/>
 	      <panel name="periodicityPanel" title="Periodicity" colspan="12">
 	      	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
-	      	<field name="periodicityTypeSelect"/>
 	      	<field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration"/>
 	      	<field name="durationInMonth" readonly="true"/>
 	    	</panel>
