@@ -44,6 +44,7 @@ public class TestFixedAssetService {
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
   protected MoveLineService moveLineService;
   protected AccountConfigService accountConfigService;
+  protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
 
   /*
    * Prepare dependencies by mocking them
@@ -55,7 +56,7 @@ public class TestFixedAssetService {
     fixedAssetLineMoveService = mock(FixedAssetLineMoveService.class);
     moveLineService = mock(MoveLineService.class);
     accountConfigService = mock(AccountConfigService.class);
-
+    fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
     fixedAssetLineComputationService = new FixedAssetLineComputationServiceImpl();
 
     fixedAssetService =
@@ -64,7 +65,8 @@ public class TestFixedAssetService {
             fixedAssetLineMoveService,
             fixedAssetLineComputationService,
             moveLineService,
-            accountConfigService);
+            accountConfigService,
+            fixedAssetDerogatoryLineService);
 
     prepareFixedAssetRepo();
   }

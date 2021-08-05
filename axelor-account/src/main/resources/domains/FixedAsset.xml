@@ -89,7 +89,11 @@
 		public static final String DEPRECIATION_PLAN_NONE = "0";
 		public static final String DEPRECIATION_PLAN_FISCAL = "1";
 		public static final String DEPRECIATION_PLAN_ECONOMIC = "2";
-		public static final String DEPRECIATION_PLAN_Derogation = "3";
+		public static final String DEPRECIATION_PLAN_DEROGATION = "3";
+		
+		// PERIODICITY TYPE SELECT
+		public static final int PERIODICITY_TYPE_MONTH = 1;
+		public static final int PERIODICITY_TYPE_YEAR = 2;
 		
 	]]></extra-code>
     

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
-    <grid name="fixed-asset-line-grid" title="Fixed asset lines" model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
+    <grid name="fiscal-fixed-asset-line-grid" title="Fixed asset lines" model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
     	<field name="depreciationDate"/>
     	<field name="depreciationBase"/>
     	<field name="depreciation"/>
@@ -11,6 +11,16 @@
     	<field name="accountingValue"/>
     	<field name="correctedAccountingValue"/>
     	<field name="impairmentValue"/>
+    	<field name="statusSelect"/>
+    	<field name="fixedAsset.statusSelect" hidden="true"/>
+    	<button name="realizeBtn" title="Realize" icon="fa-check-circle" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
+    </grid>
+    
+    <grid name="fixed-asset-line-grid" title="Fixed asset lines" model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
+    	<field name="depreciationDate"/>
+    	<field name="depreciation"/>
+    	<field name="cumulativeDepreciation"/>
+    	<field name="accountingValue"/>
     	<field name="statusSelect"/>
     	<field name="fixedAsset.statusSelect" hidden="true"/>
     	<button name="realizeBtn" title="Realize" icon="fa-check-circle" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>

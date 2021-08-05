@@ -38,14 +38,14 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect) {
     LocalDate firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, typeSelect);
-    BigDecimal residualValue = fixedAsset.getGrossValue().subtract(depreciation);
+    BigDecimal accountingValue = fixedAsset.getGrossValue().subtract(depreciation);
     return createPlannedFixedAssetLine(
         firstDepreciationDate,
         depreciation,
         depreciation,
-        residualValue,
+        accountingValue,
         typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
-            ? fixedAsset.getGrossValue().subtract(residualValue)
+            ? fixedAsset.getGrossValue().subtract(accountingValue)
             : fixedAsset.getGrossValue(),
         typeSelect);
   }
@@ -87,7 +87,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
 
   protected BigDecimal computeInitialDegressiveDepreciation(
       FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
-    BigDecimal ddRate = fixedAsset.getDegressiveCoef();
+    BigDecimal ddRate = isFiscalComputationMethod ? fixedAsset.getFiscalDegressiveCoef() : fixedAsset.getDegressiveCoef();
     return computeInitialDepreciationNumerator(
             fixedAsset.getGrossValue(), fixedAsset, isFiscalComputationMethod)
         .multiply(ddRate)
@@ -154,16 +154,14 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
       boolean isFiscalComputationMethod) {
     BigDecimal degressiveDepreciation =
         computeDegressiveDepreciation(
-            previousFixedAssetLine.getResidualValue(), fixedAsset, isFiscalComputationMethod);
+            previousFixedAssetLine.getAccountingValue(), fixedAsset, isFiscalComputationMethod);
     BigDecimal linearDepreciation =
         previousFixedAssetLine
-            .getResidualValue()
+            .getAccountingValue()
             .divide(
-                BigDecimal.valueOf(
-                    fixedAsset.getNumberOfDepreciation()
-                        - (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
-                            ? fixedAsset.getFixedAssetLineList().size()
-                            : fixedAsset.getFiscalFixedAssetLineList().size())),
+                BigDecimal.valueOf(isFiscalComputationMethod ? (fixedAsset.getFiscalNumberOfDepreciation() - fixedAsset.getFiscalFixedAssetLineList().size()) :
+                    (fixedAsset.getNumberOfDepreciation()
+                        - fixedAsset.getFixedAssetLineList().size())),
                 RETURNED_SCALE,
                 RoundingMode.HALF_UP);
     return degressiveDepreciation.max(linearDepreciation);
@@ -287,12 +285,12 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     BigDecimal depreciation = computeDepreciation(fixedAsset, previousFixedAssetLine, typeSelect);
     BigDecimal cumulativeDepreciation =
         previousFixedAssetLine.getCumulativeDepreciation().add(depreciation);
-    BigDecimal residualValue = fixedAsset.getGrossValue().subtract(cumulativeDepreciation);
+    BigDecimal accountingValue = fixedAsset.getGrossValue().subtract(cumulativeDepreciation);
 
     LocalDate depreciationDate;
     if (!fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
         || fixedAsset.getAcquisitionDate().equals(fixedAsset.getFirstDepreciationDate())
-        || residualValue.signum() != 0) {
+        || accountingValue.signum() != 0) {
       depreciationDate = computeDepreciationDate(fixedAsset, previousFixedAssetLine, typeSelect);
     } else {
       depreciationDate = computeLastProrataDepreciationDate(fixedAsset, typeSelect);
@@ -302,9 +300,9 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         depreciationDate,
         depreciation,
         cumulativeDepreciation,
-        residualValue,
+        accountingValue,
         typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
-            ? fixedAsset.getGrossValue().subtract(residualValue)
+            ? fixedAsset.getGrossValue().subtract(accountingValue)
             : fixedAsset.getGrossValue(),
         typeSelect);
   }
@@ -313,7 +311,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
       LocalDate depreciationDate,
       BigDecimal depreciation,
       BigDecimal cumulativeDepreciation,
-      BigDecimal residualValue,
+      BigDecimal accountingValue,
       BigDecimal depreciationBase,
       int typeSelect) {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
@@ -321,7 +319,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     fixedAssetLine.setDepreciationDate(depreciationDate);
     fixedAssetLine.setDepreciation(depreciation);
     fixedAssetLine.setCumulativeDepreciation(cumulativeDepreciation);
-    fixedAssetLine.setResidualValue(residualValue);
+    fixedAssetLine.setAccountingValue(accountingValue);
     fixedAssetLine.setDepreciationBase(depreciationBase);
     fixedAssetLine.setTypeSelect(typeSelect);
     return fixedAssetLine;

@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
@@ -45,13 +46,15 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
       FixedAssetLineMoveService fixedAssetLineMoveService,
       FixedAssetLineComputationService fixedAssetLineComputationService,
       MoveLineService moveLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService) {
     super(
         fixedAssetRepo,
         fixedAssetLineMoveService,
         fixedAssetLineComputationService,
         moveLineService,
-        accountConfigService);
+        accountConfigService,
+        fixedAssetDerogatoryLineService);
   }
 
   @Transactional

@@ -44,9 +44,9 @@
 	      <field name="fiscalDegressiveCoef" showIf="fiscalComputationMethodSelect == 'degressive'"/>
 	      <field name="fiscalNumberOfDepreciation" onChange="action-record-account-fixed-asset-compute-fiscal-duration"/>
 	      <field name="fiscalPeriodicityTypeSelect"/>
-	      <field name="fiscalPeriodicityInMonth" onChange="action-record-account-fixed-asset-compute-fiscal-duration"/>
+	      <field name="fiscalPeriodicityInMonth" showIf="fiscalPeriodicityTypeSelect == 1" onChange="action-record-account-fixed-asset-compute-fiscal-duration" min="1"/>
 	      <field name="fiscalDurationInMonth" readonly="true" showIf="fiscalPeriodicityTypeSelect == 1"/>
-	      <panel-related name="fiscalFixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fiscalFixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
+	      <panel-related name="fiscalFixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fiscalFixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fiscal-fixed-asset-line-grid" canNew="false"/>
 	    </panel>
 	    <panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect > 1">
 	      <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>

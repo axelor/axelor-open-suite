@@ -6,12 +6,13 @@
 	<grid name="fixed-asset-fiscal-line-grid"
 		title="Fixed asset fiscal lines"
 		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine">
+		<field name="depreciationDate"/>
 		<field name="depreciationAmount" />
+	    <field name="fiscalDepreciationAmount" />
 		<field name="derogatoryAmount" />
-		<field name="derogatoryBalanceAmount" />
-		<field name="derogatoryDepreciationAmount" />
-		<field name="fiscalDepreciationAmount" />
 		<field name="incomeDepreciationAmount" />
+		<field name="derogatoryBalanceAmount" />
+		<field name="statusSelect"/>	
 	</grid>
 
 	<form name="fixed-asset-fiscal-line-form"
