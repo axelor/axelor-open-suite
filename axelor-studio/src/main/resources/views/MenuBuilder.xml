@@ -9,6 +9,7 @@
       <field name="actionBuilder.model" title="Model" />
       <field name="order" />
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      <button name="recordsBtn" onClick="action-studio-method-menu-builder-show-records" icon="fa-list" title="Show records"/>
   </grid>
   
   <form name="menu-builder-form" title="Menu builder" model="com.axelor.studio.db.MenuBuilder"  width="large">
@@ -73,6 +74,10 @@
   
   <action-method name="action-menubuilder-method-fetch-menu">
   	<call class="com.axelor.studio.web.MenuBuilderController" method="fetchMenu"/>
+  </action-method>
+
+  <action-method name="action-studio-method-menu-builder-show-records">
+  	<call class="com.axelor.studio.web.MenuBuilderController" method="showMenuBuilderRecords"/>
   </action-method>
   
 </object-views>
