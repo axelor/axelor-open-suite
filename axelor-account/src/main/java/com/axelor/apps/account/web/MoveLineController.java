@@ -247,4 +247,18 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      moveLine = Beans.get(MoveLineService.class).analyzeMoveLine(moveLine);
+      response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

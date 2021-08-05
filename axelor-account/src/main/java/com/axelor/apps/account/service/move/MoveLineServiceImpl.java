@@ -1304,7 +1304,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     return moveLine;
   }
 
-  public AnalyticMoveLine computeAnalyticMoveLine(MoveLine moveLine, Integer position) {
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      MoveLine moveLine, AnalyticAccount analyticAccount) {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
     if (analyticJournalRepository.find((long) 1) != null) {
       analyticMoveLine.setAnalyticJournal(analyticJournalRepository.find((long) 1));
@@ -1322,37 +1323,10 @@ public class MoveLineServiceImpl implements MoveLineService {
     } else {
       analyticMoveLine.setAccount(accountRepository.find((long) 1));
     }
-    switch (position) {
-      case 1:
-        if (moveLine.getAxis1AnalyticAccount() != null) {
-          analyticMoveLine.setAnalyticAxis(moveLine.getAxis1AnalyticAccount().getAnalyticAxis());
-          analyticMoveLine.setAnalyticAccount(moveLine.getAxis1AnalyticAccount());
-        }
-        break;
-      case 2:
-        if (moveLine.getAxis2AnalyticAccount() != null) {
-          analyticMoveLine.setAnalyticAxis(moveLine.getAxis2AnalyticAccount().getAnalyticAxis());
-          analyticMoveLine.setAnalyticAccount(moveLine.getAxis2AnalyticAccount());
-        }
-        break;
-      case 3:
-        if (moveLine.getAxis3AnalyticAccount() != null) {
-          analyticMoveLine.setAnalyticAxis(moveLine.getAxis3AnalyticAccount().getAnalyticAxis());
-          analyticMoveLine.setAnalyticAccount(moveLine.getAxis3AnalyticAccount());
-        }
-        break;
-      case 4:
-        if (moveLine.getAxis4AnalyticAccount() != null) {
-          analyticMoveLine.setAnalyticAxis(moveLine.getAxis4AnalyticAccount().getAnalyticAxis());
-          analyticMoveLine.setAnalyticAccount(moveLine.getAxis4AnalyticAccount());
-        }
-        break;
-      case 5:
-        if (moveLine.getAxis5AnalyticAccount() != null) {
-          analyticMoveLine.setAnalyticAxis(moveLine.getAxis5AnalyticAccount().getAnalyticAxis());
-          analyticMoveLine.setAnalyticAccount(moveLine.getAxis5AnalyticAccount());
-        }
-        break;
+
+    if (analyticAccount != null) {
+      analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
+      analyticMoveLine.setAnalyticAccount(analyticAccount);
     }
     if (moveLine.getCredit().intValue() > 0) {
       analyticMoveLine.setAmount(moveLine.getCredit());
@@ -1363,49 +1337,38 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void analyzeMoveLine(MoveLine moveLine, Integer position) {
-    if (moveLine != null && position > 0) {
-      AnalyticAccount analyticAccount = null;
-      switch (position) {
-        case 1:
-          if (moveLine.getAxis1AnalyticAccount() != null) {
-            analyticAccount = moveLine.getAxis1AnalyticAccount();
-          }
-          break;
-        case 2:
-          if (moveLine.getAxis2AnalyticAccount() != null) {
-            analyticAccount = moveLine.getAxis2AnalyticAccount();
-          }
-          break;
-        case 3:
-          if (moveLine.getAxis3AnalyticAccount() != null) {
-            analyticAccount = moveLine.getAxis3AnalyticAccount();
-          }
-          break;
-        case 4:
-          if (moveLine.getAxis4AnalyticAccount() != null) {
-            analyticAccount = moveLine.getAxis4AnalyticAccount();
-          }
-          break;
-        case 5:
-          if (moveLine.getAxis5AnalyticAccount() != null) {
-            analyticAccount = moveLine.getAxis5AnalyticAccount();
-          }
-          break;
+  public MoveLine analyzeMoveLine(MoveLine moveLine) {
+    if (moveLine != null) {
+
+      if (moveLine.getAnalyticMoveLineList() == null) {
+        moveLine.setAnalyticMoveLineList(new ArrayList<>());
+      } else {
+        moveLine.getAnalyticMoveLineList().clear();
       }
-      if (analyticAccount != null) {
-        List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
-        for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-          if (analyticMoveLine.getAnalyticAccount() == analyticAccount) {
-            analyticMoveLineRepository.remove(analyticMoveLine);
-          }
-        }
-        AnalyticMoveLine analyticMoveLine = computeAnalyticMoveLine(moveLine, position);
-        moveLine.getAnalyticMoveLineList().add(analyticMoveLine);
-        analyticMoveLineRepository.save(analyticMoveLine);
-        moveLineRepository.save(moveLine);
+
+      AnalyticMoveLine analyticMoveLine = null;
+
+      if (moveLine.getAxis1AnalyticAccount() != null) {
+        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis1AnalyticAccount());
+        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (moveLine.getAxis2AnalyticAccount() != null) {
+        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis2AnalyticAccount());
+        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (moveLine.getAxis3AnalyticAccount() != null) {
+        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis3AnalyticAccount());
+        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (moveLine.getAxis4AnalyticAccount() != null) {
+        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis4AnalyticAccount());
+        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (moveLine.getAxis5AnalyticAccount() != null) {
+        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis5AnalyticAccount());
+        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
     }
+    return moveLine;
   }
 }

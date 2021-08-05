@@ -11,7 +11,7 @@
 		<string name="fullName" title="Full name" required="true"
 					namecolumn="true" search="code,name" max="550">
 		<![CDATA[
-		return orderSelect+ "_" + accountConfig.getCompany().getCode() + " - " + analyticAxis.getCode();
+		return orderSelect+ " - " + analyticAxis.getCode();
 		]]>
 		</string>
 		<many-to-one name="accountConfig" ref="AccountConfig" 
