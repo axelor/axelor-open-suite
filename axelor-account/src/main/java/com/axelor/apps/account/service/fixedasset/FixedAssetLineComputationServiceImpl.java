@@ -38,49 +38,58 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect) {
     LocalDate firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, typeSelect);
+    BigDecimal residualValue = fixedAsset.getGrossValue().subtract(depreciation);
     return createPlannedFixedAssetLine(
         firstDepreciationDate,
         depreciation,
         depreciation,
-        fixedAsset.getGrossValue().subtract(depreciation),
-        typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC ? fixedAsset.getGrossValue().subtract(depreciation) : fixedAsset.getGrossValue(),
+        residualValue,
+        typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+            ? fixedAsset.getGrossValue().subtract(residualValue)
+            : fixedAsset.getGrossValue(),
         typeSelect);
   }
 
   protected BigDecimal computeInitialDepreciation(FixedAsset fixedAsset, int typeSelect) {
-	  //Case of fiscal
-	  if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-		  //We always look at fiscal computation method for type select fiscal.
-		  if (fixedAsset.getFiscalComputationMethodSelect() != null 
-				  && fixedAsset.getFiscalComputationMethodSelect().equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)){
-			  return computeInitialDegressiveDepreciation(fixedAsset, true);
-		  }
-		  else {
-			  return computeInitialLinearDepreciation(fixedAsset, true);
-		  }	
+    // Case of fiscal
+    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
+      // We always look at fiscal computation method for type select fiscal.
+      if (fixedAsset.getFiscalComputationMethodSelect() != null
+          && fixedAsset
+              .getFiscalComputationMethodSelect()
+              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        return computeInitialDegressiveDepreciation(fixedAsset, true);
+      } else {
+        return computeInitialLinearDepreciation(fixedAsset, true);
+      }
 
-	  }
-	  //Case of Type Economic
-	  else {		 
-		  if (fixedAsset.getComputationMethodSelect() != null 
-				  && fixedAsset.getComputationMethodSelect().equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)){
-			  //In case of economic type, boolean argument is always false, since there is copy before.
-			  return computeInitialDegressiveDepreciation(fixedAsset, false);
-		  }
-		  else {
-			  return computeInitialLinearDepreciation(fixedAsset, false);
-		  }		  
-	  }
+    }
+    // Case of Type Economic
+    else {
+      if (fixedAsset.getComputationMethodSelect() != null
+          && fixedAsset
+              .getComputationMethodSelect()
+              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        // In case of economic type, boolean argument is always false, since there is copy before.
+        return computeInitialDegressiveDepreciation(fixedAsset, false);
+      } else {
+        return computeInitialLinearDepreciation(fixedAsset, false);
+      }
+    }
   }
 
-  protected BigDecimal computeInitialLinearDepreciation(FixedAsset fixedAsset, boolean isFiscalComputeMethod) {
-    return computeInitialDepreciationNumerator(fixedAsset.getGrossValue(), fixedAsset, isFiscalComputeMethod)
+  protected BigDecimal computeInitialLinearDepreciation(
+      FixedAsset fixedAsset, boolean isFiscalComputeMethod) {
+    return computeInitialDepreciationNumerator(
+            fixedAsset.getGrossValue(), fixedAsset, isFiscalComputeMethod)
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal computeInitialDegressiveDepreciation(FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
+  protected BigDecimal computeInitialDegressiveDepreciation(
+      FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
     BigDecimal ddRate = fixedAsset.getDegressiveCoef();
-    return computeInitialDepreciationNumerator(fixedAsset.getGrossValue(), fixedAsset, isFiscalComputationMethod)
+    return computeInitialDepreciationNumerator(
+            fixedAsset.getGrossValue(), fixedAsset, isFiscalComputationMethod)
         .multiply(ddRate)
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
@@ -88,32 +97,36 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   protected BigDecimal computeDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect) {
     BigDecimal depreciation;
-    //First part
-    //Case of fiscal
+    // First part
+    // Case of fiscal
     if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-    	//We always look at fiscalComputationMethodSelect
-		if (fixedAsset.getFiscalComputationMethodSelect() != null 
-				&& fixedAsset.getFiscalComputationMethodSelect().equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-			depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine, typeSelect,  true);
-		}
-		else {
-			depreciation = computeLinearDepreciation(fixedAsset, true);
-		}
+      // We always look at fiscalComputationMethodSelect
+      if (fixedAsset.getFiscalComputationMethodSelect() != null
+          && fixedAsset
+              .getFiscalComputationMethodSelect()
+              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        depreciation =
+            computeOnGoingDegressiveDepreciation(
+                fixedAsset, previousFixedAssetLine, typeSelect, true);
+      } else {
+        depreciation = computeLinearDepreciation(fixedAsset, true);
+      }
     }
-    //case of economic type
+    // case of economic type
     else {
-	    if (fixedAsset
-	            .getComputationMethodSelect()
-	            .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-	    	//In case of economic type, boolean argument is always false, since there is copy before, we can pick values from non fiscal field.
-	          depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine, typeSelect,  false);
-	    }
-	    else {
-	          depreciation = computeLinearDepreciation(fixedAsset, false);
-	    }
-    	
+      if (fixedAsset
+          .getComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        // In case of economic type, boolean argument is always false, since there is copy before,
+        // we can pick values from non fiscal field.
+        depreciation =
+            computeOnGoingDegressiveDepreciation(
+                fixedAsset, previousFixedAssetLine, typeSelect, false);
+      } else {
+        depreciation = computeLinearDepreciation(fixedAsset, false);
+      }
     }
-    //Second part
+    // Second part
     if (depreciation
             .add(previousFixedAssetLine.getCumulativeDepreciation())
             .compareTo(fixedAsset.getGrossValue())
@@ -124,31 +137,49 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     return depreciation;
   }
 
-  protected BigDecimal computeLinearDepreciation(FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
+  protected BigDecimal computeLinearDepreciation(
+      FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
     return computeDepreciationNumerator(
-            fixedAsset.getGrossValue(), isFiscalComputationMethod ? fixedAsset.getFiscalNumberOfDepreciation() : fixedAsset.getNumberOfDepreciation())
+            fixedAsset.getGrossValue(),
+            isFiscalComputationMethod
+                ? fixedAsset.getFiscalNumberOfDepreciation()
+                : fixedAsset.getNumberOfDepreciation())
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeOnGoingDegressiveDepreciation(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect,  boolean isFiscalComputationMethod) {
+      FixedAsset fixedAsset,
+      FixedAssetLine previousFixedAssetLine,
+      int typeSelect,
+      boolean isFiscalComputationMethod) {
     BigDecimal degressiveDepreciation =
-        computeDegressiveDepreciation(previousFixedAssetLine.getResidualValue(), fixedAsset, isFiscalComputationMethod);
+        computeDegressiveDepreciation(
+            previousFixedAssetLine.getResidualValue(), fixedAsset, isFiscalComputationMethod);
     BigDecimal linearDepreciation =
         previousFixedAssetLine
             .getResidualValue()
             .divide(
                 BigDecimal.valueOf(
                     fixedAsset.getNumberOfDepreciation()
-                        - (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC ? fixedAsset.getFixedAssetLineList().size() : fixedAsset.getFiscalFixedAssetLineList().size())),
+                        - (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+                            ? fixedAsset.getFixedAssetLineList().size()
+                            : fixedAsset.getFiscalFixedAssetLineList().size())),
                 RETURNED_SCALE,
                 RoundingMode.HALF_UP);
     return degressiveDepreciation.max(linearDepreciation);
   }
 
-  protected BigDecimal computeDegressiveDepreciation(BigDecimal baseValue, FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
-    BigDecimal ddRate = isFiscalComputationMethod ? fixedAsset.getFiscalDegressiveCoef() : fixedAsset.getDegressiveCoef();
-    return computeDepreciationNumerator(baseValue, isFiscalComputationMethod ? fixedAsset.getFiscalNumberOfDepreciation() : fixedAsset.getNumberOfDepreciation())
+  protected BigDecimal computeDegressiveDepreciation(
+      BigDecimal baseValue, FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
+    BigDecimal ddRate =
+        isFiscalComputationMethod
+            ? fixedAsset.getFiscalDegressiveCoef()
+            : fixedAsset.getDegressiveCoef();
+    return computeDepreciationNumerator(
+            baseValue,
+            isFiscalComputationMethod
+                ? fixedAsset.getFiscalNumberOfDepreciation()
+                : fixedAsset.getNumberOfDepreciation())
         .multiply(ddRate)
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
@@ -156,7 +187,11 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   protected BigDecimal computeInitialDepreciationNumerator(
       BigDecimal baseValue, FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset);
-    return computeDepreciationNumerator(baseValue, isFiscalComputationMethod ? fixedAsset.getFiscalNumberOfDepreciation() : fixedAsset.getNumberOfDepreciation())
+    return computeDepreciationNumerator(
+            baseValue,
+            isFiscalComputationMethod
+                ? fixedAsset.getFiscalNumberOfDepreciation()
+                : fixedAsset.getNumberOfDepreciation())
         .multiply(prorataTemporis);
   }
 
@@ -268,7 +303,9 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         depreciation,
         cumulativeDepreciation,
         residualValue,
-        typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC ? fixedAsset.getGrossValue().subtract(residualValue) : fixedAsset.getGrossValue(),
+        typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+            ? fixedAsset.getGrossValue().subtract(residualValue)
+            : fixedAsset.getGrossValue(),
         typeSelect);
   }
 
@@ -295,25 +332,31 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     LocalDate depreciationDate;
     depreciationDate =
         DateTool.plusMonths(
-            previousFixedAssetLine.getDepreciationDate(), typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC ? fixedAsset.getPeriodicityInMonth() : fixedAsset.getFiscalPeriodicityInMonth());
+            previousFixedAssetLine.getDepreciationDate(),
+            typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+                ? fixedAsset.getPeriodicityInMonth()
+                : fixedAsset.getFiscalPeriodicityInMonth());
 
     return depreciationDate;
   }
 
   protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset, int typeSelect) {
     LocalDate d =
-        DateTool.plusMonths(fixedAsset.getAcquisitionDate(), typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC ? fixedAsset.getDurationInMonth() : fixedAsset.getFiscalDurationInMonth());
+        DateTool.plusMonths(
+            fixedAsset.getAcquisitionDate(),
+            typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+                ? fixedAsset.getDurationInMonth()
+                : fixedAsset.getFiscalDurationInMonth());
     if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-	    if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
-	            fixedAsset.getFiscalComputationMethodSelect())) {
-	          d = DateTool.minusMonths(d, fixedAsset.getFiscalPeriodicityInMonth());
-	    }
-    }
-    else {
-        if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
-                fixedAsset.getComputationMethodSelect())) {
-              d = DateTool.minusMonths(d, fixedAsset.getPeriodicityInMonth());
-        }
+      if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
+          fixedAsset.getFiscalComputationMethodSelect())) {
+        d = DateTool.minusMonths(d, fixedAsset.getFiscalPeriodicityInMonth());
+      }
+    } else {
+      if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
+          fixedAsset.getComputationMethodSelect())) {
+        d = DateTool.minusMonths(d, fixedAsset.getPeriodicityInMonth());
+      }
     }
 
     return d.minusDays(1);

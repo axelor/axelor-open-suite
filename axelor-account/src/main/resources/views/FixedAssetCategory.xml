@@ -44,7 +44,7 @@
 	      <field name="periodicityTypeSelect"/>
 	      <panel name="periodicityPanel" title="Periodicity" colspan="12">
 	      	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
-	      	<field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration"/>
+	      	<field name="periodicityInMonth" showIf="periodicityTypeSelect == 1" onChange="action-fixed-asset-category-record-compute-duration"/>
 	      	<field name="durationInMonth" readonly="true"/>
 	    	</panel>
 	    </panel>

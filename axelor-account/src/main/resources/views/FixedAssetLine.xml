@@ -5,11 +5,12 @@
     
     <grid name="fixed-asset-line-grid" title="Fixed asset lines" model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
     	<field name="depreciationDate"/>
+    	<field name="depreciationBase"/>
     	<field name="depreciation"/>
     	<field name="cumulativeDepreciation"/>
-    	<field name="residualValue"/>
-    	<field name="grossValue"/>
-    	<field name="typeSelect"/>
+    	<field name="accountingValue"/>
+    	<field name="correctedAccountingValue"/>
+    	<field name="impairmentValue"/>
     	<field name="statusSelect"/>
     	<field name="fixedAsset.statusSelect" hidden="true"/>
     	<button name="realizeBtn" title="Realize" icon="fa-check-circle" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
@@ -30,6 +31,7 @@
 	      <field name="depreciation"/>
 	      <field name="cumulativeDepreciation"/>
 	      <field name="residualValue"/>
+	      <field name="accountingValue"/>
 	      <field name="depreciationAccountMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
 	    </panel>
 	    
