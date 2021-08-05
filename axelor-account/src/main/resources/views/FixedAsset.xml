@@ -61,7 +61,7 @@
 	      <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
 	    </panel>
 	    <panel name="derogatoryPanel" title="Derogatory" showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)">
-	      <panel-related name="fixedAssetFiscalLineListPanel" field="fixedAssetFiscalLineList" colSpan="12" form-view="fixed-asset-fiscal-line-form" grid-view="fixed-asset-fiscal-line-grid"/>
+	      <panel-related name="fixedAssetDerogatoryLineListPanel" field="fixedAssetDerogatoryLineList" colSpan="12" form-view="fixed-asset-fiscal-line-form" grid-view="fixed-asset-fiscal-line-grid"/>
 	    </panel>
 	    <panel name="associatedFixedAssets" title="Associated Fixed Assets">
 	      <field name="associatedFixedAssetsSet" colSpan="12" widget="many-to-many" canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid" domain="self.company = :company"/>

@@ -5,7 +5,7 @@
 
 	<grid name="fixed-asset-fiscal-line-grid"
 		title="Fixed asset fiscal lines"
-		model="com.axelor.apps.account.db.FixedAssetFiscalLine">
+		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine">
 		<field name="depreciationAmount" />
 		<field name="derogatoryAmount" />
 		<field name="derogatoryBalanceAmount" />
@@ -16,7 +16,7 @@
 
 	<form name="fixed-asset-fiscal-line-form"
 		title="Fixed asset fiscal line"
-		model="com.axelor.apps.account.db.FixedAssetFiscalLine">
+		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine">
 		<panel name="mainPanel">
 	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 	      <field name="fiscalDepreciationAmount"/>

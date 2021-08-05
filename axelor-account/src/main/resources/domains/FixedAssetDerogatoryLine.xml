@@ -6,7 +6,8 @@
 
 	<module name="account" package="com.axelor.apps.account.db" />
 
-	<entity name="FixedAssetFiscalLine" lang="java" cacheable="true">
+	<entity name="FixedAssetDerogatoryLine" lang="java" cacheable="true">
+		<date name="depreciationDate" title="Depreciation date"/>
 		<decimal name="depreciationAmount" title="Depreciation Amount"/>
 		<decimal name="derogatoryAmount" title="Derogatory Amount"/>
 		<decimal name="derogatoryBalanceAmount" title="Derogatory Balance Amount"/>
