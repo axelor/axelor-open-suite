@@ -43,9 +43,17 @@ public class MapperValue {
     this.selected = selected;
   }
 
+  public MapperField getParentField() {
+    return parentField;
+  }
+
+  public void setParentField(MapperField parentField) {
+    this.parentField = parentField;
+  }
+
   public String toScript(MapperField parentField) {
 
-    this.parentField = parentField;
+    setParentField(parentField);
 
     StringBuilder stb = new StringBuilder();
 
@@ -85,7 +93,7 @@ public class MapperValue {
     this.from = from;
   }
 
-  private void mapNone(StringBuilder stb) {
+  protected void mapNone(StringBuilder stb) {
 
     String target = parentField.getTarget();
     String targetJsonModel = parentField.getJsonModel();
@@ -110,7 +118,7 @@ public class MapperValue {
     }
   }
 
-  private String prepareQuery(String jsonModel, String fieldValue) {
+  protected String prepareQuery(String jsonModel, String fieldValue) {
 
     String[] queryParts = fieldValue.split(",");
 
@@ -128,7 +136,7 @@ public class MapperValue {
     return query;
   }
 
-  private String getTypedValue(String value, boolean isString) {
+  protected String getTypedValue(String value, boolean isString) {
 
     String type = parentField.getType();
 
@@ -158,7 +166,7 @@ public class MapperValue {
     return value;
   }
 
-  private void mapContext(StringBuilder stb) {
+  protected void mapContext(StringBuilder stb) {
 
     String value = getSelectedScript();
 
@@ -177,7 +185,7 @@ public class MapperValue {
     stb.append(getSelectedScript());
   }
 
-  private void mapSource(StringBuilder stb) {
+  protected void mapSource(StringBuilder stb) {
 
     String selected = "src." + getSelectedScript();
     if (MANY_TO_ONE_TYPE.contains(parentField.getType())) {
