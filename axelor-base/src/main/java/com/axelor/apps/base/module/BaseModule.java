@@ -79,6 +79,8 @@ import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
+import com.axelor.apps.base.service.ModelEmailLinkService;
+import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -130,6 +132,7 @@ import com.axelor.apps.base.service.imports.ImportCityServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
+import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
@@ -164,6 +167,7 @@ public class BaseModule extends AxelorModule {
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
     bind(UserService.class).to(UserServiceImpl.class);
     bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
+    bind(MessageBaseService.class).to(MessageServiceBaseImpl.class);
     bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
     bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);
     bind(FiscalPositionService.class).to(FiscalPositionServiceImpl.class);
@@ -233,5 +237,6 @@ public class BaseModule extends AxelorModule {
     bind(AdvancedImportRepository.class).to(AdvancedImportBaseRepository.class);
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
     bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
+    bind(ModelEmailLinkService.class).to(ModelEmailLinkServiceImpl.class);
   }
 }

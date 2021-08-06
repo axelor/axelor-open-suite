@@ -21,8 +21,10 @@ import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -42,15 +44,18 @@ public class TemplateMessageAccountServiceImpl implements TemplateMessageAccount
       throws ClassNotFoundException, IOException, InstantiationException, AxelorException,
           IllegalAccessException {
     Message message = this.templateMessageService.generateMessage(debtRecoveryHistory, template);
-    message.setRelatedTo2Select(Partner.class.getCanonicalName());
-    message.setRelatedTo2SelectId(
-        (debtRecoveryHistory.getDebtRecovery().getTradingName() == null)
+    Long id =
+        debtRecoveryHistory.getDebtRecovery().getTradingName() == null
             ? debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId()
             : debtRecoveryHistory
                 .getDebtRecovery()
                 .getTradingNameAccountingSituation()
                 .getPartner()
-                .getId());
+                .getId();
+
+    Beans.get(MessageService.class)
+        .addMessageRelatedTo(message, Partner.class.getCanonicalName(), id);
+
     return message;
   }
 }

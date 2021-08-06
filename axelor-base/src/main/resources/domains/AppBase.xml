@@ -99,6 +99,8 @@
 
 	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
 
+	   	<one-to-many name="emailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink" title="Email links"/>
+
 	   	<string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
 	   	<string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
 

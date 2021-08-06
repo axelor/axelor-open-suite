@@ -626,4 +626,9 @@
 		<option value="com.axelor.apps.account.db.PaymentCondition" data-grid="payment-condition-grid" data-form="payment-condition-form">Payment condition</option>
 	</selection>
 
+	<selection name="message.address.type.select">
+		<option value="1">From</option>
+		<option value="2">To</option>
+	</selection>
+
 </object-views>
