@@ -15,7 +15,7 @@
     <field name="statusSelect" />
   </grid>
 
-  <form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" onNew="action-bank-reconciliation-onnew-group">
+  <form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" onNew="action-bank-reconciliation-onnew-group" onLoad="action-bank-reconciliation-method-update-amounts">
     <toolbar>
       <button title="Print the bank reconciliation" name="printBtn" onClick="save,action-bank-reconciliation-method-print-bank-reconciliation" />
     </toolbar>
@@ -42,6 +42,8 @@
           showIf="bankStatement &amp;&amp; !bankReconciliationLineList.length > 0" colSpan="3" />
         <button name="loadOtherBankStatementBtn" title="Load other bank statements" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" readonlyIf="statusSelect == 2"
           showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements" colSpan="3" />
+        <button name="autoReconcileBtn" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" onClick="action-bank-reconciliation-method-automatic-reconciliation" title="Auto reconcile" colSpan="3" />
+        <button name="autoAccounting" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" title="Auto accounting" onClick="action-bank-reconciliation-method-auto-accounting" colSpan="3"/>
         <button name="validateBtn" title="Validate" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-validate-click" colSpan="3" />
         <button name="showReconciledMoveLineBtn" title="Show reconciled move lines" showIf="statusSelect == 2" onClick="action-bank-reconciliation-view-show-reconciled-move-lines" colSpan="3" />
       </panel>
@@ -70,7 +72,7 @@
       </panel>
       <panel-related name="bankReconciliationLineListPanel" editable="true" field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid"
         form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click" />
-      <button name="reconcileBtn" onClick="action-bank-reconciliation-method-validate-reconcile" title="Reconcile selected" colSpan="3" />
+      <button name="reconcileBtn" onClick="action-bank-reconciliation-method-reconcile-selected" title="Reconcile selected" colSpan="3" />
       <button name="unreconcileBtn" onClick="action-bank-reconciliation-method-unreconcile" title="Unreconcile selected" colSpan="3" />
       <panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12" />
       <spacer colSpan="6" />
@@ -131,7 +133,6 @@
     <action name="save" />
     <action name="action-bank-reconciliation-method-compute" />
     <action name="action-bank-reconciliation-check-incomplete-bankreconciliation-line" />
-    <action name="action-bank-reconciliation-method-auto-accounting" />
     <action name="action-bank-reconciliation-method-validate" />
   </action-group>
 
@@ -245,8 +246,12 @@
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validateMultipleReconcile" />
   </action-method>
 
-  <action-method name="action-bank-reconciliation-method-validate-reconcile">
-    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="reconcile" />
+  <action-method name="action-bank-reconciliation-method-reconcile-selected">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="reconcileSelected" />
+  </action-method>
+  
+  <action-method name="action-bank-reconciliation-method-automatic-reconciliation">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="automaticReconciliation" />
   </action-method>
 
   <action-method name="action-bank-reconciliation-method-unreconcile">
@@ -272,6 +277,10 @@
 
   <action-method name="action-bank-reconciliation-method-set-cash-account">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="setCashAccount" />
+  </action-method>
+  
+  <action-method name="action-bank-reconciliation-method-update-amounts">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="updateAmounts" />
   </action-method>
 
   <search-filters name="bank-reconciliation-filters" model="com.axelor.apps.bankpayment.db.BankReconciliation" title="Bank reconciliation filters">

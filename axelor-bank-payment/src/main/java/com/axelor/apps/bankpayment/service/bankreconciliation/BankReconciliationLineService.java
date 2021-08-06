@@ -63,11 +63,18 @@ public class BankReconciliationLineService {
   }
 
   public BankReconciliationLine createBankReconciliationLine(BankStatementLine bankStatementLine) {
-
+    BigDecimal debit =
+        bankStatementLine.getDebit().compareTo(BigDecimal.ZERO) == 0
+            ? BigDecimal.ZERO
+            : bankStatementLine.getAmountRemainToReconcile();
+    BigDecimal credit =
+        bankStatementLine.getDebit().compareTo(BigDecimal.ZERO) != 0
+            ? BigDecimal.ZERO
+            : bankStatementLine.getAmountRemainToReconcile();
     return this.createBankReconciliationLine(
         bankStatementLine.getValueDate(),
-        bankStatementLine.getDebit(),
-        bankStatementLine.getCredit(),
+        debit,
+        credit,
         bankStatementLine.getDescription(),
         bankStatementLine.getReference(),
         bankStatementLine,
@@ -116,7 +123,12 @@ public class BankReconciliationLineService {
   @Transactional
   public BankReconciliationLine setMoveLine(
       BankReconciliationLine bankReconciliationLine, MoveLine moveLine) {
+    bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+    bankReconciliationLine.setConfidenceIndex(
+        BankReconciliationLineRepository.CONFIDENCE_INDEX_GREEN);
+    moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
     moveLine.setIsSelectedBankReconciliation(false);
+    bankReconciliationLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setMoveLine(moveLine);
     return bankReconciliationLine;
   }

@@ -4,7 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
    
     <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false" canNew="false">
+        <hilite if="isSelectedBankReconciliation" color="green" />
+        <hilite if="!isSelectedBankReconciliation" color="black" />
         <field name="postedNbr"/>
+        <field name="confidenceIndex" readonly="true">
+           <hilite if="confidenceIndex == 1" color="green"/>
+           <hilite if="confidenceIndex == 2" color="orange"/>
+           <hilite if="confidenceIndex == 3" color="red"/>
+        </field>
         <field name="bankStatementQuery"/>
         <field name="effectDate"/>
         <field name="name"/>
@@ -17,6 +24,8 @@
         <field name="partner" canEdit="false" onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"  onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form" grid-view="partner-grid"/>
    	    <field name="moveLine" width="135" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
   	    <field name="isPosted" readonly="true"/>
+        <field name="isSelectedBankReconciliation" hidden="true"/>
+        <button onClick="action-bank-reconciliation-line-record-set-selected,save" name="select" title="Select / Unselect" icon="fa-cog" />
     </grid>
   
      <form name="bank-reconciliation-line-form" title="Bank reconciliation Line" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large">
@@ -68,6 +77,10 @@
        <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, __parent__?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; __parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
        <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.customerAccount" if="typeSelect == 2 &amp;&amp; __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
        <field name="account" expr="eval: __repo__(AccountingSituation).all().filter('self.partner = ?1 AND self.company = ?2', partner, bankReconciliation?.company).fetchOne()?.supplierAccount" if="typeSelect == 3 &amp;&amp; __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
+   </action-record>
+   
+   <action-record name="action-bank-reconciliation-line-record-set-selected" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+      <field name="isSelectedBankReconciliation" expr="eval: !isSelectedBankReconciliation"/>
    </action-record>
     
 </object-views>

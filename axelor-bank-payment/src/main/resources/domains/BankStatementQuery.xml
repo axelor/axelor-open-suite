@@ -12,7 +12,7 @@
     <integer name="confidenceIndex" title="Confidence index" selection="bank.payment.bank.statement.query.confidence.index.select" default="1" />
     <integer name="sequence" title="Sequence" />
 
-    <finder-method name="findBySequenceAndRuleType" using="sequence,ruleType" />
+    <finder-method name="findBySequenceAndRuleTypeAndId" using="sequence,ruleType,id" />
     <finder-method name="findByRuleType" using="ruleType" orderBy="sequence" all="true" />
     
     <extra-code><![CDATA[

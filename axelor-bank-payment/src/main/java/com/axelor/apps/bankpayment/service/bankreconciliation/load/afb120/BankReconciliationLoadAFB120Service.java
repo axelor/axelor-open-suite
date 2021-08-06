@@ -28,6 +28,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconcili
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadService {
@@ -78,9 +79,9 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
 
     if (bankStatementLineList != null) {
       for (BankStatementLine bankStatementLine : bankStatementLineList) {
-
-        bankReconciliation.addBankReconciliationLineListItem(
-            bankReconciliationLineService.createBankReconciliationLine(bankStatementLine));
+        if (bankStatementLine.getAmountRemainToReconcile().compareTo(BigDecimal.ZERO) != 0)
+          bankReconciliation.addBankReconciliationLineListItem(
+              bankReconciliationLineService.createBankReconciliationLine(bankStatementLine));
       }
     }
   }

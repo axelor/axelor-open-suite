@@ -9,6 +9,12 @@
 		<option value="2">Customer</option>
 		<option value="3">Supplier</option>
 	</selection>	
+  
+  <selection name="bankpayment.bank.reconciliation.confidenceIndex">
+    <option value="1">•</option>
+    <option value="2">•</option>
+    <option value="3">•</option>
+  </selection>
 	
 	<selection name="bankpayment.bank.reconciliation.status.select">
 		<option value="1">Draft</option>

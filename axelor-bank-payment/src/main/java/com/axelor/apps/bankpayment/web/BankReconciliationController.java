@@ -67,22 +67,31 @@ public class BankReconciliationController {
     this.bankReconciliationLineService = bankReconciliationLineService;
   }
 
+  public void updateAmounts(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    BankReconciliation br =
+        bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
+
+    //if (bankReconciliationService.updateAmounts(br)) response.setReload(true);
+  }
+
   public void unreconcile(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     BankReconciliation br =
         bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
     List<BankReconciliationLine> bankReconciliationLines =
         br.getBankReconciliationLineList().stream()
-            .filter(line -> line.isSelected())
+            .filter(line -> line.getIsSelectedBankReconciliation())
             .collect(Collectors.toList());
     if (bankReconciliationLines.isEmpty()) {
-      response.setFlash(I18n.get("Please select a contract"));
+      response.setFlash(I18n.get("Please select a reconciliation line"));
     } else {
       bankReconciliationService.unreconcileLines(bankReconciliationLines);
+      response.setReload(true);
     }
   }
 
-  public void reconcile(ActionRequest request, ActionResponse response) {
+  public void reconcileSelected(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     BankReconciliation br = context.asType(BankReconciliation.class);
     BankReconciliationLine bankReconciliationLine;
@@ -90,34 +99,49 @@ public class BankReconciliationController {
         moveLineRepository
             .all()
             .filter(
-                "self.isSelectedBankReconciliation AND self.move.journal = :journal AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
+                "self.isSelectedBankReconciliation = true AND self.move.journal = :journal AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
             .bind("cashAccount", br.getCashAccount())
             .bind("statusSelect", MoveRepository.STATUS_CANCELED)
             .bind("journal", br.getJournal())
             .fetch();
-    if (br.getBankReconciliationLineList().stream().filter(line -> line.isSelected()).count() == 0
+    if (br.getBankReconciliationLineList().stream()
+                .filter(line -> line.getIsSelectedBankReconciliation())
+                .count()
+            == 0
         || moveLines.size() == 0) {
-      if (br.getBankReconciliationLineList().stream().filter(line -> line.isSelected()).count() == 0
+      if (br.getBankReconciliationLineList().stream()
+                  .filter(line -> line.getIsSelectedBankReconciliation())
+                  .count()
+              == 0
           && moveLines.size() == 0)
         response.setError(I18n.get("Please select one bank reconciliation line and one move line"));
-      else if (br.getBankReconciliationLineList().stream().filter(line -> line.isSelected()).count()
+      else if (br.getBankReconciliationLineList().stream()
+              .filter(line -> line.getIsSelectedBankReconciliation())
+              .count()
           == 0) response.setError(I18n.get("Please select one bank reconciliation line"));
       else if (moveLines.size() == 0) response.setError(I18n.get("Please select one move line"));
-    } else if (br.getBankReconciliationLineList().stream().filter(line -> line.isSelected()).count()
+    } else if (br.getBankReconciliationLineList().stream()
+                .filter(line -> line.getIsSelectedBankReconciliation())
+                .count()
             > 1
         || moveLines.size() > 1) {
-      if (br.getBankReconciliationLineList().stream().filter(line -> line.isSelected()).count() > 1
+      if (br.getBankReconciliationLineList().stream()
+                  .filter(line -> line.getIsSelectedBankReconciliation())
+                  .count()
+              > 1
           && moveLines.size() > 1)
         response.setError(
             I18n.get("Please select only one bank reconciliation line and only one move line"));
-      else if (br.getBankReconciliationLineList().stream().filter(line -> line.isSelected()).count()
+      else if (br.getBankReconciliationLineList().stream()
+              .filter(line -> line.getIsSelectedBankReconciliation())
+              .count()
           > 1) response.setError(I18n.get("Please select only one bank reconciliation line"));
       else if (moveLines.size() > 1)
         response.setError(I18n.get("Please select only one move line"));
     } else {
       bankReconciliationLine =
           br.getBankReconciliationLineList().stream()
-              .filter(line -> line.isSelected())
+              .filter(line -> line.getIsSelectedBankReconciliation())
               .collect(Collectors.toList())
               .get(0);
       bankReconciliationLine.setMoveLine(moveLines.get(0));
@@ -125,6 +149,18 @@ public class BankReconciliationController {
           bankReconciliationLineService.setMoveLine(bankReconciliationLine, moveLines.get(0));
       br = bankReconciliationRepository.find(br.getId());
       response.setValue("bankReconciliationLineList", br.getBankReconciliationLineList());
+      response.setReload(true);
+    }
+  }
+
+  public void automaticReconciliation(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.reconciliateAccordingToQueries(
+          bankReconciliationRepository.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -132,8 +168,6 @@ public class BankReconciliationController {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       bankReconciliationService.loadBankStatement(
-          bankReconciliationRepository.find(bankReconciliation.getId()));
-      bankReconciliationService.reconciliateAccordingToQueries(
           bankReconciliationRepository.find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
@@ -312,5 +346,6 @@ public class BankReconciliationController {
   public void autoAccounting(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+    response.setReload(true);
   }
 }

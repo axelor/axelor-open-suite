@@ -179,14 +179,16 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
         if (operationDate.isBefore(bankStatement.getFromDate()))
           bankStatement.setFromDate(operationDate);
       } else {
-        bankStatement.setFromDate(operationDate);
+        if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+          bankStatement.setFromDate(operationDate);
       }
       if (ObjectUtils.notEmpty(bankStatement.getToDate())
           && lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
         if (operationDate.isAfter(bankStatement.getToDate()))
           bankStatement.setToDate(operationDate);
       } else {
-        bankStatement.setToDate(operationDate);
+        if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+          bankStatement.setToDate(operationDate);
       }
     }
 
