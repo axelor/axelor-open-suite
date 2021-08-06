@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.Before;
@@ -37,7 +38,8 @@ public class TestFixedAssetLineComputationService {
 
   @Before
   public void prepare() {
-    fixedAssetLineComputationService = new FixedAssetLineComputationServiceImpl();
+    fixedAssetLineComputationService =
+        new FixedAssetLineComputationServiceImpl(new AnalyticFixedAssetServiceImpl());
   }
 
   @Test

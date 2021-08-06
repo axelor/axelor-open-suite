@@ -20,23 +20,33 @@ package com.axelor.apps.account.service.fixedasset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CALCULATION_SCALE;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.tool.date.DateTool;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
 
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.tool.date.DateTool;
-
 public class FixedAssetLineComputationServiceImpl implements FixedAssetLineComputationService {
+
+  protected AnalyticFixedAssetService analyticFixedAssetService;
+
+  @Inject
+  public FixedAssetLineComputationServiceImpl(AnalyticFixedAssetService analyticFixedAssetService) {
+    this.analyticFixedAssetService = analyticFixedAssetService;
+  }
 
   @Override
   public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect) {
-    LocalDate firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
+    LocalDate firstDepreciationDate =
+        analyticFixedAssetService.computeFirstDepreciationDate(
+            fixedAsset, fixedAsset.getFirstDepreciationDate());
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, typeSelect);
     BigDecimal accountingValue = fixedAsset.getGrossValue().subtract(depreciation);
     return createPlannedFixedAssetLine(
@@ -87,7 +97,10 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
 
   protected BigDecimal computeInitialDegressiveDepreciation(
       FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
-    BigDecimal ddRate = isFiscalComputationMethod ? fixedAsset.getFiscalDegressiveCoef() : fixedAsset.getDegressiveCoef();
+    BigDecimal ddRate =
+        isFiscalComputationMethod
+            ? fixedAsset.getFiscalDegressiveCoef()
+            : fixedAsset.getDegressiveCoef();
     return computeInitialDepreciationNumerator(
             fixedAsset.getGrossValue(), fixedAsset, isFiscalComputationMethod)
         .multiply(ddRate)
@@ -159,9 +172,12 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         previousFixedAssetLine
             .getAccountingValue()
             .divide(
-                BigDecimal.valueOf(isFiscalComputationMethod ? (fixedAsset.getFiscalNumberOfDepreciation() - fixedAsset.getFiscalFixedAssetLineList().size()) :
-                    (fixedAsset.getNumberOfDepreciation()
-                        - fixedAsset.getFixedAssetLineList().size())),
+                BigDecimal.valueOf(
+                    isFiscalComputationMethod
+                        ? (fixedAsset.getFiscalNumberOfDepreciation()
+                            - fixedAsset.getFiscalFixedAssetLineList().size())
+                        : (fixedAsset.getNumberOfDepreciation()
+                            - fixedAsset.getFixedAssetLineList().size())),
                 RETURNED_SCALE,
                 RoundingMode.HALF_UP);
     return degressiveDepreciation.max(linearDepreciation);

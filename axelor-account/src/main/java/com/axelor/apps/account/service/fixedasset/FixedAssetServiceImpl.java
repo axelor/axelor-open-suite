@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -46,6 +35,15 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -78,6 +76,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.moveLineService = moveLineService;
     this.accountConfigService = accountConfigService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
+    ;
   }
 
   @Override
@@ -90,12 +89,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
-      
+
       generateComputedPlannedFixedAssetLine(
-                  fixedAsset,
-                  initialFixedAssetLine,
-                  fixedAsset.getFixedAssetLineList(),
-                  FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+          fixedAsset,
+          initialFixedAssetLine,
+          fixedAsset.getFixedAssetLineList(),
+          FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
     }
     if (fixedAsset
         .getDepreciationPlanSelect()
@@ -121,6 +120,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       if (fixedAsset.getFixedAssetDerogatoryLineList() == null) {
         fixedAsset.setFixedAssetDerogatoryLineList(new ArrayList<>());
       }
+      fixedAsset.setFixedAssetDerogatoryLineList(
+          fixedAsset.getFixedAssetDerogatoryLineList().stream()
+              .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED)
+              .collect(Collectors.toList()));
       fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
     }
 
@@ -128,11 +131,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   private List<FixedAssetLine> generateComputedPlannedFixedAssetLine(
-      FixedAsset fixedAsset, FixedAssetLine initialFixedAssetLine, List<FixedAssetLine> fixedAssetLineList, int typeSelect) {
+      FixedAsset fixedAsset,
+      FixedAssetLine initialFixedAssetLine,
+      List<FixedAssetLine> fixedAssetLineList,
+      int typeSelect) {
 
     // counter to avoid too many iterations in case of a current or future mistake
     int c = 0;
-    final int MAX_ITERATION = 1000; 
+    final int MAX_ITERATION = 1000;
     FixedAssetLine fixedAssetLine = initialFixedAssetLine;
     while (c < MAX_ITERATION && fixedAssetLine.getAccountingValue().signum() != 0) {
       fixedAssetLine =

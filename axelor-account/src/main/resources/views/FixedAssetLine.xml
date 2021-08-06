@@ -18,6 +18,7 @@
     
     <grid name="fixed-asset-line-grid" title="Fixed asset lines" model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
     	<field name="depreciationDate"/>
+    	<field name="depreciationBase"/>
     	<field name="depreciation"/>
     	<field name="cumulativeDepreciation"/>
     	<field name="accountingValue"/>

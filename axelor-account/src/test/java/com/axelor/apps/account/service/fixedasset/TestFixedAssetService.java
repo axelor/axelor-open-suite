@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import java.math.BigDecimal;
@@ -57,7 +58,8 @@ public class TestFixedAssetService {
     moveLineService = mock(MoveLineService.class);
     accountConfigService = mock(AccountConfigService.class);
     fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
-    fixedAssetLineComputationService = new FixedAssetLineComputationServiceImpl();
+    fixedAssetLineComputationService =
+        new FixedAssetLineComputationServiceImpl(new AnalyticFixedAssetServiceImpl());
 
     fixedAssetService =
         new FixedAssetServiceImpl(
