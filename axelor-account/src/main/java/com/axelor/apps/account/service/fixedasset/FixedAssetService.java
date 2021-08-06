@@ -17,14 +17,15 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 public interface FixedAssetService {
 
@@ -61,4 +62,10 @@ public interface FixedAssetService {
       throws AxelorException;
 
   void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
+  
+  void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset);
+  
+  void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset);
+  
+  void generateAndComputeFixedAssetLines(FixedAsset fixedAsset);
 }

@@ -1,9 +1,5 @@
 package com.axelor.apps.account.service.fixedasset;
 
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +7,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
 
@@ -26,7 +27,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       FixedAssetLine fiscalFixedAssetLine) {
 
     FixedAssetDerogatoryLine fixedAssetDerogatoryLine = new FixedAssetDerogatoryLine();
-
+    fixedAssetDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
     fixedAssetDerogatoryLine.setDepreciationDate(depreciationDate);
     fixedAssetDerogatoryLine.setDepreciationAmount(depreciationAmount);
     fixedAssetDerogatoryLine.setFiscalDepreciationAmount(fiscalDepreciationAmount);
@@ -57,7 +58,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
             .collect(
                 Collectors.groupingBy(
                     FixedAssetLine::getDepreciationDate, LinkedHashMap::new, Collectors.toList()));
-
+    //Since we are working on lambda, we need an AtomicReference to store the previousFixedAssetDerogatoryLine
     AtomicReference<FixedAssetDerogatoryLine> previousFixedAssetDerogatoryLine =
         new AtomicReference<>(null);
     // Starting the computation
@@ -81,7 +82,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
                               == FixedAssetLineRepository.TYPE_SELECT_FISCAL)
                   .findAny()
                   .orElse(null);
-
+          
+          //Initialisation of fiscal and economic depreciation
           BigDecimal depreciationAmount = BigDecimal.ZERO;
           if (economicFixedAssetLine != null) {
             depreciationAmount =
@@ -100,12 +102,14 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
           BigDecimal derogatoryAmount = null;
           BigDecimal incomeDepreciationAmount = null;
-
+          
+          //If fiscal depreciation is greater than economic depreciation then we fill derogatoryAmount, else incomeDepreciation.
           if (fiscalDepreciationAmount.compareTo(depreciationAmount) > 0) {
             derogatoryAmount = fiscalDepreciationAmount.subtract(depreciationAmount);
           } else {
             incomeDepreciationAmount = fiscalDepreciationAmount.subtract(depreciationAmount);
           }
+          
           BigDecimal derogatoryBalanceAmount;
           BigDecimal previousDerogatoryBalanceAmount =
               previousFixedAssetDerogatoryLine.get() == null
@@ -130,6 +134,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
                   derogatoryBalanceAmount,
                   null,
                   null);
+          //Adding to the result list and setting previousLine to the current line (for the next line)
+          fixedAssetDerogatoryLine.setFixedAsset(fixedAsset);
           fixedAssetDerogatoryLineList.add(fixedAssetDerogatoryLine);
           previousFixedAssetDerogatoryLine.set(fixedAssetDerogatoryLine);
         });
