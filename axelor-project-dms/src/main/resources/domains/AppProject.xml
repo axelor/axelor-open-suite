@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppProject" lang="java" extends="App">
+	<entity name="AppProject" lang="java" >
 		
 		<decimal name="defaultIncrement" title="Default increment"/>
 		

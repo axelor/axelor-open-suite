@@ -14,7 +14,7 @@
     <many-to-one name="template" title="Report template" ref="com.axelor.meta.db.MetaFile"/>
     <one-to-many name="accountingReportConfigLineList" title="Rules" ref="com.axelor.apps.account.db.AccountingReportConfigLine"
                  mappedBy="reportType"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 
   </entity>
 </domain-models>
