@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" 
-		width="large" canDelete="false" canNew="false" canCopy="false" >
+		width="large" canDelete="false" canNew="false" canCopy="false" onSave="action-base-method-model-email-link-onsave">
 		<toolbar>
 		    <button name="back" title="Back" hidden="true" onClick=""/>
 		    <button name="search" title="Search" hidden="true" onClick=""/>
@@ -64,6 +64,7 @@
                 	<field name="defaultMailMessageTemplate"/>
                 	<panel-related field="mailTemplateAssociationList" grid-view="mail-template-association-grid" form-view="mail-template-association-form"/>
                 </panel>
+                <field name="emailLinkList" colSpan="12" onChange="action-base-method-model-email-link-onsave"/>
                 <panel name="stylePanel" title="Style" colSpan="12">
                 	<field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
                 </panel>
