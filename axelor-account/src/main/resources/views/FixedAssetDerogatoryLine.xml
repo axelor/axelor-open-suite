@@ -5,7 +5,7 @@
 
 	<grid name="fixed-asset-fiscal-line-grid"
 		title="Fixed asset fiscal lines"
-		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine">
+		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine" orderBy="depreciationDate">
 		<field name="depreciationDate"/>
 		<field name="depreciationAmount" />
 	    <field name="fiscalDepreciationAmount" />
@@ -13,7 +13,7 @@
 		<field name="incomeDepreciationAmount" />
 		<field name="derogatoryBalanceAmount" />
 		<field name="statusSelect"/>
-		<button name="realizeBtn" title="Realize" readonlyIf="statusSelect == 2" icon="fa-check-circle" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>	
+		<button name="realizeBtn" title="Realize" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" icon="fa-check-circle" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>	
 	</grid>
 
 	<form name="fixed-asset-fiscal-line-form"
@@ -28,7 +28,7 @@
 	      <field name="derogatoryDepreciationMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
 	    </panel>
 	    <panel name="actionsPanel" hideIf="statusSelect == 2">
-	      <button name="realizeBtn" readonlyIf="statusSelect == 2" title="Realize" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
+	      <button name="realizeBtn" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" title="Realize" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
 	    </panel>
 	</form>
 	
