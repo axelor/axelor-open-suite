@@ -44,9 +44,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
 
   @Override
   public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect) {
-    LocalDate firstDepreciationDate =
-        analyticFixedAssetService.computeFirstDepreciationDate(
-            fixedAsset, fixedAsset.getFirstDepreciationDate());
+    LocalDate firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, typeSelect);
     BigDecimal accountingValue = fixedAsset.getGrossValue().subtract(depreciation);
     return createPlannedFixedAssetLine(

@@ -17,6 +17,27 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -25,27 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections.CollectionUtils;
-
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -61,6 +62,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
 
+  protected AnalyticFixedAssetService analyticFixedAssetService;
+
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
 
@@ -71,13 +74,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLineComputationService fixedAssetLineComputationService,
       MoveLineService moveLineService,
       AccountConfigService accountConfigService,
-      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService) {
+      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
+      AnalyticFixedAssetService analyticFixedAssetService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineService = moveLineService;
     this.accountConfigService = accountConfigService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
+    this.analyticFixedAssetService = analyticFixedAssetService;
     ;
   }
 
@@ -91,33 +96,36 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     return fixedAsset;
   }
-@Override
-public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset) {
-	if (fixedAsset
+
+  @Override
+  public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset) {
+    if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-      
+
       List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
           fixedAssetDerogatoryLineService.computeFixedAssetDerogatoryLineList(fixedAsset);
       if (fixedAssetDerogatoryLineList.size() != 0) {
-          if (fixedAsset.getFixedAssetDerogatoryLineList() == null) {
-        	  fixedAsset.setFixedAssetDerogatoryLineList(new ArrayList<>());
-              fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
-          } else {
-              List<FixedAssetDerogatoryLine> linesToKeep = fixedAsset.getFixedAssetDerogatoryLineList().stream()
-              .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED)
-              .collect(Collectors.toList());
-              fixedAsset.clearFixedAssetDerogatoryLineList();
-              fixedAsset.getFixedAssetDerogatoryLineList().addAll(linesToKeep);
-              fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
-          }
+        if (fixedAsset.getFixedAssetDerogatoryLineList() == null) {
+          fixedAsset.setFixedAssetDerogatoryLineList(new ArrayList<>());
+          fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
+        } else {
+          List<FixedAssetDerogatoryLine> linesToKeep =
+              fixedAsset.getFixedAssetDerogatoryLineList().stream()
+                  .filter(
+                      line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED)
+                  .collect(Collectors.toList());
+          fixedAsset.clearFixedAssetDerogatoryLineList();
+          fixedAsset.getFixedAssetDerogatoryLineList().addAll(linesToKeep);
+          fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
+        }
       }
-
     }
-}
-@Override
-public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset) {
-	if (fixedAsset
+  }
+
+  @Override
+  public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset) {
+    if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
       FixedAssetLine initialFiscalFixedAssetLine =
@@ -131,10 +139,11 @@ public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset) {
           fixedAsset.getFiscalFixedAssetLineList(),
           FixedAssetLineRepository.TYPE_SELECT_FISCAL);
     }
-}
-@Override
-public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) {
-	if (fixedAsset
+  }
+
+  @Override
+  public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) {
+    if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       FixedAssetLine initialFixedAssetLine =
@@ -148,7 +157,7 @@ public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) {
           fixedAsset.getFixedAssetLineList(),
           FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
     }
-}
+  }
 
   private List<FixedAssetLine> generateComputedPlannedFixedAssetLine(
       FixedAsset fixedAsset,
@@ -374,6 +383,38 @@ public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) {
             }
           }
         }
+      }
+    }
+  }
+
+  /**
+   * If firstDepreciationDateInitSeelct if acquisition Date THEN : -If PeriodicityTypeSelect = 12
+   * (Year) >> FirstDepreciationDate = au 31/12 of the year of fixedAsset.acquisitionDate -if
+   * PeriodicityTypeSelect = 1 (Month) >> FirstDepreciationDate = last day of the month of
+   * fixedAsset.acquisitionDate Else (== first service date) -If PeriodicityTypeSelect = 12 (Year)
+   * >> FirstDepreciationDate = au 31/12 of the year of fixedAsset.firstServiceDate -if
+   * PeriodicityTypeSelect = 1 (Month) >> FirstDepreciationDate = last day of the month of
+   * fixedAsset.firstServiceDate
+   */
+  @Override
+  public void computeFirstDepreciationDate(FixedAsset fixedAsset) {
+
+    FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+    Integer periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
+    Integer firstDepreciationDateInitSelect =
+        fixedAssetCategory.getFirstDepreciationDateInitSelect();
+    if (fixedAssetCategory != null
+        && periodicityTypeSelect != null
+        && firstDepreciationDateInitSelect != null) {
+      if (firstDepreciationDateInitSelect
+          == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION) {
+        fixedAsset.setFirstDepreciationDate(
+            analyticFixedAssetService.computeFirstDepreciationDate(
+                fixedAsset, fixedAsset.getAcquisitionDate()));
+      } else {
+        fixedAsset.setFirstDepreciationDate(
+            analyticFixedAssetService.computeFirstDepreciationDate(
+                fixedAsset, fixedAsset.getFirstServiceDate()));
       }
     }
   }

@@ -36,6 +36,7 @@
 	    	</panel>
 	    </panel>
 	    <panel name="depreciationPanel" title="Depreciation method" colspan="12">
+	      <field name="firstDepreciationDateInitSelect"/>
 	      <field name="depreciationPlanSelect" widget="MultiSelect"/>
 	      <field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef" required="true"/>
 	      <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'" validIf="computationMethodSelect == 'linear' || (computationMethodSelect == 'degressive' &amp;&amp; degressiveCoef != 0.00)"/>

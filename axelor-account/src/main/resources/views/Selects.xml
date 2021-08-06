@@ -470,6 +470,10 @@
 		<option value="3">Derogation</option>
 	</selection>
 	
+	<selection name="account.fixed.asset.first.depreciation.date.ref.select">
+		<option value="1">Acquisition Date</option>
+		<option value="2">First Service Date</option>
+	</selection>
 	<selection name="account.fixed.asset.origin">
 		<option value="1">Manual</option>
 		<option value="2">Invoice</option>

@@ -23,6 +23,7 @@
 	<integer name="durationInMonth" title="Duration in month"/>
 	<string  name="depreciationPlanSelect" title="Depreciation Plan" selection="account.fixed.asset.depreciation.plan"/>
 	<integer name="periodicityTypeSelect" title="Periodicity Type" selection="account.fixed.asset.periodicity.type" default="12"/>
+	<integer name="firstDepreciationDateInitSelect" title="Reference Date for first depreciation" selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
 	
 	<boolean name="isProrataTemporis" title="Prorata temporis"/>
 	<boolean name="isUSProrataTemporis" title="Use US prorata temoris" default="false"/>
@@ -40,6 +41,14 @@
 	<many-to-one ref="com.axelor.apps.account.db.Account" name="realisedAssetsIncomeAccount" title="Realised Assets Income Account"/>
 	<many-to-one ref="com.axelor.apps.account.db.Account" name="debtReceivableAccount" title="Debt Receivable Account"/>
 	<many-to-one ref="com.axelor.apps.account.db.Account" name="provisionTangibleFixedAssetAccount" title="Provision Tangible Fixed Asset Account"/>
+	
+		<extra-code><![CDATA[
+	
+	   	// Reference Date for first depreciation
+		public static final int REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION = 1;
+		public static final int REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE = 2;
+		
+	]]></extra-code>
 
   </entity>
  

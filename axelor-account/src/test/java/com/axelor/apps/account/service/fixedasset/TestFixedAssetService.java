@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -46,6 +47,7 @@ public class TestFixedAssetService {
   protected MoveLineService moveLineService;
   protected AccountConfigService accountConfigService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
+  protected AnalyticFixedAssetService analyticFixedAssetService;
 
   /*
    * Prepare dependencies by mocking them
@@ -58,6 +60,7 @@ public class TestFixedAssetService {
     moveLineService = mock(MoveLineService.class);
     accountConfigService = mock(AccountConfigService.class);
     fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
+    analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
     fixedAssetLineComputationService =
         new FixedAssetLineComputationServiceImpl(new AnalyticFixedAssetServiceImpl());
 
@@ -68,7 +71,8 @@ public class TestFixedAssetService {
             fixedAssetLineComputationService,
             moveLineService,
             accountConfigService,
-            fixedAssetDerogatoryLineService);
+            fixedAssetDerogatoryLineService,
+            analyticFixedAssetService);
 
     prepareFixedAssetRepo();
   }
