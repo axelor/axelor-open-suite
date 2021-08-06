@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -96,6 +97,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AnalyticAccountRepository analyticAccountRepository;
   protected AccountRepository accountRepository;
+  protected AccountConfigRepository accountConfigRepository;
 
   @Inject
   public MoveLineServiceImpl(
@@ -111,7 +113,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AnalyticJournalRepository analyticJournalRepository,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       AnalyticAccountRepository analyticAccountRepository,
-      AccountRepository accountRepository) {
+      AccountRepository accountRepository,
+      AccountConfigRepository accountConfigRepository) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -125,6 +128,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.analyticAccountRepository = analyticAccountRepository;
     this.accountRepository = accountRepository;
+    this.accountConfigRepository = accountConfigRepository;
   }
 
   @Override
@@ -1307,14 +1311,26 @@ public class MoveLineServiceImpl implements MoveLineService {
   public AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, AnalyticAccount analyticAccount) {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
-    if (analyticJournalRepository.find((long) 1) != null) {
-      analyticMoveLine.setAnalyticJournal(analyticJournalRepository.find((long) 1));
+    System.err.println(
+        accountConfigRepository.findByCompany(analyticAccount.getAnalyticAxis().getCompany()));
+    System.err.println(
+        accountConfigRepository
+            .findByCompany(analyticAccount.getAnalyticAxis().getCompany())
+            .getAnalyticJournal());
+    if (accountConfigRepository
+            .findByCompany(analyticAccount.getAnalyticAxis().getCompany())
+            .getAnalyticJournal()
+        != null) {
+
+      analyticMoveLine.setAnalyticJournal(
+          accountConfigRepository
+              .findByCompany(analyticAccount.getAnalyticAxis().getCompany())
+              .getAnalyticJournal());
     }
 
     analyticMoveLine.setDate(moveLine.getDate());
     analyticMoveLine.setPercentage(new BigDecimal(100));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
-    analyticMoveLine.setMoveLine(moveLine);
     if (moveLine.getAccount() != null) {
       analyticMoveLine.setAccount(moveLine.getAccount());
       if (moveLine.getAccount().getAccountType() != null) {

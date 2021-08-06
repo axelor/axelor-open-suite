@@ -13,7 +13,16 @@
 		model="com.axelor.apps.account.db.AnalyticAxisByCompany" onNew="action-record-analytic-axis-by-company-on-new">
 		<panel name="mainPanel">
 			<field name="orderSelect" />
-			<field name="analyticAxis" />
+			<field name="analyticAxis"/>
+			<field name="accountConfig.company.code" title="Company" hidden="true"/>
+		</panel>
+	</form>
+	
+	<form name="analytic-axis-by-company-config-form" title="Analytic Axis By company"
+		model="com.axelor.apps.account.db.AnalyticAxisByCompany" onNew="action-record-analytic-axis-by-company-on-new">
+		<panel name="mainPanel">
+			<field name="orderSelect" />
+			<field name="analyticAxis" onSelect="action-attrs-axis-by-company-set-axis-domain"/>
 			<field name="accountConfig.company.code" title="Company" hidden="true"/>
 		</panel>
 	</form>
@@ -21,5 +30,9 @@
 	<action-record name="action-record-analytic-axis-by-company-on-new" model="com.axelor.apps.account.db.AnalyticAxisByCompany">
 		<field name="accountConfig" expr="eval: __parent__"/>
 	</action-record>
+
+	<action-attrs name="action-attrs-axis-by-company-set-axis-domain">
+		<attribute name="domain" for="analyticAxis" expr="eval: &quot;self.company.id = ${__parent__?.company?.id} &quot;"/>
+	</action-attrs>
 
 </object-views>
