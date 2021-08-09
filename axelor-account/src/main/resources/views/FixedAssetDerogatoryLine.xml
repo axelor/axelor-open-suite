@@ -3,8 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="fixed-asset-fiscal-line-grid"
-		title="Fixed asset fiscal lines"
+	<grid name="fixed-asset-derogatory-line-grid"
+		title="Fixed asset derogatory lines"
 		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine" orderBy="depreciationDate">
 		<field name="depreciationDate"/>
 		<field name="depreciationAmount" />
@@ -13,11 +13,12 @@
 		<field name="incomeDepreciationAmount" />
 		<field name="derogatoryBalanceAmount" />
 		<field name="statusSelect"/>
+		<field name="fixedAsset.statusSelect" hidden="true"/>
 		<button name="realizeBtn" title="Realize" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" icon="fa-check-circle" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>	
 	</grid>
 
-	<form name="fixed-asset-fiscal-line-form"
-		title="Fixed asset fiscal line"
+	<form name="fixed-asset-derogatory-line-form"
+		title="Fixed asset derogatory line"
 		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine">
 		<panel name="mainPanel">
 	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
@@ -26,6 +27,7 @@
 	      <field name="incomeDepreciationAmount"/>
 	      <field name="derogatoryBalanceAmount"/>
 	      <field name="derogatoryDepreciationMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
+	      <field name="fixedAsset.statusSelect" hidden="true"/>
 	    </panel>
 	    <panel name="actionsPanel" hideIf="statusSelect == 2">
 	      <button name="realizeBtn" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" title="Realize" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
