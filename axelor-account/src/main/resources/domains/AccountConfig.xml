@@ -171,7 +171,7 @@
 		<integer name="nbrOfAnalyticAxisSelect" title="Nbr. of analytic axis" selection="account.general.analytic.axis.type.select" default="1"/>
 		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
 		<one-to-many name="analyticAxisByCompanyList" ref="AnalyticAxisByCompany" title="Order of Analytic Axis" mappedBy="accountConfig"/>
-		<many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
+		<many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Default analytic journal"/>
     <finder-method name="findByCompany" using="company"/>
 
 		<extra-code><![CDATA[

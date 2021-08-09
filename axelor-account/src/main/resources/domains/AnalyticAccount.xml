@@ -16,13 +16,14 @@
 			ref="com.axelor.apps.account.db.AnalyticAccount"
 			title="Parent Analytic Acc." />
 		<many-to-one name="analyticLevel" ref="com.axelor.apps.account.db.AnalyticLevel"
-			title="Analytic level" massUpdate="true" help="This field defines the level in the tree of the analytic account. If the value is set to 0, this means this analytic account is at the bottom level."/>
+			title="Analytic level" massUpdate="true" help="This field defines the level in the tree of the analytic account. If the value is set to 1, this means this analytic account is at the bottom level."/>
 		<string name="fullName" title="Full name" required="true"
 			namecolumn="true" search="code,name">
 			<![CDATA[
 		return code+" - " + name;
 		]]>
 		</string>
+		
 		<many-to-one name="analyticGroupingValue1" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 1"/>
 		<many-to-one name="analyticGroupingValue2" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 2"/>
 		<many-to-one name="analyticGroupingValue3" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 3"/>
@@ -33,7 +34,10 @@
 		<many-to-one name="analyticGroupingValue8" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 8"/>
 		<many-to-one name="analyticGroupingValue9" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 9"/>
 		<many-to-one name="analyticGroupingValue10" ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 10"/>
-		<unique-constraint columns="code,name,analyticAxis" />
+
+		<unique-constraint columns="code,name,analyticAxis" />		
+		
+		<finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
 	</entity>
 
 </domain-models>

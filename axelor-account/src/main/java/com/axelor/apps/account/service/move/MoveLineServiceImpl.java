@@ -1311,12 +1311,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   public AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, AnalyticAccount analyticAccount) {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
-    System.err.println(
-        accountConfigRepository.findByCompany(analyticAccount.getAnalyticAxis().getCompany()));
-    System.err.println(
-        accountConfigRepository
-            .findByCompany(analyticAccount.getAnalyticAxis().getCompany())
-            .getAnalyticJournal());
     if (accountConfigRepository
             .findByCompany(analyticAccount.getAnalyticAxis().getCompany())
             .getAnalyticJournal()

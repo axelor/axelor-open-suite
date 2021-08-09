@@ -14,10 +14,10 @@
     <form name="analytic-rules-form" title="Analytic Rules" model="com.axelor.apps.account.db.AnalyticRules">
         <panel name="mainPanel">
 	        <field name="name"/>
-			<field name="company"/>
-			<field name="fromAccount" domain="self.company = :company"/>
-			<field name="toAccount" onSelect="action-on-select-to-account-set-domain"/>
-			<field name="analyticAccountSet" colSpan="12"/>
+			<field name="company" required="true"/>
+			<field name="fromAccount" domain="self.company = :company" requiredIf="company != null" readonlyIf="company == null"/>
+			<field name="toAccount" onSelect="action-on-select-to-account-set-domain" requiredIf="company != null" readonlyIf="company == null"/>
+			<field name="analyticAccountSet" colSpan="12" readonlyIf="company == null" domain="self.analyticAxis.company = :company"/>
         </panel>      
     </form>
     
