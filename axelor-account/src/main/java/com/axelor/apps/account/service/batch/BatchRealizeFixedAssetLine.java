@@ -83,7 +83,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
         if (fixedAssetLine.getFixedAsset().getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
-          fixedAssetLineMoveService.realize(fixedAssetLine);
+          fixedAssetLineMoveService.realize(fixedAssetLine, true);
           incrementDone();
         }
       } catch (Exception e) {

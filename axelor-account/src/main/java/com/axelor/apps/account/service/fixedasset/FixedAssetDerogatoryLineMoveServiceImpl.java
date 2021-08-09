@@ -35,25 +35,32 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository;
   protected MoveCreateService moveCreateService;
   protected MoveRepository moveRepo;
+  protected FixedAssetLineMoveService fixedAssetLineMoveService;
 
   @Inject
   public FixedAssetDerogatoryLineMoveServiceImpl(
       FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository,
       MoveCreateService moveCreateService,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      FixedAssetLineMoveService fixedAssetLineMoveService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
+    this.fixedAssetLineMoveService = fixedAssetLineMoveService;
   }
 
   @Override
   @Transactional
-  public void realize(FixedAssetDerogatoryLine fixedAssetLine) throws AxelorException {
-    Objects.requireNonNull(fixedAssetLine);
-    log.debug("Computing action 'realize' on " + fixedAssetLine);
-    BigDecimal derogatoryAmount = fixedAssetLine.getDerogatoryAmount();
-    BigDecimal incomeDepreciationAmount = fixedAssetLine.getIncomeDepreciationAmount();
-    BigDecimal derogatoryBalanceAmount = fixedAssetLine.getDerogatoryBalanceAmount();
+  public void realize(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException {
+    Objects.requireNonNull(fixedAssetDerogatoryLine);
+    log.debug("Computing action 'realize' on " + fixedAssetDerogatoryLine);
+
+    if (fixedAssetDerogatoryLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED) {
+      return;
+    }
+    BigDecimal derogatoryAmount = fixedAssetDerogatoryLine.getDerogatoryAmount();
+    BigDecimal incomeDepreciationAmount = fixedAssetDerogatoryLine.getIncomeDepreciationAmount();
+    BigDecimal derogatoryBalanceAmount = fixedAssetDerogatoryLine.getDerogatoryBalanceAmount();
     // If derogatoryAmount or incomeDepreciationAmount or derogatoryBalanceAmount are greater than 0
     // then we proceed.
     if ((derogatoryAmount != null && derogatoryAmount.compareTo(BigDecimal.ZERO) > 0)
@@ -62,20 +69,28 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         || (derogatoryBalanceAmount != null
             && derogatoryBalanceAmount.compareTo(BigDecimal.ZERO) > 0)) {
 
-      generateMove(fixedAssetLine);
-      fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
-      fixedAssetDerogatoryLineRepository.save(fixedAssetLine);
+      generateMove(fixedAssetDerogatoryLine);
+    }
+    fixedAssetDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
+    fixedAssetDerogatoryLineRepository.save(fixedAssetDerogatoryLine);
+
+    if (fixedAssetDerogatoryLine.getFixedAsset() != null) {
+      fixedAssetLineMoveService.realizeOthersLines(
+          fixedAssetDerogatoryLine.getFixedAsset(),
+          fixedAssetDerogatoryLine.getDepreciationDate(),
+          false);
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  private void generateMove(FixedAssetDerogatoryLine fixedAssetLine) throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+  private void generateMove(FixedAssetDerogatoryLine fixedAssetDerogatoryLine)
+      throws AxelorException {
+    FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
-    LocalDate date = fixedAssetLine.getDepreciationDate();
+    LocalDate date = fixedAssetDerogatoryLine.getDepreciationDate();
 
     log.debug(
         "Creating an fixed asset derogatory line specific accounting entry {} (Company : {}, Journal : {})",
@@ -110,19 +125,22 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
             "Expense depreciation derogatory/Capital depreciation derogatory/Income depreciation derogatory");
       }
-      if (fixedAssetLine.getDerogatoryAmount().compareTo(BigDecimal.ZERO) > 0) {
+      if (fixedAssetDerogatoryLine.getDerogatoryAmount().compareTo(BigDecimal.ZERO) > 0) {
         debitLineAccount =
             fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
         creditLineAccount =
             fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
-        amount = fixedAssetLine.getDerogatoryAmount().abs();
-      } else if (fixedAssetLine.getIncomeDepreciationAmount().abs().compareTo(BigDecimal.ZERO)
+        amount = fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
+      } else if (fixedAssetDerogatoryLine
+              .getIncomeDepreciationAmount()
+              .abs()
+              .compareTo(BigDecimal.ZERO)
           > 0) {
         debitLineAccount =
             fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
         creditLineAccount =
             fixedAsset.getFixedAssetCategory().getIncomeDepreciationDerogatoryAccount();
-        amount = fixedAssetLine.getIncomeDepreciationAmount().abs();
+        amount = fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
       }
       // We call this function only if derogatoryAmount or incomeDepreciationAmount or
       // derogatoryBalanceAmount are greater than 0
@@ -134,7 +152,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
         creditLineAccount =
             fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
-        amount = fixedAssetLine.getDerogatoryAmount().abs();
+        amount = fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
       }
 
       // Creating accounting debit move line
@@ -175,6 +193,6 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     }
 
     moveRepo.save(move);
-    fixedAssetLine.setDerogatoryDepreciationMove(move);
+    fixedAssetDerogatoryLine.setDerogatoryDepreciationMove(move);
   }
 }

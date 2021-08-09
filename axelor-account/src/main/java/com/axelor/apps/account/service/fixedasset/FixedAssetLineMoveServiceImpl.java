@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -54,27 +55,44 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected MoveLineService moveLineService;
 
+  protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
+
   @Inject
   public FixedAssetLineMoveServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepo,
       MoveCreateService moveCreateService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.moveLineService = moveLineService;
+    this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void realize(FixedAssetLine fixedAssetLine) throws AxelorException {
+  public void realize(FixedAssetLine fixedAssetLine, boolean isBatch) throws AxelorException {
 
-    generateMove(fixedAssetLine);
+    if (fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED) {
+      return;
+    }
+    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+    if (!isBatch) {
+      if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
+        generateMove(fixedAssetLine);
+      } else if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
+        generateMove(fixedAssetLine);
+      }
+    } else {
+      if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
+        generateMove(fixedAssetLine);
+      }
+    }
 
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
 
-    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
     BigDecimal residualValue = fixedAsset.getResidualValue();
     fixedAsset.setResidualValue(residualValue.subtract(fixedAssetLine.getDepreciation()));
 
@@ -90,6 +108,51 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
 
     fixedAssetLineRepo.save(fixedAssetLine);
+
+    if (fixedAsset != null) {
+      realizeOthersLines(fixedAsset, fixedAssetLine.getDepreciationDate(), isBatch);
+    }
+  }
+  /**
+   * Method that may computes action "realize" on lines of fiscalFixedAssetLineList,
+   * fixedAssetLineList and fixedAssetDerogatoryLineList that matches the same depreciation date. It
+   * will compute depending on the fixedAsset.depreciationPlanSelect
+   *
+   * @param fixedAsset
+   * @param depreciationDate
+   * @throws AxelorException
+   */
+  @Override
+  public void realizeOthersLines(FixedAsset fixedAsset, LocalDate depreciationDate, boolean isBatch)
+      throws AxelorException {
+    String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
+
+    if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)
+        && depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+
+      FixedAssetLine economicFixedAssetLine =
+          fixedAsset.getFixedAssetLineList().stream()
+              .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+              .findAny()
+              .orElse(null);
+      FixedAssetLine fiscalFixedAssetLine =
+          fixedAsset.getFiscalFixedAssetLineList().stream()
+              .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+              .findAny()
+              .orElse(null);
+
+      realize(economicFixedAssetLine, isBatch);
+      realize(fiscalFixedAssetLine, isBatch);
+
+      if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
+        FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
+            fixedAsset.getFixedAssetDerogatoryLineList().stream()
+                .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+                .findAny()
+                .orElse(null);
+        fixedAssetDerogatoryLineMoveService.realize(fixedAssetDerogatoryLine);
+      }
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})

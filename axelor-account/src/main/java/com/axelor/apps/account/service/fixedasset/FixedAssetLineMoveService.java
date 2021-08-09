@@ -17,12 +17,26 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
 
 public interface FixedAssetLineMoveService {
 
-  void realize(FixedAssetLine fixedAssetLine) throws AxelorException;
+  void realize(FixedAssetLine fixedAssetLine, boolean isBatch) throws AxelorException;
 
   void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  /**
+   * Method that may computes action "realize" on lines of fiscalFixedAssetLineList,
+   * fixedAssetLineList and fixedAssetDerogatoryLineList that matches the same depreciation date. It
+   * will compute depending on the fixedAsset.depreciationPlanSelect
+   *
+   * @param fixedAsset
+   * @param depreciationDate
+   * @throws AxelorException
+   */
+  void realizeOthersLines(FixedAsset fixedAsset, LocalDate depreciationDate, boolean isBatch)
+      throws AxelorException;
 }

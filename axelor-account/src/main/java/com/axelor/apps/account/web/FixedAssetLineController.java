@@ -34,7 +34,7 @@ public class FixedAssetLineController {
     fixedAssetLine = Beans.get(FixedAssetLineRepository.class).find(fixedAssetLine.getId());
 
     try {
-      Beans.get(FixedAssetLineMoveService.class).realize(fixedAssetLine);
+      Beans.get(FixedAssetLineMoveService.class).realize(fixedAssetLine, false);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

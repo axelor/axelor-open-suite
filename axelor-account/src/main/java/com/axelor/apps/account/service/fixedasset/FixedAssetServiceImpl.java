@@ -173,6 +173,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       fixedAssetLine =
           fixedAssetLineComputationService.computePlannedFixedAssetLine(
               fixedAsset, fixedAssetLine, typeSelect);
+      fixedAssetLine.setFixedAsset(fixedAsset);
       fixedAssetLineList.add(fixedAssetLine);
       c++;
     }
@@ -278,7 +279,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
       FixedAssetLine depreciationFixedAssetLine =
           generateProrataDepreciationLine(fixedAsset, disposalDate, previousRealizedLine);
-      fixedAssetLineMoveService.realize(depreciationFixedAssetLine);
+      fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false);
       fixedAssetLineMoveService.generateDisposalMove(depreciationFixedAssetLine);
     } else {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
@@ -350,6 +351,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAssetLine.setCumulativeDepreciation(cumulativeValue);
     fixedAssetLine.setResidualValue(
         fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
+    fixedAssetLine.setFixedAsset(fixedAsset);
     fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
     return fixedAssetLine;
   }

@@ -48,6 +48,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, typeSelect);
     BigDecimal accountingValue = fixedAsset.getGrossValue().subtract(depreciation);
     return createPlannedFixedAssetLine(
+        fixedAsset,
         firstDepreciationDate,
         depreciation,
         depreciation,
@@ -311,6 +312,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     }
 
     return createPlannedFixedAssetLine(
+        fixedAsset,
         depreciationDate,
         depreciation,
         cumulativeDepreciation,
@@ -322,6 +324,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   }
 
   protected FixedAssetLine createPlannedFixedAssetLine(
+      FixedAsset fixedAsset,
       LocalDate depreciationDate,
       BigDecimal depreciation,
       BigDecimal cumulativeDepreciation,
@@ -329,6 +332,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
       BigDecimal depreciationBase,
       int typeSelect) {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    fixedAssetLine.setFixedAsset(fixedAsset);
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
     fixedAssetLine.setDepreciationDate(depreciationDate);
     fixedAssetLine.setDepreciation(depreciation);
