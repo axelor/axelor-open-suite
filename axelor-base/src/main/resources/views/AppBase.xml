@@ -62,6 +62,7 @@
 				<panel-related field="companySpecificProductFieldsSet" domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false" canEdit="false" grid-view="meta-field-details-grid" form-view="meta-field-form"/>
 				<panel itemSpan="12" colSpan="6">
                 	<field name="defaultMailMessageTemplate"/>
+                	<field name="manageCcBccRelatedTo" widget="boolean-switch"/>
                 	<panel-related field="mailTemplateAssociationList" grid-view="mail-template-association-grid" form-view="mail-template-association-form"/>
                 </panel>
                 <field name="emailLinkList" colSpan="12" onChange="action-base-method-model-email-link-onsave"/>
