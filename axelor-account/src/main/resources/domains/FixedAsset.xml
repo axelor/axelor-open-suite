@@ -93,7 +93,7 @@
 		
 		// PERIODICITY TYPE SELECT
 		public static final int PERIODICITY_TYPE_MONTH = 1;
-		public static final int PERIODICITY_TYPE_YEAR = 2;
+		public static final int PERIODICITY_TYPE_YEAR = 12;
 		
 	]]></extra-code>
     

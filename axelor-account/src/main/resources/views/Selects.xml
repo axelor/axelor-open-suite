@@ -489,12 +489,12 @@
 	
 	<selection name="account.fixed.asset.periodicity.type">
 		<option value="1">Month</option>
-		<option value="2">Year</option>
+		<option value="12">Year</option>
 	</selection>
 	
 	<selection name="account.fixed.asset.fiscal.periodicity.type">
 		<option value="1">Month</option>
-		<option value="2">Year</option>
+		<option value="12">Year</option>
 	</selection>
 	
 	<selection name="account.fixed.asset.line.type.select">

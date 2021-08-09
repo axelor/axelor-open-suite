@@ -1,15 +1,5 @@
 package com.axelor.apps.account.service.fixedasset;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
@@ -28,6 +18,14 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixedAssetDerogatoryLineMoveServiceImpl
     implements FixedAssetDerogatoryLineMoveService {
@@ -103,13 +101,14 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       Account debitLineAccount = null;
       Account creditLineAccount = null;
       BigDecimal amount = null;
-      
-      if (fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount() == null 
-    		  || fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount() == null
-    		  || fixedAsset.getFixedAssetCategory().getIncomeDepreciationDerogatoryAccount() == null) {
-    	  throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD,
-    			  I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-    			  "Expense depreciation derogatory/Capital depreciation derogatory/Income depreciation derogatory");
+
+      if (fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount() == null
+          || fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount() == null
+          || fixedAsset.getFixedAssetCategory().getIncomeDepreciationDerogatoryAccount() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+            "Expense depreciation derogatory/Capital depreciation derogatory/Income depreciation derogatory");
       }
       if (fixedAssetLine.getDerogatoryAmount().compareTo(BigDecimal.ZERO) > 0) {
         debitLineAccount =
@@ -117,9 +116,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         creditLineAccount =
             fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
         amount = fixedAssetLine.getDerogatoryAmount().abs();
-      }
-
-      else if (fixedAssetLine.getIncomeDepreciationAmount().abs().compareTo(BigDecimal.ZERO) > 0){
+      } else if (fixedAssetLine.getIncomeDepreciationAmount().abs().compareTo(BigDecimal.ZERO)
+          > 0) {
         debitLineAccount =
             fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
         creditLineAccount =
@@ -128,14 +126,15 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       }
       // We call this function only if derogatoryAmount or incomeDepreciationAmount or
       // derogatoryBalanceAmount are greater than 0
-      // This means that if derogatoryAmount or incomeDepreciationAmount are not greater than zero then
+      // This means that if derogatoryAmount or incomeDepreciationAmount are not greater than zero
+      // then
       // derogatoryBalanceAmount is.
       else {
-	  	debitLineAccount =
-                fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
-            creditLineAccount =
-                fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
-            amount = fixedAssetLine.getDerogatoryAmount().abs(); 
+        debitLineAccount =
+            fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
+        creditLineAccount =
+            fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
+        amount = fixedAssetLine.getDerogatoryAmount().abs();
       }
 
       // Creating accounting debit move line
