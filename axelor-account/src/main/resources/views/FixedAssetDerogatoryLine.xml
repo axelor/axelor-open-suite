@@ -34,8 +34,8 @@
 	    </panel>
 	</form>
 	
-	<action-record name="action-attrs-account-fixed-asset-derogatory-line-realize" model="com.axelor.apps.account.db.FixedAssetDerogatoryLine">
-		<field name="statusSelect" expr="eval:2"/>
-	</action-record>
+	<action-method name="action-attrs-account-fixed-asset-derogatory-line-realize">
+		<call class="com.axelor.apps.account.web.FixedAssetDerogatoryLineController" method="realize"/>
+	</action-method>
 
 </object-views>

@@ -23,7 +23,9 @@ package com.axelor.apps.account.exception;
  * @author dubaux
  */
 public interface IExceptionMessage {
-
+	
+  static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING = 
+		  /*$$(*/ "Fixed asset category is missing theses account %s" /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/
