@@ -104,23 +104,36 @@
 
 
     
-    <form model="com.axelor.apps.base.db.Wizard" title="disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew">
+    <form model="com.axelor.apps.base.db.Wizard" title="disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew, action-attrs-account-fixed-asset-wizard-form-disposal-amount, action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     	<panel name="mainPanel">
     		<field name="disposalDate" type="date" title="Disposal date"/>
-	    	<field name="disposalTypeSelect"/>
-	    	<field name="disposalQtySelect"/>
-	    	<field name="disposalQty"/>
+	    	<field name="disposalTypeSelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
+	    	<field name="disposalQtySelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
+	    	<field name="qty" showIf="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect != 1" min="0"/>
     		<field name="disposalAmount" type="decimal" title="Disposal amount" min="0"/>
     		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-fixed-asset-disposal-wizard-method-disposal"/>
     		<field name="$generateSaleMove" title="Generate Sale Move" widget="boolean" showIf="disposalTypeSelect == 2"/>
-    		<field name="invoiceLine.taxLine" title="Taxline" widget="many-to-one" showIf="invoiceLine.taxLine"/>
-    		<field name="comments" colSpan="12" widget="text"/>
+    		<field name="saleTaxLine" title="Tax line" widget="many-to-one" target="com.axelor.apps.account.db.TaxLine" showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove"/>
+    		<field name="comments" colSpan="12" widget="text" showIf="disposalTypeSelect == 2"/>
     	</panel>
     </form>
-    
+    <action-attrs name="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
+    	<attribute name="domain" for="saleTaxLine" expr="eval: &quot;(self.endDate &gt; :disposalDate OR self.endDate IS NULL) AND self.startDate &lt; :disposalDate &quot;"/>
+    </action-attrs>
+    <action-attrs name="action-attrs-account-fixed-asset-wizard-form-disposal-amount">
+    	<attribute name="title" for="disposalAmount" expr="eval:com.axelor.i18n.I18n.get('Sales price excluding taxes')" if="disposalTypeSelect == 2"/>
+    	<attribute name="title" for="disposalAmount" expr="eval:com.axelor.i18n.I18n.get('Amount excluding taxes')" if="disposalTypeSelect == 1"/>
+    	<attribute name="readonly" for="disposalAmount" expr="false" if="disposalTypeSelect == 2"/>
+    	<attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.residualValue" if="disposalTypeSelect == 2"/>
+    	<attribute name="readonly" for="disposalAmount" expr="true" if="disposalQtySelect == 1 &amp;&amp; disposalTypeSelect == 1"/>
+    	<attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.accountingValue" if="disposalQtySelect == 1 &amp;&amp; disposalTypeSelect == 1"/>
+    	<attribute name="readonly" for="disposalAmount" expr="true" if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
+    	<attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.accountingValue" if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
+    </action-attrs>
     <action-record name="action-fixed-asset-disposal-wizard-record-onnew" model="com.axelor.apps.base.db.Wizard">
     	<field name="disposalDate" expr="eval: __date__"/>
     	<field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
+    	<field name="qty" expr="eval:_fixedAsset?.qty"/>
     </action-record>
     
     <action-record name="action-fixed-asset-record-default" model="com.axelor.apps.account.db.FixedAsset">
