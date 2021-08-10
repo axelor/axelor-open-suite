@@ -195,7 +195,7 @@ public class ImportService {
       return null;
     }
 
-    return field;
+    return metaJsonFieldRepo.save(field);
   }
 
   public MetaJsonField importJsonField(Object bean, Map<String, Object> values) {

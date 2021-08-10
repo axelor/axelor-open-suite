@@ -2,9 +2,9 @@
 <menu-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <menu-builder name="bpm-product-root" title="Products" icon="fa-cube" background="red" appBuilder="PRD" />
+  <menu-builder name="bpm-product-root" title="Products" icon="fa-cube" background="red" appBuilder="PRD" xmlId="bpm-product-root" />
   
-  <menu-builder name="menu-json-model-ProductCategory" title="Product category" parent="bpm-product-root" show-action="true" appBuilder="PRD">
+  <menu-builder name="menu-json-model-ProductCategory" xmlId="menu-json-model-ProductCategory" title="Product category" parent="bpm-product-root" show-action="true" appBuilder="PRD">
   	<action name="all.json.ProductCategory" title="Product category" model="com.axelor.meta.db.MetaJsonRecord"
   		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
@@ -17,7 +17,7 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="menu-json-model-Product" title="Product" parent="bpm-product-root" show-action="true" appBuilder="PRD">
+  <menu-builder name="menu-json-model-Product" xmlId="menu-json-model-Product" title="Product" parent="bpm-product-root" show-action="true" appBuilder="PRD">
   	<action name="all.json.Product" title="Product" model="com.axelor.meta.db.MetaJsonRecord"
 		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
@@ -30,7 +30,7 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="menu-json-model-ProductOrder" title="Product order" parent="bpm-product-root" show-action="true" appBuilder="PRD">
+  <menu-builder name="menu-json-model-ProductOrder" xmlId="menu-json-model-ProductOrder" title="Product order" parent="bpm-product-root" show-action="true" appBuilder="PRD">
   	<action name="all.json.ProductOrder" title="Product order" model="com.axelor.meta.db.MetaJsonRecord"
   		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
@@ -43,7 +43,7 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="menu-json-model-ProductOrderLine" title="Product order line" parent="bpm-product-root" show-action="true" appBuilder="PRD" >
+  <menu-builder name="menu-json-model-ProductOrderLine" xmlId="menu-json-model-ProductOrderLine" title="Product order line" parent="bpm-product-root" show-action="true" appBuilder="PRD" >
   	<action name="all.json.ProductOrderLine" title="Product order line" model="com.axelor.meta.db.MetaJsonRecord"
   		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
@@ -56,7 +56,7 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="bpm-dashboard-product-dashboard" title="Product dashboard" parent="bpm-product-root" show-action="true" appBuilder="PRD">
+  <menu-builder name="bpm-dashboard-product-dashboard" xmlId="bpm-dashboard-product-dashboard" title="Product dashboard" parent="bpm-product-root" show-action="true" appBuilder="PRD">
   	<action name="bpm.dashboard.product.dashboard" title="Product dashboard" isJson="true">
   		<views>
   			<view type="dashboard" name="product-dashboard" sequence="1" />

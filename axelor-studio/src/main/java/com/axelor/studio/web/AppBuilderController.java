@@ -46,7 +46,7 @@ public class AppBuilderController {
 
     try {
       InputStream inputStream = this.getClass().getResourceAsStream(config);
-      File configFile = File.createTempFile("config", ".xml");
+      File configFile = MetaFiles.createTempFile("config", ".xml").toFile();
       FileOutputStream fout = new FileOutputStream(configFile);
       IOUtil.copyCompletely(inputStream, fout);
 

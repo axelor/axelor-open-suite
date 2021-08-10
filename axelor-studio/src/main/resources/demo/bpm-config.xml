@@ -109,6 +109,7 @@
 	<input file="bpm_menuBuilder.xml" root="menu-builders">
 		<bind node="menu-builder" type="com.axelor.studio.db.MenuBuilder" call="com.axelor.studio.service.ImportService:importMenuBuilder">
 			<bind node="@name" to="name" />
+			<bind node="@xmlId" to="xmlId" />
 			<bind node="@title" to="title" />
 			<bind node="@icon" to="icon" />
 			<bind node="@background" to="iconBackground" />
@@ -138,6 +139,7 @@
 	<input file="bpm_actionBuilder.xml" root="action-builders">
 		<bind node="action-builder" type="com.axelor.studio.db.ActionBuilder" call="com.axelor.studio.service.ImportService:importActionBuilder">
 			<bind node="@name" to="name" />
+			<bind node="@xmlId" to="xmlId" />
 			<bind node="@isJson" to="isJson" />
 			<bind node="@typeSelect" to="typeSelect" />
 			<bind node="@model" to="model" />

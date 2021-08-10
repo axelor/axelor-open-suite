@@ -13,10 +13,12 @@
   
   <form name="menu-builder-form" title="Menu builder" model="com.axelor.studio.db.MenuBuilder"  width="large">
       <panel name="mainPanel">
-      	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
       	  <field name="$existingMenu" title="Existing menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
+	      <spacer colSpan="12" hideIf="id"/>
+	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      	  <field name="name" required="true" />
 	      <field name="title" />
-	      <field name="xmlId" />
+	      <field name="xmlId" required="true" />
 	      <field name="parentMenu" />
 	      <field name="icon" widget="ImageSelect"/>
 	      <field name="iconBackground"/>
