@@ -285,7 +285,7 @@
 				<bind node="validationMsg" to="validationMsg"/>
 				<bind node="name" to="name" alias="_lineName"/>
 				<bind node="dummy" to="dummy"/>
-				<bind node="subLines/line" to="subLines" search="self.parent.actionBuilder.name = :_actionBuilder and self.parent.name = :_lineName and self.name = :_subLineName">
+				<bind node="subLines/line" to="subLines" search="self.parent.actionBuilder.xmlId = :xmlId and self.parent.name = :_lineName and self.name = :_subLineName">
 					<bind node="target" alias="target" />
 					<bind node="source" alias="source" />
 					<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :target" create="false"/>
@@ -299,7 +299,7 @@
 					<bind node="validationMsg" to="validationMsg"/>
 					<bind node="name" to="name" alias="_subLineName"/>
 					<bind node="dummy" to="dummy"/>
-					<bind node="subLines/line" to="subLines" search="self.parent.parent.actionBuilder.name = :_actionBuilder and self.parent.parent.name = :_lineName and self.parent.name = :_subLineName and self.name = :_subSubLineName">
+					<bind node="subLines/line" to="subLines" search="self.parent.parent.actionBuilder.xmlId = :xmlId and self.parent.parent.name = :_lineName and self.parent.name = :_subLineName and self.name = :_subSubLineName">
 						<bind node="target" alias="target" />
 						<bind node="source" alias="source" />
 						<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :target" create="false"/>
