@@ -67,6 +67,8 @@ import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticAxisService;
+import com.axelor.apps.account.service.AnalyticAxisServiceImpl;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateServiceImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -283,5 +285,7 @@ public class AccountModule extends AxelorModule {
 
     bind(AnalyticDistributionTemplateService.class)
         .to(AnalyticDistributionTemplateServiceImpl.class);
+
+    bind(AnalyticAxisService.class).to(AnalyticAxisServiceImpl.class);
   }
 }

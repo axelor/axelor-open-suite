@@ -7,6 +7,7 @@
 		model="com.axelor.apps.account.db.AnalyticAxis">
 		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 		<field name="name" />
+		<field name="company" hidden="true"/>
 	</grid>
 	
 	<form name="analytic-axis-form" title="Analytic Axis"
@@ -16,7 +17,7 @@
 			<field name="name" />
 			<field name="nbrOfAnalyticGrouping" onChange="action-attrs-analytic-axis-set-grouping,action-attrs-analytic-axis-hide-grouping"/>
 			<field name="manageParentAccount"/>
-			<field name="company" colSpan="12" />
+			<field name="company" colSpan="12" onChange="action-method-axis-change-company"/>
 			<field name="analyticGrouping1" onChange="action-validate-analytic-axis-check-1,save" hidden="true"/>
 			<field name="analyticGrouping2" onChange="action-validate-analytic-axis-check-2" hidden="true"/>
 			<field name="analyticGrouping3" onChange="action-validate-analytic-axis-check-3" hidden="true"/>
@@ -157,4 +158,9 @@
 	<action-record name="action-record-axis-delete-grouping-10" model="com.axelor.apps.account.db.AnalyticAxis">
 		<field name="analyticGrouping10" expr="eval: null" if="analyticGrouping10 &amp;&amp; (analyticGrouping10 == analyticGrouping1 || analyticGrouping10 == analyticGrouping2 || analyticGrouping10 == analyticGrouping3 || analyticGrouping10 == analyticGrouping4 || analyticGrouping10 == analyticGrouping5 || analyticGrouping10 == analyticGrouping6 || analyticGrouping10 == analyticGrouping7 || analyticGrouping10 == analyticGrouping8 || analyticGrouping10 == analyticGrouping9)"/>
 	</action-record>
+	
+	<action-method name="action-method-axis-change-company">
+		<call class="com.axelor.apps.account.web.AnalyticAxisController" method="checkCompanyOnMoveLine"/>
+	</action-method>
+	
 </object-views>

@@ -19,6 +19,8 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -30,6 +32,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -98,6 +101,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AnalyticAccountRepository analyticAccountRepository;
   protected AccountRepository accountRepository;
   protected AccountConfigRepository accountConfigRepository;
+  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
 
   @Inject
   public MoveLineServiceImpl(
@@ -114,7 +118,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AnalyticMoveLineRepository analyticMoveLineRepository,
       AnalyticAccountRepository analyticAccountRepository,
       AccountRepository accountRepository,
-      AccountConfigRepository accountConfigRepository) {
+      AccountConfigRepository accountConfigRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -129,6 +134,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.analyticAccountRepository = analyticAccountRepository;
     this.accountRepository = accountRepository;
     this.accountConfigRepository = accountConfigRepository;
+    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
   }
 
   @Override
@@ -1380,5 +1386,63 @@ public class MoveLineServiceImpl implements MoveLineService {
       }
     }
     return moveLine;
+  }
+
+  public <T> List<T> intersection(List<T> list1, List<T> list2) {
+    List<T> list = new ArrayList<T>();
+
+    for (T t : list1) {
+      if (list2.contains(t)) {
+        list.add(t);
+      }
+    }
+
+    return list;
+  }
+
+  @Override
+  public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine) {
+    return (position
+        <= accountConfigRepository
+            .findByCompany(moveLine.getMove().getCompany())
+            .getNbrOfAnalyticAxisSelect());
+  }
+
+  public List<Long> setAxisDomains(MoveLine moveLine, int position) {
+    List<Long> analyticAccountListByAxis = new ArrayList<Long>();
+    List<Long> analyticAccountListByRules = new ArrayList<Long>();
+
+    AnalyticAxis analyticAxis = new AnalyticAxis();
+
+    if (compareNbrOfAnalyticAxisSelect(position, moveLine)) {
+
+      for (AnalyticAxisByCompany axis :
+          accountConfigRepository
+              .findByCompany(moveLine.getMove().getCompany())
+              .getAnalyticAxisByCompanyList()) {
+        if (axis.getOrderSelect() == position) {
+          System.err.println(analyticAxis);
+          analyticAxis = axis.getAnalyticAxis();
+        }
+      }
+
+      for (AnalyticAccount analyticAccount :
+          analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
+        analyticAccountListByAxis.add(analyticAccount.getId());
+      }
+
+      if (!accountAnalyticRulesRepository
+          .findAnalyticAccountByAccounts(moveLine.getAccount())
+          .isEmpty()) {
+
+        for (AnalyticAccount analyticAccount :
+            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(moveLine.getAccount())) {
+          analyticAccountListByRules.add(analyticAccount.getId());
+        }
+        analyticAccountListByAxis =
+            intersection(analyticAccountListByAxis, analyticAccountListByRules);
+      }
+    }
+    return analyticAccountListByAxis;
   }
 }

@@ -145,4 +145,8 @@ public interface MoveLineService {
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 
   public MoveLine analyzeMoveLine(MoveLine moveLine);
+
+  public List<Long> setAxisDomains(MoveLine moveline, int position);
+
+  public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine);
 }

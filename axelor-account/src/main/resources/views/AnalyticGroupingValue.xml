@@ -9,12 +9,24 @@
 		<field name="analyticGrouping.analyticAxis" title="Analytic Axis related"/>
 		<field name="analyticGrouping"/>
 	</grid>
+	
+	<grid name="analytic-grouping-value-grouping-grid" title="Analytic Grouping Values" model="com.axelor.apps.account.db.AnalyticGroupingValue">
+		<field name="code"/>
+		<field name="name"/>
+	</grid>
     
     <form name="analytic-grouping-value-form" title="Analytic Grouping Value" model="com.axelor.apps.account.db.AnalyticGroupingValue">
         <panel name="mainPanel">
 	        <field name="code"/>
 			<field name="name"/>
 			<field name="analyticGrouping"/>
+        </panel>      
+    </form>
+    
+    <form name="analytic-grouping-value-grouping-form" title="Analytic Grouping Value" model="com.axelor.apps.account.db.AnalyticGroupingValue">
+        <panel name="mainPanel">
+	        <field name="code"/>
+			<field name="name"/>
         </panel>      
     </form>
 

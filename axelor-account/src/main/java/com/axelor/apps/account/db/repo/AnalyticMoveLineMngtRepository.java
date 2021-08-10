@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.account.db.repo;
 
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.db.Query;
+import java.util.List;
 
 public class AnalyticMoveLineMngtRepository extends AnalyticMoveLineRepository {
   @Override
@@ -26,5 +30,14 @@ public class AnalyticMoveLineMngtRepository extends AnalyticMoveLineRepository {
     copy.setMoveLine(null);
     copy.setInvoiceLine(null);
     return copy;
+  }
+
+  public List<AnalyticMoveLine> findByAnalyticAxisAndAnotherCompany(
+      AnalyticAxis analyticAxis, Company company) {
+    return Query.of(AnalyticMoveLine.class)
+        .filter("self.analyticAxis = :analyticAxis AND self.account.company != :company")
+        .bind("analyticAxis", analyticAxis)
+        .bind("company", company)
+        .fetch();
   }
 }

@@ -12,7 +12,7 @@
     	onSave="action-analytic-distribution-template-on-save">
         <panel name="mainPanel" >
 	        <field name="name"/>
-	        <field name="company" onChange="save"/>
+	        <field name="company" required="true" onChange="save"/>
         </panel>      
         <panel-related name="analyticDistributionLineListPanel" field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
     </form>

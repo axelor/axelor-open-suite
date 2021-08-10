@@ -29,9 +29,9 @@
         <panel name="mainPanel">
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="name"/>
-	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-record-analytic-account-set-values,action-attrs-analytic-account-change-axis,save"/>
+	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" required="true" onChange="action-record-analytic-account-set-values,action-attrs-analytic-account-change-axis,save"/>
 	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid" domain="self.analyticLevel.nbr = :level AND self.analyticAxis = :analyticAxis"/>
-	        <field name="analyticLevel" form-view="analytic-level-form" grid-view="analytic-level-grid" onChange="action-record-domain-analytic-level-parent"/>
+	        <field name="analyticLevel" form-view="analytic-level-form" grid-view="analytic-level-grid" requiredIf="analyticAxis.manageParentAccount" onChange="action-record-domain-analytic-level-parent"/>
 	        <field name="$level" type="integer" hidden="true"/>
         </panel>
         <panel name="groupingValuePanel" hidden="true">

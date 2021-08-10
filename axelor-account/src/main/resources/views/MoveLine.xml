@@ -65,7 +65,7 @@
 		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
 		<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" 
 		readonlyIf="!(account.analyticDistributionAuthorized == true &amp;&amp; account.analyticDistributionTemplate == null)" 
-		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
+		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/><field name="$test1" expr="__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis"/>
         <field name="origin" width="120"/>
         <field name="description" requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
         <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid" form-view="analytic-move-line-move-line-form"/>
@@ -393,7 +393,7 @@
 	</action-group>
 
     <action-method name="action-move-line-method-compute-analytic-distribution">
-		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution"/>
+		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution" if="account"/>
 	</action-method>
     
     <action-method name="action-move-line-method-create-analytic-distribution">
@@ -553,18 +553,6 @@
 		<field name="date" expr="eval: __parent__.date" if="__parent__"/>
 	</action-record>
 	
-	<action-attrs name="action-attrs-move-line-set-domain-axis">
-		<attribute name="value" for="move" expr="eval: __parent__"/>
-		<attribute if="(__parent__ &amp;&amp; 1 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect) &amp;&amp; __repo__(AnalyticRules).findAnalyticAccountByAccounts(account)" name="domain" expr="eval: &quot;self.id IN (${__repo__(AnalyticAccount).findByAnalyticAxis(__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis)?.collect{it.id}+[0]}).intersect{${(__repo__(AnalyticRules).findAnalyticAccountByAccounts(account)?.collect{it.id}+[0]).join(',')}}&quot;" for="axis1AnalyticAccount"/>
-		
-		<attribute name="domain" for="axis1AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis?.id} &quot;" if="(__parent__ &amp;&amp; 1 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect) &amp;&amp; !__repo__(AnalyticRules).findAnalyticAccountByAccounts(account)"/>
-		
-		<attribute name="domain" for="axis2AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 2 }?.analyticAxis?.id} &quot;" if="(__parent__ &amp;&amp; 2 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="domain" for="axis3AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 3 }?.analyticAxis?.id} &quot;" if="(__parent__ &amp;&amp; 3 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="domain" for="axis4AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 4 }?.analyticAxis?.id} &quot;" if="(__parent__ &amp;&amp; 4 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="domain" for="axis5AnalyticAccount" expr="eval: &quot;self.analyticAxis.id = ${__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 5 }?.analyticAxis?.id} &quot;" if="(__parent__ &amp;&amp; 5 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-	</action-attrs>
-	
 	<action-group name="action-group-account-move-line-on-change">
 		<action name="action-move-line-method-compute-analytic-distribution"/>
 		<action name="action-attrs-move-line-set-domain-axis"/>
@@ -572,6 +560,10 @@
 
 	<action-method name="action-method-move-line-axis-create-analytic-line" >
 		<call class="com.axelor.apps.account.web.MoveLineController" method="createAnalyticAccountLines" />
+	</action-method>
+	
+	<action-method name="action-attrs-move-line-set-domain-axis" >
+		<call class="com.axelor.apps.account.web.MoveLineController" method="setAxisDomains" />
 	</action-method>
 
 </object-views>
