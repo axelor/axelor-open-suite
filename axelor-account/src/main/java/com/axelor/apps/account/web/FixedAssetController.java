@@ -61,7 +61,6 @@ public class FixedAssetController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-    response.setValue("residualValue", fixedAsset.getGrossValue());
     response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
     response.setValue("fiscalFixedAssetLineList", fixedAsset.getFiscalFixedAssetLineList());
     response.setValue("fixedAssetDerogatoryLineList", fixedAsset.getFixedAssetDerogatoryLineList());

@@ -54,7 +54,7 @@
 	<date name="failoverDate" title="Failover Date"/>
 	<decimal name="pastDepreciation" title="Past Depreciation"/>
 	<decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
-	<decimal name="accountingValue" title="Accounting Value"/>
+	<decimal name="accountingValue" title="Accounting value"/>
 	<decimal name="correctedResidualValue" title="Corrected Residual Value"/>
 	
 	<boolean name="isEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>

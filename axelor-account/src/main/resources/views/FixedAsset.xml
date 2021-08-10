@@ -48,7 +48,7 @@
 	      <field name="fiscalDurationInMonth" readonly="true" showIf="fiscalPeriodicityTypeSelect == 1" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
 	      <field name="fixedAssetCategory.isProrataTemporis"/>
 	      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
-	      <panel-related name="fiscalFixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fiscalFixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
+	      <panel-related name="fiscalFixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fiscalFixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fiscal-fixed-asset-line-grid" canNew="false"/>
 	    </panel>
 	    <panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect > 1">
 	      <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
@@ -89,7 +89,7 @@
 	    <field name="pastDepreciation"/>
 	    <field name="alreadyDepreciatedAmount"/>
 	    <field name="grossValue" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
-	    <field name="residualValue" readonly="true"/>
+	    <field name="residualValue"/>
 	    <field name="accountingValue"/>
 	    <field name="correctedResidualValue" readonlyIf="residualValue == null || residualValue &lt;= 0"/>
 	  </panel>
@@ -143,7 +143,6 @@
     </action-record>
     
     <action-record name="action-fixed-asset-record-set-residual-value" model="com.axelor.apps.account.db.FixedAsset">
-    	<field name="residualValue" expr="eval: grossValue"/>
     	<field name="fixedAssetLineList" expr="eval: null" if="!grossValue"/>
     </action-record>
     

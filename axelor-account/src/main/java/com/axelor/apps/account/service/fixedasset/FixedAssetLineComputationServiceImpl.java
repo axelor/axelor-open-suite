@@ -47,16 +47,31 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     LocalDate firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, typeSelect);
     BigDecimal accountingValue = fixedAsset.getGrossValue().subtract(depreciation);
+    BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, accountingValue);
     return createPlannedFixedAssetLine(
         fixedAsset,
         firstDepreciationDate,
         depreciation,
         depreciation,
         accountingValue,
-        typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
-            ? fixedAsset.getGrossValue().subtract(accountingValue)
-            : fixedAsset.getGrossValue(),
+        depreciationBase,
         typeSelect);
+  }
+
+  protected BigDecimal computeDepreciationBase(
+      FixedAsset fixedAsset, int typeSelect, BigDecimal accountingValue) {
+    // Default value is if typeSelect is fiscal.
+    BigDecimal depreciationBase = fixedAsset.getGrossValue();
+    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC) {
+      if (fixedAsset
+          .getComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        depreciationBase = fixedAsset.getGrossValue().subtract(accountingValue);
+      } else {
+        depreciationBase = fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
+      }
+    }
+    return depreciationBase;
   }
 
   protected BigDecimal computeInitialDepreciation(FixedAsset fixedAsset, int typeSelect) {
@@ -310,16 +325,14 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     } else {
       depreciationDate = computeLastProrataDepreciationDate(fixedAsset, typeSelect);
     }
-
+    BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, accountingValue);
     return createPlannedFixedAssetLine(
         fixedAsset,
         depreciationDate,
         depreciation,
         cumulativeDepreciation,
         accountingValue,
-        typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
-            ? fixedAsset.getGrossValue().subtract(accountingValue)
-            : fixedAsset.getGrossValue(),
+        depreciationBase,
         typeSelect);
   }
 
