@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.FixedAssetType;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.Assert;
@@ -46,12 +47,12 @@ public class FixedAssetTestTool {
       LocalDate depreciationDate,
       BigDecimal depreciation,
       BigDecimal cumulativeDepreciation,
-      BigDecimal residualValue) {
+      BigDecimal accountingValue) {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
     fixedAssetLine.setDepreciationDate(depreciationDate);
     fixedAssetLine.setDepreciation(depreciation);
     fixedAssetLine.setCumulativeDepreciation(cumulativeDepreciation);
-    fixedAssetLine.setResidualValue(residualValue);
+    fixedAssetLine.setAccountingValue(accountingValue);
     return fixedAssetLine;
   }
 
@@ -94,6 +95,7 @@ public class FixedAssetTestTool {
     fixedAsset.setDurationInMonth(numberOfDepreciation * periodicityInMonth);
     fixedAsset.setFixedAssetCategory(fixedAssetCategory);
     fixedAsset.setGrossValue(grossValue);
+    fixedAsset.setDepreciationPlanSelect(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC);
 
     return fixedAsset;
   }
@@ -111,8 +113,8 @@ public class FixedAssetTestTool {
       Assert.assertEquals(
           expectedLine.getCumulativeDepreciation(), actualLine.getCumulativeDepreciation());
     }
-    if (expectedLine.getResidualValue() != null) {
-      Assert.assertEquals(expectedLine.getResidualValue(), actualLine.getResidualValue());
+    if (expectedLine.getAccountingValue() != null) {
+      Assert.assertEquals(expectedLine.getAccountingValue(), actualLine.getAccountingValue());
     }
   }
 }
