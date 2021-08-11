@@ -50,7 +50,7 @@
 	      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
 	      <panel-related name="fiscalFixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fiscalFixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fiscal-fixed-asset-line-grid" canNew="false"/>
 	    </panel>
-	    <panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect > 1">
+	    <panel name="depreciationInfo" title="Depreciation information" readonlyIf="statusSelect > 2">
 	      <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
 	      <field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef" requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
 	      <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
@@ -77,7 +77,7 @@
 	    <button name="computeDepreciationBtn" title="Compute depreciation" hideIf="statusSelect > 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="action-fixed-asset-group-compute-depreciation-click"/>
 	    <button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="save,action-fixed-asset-method-compute-depreciation,action-fixed-asset-record-status-validated,save"/>
 	    <button name="disposalBtn" title="Disposal" showIf="statusSelect > 1 &amp;&amp; statusSelect != 4" onClick="save,action-fixed-asset-group-disposal-click"/>
-	    <button name="updateDepreciationBtn" title="Update depreciation" showIf="statusSelect == 2" onClick="action-method-account-fixed-asset-update-depreciation"/>
+	    <button name="updateDepreciationBtn" title="Update depreciation" showIf="statusSelect == 2" onClick="save, action-method-account-fixed-asset-update-depreciation, save"/>
 	  </panel>
 	  <panel name="datesPanel" readonlyIf="statusSelect > 1" sidebar="true">
 	    <field name="acquisitionDate" onChange="action-method-account-fixed-asset-compute-first-depreciation-date, action-fixed-asset-validate-check-first-depreciation-date" required="true"/>

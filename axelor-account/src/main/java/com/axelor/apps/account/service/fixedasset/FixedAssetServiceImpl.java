@@ -45,6 +45,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -454,14 +455,19 @@ public void updateDepreciation(FixedAsset fixedAsset) {
 		}
 		//We can do this, since we will never save fixedAsset nor fixedAssetLine in the java process
 		fixedAsset.setGrossValue(correctedAccountingValue);
-		fixedAsset.setFirstDepreciationDate(lastRealizedFixedAssetLine.getDepreciationDate());
+		fixedAsset.setFirstDepreciationDate(DateTool.plusMonths(lastRealizedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
+		fixedAsset.setNumberOfDepreciation(fixedAsset.getNumberOfDepreciation() - fixedAssetLineList.size());
+		if (fixedAsset.getNumberOfDepreciation() <= 0) {
+			return; 
+		}
 	    FixedAssetLine initialFixedAssetLine =
 	              fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
 	                  fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+	    fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
 	    generateComputedPlannedFixedAssetLine(
 	            fixedAsset,
 	            initialFixedAssetLine,
-	            fixedAsset.getFixedAssetLineList(),
+	            fixedAssetLineList,
 	            FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
 	    
 		

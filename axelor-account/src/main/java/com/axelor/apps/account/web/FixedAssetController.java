@@ -113,6 +113,8 @@ public class FixedAssetController {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
       Beans.get(FixedAssetService.class).updateDepreciation(fixedAsset);
       response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
+      response.setValue("fiscalFixedAssetLineList", fixedAsset.getFiscalFixedAssetLineList());
+      response.setValue("fixedAssetDerogatoryLineList", fixedAsset.getFixedAssetDerogatoryLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
