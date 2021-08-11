@@ -1,14 +1,5 @@
 package com.axelor.apps.account.service.fixedasset;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
@@ -27,6 +18,13 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixedAssetDerogatoryLineMoveServiceImpl
     implements FixedAssetDerogatoryLineMoveService {
@@ -55,7 +53,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   public void realize(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException {
     log.debug("Computing action 'realize' on " + fixedAssetDerogatoryLine);
 
-    if (fixedAssetDerogatoryLine == null || fixedAssetDerogatoryLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED) {
+    if (fixedAssetDerogatoryLine == null
+        || fixedAssetDerogatoryLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED) {
       return;
     }
     BigDecimal derogatoryAmount = fixedAssetDerogatoryLine.getDerogatoryAmount();

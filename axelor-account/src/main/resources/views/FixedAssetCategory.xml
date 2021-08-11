@@ -30,6 +30,7 @@
 	      <field name="incomeDepreciationDerogatoryAccount" form-view="account-form"/>
 	      <field name="debtReceivableAccount" form-view="account-form"/>
 	      <field name="provisionTangibleFixedAssetAccount" form-view="account-form"/>
+	      <field name="wbProvisionTangibleFixedAssetAccount" form-view="account-form"/>
 	      <panel name="exitAccountPanel" title="Assets cession" colspan="12">
 	      	<field name="realisedAssetsValueAccount" form-view="account-form"/>
 	        <field name="realisedAssetsIncomeAccount" form-view="account-form"/>

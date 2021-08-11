@@ -60,7 +60,7 @@
 	      <field name="durationInMonth" readonly="true" showIf="periodicityTypeSelect == 1"/>
 	      <field name="fixedAssetCategory.isProrataTemporis"/>
 	      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
-	      <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
+	      <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 2" colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
 	    </panel>
 	    <panel name="derogatoryPanel" title="Derogatory" showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)">
 	      <panel-related name="fixedAssetDerogatoryLineListPanel" readonlyIf="statusSelect > 1"  field="fixedAssetDerogatoryLineList" colSpan="12" form-view="fixed-asset-derogatory-line-form" grid-view="fixed-asset-derogatory-line-grid"/>

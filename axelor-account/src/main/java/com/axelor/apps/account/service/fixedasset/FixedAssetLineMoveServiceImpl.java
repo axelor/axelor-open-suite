@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Journal;
@@ -37,11 +38,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -125,7 +129,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
    * @param depreciationDate
    * @throws AxelorException
    */
-  @Override 
+  @Override
   public void realizeOthersLines(FixedAsset fixedAsset, LocalDate depreciationDate, boolean isBatch)
       throws AxelorException {
     String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
@@ -144,12 +148,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               .findAny()
               .orElse(null);
       if (economicFixedAssetLine != null) {
-    	  realize(economicFixedAssetLine, isBatch);
+        realize(economicFixedAssetLine, isBatch);
       }
       if (fiscalFixedAssetLine != null) {
-    	  realize(fiscalFixedAssetLine, isBatch);
+        realize(fiscalFixedAssetLine, isBatch);
       }
-      
 
       if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
         FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
@@ -158,9 +161,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 .findAny()
                 .orElse(null);
         if (fixedAssetDerogatoryLine != null) {
-        	fixedAssetDerogatoryLineMoveService.realize(fixedAssetDerogatoryLine);
+          fixedAssetDerogatoryLineMoveService.realize(fixedAssetDerogatoryLine);
         }
-        
       }
     }
   }
@@ -195,9 +197,34 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       List<MoveLine> moveLines = new ArrayList<>();
 
       String origin = fixedAsset.getReference();
-      Account debitLineAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
-      Account creditLineAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
+      FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+      Account debitLineAccount = fixedAssetCategory.getChargeAccount();
+      Account creditLineAccount = fixedAssetCategory.getDepreciationAccount();
       BigDecimal amount = fixedAssetLine.getDepreciation();
+      BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
+      BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
+
+      if (correctedAccountingValue != null
+          && !(correctedAccountingValue.signum() != 0)
+          && impairmentValue != null
+          && !(impairmentValue.signum() != 0)) {
+        if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
+          if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+                "provisionTangibleFixedAssetAccount/wbProvisionTangibleFixedAssetAccount");
+          }
+
+          debitLineAccount = fixedAssetCategory.getChargeAccount();
+          creditLineAccount =
+              fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+        } else {
+          debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+          creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
+        }
+        amount = impairmentValue.abs();
+      }
 
       // Creating accounting debit move line
       MoveLine debitMoveLine =
