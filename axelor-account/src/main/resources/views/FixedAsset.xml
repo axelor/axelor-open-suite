@@ -109,14 +109,18 @@
     		<field name="disposalDate" onChange="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line" type="date" title="Disposal date"/>
 	    	<field name="disposalTypeSelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
 	    	<field name="disposalQtySelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
-	    	<field name="qty" showIf="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect != 1" min="0"/>
-    		<field name="disposalAmount" type="decimal" title="Disposal amount" min="0"/>
-    		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-fixed-asset-disposal-wizard-method-disposal"/>
+	    	<field name="qty" onChange="action-validate-account-fixed-asset-wizard-form-validate-qty" showIf="disposalQtySelect == 2" min="0.01" type="decimal" />
+    		<field name="disposalAmount" showIf="disposalTypeSelect != 1"  type="decimal" title="Disposal amount" min="0.01"/>
+    		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal"/>
     		<field name="$generateSaleMove" title="Generate Sale Move" widget="boolean" showIf="disposalTypeSelect == 2"/>
     		<field name="saleTaxLine" title="Tax line" widget="many-to-one" target="com.axelor.apps.account.db.TaxLine" showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove"/>
     		<field name="comments" colSpan="12" widget="text" showIf="disposalTypeSelect == 2"/>
+    		<field name="$originalQty" hidden="true" type="decimal"/>
     	</panel>
     </form>
+    <action-validate name="action-validate-account-fixed-asset-wizard-form-validate-qty">
+    	<error if="qty &lt; 0 || qty &gt; $originalQty " message="Disposal Quantity must be greater than 0 and lesser than fixed asset disposal quantity"/>
+    </action-validate>
     <action-attrs name="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     	<attribute name="domain" for="saleTaxLine" expr="eval: &quot;(self.endDate &gt; :disposalDate OR self.endDate IS NULL) AND self.startDate &lt; :disposalDate &quot;"/>
     </action-attrs>
@@ -134,6 +138,7 @@
     	<field name="disposalDate" expr="eval: __date__"/>
     	<field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
     	<field name="qty" expr="eval:_fixedAsset?.qty"/>
+    	<field name="$originalQty" expr="eval: _fixedAsset?.qty"/>
     </action-record>
     
     <action-record name="action-fixed-asset-record-default" model="com.axelor.apps.account.db.FixedAsset">
