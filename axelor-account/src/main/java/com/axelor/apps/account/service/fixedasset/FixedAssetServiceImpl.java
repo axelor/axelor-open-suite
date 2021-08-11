@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -38,15 +50,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -420,4 +423,20 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
     }
   }
+
+@Override
+public void updateDepreciation(FixedAsset fixedAsset) {
+	
+	BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
+	if (correctedAccountingValue != null && fixedAsset.getDepreciationPlanSelect().contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+		List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+		fixedAssetLineList.sort((fa1, fa2) -> fa2.getDepreciationDate().compareTo(fa1.getDepreciationDate()));
+		Optional<FixedAssetLine> optFixedAssetLine = fixedAssetLineList.stream().filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED).findFirst();
+		if (!optFixedAssetLine.isPresent()) {
+			return;
+		}
+	}
+	
+	
+}
 }

@@ -77,6 +77,7 @@
 	    <button name="computeDepreciationBtn" title="Compute depreciation" hideIf="statusSelect > 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="action-fixed-asset-group-compute-depreciation-click"/>
 	    <button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="save,action-fixed-asset-method-compute-depreciation,action-fixed-asset-record-status-validated,save"/>
 	    <button name="disposalBtn" title="Disposal" showIf="statusSelect > 1 &amp;&amp; statusSelect != 4" onClick="save,action-fixed-asset-group-disposal-click"/>
+	    <button name="updateDepreciationBtn" title="Update depreciation" showIf="statusSelect == 2" onClick="action-method-account-fixed-asset-update-depreciation"/>
 	  </panel>
 	  <panel name="datesPanel" readonlyIf="statusSelect > 1" sidebar="true">
 	    <field name="acquisitionDate" onChange="action-method-account-fixed-asset-compute-first-depreciation-date, action-fixed-asset-validate-check-first-depreciation-date" required="true"/>
@@ -91,7 +92,7 @@
 	    <field name="grossValue" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
 	    <field name="residualValue"/>
 	    <field name="accountingValue"/>
-	    <field name="correctedResidualValue" readonlyIf="residualValue == null || residualValue &lt;= 0"/>
+	    <field name="correctedAccountingValue" readonlyIf="accountingValue == null || accountingValue &lt;= 0"/>
 	  </panel>
 	  <panel name="transferredPanel" title="Exit" showIf="statusSelect == 4" sidebar="true">
 	    <field name="transferredReasonSelect" showIf="statusSelect == 4"/>
@@ -119,7 +120,7 @@
     	</panel>
     </form>
     <action-validate name="action-validate-account-fixed-asset-wizard-form-validate-qty">
-    	<error if="qty &lt; 0 || qty &gt; $originalQty " message="Disposal Quantity must be greater than 0 and lesser than fixed asset disposal quantity"/>
+    	<error if="disposalQtySelect == 2 &amp;&amp; (qty &lt; 0 || qty &gt; $originalQty) " message="Disposal Quantity must be greater than 0 and lesser than fixed asset disposal quantity"/>
     </action-validate>
     <action-attrs name="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     	<attribute name="domain" for="saleTaxLine" expr="eval: &quot;(self.endDate &gt; :disposalDate OR self.endDate IS NULL) AND self.startDate &lt; :disposalDate &quot;"/>
@@ -292,6 +293,9 @@
     
     <action-method name="action-method-account-fixed-asset-compute-first-depreciation-date">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="computeFirstDepreciationDate"/>
+    </action-method>
+    <action-method name="action-method-account-fixed-asset-update-depreciation">
+    	<call class="com.axelor.apps.account.web.FixedAssetController" method="updateDepreciation"/>
     </action-method>
 
     

@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -35,13 +44,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService {
 
@@ -123,7 +125,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
    * @param depreciationDate
    * @throws AxelorException
    */
-  @Override
+  @Override 
   public void realizeOthersLines(FixedAsset fixedAsset, LocalDate depreciationDate, boolean isBatch)
       throws AxelorException {
     String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
@@ -141,9 +143,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               .filter(line -> line.getDepreciationDate().equals(depreciationDate))
               .findAny()
               .orElse(null);
-
-      realize(economicFixedAssetLine, isBatch);
-      realize(fiscalFixedAssetLine, isBatch);
+      if (economicFixedAssetLine != null) {
+    	  realize(economicFixedAssetLine, isBatch);
+      }
+      if (fiscalFixedAssetLine != null) {
+    	  realize(fiscalFixedAssetLine, isBatch);
+      }
+      
 
       if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
         FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
@@ -151,7 +157,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 .filter(line -> line.getDepreciationDate().equals(depreciationDate))
                 .findAny()
                 .orElse(null);
-        fixedAssetDerogatoryLineMoveService.realize(fixedAssetDerogatoryLine);
+        if (fixedAssetDerogatoryLine != null) {
+        	fixedAssetDerogatoryLineMoveService.realize(fixedAssetDerogatoryLine);
+        }
+        
       }
     }
   }

@@ -89,4 +89,6 @@ public interface FixedAssetService {
    * @param fixedAsset
    */
   void computeFirstDepreciationDate(FixedAsset fixedAsset);
+
+  void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 }

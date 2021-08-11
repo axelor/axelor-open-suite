@@ -55,7 +55,7 @@
 	<decimal name="pastDepreciation" title="Past Depreciation"/>
 	<decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
 	<decimal name="accountingValue" title="Accounting value"/>
-	<decimal name="correctedResidualValue" title="Corrected Residual Value"/>
+	<decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
 	
 	<boolean name="isEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
 	<integer name="periodicityTypeSelect" title="Periodicity Type" selection="account.fixed.asset.periodicity.type" default="12"/>
