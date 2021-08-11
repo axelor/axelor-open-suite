@@ -430,13 +430,49 @@ public void updateDepreciation(FixedAsset fixedAsset) {
 	BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
 	if (correctedAccountingValue != null && fixedAsset.getDepreciationPlanSelect().contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
 		List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
-		fixedAssetLineList.sort((fa1, fa2) -> fa2.getDepreciationDate().compareTo(fa1.getDepreciationDate()));
-		Optional<FixedAssetLine> optFixedAssetLine = fixedAssetLineList.stream().filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED).findFirst();
+		Optional<FixedAssetLine> optFixedAssetLine = findNewestRealizedFixedAssetLine(fixedAssetLineList, 0);
 		if (!optFixedAssetLine.isPresent()) {
 			return;
 		}
+		//We can proceed the next part.
+		//We remove all fixedAssetLine that are not realized.
+		fixedAssetLineList.removeIf(fixedAssetLine -> fixedAssetLine.getStatusSelect() ==  FixedAssetLineRepository.STATUS_PLANNED);
+		FixedAssetLine lastRealizedFixedAssetLine = optFixedAssetLine.get();
+		lastRealizedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
+		lastRealizedFixedAssetLine.setImpairmentValue(lastRealizedFixedAssetLine.getAccountingValue().subtract(lastRealizedFixedAssetLine.getCorrectedAccountingValue()));
+		Optional<FixedAssetLine> previousLastRealizedFAL = findNewestRealizedFixedAssetLine(fixedAssetLineList, 1);
+		if (previousLastRealizedFAL.isPresent()) {
+			lastRealizedFixedAssetLine.setCumulativeDepreciation(
+					previousLastRealizedFAL.get().getCumulativeDepreciation()
+					.add(lastRealizedFixedAssetLine.getDepreciation())
+					.add(lastRealizedFixedAssetLine.getImpairmentValue()));
+		}
+		else {
+			lastRealizedFixedAssetLine.setCumulativeDepreciation(BigDecimal.ZERO
+					.add(lastRealizedFixedAssetLine.getDepreciation())
+					.add(lastRealizedFixedAssetLine.getImpairmentValue()));
+		}
+		//We can do this, since we will never save fixedAsset nor fixedAssetLine in the java process
+		fixedAsset.setGrossValue(correctedAccountingValue);
+		fixedAsset.setFirstDepreciationDate(lastRealizedFixedAssetLine.getDepreciationDate());
+	    FixedAssetLine initialFixedAssetLine =
+	              fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
+	                  fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+	    generateComputedPlannedFixedAssetLine(
+	            fixedAsset,
+	            initialFixedAssetLine,
+	            fixedAsset.getFixedAssetLineList(),
+	            FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+	    
+		
 	}
 	
 	
+}
+
+private Optional<FixedAssetLine> findNewestRealizedFixedAssetLine(List<FixedAssetLine> fixedAssetLineList, int nbLineToSkip) {
+	fixedAssetLineList.sort((fa1, fa2) -> fa2.getDepreciationDate().compareTo(fa1.getDepreciationDate()));
+	Optional<FixedAssetLine> optFixedAssetLine = fixedAssetLineList.stream().filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED).skip(nbLineToSkip).findFirst();
+	return optFixedAssetLine;
 }
 }

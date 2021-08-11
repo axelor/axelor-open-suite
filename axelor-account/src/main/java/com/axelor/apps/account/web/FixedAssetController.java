@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.account.web;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
@@ -27,8 +30,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Singleton
 public class FixedAssetController {
@@ -111,6 +112,7 @@ public class FixedAssetController {
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
       Beans.get(FixedAssetService.class).updateDepreciation(fixedAsset);
+      response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
