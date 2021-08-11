@@ -18,7 +18,8 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
   @Override
   public boolean checkCompanyOnMoveLine(AnalyticAxis analyticAxis) {
     if (analyticAxis != null && analyticAxis.getCompany() != null) {
-      if (ObjectUtils.isEmpty(analyticMoveLineManagementRepository.findByAnalyticAxisAndAnotherCompany(
+      if (!ObjectUtils.isEmpty(
+          analyticMoveLineManagementRepository.findByAnalyticAxisAndAnotherCompany(
               analyticAxis, analyticAxis.getCompany()))) {
         return true;
       }
