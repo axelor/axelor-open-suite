@@ -43,8 +43,8 @@
 	      <field name="fiscalComputationMethodSelect" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
 	      <field name="fiscalDegressiveCoef" showIf="fiscalComputationMethodSelect == 'degressive'" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
 	      <field name="fiscalNumberOfDepreciation" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal, action-record-account-fixed-asset-compute-fiscal-duration"/>
-	      <field name="fiscalPeriodicityTypeSelect" onChange="action-attrs-account-fiscal-periodicity-type-select-on-change, action-record-account-fixed-asset-compute-fiscal-duration, action-attrs-fixed-asset-fiscal-depreciation-equal"/>
-	      <field name="fiscalPeriodicityInMonth" showIf="fiscalPeriodicityTypeSelect == 1" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal, action-record-account-fixed-asset-compute-fiscal-duration" min="1"/>
+	      <field name="fiscalPeriodicityTypeSelect" onChange="action-attrs-account-fiscal-periodicity-type-select-on-change, action-record-account-fixed-asset-compute-fiscal-duration, action-attrs-fixed-asset-fiscal-depreciation-equal, action-fixed-asset-category-record-compute-duration"/>
+	      <field name="fiscalPeriodicityInMonth" showIf="fiscalPeriodicityTypeSelect == 1" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal, action-record-account-fixed-asset-compute-fiscal-duration, action-fixed-asset-category-record-compute-duration" min="1"/>
 	      <field name="fiscalDurationInMonth" readonly="true" showIf="fiscalPeriodicityTypeSelect == 1" onChange="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
 	      <field name="fixedAssetCategory.isProrataTemporis"/>
 	      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>

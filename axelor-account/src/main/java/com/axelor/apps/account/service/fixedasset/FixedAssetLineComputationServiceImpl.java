@@ -159,7 +159,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     //Added this condition since baseValue in this case is not constant
     if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC && fixedAsset
           .getComputationMethodSelect()
-          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE) && !fixedAsset.getIsEqualToFiscalDepreciation()) {
     	return depreciation;
     }
     if (depreciation
@@ -325,7 +325,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, previousFixedAssetLine.getCumulativeDepreciation());
     BigDecimal cumulativeDepreciation =
         previousFixedAssetLine.getCumulativeDepreciation().add(depreciation);
-    BigDecimal accountingValue = previousFixedAssetLine.getAccountingValue().subtract(depreciation);
+    BigDecimal accountingValue = depreciationBase.subtract(cumulativeDepreciation);
 
 
     LocalDate depreciationDate;
@@ -383,7 +383,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset, int typeSelect) {
     LocalDate d =
         DateTool.plusMonths(
-            fixedAsset.getAcquisitionDate(),
+            fixedAsset.getFirstDepreciationDate(),
             typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
                 ? fixedAsset.getDurationInMonth()
                 : fixedAsset.getFiscalDurationInMonth());
@@ -399,6 +399,6 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
       }
     }
 
-    return d.minusDays(1);
+    return d;
   }
 }
