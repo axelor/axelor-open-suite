@@ -99,9 +99,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
 
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
-
-    BigDecimal residualValue = fixedAsset.getResidualValue();
-    fixedAsset.setResidualValue(residualValue.subtract(fixedAssetLine.getDepreciation()));
+    
+    if (fixedAssetLine.getTypeSelect() == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC) {
+        BigDecimal accountingValue = fixedAsset.getAccountingValue();
+        fixedAsset.setAccountingValue(accountingValue.subtract(fixedAssetLine.getDepreciation()));
+    }
 
     FixedAssetLine plannedFixedAssetLine =
         fixedAsset.getFixedAssetLineList().stream()
@@ -192,7 +194,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-
+    BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
+    BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<>();
 
@@ -201,8 +204,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Account debitLineAccount = fixedAssetCategory.getChargeAccount();
       Account creditLineAccount = fixedAssetCategory.getDepreciationAccount();
       BigDecimal amount = fixedAssetLine.getDepreciation();
-      BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
-      BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
+
 
       if (correctedAccountingValue != null
           && (correctedAccountingValue.signum() != 0)
@@ -270,8 +272,17 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
 
     moveRepo.save(move);
-
-    fixedAssetLine.setDepreciationAccountMove(move);
+    
+    if (correctedAccountingValue != null
+            && (correctedAccountingValue.signum() != 0)
+            && impairmentValue != null
+            && (impairmentValue.signum() != 0)) {
+    	//If it's reevaluation
+    	fixedAssetLine.setImpairmentAccountMove(move);
+    }else {
+    	fixedAssetLine.setDepreciationAccountMove(move);
+    }
+    
   }
 
   @Override
