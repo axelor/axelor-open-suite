@@ -61,14 +61,14 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   }
 
   protected BigDecimal computeDepreciationBase(
-      FixedAsset fixedAsset, int typeSelect, BigDecimal accountingValue) {
+      FixedAsset fixedAsset, int typeSelect, BigDecimal cumulatedDepreciation) {
     // Default value is if typeSelect is fiscal.
     BigDecimal depreciationBase = fixedAsset.getGrossValue();
     if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC && !fixedAsset.getIsEqualToFiscalDepreciation()) {
       if (fixedAsset
           .getComputationMethodSelect()
           .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        depreciationBase = fixedAsset.getGrossValue().subtract(accountingValue);
+        depreciationBase = fixedAsset.getGrossValue().subtract(cumulatedDepreciation);
       } else {
         depreciationBase = fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
       }
@@ -156,6 +156,12 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
       }
     }
     // Second part
+    //Added this condition since baseValue in this case is not constant
+    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC && fixedAsset
+          .getComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+    	return depreciation;
+    }
     if (depreciation
             .add(previousFixedAssetLine.getCumulativeDepreciation())
             .compareTo(baseValue)
@@ -314,12 +320,13 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   public FixedAssetLine computePlannedFixedAssetLine(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect) {
 	  
-	BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, BigDecimal.ZERO);
-    BigDecimal depreciation = computeDepreciation(fixedAsset, previousFixedAssetLine, typeSelect, depreciationBase);
+	
+    BigDecimal depreciation = computeDepreciation(fixedAsset, previousFixedAssetLine, typeSelect,previousFixedAssetLine.getDepreciationBase());
+    BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, previousFixedAssetLine.getCumulativeDepreciation());
     BigDecimal cumulativeDepreciation =
         previousFixedAssetLine.getCumulativeDepreciation().add(depreciation);
-    
-    BigDecimal accountingValue = depreciationBase.subtract(cumulativeDepreciation);
+    BigDecimal accountingValue = previousFixedAssetLine.getAccountingValue().subtract(depreciation);
+
 
     LocalDate depreciationDate;
     if (!fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
