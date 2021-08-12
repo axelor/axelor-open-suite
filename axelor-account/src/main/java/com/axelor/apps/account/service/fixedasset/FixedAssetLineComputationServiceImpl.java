@@ -20,6 +20,12 @@ package com.axelor.apps.account.service.fixedasset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CALCULATION_SCALE;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Calendar;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
@@ -27,11 +33,6 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.tool.date.DateTool;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Calendar;
 
 public class FixedAssetLineComputationServiceImpl implements FixedAssetLineComputationService {
 
@@ -62,7 +63,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
       FixedAsset fixedAsset, int typeSelect, BigDecimal accountingValue) {
     // Default value is if typeSelect is fiscal.
     BigDecimal depreciationBase = fixedAsset.getGrossValue();
-    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC) {
+    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC && !fixedAsset.getIsEqualToFiscalDepreciation()) {
       if (fixedAsset
           .getComputationMethodSelect()
           .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
