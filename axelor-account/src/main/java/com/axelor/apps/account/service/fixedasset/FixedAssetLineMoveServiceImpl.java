@@ -89,9 +89,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (!isBatch) {
       if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
         generateMove(fixedAssetLine);
-      } else if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-        generateMove(fixedAssetLine);
-      }
+      } 
     } else {
       if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
         generateMove(fixedAssetLine);
