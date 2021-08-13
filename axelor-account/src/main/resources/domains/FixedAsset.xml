@@ -95,6 +95,12 @@
 		public static final int PERIODICITY_TYPE_MONTH = 1;
 		public static final int PERIODICITY_TYPE_YEAR = 12;
 		
+		public static final int DISPOSABLE_TYPE_SELECT_SCRAPPING = 1;
+		public static final int DISPOSABLE_TYPE_SELECT_CESSION = 2;
+		
+		public static final int DISPOSABLE_QTY_SELECT_TOTAL = 1;
+		public static final int DISPOSABLE_QTY_SELECT_PARTIAL = 2;
+		
 	]]></extra-code>
     
   </entity>

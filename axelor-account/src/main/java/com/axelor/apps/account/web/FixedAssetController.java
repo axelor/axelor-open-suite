@@ -68,15 +68,21 @@ public class FixedAssetController {
 
   public void disposal(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
-    if (context.get("disposalDate") == null || context.get("disposalAmount") == null) {
+    if (context.get("disposalDate") == null
+        || context.get("disposalAmount") == null
+        || context.get("disposalTypeSelect") == null
+        || context.get("disposalQtySelect") == null) {
       return;
     }
     LocalDate disposalDate = (LocalDate) context.get("disposalDate");
     BigDecimal disposalAmount = new BigDecimal(context.get("disposalAmount").toString());
+    Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
+    Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
 
-    Beans.get(FixedAssetService.class).disposal(disposalDate, disposalAmount, fixedAsset);
+    Beans.get(FixedAssetService.class)
+        .disposal(disposalDate, disposalAmount, fixedAsset, disposalTypeSelect, disposalQtySelect);
 
     response.setCanClose(true);
   }

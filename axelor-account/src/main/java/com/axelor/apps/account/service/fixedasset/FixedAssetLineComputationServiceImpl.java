@@ -20,12 +20,6 @@ package com.axelor.apps.account.service.fixedasset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CALCULATION_SCALE;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Calendar;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
@@ -33,6 +27,11 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.tool.date.DateTool;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Calendar;
 
 public class FixedAssetLineComputationServiceImpl implements FixedAssetLineComputationService {
 
@@ -45,12 +44,12 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
 
   @Override
   public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect) {
-	LocalDate firstDepreciationDate; 
-	firstDepreciationDate = computeStartDepreciationDate(fixedAsset, typeSelect);
+    LocalDate firstDepreciationDate;
+    firstDepreciationDate = computeStartDepreciationDate(fixedAsset, typeSelect);
     BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, BigDecimal.ZERO);
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, typeSelect, depreciationBase);
     BigDecimal accountingValue = depreciationBase.subtract(depreciation);
-   
+
     return createPlannedFixedAssetLine(
         fixedAsset,
         firstDepreciationDate,
@@ -61,22 +60,25 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         typeSelect);
   }
 
-private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSelect) {
-	LocalDate firstDepreciationDate;
-	if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC && !fixedAsset.getIsEqualToFiscalDepreciation()) {
-		firstDepreciationDate = analyticFixedAssetService.computeFirstDepreciationDate(fixedAsset, fixedAsset.getFirstServiceDate());
-	}
-	else {
-		firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
-	}
-	return firstDepreciationDate;
-}
+  private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSelect) {
+    LocalDate firstDepreciationDate;
+    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+        && !fixedAsset.getIsEqualToFiscalDepreciation()) {
+      firstDepreciationDate =
+          analyticFixedAssetService.computeFirstDepreciationDate(
+              fixedAsset, fixedAsset.getFirstServiceDate());
+    } else {
+      firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
+    }
+    return firstDepreciationDate;
+  }
 
   protected BigDecimal computeDepreciationBase(
       FixedAsset fixedAsset, int typeSelect, BigDecimal cumulatedDepreciation) {
     // Default value is if typeSelect is fiscal.
     BigDecimal depreciationBase = fixedAsset.getGrossValue();
-    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC && !fixedAsset.getIsEqualToFiscalDepreciation()) {
+    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+        && !fixedAsset.getIsEqualToFiscalDepreciation()) {
       if (fixedAsset
           .getComputationMethodSelect()
           .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
@@ -88,7 +90,8 @@ private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSe
     return depreciationBase;
   }
 
-  protected BigDecimal computeInitialDepreciation(FixedAsset fixedAsset, int typeSelect, BigDecimal baseValue) {
+  protected BigDecimal computeInitialDepreciation(
+      FixedAsset fixedAsset, int typeSelect, BigDecimal baseValue) {
     // Case of fiscal
     if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
       // We always look at fiscal computation method for type select fiscal.
@@ -118,8 +121,7 @@ private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSe
 
   protected BigDecimal computeInitialLinearDepreciation(
       FixedAsset fixedAsset, boolean isFiscalComputeMethod, BigDecimal baseValue) {
-    return computeInitialDepreciationNumerator(
-            baseValue, fixedAsset, isFiscalComputeMethod)
+    return computeInitialDepreciationNumerator(baseValue, fixedAsset, isFiscalComputeMethod)
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
@@ -129,14 +131,16 @@ private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSe
         isFiscalComputationMethod
             ? fixedAsset.getFiscalDegressiveCoef()
             : fixedAsset.getDegressiveCoef();
-    return computeInitialDepreciationNumerator(
-            baseValue, fixedAsset, isFiscalComputationMethod)
+    return computeInitialDepreciationNumerator(baseValue, fixedAsset, isFiscalComputationMethod)
         .multiply(ddRate)
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeDepreciation(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect, BigDecimal baseValue) {
+      FixedAsset fixedAsset,
+      FixedAssetLine previousFixedAssetLine,
+      int typeSelect,
+      BigDecimal baseValue) {
     BigDecimal depreciation;
     // First part
     // Case of fiscal
@@ -168,18 +172,17 @@ private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSe
       }
     }
     // Second part
-    //Added this condition since baseValue in this case is not constant
-    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC && fixedAsset
-          .getComputationMethodSelect()
-          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE) && !fixedAsset.getIsEqualToFiscalDepreciation()) {
-    	return depreciation;
+    // Added this condition since baseValue in this case is not constant
+    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+        && fixedAsset
+            .getComputationMethodSelect()
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)
+        && !fixedAsset.getIsEqualToFiscalDepreciation()) {
+      return depreciation;
     }
-    if (depreciation
-            .add(previousFixedAssetLine.getCumulativeDepreciation())
-            .compareTo(baseValue)
+    if (depreciation.add(previousFixedAssetLine.getCumulativeDepreciation()).compareTo(baseValue)
         > 0) {
-      depreciation =
-          baseValue.subtract(previousFixedAssetLine.getCumulativeDepreciation());
+      depreciation = baseValue.subtract(previousFixedAssetLine.getCumulativeDepreciation());
     }
     return depreciation;
   }
@@ -256,25 +259,28 @@ private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSe
             BigDecimal.valueOf(numberOfDepreciation), CALCULATION_SCALE, RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal computeProrataTemporis(FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
+  protected BigDecimal computeProrataTemporis(
+      FixedAsset fixedAsset, boolean isFiscalComputationMethod) {
     BigDecimal prorataTemporis = BigDecimal.ONE;
-    
+
     LocalDate acquisitionDate;
     LocalDate depreciationDate;
-    //If we are in economic lines && and economic is not equal to fiscal
-    if(!isFiscalComputationMethod && !fixedAsset.getIsEqualToFiscalDepreciation()) {
-  	  //Then acquisitionDate is first service date AND firstDateDepreciation is based on firstServiceDate.
-  	  acquisitionDate = fixedAsset.getFirstServiceDate();
-  	  depreciationDate = analyticFixedAssetService.computeFirstDepreciationDate(fixedAsset, fixedAsset.getFirstServiceDate());
+    // If we are in economic lines && and economic is not equal to fiscal
+    if (!isFiscalComputationMethod && !fixedAsset.getIsEqualToFiscalDepreciation()) {
+      // Then acquisitionDate is first service date AND firstDateDepreciation is based on
+      // firstServiceDate.
+      acquisitionDate = fixedAsset.getFirstServiceDate();
+      depreciationDate =
+          analyticFixedAssetService.computeFirstDepreciationDate(
+              fixedAsset, fixedAsset.getFirstServiceDate());
+    } else {
+      acquisitionDate = fixedAsset.getAcquisitionDate();
+      depreciationDate = fixedAsset.getFirstDepreciationDate();
     }
-    else {
-  	  acquisitionDate = fixedAsset.getAcquisitionDate();
-  	  depreciationDate = fixedAsset.getFirstDepreciationDate();
-    }
-    
+
     if (fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
         && !acquisitionDate.equals(depreciationDate)) {
-      
+
       acquisitionDate = acquisitionDate.minusDays(1);
       int acquisitionYear = acquisitionDate.getYear();
       Month acquisitionMonth = acquisitionDate.getMonth();
@@ -343,17 +349,23 @@ private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSe
   @Override
   public FixedAssetLine computePlannedFixedAssetLine(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect) {
-	  
-	
-    BigDecimal depreciation = computeDepreciation(fixedAsset, previousFixedAssetLine, typeSelect,previousFixedAssetLine.getDepreciationBase());
-    BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, previousFixedAssetLine.getCumulativeDepreciation());
+
+    BigDecimal depreciation =
+        computeDepreciation(
+            fixedAsset,
+            previousFixedAssetLine,
+            typeSelect,
+            previousFixedAssetLine.getDepreciationBase());
+    BigDecimal depreciationBase =
+        computeDepreciationBase(
+            fixedAsset, typeSelect, previousFixedAssetLine.getCumulativeDepreciation());
     BigDecimal cumulativeDepreciation =
         previousFixedAssetLine.getCumulativeDepreciation().add(depreciation);
     BigDecimal accountingValue = previousFixedAssetLine.getAccountingValue().subtract(depreciation);
 
+    LocalDate depreciationDate =
+        computeDepreciationDate(fixedAsset, previousFixedAssetLine, typeSelect);
 
-    LocalDate depreciationDate = computeDepreciationDate(fixedAsset, previousFixedAssetLine, typeSelect);
-    
     return createPlannedFixedAssetLine(
         fixedAsset,
         depreciationDate,
@@ -398,10 +410,10 @@ private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSe
   }
 
   protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset, int typeSelect) {
-	  LocalDate startDepreciationDate = computeStartDepreciationDate(fixedAsset, typeSelect);
+    LocalDate startDepreciationDate = computeStartDepreciationDate(fixedAsset, typeSelect);
     LocalDate d =
         DateTool.plusMonths(
-        		startDepreciationDate,
+            startDepreciationDate,
             typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
                 ? fixedAsset.getDurationInMonth()
                 : fixedAsset.getFiscalDurationInMonth());

@@ -95,7 +95,7 @@
 	    <field name="correctedAccountingValue" readonlyIf="accountingValue == null || accountingValue &lt;= 0"/>
 	  </panel>
 	  <panel name="transferredPanel" title="Exit" showIf="statusSelect == 4" sidebar="true">
-	    <field name="transferredReasonSelect" showIf="statusSelect == 4"/>
+	    <field name="transferredReasonSelect" readonlyIf="true"  showIf="statusSelect == 4"/>
 	    <field name="failoverDate" title="Date de sortie" showIf="statusSelect == 4"/>
 	    <field name="disposalValue" readonly="true" showIf="statusSelect == 4"/>
 	    <field name="disposalMove" title="Ecriture de vente" readonly="true" showIf="statusSelect == 4" form-view="move-form" grid-view="move-grid"/>
@@ -105,7 +105,7 @@
 
 
     
-    <form model="com.axelor.apps.base.db.Wizard" title="disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew, action-attrs-account-fixed-asset-wizard-form-disposal-amount, action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
+    <form model="com.axelor.apps.base.db.Wizard" title="Disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew, action-attrs-account-fixed-asset-wizard-form-disposal-amount, action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     	<panel name="mainPanel">
     		<field name="disposalDate" onChange="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line" type="date" title="Disposal date"/>
 	    	<field name="disposalTypeSelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
@@ -166,6 +166,8 @@
     </action-record>
     
     <action-record name="action-fixed-asset-record-status-validated" model="com.axelor.apps.account.db.FixedAsset">
+    	<field name="accountingValue" expr="eval:grossValue" if="isEqualToFiscalDepreciation"/>
+    	<field name="accountingValue" expr="eval:grossValue - residualValue" if="!isEqualToFiscalDepreciation"/>
     	<field name="statusSelect" expr="2"/>
     </action-record>
     

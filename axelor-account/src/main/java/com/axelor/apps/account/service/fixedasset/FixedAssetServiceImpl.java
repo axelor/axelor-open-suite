@@ -246,7 +246,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void disposal(LocalDate disposalDate, BigDecimal disposalAmount, FixedAsset fixedAsset)
+  public void disposal(
+      LocalDate disposalDate,
+      BigDecimal disposalAmount,
+      FixedAsset fixedAsset,
+      Integer disposalTypeSelect,
+      Integer disposalQtySelect)
       throws AxelorException {
 
     Map<Integer, List<FixedAssetLine>> fixedAssetLineMap =
@@ -302,6 +307,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
     fixedAsset.setDisposalDate(disposalDate);
     fixedAsset.setDisposalValue(disposalAmount);
+    if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL) {
+    	fixedAsset.setTransferredReasonSelect(3); //Partial Session
+    }
+    else {
+    	fixedAsset.setTransferredReasonSelect(disposalTypeSelect);
+    }
     fixedAssetRepo.save(fixedAsset);
   }
 
@@ -407,7 +418,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
     if (fixedAssetCategory == null) {
-    	return;
+      return;
     }
     Integer periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
     Integer firstDepreciationDateInitSelect =
@@ -432,14 +443,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   public void updateDepreciation(FixedAsset fixedAsset) {
 
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
-    if (correctedAccountingValue != null
+    if (correctedAccountingValue != null && correctedAccountingValue.signum() != 0
         && fixedAsset
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
       Optional<FixedAssetLine> optFixedAssetLine =
-    	      findOldestFixedAssetLine(fixedAssetLineList, FixedAssetLineRepository.STATUS_PLANNED, 0);
-      
+          findOldestFixedAssetLine(fixedAssetLineList, FixedAssetLineRepository.STATUS_PLANNED, 0);
+
       if (!optFixedAssetLine.isPresent()) {
         return;
       }
@@ -447,7 +458,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       // We remove all fixedAssetLine that are not realized.
       fixedAssetLineList.removeIf(
           fixedAssetLine ->
-              fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED && !fixedAssetLine.equals(optFixedAssetLine.get()));
+              fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
+                  && !fixedAssetLine.equals(optFixedAssetLine.get()));
       FixedAssetLine firstPlannedFixedAssetLine = optFixedAssetLine.get();
       firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
       firstPlannedFixedAssetLine.setImpairmentValue(
@@ -455,7 +467,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               .getAccountingValue()
               .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue()));
       Optional<FixedAssetLine> previousLastRealizedFAL =
-    		  findNewestFixedAssetLine(fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
+          findNewestFixedAssetLine(fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
       if (previousLastRealizedFAL.isPresent()) {
         firstPlannedFixedAssetLine.setCumulativeDepreciation(
             previousLastRealizedFAL
@@ -471,10 +483,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
       // We can do this, since we will never save fixedAsset nor fixedAssetLine in the java process
       fixedAsset.setGrossValue(correctedAccountingValue);
-      fixedAsset.setFirstDepreciationDate(analyticFixedAssetService.computeFirstDepreciationDate(fixedAsset, DateTool.plusMonths(
-              firstPlannedFixedAssetLine.getDepreciationDate(),
-              fixedAsset.getPeriodicityInMonth())
-          ));
+      fixedAsset.setFirstDepreciationDate(
+          analyticFixedAssetService.computeFirstDepreciationDate(
+              fixedAsset,
+              DateTool.plusMonths(
+                  firstPlannedFixedAssetLine.getDepreciationDate(),
+                  fixedAsset.getPeriodicityInMonth())));
       fixedAsset.setFirstServiceDate(fixedAsset.getFirstDepreciationDate());
       fixedAsset.setNumberOfDepreciation(
           fixedAsset.getNumberOfDepreciation() - fixedAssetLineList.size());
@@ -493,15 +507,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
   }
 
-private Optional<FixedAssetLine> findOldestFixedAssetLine(List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToStip) {
-	fixedAssetLineList.sort(
-    	        (fa1, fa2) -> fa1.getDepreciationDate().compareTo(fa2.getDepreciationDate()));
-     return  fixedAssetLineList.stream()
-      .filter(
-          fixedAssetLine ->
-              fixedAssetLine.getStatusSelect() == status)
-      .findFirst();
-}
+  private Optional<FixedAssetLine> findOldestFixedAssetLine(
+      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToStip) {
+    fixedAssetLineList.sort(
+        (fa1, fa2) -> fa1.getDepreciationDate().compareTo(fa2.getDepreciationDate()));
+    return fixedAssetLineList.stream()
+        .filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == status)
+        .findFirst();
+  }
 
   private Optional<FixedAssetLine> findNewestFixedAssetLine(
       List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip) {
@@ -509,9 +522,7 @@ private Optional<FixedAssetLine> findOldestFixedAssetLine(List<FixedAssetLine> f
         (fa1, fa2) -> fa2.getDepreciationDate().compareTo(fa1.getDepreciationDate()));
     Optional<FixedAssetLine> optFixedAssetLine =
         fixedAssetLineList.stream()
-            .filter(
-                fixedAssetLine ->
-                    fixedAssetLine.getStatusSelect() == status)
+            .filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == status)
             .skip(nbLineToSkip)
             .findFirst();
     return optFixedAssetLine;

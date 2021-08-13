@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -48,6 +39,13 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService {
 
@@ -89,7 +87,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (!isBatch) {
       if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
         generateMove(fixedAssetLine);
-      } 
+      }
     } else {
       if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
         generateMove(fixedAssetLine);
@@ -97,10 +95,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
 
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
-    
+
     if (fixedAssetLine.getTypeSelect() == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC) {
-        BigDecimal accountingValue = fixedAsset.getAccountingValue();
-        fixedAsset.setAccountingValue(accountingValue.subtract(fixedAssetLine.getDepreciation()));
+      BigDecimal accountingValue = fixedAsset.getAccountingValue();
+      fixedAsset.setAccountingValue(accountingValue.subtract(fixedAssetLine.getDepreciation()));
     }
 
     FixedAssetLine plannedFixedAssetLine =
@@ -203,7 +201,6 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Account creditLineAccount = fixedAssetCategory.getDepreciationAccount();
       BigDecimal amount = fixedAssetLine.getDepreciation();
 
-
       if (correctedAccountingValue != null
           && (correctedAccountingValue.signum() != 0)
           && impairmentValue != null
@@ -270,17 +267,16 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
 
     moveRepo.save(move);
-    
+
     if (correctedAccountingValue != null
-            && (correctedAccountingValue.signum() != 0)
-            && impairmentValue != null
-            && (impairmentValue.signum() != 0)) {
-    	//If it's reevaluation
-    	fixedAssetLine.setImpairmentAccountMove(move);
-    }else {
-    	fixedAssetLine.setDepreciationAccountMove(move);
+        && (correctedAccountingValue.signum() != 0)
+        && impairmentValue != null
+        && (impairmentValue.signum() != 0)) {
+      // If it's reevaluation
+      fixedAssetLine.setImpairmentAccountMove(move);
+    } else {
+      fixedAssetLine.setDepreciationAccountMove(move);
     }
-    
   }
 
   @Override

@@ -1,5 +1,9 @@
 package com.axelor.apps.account.service.fixedasset;
 
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,11 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
 
@@ -109,7 +108,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
           if (fiscalDepreciationAmount.compareTo(depreciationAmount) > 0) {
             derogatoryAmount = (fiscalDepreciationAmount.subtract(depreciationAmount)).abs();
           } else {
-            incomeDepreciationAmount = (fiscalDepreciationAmount.subtract(depreciationAmount)).abs();
+            incomeDepreciationAmount =
+                (fiscalDepreciationAmount.subtract(depreciationAmount)).abs();
           }
 
           BigDecimal derogatoryBalanceAmount;

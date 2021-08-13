@@ -53,7 +53,12 @@ public interface FixedAssetService {
    * @param fixedAsset
    * @throws AxelorException
    */
-  void disposal(LocalDate disposalDate, BigDecimal disposalAmount, FixedAsset fixedAsset)
+  void disposal(
+      LocalDate disposalDate,
+      BigDecimal disposalAmount,
+      FixedAsset fixedAsset,
+      Integer disposalTypeSelect,
+      Integer disposalQtySelect)
       throws AxelorException;
 
   void createAnalyticOnMoveLine(
