@@ -124,6 +124,13 @@
 				</panel>
 
 				<panel name="productsPanel" title="Products" colSpan="12">
+					<field name="purchFinancialDiscountAccount" requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+					<field name="saleFinancialDiscountAccount" requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+					<field name="purchFinancialDiscountTax" requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+					<field name="saleFinancialDiscountTax" requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+				</panel>
+				
+				<panel name="discountPanel" title="Discount Accounts" colSpan="12">
 					<field name="invoicingProduct" domain="self.dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
 					<field name="advancePaymentProduct" domain="self.dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
 				</panel>

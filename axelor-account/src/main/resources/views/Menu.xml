@@ -566,6 +566,12 @@
 		<view type="form" name="tax-number-form" />
 	</action-view>
 	
+	<menuitem name="account-conf-financial-financial-discount" title="Financial Discount" parent="account-conf-financial" action="financial.discount" />
+	
+	<action-view name="financial.discount" title="Financial Discount" model="com.axelor.apps.account.db.FinancialDiscount">
+		<view type="grid" name="financial-discount-grid"/>
+		<view type="form" name="financial-discount-form"/>
+	</action-view>
 	
 	<menuitem name="account-conf-analytic" parent="account-conf"
 		title="Analytic" />
@@ -842,6 +848,8 @@
 		<view type="grid" name="payment-delay-reason-grid"/>
 		<view type="form" name="payment-delay-reason-form"/>
 	</action-view>
+	
+	
 	
 		
 </object-views>

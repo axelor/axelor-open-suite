@@ -310,7 +310,7 @@
         </panel>
 
         <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
-            <field name="partner" colSpan="3" canEdit="false" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"  onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-invoice-method-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
+            <field name="partner" colSpan="3" canEdit="false" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"  onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str,action-record-invoice-set-discount-values" onSelect="action-invoice-method-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
             <field name="contactPartner" colSpan="3" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true AND :company member of self.companySet" readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
             <field name="paymentMode" colSpan="3" canEdit="false" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details,action-invoice-method-check-partner-bank-details-list" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
             <field name="paymentCondition" colSpan="3" canEdit="false" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
@@ -433,6 +433,9 @@ InvoiceSet.length > 0))"
 				<panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note" colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
 					<field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
+				<panel name="legalNoticePanel" title="Legal Notice" colSpan="12">
+					<field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12" showTitle="false"/>
+				</panel>
 			</panel>
       <panel name="automaticMailPanel" title="Automatic mail" hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail &amp;&amp; !invoiceAutomaticMailOnValidate">
         <panel name="afterValidationAutomaticMailPanel" hideIf="statusSelect &gt;= 2 &amp;&amp; !invoiceAutomaticMailOnValidate" colSpan="12">
@@ -469,6 +472,8 @@ InvoiceSet.length > 0))"
 						<viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
 					</field>
 				</panel>
+				<field name="financialDiscount" colSpan="6"/>
+				<field name="financialDiscountRate" colSpan="6"/>
 				<panel-related name="invoicePaymentListPanel" title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
 				<panel name="pfpAccountConfigPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" hidden="true">
 					<field name="$isValidPfpValidatorUser" type="boolean"/>
@@ -1600,5 +1605,11 @@ InvoiceSet.length > 0))"
 			<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
 		</filter>
 	</search-filters>
+	
+	<action-record name="action-record-invoice-set-discount-values" model="com.axelor.apps.account.db.Invoice">
+		<field name="financialDiscount" expr="eval: partner.financialDiscount" if="partner &amp;&amp; partner.financialDiscount"/>
+		<field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate" if="partner &amp;&amp; partner.financialDiscount"/>
+		<field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice" if="partner &amp;&amp; partner.financialDiscount"/>
+	</action-record>
 
 </object-views>

@@ -41,7 +41,16 @@
             <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoice.tradingName"/>
-            <field name="invoice" hidden="true" />
+            <field name="invoice" hidden="true"/>
+		</panel>
+		<panel name="discountPanel" title="Financial Discount">
+			<field name="applyFinancialDiscount" onChange="action-record-invoice-payment-calculate-discount"/>
+			<field name="financialDiscount"/>
+			<field name="financialDiscount.discountRate" showIf="applyFinancialDiscount"/>
+			<field name="financialDiscount.discountBaseSelect" title="Discount Base" showIf="applyFinancialDiscount"/>
+			<field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"/>
+			<field name="financialDiscountAmount" showIf="applyFinancialDiscount"/>
+			<field name="financialDiscountTaxAmount" showIf="applyFinancialDiscount &amp;&amp; financialDiscount.discountBaseSelect == 1"/>
 		</panel>
 		<panel name="otherDetailsPanel" showIf="id">
 			<field name="move" form-view="move-form" grid-view="move-grid"/>
@@ -50,6 +59,7 @@
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancelBtn" title="Cancel"  readonlyIf="statusSelect == 2 || move.statusSelect == 3" hideIf="move.statusSelect == 3" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
 			<field name="move.statusSelect" hidden="true" readonly="true"/>
+			
 		</panel>
 		<panel name="newInvoicePaymentPanel"  hideIf="id">
 			<button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"  onClick="action-invoice-payment-method-check-and-save,save,close"/>
@@ -101,6 +111,7 @@
 		<field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
     	<field name="invoice" expr="eval: _invoice"/>
     	<field name="typeSelect" expr="2"/>
+
     </action-record>
     
 	<action-record name="action-invoice-payment-record-mass-payment-new" model="com.axelor.apps.account.db.InvoicePayment">
@@ -145,6 +156,17 @@
 	<action-method name="action-invoice-payment-method-check-and-save">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
 	</action-method>
+	
+	<action-method name="action-method-invoice-payment-calculate-discount">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
+	</action-method>
+	
+	<action-record name="action-record-invoice-payment-calculate-discount" model="com.axelor.apps.account.db.InvoicePayment">
+		<field name="financialDiscountDeadlineDate" expr="eval: invoice.dueDate.minusDays(invoice.financialDiscount?.discountDelay?invoice.financialDiscount?.discountDelay:0)"/>
+		<field name="financialDiscount" expr="eval: invoice.financialDiscount" if="invoice.financialDiscount"/>
+    	<field name="financialDiscountAmount"  expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateFinancialDiscountAmount(invoice)" if="invoice"/>
+    	<field name="financialDiscountTaxAmount"  expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateFinancialDiscountTaxAmount(invoice)" if="invoice"/>
+	</action-record>
 	
 </object-views>
 	

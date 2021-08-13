@@ -33,7 +33,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -283,4 +285,10 @@ public interface InvoiceService {
   public User getPfpValidatorUser(Invoice invoice);
 
   public String getPfpValidatorUserDomain(Invoice invoice);
+
+  @CallMethod
+  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice);
+
+  @CallMethod
+  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice);
 }

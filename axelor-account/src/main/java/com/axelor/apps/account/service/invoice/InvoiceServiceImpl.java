@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -75,6 +76,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,6 +105,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
   protected MoveToolService moveToolService;
+  protected AccountConfigRepository accountConfigRepository;
 
   @Inject
   public InvoiceServiceImpl(
@@ -115,7 +118,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      AccountConfigRepository accountConfigRepository) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -127,6 +131,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
+    this.accountConfigRepository = accountConfigRepository;
   }
 
   // WKF
@@ -973,5 +978,85 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .setParameter(4, partner.getId())
         .getResultList()
         .size();
+  }
+
+  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice) {
+    if (invoice != null) {
+      if (invoice.getFinancialDiscount() != null) {
+        AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
+        if (invoice.getFinancialDiscount().getDiscountBaseSelect() == 0) {
+          return invoice
+              .getExTaxTotal()
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3));
+        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect() == 1
+            && (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 3)
+            && accountConfig.getPurchFinancialDiscountTax() != null) {
+          return invoice
+              .getInTaxTotal()
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+              .divide(
+                  accountConfig
+                      .getPurchFinancialDiscountTax()
+                      .getActiveTaxLine()
+                      .getValue()
+                      .add(new BigDecimal(1)),
+                  3);
+        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect() == 1
+            && (invoice.getOperationTypeSelect() == 2 || invoice.getOperationTypeSelect() == 4)
+            && accountConfig.getSaleFinancialDiscountTax() != null) {
+          return invoice
+              .getInTaxTotal()
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+              .divide(
+                  accountConfig
+                      .getSaleFinancialDiscountTax()
+                      .getActiveTaxLine()
+                      .getValue()
+                      .add(new BigDecimal(1)),
+                  3);
+        }
+      }
+    }
+    return BigDecimal.ZERO;
+  }
+
+  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice) {
+    if (invoice != null) {
+      if (invoice.getFinancialDiscount() != null) {
+        AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
+        if (invoice.getFinancialDiscount().getDiscountBaseSelect() == 1
+            && (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 3)
+            && accountConfig.getPurchFinancialDiscountTax() != null) {
+          return invoice
+              .getInTaxTotal()
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+              .multiply(accountConfig.getPurchFinancialDiscountTax().getActiveTaxLine().getValue())
+              .divide(
+                  accountConfig
+                      .getPurchFinancialDiscountTax()
+                      .getActiveTaxLine()
+                      .getValue()
+                      .add(new BigDecimal(1)),
+                  5,
+                  RoundingMode.CEILING);
+        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect() == 1
+            && (invoice.getOperationTypeSelect() == 2 || invoice.getOperationTypeSelect() == 4)
+            && accountConfig.getSaleFinancialDiscountTax() != null) {
+          return invoice
+              .getInTaxTotal()
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+              .multiply(accountConfig.getSaleFinancialDiscountTax().getActiveTaxLine().getValue())
+              .divide(
+                  accountConfig
+                      .getSaleFinancialDiscountTax()
+                      .getActiveTaxLine()
+                      .getValue()
+                      .add(new BigDecimal(1)),
+                  5,
+                  RoundingMode.CEILING);
+        }
+      }
+    }
+    return BigDecimal.ZERO;
   }
 }
