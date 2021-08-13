@@ -352,14 +352,7 @@ private LocalDate computeStartDepreciationDate(FixedAsset fixedAsset, int typeSe
     BigDecimal accountingValue = previousFixedAssetLine.getAccountingValue().subtract(depreciation);
 
 
-    LocalDate depreciationDate;
-    if (!fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-        || fixedAsset.getAcquisitionDate().equals(fixedAsset.getFirstDepreciationDate())
-        || accountingValue.signum() != 0) {
-      depreciationDate = computeDepreciationDate(fixedAsset, previousFixedAssetLine, typeSelect);
-    } else {
-      depreciationDate = computeLastProrataDepreciationDate(fixedAsset, typeSelect);
-    }
+    LocalDate depreciationDate = computeDepreciationDate(fixedAsset, previousFixedAssetLine, typeSelect);
     
     return createPlannedFixedAssetLine(
         fixedAsset,
