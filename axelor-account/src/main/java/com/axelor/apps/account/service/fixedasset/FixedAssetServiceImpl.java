@@ -472,6 +472,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               firstPlannedFixedAssetLine.getDepreciationDate(),
               fixedAsset.getPeriodicityInMonth())
           ));
+      fixedAsset.setFirstServiceDate(fixedAsset.getFirstDepreciationDate());
       fixedAsset.setNumberOfDepreciation(
           fixedAsset.getNumberOfDepreciation() - fixedAssetLineList.size());
       if (fixedAsset.getNumberOfDepreciation() <= 0) {
