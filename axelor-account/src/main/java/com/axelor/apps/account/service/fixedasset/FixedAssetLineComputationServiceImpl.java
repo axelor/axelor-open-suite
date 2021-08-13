@@ -325,7 +325,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, previousFixedAssetLine.getCumulativeDepreciation());
     BigDecimal cumulativeDepreciation =
         previousFixedAssetLine.getCumulativeDepreciation().add(depreciation);
-    BigDecimal accountingValue = depreciationBase.subtract(cumulativeDepreciation);
+    BigDecimal accountingValue = previousFixedAssetLine.getAccountingValue().subtract(depreciation);
 
 
     LocalDate depreciationDate;
