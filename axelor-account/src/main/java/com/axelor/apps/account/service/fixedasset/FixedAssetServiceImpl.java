@@ -406,6 +406,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   public void computeFirstDepreciationDate(FixedAsset fixedAsset) {
 
     FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+    if (fixedAssetCategory == null) {
+    	return;
+    }
     Integer periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
     Integer firstDepreciationDateInitSelect =
         fixedAssetCategory.getFirstDepreciationDateInitSelect();
