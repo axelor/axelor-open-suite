@@ -445,33 +445,33 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       fixedAssetLineList.removeIf(
           fixedAssetLine ->
               fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED && !fixedAssetLine.equals(optFixedAssetLine.get()));
-      FixedAssetLine lastRealizedFixedAssetLine = optFixedAssetLine.get();
-      lastRealizedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
-      lastRealizedFixedAssetLine.setImpairmentValue(
-          lastRealizedFixedAssetLine
+      FixedAssetLine firstPlannedFixedAssetLine = optFixedAssetLine.get();
+      firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
+      firstPlannedFixedAssetLine.setImpairmentValue(
+          firstPlannedFixedAssetLine
               .getAccountingValue()
-              .subtract(lastRealizedFixedAssetLine.getCorrectedAccountingValue()));
+              .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue()));
       Optional<FixedAssetLine> previousLastRealizedFAL =
     		  findNewestFixedAssetLine(fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
       if (previousLastRealizedFAL.isPresent()) {
-        lastRealizedFixedAssetLine.setCumulativeDepreciation(
+        firstPlannedFixedAssetLine.setCumulativeDepreciation(
             previousLastRealizedFAL
                 .get()
                 .getCumulativeDepreciation()
-                .add(lastRealizedFixedAssetLine.getDepreciation())
-                .add(lastRealizedFixedAssetLine.getImpairmentValue()));
+                .add(firstPlannedFixedAssetLine.getDepreciation())
+                .add(firstPlannedFixedAssetLine.getImpairmentValue()));
       } else {
-        lastRealizedFixedAssetLine.setCumulativeDepreciation(
+        firstPlannedFixedAssetLine.setCumulativeDepreciation(
             BigDecimal.ZERO
-                .add(lastRealizedFixedAssetLine.getDepreciation())
-                .add(lastRealizedFixedAssetLine.getImpairmentValue()));
+                .add(firstPlannedFixedAssetLine.getDepreciation())
+                .add(firstPlannedFixedAssetLine.getImpairmentValue()));
       }
       // We can do this, since we will never save fixedAsset nor fixedAssetLine in the java process
       fixedAsset.setGrossValue(correctedAccountingValue);
-      fixedAsset.setFirstDepreciationDate(
-          DateTool.plusMonths(
-              lastRealizedFixedAssetLine.getDepreciationDate(),
-              fixedAsset.getPeriodicityInMonth()));
+      fixedAsset.setFirstDepreciationDate(analyticFixedAssetService.computeFirstDepreciationDate(fixedAsset, DateTool.plusMonths(
+              firstPlannedFixedAssetLine.getDepreciationDate(),
+              fixedAsset.getPeriodicityInMonth())
+          ));
       fixedAsset.setNumberOfDepreciation(
           fixedAsset.getNumberOfDepreciation() - fixedAssetLineList.size());
       if (fixedAsset.getNumberOfDepreciation() <= 0) {
