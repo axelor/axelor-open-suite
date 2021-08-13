@@ -43,12 +43,12 @@
 	      <field name="cumulativeDepreciation"/>
 	      <field name="residualValue"/>
 	      <field name="accountingValue"/>
-	      <field name="depreciationAccountMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
+	      <field name="depreciationAccountMove" showIf="statusSelect == 2 &amp;&amp; typeSelect != 2" form-view="move-form" grid-view="move-grid"/>
 	    </panel>
 	    
 	  </panel>
 	  <panel-tabs name="mainPanelTab">
-	    <panel name="impairmentPanel" title="Impairment information">
+	    <panel name="impairmentPanel" title="Impairment information" showIf="typeSelect != 2">
 	      <field name="correctedAccountingValue"/>
 	      <field name="impairmentValue"/>
 	      <field name="impairmentAccountMove"/>
