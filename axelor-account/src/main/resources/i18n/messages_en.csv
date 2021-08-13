@@ -1074,6 +1074,7 @@
 "Fixed asset category filters",,,
 "Fixed asset category is missing on invoice line for product %s",,,
 "Fixed asset category required on invoices",,,
+"Fixed asset derogatory lines",,,
 "Fixed asset filters",,,
 "Fixed asset line",,,
 "Fixed asset lines",,,
