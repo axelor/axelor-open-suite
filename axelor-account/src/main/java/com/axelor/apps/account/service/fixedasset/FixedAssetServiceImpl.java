@@ -473,12 +473,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 .get()
                 .getCumulativeDepreciation()
                 .add(firstPlannedFixedAssetLine.getDepreciation())
-                .add(firstPlannedFixedAssetLine.getImpairmentValue()));
+                .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
       } else {
         firstPlannedFixedAssetLine.setCumulativeDepreciation(
             BigDecimal.ZERO
                 .add(firstPlannedFixedAssetLine.getDepreciation())
-                .add(firstPlannedFixedAssetLine.getImpairmentValue()));
+                .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
       }
       // We can do this, since we will never save fixedAsset nor fixedAssetLine in the java process
       fixedAsset.setGrossValue(correctedAccountingValue);
@@ -489,14 +489,25 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                   firstPlannedFixedAssetLine.getDepreciationDate(),
                   fixedAsset.getPeriodicityInMonth())));
       fixedAsset.setFirstServiceDate(fixedAsset.getFirstDepreciationDate());
-      fixedAsset.setNumberOfDepreciation(
-          fixedAsset.getNumberOfDepreciation() - fixedAssetLineList.size());
-      if (fixedAsset.getNumberOfDepreciation() <= 0) {
-        return;
+      if (fixedAsset
+          .getComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+        // In linear mode we udapte number of depreciation
+        // In degressiv we do not update number of depreciation because it seems the engine for
+        // calculation the full size
+        fixedAsset.setNumberOfDepreciation(
+            fixedAsset.getNumberOfDepreciation() - fixedAssetLineList.size());
+        if (fixedAsset.getNumberOfDepreciation() <= 0) {
+          return;
+        }
       }
       FixedAssetLine initialFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+      initialFixedAssetLine.setCumulativeDepreciation(
+          initialFixedAssetLine
+              .getCumulativeDepreciation()
+              .add(firstPlannedFixedAssetLine.getCumulativeDepreciation()));
       fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
       generateComputedPlannedFixedAssetLine(
           fixedAsset,

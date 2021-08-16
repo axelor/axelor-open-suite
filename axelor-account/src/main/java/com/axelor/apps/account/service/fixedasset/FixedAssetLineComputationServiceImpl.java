@@ -46,7 +46,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
   public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect) {
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset, typeSelect);
-    BigDecimal depreciationBase = computeDepreciationBase(fixedAsset, typeSelect, BigDecimal.ZERO);
+    BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset, typeSelect);
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, typeSelect, depreciationBase);
     BigDecimal accountingValue = depreciationBase.subtract(depreciation);
 
@@ -73,21 +73,37 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     return firstDepreciationDate;
   }
 
-  protected BigDecimal computeDepreciationBase(
-      FixedAsset fixedAsset, int typeSelect, BigDecimal cumulatedDepreciation) {
-    // Default value is if typeSelect is fiscal.
-    BigDecimal depreciationBase = fixedAsset.getGrossValue();
+  protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset, int typeSelect) {
     if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
         && !fixedAsset.getIsEqualToFiscalDepreciation()) {
       if (fixedAsset
           .getComputationMethodSelect()
           .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        depreciationBase = fixedAsset.getGrossValue().subtract(cumulatedDepreciation);
+        return fixedAsset.getGrossValue();
       } else {
-        depreciationBase = fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
+        return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
       }
+    } else {
+      return fixedAsset.getGrossValue();
     }
-    return depreciationBase;
+  }
+
+  protected BigDecimal computeDepreciationBase(
+      FixedAsset fixedAsset, int typeSelect, FixedAssetLine previousFixedAssetLine) {
+    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
+        && !fixedAsset.getIsEqualToFiscalDepreciation()) {
+      if (fixedAsset
+          .getComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        return previousFixedAssetLine
+            .getDepreciationBase()
+            .subtract(previousFixedAssetLine.getDepreciation());
+      } else {
+        return previousFixedAssetLine.getDepreciationBase();
+      }
+    } else {
+      return previousFixedAssetLine.getDepreciationBase();
+    }
   }
 
   protected BigDecimal computeInitialDepreciation(
@@ -171,18 +187,10 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         depreciation = computeLinearDepreciation(fixedAsset, false, baseValue);
       }
     }
-    // Second part
-    // Added this condition since baseValue in this case is not constant
-    if (typeSelect == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC
-        && fixedAsset
-            .getComputationMethodSelect()
-            .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)
-        && !fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return depreciation;
-    }
-    if (depreciation.add(previousFixedAssetLine.getCumulativeDepreciation()).compareTo(baseValue)
+    if (BigDecimal.ZERO.compareTo(
+            previousFixedAssetLine.getAccountingValue().subtract(depreciation))
         > 0) {
-      depreciation = baseValue.subtract(previousFixedAssetLine.getCumulativeDepreciation());
+      depreciation = previousFixedAssetLine.getAccountingValue();
     }
     return depreciation;
   }
@@ -357,8 +365,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
             typeSelect,
             previousFixedAssetLine.getDepreciationBase());
     BigDecimal depreciationBase =
-        computeDepreciationBase(
-            fixedAsset, typeSelect, previousFixedAssetLine.getCumulativeDepreciation());
+        computeDepreciationBase(fixedAsset, typeSelect, previousFixedAssetLine);
     BigDecimal cumulativeDepreciation =
         previousFixedAssetLine.getCumulativeDepreciation().add(depreciation);
     BigDecimal accountingValue = previousFixedAssetLine.getAccountingValue().subtract(depreciation);
