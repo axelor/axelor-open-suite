@@ -18,8 +18,9 @@
 	</grid>
 
 	<form name="fixed-asset-derogatory-line-form"
-		title="Fixed asset derogatory line"
-		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine">
+		title="Fixed asset derogatory lines"
+		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine"
+		onLoad="action-attrs-account-fixed-asset-derogatory-line-title-derogatory-depreciation-move">
 		<panel name="mainPanel">
 	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 	      <field name="fiscalDepreciationAmount"/>
@@ -34,6 +35,10 @@
 	    </panel>
 	</form>
 	
+	<action-attrs name="action-attrs-account-fixed-asset-derogatory-line-title-derogatory-depreciation-move">
+	    <attribute name="title" for="derogatoryDepreciationMove" expr="eval:com.axelor.i18n.I18n.get('Derogatory Resumption Move')" if="incomeDepreciationAmount != 0"/>
+    	<attribute name="title" for="derogatoryDepreciationMove" expr="eval:com.axelor.i18n.I18n.get('Derogatory Depreciation Move')" if="derogatoryAmount != 0"/>
+	</action-attrs>
 	<action-method name="action-attrs-account-fixed-asset-derogatory-line-realize">
 		<call class="com.axelor.apps.account.web.FixedAssetDerogatoryLineController" method="realize"/>
 	</action-method>
