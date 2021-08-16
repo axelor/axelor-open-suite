@@ -85,13 +85,14 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
     if (!isBatch) {
-      if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-        generateMove(fixedAssetLine);
+      if (!isPreviousLineRealized(fixedAssetLine, fixedAsset)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
       }
-    } else {
-      if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-        generateMove(fixedAssetLine);
-      }
+    }
+    if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
+      generateMove(fixedAssetLine);
     }
 
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
@@ -117,6 +118,27 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     if (fixedAsset != null) {
       realizeOthersLines(fixedAsset, fixedAssetLine.getDepreciationDate(), isBatch);
     }
+  }
+
+  protected boolean isPreviousLineRealized(FixedAssetLine fixedAssetLine, FixedAsset fixedAsset) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    fixedAssetLineList.sort(
+        (line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
+    for (int i = 0; i < fixedAssetLineList.size(); i++) {
+      if (fixedAssetLine
+          .getDepreciationDate()
+          .equals(fixedAssetLineList.get(i).getDepreciationDate())) {
+        if (i > 0) {
+          if (fixedAssetLineList.get(i - 1).getStatusSelect()
+              != FixedAssetLineRepository.STATUS_REALIZED) {
+            return false;
+          }
+          return true;
+        }
+        return true;
+      }
+    }
+    return true;
   }
   /**
    * Method that may computes action "realize" on lines of fiscalFixedAssetLineList,

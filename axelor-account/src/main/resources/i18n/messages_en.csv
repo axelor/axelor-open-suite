@@ -1310,6 +1310,7 @@
 "Level",,,
 "Level to apply / awaiting",,,
 "Line Nbr.",,,
+"Line can't be realized because previous line is still planned",,,
 "Linear",,,
 "Linked Adjusting Moves",,,
 "List of invoices to pay",,,

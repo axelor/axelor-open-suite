@@ -17,18 +17,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -51,6 +39,16 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -307,11 +305,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
     fixedAsset.setDisposalDate(disposalDate);
     fixedAsset.setDisposalValue(disposalAmount);
-    if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL) {
-    	fixedAsset.setTransferredReasonSelect(3); //Partial Session
-    }
-    else {
-    	fixedAsset.setTransferredReasonSelect(disposalTypeSelect);
+    if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
+        && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL) {
+      fixedAsset.setTransferredReasonSelect(3); // Partial Session
+    } else {
+      fixedAsset.setTransferredReasonSelect(disposalTypeSelect);
     }
     fixedAssetRepo.save(fixedAsset);
   }
@@ -443,7 +441,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   public void updateDepreciation(FixedAsset fixedAsset) {
 
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
-    if (correctedAccountingValue != null && correctedAccountingValue.signum() != 0
+    if (correctedAccountingValue != null
+        && correctedAccountingValue.signum() != 0
         && fixedAsset
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {

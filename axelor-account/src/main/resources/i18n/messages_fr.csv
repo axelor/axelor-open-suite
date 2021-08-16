@@ -1310,6 +1310,7 @@
 "Level","Niveau",,
 "Level to apply / awaiting","Niveau à appliquer/en attente",,
 "Line Nbr.","N° Ligne",,
+"Line can't be realized because previous line is still planned","La ligne ne peut pas être réalisée car la ligne précédente est encore au statut planifiée",,
 "Linear","Linéaire",,
 "Linked Adjusting Moves","Écritures rectificatives liées",,
 "List of invoices to pay","Liste des factures à payer",,
