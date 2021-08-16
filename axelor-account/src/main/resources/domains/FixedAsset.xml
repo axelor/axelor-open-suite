@@ -33,7 +33,7 @@
 	<decimal name="grossValue" title="Gross value"/>
 	<decimal name="residualValue" title="Residual value"/>
 	
-	<date name="disposalDate" title="Disposal date"/>
+	<date name="disposalDate" title="Fixed asset Disposal date"/>
 	
 	<decimal name="disposalValue" title="Disposal value"/>
 	

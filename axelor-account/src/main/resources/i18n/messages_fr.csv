@@ -1077,6 +1077,7 @@
 "Fixed asset category is missing on invoice line for product %s","La catégorie d'immobilisation est manquante sur la ligne de facture pour le produit %s",,
 "Fixed asset category required on invoices","Catégorie d'immobilisation requise sur les factures",,
 "Fixed asset derogatory lines","Ligne d'amortissement dérogatoire",,
+"Fixed asset Disposal date","Date de sortie",,
 "Fixed asset filters","Filtres sur la catégorie d'immobilisation",,
 "Fixed asset line","Line d'immobilisation",,
 "Fixed asset lines","Lignes d'immobilisation",,

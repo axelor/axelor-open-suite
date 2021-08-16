@@ -107,7 +107,7 @@
     
     <form model="com.axelor.apps.base.db.Wizard" title="Disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew, action-attrs-account-fixed-asset-wizard-form-disposal-amount, action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     	<panel name="mainPanel">
-    		<field name="disposalDate" onChange="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line" type="date" title="Disposal date"/>
+    		<field name="disposalDate" onChange="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line" type="date" title="Fixed asset Disposal date"/>
 	    	<field name="disposalTypeSelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
 	    	<field name="disposalQtySelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
 	    	<field name="qty" onChange="action-validate-account-fixed-asset-wizard-form-validate-qty" showIf="disposalQtySelect == 2" min="0.01" type="decimal" />
