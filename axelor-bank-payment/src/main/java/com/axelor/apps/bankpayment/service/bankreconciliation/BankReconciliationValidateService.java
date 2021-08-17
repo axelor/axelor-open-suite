@@ -170,7 +170,7 @@ public class BankReconciliationValidateService {
 
     moveService.getMoveValidateService().validate(move);
 
-    bankReconciliationLineService.setMoveLine(bankReconciliationLine, cashMoveLine);
+    bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, cashMoveLine);
 
     bankReconciliationLine.setIsPosted(true);
 
@@ -237,6 +237,10 @@ public class BankReconciliationValidateService {
         if (firstLine) {
           bankReconciliationLine.setDebit(debit);
           bankReconciliationLine.setCredit(credit);
+          bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+          moveLine =
+              bankReconciliationLineService.setMoveLinePostedNbr(
+                  moveLine, bankReconciliationLine.getPostedNbr());
           bankReconciliationLine.setMoveLine(moveLine);
           firstLine = false;
         } else {

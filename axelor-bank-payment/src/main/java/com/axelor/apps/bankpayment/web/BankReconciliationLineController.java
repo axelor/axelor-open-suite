@@ -42,7 +42,7 @@ public class BankReconciliationLineController {
       bankReconciliationService.unreconcileLine(bankReconciliationLineDatabase);
 
     if (ObjectUtils.notEmpty(moveLine))
-      bankReconciliationLineService.setMoveLine(
+      bankReconciliationLineService.reconcileBRLAndMoveLine(
           bankReconciliationLineRepository.find(bankReconciliationLineContext.getId()), moveLine);
 
     response.setReload(true);

@@ -48,7 +48,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -61,6 +60,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -180,7 +180,7 @@ public class BankReconciliationService {
     move.clearMoveLineList();
     MoveLine moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, true);
     move.addMoveLineListItem(moveLine);
-    bankReconciliationLineService.setMoveLine(bankReconciliationLine, moveLine);
+    bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);
     moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, false);
     moveLine = moveLineRepository.save(moveLine);
     move.addMoveLineListItem(moveLine);
@@ -262,11 +262,15 @@ public class BankReconciliationService {
     BigDecimal statementOngoingReconciledBalance = BigDecimal.ZERO;
     BigDecimal movesOngoingReconciledBalance = BigDecimal.ZERO;
 
-    bankReconciliations = bankReconciliationRepository.findByBankDetails(bankReconciliation.getBankDetails()).fetch(limit, offset);
+    bankReconciliations =
+        bankReconciliationRepository
+            .findByBankDetails(bankReconciliation.getBankDetails())
+            .fetch(limit, offset);
     do {
       for (BankReconciliation br : bankReconciliations) {
         for (BankReconciliationLine brl : br.getBankReconciliationLineList()) {
           if (brl.getIsPosted()) {
+
             statementReconciledLineBalance =
                 statementReconciledLineBalance.subtract(brl.getDebit());
             statementReconciledLineBalance = statementReconciledLineBalance.add(brl.getCredit());
@@ -297,7 +301,10 @@ public class BankReconciliationService {
       }
       offset += limit;
       JPA.clear();
-      bankReconciliations = bankReconciliationRepository.findByBankDetails(bankReconciliation.getBankDetails()).fetch(limit, offset);
+      bankReconciliations =
+          bankReconciliationRepository
+              .findByBankDetails(bankReconciliation.getBankDetails())
+              .fetch(limit, offset);
     } while (bankReconciliations.size() != 0);
     offset = 0;
     JPA.clear();
@@ -587,13 +594,33 @@ public class BankReconciliationService {
 
   @Transactional
   public void unreconcileLine(BankReconciliationLine bankReconciliationLine) {
-    bankReconciliationLine.setPostedNbr("");
     bankReconciliationLine.setBankStatementQuery(null);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
-    if (ObjectUtils.notEmpty(bankReconciliationLine.getMoveLine()))
-      bankReconciliationLine.getMoveLine().setPostedNbr("");
+    String query = "self.postedNbr LIKE '%%s%'";
+    query = query.replace("%s", bankReconciliationLine.getPostedNbr());
+    List<MoveLine> moveLines = 
+        moveLineRepository
+            .all()
+            .filter(query)
+            .fetch();
+    for (MoveLine moveLine : moveLines) {
+      moveLine = removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+    }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
+    bankReconciliationLine.setPostedNbr("");
+  }
+
+  protected MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
+    String posted = moveLine.getPostedNbr();
+    System.err.println(posted);
+    List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
+    postedNbrs.remove(postedNbr);
+    System.err.println(postedNbr);
+    posted = String.join(",", postedNbrs);
+    System.err.println(posted);
+    moveLine.setPostedNbr(posted);
+    return moveLine;
   }
 
   public boolean updateAmounts(BankReconciliation br) {

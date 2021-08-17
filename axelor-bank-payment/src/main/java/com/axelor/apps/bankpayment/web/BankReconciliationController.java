@@ -146,7 +146,8 @@ public class BankReconciliationController {
               .get(0);
       bankReconciliationLine.setMoveLine(moveLines.get(0));
       bankReconciliationLine =
-          bankReconciliationLineService.setMoveLine(bankReconciliationLine, moveLines.get(0));
+          bankReconciliationLineService.reconcileBRLAndMoveLine(
+              bankReconciliationLine, moveLines.get(0));
       br = bankReconciliationRepository.find(br.getId());
       response.setValue("bankReconciliationLineList", br.getBankReconciliationLineList());
       response.setReload(true);

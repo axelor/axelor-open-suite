@@ -99,6 +99,7 @@
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
+    <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
 
   	<extra-code><![CDATA[
 
