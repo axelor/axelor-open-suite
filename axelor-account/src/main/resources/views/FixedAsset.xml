@@ -128,7 +128,7 @@
     	</panel>
     </form>
     <action-validate name="action-validate-account-fixed-asset-wizard-form-validate-qty">
-    	<error if="disposalQtySelect == 2 &amp;&amp; (qty &lt; 0) " message="Disposal Quantity must be greater than 0 and lesser than fixed asset disposal quantity"/>
+    	<error if="disposalQtySelect == 2 &amp;&amp; (qty &lt; 0) " message="Disposal Quantity must be greater than 0"/>
     </action-validate>
     <action-attrs name="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     	<attribute name="domain" for="saleTaxLine" expr="eval: &quot;(self.endDate &gt; :disposalDate OR self.endDate IS NULL) AND self.startDate &lt; :disposalDate &quot;"/>

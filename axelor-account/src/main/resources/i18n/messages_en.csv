@@ -944,6 +944,7 @@
 "Display the balances",,,
 "Disposal",,,
 "Disposal Quantity",,,
+"Disposal quantity can not be greater than the fixed asset quantity (%s)",,,
 "Disposal Type",,,
 "Disposal amount",,,
 "Disposal date",,,

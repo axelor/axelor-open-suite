@@ -102,6 +102,11 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         return previousFixedAssetLine.getDepreciationBase();
       }
     } else {
+      if (fixedAsset
+          .getFiscalComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        return previousFixedAssetLine.getAccountingValue();
+      }
       return previousFixedAssetLine.getDepreciationBase();
     }
   }

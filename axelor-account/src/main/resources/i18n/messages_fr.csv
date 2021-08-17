@@ -944,6 +944,7 @@
 "Display the balances","Afficher les soldes",,
 "Disposal","Sortie",,
 "Disposal Quantity","Quantité à sortir",,
+"Disposal quantity can not be greater than the fixed asset quantity (%s)","La quantité à sortir ne peut pas être plus grande que la quantité de l'immobilisation (%s)",,
 "Disposal Type","Type de sortie",,
 "Disposal amount","Montant de la cession",,
 "Disposal date","Date de cession",,
