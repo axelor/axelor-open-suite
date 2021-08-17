@@ -980,7 +980,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .size();
   }
 
-  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice) {
+  public BigDecimal calculateFinancialDiscountAmount(Long id) {
+    Invoice invoice = invoiceRepo.find(id);
     if (invoice != null) {
       if (invoice.getFinancialDiscount() != null) {
         AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
@@ -1020,7 +1021,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return BigDecimal.ZERO;
   }
 
-  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice) {
+  public BigDecimal calculateFinancialDiscountTaxAmount(Long id) {
+    Invoice invoice = invoiceRepo.find(id);
     if (invoice != null) {
       if (invoice.getFinancialDiscount() != null) {
         AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
@@ -1058,5 +1060,57 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
     return BigDecimal.ZERO;
+  }
+
+  public BigDecimal calculateAmountRemainingInPaymentOnNew(Long id) {
+
+    Invoice invoice = invoiceRepo.find(id);
+    System.err.println(
+        invoice.getAmountRemaining()
+            + "  "
+            + calculateFinancialDiscountTaxAmount(id)
+            + "   "
+            + calculateFinancialDiscountAmount(id));
+    if (applyFinancialDiscount(id)) {
+      return invoice
+          .getAmountRemaining()
+          .subtract(calculateFinancialDiscountTaxAmount(id))
+          .subtract(calculateFinancialDiscountAmount(id));
+    }
+    return invoice.getAmountRemaining();
+  }
+
+  public BigDecimal calculateAmountRemainingInPayment(Long id, Boolean apply) {
+
+    Invoice invoice = invoiceRepo.find(id);
+    System.err.println(
+        invoice.getAmountRemaining()
+            + "  "
+            + calculateFinancialDiscountTaxAmount(id)
+            + "   "
+            + calculateFinancialDiscountAmount(id));
+    if (apply) {
+      return invoice
+          .getAmountRemaining()
+          .subtract(calculateFinancialDiscountTaxAmount(id))
+          .subtract(calculateFinancialDiscountAmount(id));
+    }
+    return invoice.getAmountRemaining();
+  }
+
+  public boolean applyFinancialDiscount(Long id) {
+    Invoice invoice = invoiceRepo.find(id);
+    if (invoice.getFinancialDiscountDeadlineDate() != null
+        && invoice.getFinancialDiscountDeadlineDate().compareTo(LocalDate.now()) >= 0) {
+      return true;
+    }
+    return false;
+  }
+
+  public String setAmountTitle(Boolean applyFinancialDiscount) {
+    if (applyFinancialDiscount) {
+      return I18n.get("Financial discount deducted");
+    }
+    return I18n.get("Amount");
   }
 }

@@ -20,8 +20,8 @@
 	        <field name="legalNotice" colSpan="12"/>
         </panel>
         <panel name="Partners">
-        	<field name="partnerList" grid-view="partner-grid" form-view="partner-form" colSpan="12"/>
+        	<field name="partnerList" grid-view="partner-grid" form-view="partner-form" colSpan="12" canNew="false"/>
         </panel>
     </form>
-    
+
 </object-views>

@@ -502,7 +502,7 @@
     </selection>
     
     <selection name="account.financial.discount.discount.base.select">
-	   <option value="0">Duty free</option>
+	   <option value="0">Tax excluded</option>
 	   <option value="1">Tax included</option>
   </selection>
 

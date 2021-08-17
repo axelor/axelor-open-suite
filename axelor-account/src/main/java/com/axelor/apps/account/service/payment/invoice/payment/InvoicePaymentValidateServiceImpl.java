@@ -151,7 +151,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     Partner partner = invoice.getPartner();
     LocalDate paymentDate = invoicePayment.getPaymentDate();
-    BigDecimal paymentAmount = invoicePayment.getAmount();
+
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
 
     Account customerAccount;
@@ -211,6 +211,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     if (!invoicePayment.getApplyFinancialDiscount()) {
 
+      BigDecimal paymentAmount = invoicePayment.getAmount();
+
       move.setTradingName(invoice.getTradingName());
 
       move.addMoveLineListItem(
@@ -243,11 +245,15 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     } else if (invoicePayment.getApplyFinancialDiscount()) {
 
-      BigDecimal paymentAmountWithoutDiscount =
-          paymentAmount.subtract(
-              invoicePayment
-                  .getFinancialDiscountAmount()
-                  .add(invoicePayment.getFinancialDiscountTaxAmount()));
+      BigDecimal paymentAmount =
+          invoicePayment
+              .getAmount()
+              .add(
+                  invoicePayment
+                      .getFinancialDiscountAmount()
+                      .add(invoicePayment.getFinancialDiscountTaxAmount()));
+
+      BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
 
       move.setTradingName(invoice.getTradingName());
 
