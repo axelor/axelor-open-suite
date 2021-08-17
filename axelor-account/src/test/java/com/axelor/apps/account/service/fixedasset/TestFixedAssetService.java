@@ -26,9 +26,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
-import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import java.math.BigDecimal;
@@ -48,6 +48,7 @@ public class TestFixedAssetService {
   protected AccountConfigService accountConfigService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetLineRepository fixedAssetLineRepo;
 
   /*
    * Prepare dependencies by mocking them
@@ -56,13 +57,13 @@ public class TestFixedAssetService {
   public void prepare() {
 
     fixedAssetRepo = mock(FixedAssetRepository.class);
+    fixedAssetLineRepo = mock(FixedAssetLineRepository.class);
     fixedAssetLineMoveService = mock(FixedAssetLineMoveService.class);
     moveLineService = mock(MoveLineService.class);
     accountConfigService = mock(AccountConfigService.class);
     fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
     analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
-    fixedAssetLineComputationService =
-        new FixedAssetLineComputationServiceImpl(new AnalyticFixedAssetServiceImpl());
+    fixedAssetLineComputationService = mock(FixedAssetLineComputationService.class);
 
     fixedAssetService =
         new FixedAssetServiceImpl(
@@ -72,7 +73,8 @@ public class TestFixedAssetService {
             moveLineService,
             accountConfigService,
             fixedAssetDerogatoryLineService,
-            analyticFixedAssetService);
+            analyticFixedAssetService,
+            fixedAssetLineRepo);
 
     prepareFixedAssetRepo();
   }

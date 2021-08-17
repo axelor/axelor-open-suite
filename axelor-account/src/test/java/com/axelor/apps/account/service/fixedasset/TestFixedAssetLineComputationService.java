@@ -21,12 +21,13 @@ import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.asse
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAsset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAssetCategoryFromIsProrataTemporis;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAssetLine;
+import static org.mockito.Mockito.mock;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
+import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.Before;
@@ -35,11 +36,20 @@ import org.junit.Test;
 public class TestFixedAssetLineComputationService {
 
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
+  protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
+  protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
 
   @Before
   public void prepare() {
+    fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
+    analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
+    fixedAssetDerogatoryLineMoveService = mock(FixedAssetDerogatoryLineMoveService.class);
     fixedAssetLineComputationService =
-        new FixedAssetLineComputationServiceImpl(new AnalyticFixedAssetServiceImpl());
+        new FixedAssetLineComputationServiceImpl(
+            analyticFixedAssetService,
+            fixedAssetDerogatoryLineService,
+            fixedAssetDerogatoryLineMoveService);
   }
 
   @Test

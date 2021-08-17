@@ -96,4 +96,31 @@ public interface FixedAssetService {
   void computeFirstDepreciationDate(FixedAsset fixedAsset);
 
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
+
+  /**
+   * Split the fixed asset in two fixed asset. The split will create a fixed asset and modify
+   * fixedAsset in order to have two complementary fixed assets. The new fixed asset is a copy of
+   * fixedAsset except for the lines (fiscal lines, derogatory lines and economic lines). Every
+   * lines that have not been realized will be removed, and others will be re-computed pro-rata to
+   * the quantity. (DisposalQty / fixedAsset.qty)
+   *
+   * @param fixedAsset
+   * @param disposalQty
+   * @return The new fixed asset created from split.
+   * @throws AxelorException
+   */
+  FixedAsset splitFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) throws AxelorException;
+
+  void computeTransferredReason(
+      FixedAsset fixedAsset, Integer disposalTypeSelect, Integer disposalQtySelect);
+
+  /**
+   * Filter lines from fixedAssetLineList / fiscalAssetLineList / fixedAssetDerogatoryLineList with
+   * line.status = status.
+   *
+   * @param fixedAsset
+   * @param statusPlanned
+   * @return filteredFixedAsset
+   */
+  FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status);
 }

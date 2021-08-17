@@ -106,6 +106,12 @@
 		public static final int TRANSFERED_REASON_CESSION = 2;
 		public static final int TRANSFERED_REASON_PARTIAL_CESSION = 3;
 		
+		//Origin select
+		public static final int ORIGINAL_SELECT_MANUAL = 1;
+		public static final int ORIGINAL_SELECT_INVOICE = 2;
+		public static final int ORIGINAL_SELECT_WRITING = 3;
+		public static final int ORIGINAL_SELECT_SCISSION = 4;
+		
 	]]></extra-code>
     
   </entity>

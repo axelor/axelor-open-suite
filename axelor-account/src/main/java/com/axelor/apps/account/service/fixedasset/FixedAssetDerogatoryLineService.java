@@ -17,7 +17,10 @@ public interface FixedAssetDerogatoryLineService {
       BigDecimal incomeDepreciationAmount,
       BigDecimal derogatoryBalanceAmount,
       FixedAssetLine fixedAssetLine,
-      FixedAssetLine fiscalFixedAssetLine);
+      FixedAssetLine fiscalFixedAssetLine,
+      int statusSelect);
 
   List<FixedAssetDerogatoryLine> computeFixedAssetDerogatoryLineList(FixedAsset fixedAsset);
+
+  void multiplyLinesBy(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLine, BigDecimal prorata);
 }

@@ -1,10 +1,13 @@
 package com.axelor.apps.account.service.fixedasset;
 
+import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -23,10 +26,11 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       BigDecimal incomeDepreciationAmount,
       BigDecimal derogatoryBalanceAmount,
       FixedAssetLine fixedAssetLine,
-      FixedAssetLine fiscalFixedAssetLine) {
+      FixedAssetLine fiscalFixedAssetLine,
+      int statusSelect) {
 
     FixedAssetDerogatoryLine fixedAssetDerogatoryLine = new FixedAssetDerogatoryLine();
-    fixedAssetDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
+    fixedAssetDerogatoryLine.setStatusSelect(statusSelect);
     fixedAssetDerogatoryLine.setDepreciationDate(depreciationDate);
     fixedAssetDerogatoryLine.setDepreciationAmount(depreciationAmount);
     fixedAssetDerogatoryLine.setFiscalDepreciationAmount(fiscalDepreciationAmount);
@@ -136,7 +140,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
                   incomeDepreciationAmount,
                   derogatoryBalanceAmount,
                   null,
-                  null);
+                  null,
+                  FixedAssetLineRepository.STATUS_PLANNED);
           // Adding to the result list and setting previousLine to the current line (for the next
           // line)
           fixedAssetDerogatoryLine.setFixedAsset(fixedAsset);
@@ -145,5 +150,38 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
         });
 
     return fixedAssetDerogatoryLineList;
+  }
+
+  @Override
+  public void multiplyLinesBy(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLine, BigDecimal prorata) {
+
+    if (fixedAssetDerogatoryLine != null) {
+      fixedAssetDerogatoryLine.forEach(line -> multiplyLineBy(line, prorata));
+    }
+  }
+
+  private void multiplyLineBy(FixedAssetDerogatoryLine line, BigDecimal prorata) {
+
+    line.setDepreciationAmount(
+        prorata
+            .multiply(line.getDepreciationAmount())
+            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setFiscalDepreciationAmount(
+        prorata
+            .multiply(line.getFiscalDepreciationAmount())
+            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setDerogatoryAmount(
+        prorata
+            .multiply(line.getDerogatoryAmount())
+            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setIncomeDepreciationAmount(
+        prorata
+            .multiply(line.getIncomeDepreciationAmount())
+            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setDerogatoryBalanceAmount(
+        prorata
+            .multiply(line.getDerogatoryBalanceAmount())
+            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
   }
 }

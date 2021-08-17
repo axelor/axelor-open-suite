@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
@@ -26,6 +27,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -79,23 +81,47 @@ public class FixedAssetController {
     }
     LocalDate disposalDate = (LocalDate) context.get("disposalDate");
     BigDecimal disposalAmount = new BigDecimal(context.get("disposalAmount").toString());
-    BigDecimal qty = new BigDecimal(context.get("qty").toString());
+    BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
     Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
     Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
 
     if (disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL
-        && qty.compareTo(fixedAsset.getQty()) > 0) {
+        && disposalQty.compareTo(fixedAsset.getQty()) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
           fixedAsset.getQty().toString());
     }
-    Beans.get(FixedAssetService.class)
-        .disposal(disposalDate, disposalAmount, fixedAsset, disposalTypeSelect, disposalQtySelect);
+    try {
+      Beans.get(FixedAssetService.class)
+          .computeTransferredReason(fixedAsset, disposalTypeSelect, disposalQtySelect);
+      if (fixedAsset.getTransferredReasonSelect()
+          == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
+        FixedAsset createdFixedAsset =
+            Beans.get(FixedAssetService.class)
+                .splitFixedAsset(
+                    Beans.get(FixedAssetService.class)
+                        .filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED),
+                    disposalQty);
+        response.setView(
+            ActionView.define("Fixed asset")
+                .model(FixedAsset.class.getName())
+                .add("form", "fixed-asset-form")
+                .context("_showRecord", createdFixedAsset.getId())
+                .map());
+        response.setReload(true);
+      } else {
+        Beans.get(FixedAssetService.class)
+            .disposal(
+                disposalDate, disposalAmount, fixedAsset, disposalTypeSelect, disposalQtySelect);
+        response.setCanClose(true);
+      }
 
-    response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void createAnalyticDistributionWithTemplate(

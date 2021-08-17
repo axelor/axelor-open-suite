@@ -66,8 +66,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected AnalyticFixedAssetService analyticFixedAssetService;
 
+  protected FixedAssetLineRepository fixedAssetLineRepo;
+
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
+  public static final String SUFFIX_SPLITTED_FIXED_ASSET = "_SPLITTED";
 
   @Inject
   public FixedAssetServiceImpl(
@@ -77,7 +80,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       MoveLineService moveLineService,
       AccountConfigService accountConfigService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
-      AnalyticFixedAssetService analyticFixedAssetService) {
+      AnalyticFixedAssetService analyticFixedAssetService,
+      FixedAssetLineRepository fixedAssetLineRepo) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
@@ -85,7 +89,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.accountConfigService = accountConfigService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.analyticFixedAssetService = analyticFixedAssetService;
-    ;
+    this.fixedAssetLineRepo = fixedAssetLineRepo;
   }
 
   @Override
@@ -305,16 +309,21 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
     fixedAsset.setDisposalDate(disposalDate);
     fixedAsset.setDisposalValue(disposalAmount);
+    computeTransferredReason(fixedAsset, disposalTypeSelect, disposalQtySelect);
+    fixedAssetRepo.save(fixedAsset);
+  }
+
+  @Override
+  public void computeTransferredReason(
+      FixedAsset fixedAsset, Integer disposalTypeSelect, Integer disposalQtySelect) {
     if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
         && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL) {
-      fixedAsset.setTransferredReasonSelect(
-          FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION); // Partial Cession
+      fixedAsset.setTransferredReasonSelect(FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION);
     } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
       fixedAsset.setTransferredReasonSelect(FixedAssetRepository.TRANSFERED_REASON_CESSION);
     } else {
       fixedAsset.setTransferredReasonSelect(FixedAssetRepository.TRANSFERED_REASON_SCRAPPING);
     }
-    fixedAssetRepo.save(fixedAsset);
   }
 
   protected FixedAssetLine generateProrataDepreciationLine(
@@ -539,5 +548,61 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             .skip(nbLineToSkip)
             .findFirst();
     return optFixedAssetLine;
+  }
+
+  @Override
+  @Transactional
+  public FixedAsset splitFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty)
+      throws AxelorException {
+    FixedAsset newFixedAsset = copyFixedAsset(fixedAsset);
+    BigDecimal prorata =
+        disposalQty.divide(fixedAsset.getQty(), RETURNED_SCALE, RoundingMode.HALF_UP);
+    newFixedAsset.setQty(prorata);
+    fixedAssetLineComputationService.multiplyLinesBy(newFixedAsset, prorata);
+    fixedAssetLineComputationService.multiplyLinesBy(
+        fixedAsset,
+        BigDecimal.ONE.subtract(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    fixedAssetRepo.save(fixedAsset);
+    return fixedAssetRepo.save(newFixedAsset);
+  }
+
+  private FixedAsset copyFixedAsset(FixedAsset fixedAsset) {
+    FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
+    // Adding this copy because it seems there is a bug with copy.
+    if (newFixedAsset.getFixedAssetLineList() == null) {
+
+      fixedAsset
+          .getFixedAssetLineList()
+          .forEach(
+              line -> {
+                FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
+                copy.setFixedAsset(newFixedAsset);
+                newFixedAsset.addFixedAssetLineListItem(copy);
+              });
+    }
+    newFixedAsset.setName(fixedAsset.getName() + SUFFIX_SPLITTED_FIXED_ASSET);
+    newFixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
+    newFixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_SCISSION);
+    return newFixedAsset;
+  }
+
+  @Override
+  @Transactional
+  public FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    List<FixedAssetLine> fiscalFixedAssetLineList = fixedAsset.getFiscalFixedAssetLineList();
+    List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
+        fixedAsset.getFixedAssetDerogatoryLineList();
+
+    if (fixedAssetLineList != null) {
+      fixedAssetLineList.removeIf(line -> line.getStatusSelect() == status);
+    }
+    if (fiscalFixedAssetLineList != null) {
+      fiscalFixedAssetLineList.removeIf(line -> line.getStatusSelect() == status);
+    }
+    if (fixedAssetDerogatoryLineList != null) {
+      fixedAssetDerogatoryLineList.removeIf(line -> line.getStatusSelect() == status);
+    }
+    return fixedAssetRepo.save(fixedAsset);
   }
 }

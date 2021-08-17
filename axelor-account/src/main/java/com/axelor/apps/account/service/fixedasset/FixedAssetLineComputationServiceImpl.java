@@ -21,25 +21,35 @@ import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.C
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
+import java.util.List;
 
 public class FixedAssetLineComputationServiceImpl implements FixedAssetLineComputationService {
 
   protected AnalyticFixedAssetService analyticFixedAssetService;
+  protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
+  protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
 
   @Inject
-  public FixedAssetLineComputationServiceImpl(AnalyticFixedAssetService analyticFixedAssetService) {
+  public FixedAssetLineComputationServiceImpl(
+      AnalyticFixedAssetService analyticFixedAssetService,
+      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
+      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService) {
     this.analyticFixedAssetService = analyticFixedAssetService;
+    this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
+    this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
   }
 
   @Override
@@ -442,5 +452,53 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
     }
 
     return d;
+  }
+
+  @Override
+  public void multiplyLinesBy(FixedAsset fixedAsset, BigDecimal prorata) throws AxelorException {
+
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    List<FixedAssetLine> fiscalAssetLineList = fixedAsset.getFiscalFixedAssetLineList();
+    List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
+        fixedAsset.getFixedAssetDerogatoryLineList();
+    if (fixedAssetLineList != null) {
+      fixedAssetLineList.forEach(line -> multiplyLineBy(line, prorata));
+    }
+    if (fiscalAssetLineList != null) {
+      fiscalAssetLineList.forEach(line -> multiplyLineBy(line, prorata));
+    }
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
+      if (fixedAssetDerogatoryLineList != null) {
+        fixedAssetDerogatoryLineList.clear();
+        fixedAssetDerogatoryLineList.addAll(
+            fixedAssetDerogatoryLineService.computeFixedAssetDerogatoryLineList(fixedAsset));
+        for (FixedAssetDerogatoryLine line : fixedAssetDerogatoryLineList) {
+          fixedAssetDerogatoryLineMoveService.realize(line);
+        }
+      }
+    }
+  }
+
+  private void multiplyLineBy(FixedAssetLine line, BigDecimal prorata) {
+    line.setDepreciationBase(
+        prorata
+            .multiply(line.getDepreciationBase())
+            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setDepreciation(
+        prorata.multiply(line.getDepreciation()).setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setCumulativeDepreciation(
+        prorata
+            .multiply(line.getCumulativeDepreciation())
+            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setAccountingValue(
+        prorata.multiply(line.getAccountingValue()).setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setCorrectedAccountingValue(
+        prorata
+            .multiply(line.getCorrectedAccountingValue())
+            .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    line.setImpairmentValue(
+        prorata.multiply(line.getImpairmentValue()).setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
   }
 }
