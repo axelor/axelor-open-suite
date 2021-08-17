@@ -101,6 +101,11 @@
 		public static final int DISPOSABLE_QTY_SELECT_TOTAL = 1;
 		public static final int DISPOSABLE_QTY_SELECT_PARTIAL = 2;
 		
+		//Transfered reason
+		public static final int TRANSFERED_REASON_SCRAPPING = 1;
+		public static final int TRANSFERED_REASON_CESSION = 2;
+		public static final int TRANSFERED_REASON_PARTIAL_CESSION = 3;
+		
 	]]></extra-code>
     
   </entity>

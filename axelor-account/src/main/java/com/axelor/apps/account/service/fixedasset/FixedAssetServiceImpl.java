@@ -307,9 +307,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setDisposalValue(disposalAmount);
     if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
         && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL) {
-      fixedAsset.setTransferredReasonSelect(3); // Partial Session
+      fixedAsset.setTransferredReasonSelect(
+          FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION); // Partial Cession
+    } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
+      fixedAsset.setTransferredReasonSelect(FixedAssetRepository.TRANSFERED_REASON_CESSION);
     } else {
-      fixedAsset.setTransferredReasonSelect(disposalTypeSelect);
+      fixedAsset.setTransferredReasonSelect(FixedAssetRepository.TRANSFERED_REASON_SCRAPPING);
     }
     fixedAssetRepo.save(fixedAsset);
   }
