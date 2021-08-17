@@ -643,6 +643,11 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ANALYTIC_TEMPLATE =
       /*$$(*/ "AccountingReportType17.total_by_analytic_template"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_LABEL_PROVISIONAL =
+      /*$$(*/ "AccountingReportType.provisional"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_STATUS_SELECT_TITLE =
+      /*$$(*/ "AccountingReportType.status_select_title"; /*)*/
+
   public static final String INVOICE_PAYMENT_DATE = /*$$(*/ "InvoicePayment.date"; /*)*/
   public static final String INVOICE_PAYMENT_TYPE = /*$$(*/ "InvoicePayment.type"; /*)*/
   public static final String INVOICE_PAYMENT_PAYMENT_MODE = /*$$(*/
