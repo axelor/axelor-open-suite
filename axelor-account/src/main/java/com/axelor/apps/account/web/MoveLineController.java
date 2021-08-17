@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -248,13 +249,14 @@ public class MoveLineController {
 
     try {
       Context parentContext = request.getContext().getParent();
-      if (parentContext.getClass().equals(Move.class))
-        if (parentContext != null) {
-          Move move = parentContext.asType(Move.class);
-          AccountConfig accountConfig =
-              Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-          response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
-        }
+      if (ObjectUtils.notEmpty(parentContext))
+        if (Move.class.equals(parentContext.getClass()))
+          if (parentContext != null) {
+            Move move = parentContext.asType(Move.class);
+            AccountConfig accountConfig =
+                Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+            response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
+          }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }

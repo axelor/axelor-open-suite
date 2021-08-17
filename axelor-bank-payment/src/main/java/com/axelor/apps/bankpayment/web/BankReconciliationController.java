@@ -72,7 +72,7 @@ public class BankReconciliationController {
     BankReconciliation br =
         bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
 
-    //if (bankReconciliationService.updateAmounts(br)) response.setReload(true);
+    // if (bankReconciliationService.updateAmounts(br)) response.setReload(true);
   }
 
   public void unreconcile(ActionRequest request, ActionResponse response) {

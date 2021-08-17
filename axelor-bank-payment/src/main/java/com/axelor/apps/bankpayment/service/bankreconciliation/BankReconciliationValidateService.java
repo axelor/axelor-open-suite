@@ -170,7 +170,7 @@ public class BankReconciliationValidateService {
 
     moveService.getMoveValidateService().validate(move);
 
-    bankReconciliationLine.setMoveLine(cashMoveLine);
+    bankReconciliationLineService.setMoveLine(bankReconciliationLine, cashMoveLine);
 
     bankReconciliationLine.setIsPosted(true);
 

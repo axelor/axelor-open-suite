@@ -42,6 +42,8 @@
     <decimal name="movesTheoreticalBalance" title="Moves theoretical balance"/>
     
     
+    <finder-method name="findByBankDetails" using="bankDetails" all="true"/>
+    
 	<extra-code><![CDATA[
 	
 	   	// Status select

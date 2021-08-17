@@ -48,6 +48,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -134,6 +135,7 @@ public class BankReconciliationService {
                   bankReconciliationLine.getBankStatementLine().getOperationInterbankCodeLine())
               .fetch();
       for (BankStatementRule bankStatementRule : bankStatementRules) {
+
         if (Boolean.TRUE.equals(
             new GroovyScriptHelper(scriptContext)
                 .eval(
@@ -260,23 +262,24 @@ public class BankReconciliationService {
     BigDecimal statementOngoingReconciledBalance = BigDecimal.ZERO;
     BigDecimal movesOngoingReconciledBalance = BigDecimal.ZERO;
 
-    bankReconciliations = bankReconciliationRepository.all().fetch(limit, offset);
+    bankReconciliations = bankReconciliationRepository.findByBankDetails(bankReconciliation.getBankDetails()).fetch(limit, offset);
     do {
       for (BankReconciliation br : bankReconciliations) {
         for (BankReconciliationLine brl : br.getBankReconciliationLineList()) {
           if (brl.getIsPosted()) {
-            statementReconciledLineBalance = statementReconciledLineBalance.add(brl.getDebit());
             statementReconciledLineBalance =
-                statementReconciledLineBalance.subtract(brl.getCredit());
+                statementReconciledLineBalance.subtract(brl.getDebit());
+            statementReconciledLineBalance = statementReconciledLineBalance.add(brl.getCredit());
           } else {
-            statementUnreconciledLineBalance = statementUnreconciledLineBalance.add(brl.getDebit());
             statementUnreconciledLineBalance =
-                statementUnreconciledLineBalance.subtract(brl.getCredit());
+                statementUnreconciledLineBalance.subtract(brl.getDebit());
+            statementUnreconciledLineBalance =
+                statementUnreconciledLineBalance.add(brl.getCredit());
             if (Strings.isNullOrEmpty(brl.getPostedNbr())) {
               statementOngoingReconciledBalance =
-                  statementOngoingReconciledBalance.add(brl.getDebit());
+                  statementOngoingReconciledBalance.subtract(brl.getDebit());
               statementOngoingReconciledBalance =
-                  statementOngoingReconciledBalance.subtract(brl.getCredit());
+                  statementOngoingReconciledBalance.add(brl.getCredit());
               tempMoveLine = brl.getMoveLine();
               if (tempMoveLine != null) {
                 if (tempMoveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
@@ -294,7 +297,7 @@ public class BankReconciliationService {
       }
       offset += limit;
       JPA.clear();
-      bankReconciliations = bankReconciliationRepository.all().fetch(limit, offset);
+      bankReconciliations = bankReconciliationRepository.findByBankDetails(bankReconciliation.getBankDetails()).fetch(limit, offset);
     } while (bankReconciliations.size() != 0);
     offset = 0;
     JPA.clear();
@@ -587,8 +590,10 @@ public class BankReconciliationService {
     bankReconciliationLine.setPostedNbr("");
     bankReconciliationLine.setBankStatementQuery(null);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
-    bankReconciliationLine.getMoveLine().setPostedNbr("");
+    if (ObjectUtils.notEmpty(bankReconciliationLine.getMoveLine()))
+      bankReconciliationLine.getMoveLine().setPostedNbr("");
     bankReconciliationLine.setMoveLine(null);
+    bankReconciliationLine.setConfidenceIndex(0);
   }
 
   public boolean updateAmounts(BankReconciliation br) {
