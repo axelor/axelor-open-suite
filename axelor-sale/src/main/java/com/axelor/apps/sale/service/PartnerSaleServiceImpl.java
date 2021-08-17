@@ -71,7 +71,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
 
   @SuppressWarnings("unchecked")
   public List<Long> findMailsFromSaleOrder(Partner partner, int emailType) {
-    
+
     String query =
         "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
             + " WHERE part.id = "
@@ -86,7 +86,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
 
   @SuppressWarnings("unchecked")
   public List<Long> findMailsFromSaleOrderContact(Partner partner, int emailType) {
-    
+
     String query =
         "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
             + " WHERE part.id = "

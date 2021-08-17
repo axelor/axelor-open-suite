@@ -43,6 +43,10 @@
   	<extra-code>
       	<![CDATA[
       		// TYPE SELECT
+                public static final int TYPE_EVENT = 0;
+		public static final Integer TYPE_CALL = 1;
+	 	public static final Integer TYPE_MEETING = 2;
+	  	public static final Integer TYPE_TASK = 3;
       		public static final int TYPE_NOTE = 5;
       		
       		// CALL TYPE SELECT

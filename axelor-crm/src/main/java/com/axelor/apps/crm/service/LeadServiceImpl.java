@@ -90,7 +90,7 @@ public class LeadServiceImpl implements LeadService {
           multiRelatedRepository
               .all()
               .filter(
-                  "self.relatedTo1Select = ?1 and self.relatedTo1SelectId = ?2",
+                  "self.relatedToSelect = ?1 and self.relatedToSelectId = ?2",
                   Lead.class.getName(),
                   lead.getId())
               .fetch();

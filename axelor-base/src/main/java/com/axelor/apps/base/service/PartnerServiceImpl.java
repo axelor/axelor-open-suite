@@ -373,21 +373,18 @@ public class PartnerServiceImpl implements PartnerService {
       if (emailType == MessageRepository.TYPE_RECEIVED) {
         query =
             query.substring(0, query.length() - 1)
-                + " OR (:emailAddress MEMBER OF email.toEmailAddressSet)) AND email.typeSelect = "
-                + emailType;
-
-        return JPA.em()
-            .createQuery(query)
-            .setParameter("emailAddress", partner.getEmailAddress())
-            .getResultList();
+                + " AND (email.fromEmailAddress.id = "
+                + partner.getEmailAddress().getId()
+                + "))";
 
       } else {
         query =
             query.substring(0, query.length() - 1)
-                + " OR (email.fromEmailAddress.id = "
-                + partner.getEmailAddress().getId()
-                + ")) AND email.typeSelect = "
-                + emailType;
+                + " AND (:emailAddress MEMBER OF email.toEmailAddressSet))";
+        return JPA.em()
+            .createQuery(query)
+            .setParameter("emailAddress", partner.getEmailAddress())
+            .getResultList();
       }
     } else {
       query += " AND email.typeSelect = " + emailType;

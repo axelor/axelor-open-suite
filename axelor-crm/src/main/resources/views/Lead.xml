@@ -380,20 +380,19 @@
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
 		<domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND 
-			related.relatedToSelectId = :id) OR (self.fromEmailAddress.id = :idEmail))</domain>
+			related.relatedToSelectId = :id) AND (:email MEMBER OF self.toEmailAddressSet))</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="idEmail" expr="eval: emailAddress?.id"/>
+		<context name="email" expr="eval: emailAddress"/>
 	</action-view>
 	
 	<action-view name="action-lead-view-received-emails" title="Received emails" model="com.axelor.apps.message.db.Message">
 		<view type="cards" name="message-cards"/>
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.mediaTypeSelect = 2 AND self.typeSelect = 1 AND ((self.relatedTo1Select = 'com.axelor.apps.crm.db.Lead' AND self.relatedTo1SelectId = :id)
-					OR (self.relatedTo2Select = 'com.axelor.apps.crm.db.Lead' AND self.relatedTo2SelectId = :id)
-					OR (:email MEMBER OF self.toEmailAddressSet))</domain>
+		<domain>self.mediaTypeSelect = 2 AND ((self.multiRelatedList.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND self.multiRelatedList.relatedToSelectId = :id)
+					 AND  (self.fromEmailAddress.id = :idEmail))</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="email" expr="eval: emailAddress"/>
+		<context name="idEmail" expr="eval: emailAddress?.id"/>
 	</action-view>
 	
 	<action-view name="action-lead-view-events" title="Events" model="com.axelor.apps.crm.db.Event">

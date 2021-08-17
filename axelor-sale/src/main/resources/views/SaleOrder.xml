@@ -1502,16 +1502,14 @@
 		<view type="cards" name="message-cards"/>
 		<view type="grid" name="message-grid" />
 		<view type="form" name="message-form" />
-		<domain>self.mediaTypeSelect = 2 AND self.typeSelect = 2 AND ((self.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND self.relatedTo1SelectId = :id)
-			OR (self.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND self.relatedTo2SelectId = :id))</domain>
+		<domain>self.mediaTypeSelect = 2 AND self.typeSelect = 2 AND (self.multiRelatedList.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND self.multiRelatedList.relatedToSelectId = :id)</domain>
 	</action-view>
 	
 	<action-view name="action-sale-order-view-recieved-emails" title="Emails" model="com.axelor.apps.message.db.Message">
 		<view type="cards" name="message-cards"/>
 		<view type="grid" name="message-grid" />
 		<view type="form" name="message-form" />
-		<domain>self.mediaTypeSelect = 2 AND self.typeSelect = 1 AND ((self.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND self.relatedTo1SelectId = :id)
-			OR (self.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND self.relatedTo2SelectId = :id))</domain>
+		<domain>self.mediaTypeSelect = 2 AND self.typeSelect = 1 AND (self.multiRelatedList.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND self.multiRelatedList.relatedToSelectId = :id)</domain>
 	</action-view>
 	
 	<action-view name="action-sale-order-view-invoicing-advance-payment-wizard" title="" model="com.axelor.apps.sale.db.SaleOrder">
