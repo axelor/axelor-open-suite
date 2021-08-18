@@ -252,8 +252,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       LocalDate disposalDate,
       BigDecimal disposalAmount,
       FixedAsset fixedAsset,
-      Integer disposalTypeSelect,
-      Integer disposalQtySelect)
+      int transferredReason)
       throws AxelorException {
 
     Map<Integer, List<FixedAssetLine>> fixedAssetLineMap =
@@ -291,7 +290,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLine depreciationFixedAssetLine =
           generateProrataDepreciationLine(fixedAsset, disposalDate, previousRealizedLine);
       fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false);
-      fixedAssetLineMoveService.generateDisposalMove(depreciationFixedAssetLine);
+      fixedAssetLineMoveService.generateDisposalMove(depreciationFixedAssetLine, transferredReason);
     } else {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
         return;
@@ -306,39 +305,56 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       fixedAsset.removeFixedAssetLineListItem(fixedAssetLine);
     }
-    fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
-    fixedAsset.setDisposalDate(disposalDate);
-    fixedAsset.setDisposalValue(disposalAmount);
-    computeTransferredReason(fixedAsset, disposalTypeSelect, disposalQtySelect);
+
+    setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
     fixedAssetRepo.save(fixedAsset);
   }
 
+  private void setDisposalFields(
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      BigDecimal disposalAmount,
+      int transferredReason) {
+    fixedAsset.setDisposalDate(disposalDate);
+    fixedAsset.setDisposalValue(disposalAmount);
+    fixedAsset.setTransferredReasonSelect(transferredReason);
+    fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
+  }
+
   @Override
-  public void computeTransferredReason(
-      FixedAsset fixedAsset, Integer disposalTypeSelect, Integer disposalQtySelect) {
+  public int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect) {
     if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION
         && disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL) {
-      fixedAsset.setTransferredReasonSelect(FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION);
+      return FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION;
     } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
-      fixedAsset.setTransferredReasonSelect(FixedAssetRepository.TRANSFERED_REASON_CESSION);
-    } else {
-      fixedAsset.setTransferredReasonSelect(FixedAssetRepository.TRANSFERED_REASON_SCRAPPING);
+      return FixedAssetRepository.TRANSFERED_REASON_CESSION;
     }
+    return FixedAssetRepository.TRANSFERED_REASON_SCRAPPING;
   }
 
   protected FixedAssetLine generateProrataDepreciationLine(
       FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine) {
+    FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    fixedAssetLine.setDepreciationDate(disposalDate);
+    computeDepreciationWithProrata(fixedAsset, fixedAssetLine, previousRealizedLine, disposalDate);
+    fixedAssetLine.setFixedAsset(fixedAsset);
+    fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
+    return fixedAssetLine;
+  }
 
+  private void computeDepreciationWithProrata(
+      FixedAsset fixedAsset,
+      FixedAssetLine fixedAssetLine,
+      FixedAssetLine previousRealizedLine,
+      LocalDate disposalDate) {
     LocalDate previousRealizedDate =
         previousRealizedLine != null
             ? previousRealizedLine.getDepreciationDate()
-            : fixedAsset.getFirstDepreciationDate();
+            : fixedAsset.getFirstServiceDate();
     long monthsBetweenDates =
         ChronoUnit.MONTHS.between(
             previousRealizedDate.withDayOfMonth(1), disposalDate.withDayOfMonth(1));
 
-    FixedAssetLine fixedAssetLine = new FixedAssetLine();
-    fixedAssetLine.setDepreciationDate(disposalDate);
     BigDecimal prorataTemporis =
         BigDecimal.valueOf(monthsBetweenDates)
             .divide(
@@ -374,11 +390,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             ? previousRealizedLine.getCumulativeDepreciation().add(deprecationValue)
             : deprecationValue;
     fixedAssetLine.setCumulativeDepreciation(cumulativeValue);
-    fixedAssetLine.setResidualValue(
+    fixedAssetLine.setAccountingValue(
         fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
-    fixedAssetLine.setFixedAsset(fixedAsset);
-    fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
-    return fixedAssetLine;
   }
 
   @Override
@@ -530,7 +543,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   private Optional<FixedAssetLine> findOldestFixedAssetLine(
-      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToStip) {
+      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip) {
     fixedAssetLineList.sort(
         (fa1, fa2) -> fa1.getDepreciationDate().compareTo(fa2.getDepreciationDate()));
     return fixedAssetLineList.stream()
@@ -552,16 +565,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   @Transactional
-  public FixedAsset splitFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty)
-      throws AxelorException {
+  public FixedAsset splitFixedAsset(
+      FixedAsset fixedAsset, BigDecimal disposalQty, int transferredReason) throws AxelorException {
+    fixedAsset.setTransferredReasonSelect(transferredReason);
     FixedAsset newFixedAsset = copyFixedAsset(fixedAsset);
     BigDecimal prorata =
         disposalQty.divide(fixedAsset.getQty(), RETURNED_SCALE, RoundingMode.HALF_UP);
     newFixedAsset.setQty(prorata);
+    BigDecimal remainingProrata =
+        BigDecimal.ONE.subtract(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
+    fixedAsset.setQty(remainingProrata);
     fixedAssetLineComputationService.multiplyLinesBy(newFixedAsset, prorata);
-    fixedAssetLineComputationService.multiplyLinesBy(
-        fixedAsset,
-        BigDecimal.ONE.subtract(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    fixedAssetLineComputationService.multiplyLinesBy(fixedAsset, remainingProrata);
     fixedAssetRepo.save(fixedAsset);
     return fixedAssetRepo.save(newFixedAsset);
   }
@@ -604,5 +619,103 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       fixedAssetDerogatoryLineList.removeIf(line -> line.getStatusSelect() == status);
     }
     return fixedAssetRepo.save(fixedAsset);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void cession(
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      BigDecimal disposalAmount,
+      int transferredReason)
+      throws AxelorException {
+
+    if (getExistingLineWithSameYear(
+            fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_REALIZED)
+        != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
+    }
+    FixedAssetLine correspondingFixedAssetLine;
+    if (isLastDayOfTheYear(disposalDate)) {
+      correspondingFixedAssetLine = getExistingLineWithSameDate(fixedAsset, disposalDate);
+    } else {
+      // If it is not a last day of the year we will apply a prorata on the line.
+      if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
+        correspondingFixedAssetLine =
+            getExistingLineWithSameYear(
+                fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
+      } else {
+        correspondingFixedAssetLine =
+            getExistingLineWithSameMonth(
+                fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
+      }
+      FixedAssetLine previousRealizedLine =
+          findOldestFixedAssetLine(
+                  fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0)
+              .orElse(null);
+      if (previousRealizedLine != null
+          && disposalDate.isBefore(previousRealizedLine.getDepreciationDate())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
+      }
+      computeDepreciationWithProrata(
+          fixedAsset, correspondingFixedAssetLine, previousRealizedLine, disposalDate);
+    }
+    if (correspondingFixedAssetLine != null) {
+      fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false);
+      fixedAssetLineMoveService.generateDisposalMove(
+          correspondingFixedAssetLine, transferredReason);
+    }
+    setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
+    fixedAssetRepo.save(fixedAsset);
+  }
+
+  private FixedAssetLine getExistingLineWithSameDate(
+      FixedAsset fixedAsset, LocalDate disposalDate) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    if (fixedAssetLineList != null) {
+      return fixedAssetLineList.stream()
+          .filter(line -> line.getDepreciationDate().equals(disposalDate))
+          .findAny()
+          .orElse(null);
+    }
+    return null;
+  }
+
+  private boolean isLastDayOfTheYear(LocalDate disposalDate) {
+    return disposalDate.getMonthValue() == 12 && disposalDate.getDayOfMonth() == 31;
+  }
+
+  private FixedAssetLine getExistingLineWithSameYear(
+      FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    if (fixedAssetLineList != null) {
+      return fixedAssetLineList.stream()
+          .filter(
+              line ->
+                  line.getDepreciationDate().getYear() == disposalDate.getYear()
+                      && line.getStatusSelect() == lineStatus)
+          .findAny()
+          .orElse(null);
+    }
+    return null;
+  }
+
+  private FixedAssetLine getExistingLineWithSameMonth(
+      FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    if (fixedAssetLineList != null) {
+      return fixedAssetLineList.stream()
+          .filter(
+              line ->
+                  line.getDepreciationDate().getMonth() == disposalDate.getMonth()
+                      && line.getStatusSelect() == lineStatus)
+          .findAny()
+          .orElse(null);
+    }
+    return null;
   }
 }

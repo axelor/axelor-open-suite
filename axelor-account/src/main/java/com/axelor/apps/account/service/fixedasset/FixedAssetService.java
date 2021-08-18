@@ -57,8 +57,7 @@ public interface FixedAssetService {
       LocalDate disposalDate,
       BigDecimal disposalAmount,
       FixedAsset fixedAsset,
-      Integer disposalTypeSelect,
-      Integer disposalQtySelect)
+      int transferredReason)
       throws AxelorException;
 
   void createAnalyticOnMoveLine(
@@ -109,10 +108,10 @@ public interface FixedAssetService {
    * @return The new fixed asset created from split.
    * @throws AxelorException
    */
-  FixedAsset splitFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) throws AxelorException;
+  FixedAsset splitFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty, int transferredReason)
+      throws AxelorException;
 
-  void computeTransferredReason(
-      FixedAsset fixedAsset, Integer disposalTypeSelect, Integer disposalQtySelect);
+  int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect);
 
   /**
    * Filter lines from fixedAssetLineList / fiscalAssetLineList / fixedAssetDerogatoryLineList with
@@ -123,4 +122,11 @@ public interface FixedAssetService {
    * @return filteredFixedAsset
    */
   FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status);
+
+  void cession(
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      BigDecimal disposalAmount,
+      int transferredReason)
+      throws AxelorException;
 }

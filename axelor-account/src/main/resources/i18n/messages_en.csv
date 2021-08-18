@@ -1979,6 +1979,7 @@
 "The company is required and must be the same for all invoices",,,
 "The currency is required and must be the same for all invoices",,,
 "The deposit slip has already been published.",,,
+"The disposal of the asset cannot be executed while depreciation has already been accounted.",,,
 "The from date is incorrect",,,
 "The move %s cannot be empty",,,
 "The move is validated and so can not be canceled.",,,

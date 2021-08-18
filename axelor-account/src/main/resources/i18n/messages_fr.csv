@@ -1979,6 +1979,7 @@
 "The company is required and must be the same for all invoices","La société est obligatoire et doit être la même pour l'ensemble des factures",,
 "The currency is required and must be the same for all invoices","La devise est obligatoire et doit être la même pour l'ensemble des factures",,
 "The deposit slip has already been published.","Le bordeau a déjà été édité",,
+"The disposal of the asset cannot be executed while depreciation has already been accounted.","La sortie de l'immobilisaiton ne peut être réalisée dès lors que l'amortissement a déjà été constaté.",,
 "The from date is incorrect","La date de départ est incorrecte",,
 "The move %s cannot be empty","L'écriture %s ne peut pas être vide",,
 "The move is validated and so can not be canceled.","L'écriture est validé et donc ne peut pas être annulé.",,

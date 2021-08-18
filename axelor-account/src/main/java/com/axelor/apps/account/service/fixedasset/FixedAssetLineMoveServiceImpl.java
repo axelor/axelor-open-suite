@@ -303,7 +303,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException {
+  public void generateDisposalMove(FixedAssetLine fixedAssetLine, int transferredReason)
+      throws AxelorException {
 
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
     Journal journal = fixedAsset.getJournal();
@@ -326,11 +327,22 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
       String origin = fixedAsset.getReference();
-      Account chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
+      Account chargeAccount;
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
-      BigDecimal chargeAmount = fixedAssetLine.getResidualValue();
+      BigDecimal chargeAmount = fixedAssetLine.getAccountingValue();
       BigDecimal cumulativeDepreciationAmount = fixedAssetLine.getCumulativeDepreciation();
+      if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
+        if (fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+              "RealisedAssetsValueAccount");
+        }
+        chargeAccount = fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount();
+      } else {
+        chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
+      }
 
       // Creating accounting debit move line for charge account
       MoveLine chargeAccountDebitMoveLine =
@@ -396,9 +408,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       move.getMoveLineList().addAll(moveLines);
     }
-
     moveRepo.save(move);
-
     fixedAsset.setDisposalMove(move);
   }
 

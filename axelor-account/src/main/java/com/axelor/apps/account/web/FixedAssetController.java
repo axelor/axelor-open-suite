@@ -95,16 +95,17 @@ public class FixedAssetController {
           fixedAsset.getQty().toString());
     }
     try {
-      Beans.get(FixedAssetService.class)
-          .computeTransferredReason(fixedAsset, disposalTypeSelect, disposalQtySelect);
-      if (fixedAsset.getTransferredReasonSelect()
-          == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
+      int transferredReason =
+          Beans.get(FixedAssetService.class)
+              .computeTransferredReason(disposalTypeSelect, disposalQtySelect);
+      if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
         FixedAsset createdFixedAsset =
             Beans.get(FixedAssetService.class)
                 .splitFixedAsset(
                     Beans.get(FixedAssetService.class)
                         .filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED),
-                    disposalQty);
+                    disposalQty,
+                    transferredReason);
         response.setView(
             ActionView.define("Fixed asset")
                 .model(FixedAsset.class.getName())
@@ -112,10 +113,16 @@ public class FixedAssetController {
                 .context("_showRecord", createdFixedAsset.getId())
                 .map());
         response.setReload(true);
+
+      } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
+        Beans.get(FixedAssetService.class)
+            .cession(fixedAsset, disposalDate, disposalAmount, transferredReason);
+        Beans.get(FixedAssetService.class)
+            .filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
+        response.setCanClose(true);
       } else {
         Beans.get(FixedAssetService.class)
-            .disposal(
-                disposalDate, disposalAmount, fixedAsset, disposalTypeSelect, disposalQtySelect);
+            .disposal(disposalDate, disposalAmount, fixedAsset, transferredReason);
         response.setCanClose(true);
       }
 

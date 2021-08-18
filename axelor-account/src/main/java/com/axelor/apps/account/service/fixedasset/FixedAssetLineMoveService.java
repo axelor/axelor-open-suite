@@ -26,7 +26,8 @@ public interface FixedAssetLineMoveService {
 
   void realize(FixedAssetLine fixedAssetLine, boolean isBatch) throws AxelorException;
 
-  void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException;
+  void generateDisposalMove(FixedAssetLine fixedAssetLine, int transferredReason)
+      throws AxelorException;
 
   /**
    * Method that may computes action "realize" on lines of fiscalFixedAssetLineList,
