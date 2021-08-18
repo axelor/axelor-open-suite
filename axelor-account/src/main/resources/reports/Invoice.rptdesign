@@ -4854,12 +4854,6 @@ row["message_key"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">legal_notice</property>
-                                <text-property name="displayName">legal_notice</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["legal_notice"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">description</property>
                                 <text-property name="displayName">description</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["description"]</expression>

@@ -37,6 +37,7 @@
 	<date name="financialDiscountDeadlineDate" title="Fin. Discount Deadline Date"/>
 	<decimal name="financialDiscountAmount" title="Fin. Discount Amount"/>
 	<decimal name="financialDiscountTaxAmount" title="Fin. Discount Tax"/>
+	<decimal name="financialDiscountTotalAmount" title="Fin. Discount Total Amount"/>
 	
 	<finder-method name="findByReconcile" using="reconcile" all="true"/>
 

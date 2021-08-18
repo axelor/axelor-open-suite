@@ -44,7 +44,7 @@
             <field name="invoice" hidden="true"/>
 		</panel>
 		<panel name="discountPanel" title="Financial Discount">
-			<field name="applyFinancialDiscount" onChange="action-record-on-change-invoice-payment-financial-discount,action-attrs-on-change-invoice-payment-financial-discount"/>
+			<field name="applyFinancialDiscount" readonlyIf="!financialDiscount" onChange="action-record-on-change-invoice-payment-financial-discount,action-attrs-on-change-invoice-payment-financial-discount"/>
 			<field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
 			<field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount" readonly="true"/>
 			<field name="financialDiscountAmount" showIf="applyFinancialDiscount" readonly="true"/>
@@ -90,6 +90,7 @@
 	</form>
 
 
+
 	<action-group name="action-invoice-payment-group-new">
 		<action name="action-invoice-payment-record-new"/>
 		<action name="action-invoice-payment-attrs-new"/>
@@ -109,12 +110,6 @@
 		<field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
     	<field name="invoice" expr="eval: _invoice"/>
     	<field name="typeSelect" expr="2"/>
-    	<field name="applyFinancialDiscount" expr="call:com.axelor.apps.account.service.invoice.InvoiceService:applyFinancialDiscount(_invoice.id)" if="_invoice"/>
-    	<field name="amount" expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPaymentOnNew(_invoice.id)" if="_invoice"/>
-    	<field name="financialDiscountDeadlineDate" expr="eval: _invoice?.financialDiscountDeadlineDate" if="_invoice &amp;&amp; _invoice.financialDiscountDeadlineDate"/>
-    	<field name="financialDiscount" expr="eval: _invoice?.financialDiscount" if="_invoice &amp;&amp; _invoice.financialDiscount"/>
-    	<field name="financialDiscountAmount"  expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateFinancialDiscountAmount(_invoice.id)" if="_invoice"/>
-    	<field name="financialDiscountTaxAmount"  expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateFinancialDiscountTaxAmount(_invoice.id)" if="_invoice"/>
      </action-record>
     
 	<action-record name="action-invoice-payment-record-mass-payment-new" model="com.axelor.apps.account.db.InvoicePayment">
@@ -141,7 +136,7 @@
 	</action-method>
 	
 	<action-method name="action-invoice-payment-method-new-discount">
-        <call class="com.axelor.apps.account.web.InvoicePaymentController" method="filterPaymentMode"/>
+        <call class="com.axelor.apps.account.web.InvoicePaymentController" method="computeDatasForFinancialDiscount"/>
 	</action-method>
 
     <action-method name="action-invoice-payment-method-cancel">

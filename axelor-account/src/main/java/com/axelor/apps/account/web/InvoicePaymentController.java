@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -43,6 +44,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -189,6 +191,45 @@ public class InvoicePaymentController {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
       Beans.get(InvoicePaymentToolService.class).checkConditionBeforeSave(invoicePayment);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void computeDatasForFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      Long invoiceId =
+          Long.valueOf(
+              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+      if (invoiceId > 0) {
+        Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+        Boolean applyDiscount = Beans.get(InvoiceService.class).applyFinancialDiscount(invoiceId);
+        response.setValue("applyFinancialDiscount", applyDiscount);
+        response.setValue(
+            "amount",
+            Beans.get(InvoiceService.class)
+                .calculateAmountRemainingInPayment(invoiceId, applyDiscount));
+        if (invoice.getFinancialDiscountDeadlineDate() != null) {
+          response.setValue(
+              "financialDiscountDeadlineDate", invoice.getFinancialDiscountDeadlineDate());
+        }
+        if (invoice.getFinancialDiscount() != null) {
+          response.setValue("financialDiscount", invoice.getFinancialDiscount());
+        }
+        response.setValue(
+            "financialDiscountAmount",
+            Beans.get(InvoiceService.class).calculateFinancialDiscountAmount(invoiceId));
+        response.setValue(
+            "financialDiscountTaxAmount",
+            Beans.get(InvoiceService.class).calculateFinancialDiscountTaxAmount(invoiceId));
+        response.setValue(
+            "financialDiscountTotalAmount",
+            Beans.get(InvoiceService.class).calculateFinancialDiscountTotalAmount(invoiceId));
+        response.setAttr(
+            "amount", "title", Beans.get(InvoiceService.class).setAmountTitle(applyDiscount));
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

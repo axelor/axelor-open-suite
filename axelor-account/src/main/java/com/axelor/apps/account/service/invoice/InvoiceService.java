@@ -286,19 +286,15 @@ public interface InvoiceService {
 
   public String getPfpValidatorUserDomain(Invoice invoice);
 
-  @CallMethod
   public BigDecimal calculateFinancialDiscountTaxAmount(Long id);
 
-  @CallMethod
   public BigDecimal calculateFinancialDiscountAmount(Long id);
 
-  @CallMethod
-  public BigDecimal calculateAmountRemainingInPaymentOnNew(Long id);
+  public BigDecimal calculateFinancialDiscountTotalAmount(Long id);
 
   @CallMethod
   public BigDecimal calculateAmountRemainingInPayment(Long id, Boolean apply);
 
-  @CallMethod
   public boolean applyFinancialDiscount(Long id);
 
   @CallMethod

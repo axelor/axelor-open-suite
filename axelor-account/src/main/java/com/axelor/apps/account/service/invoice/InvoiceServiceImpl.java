@@ -1062,33 +1062,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return BigDecimal.ZERO;
   }
 
-  public BigDecimal calculateAmountRemainingInPaymentOnNew(Long id) {
-
-    Invoice invoice = invoiceRepo.find(id);
-    System.err.println(
-        invoice.getAmountRemaining()
-            + "  "
-            + calculateFinancialDiscountTaxAmount(id)
-            + "   "
-            + calculateFinancialDiscountAmount(id));
-    if (applyFinancialDiscount(id)) {
-      return invoice
-          .getAmountRemaining()
-          .subtract(calculateFinancialDiscountTaxAmount(id))
-          .subtract(calculateFinancialDiscountAmount(id));
-    }
-    return invoice.getAmountRemaining();
+  public BigDecimal calculateFinancialDiscountTotalAmount(Long id) {
+    return calculateFinancialDiscountAmount(id).add(calculateFinancialDiscountTaxAmount(id));
   }
 
   public BigDecimal calculateAmountRemainingInPayment(Long id, Boolean apply) {
 
     Invoice invoice = invoiceRepo.find(id);
-    System.err.println(
-        invoice.getAmountRemaining()
-            + "  "
-            + calculateFinancialDiscountTaxAmount(id)
-            + "   "
-            + calculateFinancialDiscountAmount(id));
     if (apply) {
       return invoice
           .getAmountRemaining()
