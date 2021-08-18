@@ -366,10 +366,10 @@
     <action name="action-move-line-record-get-first-move-line-informations" />
     <action name="action-move-line-record-get-creditdebit-balance" />
     <action name="action-move-line-attrs-hidden-reconcileLists" />
+    <action name="action-move-line-method-set-is-other-currency"/>
     <action name="action-move-line-method-set-currencyRate" />
     <action name="action-move-line-record-set-currencyAmount" />
     <action name="action-move-line-method-description-required" />
-    <action name="action-move-line-method-set-is-other-currency"/>
   </action-group>
 
   <action-group name="action-group-account-moveline-debitcredit-onchange">
@@ -524,8 +524,8 @@
   </action-record>
 
   <action-record name="action-move-line-record-set-debitcredit" model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit" expr="eval: currencyAmount * currencyRate" if="account?.commonPosition = 1" />
-    <field name="credit" expr="eval: currencyAmount * currencyRate" if="account?.commonPosition = 2" />
+    <field name="debit" expr="eval: currencyAmount * currencyRate" if="account?.commonPosition == 2" />
+    <field name="credit" expr="eval: currencyAmount * currencyRate" if="account?.commonPosition == 1" />
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">
