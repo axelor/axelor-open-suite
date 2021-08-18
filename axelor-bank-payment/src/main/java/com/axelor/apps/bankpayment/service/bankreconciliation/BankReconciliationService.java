@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
@@ -58,9 +59,10 @@ import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.mysql.jdbc.StringUtils;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,6 +83,7 @@ public class BankReconciliationService {
   protected MoveService moveService;
   protected PeriodService periodService;
   protected BankReconciliationLineService bankReconciliationLineService;
+  protected MoveLineService moveLineService;
 
   @Inject
   public BankReconciliationService(
@@ -95,7 +98,8 @@ public class BankReconciliationService {
       BankStatementRuleRepository bankStatementRuleRepository,
       PeriodService periodService,
       MoveService moveService,
-      BankReconciliationLineService bankReconciliationLineService) {
+      BankReconciliationLineService bankReconciliationLineService,
+      MoveLineService moveLineService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -109,6 +113,7 @@ public class BankReconciliationService {
     this.moveService = moveService;
     this.periodService = periodService;
     this.bankReconciliationLineService = bankReconciliationLineService;
+    this.moveLineService = moveLineService;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) {
@@ -588,7 +593,10 @@ public class BankReconciliationService {
 
   public void unreconcileLines(List<BankReconciliationLine> bankReconciliationLines) {
     for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      unreconcileLine(bankReconciliationLine);
+    	if(!StringUtils.isNullOrEmpty(bankReconciliationLine.getPostedNbr()))
+    	{
+    		unreconcileLine(bankReconciliationLine);
+    	}
     }
   }
 
@@ -598,29 +606,13 @@ public class BankReconciliationService {
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
     String query = "self.postedNbr LIKE '%%s%'";
     query = query.replace("%s", bankReconciliationLine.getPostedNbr());
-    List<MoveLine> moveLines = 
-        moveLineRepository
-            .all()
-            .filter(query)
-            .fetch();
+    List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
     for (MoveLine moveLine : moveLines) {
-      moveLine = removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+      moveLine = moveLineService.removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
     bankReconciliationLine.setPostedNbr("");
-  }
-
-  protected MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
-    String posted = moveLine.getPostedNbr();
-    System.err.println(posted);
-    List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
-    postedNbrs.remove(postedNbr);
-    System.err.println(postedNbr);
-    posted = String.join(",", postedNbrs);
-    System.err.println(posted);
-    moveLine.setPostedNbr(posted);
-    return moveLine;
   }
 
   public boolean updateAmounts(BankReconciliation br) {
