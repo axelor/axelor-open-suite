@@ -2,21 +2,32 @@ package com.axelor.apps.account.service.fixedasset;
 
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
+
+  protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
+
+  @Inject
+  public FixedAssetDerogatoryLineServiceImpl(
+      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService) {
+    this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
+  }
 
   @Override
   public FixedAssetDerogatoryLine createFixedAssetDerogatoryLine(
@@ -183,5 +194,48 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
         prorata
             .multiply(line.getDerogatoryBalanceAmount())
             .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+  }
+
+  @Override
+  public void generateDerogatoryCessionMove(
+      FixedAssetDerogatoryLine firstPlannedDerogatoryLine,
+      FixedAssetDerogatoryLine lastRealizedDerogatoryLine)
+      throws AxelorException {
+    Objects.requireNonNull(firstPlannedDerogatoryLine);
+    Account creditAccount = computeCessionCreditAccount(firstPlannedDerogatoryLine);
+    Account debitAccount = computeCessionDebitAccount(firstPlannedDerogatoryLine);
+    BigDecimal lastDerogatoryBalanceAmount =
+        lastRealizedDerogatoryLine == null
+            ? BigDecimal.ZERO
+            : lastRealizedDerogatoryLine.getDerogatoryBalanceAmount();
+    BigDecimal amount =
+        firstPlannedDerogatoryLine
+            .getDerogatoryBalanceAmount()
+            .subtract(lastDerogatoryBalanceAmount)
+            .abs();
+    fixedAssetDerogatoryLineMoveService.generateMove(
+        firstPlannedDerogatoryLine, creditAccount, debitAccount, amount);
+  }
+
+  private Account computeCessionDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+    FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+    if (fixedAssetDerogatoryLine.getDerogatoryBalanceAmount().compareTo(BigDecimal.ZERO) > 0) {
+      return fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
+    } else if (fixedAssetDerogatoryLine.getDerogatoryBalanceAmount().compareTo(BigDecimal.ZERO)
+        < 0) {
+      return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
+    }
+    return fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
+  }
+
+  private Account computeCessionCreditAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+    FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+    if (fixedAssetDerogatoryLine.getDerogatoryBalanceAmount().compareTo(BigDecimal.ZERO) > 0) {
+      return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
+    } else if (fixedAssetDerogatoryLine.getDerogatoryBalanceAmount().compareTo(BigDecimal.ZERO)
+        < 0) {
+      return fixedAsset.getFixedAssetCategory().getIncomeDepreciationDerogatoryAccount();
+    }
+    return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
   }
 }

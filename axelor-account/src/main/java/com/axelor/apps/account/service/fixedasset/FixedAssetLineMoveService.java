@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface FixedAssetLineMoveService {
 
@@ -44,5 +43,7 @@ public interface FixedAssetLineMoveService {
   void realizeOthersLines(FixedAsset fixedAsset, LocalDate depreciationDate, boolean isBatch)
       throws AxelorException;
 
-void generateSaleMove(FixedAsset fixedAsset, TaxLine taxLine, BigDecimal disposalAmount, LocalDate disposalDate) throws AxelorException;
+  void generateSaleMove(
+      FixedAsset fixedAsset, TaxLine taxLine, BigDecimal disposalAmount, LocalDate disposalDate)
+      throws AxelorException;
 }

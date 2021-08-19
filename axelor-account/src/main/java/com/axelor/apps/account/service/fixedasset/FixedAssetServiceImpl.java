@@ -566,9 +566,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   @Transactional
   public FixedAsset splitFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, int transferredReason) throws AxelorException {
+      FixedAsset fixedAsset, BigDecimal disposalQty, int transferredReason, String comments)
+      throws AxelorException {
     fixedAsset.setTransferredReasonSelect(transferredReason);
     FixedAsset newFixedAsset = copyFixedAsset(fixedAsset);
+    newFixedAsset.setComments(comments);
     BigDecimal prorata =
         disposalQty.divide(fixedAsset.getQty(), RETURNED_SCALE, RoundingMode.HALF_UP);
     newFixedAsset.setQty(prorata);
@@ -598,6 +600,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     newFixedAsset.setName(fixedAsset.getName() + SUFFIX_SPLITTED_FIXED_ASSET);
     newFixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
     newFixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_SCISSION);
+    newFixedAsset.addAssociatedFixedAssetsSetItem(fixedAsset);
     return newFixedAsset;
   }
 
@@ -627,9 +630,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAsset fixedAsset,
       LocalDate disposalDate,
       BigDecimal disposalAmount,
-      int transferredReason)
+      int transferredReason,
+      String comments)
       throws AxelorException {
-
+    if (disposalDate.isBefore(fixedAsset.getFirstServiceDate())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE));
+    }
     if (getExistingLineWithSameYear(
             fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_REALIZED)
         != null) {
@@ -665,12 +673,46 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset, correspondingFixedAssetLine, previousRealizedLine, disposalDate);
     }
     if (correspondingFixedAssetLine != null) {
+      if (fixedAsset
+          .getDepreciationPlanSelect()
+          .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
+        generateDerogatoryCessionMove(fixedAsset);
+      }
       fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false);
       fixedAssetLineMoveService.generateDisposalMove(
           correspondingFixedAssetLine, transferredReason);
     }
     setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
+    fixedAsset.setComments(comments);
     fixedAssetRepo.save(fixedAsset);
+  }
+
+  private void generateDerogatoryCessionMove(FixedAsset fixedAsset) throws AxelorException {
+
+    List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
+        fixedAsset.getFixedAssetDerogatoryLineList();
+    fixedAssetDerogatoryLineList.sort(
+        (line1, line2) -> line2.getDepreciationDate().compareTo(line1.getDepreciationDate()));
+    FixedAssetDerogatoryLine lastRealizedDerogatoryLine =
+        fixedAssetDerogatoryLineList.stream()
+            .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED)
+            .findFirst()
+            .orElse(null);
+    fixedAssetDerogatoryLineList.sort(
+        (line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
+    FixedAssetDerogatoryLine firstPlannedDerogatoryLine =
+        fixedAssetDerogatoryLineList.stream()
+            .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
+            .findFirst()
+            .orElse(null);
+    if (firstPlannedDerogatoryLine == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE));
+    }
+    fixedAssetDerogatoryLineService.generateDerogatoryCessionMove(
+        firstPlannedDerogatoryLine, lastRealizedDerogatoryLine);
+    firstPlannedDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
   }
 
   private FixedAssetLine getExistingLineWithSameDate(

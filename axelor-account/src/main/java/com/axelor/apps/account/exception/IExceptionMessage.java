@@ -30,6 +30,10 @@ public interface IExceptionMessage {
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
   static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset category is missing theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
+      /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
+  static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
+      /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/

@@ -948,6 +948,7 @@
 "Disposal Type","Type de sortie",,
 "Disposal amount","Montant de la cession",,
 "Disposal date","Date de cession",,
+"Disposal date can not be before the first service date of the fixed asset","La date de sortie ne doit pas être avant la date de mise en service",,
 "Disposal date must be after the date of the last depreciation.","La date de cession doit être après la date du dernier amortissement.",,
 "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal.","La date de cession ne devrait pas être après la prochaine date d'amortissement planifié. Merci de réaliser tous les amortissements antérieurs à la cession.",,
 "Disposal move","Ecriture de sortie d'actif",,

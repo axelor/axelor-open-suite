@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashMap;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
@@ -39,6 +35,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
 
 @Singleton
 public class FixedAssetController {
@@ -75,9 +74,9 @@ public class FixedAssetController {
     response.setValue("fiscalFixedAssetLineList", fixedAsset.getFiscalFixedAssetLineList());
     response.setValue("fixedAssetDerogatoryLineList", fixedAsset.getFixedAssetDerogatoryLineList());
   }
-  
+
   @SuppressWarnings("unchecked")
-public void disposal(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void disposal(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     if (context.get("disposalDate") == null
         || context.get("disposalAmount") == null
@@ -90,14 +89,22 @@ public void disposal(ActionRequest request, ActionResponse response) throws Axel
     BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
     Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
     Integer disposalQtySelect = (Integer) context.get("disposalQtySelect");
+    String comments = null;
+    if (context.get("comments") != null) {
+      comments = context.get("comments").toString();
+    }
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
     Boolean generateSaleMove = false;
     TaxLine saleTaxLine = null;
     if (context.get("generateSaleMove") != null) {
-    	generateSaleMove = Boolean.parseBoolean(context.get("generateSaleMove").toString());
+      generateSaleMove = Boolean.parseBoolean(context.get("generateSaleMove").toString());
     }
     if (context.get("saleTaxLine") != null) {
-        saleTaxLine = Beans.get(TaxLineRepository.class).find(((Integer)((HashMap<String, Object>)context.get("saleTaxLine")).get("id")).longValue()) ;
+      saleTaxLine =
+          Beans.get(TaxLineRepository.class)
+              .find(
+                  ((Integer) ((HashMap<String, Object>) context.get("saleTaxLine")).get("id"))
+                      .longValue());
     }
 
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
@@ -120,7 +127,8 @@ public void disposal(ActionRequest request, ActionResponse response) throws Axel
                     Beans.get(FixedAssetService.class)
                         .filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED),
                     disposalQty,
-                    transferredReason);
+                    transferredReason,
+                    comments);
         response.setView(
             ActionView.define("Fixed asset")
                 .model(FixedAsset.class.getName())
@@ -131,7 +139,7 @@ public void disposal(ActionRequest request, ActionResponse response) throws Axel
 
       } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
         Beans.get(FixedAssetService.class)
-            .cession(fixedAsset, disposalDate, disposalAmount, transferredReason);
+            .cession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
         Beans.get(FixedAssetService.class)
             .filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
         response.setCanClose(true);
@@ -141,7 +149,8 @@ public void disposal(ActionRequest request, ActionResponse response) throws Axel
         response.setCanClose(true);
       }
       if (generateSaleMove && saleTaxLine != null) {
-    	  Beans.get(FixedAssetLineMoveService.class).generateSaleMove(fixedAsset, saleTaxLine, disposalAmount, disposalDate);
+        Beans.get(FixedAssetLineMoveService.class)
+            .generateSaleMove(fixedAsset, saleTaxLine, disposalAmount, disposalDate);
       }
 
     } catch (Exception e) {

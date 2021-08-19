@@ -108,7 +108,8 @@ public interface FixedAssetService {
    * @return The new fixed asset created from split.
    * @throws AxelorException
    */
-  FixedAsset splitFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty, int transferredReason)
+  FixedAsset splitFixedAsset(
+      FixedAsset fixedAsset, BigDecimal disposalQty, int transferredReason, String comments)
       throws AxelorException;
 
   int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect);
@@ -127,6 +128,7 @@ public interface FixedAssetService {
       FixedAsset fixedAsset,
       LocalDate disposalDate,
       BigDecimal disposalAmount,
-      int transferredReason)
+      int transferredReason,
+      String comments)
       throws AxelorException;
 }

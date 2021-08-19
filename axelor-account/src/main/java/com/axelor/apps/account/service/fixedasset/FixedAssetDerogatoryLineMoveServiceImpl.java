@@ -68,7 +68,10 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         || (derogatoryBalanceAmount != null
             && derogatoryBalanceAmount.compareTo(BigDecimal.ZERO) > 0)) {
 
-      generateMove(fixedAssetDerogatoryLine);
+      Account creditAccount = computeCreditAccount(fixedAssetDerogatoryLine);
+      Account debitAccount = computeDebitAccount(fixedAssetDerogatoryLine);
+      BigDecimal amount = computeAmount(fixedAssetDerogatoryLine);
+      generateMove(fixedAssetDerogatoryLine, creditAccount, debitAccount, amount);
     }
     fixedAssetDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
     fixedAssetDerogatoryLineRepository.save(fixedAssetDerogatoryLine);
@@ -81,8 +84,54 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     }
   }
 
+  private BigDecimal computeAmount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+    if (fixedAssetDerogatoryLine.getDerogatoryAmount().compareTo(BigDecimal.ZERO) > 0) {
+      return fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
+    } else if (fixedAssetDerogatoryLine
+            .getIncomeDepreciationAmount()
+            .abs()
+            .compareTo(BigDecimal.ZERO)
+        > 0) {
+      return fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
+    }
+    return fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
+  }
+
+  private Account computeDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+    FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+    if (fixedAssetDerogatoryLine.getDerogatoryAmount().compareTo(BigDecimal.ZERO) > 0) {
+      return fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
+    } else if (fixedAssetDerogatoryLine
+            .getIncomeDepreciationAmount()
+            .abs()
+            .compareTo(BigDecimal.ZERO)
+        > 0) {
+      return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
+    }
+    return fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
+  }
+
+  private Account computeCreditAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+    FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+    if (fixedAssetDerogatoryLine.getDerogatoryAmount().compareTo(BigDecimal.ZERO) > 0) {
+      return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
+    } else if (fixedAssetDerogatoryLine
+            .getIncomeDepreciationAmount()
+            .abs()
+            .compareTo(BigDecimal.ZERO)
+        > 0) {
+      return fixedAsset.getFixedAssetCategory().getIncomeDepreciationDerogatoryAccount();
+    }
+    return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
-  private void generateMove(FixedAssetDerogatoryLine fixedAssetDerogatoryLine)
+  public void generateMove(
+      FixedAssetDerogatoryLine fixedAssetDerogatoryLine,
+      Account creditLineAccount,
+      Account debitLineAccount,
+      BigDecimal amount)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
 
@@ -112,48 +161,13 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       List<MoveLine> moveLines = new ArrayList<>();
 
       String origin = fixedAsset.getReference();
-      Account debitLineAccount = null;
-      Account creditLineAccount = null;
-      BigDecimal amount = null;
 
-      if (fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount() == null
-          || fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount() == null
-          || fixedAsset.getFixedAssetCategory().getIncomeDepreciationDerogatoryAccount() == null) {
+      if (creditLineAccount == null || debitLineAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
             "Expense depreciation derogatory/Capital depreciation derogatory/Income depreciation derogatory");
       }
-      if (fixedAssetDerogatoryLine.getDerogatoryAmount().compareTo(BigDecimal.ZERO) > 0) {
-        debitLineAccount =
-            fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
-        creditLineAccount =
-            fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
-        amount = fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
-      } else if (fixedAssetDerogatoryLine
-              .getIncomeDepreciationAmount()
-              .abs()
-              .compareTo(BigDecimal.ZERO)
-          > 0) {
-        debitLineAccount =
-            fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
-        creditLineAccount =
-            fixedAsset.getFixedAssetCategory().getIncomeDepreciationDerogatoryAccount();
-        amount = fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
-      }
-      // We call this function only if derogatoryAmount or incomeDepreciationAmount or
-      // derogatoryBalanceAmount are greater than 0
-      // This means that if derogatoryAmount or incomeDepreciationAmount are not greater than zero
-      // then
-      // derogatoryBalanceAmount is.
-      else {
-        debitLineAccount =
-            fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
-        creditLineAccount =
-            fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
-        amount = fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
-      }
-
       // Creating accounting debit move line
       MoveLine debitMoveLine =
           new MoveLine(
