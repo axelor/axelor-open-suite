@@ -189,4 +189,35 @@ public class FixedAssetController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void splitFixedAsset(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Long fixedAssetId = Long.valueOf(context.get("_id").toString());
+    FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
+    BigDecimal disposalQty = new BigDecimal(context.get("qty").toString());
+
+    try {
+      if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+            fixedAsset.getQty().toString());
+      }
+      FixedAsset createdFixedAsset =
+          Beans.get(FixedAssetService.class)
+              .splitFixedAsset(fixedAsset, disposalQty, LocalDate.now(), fixedAsset.getComments());
+      if (createdFixedAsset != null) {
+        response.setView(
+            ActionView.define("Fixed asset")
+                .model(FixedAsset.class.getName())
+                .add("form", "fixed-asset-form")
+                .context("_showRecord", createdFixedAsset.getId())
+                .map());
+        response.setCanClose(true);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

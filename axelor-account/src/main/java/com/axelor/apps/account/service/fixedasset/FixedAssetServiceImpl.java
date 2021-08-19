@@ -567,12 +567,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   @Transactional
   public FixedAsset splitFixedAsset(
-      FixedAsset fixedAsset,
-      BigDecimal disposalQty,
-      BigDecimal disposalAmount,
-      LocalDate disposalDate,
-      int transferredReason,
-      String comments)
+      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate disposalDate, String comments)
       throws AxelorException {
     FixedAsset newFixedAsset = copyFixedAsset(fixedAsset, disposalQty);
 
@@ -634,22 +629,30 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               .multiply(fixedAsset.getAccountingValue())
               .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
     }
+    if (fixedAsset.getCorrectedAccountingValue() != null) {
+      fixedAsset.setCorrectedAccountingValue(
+          prorata
+              .multiply(fixedAsset.getCorrectedAccountingValue())
+              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    }
   }
 
   private FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because it seems there is a bug with copy.
     if (newFixedAsset.getFixedAssetLineList() == null) {
-
-      fixedAsset
-          .getFixedAssetLineList()
-          .forEach(
-              line -> {
-                FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
-                copy.setFixedAsset(newFixedAsset);
-                newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepo.save(copy));
-              });
+      if (fixedAsset.getFixedAssetLineList() != null) {
+        fixedAsset
+            .getFixedAssetLineList()
+            .forEach(
+                line -> {
+                  FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
+                  copy.setFixedAsset(newFixedAsset);
+                  newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepo.save(copy));
+                });
+      }
     }
+    newFixedAsset.setStatusSelect(fixedAsset.getStatusSelect());
     newFixedAsset.addAssociatedFixedAssetsSetItem(fixedAsset);
     fixedAsset.addAssociatedFixedAssetsSetItem(newFixedAsset);
     return newFixedAsset;
@@ -824,9 +827,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       throws AxelorException {
     FixedAsset createdFixedAsset = null;
     if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
-      createdFixedAsset =
-          splitFixedAsset(
-              fixedAsset, disposalQty, disposalAmount, disposalDate, transferredReason, comments);
+      createdFixedAsset = splitFixedAsset(fixedAsset, disposalQty, disposalDate, comments);
       cession(createdFixedAsset, disposalDate, disposalAmount, transferredReason, comments);
       filterListsByStatus(createdFixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
     } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {

@@ -14,6 +14,9 @@
 	</grid>
     
     <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date" onNew="action-fixed-asset-record-default">
+    <toolbar>
+    	<button name="splitBtn" title="Split" onClick="save,action-fixed-asset-view-show-split-wizard"/>
+    </toolbar>
 	  <panel>
 	    <panel name="statusSelectPanel" colSpan="12">
 	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
@@ -127,6 +130,17 @@
     		<field name="$originalQty" type="decimal" hidden="true"/>
     	</panel>
     </form>
+    
+    <form model="com.axelor.apps.base.db.Wizard" title="Split fixed asset" name="fixed-asset-split-wizard-form">
+    	<panel name="mainPanel">
+    		<field name="qty" title="Quantity to split" min="0.01" type="decimal"/>
+    		<label title="A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity."/>
+    		<button name="splitBtn" title="Split" colSpan="4" onClick="action-method-account-fixed-asset-split"/>
+    	</panel>
+    </form>
+    <action-method name="action-method-account-fixed-asset-split">
+    	<call class="com.axelor.apps.account.web.FixedAssetController" method="splitFixedAsset"/>
+    </action-method>
     <action-validate name="action-validate-account-fixed-asset-wizard-form-validate-qty">
     	<error if="disposalQtySelect == 2 &amp;&amp; (qty &lt; 0) " message="Disposal Quantity must be greater than 0"/>
     </action-validate>
@@ -189,6 +203,15 @@
     
     <action-view name="action-fixed-asset-view-show-disposal-wizard" title="Disposal" model="com.axelor.apps.account.db.FixedAsset">
     	<view type="form" name="fixed-asset-disposal-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_fixedAsset" expr="eval: __this__"/>
+    </action-view>
+    
+    <action-view name="action-fixed-asset-view-show-split-wizard" title="Split fixed asset" model="com.axelor.apps.account.db.FixedAsset">
+    	<view type="form" name="fixed-asset-split-wizard-form"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="false" />

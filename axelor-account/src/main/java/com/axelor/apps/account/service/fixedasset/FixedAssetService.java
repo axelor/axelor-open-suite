@@ -109,12 +109,7 @@ public interface FixedAssetService {
    * @throws AxelorException
    */
   FixedAsset splitFixedAsset(
-      FixedAsset fixedAsset,
-      BigDecimal disposalQty,
-      BigDecimal disposalAmount,
-      LocalDate disposalDate,
-      int transferredReason,
-      String comments)
+      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate disposalDate, String comments)
       throws AxelorException;
 
   int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect);
