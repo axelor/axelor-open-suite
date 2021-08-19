@@ -112,6 +112,9 @@
 		public static final int ORIGINAL_SELECT_WRITING = 3;
 		public static final int ORIGINAL_SELECT_SCISSION = 4;
 		
+		//Split message
+		public static final String SPLIT_MESSAGE_COMMENT = "Split of %.2f realized on %s";
+		
 	]]></extra-code>
     
   </entity>

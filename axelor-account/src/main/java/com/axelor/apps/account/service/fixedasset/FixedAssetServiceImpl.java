@@ -17,18 +17,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -51,6 +39,17 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -72,7 +71,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
-  public static final String SUFFIX_SPLITTED_FIXED_ASSET = "_SPLITTED";
+  public static final String SUFFIX_SPLITTED_FIXED_ASSET = "-%s %.2f";
 
   @Inject
   public FixedAssetServiceImpl(
@@ -568,24 +567,76 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   @Transactional
   public FixedAsset splitFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, int transferredReason, String comments)
+      FixedAsset fixedAsset,
+      BigDecimal disposalQty,
+      BigDecimal disposalAmount,
+      LocalDate disposalDate,
+      int transferredReason,
+      String comments)
       throws AxelorException {
-    fixedAsset.setTransferredReasonSelect(transferredReason);
-    FixedAsset newFixedAsset = copyFixedAsset(fixedAsset);
-    newFixedAsset.setComments(comments);
+    FixedAsset newFixedAsset = copyFixedAsset(fixedAsset, disposalQty);
+
     BigDecimal prorata =
         disposalQty.divide(fixedAsset.getQty(), RETURNED_SCALE, RoundingMode.HALF_UP);
-    newFixedAsset.setQty(prorata);
     BigDecimal remainingProrata =
         BigDecimal.ONE.subtract(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
-    fixedAsset.setQty(remainingProrata);
+
     fixedAssetLineComputationService.multiplyLinesBy(newFixedAsset, prorata);
     fixedAssetLineComputationService.multiplyLinesBy(fixedAsset, remainingProrata);
+    multiplyFieldsToSplit(newFixedAsset, prorata);
+    multiplyFieldsToSplit(fixedAsset, remainingProrata);
+    fixedAsset.setQty(fixedAsset.getQty().subtract(disposalQty));
+    newFixedAsset.setQty(disposalQty);
+    newFixedAsset.setName(
+        fixedAsset.getName()
+            + String.format(
+                SUFFIX_SPLITTED_FIXED_ASSET,
+                I18n.get("Quantity"),
+                disposalQty.setScale(RETURNED_SCALE)));
+    fixedAsset.setName(
+        fixedAsset.getName()
+            + String.format(
+                SUFFIX_SPLITTED_FIXED_ASSET,
+                I18n.get("Quantity"),
+                fixedAsset.getQty().setScale(RETURNED_SCALE)));
+    String commentsToAdd =
+        String.format(
+            I18n.get(FixedAssetRepository.SPLIT_MESSAGE_COMMENT),
+            disposalQty,
+            disposalDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+    newFixedAsset.setComments(comments);
+    newFixedAsset.setComments(
+        String.format(
+            "%s %s",
+            newFixedAsset.getComments() == null ? "" : newFixedAsset.getComments(), commentsToAdd));
+    newFixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_SCISSION);
     fixedAssetRepo.save(fixedAsset);
     return fixedAssetRepo.save(newFixedAsset);
   }
 
-  private FixedAsset copyFixedAsset(FixedAsset fixedAsset) {
+  private void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
+
+    if (fixedAsset.getGrossValue() != null) {
+      fixedAsset.setGrossValue(
+          prorata
+              .multiply(fixedAsset.getGrossValue())
+              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    }
+    if (fixedAsset.getResidualValue() != null) {
+      fixedAsset.setResidualValue(
+          prorata
+              .multiply(fixedAsset.getResidualValue())
+              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    }
+    if (fixedAsset.getAccountingValue() != null) {
+      fixedAsset.setAccountingValue(
+          prorata
+              .multiply(fixedAsset.getAccountingValue())
+              .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
+    }
+  }
+
+  private FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because it seems there is a bug with copy.
     if (newFixedAsset.getFixedAssetLineList() == null) {
@@ -596,13 +647,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               line -> {
                 FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
                 copy.setFixedAsset(newFixedAsset);
-                newFixedAsset.addFixedAssetLineListItem(copy);
+                newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepo.save(copy));
               });
     }
-    newFixedAsset.setName(fixedAsset.getName() + SUFFIX_SPLITTED_FIXED_ASSET);
-    newFixedAsset.setStatusSelect(FixedAssetRepository.STATUS_TRANSFERRED);
-    newFixedAsset.setOriginSelect(FixedAssetRepository.ORIGINAL_SELECT_SCISSION);
     newFixedAsset.addAssociatedFixedAssetsSetItem(fixedAsset);
+    fixedAsset.addAssociatedFixedAssetsSetItem(newFixedAsset);
     return newFixedAsset;
   }
 
@@ -761,5 +810,32 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           .orElse(null);
     }
     return null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  public FixedAsset computeDisposal(
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      BigDecimal disposalQty,
+      BigDecimal disposalAmount,
+      int transferredReason,
+      String comments)
+      throws AxelorException {
+    FixedAsset createdFixedAsset = null;
+    if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
+      createdFixedAsset =
+          splitFixedAsset(
+              fixedAsset, disposalQty, disposalAmount, disposalDate, transferredReason, comments);
+      cession(createdFixedAsset, disposalDate, disposalAmount, transferredReason, comments);
+      filterListsByStatus(createdFixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
+    } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
+      cession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
+      filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
+    } else {
+      disposal(disposalDate, disposalAmount, fixedAsset, transferredReason);
+    }
+
+    return createdFixedAsset;
   }
 }

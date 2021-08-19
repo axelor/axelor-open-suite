@@ -471,12 +471,7 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
       if (fixedAssetDerogatoryLineList != null) {
-        fixedAssetDerogatoryLineList.clear();
-        fixedAssetDerogatoryLineList.addAll(
-            fixedAssetDerogatoryLineService.computeFixedAssetDerogatoryLineList(fixedAsset));
-        for (FixedAssetDerogatoryLine line : fixedAssetDerogatoryLineList) {
-          fixedAssetDerogatoryLineMoveService.realize(line);
-        }
+        fixedAssetDerogatoryLineService.multiplyLinesBy(fixedAssetDerogatoryLineList, prorata);
       }
     }
   }

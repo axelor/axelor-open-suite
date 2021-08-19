@@ -17,16 +17,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -50,6 +40,14 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService {
 
@@ -85,7 +83,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void realize(FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove) throws AxelorException {
+  public void realize(FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove)
+      throws AxelorException {
 
     if (fixedAssetLine == null
         || fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED) {
@@ -99,7 +98,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
       }
     }
-    if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL && generateMove) {
+    if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL
+        && generateMove) {
       generateMove(fixedAssetLine);
     }
 
@@ -158,7 +158,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
    * @throws AxelorException
    */
   @Override
-  public void realizeOthersLines(FixedAsset fixedAsset, LocalDate depreciationDate, boolean isBatch, boolean generateMove)
+  public void realizeOthersLines(
+      FixedAsset fixedAsset, LocalDate depreciationDate, boolean isBatch, boolean generateMove)
       throws AxelorException {
     String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
 

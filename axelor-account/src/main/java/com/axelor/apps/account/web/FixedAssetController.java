@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -120,32 +119,26 @@ public class FixedAssetController {
       int transferredReason =
           Beans.get(FixedAssetService.class)
               .computeTransferredReason(disposalTypeSelect, disposalQtySelect);
-      if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
-        FixedAsset createdFixedAsset =
-            Beans.get(FixedAssetService.class)
-                .splitFixedAsset(
-                    Beans.get(FixedAssetService.class)
-                        .filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED),
-                    disposalQty,
-                    transferredReason,
-                    comments);
+
+      FixedAsset createdFixedAsset =
+          Beans.get(FixedAssetService.class)
+              .computeDisposal(
+                  fixedAsset,
+                  disposalDate,
+                  disposalQty,
+                  disposalAmount,
+                  transferredReason,
+                  comments);
+      if (createdFixedAsset != null) {
         response.setView(
             ActionView.define("Fixed asset")
                 .model(FixedAsset.class.getName())
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())
                 .map());
-        response.setReload(true);
-
-      } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
-        Beans.get(FixedAssetService.class)
-            .cession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
-        Beans.get(FixedAssetService.class)
-            .filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
         response.setCanClose(true);
+        response.setReload(true);
       } else {
-        Beans.get(FixedAssetService.class)
-            .disposal(disposalDate, disposalAmount, fixedAsset, transferredReason);
         response.setCanClose(true);
       }
       if (generateSaleMove && saleTaxLine != null) {
