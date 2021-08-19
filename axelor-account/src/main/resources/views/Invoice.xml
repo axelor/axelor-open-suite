@@ -1652,7 +1652,7 @@ InvoiceSet.length > 0))"
 		<field name="financialDiscountRate" expr="eval: financialDiscount.discountRate" if="financialDiscount &amp;&amp; financialDiscount.discountRate"/>
 		<field name="legalNotice" expr="eval: null" if="!financialDiscount"/>
 		<field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
-		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate &amp;&amp; "/>
+		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate &amp;&amp; financialDiscount"/>
 		</action-record>
 
 </object-views>
