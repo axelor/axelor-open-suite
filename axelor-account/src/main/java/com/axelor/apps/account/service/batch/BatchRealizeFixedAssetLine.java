@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
@@ -31,9 +35,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
@@ -83,7 +84,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
         if (fixedAssetLine.getFixedAsset().getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
-          fixedAssetLineMoveService.realize(fixedAssetLine, true);
+          fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
           incrementDone();
         }
       } catch (Exception e) {

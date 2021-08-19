@@ -17,6 +17,18 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -39,16 +51,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -289,7 +291,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
       FixedAssetLine depreciationFixedAssetLine =
           generateProrataDepreciationLine(fixedAsset, disposalDate, previousRealizedLine);
-      fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false);
+      fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true);
       fixedAssetLineMoveService.generateDisposalMove(depreciationFixedAssetLine, transferredReason);
     } else {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
@@ -678,7 +680,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
         generateDerogatoryCessionMove(fixedAsset);
       }
-      fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false);
+      fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false, false);
       fixedAssetLineMoveService.generateDisposalMove(
           correspondingFixedAssetLine, transferredReason);
     }
