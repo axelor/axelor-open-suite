@@ -278,7 +278,7 @@
 	<selection name="base.product.cost.type.select">
 		<option value="1">Manual</option>
 		<option value="2">Last purchase price</option>
-		<option value="3">Average Price</option>
+		<option value="3">Weighted Average Price</option>
 		<option value="4">Last production price</option>
 	</selection>
 	

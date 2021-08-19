@@ -22,7 +22,7 @@
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
-            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
+            <button name="updateAvgPriceBtn" title="Update weighted average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
             <field name="stockLocation"/>
             <field name="stockLocation.typeSelect" hidden="true"/>
@@ -71,7 +71,7 @@
             <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
-            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
+            <button name="updateAvgPriceBtn" title="Update weighted average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
             <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
@@ -94,7 +94,7 @@
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
-            <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
+            <button name="updateAvgPriceBtn" title="Update weighted average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
 	        <field name="lastFutureStockMoveDate"/>
             <field name="rack"/>
             <field name="stockLocation" hidden="true"/>

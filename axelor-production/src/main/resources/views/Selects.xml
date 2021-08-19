@@ -95,7 +95,7 @@
 	</selection>
 	
 	<selection name="production.product.components.valuation.select">
-		<option value="1">Average Price</option>
+		<option value="1">Weighted Average Price</option>
 		<option value="2">Cost Price</option>
 	</selection>
 	
