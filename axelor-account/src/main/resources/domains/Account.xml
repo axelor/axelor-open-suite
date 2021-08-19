@@ -29,7 +29,7 @@
         <boolean name="isTaxAuthorizedOnMoveLine" title="Tax authorized on move line" massUpdate="true"/>
     	<boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line" massUpdate="true"/>
    	   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-   	   	<many-to-one name="analyticDistributionTemplate" ref="AnalyticDistributionTemplate" title="Analytic Distribution Template" massUpdate="true"/>
+   	   	<many-to-one name="analyticDistributionTemplate" ref="AnalyticDistributionTemplate" title="Analytic Distribution Template" massUpdate="true" help="This analytical distribution will be used by default when entering invoice lines or entries as soon as this accounting account is selected."/>
    	   	
    	   	<unique-constraint columns="code,company"/>
 

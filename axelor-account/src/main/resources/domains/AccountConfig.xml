@@ -167,8 +167,8 @@
 		<boolean name="hasLatePaymentAccountBlocking" title="Late payment account blocking"/>
 		<integer name="numberOfDaysBeforeAccountBlocking" title="Number of days before account blocking"/>
 		
-		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
-		<integer name="nbrOfAnalyticAxisSelect" title="Nbr. of analytic axis" selection="account.general.analytic.axis.type.select" default="1"/>
+		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting" help="If this field is activated, the management of cost accounting will be offered at each place where the entry or choice of parameters related to cost accounting is necessary at the same time as the company."/>
+		<integer name="nbrOfAnalyticAxisSelect" title="Nbr. of analytic axis" selection="account.general.analytic.axis.type.select" default="1" help="This field indicates the number of Analytical Axes that will be managed on the company, and in particular for entering the analytical breakdown during the creation of accounting entries. The order of the analytical axes is to be defined in the Order of analytical axes table below."/>
 		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
 		<one-to-many name="analyticAxisByCompanyList" ref="AnalyticAxisByCompany" title="Order of Analytic Axis" mappedBy="accountConfig"/>
 		<many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Default analytic journal"/>
