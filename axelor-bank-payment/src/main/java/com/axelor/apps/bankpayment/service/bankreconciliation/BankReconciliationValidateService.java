@@ -112,9 +112,9 @@ public class BankReconciliationValidateService {
     Partner partner = bankReconciliationLine.getPartner();
 
     String reference = bankReconciliationLine.getReference();
-    String name = bankReconciliationLine.getName();
-    if (name != null && name.length() > 255) {
-      name = name.substring(0, 255);
+    String description = bankReconciliationLine.getName();
+    if (description != null && description.length() > 255) {
+      description = description.substring(0, 255);
     }
 
     BigDecimal amount = debit.add(credit);
@@ -134,7 +134,9 @@ public class BankReconciliationValidateService {
                 effectDate,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                description);
 
     MoveLine partnerMoveLine =
         moveLineService.createMoveLine(
@@ -147,7 +149,7 @@ public class BankReconciliationValidateService {
             effectDate,
             1,
             origin,
-            name);
+            description);
     move.addMoveLineListItem(partnerMoveLine);
 
     MoveLine cashMoveLine =
@@ -161,7 +163,7 @@ public class BankReconciliationValidateService {
             effectDate,
             2,
             origin,
-            name);
+            description);
     cashMoveLine.setBankReconciledAmount(amount);
 
     move.addMoveLineListItem(cashMoveLine);

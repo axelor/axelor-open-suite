@@ -183,7 +183,9 @@ public class AccountClearanceService {
                 partner,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                moveLine.getMove().getFunctionalOriginSelect());
+                moveLine.getMove().getFunctionalOriginSelect(),
+                null,
+                null);
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();

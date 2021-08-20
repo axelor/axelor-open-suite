@@ -199,7 +199,9 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                 paymentDate,
                 paymentMode,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                invoicePayment.getDescription());
 
     move.setTradingName(invoice.getTradingName());
 
@@ -213,8 +215,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             null,
             1,
-            origin,
-            invoicePayment.getDescription()));
+            move.getOrigin(),
+            move.getDescription()));
 
     MoveLine customerMoveLine =
         moveLineService.createMoveLine(
@@ -226,12 +228,10 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             null,
             2,
-            origin,
-            invoicePayment.getDescription());
+            move.getOrigin(),
+            move.getDescription());
 
     move.addMoveLineListItem(customerMoveLine);
-    move.setDescription(customerMoveLine.getDescription());
-    move.setOrigin(customerMoveLine.getOrigin());
     moveService.getMoveValidateService().validate(move);
 
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {

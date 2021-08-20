@@ -188,7 +188,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     Journal journal =
         paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
     BigDecimal amount = paymentScheduleLine.getInTaxAmount();
-    String name = paymentScheduleLine.getName();
+    String origin = paymentScheduleLine.getName();
     LocalDate todayDate = appBaseService.getTodayDate(company);
     Account account = accountingSituationService.getCustomerAccount(partner, company);
 
@@ -202,12 +202,14 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
                 partner,
                 paymentMode,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                null);
 
     MoveLine creditMoveLine =
         moveService
             .getMoveLineService()
-            .createMoveLine(move, partner, account, amount, false, todayDate, 1, name, null);
+            .createMoveLine(move, partner, account, amount, false, todayDate, 1, origin, null);
     move.addMoveLineListItem(creditMoveLine);
     creditMoveLine = moveLineRepo.save(creditMoveLine);
 
@@ -217,7 +219,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
         moveService
             .getMoveLineService()
             .createMoveLine(
-                move, partner, paymentModeAccount, amount, true, todayDate, 2, name, null);
+                move, partner, paymentModeAccount, amount, true, todayDate, 2, origin, null);
     move.addMoveLineListItem(debitMoveLine);
     debitMoveLine = moveLineRepo.save(debitMoveLine);
 

@@ -116,6 +116,7 @@ public class MoveTemplateService {
       boolean isDebit = false;
       Partner debitPartner = null;
       Partner creditPartner = null;
+      String origin = moveTemplate.getCode();
       BigDecimal moveBalance = new BigDecimal(data.get("moveBalance").toString());
       Partner partner = null;
       if (data.get("debitPartner") != null) {
@@ -144,7 +145,10 @@ public class MoveTemplateService {
                     moveDate,
                     null,
                     MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                    0);
+                    0,
+                    origin,
+                    null);
+
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
@@ -178,7 +182,7 @@ public class MoveTemplateService {
                   moveDate,
                   moveDate,
                   counter,
-                  moveTemplate.getFullName(),
+                  origin,
                   moveTemplateLine.getName());
           move.getMoveLineList().add(moveLine);
 
@@ -233,7 +237,9 @@ public class MoveTemplateService {
                     moveDate,
                     null,
                     MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                    0);
+                    0,
+                    moveTemplate.getFullName(),
+                    null);
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {

@@ -153,6 +153,11 @@ public class MoveServiceImpl implements MoveService {
   @Override
   public Move createMove(Invoice invoice) throws AxelorException {
     Move move = null;
+    String origin = invoice.getInvoiceId();
+
+    if (InvoiceToolService.isPurchase(invoice)) {
+      origin = invoice.getSupplierInvoiceNb();
+    }
 
     if (invoice != null && invoice.getInvoiceLineList() != null) {
 
@@ -182,7 +187,9 @@ public class MoveServiceImpl implements MoveService {
               invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-              functionalOrigin);
+              functionalOrigin,
+              origin,
+              null);
 
       if (move != null) {
 
@@ -193,6 +200,8 @@ public class MoveServiceImpl implements MoveService {
         boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
+
+        move.setDescription(null);
 
         move.getMoveLineList()
             .addAll(
@@ -206,8 +215,7 @@ public class MoveServiceImpl implements MoveService {
                     isPurchase,
                     isDebitCustomer));
 
-        move.setOrigin(move.getMoveLineList().get(0).getOrigin());
-        move.setDescription(move.getMoveLineList().get(0).getDescription());
+        setOriginAndDescriptionOnMoveLineList(move);
 
         moveRepository.save(move);
 
@@ -304,6 +312,7 @@ public class MoveServiceImpl implements MoveService {
   public void createMoveUseExcessPayment(Invoice invoice) throws AxelorException {
 
     Company company = invoice.getCompany();
+    String origin = invoice.getInvoiceId();
 
     // Récupération des acomptes de la facture
     List<MoveLine> creditMoveLineList = moveExcessPaymentService.getAdvancePaymentMoveList(invoice);
@@ -345,7 +354,9 @@ public class MoveServiceImpl implements MoveService {
                 invoice.getInvoiceDate(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                null);
 
         if (move != null) {
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -361,7 +372,7 @@ public class MoveServiceImpl implements MoveService {
                   false,
                   appAccountService.getTodayDate(company),
                   1,
-                  invoice.getInvoiceId(),
+                  origin,
                   null);
           move.getMoveLineList().add(creditMoveLine);
 
@@ -401,6 +412,7 @@ public class MoveServiceImpl implements MoveService {
     Company company = invoice.getCompany();
     Partner partner = invoice.getPartner();
     Account account = invoice.getPartnerAccount();
+    String origin = invoice.getInvoiceId();
 
     Journal journal =
         accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
@@ -422,7 +434,9 @@ public class MoveServiceImpl implements MoveService {
             invoice.getInvoiceDate(),
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null);
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -438,7 +452,7 @@ public class MoveServiceImpl implements MoveService {
               true,
               appAccountService.getTodayDate(company),
               1,
-              invoice.getInvoiceId(),
+              origin,
               null);
       oDmove.getMoveLineList().add(debitMoveLine);
 
@@ -488,10 +502,13 @@ public class MoveServiceImpl implements MoveService {
             move.getFunctionalOriginSelect(),
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
-            move.getAutoYearClosureMove());
+            move.getAutoYearClosureMove(),
+            move.getOrigin(),
+            move.getDescription());
 
     move.setInvoice(move.getInvoice());
     move.setPaymentVoucher(move.getPaymentVoucher());
+    move.setDescription(move.getDescription());
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED

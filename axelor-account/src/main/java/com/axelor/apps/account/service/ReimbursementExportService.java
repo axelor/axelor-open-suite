@@ -197,7 +197,9 @@ public class ReimbursementExportService {
                         partner,
                         null,
                         MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                        MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                        MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                        reimbursement.getRef(),
+                        reimbursement.getDescription());
             first = false;
           }
           // Création d'une ligne au débit

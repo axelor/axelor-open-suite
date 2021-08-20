@@ -214,7 +214,9 @@ public class PaymentVoucherConfirmService {
                   paymentDate,
                   paymentMode,
                   MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                  paymentVoucher.getRef(),
+                  null);
 
       move.setPaymentVoucher(paymentVoucher);
       move.setTradingName(paymentVoucher.getTradingName());
@@ -288,8 +290,6 @@ public class PaymentVoucherConfirmService {
                 null);
       }
       move.getMoveLineList().add(moveLine);
-      move.setOrigin(moveLine.getOrigin());
-      move.setDescription(moveLine.getDescription());
       // Check if the paid amount is > paid lines total
       // Then Use Excess payment on old invoices / moveLines
       if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0) {

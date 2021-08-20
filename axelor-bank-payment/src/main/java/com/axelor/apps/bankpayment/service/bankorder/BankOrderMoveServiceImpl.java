@@ -145,7 +145,9 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 this.getDate(bankOrderLine),
                 paymentMode,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                bankOrderLine.getReceiverReference(),
+                bankOrderLine.getReceiverLabel());
 
     MoveLine bankMoveLine =
         moveService
@@ -203,7 +205,9 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 this.getDate(bankOrderLine),
                 paymentMode,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                bankOrderLine.getReceiverReference(),
+                bankOrderLine.getReceiverLabel());
 
     MoveLine bankMoveLine =
         moveService
