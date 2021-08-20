@@ -21,8 +21,13 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetLine fixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       int statusSelect);
-
-  List<FixedAssetDerogatoryLine> computeFixedAssetDerogatoryLineList(FixedAsset fixedAsset);
+  /**
+   * This method will generate a fixedAssetDerogatoryLine list based on fixedAsset's fiscal and economic lines that are planned.
+   * Keep in mind that it will not compute realized lines, and therefore the derogatoryBalanceAmount of computed derogatory lines
+   * might be shifted from lines that are realized. (Because it depends of the previous line)
+   * It might be necessary to recalculate derogatoryBalanceAmount. 
+   */
+  List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(FixedAsset fixedAsset);
 
   void multiplyLinesBy(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLine, BigDecimal prorata);
 
@@ -32,4 +37,6 @@ public interface FixedAssetDerogatoryLineService {
       throws AxelorException;
 
 void copyFixedAssetDerogatoryLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset);
+
+void computeDerogatoryBalanceAmount(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList);
 }

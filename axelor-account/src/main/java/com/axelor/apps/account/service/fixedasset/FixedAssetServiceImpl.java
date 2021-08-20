@@ -113,7 +113,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
 
       List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
-          fixedAssetDerogatoryLineService.computeFixedAssetDerogatoryLineList(fixedAsset);
+          fixedAssetDerogatoryLineService.computePlannedFixedAssetDerogatoryLineList(fixedAsset);
       if (fixedAssetDerogatoryLineList.size() != 0) {
         if (fixedAsset.getFixedAssetDerogatoryLineList() == null) {
           fixedAsset.setFixedAssetDerogatoryLineList(new ArrayList<>());
@@ -128,6 +128,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset.getFixedAssetDerogatoryLineList().addAll(linesToKeep);
           fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
         }
+        fixedAssetDerogatoryLineService.computeDerogatoryBalanceAmount(fixedAsset.getFixedAssetDerogatoryLineList());
       }
     }
   }
@@ -542,6 +543,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           initialFixedAssetLine,
           fixedAssetLineList,
           FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+      generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
     }
   }
 

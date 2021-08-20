@@ -60,14 +60,28 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
     return fixedAssetDerogatoryLine;
   }
+  
+  @Override
+  public void computeDerogatoryBalanceAmount(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList) {
+	  if (fixedAssetDerogatoryLineList != null) {
+		  fixedAssetDerogatoryLineList.sort((line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
+		  FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine = null;
+		  for (FixedAssetDerogatoryLine line: fixedAssetDerogatoryLineList) {
+			  line.setDerogatoryBalanceAmount(computeDerogatoryBalanceAmount(previousFixedAssetDerogatoryLine, line.getDerogatoryAmount(), line.getIncomeDepreciationAmount()));
+			  previousFixedAssetDerogatoryLine = line;
+		  }
+	  }
+
+  }
 
   @Override
-  public List<FixedAssetDerogatoryLine> computeFixedAssetDerogatoryLineList(FixedAsset fixedAsset) {
+  public List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(FixedAsset fixedAsset) {
     // Preparation of data needed for computation
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList = new ArrayList<>();
     List<FixedAssetLine> tmpList = new ArrayList<>();
-    tmpList.addAll(fixedAsset.getFiscalFixedAssetLineList());
-    tmpList.addAll(fixedAsset.getFixedAssetLineList());
+    //This method will only compute line that are not realized.
+    tmpList.addAll(fixedAsset.getFiscalFixedAssetLineList().stream().filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED).collect(Collectors.toList()));
+    tmpList.addAll(fixedAsset.getFixedAssetLineList().stream().filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED).collect(Collectors.toList()));
 
     // Sorting by depreciation date
     tmpList.sort((f1, f2) -> f1.getDepreciationDate().compareTo(f2.getDepreciationDate()));
@@ -134,20 +148,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
                 (fiscalDepreciationAmount.subtract(depreciationAmount)).abs();
           }
 
-          BigDecimal derogatoryBalanceAmount;
-          BigDecimal previousDerogatoryBalanceAmount =
-              previousFixedAssetDerogatoryLine.get() == null
-                  ? BigDecimal.ZERO
-                  : previousFixedAssetDerogatoryLine.get().getDerogatoryBalanceAmount();
-          if (derogatoryAmount == null) {
-            derogatoryBalanceAmount =
-                BigDecimal.ZERO
-                    .subtract(incomeDepreciationAmount)
-                    .add(previousDerogatoryBalanceAmount);
-          } else {
-            derogatoryBalanceAmount =
-                derogatoryAmount.subtract(BigDecimal.ZERO).add(previousDerogatoryBalanceAmount);
-          }
+          BigDecimal derogatoryBalanceAmount = computeDerogatoryBalanceAmount(previousFixedAssetDerogatoryLine.get(),
+				derogatoryAmount, incomeDepreciationAmount);
           FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
               createFixedAssetDerogatoryLine(
                   date,
@@ -168,6 +170,26 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
     return fixedAssetDerogatoryLineList;
   }
+
+private BigDecimal computeDerogatoryBalanceAmount(
+		FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine, BigDecimal derogatoryAmount,
+		BigDecimal incomeDepreciationAmount) {
+	BigDecimal derogatoryBalanceAmount;
+	  BigDecimal previousDerogatoryBalanceAmount =
+			  previousFixedAssetDerogatoryLine == null
+	          ? BigDecimal.ZERO
+	          : previousFixedAssetDerogatoryLine.getDerogatoryBalanceAmount();
+	  if (derogatoryAmount == null || derogatoryAmount.signum() == 0) {
+	    derogatoryBalanceAmount =
+	        BigDecimal.ZERO
+	            .subtract(incomeDepreciationAmount)
+	            .add(previousDerogatoryBalanceAmount);
+	  } else {
+	    derogatoryBalanceAmount =
+	        derogatoryAmount.subtract(BigDecimal.ZERO).add(previousDerogatoryBalanceAmount);
+	  }
+	return derogatoryBalanceAmount;
+}
 
   @Override
   public void multiplyLinesBy(
