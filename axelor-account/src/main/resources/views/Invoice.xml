@@ -472,9 +472,12 @@ InvoiceSet.length > 0))"
 						<viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
 					</field>
 				</panel>
-				<field name="financialDiscount" colSpan="6" onChange="action-record-invoice-set-financial-discount-informations"/>
-				<field name="financialDiscountRate" colSpan="6"/>
-				<field name="financialDiscountDeadlineDate" colSpan="6"/>
+				<panel name="financialDiscountPanel">
+					<field name="financialDiscount" colSpan="6" onChange="action-record-invoice-set-financial-discount-informations"/>
+					<field name="financialDiscountRate" colSpan="6"/>
+					<field name="financialDiscountDeadlineDate" colSpan="6"/>
+				</panel>
+				
 				
 				<panel-related name="invoicePaymentListPanel" title="Payments details" field="invoicePaymentList" colSpan="12"  grid-view="invoice-payment-grid" form-view="invoice-payment-form" canNew="false" canRemove="false"/>
 				<panel name="pfpAccountConfigPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" hidden="true">
@@ -539,39 +542,77 @@ InvoiceSet.length > 0))"
             <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12" css="order-subtotal">
               <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
                 <![CDATA[
-                  <span class="form-item-container">
-                    <dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
-                      <dt>
-                        <a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}">
-                          <i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i>
-                        </a>
-                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">Paid on</font>
-                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">Canceled payment on</font>
-                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
-                        <font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
-                        <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
-                        <font x-translate ng-if="record.typeSelect == 5">Other on</font>
-                        <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{$fmt('paymentDate')}}</font>
-                        <dd>-{{$fmt('amount') | currency: record.currency.symbol}}</dd>
-                      </dt>
-					  <dt>
-                      <a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}">
-                        <i ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}" ng-if="record.applyFinancialDiscount == true"></i>
-                      </a>
-	                      <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3 && record.applyFinancialDiscount == true">Discounted on</font>
-	                      <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2 && record.applyFinancialDiscount == true">Canceled discount on</font>
-	                      <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3 && record.applyFinancialDiscount == true">Pending discount</font>
-	                      <font x-translate ng-if="record.typeSelect == 3 && record.applyFinancialDiscount == true">Ref. on</font>
-	                      <font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">Inv. on</font>
-	                      <font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">Other on</font>
-	                      <font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">Imputed on</font>
-	                      <font x-translate ng-if="record.applyFinancialDiscount == true">{{$fmt('paymentDate')}}</font>
-						  <dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount > 0">-{{$fmt('financialDiscountTotalAmount')| currency: record.currency.symbol}}</dd>
-						  <dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount == 0">-{{$fmt('financialDiscountAmount') | currency: record.currency.symbol}}</dd>
-                    </dt>
-                   	</dl>
-                  </span>
+                  <div class="form-item-container" style="flex-direction: column">
+					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
+						<dt>
+							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i></a>
+							<span>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">
+									Paid on
+								</font>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">
+									Canceled payment on
+								</font>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">
+									Pending payment
+								</font>
+								<font x-translate ng-if="record.typeSelect == 3">
+									Ref. on
+								</font>
+								<font x-translate ng-if="record.typeSelect == 4">
+									Inv. on
+								</font>
+								<font x-translate ng-if="record.typeSelect == 5">
+									Other on
+								</font>
+								<font x-translate ng-if="record.typeSelect == 6">
+									Imputed on
+								</font>
+								<font>
+									 {{$fmt('paymentDate')}}
+								</font>
+							</span>
+						</dt>
+						<dd>
+							-{{$fmt('amount') | currency: record.currency.symbol}}
+						</dd>
+					</dl>
+					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
+						<dt>
+							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}" ng-if="record.applyFinancialDiscount == true"></i></a>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3 && record.applyFinancialDiscount == true">
+								Discounted on
+							</font>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2 && record.applyFinancialDiscount == true">
+								Canceled discount on
+							</font>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3 && record.applyFinancialDiscount == true">
+								Pending discount
+							</font>
+							<font x-translate ng-if="record.typeSelect == 3 && record.applyFinancialDiscount == true">
+								Ref. on
+							</font>
+							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">
+								Inv. on
+							</font>
+							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">
+								Other on
+							</font>
+							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">
+								Imputed on
+							</font>
+							<font x-translate ng-if="record.applyFinancialDiscount == true">
+								{{$fmt('paymentDate')}}
+							</font>
+						</dt>
+						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount > 0">
+							-{{$fmt('financialDiscountTotalAmount')| currency: record.currency.symbol}}
+						</dd>
+						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount == 0">
+							-{{$fmt('financialDiscountAmount') | currency: record.currency.symbol}}
+						</dd>
+					</dl>
+				</div>
                 ]]>
               </viewer>
               <editor></editor>
@@ -759,7 +800,7 @@ InvoiceSet.length > 0))"
 			</field>
             <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true" />
             <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12" css="order-subtotal">
-              <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice">
+              <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
                 <![CDATA[
                   <div class="form-item-container" style="flex-direction: column">
 					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
@@ -796,44 +837,10 @@ InvoiceSet.length > 0))"
 							-{{$fmt('amount') | currency: record.currency.symbol}}
 						</dd>
 					</dl>
-					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
-						<dt>
-							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}" ng-if="record.applyFinancialDiscount == true"></i></a>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3 && record.applyFinancialDiscount == true">
-								Discounted on
-							</font>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2 && record.applyFinancialDiscount == true">
-								Canceled discount on
-							</font>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3 && record.applyFinancialDiscount == true">
-								Pending discount
-							</font>
-							<font x-translate ng-if="record.typeSelect == 3 && record.applyFinancialDiscount == true">
-								Ref. on
-							</font>
-							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">
-								Inv. on
-							</font>
-							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">
-								Other on
-							</font>
-							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">
-								Imputed on
-							</font>
-							<font x-translate ng-if="record.applyFinancialDiscount == true">
-								{{$fmt('paymentDate')}}
-							</font>
-						</dt>
-						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount > 0">
-							-{{$fmt('financialDiscountTotalAmount')| currency: record.currency.symbol}}
-						</dd>
-						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount == 0">
-							-{{$fmt('financialDiscountAmount') | currency: record.currency.symbol}}
-						</dd>
-					</dl>
 				</div>
                 ]]>
               </viewer>
+              <editor/>
             </field>
 			<field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12" showIf="statusSelect == 2 || statusSelect == 3">
 				<viewer depends="amountRemaining,currency.symbol"><![CDATA[
@@ -958,6 +965,8 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-record-set-dummy-field-language"/>
         <action name="action-invoice-method-set-default-group-products-on-printings"/>
         <action name="action-invoice-record-set-display-stock-move-on-invoice-printing" if="__config__.app.isApp('supplychain')"/>
+        <action name="action-attrs-show-if-manage-financial-discount"/>
+        <action name="action-attrs-set-null-manage-financial-discount"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >
@@ -975,6 +984,8 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
     	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
+      <action name="action-attrs-show-if-manage-financial-discount"/>
+      <action name="action-attrs-set-null-manage-financial-discount"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -1691,6 +1702,18 @@ InvoiceSet.length > 0))"
 		<field name="legalNotice" expr="eval: null" if="!financialDiscount"/>
 		<field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
 		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate &amp;&amp; financialDiscount"/>
-		</action-record>
+	</action-record>
+
+	<action-attrs name="action-attrs-show-if-manage-financial-discount">
+		<attribute name="hidden" for="financialDiscountPanel" expr="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
+		<attribute name="hidden" for="legalNotice" expr="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
+	</action-attrs>
+	
+	<action-record name="action-attrs-set-null-manage-financial-discount" model="com.axelor.apps.account.db.Invoice">
+		<field name="financialDiscount" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
+		<field name="legalNotice" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
+		<field name="financialDiscountRate" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
+		<field name="financialDiscountDeadlineDate" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
+	</action-record>
 
 </object-views>

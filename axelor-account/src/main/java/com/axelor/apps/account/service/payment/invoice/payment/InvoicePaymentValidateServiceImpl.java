@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -208,12 +209,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                 MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     MoveLine customerMoveLine = null;
+    move.setTradingName(invoice.getTradingName());
 
     if (!invoicePayment.getApplyFinancialDiscount()) {
 
       BigDecimal paymentAmount = invoicePayment.getAmount();
-
-      move.setTradingName(invoice.getTradingName());
 
       move.addMoveLineListItem(
           moveLineService.createMoveLine(
@@ -243,7 +243,9 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
       move.addMoveLineListItem(customerMoveLine);
 
-    } else if (invoicePayment.getApplyFinancialDiscount()) {
+    } else if (invoicePayment.getApplyFinancialDiscount()
+        && invoicePayment.getFinancialDiscount() != null
+        && Beans.get(AppAccountService.class).getAppAccount().getManageFinancialDiscount()) {
 
       BigDecimal paymentAmount =
           invoicePayment
@@ -254,8 +256,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                       .add(invoicePayment.getFinancialDiscountTaxAmount()));
 
       BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
-
-      move.setTradingName(invoice.getTradingName());
 
       if (invoice.getOperationTypeSelect() == 1) {
 

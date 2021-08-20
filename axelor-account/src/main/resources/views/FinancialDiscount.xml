@@ -19,6 +19,9 @@
 	        <field name="discountRate"/>
 	        <field name="legalNotice" colSpan="12"/>
         </panel>
+        <panel name="partnerPanel" title="Linked Partners">
+        	<field name="partnerList" grid-view="partner-grid" form-view="partner-form"/>
+        </panel>
     </form>
 
 </object-views>
