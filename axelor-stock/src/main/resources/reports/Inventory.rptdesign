@@ -962,9 +962,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">inventoryDate</property>
-                            <text-property name="displayName">inventoryDate</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["inventoryDate"]</expression>
+                            <property name="name">inventoryPlannedStartDate</property>
+                            <text-property name="displayName">inventoryPlannedStartDate</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["inventoryPlannedStartDate"]</expression>
+                            <property name="dataType">date-time</property>
+                        </structure>
+                        <structure>
+                            <property name="name">inventoryPlannedEndDate</property>
+                            <text-property name="displayName">inventoryPlannedEndDate</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["inventoryPlannedEndDate"]</expression>
+                            <property name="dataType">date-time</property>
+                        </structure>
+                        <structure>
+                            <property name="name">inventoryCreatedOn</property>
+                            <text-property name="displayName">inventoryCreatedOn</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["inventoryCreatedOn"]</expression>
                             <property name="dataType">date-time</property>
                         </structure>
                         <structure>
@@ -972,6 +984,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <text-property name="displayName">companyName</text-property>
                             <expression name="expression" type="javascript">dataSetRow["companyName"]</expression>
                             <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_height</property>
+                            <text-property name="displayName">logo_height</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_width</property>
+                            <text-property name="displayName">logo_width</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                            <property name="dataType">integer</property>
                         </structure>
                         <structure>
                             <property name="name">logo_path</property>
@@ -984,35 +1008,30 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <text-property name="displayName">product_family</text-property>
                             <expression name="expression" type="javascript">dataSetRow["product_family"]</expression>
                             <property name="dataType">string</property>
-                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">product</property>
                             <text-property name="displayName">product</text-property>
                             <expression name="expression" type="javascript">dataSetRow["product"]</expression>
                             <property name="dataType">string</property>
-                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">product_category</property>
                             <text-property name="displayName">product_category</text-property>
                             <expression name="expression" type="javascript">dataSetRow["product_category"]</expression>
                             <property name="dataType">string</property>
-                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">from_rack</property>
                             <text-property name="displayName">from_rack</text-property>
                             <expression name="expression" type="javascript">dataSetRow["from_rack"]</expression>
                             <property name="dataType">string</property>
-                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">to_rack</property>
                             <text-property name="displayName">to_rack</text-property>
                             <expression name="expression" type="javascript">dataSetRow["to_rack"]</expression>
                             <property name="dataType">string</property>
-                            <property name="allowExport">true</property>
                         </structure>
                     </list-property>
                     <column id="5206">
@@ -1075,7 +1094,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["inventoryDate"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["inventoryPlannedStartDate"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="5348">
@@ -1377,12 +1396,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="dataType">string</property>
                                     </structure>
                                     <structure>
-                                        <property name="name">inventoryDate</property>
-                                        <text-property name="displayName">inventoryDate</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["inventoryDate"]</expression>
-                                        <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
                                         <property name="name">companyName</property>
                                         <text-property name="displayName">companyName</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["companyName"]</expression>
@@ -1464,6 +1477,84 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="name">inventoryName</property>
                                         <text-property name="displayName">inventoryName</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["inventoryName"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">inventoryLocation</property>
+                                        <text-property name="displayName">inventoryLocation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["inventoryLocation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">inventoryPlannedStartDate</property>
+                                        <text-property name="displayName">inventoryPlannedStartDate</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["inventoryPlannedStartDate"]</expression>
+                                        <property name="dataType">date-time</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">inventoryPlannedEndDate</property>
+                                        <text-property name="displayName">inventoryPlannedEndDate</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["inventoryPlannedEndDate"]</expression>
+                                        <property name="dataType">date-time</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">inventoryCreatedOn</property>
+                                        <text-property name="displayName">inventoryCreatedOn</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["inventoryCreatedOn"]</expression>
+                                        <property name="dataType">date-time</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">companyName</property>
+                                        <text-property name="displayName">companyName</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["companyName"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_height</property>
+                                        <text-property name="displayName">logo_height</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_width</property>
+                                        <text-property name="displayName">logo_width</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">product_family</property>
+                                        <text-property name="displayName">product_family</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["product_family"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">product</property>
+                                        <text-property name="displayName">product</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["product"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">product_category</property>
+                                        <text-property name="displayName">product_category</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["product_category"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">from_rack</property>
+                                        <text-property name="displayName">from_rack</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["from_rack"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">to_rack</property>
+                                        <text-property name="displayName">to_rack</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["to_rack"]</expression>
                                         <property name="dataType">string</property>
                                     </structure>
                                 </list-property>
