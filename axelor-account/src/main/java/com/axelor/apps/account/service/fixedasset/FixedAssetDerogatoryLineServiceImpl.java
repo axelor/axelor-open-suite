@@ -2,13 +2,6 @@ package com.axelor.apps.account.service.fixedasset;
 
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -19,14 +12,27 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
 
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
+  
+  protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository;
 
   @Inject
   public FixedAssetDerogatoryLineServiceImpl(
-      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService) {
+      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
+      FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository) {
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
+    this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
   }
 
   @Override
@@ -238,4 +244,19 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     }
     return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
   }
+  
+  @Override
+  public void copyFixedAssetDerogatoryLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset) {
+	if (newFixedAsset.getFixedAssetDerogatoryLineList() == null) {
+		if (fixedAsset.getFixedAssetDerogatoryLineList() != null) {
+			fixedAsset.getFixedAssetDerogatoryLineList()
+			.forEach(line -> {
+				FixedAssetDerogatoryLine copy = fixedAssetDerogatoryLineRepository.copy(line, false);
+                copy.setFixedAsset(newFixedAsset);
+                newFixedAsset.addFixedAssetDerogatoryLineListItem(fixedAssetDerogatoryLineRepository.save(copy));
+			});
+		}
+	}
+	
+}
 }

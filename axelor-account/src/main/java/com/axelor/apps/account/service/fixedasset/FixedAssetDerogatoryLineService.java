@@ -1,12 +1,13 @@
 package com.axelor.apps.account.service.fixedasset;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 public interface FixedAssetDerogatoryLineService {
 
@@ -29,4 +30,6 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetDerogatoryLine firstPlannedDerogatoryLine,
       FixedAssetDerogatoryLine lastRealizedDerogatoryLine)
       throws AxelorException;
+
+void copyFixedAssetDerogatoryLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset);
 }

@@ -17,6 +17,19 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -39,17 +52,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -640,34 +642,42 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   private FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because it seems there is a bug with copy.
-    if (newFixedAsset.getFixedAssetLineList() == null) {
-      if (fixedAsset.getFixedAssetLineList() != null) {
-        fixedAsset
-            .getFixedAssetLineList()
-            .forEach(
-                line -> {
-                  FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
-                  copy.setFixedAsset(newFixedAsset);
-                  newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepo.save(copy));
-                });
-      }
-    }
-    // Need to have this too
-    if (newFixedAsset.getFiscalFixedAssetLineList() != null) {
-      for (FixedAssetLine line : newFixedAsset.getFiscalFixedAssetLineList()) {
-        line.setFixedAsset(newFixedAsset);
-      }
-    }
-    if (newFixedAsset.getFixedAssetDerogatoryLineList() != null) {
-      for (FixedAssetDerogatoryLine line : newFixedAsset.getFixedAssetDerogatoryLineList()) {
-        line.setFixedAsset(newFixedAsset);
-      }
-    }
+    copyFixedAssetLineList(fixedAsset, newFixedAsset);
+    fixedAssetDerogatoryLineService.copyFixedAssetDerogatoryLineList(fixedAsset, newFixedAsset);
     newFixedAsset.setStatusSelect(fixedAsset.getStatusSelect());
     newFixedAsset.addAssociatedFixedAssetsSetItem(fixedAsset);
     fixedAsset.addAssociatedFixedAssetsSetItem(newFixedAsset);
     return newFixedAsset;
   }
+  
+
+
+public void copyFixedAssetLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset) {
+		if (newFixedAsset.getFixedAssetLineList() == null) {
+	      if (fixedAsset.getFixedAssetLineList() != null) {
+	        fixedAsset
+	            .getFixedAssetLineList()
+	            .forEach(
+	                line -> {
+	                  FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
+	                  copy.setFixedAsset(newFixedAsset);
+	                  newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepo.save(copy));
+	                });
+	      }
+	    }
+		if (newFixedAsset.getFiscalFixedAssetLineList() == null) {
+		      if (fixedAsset.getFiscalFixedAssetLineList() != null) {
+		        fixedAsset
+		            .getFiscalFixedAssetLineList()
+		            .forEach(
+		                line -> {
+		                  FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
+		                  copy.setFixedAsset(newFixedAsset);
+		                  newFixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLineRepo.save(copy));
+		                });
+		      }
+		    }
+	}
 
   @Override
   @Transactional
