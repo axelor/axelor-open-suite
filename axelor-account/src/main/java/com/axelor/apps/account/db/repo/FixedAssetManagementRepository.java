@@ -18,12 +18,10 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class FixedAssetManagementRepository extends FixedAssetRepository {
@@ -32,7 +30,6 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
   public FixedAsset save(FixedAsset fixedAsset) {
     try {
       computeReference(fixedAsset);
-      computeDepreciation(fixedAsset);
       return super.save(fixedAsset);
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -52,21 +49,13 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     }
   }
 
-  private void computeDepreciation(FixedAsset fixedAsset) {
-    if ((fixedAsset.getFixedAssetLineList() == null || fixedAsset.getFixedAssetLineList().isEmpty())
-        && fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
-
-      Beans.get(FixedAssetService.class).generateAndComputeFixedAssetLines(fixedAsset);
-    }
-  }
-
   @Override
   public FixedAsset copy(FixedAsset entity, boolean deep) {
 
     FixedAsset copy = super.copy(entity, deep);
     copy.setStatusSelect(STATUS_DRAFT);
     copy.setReference(null);
-    copy.setResidualValue(entity.getGrossValue());
+    copy.setAccountingValue(entity.getGrossValue());
     copy.setFixedAssetLineList(null);
     return copy;
   }

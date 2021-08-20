@@ -130,6 +130,18 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
           && fixedAsset
               .getFiscalComputationMethodSelect()
               .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        // Theses cases is for when user want to depreciate in one year.
+        // Normally user should set a depreciationRate of 1 for theses cases
+        // But when in case of recomputing, he can not change depreciation rate.
+        if (fixedAsset.getFiscalFixedAssetLineList() != null
+            && fixedAsset.getFiscalFixedAssetLineList().size()
+                == fixedAsset.getFiscalNumberOfDepreciation() - 1) {
+          return baseValue;
+        }
+        if (fixedAsset.getFiscalFixedAssetLineList() == null
+            && fixedAsset.getFiscalNumberOfDepreciation() == 1) {
+          return baseValue;
+        }
         return computeInitialDegressiveDepreciation(fixedAsset, true, baseValue);
       } else {
         return computeInitialLinearDepreciation(fixedAsset, true, baseValue);
@@ -142,6 +154,16 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
           && fixedAsset
               .getComputationMethodSelect()
               .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+        // Same reason as above
+        if (fixedAsset.getFixedAssetLineList() != null
+            && fixedAsset.getFixedAssetLineList().size()
+                == fixedAsset.getNumberOfDepreciation() - 1) {
+          return baseValue;
+        }
+        if (fixedAsset.getFixedAssetLineList() == null
+            && fixedAsset.getNumberOfDepreciation() == 1) {
+          return baseValue;
+        }
         // In case of economic type, boolean argument is always false, since there is copy before.
         return computeInitialDegressiveDepreciation(fixedAsset, false, baseValue);
       } else {
@@ -181,25 +203,70 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
           && fixedAsset
               .getFiscalComputationMethodSelect()
               .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        depreciation =
-            computeOnGoingDegressiveDepreciation(
-                fixedAsset, previousFixedAssetLine, typeSelect, true);
+        // At this stage, if list size == nb of depreciation -1 then it means we are processing the
+        // last line.
+        if (fixedAsset.getFiscalFixedAssetLineList().size()
+            == fixedAsset.getFiscalNumberOfDepreciation() - 1) {
+          depreciation = previousFixedAssetLine.getAccountingValue();
+        } else {
+          depreciation =
+              computeOnGoingDegressiveDepreciation(
+                  fixedAsset, previousFixedAssetLine, typeSelect, true);
+        }
+
       } else {
-        depreciation = computeLinearDepreciation(fixedAsset, true, baseValue);
+        // In case of linear, we must filter line that have a correctedAccountingValue and line that
+        // are realized.
+        // Because when recomputing, number of depreciation is computed as follow (nbDepreciation -
+        // list.size())
+        if (fixedAsset.getFiscalFixedAssetLineList().stream()
+                .filter(
+                    line ->
+                        line.getCorrectedAccountingValue().signum() == 0
+                            && line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
+                .count()
+            == fixedAsset.getFiscalNumberOfDepreciation() - 1) {
+          // So we must depreciate the remaining accounting value.
+          depreciation = previousFixedAssetLine.getAccountingValue();
+        } else {
+          depreciation = computeLinearDepreciation(fixedAsset, true, baseValue);
+        }
       }
+
     }
     // case of economic type
     else {
       if (fixedAsset
           .getComputationMethodSelect()
           .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        // In case of economic type, boolean argument is always false, since there is copy before,
-        // we can pick values from non fiscal field.
-        depreciation =
-            computeOnGoingDegressiveDepreciation(
-                fixedAsset, previousFixedAssetLine, typeSelect, false);
+        if (fixedAsset.getFixedAssetLineList().size() == fixedAsset.getNumberOfDepreciation() - 1) {
+          depreciation = previousFixedAssetLine.getAccountingValue();
+        } else {
+          // In case of economic type, boolean argument is always false. We did a copy of the fiscal
+          // values,
+          // we can pick values from non fiscal field.
+          depreciation =
+              computeOnGoingDegressiveDepreciation(
+                  fixedAsset, previousFixedAssetLine, typeSelect, false);
+        }
+
       } else {
-        depreciation = computeLinearDepreciation(fixedAsset, false, baseValue);
+        // In case of linear, we must filter line that have a correctedAccountingValue and line that
+        // are realized.
+        // Because when recomputing, number of depreciation is computed as follow (nbDepreciation -
+        // list.size())
+        if (fixedAsset.getFixedAssetLineList().stream()
+                .filter(
+                    line ->
+                        line.getCorrectedAccountingValue().signum() == 0
+                            && line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
+                .count()
+            == fixedAsset.getNumberOfDepreciation() - 1) {
+          // So we must depreciate the remaining accounting value.
+          depreciation = previousFixedAssetLine.getAccountingValue();
+        } else {
+          depreciation = computeLinearDepreciation(fixedAsset, false, baseValue);
+        }
       }
     }
     if (BigDecimal.ZERO.compareTo(
