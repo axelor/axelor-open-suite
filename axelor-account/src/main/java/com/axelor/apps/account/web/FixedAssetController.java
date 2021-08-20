@@ -138,12 +138,16 @@ public class FixedAssetController {
                 .map());
         response.setCanClose(true);
         response.setReload(true);
+        if (generateSaleMove && saleTaxLine != null) {
+          Beans.get(FixedAssetLineMoveService.class)
+              .generateSaleMove(createdFixedAsset, saleTaxLine, disposalAmount, disposalDate);
+        }
       } else {
+        if (generateSaleMove && saleTaxLine != null) {
+          Beans.get(FixedAssetLineMoveService.class)
+              .generateSaleMove(fixedAsset, saleTaxLine, disposalAmount, disposalDate);
+        }
         response.setCanClose(true);
-      }
-      if (generateSaleMove && saleTaxLine != null) {
-        Beans.get(FixedAssetLineMoveService.class)
-            .generateSaleMove(fixedAsset, saleTaxLine, disposalAmount, disposalDate);
       }
 
     } catch (Exception e) {

@@ -652,6 +652,17 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 });
       }
     }
+    // Need to have this too
+    if (newFixedAsset.getFiscalFixedAssetLineList() != null) {
+      for (FixedAssetLine line : newFixedAsset.getFiscalFixedAssetLineList()) {
+        line.setFixedAsset(newFixedAsset);
+      }
+    }
+    if (newFixedAsset.getFixedAssetDerogatoryLineList() != null) {
+      for (FixedAssetDerogatoryLine line : newFixedAsset.getFixedAssetDerogatoryLineList()) {
+        line.setFixedAsset(newFixedAsset);
+      }
+    }
     newFixedAsset.setStatusSelect(fixedAsset.getStatusSelect());
     newFixedAsset.addAssociatedFixedAssetsSetItem(fixedAsset);
     fixedAsset.addAssociatedFixedAssetsSetItem(newFixedAsset);
