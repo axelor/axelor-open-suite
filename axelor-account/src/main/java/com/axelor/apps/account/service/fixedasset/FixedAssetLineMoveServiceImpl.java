@@ -17,16 +17,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -50,6 +40,14 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService {
 
@@ -101,9 +99,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       }
     }
     if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-    	if (generateMove)
-    		generateMove(fixedAssetLine);
-    	generateImpairementAccountMove(fixedAssetLine);
+      if (generateMove) generateMove(fixedAssetLine);
+      generateImpairementAccountMove(fixedAssetLine);
     }
 
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
@@ -198,105 +195,109 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       }
     }
   }
+
   @Transactional
-  private void generateImpairementAccountMove(FixedAssetLine fixedAssetLine) throws AxelorException {
-	    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+  private void generateImpairementAccountMove(FixedAssetLine fixedAssetLine)
+      throws AxelorException {
+    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
 
-	    Journal journal = fixedAsset.getJournal();
-	    Company company = fixedAsset.getCompany();
-	    Partner partner = fixedAsset.getPartner();
-	    LocalDate date = fixedAssetLine.getDepreciationDate();
+    Journal journal = fixedAsset.getJournal();
+    Company company = fixedAsset.getCompany();
+    Partner partner = fixedAsset.getPartner();
+    LocalDate date = fixedAssetLine.getDepreciationDate();
 
-	    log.debug(
-	        "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
-	        fixedAsset.getReference(),
-	        company.getName(),
-	        journal.getCode());
+    log.debug(
+        "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
+        fixedAsset.getReference(),
+        company.getName(),
+        journal.getCode());
 
-	    // Creating move
-	    Move move =
-	        moveCreateService.createMove(
-	            journal,
-	            company,
-	            company.getCurrency(),
-	            partner,
-	            date,
-	            null,
-	            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
-	    BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
-	    BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
-	    if (move != null && correctedAccountingValue != null
-		          && (correctedAccountingValue.signum() != 0)
-		          && impairmentValue != null
-		          && (impairmentValue.signum() != 0)) {
-			      List<MoveLine> moveLines = new ArrayList<>();
-	
-			      String origin = fixedAsset.getReference();
-			      FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
-			      Account debitLineAccount;
-			      Account creditLineAccount;
-			      BigDecimal amount;
-		        if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
-		          if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
-		              || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
-		            throw new AxelorException(
-		                TraceBackRepository.CATEGORY_MISSING_FIELD,
-		                I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-		                "provisionTangibleFixedAssetAccount/wbProvisionTangibleFixedAssetAccount");
-		          }
-	
-		          debitLineAccount = fixedAssetCategory.getChargeAccount();
-		          creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
-		        } else {
-		          debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
-		          creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
-		        }
-		        amount = impairmentValue.abs();
-			      // Creating accounting debit move line
-			      MoveLine debitMoveLine =
-			          new MoveLine(
-			              move,
-			              partner,
-			              debitLineAccount,
-			              date,
-			              null,
-			              1,
-			              amount,
-			              BigDecimal.ZERO,
-			              fixedAsset.getName(),
-			              origin,
-			              null,
-			              BigDecimal.ZERO,
-			              date);
-			      moveLines.add(debitMoveLine);
+    // Creating move
+    Move move =
+        moveCreateService.createMove(
+            journal,
+            company,
+            company.getCurrency(),
+            partner,
+            date,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+    BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
+    BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
+    if (move != null
+        && correctedAccountingValue != null
+        && (correctedAccountingValue.signum() != 0)
+        && impairmentValue != null
+        && (impairmentValue.signum() != 0)) {
+      List<MoveLine> moveLines = new ArrayList<>();
 
-			      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
+      String origin = fixedAsset.getReference();
+      FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+      Account debitLineAccount;
+      Account creditLineAccount;
+      BigDecimal amount;
+      if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
+        if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
+            || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+              "provisionTangibleFixedAssetAccount/wbProvisionTangibleFixedAssetAccount");
+        }
 
-			      // Creating accounting debit move line
-			      MoveLine creditMoveLine =
-			          new MoveLine(
-			              move,
-			              partner,
-			              creditLineAccount,
-			              date,
-			              null,
-			              2,
-			              BigDecimal.ZERO,
-			              amount,
-			              fixedAsset.getName(),
-			              origin,
-			              null,
-			              BigDecimal.ZERO,
-			              date);
-			      moveLines.add(creditMoveLine);
+        debitLineAccount = fixedAssetCategory.getChargeAccount();
+        creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+      } else {
+        debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+        creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
+      }
+      amount = impairmentValue.abs();
+      // Creating accounting debit move line
+      MoveLine debitMoveLine =
+          new MoveLine(
+              move,
+              partner,
+              debitLineAccount,
+              date,
+              null,
+              1,
+              amount,
+              BigDecimal.ZERO,
+              fixedAsset.getName(),
+              origin,
+              null,
+              BigDecimal.ZERO,
+              date);
+      moveLines.add(debitMoveLine);
 
-			      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
+      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
 
-			      move.getMoveLineList().addAll(moveLines);
-			      moveRepo.save(move);
-			      fixedAssetLine.setImpairmentAccountMove(move);
-			    }	     
-	      }  
+      // Creating accounting debit move line
+      MoveLine creditMoveLine =
+          new MoveLine(
+              move,
+              partner,
+              creditLineAccount,
+              date,
+              null,
+              2,
+              BigDecimal.ZERO,
+              amount,
+              fixedAsset.getName(),
+              origin,
+              null,
+              BigDecimal.ZERO,
+              date);
+      moveLines.add(creditMoveLine);
+
+      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
+
+      move.getMoveLineList().addAll(moveLines);
+      moveRepo.save(move);
+      fixedAssetLine.setImpairmentAccountMove(move);
+    }
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   private void generateMove(FixedAssetLine fixedAssetLine) throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
@@ -379,7 +380,6 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     moveRepo.save(move);
 
     fixedAssetLine.setDepreciationAccountMove(move);
-    
   }
 
   @Override
@@ -413,11 +413,14 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
       BigDecimal chargeAmount = fixedAssetLine.getAccountingValue();
       BigDecimal cumulativeDepreciationAmount = fixedAssetLine.getCumulativeDepreciation();
-      if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
+      if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION
+          || transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
         if (fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount() == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+              I18n.get(
+                  IExceptionMessage
+                      .IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING),
               "RealisedAssetsValueAccount");
         }
         chargeAccount = fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount();
@@ -532,7 +535,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       BigDecimal denominator = BigDecimal.ONE.add(taxLine.getValue());
       BigDecimal creditAmountOne =
           disposalAmount.divide(
-              denominator, FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
+              denominator, FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
       Account creditAccountTwo =
           taxLine.getTax().getAccountManagementList().stream()
               .filter(
@@ -544,14 +547,19 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       BigDecimal creditAmountTwo =
           creditAmountOne
               .multiply(taxLine.getValue())
-              .setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
+              .setScale(FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
+      creditAmountOne =
+          creditAmountOne.setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
+      creditAmountTwo =
+          creditAmountTwo.setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
       Account debitAccount = fixedAsset.getFixedAssetCategory().getDebtReceivableAccount();
       BigDecimal debitAmount = disposalAmount;
 
       if (creditAccountOne == null || creditAccountTwo == null || debitAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+            I18n.get(
+                IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING),
             "realisedAssetsIncomeAccount / debtReceivableAccount / taxLine.tax.AccountManagementList.saleAccount");
       }
 

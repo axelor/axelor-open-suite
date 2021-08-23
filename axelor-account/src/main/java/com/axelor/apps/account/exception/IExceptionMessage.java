@@ -28,8 +28,12 @@ public interface IExceptionMessage {
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
   static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset:  disposal move could not be generated because fixed  category is one ofmissing theses account %s" /*)*/;
   static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset category is missing theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset category is missing one of theses account %s" /*)*/;
   static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =

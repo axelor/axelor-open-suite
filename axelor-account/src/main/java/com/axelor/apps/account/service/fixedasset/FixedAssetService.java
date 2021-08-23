@@ -133,7 +133,7 @@ public interface FixedAssetService {
       String comments)
       throws AxelorException;
 
-  void cession(
+  FixedAsset cession(
       FixedAsset fixedAsset,
       LocalDate disposalDate,
       BigDecimal disposalAmount,

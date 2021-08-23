@@ -2,6 +2,14 @@ package com.axelor.apps.account.service.fixedasset;
 
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -12,19 +20,10 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
-
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
 
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
-  
+
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository;
 
   @Inject
@@ -60,28 +59,40 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
     return fixedAssetDerogatoryLine;
   }
-  
-  @Override
-  public void computeDerogatoryBalanceAmount(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList) {
-	  if (fixedAssetDerogatoryLineList != null) {
-		  fixedAssetDerogatoryLineList.sort((line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
-		  FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine = null;
-		  for (FixedAssetDerogatoryLine line: fixedAssetDerogatoryLineList) {
-			  line.setDerogatoryBalanceAmount(computeDerogatoryBalanceAmount(previousFixedAssetDerogatoryLine, line.getDerogatoryAmount(), line.getIncomeDepreciationAmount()));
-			  previousFixedAssetDerogatoryLine = line;
-		  }
-	  }
 
+  @Override
+  public void computeDerogatoryBalanceAmount(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList) {
+    if (fixedAssetDerogatoryLineList != null) {
+      fixedAssetDerogatoryLineList.sort(
+          (line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
+      FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine = null;
+      for (FixedAssetDerogatoryLine line : fixedAssetDerogatoryLineList) {
+        line.setDerogatoryBalanceAmount(
+            computeDerogatoryBalanceAmount(
+                previousFixedAssetDerogatoryLine,
+                line.getDerogatoryAmount(),
+                line.getIncomeDepreciationAmount()));
+        previousFixedAssetDerogatoryLine = line;
+      }
+    }
   }
 
   @Override
-  public List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(FixedAsset fixedAsset) {
+  public List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(
+      FixedAsset fixedAsset) {
     // Preparation of data needed for computation
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList = new ArrayList<>();
     List<FixedAssetLine> tmpList = new ArrayList<>();
-    //This method will only compute line that are not realized.
-    tmpList.addAll(fixedAsset.getFiscalFixedAssetLineList().stream().filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED).collect(Collectors.toList()));
-    tmpList.addAll(fixedAsset.getFixedAssetLineList().stream().filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED).collect(Collectors.toList()));
+    // This method will only compute line that are not realized.
+    tmpList.addAll(
+        fixedAsset.getFiscalFixedAssetLineList().stream()
+            .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
+            .collect(Collectors.toList()));
+    tmpList.addAll(
+        fixedAsset.getFixedAssetLineList().stream()
+            .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
+            .collect(Collectors.toList()));
 
     // Sorting by depreciation date
     tmpList.sort((f1, f2) -> f1.getDepreciationDate().compareTo(f2.getDepreciationDate()));
@@ -148,8 +159,11 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
                 (fiscalDepreciationAmount.subtract(depreciationAmount)).abs();
           }
 
-          BigDecimal derogatoryBalanceAmount = computeDerogatoryBalanceAmount(previousFixedAssetDerogatoryLine.get(),
-				derogatoryAmount, incomeDepreciationAmount);
+          BigDecimal derogatoryBalanceAmount =
+              computeDerogatoryBalanceAmount(
+                  previousFixedAssetDerogatoryLine.get(),
+                  derogatoryAmount,
+                  incomeDepreciationAmount);
           FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
               createFixedAssetDerogatoryLine(
                   date,
@@ -171,25 +185,24 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     return fixedAssetDerogatoryLineList;
   }
 
-private BigDecimal computeDerogatoryBalanceAmount(
-		FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine, BigDecimal derogatoryAmount,
-		BigDecimal incomeDepreciationAmount) {
-	BigDecimal derogatoryBalanceAmount;
-	  BigDecimal previousDerogatoryBalanceAmount =
-			  previousFixedAssetDerogatoryLine == null
-	          ? BigDecimal.ZERO
-	          : previousFixedAssetDerogatoryLine.getDerogatoryBalanceAmount();
-	  if (derogatoryAmount == null || derogatoryAmount.signum() == 0) {
-	    derogatoryBalanceAmount =
-	        BigDecimal.ZERO
-	            .subtract(incomeDepreciationAmount)
-	            .add(previousDerogatoryBalanceAmount);
-	  } else {
-	    derogatoryBalanceAmount =
-	        derogatoryAmount.subtract(BigDecimal.ZERO).add(previousDerogatoryBalanceAmount);
-	  }
-	return derogatoryBalanceAmount;
-}
+  private BigDecimal computeDerogatoryBalanceAmount(
+      FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
+      BigDecimal derogatoryAmount,
+      BigDecimal incomeDepreciationAmount) {
+    BigDecimal derogatoryBalanceAmount;
+    BigDecimal previousDerogatoryBalanceAmount =
+        previousFixedAssetDerogatoryLine == null
+            ? BigDecimal.ZERO
+            : previousFixedAssetDerogatoryLine.getDerogatoryBalanceAmount();
+    if (derogatoryAmount == null || derogatoryAmount.signum() == 0) {
+      derogatoryBalanceAmount =
+          BigDecimal.ZERO.subtract(incomeDepreciationAmount).add(previousDerogatoryBalanceAmount);
+    } else {
+      derogatoryBalanceAmount =
+          derogatoryAmount.subtract(BigDecimal.ZERO).add(previousDerogatoryBalanceAmount);
+    }
+    return derogatoryBalanceAmount;
+  }
 
   @Override
   public void multiplyLinesBy(
@@ -266,19 +279,22 @@ private BigDecimal computeDerogatoryBalanceAmount(
     }
     return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
   }
-  
+
   @Override
   public void copyFixedAssetDerogatoryLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset) {
-	if (newFixedAsset.getFixedAssetDerogatoryLineList() == null) {
-		if (fixedAsset.getFixedAssetDerogatoryLineList() != null) {
-			fixedAsset.getFixedAssetDerogatoryLineList()
-			.forEach(line -> {
-				FixedAssetDerogatoryLine copy = fixedAssetDerogatoryLineRepository.copy(line, false);
-                copy.setFixedAsset(newFixedAsset);
-                newFixedAsset.addFixedAssetDerogatoryLineListItem(fixedAssetDerogatoryLineRepository.save(copy));
-			});
-		}
-	}
-	
-}
+    if (newFixedAsset.getFixedAssetDerogatoryLineList() == null) {
+      if (fixedAsset.getFixedAssetDerogatoryLineList() != null) {
+        fixedAsset
+            .getFixedAssetDerogatoryLineList()
+            .forEach(
+                line -> {
+                  FixedAssetDerogatoryLine copy =
+                      fixedAssetDerogatoryLineRepository.copy(line, false);
+                  copy.setFixedAsset(newFixedAsset);
+                  newFixedAsset.addFixedAssetDerogatoryLineListItem(
+                      fixedAssetDerogatoryLineRepository.save(copy));
+                });
+      }
+    }
+  }
 }
