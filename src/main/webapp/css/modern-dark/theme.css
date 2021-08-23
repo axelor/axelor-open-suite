@@ -878,6 +878,10 @@ form .nav-tabs > li > a, .nav-tabs > li > a:hover, .nav-tabs > li > a:focus {
 	border: 1px solid #282828 !important;
 }
 
+.ui-autocomplete .ui-menu-item a.ui-state-focus {
+	background: #282828 !important;
+}
+
 .info-button, .info-button:hover, .info-button:focus, .info-button:active {
 	background: #424242 !important;
 	border: 1px solid #424242 !important;
@@ -1018,4 +1022,12 @@ text {
 	background: #323232 !important;
 	box-shadow: none;
 	border-color: #c0c0c0;
+}
+
+.iti__country-list {
+	background-color: #202124;
+}
+
+.iti__country.iti__highlight {
+	background-color: #282828;
 }
