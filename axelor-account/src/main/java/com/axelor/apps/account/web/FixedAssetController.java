@@ -37,9 +37,9 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.HashMap;
 
 @Singleton
 public class FixedAssetController {
@@ -184,7 +184,7 @@ public class FixedAssetController {
       TraceBackService.trace(response, e);
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   public void massValidation(ActionRequest request, ActionResponse response) {
     try {

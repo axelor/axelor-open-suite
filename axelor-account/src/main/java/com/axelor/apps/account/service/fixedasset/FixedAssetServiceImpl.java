@@ -33,8 +33,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.db.JPA;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -430,6 +430,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
     }
   }
+
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(FixedAsset fixedAsset) {
@@ -460,7 +461,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
     return count;
   }
-  
 
   /**
    * If firstDepreciationDateInitSeelct if acquisition Date THEN : -If PeriodicityTypeSelect = 12

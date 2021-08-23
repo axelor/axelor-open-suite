@@ -156,7 +156,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             partner,
             date,
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<>();
