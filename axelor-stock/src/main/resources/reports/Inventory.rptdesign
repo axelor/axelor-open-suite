@@ -1373,14 +1373,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <structure>
                                         <property name="name">logo_height</property>
                                         <text-property name="displayName">logo_height</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
                                         <property name="dataType">integer</property>
+                                        <property name="allowExport">true</property>
                                     </structure>
                                     <structure>
                                         <property name="name">logo_width</property>
                                         <text-property name="displayName">logo_width</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'105px'}</expression>
                                         <property name="dataType">integer</property>
+                                        <property name="allowExport">true</property>
                                     </structure>
                                     <structure>
                                         <property name="name">logo_path</property>
