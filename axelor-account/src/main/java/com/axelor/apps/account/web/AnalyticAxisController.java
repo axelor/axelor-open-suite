@@ -43,16 +43,9 @@ public class AnalyticAxisController {
 			for (int i = 1;i<=10;i++) {
 				idList.add(Beans.get(AnalyticAxisService.class).getAnalyticGroupingId(analyticAxis, i));
 			}
-			System.err.println(idList);
-			for (int i = 0;i<idList.size();i++) {
-				if (idList.get(i)==(long) 0) {
-					idList.remove(i);
-				}
-			}
-			System.err.println(idList);
+
 			if (!ObjectUtils.isEmpty(idList)) {
 				String idListStr = idList.stream().map(id -> id.toString()).collect(Collectors.joining(","));
-				System.err.println(idListStr);
 				response.setAttr("analyticGrouping1", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id = " +analyticAxis.getId());
 				response.setAttr("analyticGrouping2", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
 				response.setAttr("analyticGrouping3", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
