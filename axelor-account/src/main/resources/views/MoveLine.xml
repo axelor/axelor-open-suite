@@ -65,7 +65,7 @@
 		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
 		<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" 
 		readonlyIf="!(account.analyticDistributionAuthorized == true &amp;&amp; account.analyticDistributionTemplate == null)" 
-		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/><field name="$test1" expr="__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis"/>
+		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
         <field name="origin" width="120"/>
         <field name="description" requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
         <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid" form-view="analytic-move-line-move-line-form"/>
@@ -242,7 +242,7 @@
 	</form>
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
-	onNew="action-account-move-line-onnew-group" onLoad="action-account-moveline-onload-group" width="large">
+	onNew="action-account-move-line-onnew-group" onLoad="action-account-moveline-move-onload-group" width="large">
 		<panel name="informationsPanel" title="Information" colSpan="12" canArchive="false">
 
 			<field name="name" colSpan="8" showTitle="false">
@@ -280,11 +280,11 @@
 			<field name="taxAmount" hidden="true"/>
 			<field name="move.statusSelect" hidden="true"/>
 			<field name="account.reconcileOk" hidden="true"/>
-			<field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
-			<field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
-			<field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
-			<field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
-			<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
+			<field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
+			<field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
+			<field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
+			<field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
+			<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
 
 		</panel>
 		<panel-tabs name="mainPanelTab">
@@ -374,6 +374,13 @@
 		<action name="action-move-line-attrs-readonly"/>
 		<action name="action-move-line-attrs-show-tax-amount"/>
 		<action name="action-move-line-method-description-required"/>
+	</action-group>
+	
+	<action-group name="action-account-moveline-move-onload-group">
+		<action name="action-move-line-attrs-readonly"/>
+		<action name="action-move-line-attrs-show-tax-amount"/>
+		<action name="action-move-line-method-description-required"/>
+		<action name="action-attrs-move-line-analytic-account-on-load"/>
 	</action-group>
     
     <action-group name="action-group-account-moveline-usher-process-onchange">
@@ -565,5 +572,19 @@
 	<action-method name="action-attrs-move-line-set-domain-axis" >
 		<call class="com.axelor.apps.account.web.MoveLineController" method="setAxisDomains" />
 	</action-method>
+	
+	<action-attrs name="action-attrs-move-line-analytic-account-on-load">
+		<attribute name="hidden" for="axis1AnalyticAccount" expr="eval: !(1 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
+		<attribute name="hidden" for="axis2AnalyticAccount" expr="eval: !(2 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
+		<attribute name="hidden" for="axis3AnalyticAccount" expr="eval: !(3 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
+		<attribute name="hidden" for="axis4AnalyticAccount" expr="eval: !(4 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
+		<attribute name="hidden" for="axis5AnalyticAccount" expr="eval: !(5 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
+		
+		<attribute name="title" for="axis1AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis?.name" if="(1 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="title" for="axis2AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 2 }?.analyticAxis?.name" if="(2 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="title" for="axis3AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 3 }?.analyticAxis?.name" if="(3 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="title" for="axis4AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 4 }?.analyticAxis?.name" if="(4 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="title" for="axis5AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 5 }?.analyticAxis?.name" if="(5 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
+	</action-attrs>
 
 </object-views>

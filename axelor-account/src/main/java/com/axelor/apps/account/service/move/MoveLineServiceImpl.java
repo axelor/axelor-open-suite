@@ -1424,7 +1424,6 @@ public class MoveLineServiceImpl implements MoveLineService {
               .findByCompany(moveLine.getMove().getCompany())
               .getAnalyticAxisByCompanyList()) {
         if (axis.getOrderSelect() == position) {
-          System.err.println(analyticAxis);
           analyticAxis = axis.getAnalyticAxis();
         }
       }

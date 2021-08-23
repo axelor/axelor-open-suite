@@ -260,7 +260,7 @@
 				<field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
 				<field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
 				<field name="analyticJournal" domain="self.company = :company" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
-				<field name="analyticAxisByCompanyList" colSpan="12" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" canNew="true" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+				<field name="analyticAxisByCompanyList" colSpan="12" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" canNew="true" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid" onChange="save"/>
 				
 			</panel>
 			

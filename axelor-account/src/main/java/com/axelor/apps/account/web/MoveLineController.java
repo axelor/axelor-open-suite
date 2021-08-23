@@ -276,7 +276,7 @@ public class MoveLineController {
         if (Beans.get(MoveLineService.class).compareNbrOfAnalyticAxisSelect(i, moveLine)) {
           analyticAccountList = Beans.get(MoveLineService.class).setAxisDomains(moveLine, i);
           if (ObjectUtils.isEmpty(analyticAccountList)) {
-            response.setAttr("axis1AnalyticAccount", "domain", "self.id IN (0)");
+            response.setAttr("axis" + i + "AnalyticAccount", "domain", "self.id IN (0)");
           } else {
             String idList =
                 analyticAccountList.stream()
