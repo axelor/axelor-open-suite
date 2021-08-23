@@ -18,16 +18,16 @@
 			<field name="nbrOfAnalyticGrouping" onChange="action-attrs-analytic-axis-set-grouping,action-attrs-analytic-axis-hide-grouping"/>
 			<field name="manageParentAccount"/>
 			<field name="company" colSpan="12" onChange="action-method-axis-change-company"/>
-			<field name="analyticGrouping1" onChange="action-validate-analytic-axis-check-1,save" hidden="true"/>
-			<field name="analyticGrouping2" onChange="action-validate-analytic-axis-check-2" hidden="true"/>
-			<field name="analyticGrouping3" onChange="action-validate-analytic-axis-check-3" hidden="true"/>
-			<field name="analyticGrouping4" onChange="action-validate-analytic-axis-check-4" hidden="true"/>
-			<field name="analyticGrouping5" onChange="action-validate-analytic-axis-check-5" hidden="true"/>
-			<field name="analyticGrouping6" onChange="action-validate-analytic-axis-check-6" hidden="true"/>
-			<field name="analyticGrouping7" onChange="action-validate-analytic-axis-check-7" hidden="true"/>
-			<field name="analyticGrouping8" onChange="action-validate-analytic-axis-check-8" hidden="true"/>
-			<field name="analyticGrouping9" onChange="action-validate-analytic-axis-check-9" hidden="true"/>
-			<field name="analyticGrouping10" onChange="action-validate-analytic-axis-check-10" hidden="true"/>
+			<field name="analyticGrouping1" onChange="action-validate-analytic-axis-check-1,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping2" onChange="action-validate-analytic-axis-check-2,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping3" onChange="action-validate-analytic-axis-check-3,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping4" onChange="action-validate-analytic-axis-check-4,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping5" onChange="action-validate-analytic-axis-check-5,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping6" onChange="action-validate-analytic-axis-check-6,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping7" onChange="action-validate-analytic-axis-check-7,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping8" onChange="action-validate-analytic-axis-check-8,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping9" onChange="action-validate-analytic-axis-check-9,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
+			<field name="analyticGrouping10" onChange="action-validate-analytic-axis-check-10,save" onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"/>
 		</panel>
 
 	</form>
@@ -161,6 +161,10 @@
 	
 	<action-method name="action-method-axis-change-company">
 		<call class="com.axelor.apps.account.web.AnalyticAxisController" method="checkCompanyOnMoveLine"/>
+	</action-method>
+	
+	<action-method name="action-method-analytic-axis-set-grouping-domain">
+		<call class="com.axelor.apps.account.web.AnalyticAxisController" method="setGroupingDomain"/>
 	</action-method>
 	
 </object-views>
