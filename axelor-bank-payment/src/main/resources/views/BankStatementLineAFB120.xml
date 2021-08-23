@@ -4,7 +4,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="bank-statement-line-afb-120-grid" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="-bankStatement.toDate,bankDetails,-sequence" edit-icon="true">
-	  <hilite color="info" if="lineTypeSelect == 1"/>
+	    <toolbar>
+      <button onClick="action-bank-statement-line-afb120-view-print-wizard" name="printExportBtn" title="Print"/>
+    </toolbar>  
+    <hilite color="info" if="lineTypeSelect == 1"/>
 	  <hilite color="primary" if="lineTypeSelect == 3"/>
 	  <hilite color="danger" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &gt;= debit &amp;&amp; amountRemainToReconcile &gt;= credit"/>
 	  <hilite color="warning" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &lt; debit &amp;&amp; amountRemainToReconcile &lt; credit"/>
@@ -63,6 +66,41 @@
 			<field name="commissionExemptionIndexSelect"/>
 			<field name="description" colSpan="12"/>
 		</panel>
-	</form>
+	</form>  
+  
+  
+  <form model="com.axelor.apps.base.db.Wizard" title="Print" name="bank-statement-line-print-wizard-form" onNew="action-bank-statement-line-afb-120-wizard-group-on-new">
+    <panel name="mainPanel">
+        <field name="fromDate" type="date" title="From"/>
+        <field name="toDate" type="date" title="To"/>
+        <field name="bankDetails" type="many-to-one" target="com.axelor.apps.base.db.BankDetails"/>
+        <field name="exportTypeSelect" type="string" title="Export type" selection="iadministration.export.type.select"  />
+        <button onClick="action-bank-statement-line-afb120-method-print" name="wizardPrintBtn" readonlyIf="fromDate == null || toDate == null || bankDetails == null"/>
+    </panel>
+  </form>
 
+  <action-view name="action-bank-statement-line-afb120-view-print-wizard" title="Print" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
+    <view type="form" name="bank-statement-line-print-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false" />
+    <view-param name="popup-save" value="false"/>
+  </action-view>
+  
+  <action-group name="action-bank-statement-line-afb-120-wizard-group-on-new">
+    <action name="action-bank-statement-line-afb-120-wizard-set-export-to-pdf"/>
+    <action name="action-bank-statement-line-afb120-method-fill-bank-details"/>
+  </action-group>
+  
+  <action-method name="action-bank-statement-line-afb120-method-print">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementLineAFB120Controller" method="print"/>
+  </action-method>
+  
+  <action-method name="action-bank-statement-line-afb120-method-fill-bank-details">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementLineAFB120Controller" method="fillBankDetails"/>
+  </action-method>
+  
+  <action-record name="action-bank-statement-line-afb-120-wizard-set-export-to-pdf" model="com.axelor.apps.base.db.Wizard">
+    <field name="exportTypeSelect" expr="pdf"/>
+  </action-record>
 </object-views>

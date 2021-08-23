@@ -49,6 +49,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -59,8 +60,6 @@ import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.mysql.jdbc.StringUtils;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -593,10 +592,9 @@ public class BankReconciliationService {
 
   public void unreconcileLines(List<BankReconciliationLine> bankReconciliationLines) {
     for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-    	if(!StringUtils.isNullOrEmpty(bankReconciliationLine.getPostedNbr()))
-    	{
-    		unreconcileLine(bankReconciliationLine);
-    	}
+      if (StringUtils.notEmpty((bankReconciliationLine.getPostedNbr()))) {
+        unreconcileLine(bankReconciliationLine);
+      }
     }
   }
 
