@@ -205,8 +205,9 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
               .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
         // At this stage, if list size == nb of depreciation -1 then it means we are processing the
         // last line.
-        if (fixedAsset.getFiscalFixedAssetLineList().size()
-            == fixedAsset.getFiscalNumberOfDepreciation() - 1) {
+        if (fixedAsset.getFiscalFixedAssetLineList() != null
+            && fixedAsset.getFiscalFixedAssetLineList().size()
+                == fixedAsset.getFiscalNumberOfDepreciation() - 1) {
           depreciation = previousFixedAssetLine.getAccountingValue();
         } else {
           depreciation =
@@ -219,13 +220,15 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         // are realized.
         // Because when recomputing, number of depreciation is computed as follow (nbDepreciation -
         // list.size())
-        if (fixedAsset.getFiscalFixedAssetLineList().stream()
-                .filter(
-                    line ->
-                        line.getCorrectedAccountingValue().signum() == 0
-                            && line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
-                .count()
-            == fixedAsset.getFiscalNumberOfDepreciation() - 1) {
+        if (fixedAsset.getFiscalFixedAssetLineList() != null
+            && fixedAsset.getFiscalFixedAssetLineList().stream()
+                    .filter(
+                        line ->
+                            line.getCorrectedAccountingValue().signum() == 0
+                                && line.getStatusSelect()
+                                    == FixedAssetLineRepository.STATUS_PLANNED)
+                    .count()
+                == fixedAsset.getFiscalNumberOfDepreciation() - 1) {
           // So we must depreciate the remaining accounting value.
           depreciation = previousFixedAssetLine.getAccountingValue();
         } else {
@@ -239,7 +242,9 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
       if (fixedAsset
           .getComputationMethodSelect()
           .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        if (fixedAsset.getFixedAssetLineList().size() == fixedAsset.getNumberOfDepreciation() - 1) {
+        if (fixedAsset.getFixedAssetLineList() != null
+            && fixedAsset.getFixedAssetLineList().size()
+                == fixedAsset.getNumberOfDepreciation() - 1) {
           depreciation = previousFixedAssetLine.getAccountingValue();
         } else {
           // In case of economic type, boolean argument is always false. We did a copy of the fiscal
@@ -255,13 +260,15 @@ public class FixedAssetLineComputationServiceImpl implements FixedAssetLineCompu
         // are realized.
         // Because when recomputing, number of depreciation is computed as follow (nbDepreciation -
         // list.size())
-        if (fixedAsset.getFixedAssetLineList().stream()
-                .filter(
-                    line ->
-                        line.getCorrectedAccountingValue().signum() == 0
-                            && line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
-                .count()
-            == fixedAsset.getNumberOfDepreciation() - 1) {
+        if (fixedAsset.getFixedAssetLineList() != null
+            && fixedAsset.getFixedAssetLineList().stream()
+                    .filter(
+                        line ->
+                            line.getCorrectedAccountingValue().signum() == 0
+                                && line.getStatusSelect()
+                                    == FixedAssetLineRepository.STATUS_PLANNED)
+                    .count()
+                == fixedAsset.getNumberOfDepreciation() - 1) {
           // So we must depreciate the remaining accounting value.
           depreciation = previousFixedAssetLine.getAccountingValue();
         } else {

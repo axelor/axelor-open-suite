@@ -45,10 +45,12 @@ public class FixedAssetTestTool {
 
   public static FixedAssetLine createFixedAssetLine(
       LocalDate depreciationDate,
+      BigDecimal depreciationBase,
       BigDecimal depreciation,
       BigDecimal cumulativeDepreciation,
       BigDecimal accountingValue) {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    fixedAssetLine.setDepreciationBase(depreciationBase);
     fixedAssetLine.setDepreciationDate(depreciationDate);
     fixedAssetLine.setDepreciation(depreciation);
     fixedAssetLine.setCumulativeDepreciation(cumulativeDepreciation);
@@ -90,11 +92,13 @@ public class FixedAssetTestTool {
     fixedAsset.setDegressiveCoef(degressiveCoef);
     fixedAsset.setFirstDepreciationDate(firstDepreciationDate);
     fixedAsset.setAcquisitionDate(acquisitionDate);
+    fixedAsset.setFirstServiceDate(acquisitionDate);
     fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
     fixedAsset.setPeriodicityInMonth(periodicityInMonth);
     fixedAsset.setDurationInMonth(numberOfDepreciation * periodicityInMonth);
     fixedAsset.setFixedAssetCategory(fixedAssetCategory);
     fixedAsset.setGrossValue(grossValue);
+    fixedAsset.setResidualValue(BigDecimal.ZERO);
     fixedAsset.setDepreciationPlanSelect(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC);
 
     return fixedAsset;
