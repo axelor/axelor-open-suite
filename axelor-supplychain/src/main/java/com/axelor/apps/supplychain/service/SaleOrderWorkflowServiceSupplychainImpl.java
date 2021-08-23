@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -52,6 +53,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected SaleOrderPurchaseService saleOrderPurchaseService;
   protected AppSupplychain appSupplychain;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected PartnerSupplychainService partnerSupplychainService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -60,17 +62,26 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       UserService userService,
+      SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      PartnerSupplychainService partnerSupplychainService) {
 
-    super(sequenceService, partnerRepo, saleOrderRepo, appSaleService, userService);
+    super(
+        sequenceService,
+        partnerRepo,
+        saleOrderRepo,
+        appSaleService,
+        userService,
+        saleOrderLineService);
 
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.partnerSupplychainService = partnerSupplychainService;
   }
 
   @Override
@@ -78,6 +89,12 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     super.confirmSaleOrder(saleOrder);
+
+    if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+    }
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return;

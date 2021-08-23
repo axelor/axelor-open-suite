@@ -24,13 +24,13 @@ import com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.service.batch.ProjectInvoicingAssistantBatchService;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.team.db.TeamTask;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,10 +61,10 @@ public class ProjectInvoicingAssistantBatchController {
       Map<String, Object> values = new HashMap<String, Object>();
       values.put("field", "updatedTaskSet");
       values.put("title", I18n.get("Updated tasks"));
-      values.put("model", TeamTask.class.getName());
-      values.put("grid", "business-project-team-task-grid");
-      values.put("form", "team-task-form");
-      values.put("search-filters", "team-task-filters");
+      values.put("model", ProjectTask.class.getName());
+      values.put("grid", "business-project-project-task-grid");
+      values.put("form", "project-task-form");
+      values.put("search-filters", "project-task-filters");
 
       this.showRecords(request, response, values);
 

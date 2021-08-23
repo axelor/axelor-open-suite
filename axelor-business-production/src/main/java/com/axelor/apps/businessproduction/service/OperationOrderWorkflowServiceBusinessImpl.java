@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.production.db.OperationOrder;
@@ -40,13 +41,15 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
       OperationOrderRepository operationOrderRepo,
       OperationOrderDurationRepository operationOrderDurationRepo,
       AppProductionService appProductionService,
-      MachineToolRepository machineToolRepo) {
+      MachineToolRepository machineToolRepo,
+      WeeklyPlanningService weeklyPlanningService) {
     super(
         operationOrderStockMoveService,
         operationOrderRepo,
         operationOrderDurationRepo,
         appProductionService,
-        machineToolRepo);
+        machineToolRepo,
+        weeklyPlanningService);
   }
 
   /**

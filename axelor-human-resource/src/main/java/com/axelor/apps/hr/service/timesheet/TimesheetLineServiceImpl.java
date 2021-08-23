@@ -23,7 +23,6 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.project.db.Project;
@@ -34,7 +33,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -49,19 +47,12 @@ import org.slf4j.LoggerFactory;
 public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   protected TimesheetService timesheetService;
-  protected TimesheetHRRepository timesheetHRRepository;
-  protected TimesheetRepository timesheetRepository;
   protected EmployeeRepository employeeRepository;
 
   @Inject
   public TimesheetLineServiceImpl(
-      TimesheetService timesheetService,
-      TimesheetHRRepository timesheetHRRepository,
-      TimesheetRepository timesheetRepository,
-      EmployeeRepository employeeRepository) {
+      TimesheetService timesheetService, EmployeeRepository employeeRepository) {
     this.timesheetService = timesheetService;
-    this.timesheetHRRepository = timesheetHRRepository;
-    this.timesheetRepository = timesheetRepository;
     this.employeeRepository = employeeRepository;
   }
 
@@ -259,38 +250,5 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
 
     return projectTimeSpentMap;
-  }
-
-  @Transactional
-  public TimesheetLine setTimesheet(TimesheetLine timesheetLine) {
-    Timesheet timesheet =
-        timesheetRepository
-            .all()
-            .filter(
-                "self.user = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null)) ORDER BY self.id ASC",
-                timesheetLine.getUser(),
-                timesheetLine.getProject().getCompany(),
-                timesheetLine.getDate())
-            .fetchOne();
-    if (timesheet == null) {
-      Timesheet lastTimesheet =
-          timesheetRepository
-              .all()
-              .filter(
-                  "self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC",
-                  timesheetLine.getUser(),
-                  TimesheetRepository.STATUS_CANCELED)
-              .fetchOne();
-      timesheet =
-          timesheetService.createTimesheet(
-              timesheetLine.getUser(),
-              lastTimesheet != null && lastTimesheet.getToDate() != null
-                  ? lastTimesheet.getToDate().plusDays(1)
-                  : timesheetLine.getDate(),
-              null);
-      timesheet = timesheetHRRepository.save(timesheet);
-    }
-    timesheetLine.setTimesheet(timesheet);
-    return timesheetLine;
   }
 }

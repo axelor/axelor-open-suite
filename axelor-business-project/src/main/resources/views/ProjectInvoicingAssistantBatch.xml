@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<grid name="project-invoicing-assistant-batch-grid" title="Project invoicing assistant batches" model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch">
 		<field name="actionSelect" />
@@ -14,10 +14,11 @@
   	<form name="project-invoicing-assistant-batch-form" title="Project invoicing assistant batch" model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch"  
     onNew="action-project-invoicing-assistant-batch-record-on-new">
     	<panel name="mainPanel">
-		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
+		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select,action-project-invoicing-assistant-batch-record-action-select-on-change"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		    <field name="consolidatePhaseSelect" showIf="actionSelect == 2" validIf="actionSelect != 2 || consolidatePhaseSelect"/>
+            <field name="deadlineDate" showIf="actionSelect == 2" />
 		</panel>
     	<panel name="informationPanel" title="Information">
 			<field name="createdOn" title="Created on"/>
@@ -39,6 +40,10 @@
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
+  
+    <action-record name="action-project-invoicing-assistant-batch-record-action-select-on-change" model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch">
+        <field name="deadlineDate" expr="eval: null" if="actionSelect == 1"/>
+    </action-record>
 	
 	<action-method name="action-project-invoicing-assistant-batch-method-update-task">
 		<call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController" method="actionUpdateTask"/>

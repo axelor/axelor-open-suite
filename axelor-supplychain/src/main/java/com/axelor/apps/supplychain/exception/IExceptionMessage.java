@@ -125,6 +125,9 @@ public interface IExceptionMessage {
 
   static final String MRP_NO_PRODUCT_UNIT = /*$$(*/ "Please fill unit for product %s" /*)*/;
 
+  static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
+      "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
+
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this sale order" /*)*/;
@@ -138,9 +141,11 @@ public interface IExceptionMessage {
   static final String SO_MISSING_STOCK_LOCATION = /*$$(*/
       "Stock location is missing for the sale order %s." /*)*/;
 
-  /** Sale order Stock Service Implement */
   static final String PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this purchase order" /*)*/;
+
+  static final String RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE = /*$$(*/
+      "Please configure a correct value for the sale order date used for reservation." /*)*/;
 
   /** Purchase Order Stock Service Implement */
   static final String PO_MISSING_STOCK_LOCATION = /*$$(*/
@@ -269,4 +274,10 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT = /*$$(*/
       "%s blocked : maximal accepted credit exceeded for %s." /*)*/;
+
+  static final String SALE_ORDER_BANK_DETAILS_MISSING = /*$$(*/
+      "%s : The advance payment generation failed. Please configure the bank details for the company %s and the associated payment mode %s either on the payment mode side or this Sale order %s record (hidden field)." /*)*/;
+
+  static final String CUSTOMER_HAS_BLOCKED_ACCOUNT = /*$$(*/
+      "The customer account is blocked because he has late payments." /*)*/;
 }

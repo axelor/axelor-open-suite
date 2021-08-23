@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
     <module name="production" package="com.axelor.apps.production.db"/>
 
     <entity name="ConfiguratorBOM" lang="java">
@@ -32,6 +32,10 @@
         <integer name="statusSelect" title="Status" selection="production.bill.of.material.status.select" default="2"/>
 
         <string name="useCondition" title="Condition" large="true"/>
+        
+        <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+        <string name="workshopStockLocationFormula" title="Workshop" large="true"/>
+        <boolean name="defWorkshopStockLocationAsFormula" title="Define with a script" default="false"/>
 
         <!--we don't want a real database relation between configurator and
         bill of materials, so we just save the id-->

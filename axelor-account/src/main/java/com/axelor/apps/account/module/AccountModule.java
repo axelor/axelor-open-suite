@@ -27,6 +27,8 @@ import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.DebtRecoveryAccountRepository;
+import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
 import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
@@ -58,6 +60,8 @@ import com.axelor.apps.account.service.AccountingCloseAnnualService;
 import com.axelor.apps.account.service.AccountingCloseAnnualServiceImpl;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportServiceImpl;
+import com.axelor.apps.account.service.AccountingReportTypeService;
+import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
@@ -171,6 +175,8 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountingReportService.class).to(AccountingReportServiceImpl.class);
 
+    bind(AccountingReportTypeService.class).to(AccountingReportTypeServiceImpl.class);
+
     bind(JournalRepository.class).to(JournalManagementRepository.class);
 
     bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
@@ -272,6 +278,8 @@ public class AccountModule extends AxelorModule {
     bind(PaymentService.class).to(PaymentServiceImpl.class);
 
     bind(MoveLineService.class).to(MoveLineServiceImpl.class);
+    
+    bind(DebtRecoveryRepository.class).to(DebtRecoveryAccountRepository.class);
 
     bind(AnalyticFixedAssetService.class).to(AnalyticFixedAssetServiceImpl.class);
 

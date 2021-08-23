@@ -201,7 +201,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             company,
             supplierPartner,
             startLocation,
-            company.getStockConfig().getQualityControlDefaultStockLocation(),
+            appBaseService.getAppBase().getEnableTradingNamesManagement()
+                ? purchaseOrder.getTradingName().getQualityControlDefaultStockLocation()
+                : company.getStockConfig().getQualityControlDefaultStockLocation(),
             null,
             estimatedDeliveryDate,
             purchaseOrder.getNotes(),
@@ -216,11 +218,13 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
     stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     stockMove.setTradingName(purchaseOrder.getTradingName());
+    stockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
     qualityStockMove.setOriginId(purchaseOrder.getId());
     qualityStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
+    qualityStockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
     SupplyChainConfig supplychainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(purchaseOrder.getCompany());
@@ -376,7 +380,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .divide(
                   purchaseOrderLine.getQty(),
                   appBaseService.getNbDecimalDigitForUnitPrice(),
-                  RoundingMode.HALF_EVEN);
+                  RoundingMode.HALF_UP);
     }
 
     if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {

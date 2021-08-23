@@ -17,9 +17,26 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 
 public interface SaleOrderSupplychainService {
 
   public void updateToConfirmedStatus(SaleOrder saleOrder);
+
+  public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException;
+
+  boolean alreadyHasShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct);
+
+  SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
+      throws AxelorException;
+
+  String removeShipmentCostLine(SaleOrder saleOrder);
+
+  BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder);
+
+  public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder);
 }

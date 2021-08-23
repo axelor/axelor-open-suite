@@ -24,16 +24,18 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public interface MessageService {
 
   @Transactional
   public Message createMessage(
       String model,
-      int id,
+      long id,
       String subject,
       String content,
       EmailAddress fromEmailAddress,
@@ -47,21 +49,111 @@ public interface MessageService {
       EmailAccount emailAccount,
       String signature);
 
+  @Transactional(rollbackOn = {Exception.class})
+  /**
+   * Function is used to create temporary {@link Message}, which will only be send but not be saved.
+   * <br>
+   * Only when isTemporaryMessage = {@code True}.
+   *
+   * @param model
+   * @param id
+   * @param subject
+   * @param content
+   * @param fromEmailAddress
+   * @param replyToEmailAddressList
+   * @param toEmailAddressList
+   * @param ccEmailAddressList
+   * @param bccEmailAddressList
+   * @param metaFiles
+   * @param addressBlock
+   * @param mediaTypeSelect
+   * @param emailAccount
+   * @param signature
+   * @param isTemporaryMessage
+   * @return
+   */
+  public Message createMessage(
+      String model,
+      long id,
+      String subject,
+      String content,
+      EmailAddress fromEmailAddress,
+      List<EmailAddress> replyToEmailAddressList,
+      List<EmailAddress> toEmailAddressList,
+      List<EmailAddress> ccEmailAddressList,
+      List<EmailAddress> bccEmailAddressList,
+      Set<MetaFile> metaFiles,
+      String addressBlock,
+      int mediaTypeSelect,
+      EmailAccount emailAccount,
+      String signature,
+      Boolean isTemporaryMessage);
+
   @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles);
 
   public Set<MetaAttachment> getMetaAttachments(Message message);
 
-  public Message sendMessage(Message message) throws AxelorException;
+  /**
+   * Send {@link Message}.
+   *
+   * @param message
+   * @return
+   * @throws AxelorException
+   */
+  public Message sendMessage(Message message) throws AxelorException, JSONException, IOException;
+
+  /**
+   * Send {@link Message}.
+   *
+   * <p>If @param isTemporaryEmail is {@code True}, Message will not saved but only send.
+   *
+   * <p>
+   *
+   * @param message
+   * @param isTemporaryEmail
+   * @return
+   * @throws AxelorException
+   * @throws MessagingException
+   */
+  public Message sendMessage(Message message, Boolean isTemporaryEmail)
+      throws AxelorException, MessagingException, JSONException, IOException;
+
+  /**
+   * Send {@link Message} as Email.
+   *
+   * @param message
+   * @return
+   * @throws MessagingException
+   * @throws AxelorException
+   */
+  public Message sendByEmail(Message message) throws MessagingException, AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendByEmail(Message message) throws MessagingException, AxelorException;
+  /**
+   * Send Message as email.
+   *
+   * <p>If @param isTemporaryEmail is {@code True}, Message will not saved but only send.
+   *
+   * <p>
+   *
+   * @param message
+   * @param isTemporaryEmail
+   * @return
+   * @throws MessagingException
+   * @throws AxelorException
+   */
+  public Message sendByEmail(Message message, Boolean isTemporaryEmail)
+      throws MessagingException, AxelorException;
 
   @Transactional
   public Message sendToUser(Message message);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendByMail(Message message);
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendSMS(Message message) throws AxelorException, IOException, JSONException;
 
   public String printMessage(Message message) throws AxelorException;
 
@@ -75,4 +167,6 @@ public interface MessageService {
   Message regenerateMessage(Message message) throws Exception;
 
   public String getFullEmailAddress(EmailAddress emailAddress);
+
+  public void addMessageRelatedTo(Message message, String relatedToSelect, Long relatedToSelectId);
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<menuitem name="invoice-root" title="Invoicing" order="-100"  if="__config__.app.isApp('invoice')"
 		icon="fa-file-text-o"  icon-background="#31b4a9" />
@@ -126,23 +126,48 @@
 		title="Moves" order="0"/>
 
 	<menuitem name="account-root-move-move" parent="account-root-move"
-		title="Moves" action="account.root.move.move" />
+		title="Moves" action="account.root.move.move" order="0"/>
 
 	<action-view name="account.root.move.move" title="Moves"
 		model="com.axelor.apps.account.db.Move" >
 		<view type="grid" name="move-grid" />
 		<view type="form" name="move-form"/>
 		<view-param name="search-filters" value="move-filters"/>
+		<domain>self.statusSelect != 5</domain>
 	</action-view>
 
 	<menuitem name="account-root-move-move-line" parent="account-root-move"
-		title="Move lines" action="account.root.move.move.line" />
+		title="Move lines" action="account.root.move.move.line" order="5"/>
 
 	<action-view name="account.root.move.move.line" title="Move lines"
 		model="com.axelor.apps.account.db.MoveLine" >
 		<view type="grid" name="move-line-grid" />
 		<view type="form" name="move-line-form"/>
 		<view-param name="search-filters" value="move-line-filters"/>
+		<domain>self.move.statusSelect != 5</domain>
+	</action-view>
+	
+	<menuitem name="account-root-move-moves-simulated" parent="account-root-move"
+		title="Moves Simulated" action="account.root.move.moves.simulated" order="15"/>
+
+	<action-view name="account.root.move.moves.simulated" title="Moves Simulated"
+		model="com.axelor.apps.account.db.Move" >
+		<view type="grid" name="move-grid" />
+		<view type="form" name="move-form"/>
+		<domain>self.statusSelect = 5</domain>
+		<context name="_isSimulatedMove" expr="true"/>
+	</action-view>
+	
+	<menuitem name="account-root-move-move-line-simulated" parent="account-root-move"
+		title="Move Lines Simulated" action="account.root.move.move.line.simulated" order="20"/>
+
+	<action-view name="account.root.move.move.line.simulated" title="Move Lines Simulated"
+		model="com.axelor.apps.account.db.MoveLine" >
+		<view type="grid" name="move-line-grid" />
+		<view type="form" name="move-line-form"/>
+		<view-param name="search-filters" value="move-line-filters"/>
+		<domain>self.move.statusSelect = 5</domain>
+		<context name="_isSimulatedMoveLine" expr="true"/>
 	</action-view>
 
 	<menuitem name="account-root-payments" parent="account-root"
@@ -231,8 +256,8 @@
 		<view type="grid" name="cheque-rejection-grid"/>
 		<view type="form" name="cheque-rejection-form"/>
 		<view-param name="search-filters" value="cheque-rejection-filters"/>
-		<context name="_newDate1" expr="eval: __date__.minusDays(5)"/>
-		<context name="_newDate2" expr="eval: __date__.minusDays(30)"/>
+		<context name="_newDate1" expr="eval: __config__.date.minusDays(5)"/>
+		<context name="_newDate2" expr="eval: __config__.date.minusDays(30)"/>
 	</action-view>
 	
 	<menuitem name="account-root-debt-recovery" parent="account-root"
@@ -291,16 +316,6 @@
 		<view type="form" name="debt-recovery-method-form"/>
 	</action-view>
 
-	<menuitem name="debt-recovery-root-conf-debt-recovery-level"
-		parent="debt-recovery-root-conf" title="Debt recovery levels"
-		action="debt.recovery.root.conf.debt.recovery.level" />
-
-	<action-view name="debt.recovery.root.conf.debt.recovery.level"
-		title="Debt recovery levels" model="com.axelor.apps.account.db.DebtRecoveryLevel" >
-		<view type="grid" name="debt-recovery-level-grid"/>
-		<view type="form" name="debt-recovery-level-form"/>
-	</action-view>
-	
 	<menuitem name="debt-recovery-root-conf-factor"
 		parent="debt-recovery-root-conf" title="Factor"
 		action="debt.recovery.root.conf.factor" />
@@ -327,10 +342,10 @@
 		<view-param name="search-filters" value="reimbursement-filters"/>
 	</action-view>
 
-    <menuitem name="account-root-accounting-cheque-deposit-slip-all" parent="account-root-accounting" title="Cheque deposit slips"
+    <menuitem name="account-root-accounting-cheque-deposit-slip-all" parent="account-root-accounting" title="Deposit slips"
         action="account.root.accounting.cheque.deposit.slip.all" />
 
-    <action-view name="account.root.accounting.cheque.deposit.slip.all" title="Cheque deposit slips"
+    <action-view name="account.root.accounting.cheque.deposit.slip.all" title="Deposit slips"
         model="com.axelor.apps.account.db.DepositSlip">
         <view type="grid" name="cheque-deposit-slip-grid" />
         <view type="form" name="cheque-deposit-slip-form" />
@@ -345,7 +360,7 @@
 		<view type="grid" name="accounting-report-grid" />
 		<view type="form" name="accounting-report-form" />
 		<view-param name="search-filters" value="accounting-report-filter"/>
-		<domain>self.typeSelect &lt; 1000 or self.typeSelect &gt;= 2000</domain>
+		<domain>self.reportType.typeSelect &lt; 1000 or self.reportType.typeSelect &gt;= 2000</domain>
 	</action-view>
 
 	<menuitem name="account-root-accounting-accounting-exports" parent="account-root-accounting"
@@ -355,7 +370,28 @@
 		title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport" >
 		<view type="grid" name="accounting-report-export-grid" />
 		<view type="form" name="accounting-report-export-form" />
-		<domain>self.typeSelect &gt;= 1000 and self.typeSelect &lt; 2000</domain>
+		<domain>self.reportType.typeSelect &gt;= 1000 and self.reportType.typeSelect &lt; 2000</domain>
+	</action-view>
+
+	<menuitem name="account-conf-reporting" parent="account-conf"
+						title="Reportings/Exports" />
+
+	<menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
+						title="Interbank codes" action="account.conf.reporting.interbank.code" />
+
+	<action-view name="account.conf.reporting.interbank.code"
+							 title="Interbank codes" model="com.axelor.apps.account.db.InterbankCode" >
+		<view type="grid" name="interbank-code-grid"/>
+		<view type="form" name="interbank-code-form"/>
+	</action-view>
+
+	<menuitem name="account-root-accounting-conf-report-types" parent="account-conf-reporting"
+						title="Report types" action="account.conf.reporting.accounting.report.types"/>
+
+	<action-view name="account.conf.reporting.accounting.report.types"
+							 title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
+		<view type="grid" name="accounting-report-type-grid"/>
+		<view type="form" name="accounting-report-type-form"/>
 	</action-view>
 	
 	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.app.isApp('budget')"
@@ -522,6 +558,15 @@
 		<view-param name="search-filters" value="tax-filters"/>
 	</action-view>
 	
+	<menuitem name="account-conf-financial-tax-number" parent="account-conf-financial"
+		title="Tax numbers" action="account.conf.financial.tax.number" />
+
+	<action-view name="account.conf.financial.tax.number" title="Tax number" model="com.axelor.apps.account.db.TaxNumber">
+		<view type="grid" name="tax-number-grid" />
+		<view type="form" name="tax-number-form" />
+	</action-view>
+	
+	
 	<menuitem name="account-conf-analytic" parent="account-conf"
 		title="Analytic" />
 
@@ -614,18 +659,6 @@
 		<view type="form" name="payment-condition-form"/>
 		<view-param name="search-filters" value="payment-condition-filters"/>
 	</action-view>
-
-	<menuitem name="account-conf-reporting" parent="account-conf"
-		title="Reportings/Exports" />
-
-	<menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
-		title="Interbank codes" action="account.conf.reporting.interbank.code" />
-
-	<action-view name="account.conf.reporting.interbank.code"
-		title="Interbank codes" model="com.axelor.apps.account.db.InterbankCode" >
-		<view type="grid" name="interbank-code-grid"/>
-		<view type="form" name="interbank-code-form"/>
-	</action-view>
 	
 	<menuitem name="admin-root-batch-accounting" parent="admin-root-batch" if="__config__.app.isApp('account')" if-module="axelor-account"
 		title="Accounting batches" action="admin.root.batch.accounting" />
@@ -685,14 +718,6 @@
 		<context name="_operationTypeSelect" expr="eval:2"/>
 	</action-view>
 	
-	<menuitem name="menu-account-invoice-dashboard-sample" parent="invoice-root-report" order="-145"
-    title="General"  action="account.invoice.dashboard.view.sample"/>    
-
-    <action-view name="account.invoice.dashboard.view.sample" title="General Details">
-        <view type="dashboard" name="account.invoice.dashboard.sample" />        
-    </action-view>
-   
-    
 	<menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report" 
     title="Sale Invoices"  action="account.sale.invoice.dashboard.1.view" />    
 	
@@ -740,7 +765,7 @@
 	
 	<!-- Move template -->
 	
-	<menuitem name="move-template-wizard" title="Move From Template" parent="account-root-move" action="move.template.wizard"  top="true" />
+	<menuitem name="move-template-wizard" title="Move From Template" parent="account-root-move" action="move.template.wizard"  top="true" order="10"/>
 	
 	<action-view name="move.template.wizard"
 		title="Move From Template" model="com.axelor.apps.base.db.Wizard">
@@ -808,5 +833,15 @@
 		<view type="grid" name="fec-import-grid"/>
 		<view type="form" name="fec-import-form"/>
 	</action-view>
+	
+	<!-- Delay Reason -->
+	
+	<menuitem name="debt-recovery-root-conf-payment-delay-reason" parent="debt-recovery-root-conf" title="Payment delay reasons" action="debt.recovery.root.conf.payment.delay.reason" />
+		
+	<action-view name="debt.recovery.root.conf.payment.delay.reason" title="Payment delay reason" model="com.axelor.apps.account.db.PaymentDelayReason" >
+		<view type="grid" name="payment-delay-reason-grid"/>
+		<view type="form" name="payment-delay-reason-form"/>
+	</action-view>
+	
 		
 </object-views>

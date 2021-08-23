@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -36,6 +37,8 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.HashMap;
 
 @Singleton
@@ -155,6 +158,20 @@ public class FixedAssetController {
     }
   }
 
+  public void validate(ActionRequest request, ActionResponse response) {
+    FixedAsset fixedAsset =
+        Beans.get(FixedAssetRepository.class)
+            .find(request.getContext().asType(FixedAsset.class).getId());
+    if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
+      try {
+        Beans.get(FixedAssetService.class).validate(fixedAsset);
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
+      }
+    }
+    response.setReload(true);
+  }
+
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
 
@@ -163,6 +180,32 @@ public class FixedAssetController {
 
       Beans.get(FixedAssetService.class).updateAnalytic(fixedAsset);
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void massValidation(ActionRequest request, ActionResponse response) {
+    try {
+      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+        List<Long> ids =
+            (List)
+                (((List) request.getContext().get("_ids"))
+                    .stream()
+                        .filter(ObjectUtils::notEmpty)
+                        .map(input -> Long.parseLong(input.toString()))
+                        .collect(Collectors.toList()));
+        int validatedFixedAssets = Beans.get(FixedAssetService.class).massValidation(ids);
+        response.setFlash(
+            validatedFixedAssets
+                + " "
+                + I18n.get(
+                    "fixed asset validated", "fixed assets validated", validatedFixedAssets));
+        response.setReload(true);
+      } else {
+        response.setFlash(I18n.get("Please select something to validate"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

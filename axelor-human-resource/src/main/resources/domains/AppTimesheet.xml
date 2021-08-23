@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppTimesheet" lang="java" extends="App">
+	<entity name="AppTimesheet" lang="java" >
+	
+		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/> 
 		
 		<integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times" selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
 		<boolean name="consolidateTSLine" title="Consolidate timesheet line on invoice"/>
@@ -26,7 +28,10 @@
 		
 		<boolean name="displayTaskColumnInPrinting" title="Display task column in printing"/>
 		<boolean name="displayActivityColumnInPrinting" title="Display activity column in printing" />
-
+		
+		<boolean name="needValidation" title="Need validation" default="false"/>
+		<boolean name="enableActivity" title="Enable activity"/>
+		
 		<track>
 			<field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
 			<field name="consolidateTSLine" on="UPDATE"/>

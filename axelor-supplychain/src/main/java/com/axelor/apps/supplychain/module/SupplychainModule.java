@@ -38,9 +38,11 @@ import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.PurchaseProductServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
+import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
+import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
@@ -62,6 +64,8 @@ import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.MrpForecastManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
@@ -88,6 +92,11 @@ import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
+import com.axelor.apps.supplychain.service.OpportunitySaleOrderSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkServiceImpl;
+import com.axelor.apps.supplychain.service.PartnerSupplychainService;
+import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
@@ -147,6 +156,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesServiceImpl;
 import com.axelor.apps.supplychain.service.fixedasset.FixedAssetServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceServiceImpl;
@@ -217,24 +227,32 @@ public class SupplychainModule extends AxelorModule {
     bind(StockCorrectionServiceImpl.class).to(StockCorrectionServiceSupplychainImpl.class);
     bind(StockMoveMultiInvoiceService.class).to(StockMoveMultiInvoiceServiceImpl.class);
     bind(MrpRepository.class).to(MrpManagementRepository.class);
+    bind(MrpLineRepository.class).to(MrpLineManagementRepository.class);
     bind(SaleOrderReservedQtyService.class).to(SaleOrderReservedQtyServiceImpl.class);
     bind(StockLocationLineReservationService.class)
         .to(StockLocationLineReservationServiceImpl.class);
     bind(PurchaseRequestServiceImpl.class).to(PurchaseRequestServiceSupplychainImpl.class);
     bind(ProductStockLocationService.class).to(ProductStockLocationServiceImpl.class);
     bind(ProjectedStockService.class).to(ProjectedStockServiceImpl.class);
-    bind(SaleOrderLineRepository.class).to(SaleOrderLineSupplychainRepository.class);
+    bind(SaleOrderLineSaleRepository.class).to(SaleOrderLineSupplychainRepository.class);
     bind(FixedAssetServiceImpl.class).to(FixedAssetServiceSupplyChainImpl.class);
     bind(StockMoveLineStockRepository.class).to(StockMoveLineSupplychainRepository.class);
     bind(MrpForecastRepository.class).to(MrpForecastManagementRepository.class);
     bind(PurchaseOrderSupplychainService.class).to(PurchaseOrderServiceSupplychainImpl.class);
     bind(SaleOrderSupplychainService.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
+    bind(PartnerSupplychainLinkService.class).to(PartnerSupplychainLinkServiceImpl.class);
     bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
     bind(StockMoveReservedQtyService.class).to(StockMoveReservedQtyServiceImpl.class);
     bind(PurchaseOrderLineServiceSupplyChain.class)
         .to(PurchaseOrderLineServiceSupplychainImpl.class);
     bind(PurchaseOrderWorkflowServiceImpl.class)
         .to(PurchaseOrderWorkflowServiceSupplychainImpl.class);
+    bind(InvoiceServiceSupplychain.class).to(InvoiceServiceSupplychainImpl.class);
+    bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
+    bind(OpportunitySaleOrderServiceImpl.class)
+        .to(OpportunitySaleOrderSupplychainServiceImpl.class);
+    bind(PartnerSaleServiceImpl.class).to(PartnerSupplychainServiceImpl.class);
+    bind(PartnerSupplychainService.class).to(PartnerSupplychainServiceImpl.class);
   }
 }

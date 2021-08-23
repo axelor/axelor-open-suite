@@ -55,12 +55,16 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   protected InvoiceRepository invoiceRepo;
   protected AccountConfigRepository accountConfigRepo;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InvoicePrintServiceImpl(
-      InvoiceRepository invoiceRepo, AccountConfigRepository accountConfigRepo) {
+      InvoiceRepository invoiceRepo,
+      AccountConfigRepository accountConfigRepo,
+      AppBaseService appBaseService) {
     this.invoiceRepo = invoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -141,6 +145,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     try {
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
       metaFile = metaFiles.upload(file);
+      metaFile.setFileName(String.format("%s.%s", reportSettings.getOutputName(), format));
       invoice.setPrintedPDF(metaFile);
       return MetaFiles.getPath(metaFile).toFile();
     } catch (IOException e) {

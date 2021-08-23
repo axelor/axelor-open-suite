@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xmlns="http://axelor.com/xml/ns/object-views"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -98,6 +98,9 @@
 				<panel name="accountingReportPanel" title="Accounting reports" colSpan="12">
       	    		<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
       			</panel>
+      			<panel name="moveLinesPanel" title="Move lines" colSpan="12">
+					<field name="isDescriptionRequired" widget="boolean-switch"/>
+				</panel>
 			</panel>
 
 			<panel title="Invoicing" name="invoicingPanel">
@@ -134,6 +137,7 @@
 					<field name="displayExpenseOnPrinting" widget="boolean-switch" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
           			<field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           			<field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
+          			<field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch" colSpan="12" if="__config__.app.isApp('supplychain')"/>
           			<field name="invoiceWatermark" widget="Image"/>
 					<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
 					<field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
@@ -197,6 +201,8 @@
 				</panel>
 			</panel>
 			<panel name="receivablesRecoveryPanel" title="Receivables recovery" >
+                <field name="hasLatePaymentAccountBlocking"/>
+                <field name="numberOfDaysBeforeAccountBlocking" showIf="hasLatePaymentAccountBlocking"/>
                 <field name="factorPartner" domain="self.isFactor = TRUE AND :company member of self.companySet" if="__config__.app.getApp('account')?.manageFactors"  form-view="partner-form" grid-view="partner-grid"/>
 				<field name="mailTransitTime"/>
 				<field name="debtRecoveryConfigLineList" colSpan="12" grid-view="debt-recovery-config-line-grid" form-view="debt-recovery-config-line-form"/>

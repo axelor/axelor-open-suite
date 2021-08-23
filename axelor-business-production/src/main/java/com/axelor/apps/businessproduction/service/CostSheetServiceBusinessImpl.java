@@ -20,6 +20,7 @@ package com.axelor.apps.businessproduction.service;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -72,14 +73,14 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()
-        && employee != null) {
-
+        && employee != null
+        && !EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       BigDecimal durationHours =
           new BigDecimal(prodHumanResource.getDuration())
               .divide(
                   BigDecimal.valueOf(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN);
+                  BigDecimal.ROUND_HALF_UP);
 
       costSheet.addCostSheetLineListItem(
           costSheetLineService.createWorkCenterHRCostSheetLine(

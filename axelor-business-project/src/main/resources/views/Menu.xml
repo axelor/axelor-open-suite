@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<menuitem name="business-project-root" title="Job costing" order="-102" icon="fa-list-alt" icon-background="blue" if="__config__.app.isApp('business-project')"/>
 	
 	<menuitem name="business-project-folder" parent="business-project-root" title="Project Folder" action="business.project.folder" order="5"/>
 	
-	<action-view name="business.project.folder" title="Project Folder" model="com.axelor.apps.project.db.ProjectFolder">
+	<action-view name="business.project.folder" title="Project Folder" model="com.axelor.apps.businessproject.db.ProjectFolder">
 		<view type="grid" name="project-folder-grid"/>
 		<view type="form" name="project-folder-form"/>
 	</action-view>
@@ -20,7 +20,6 @@
 	    <view-param name="search-filters" value="project-filters"/>
 	    <domain>self.isBusinessProject = true</domain>
 	    <context name="_fromBusinessProject" expr="eval:true"/>
-	     <context name="_fromProject" expr="eval:false"/>
 	</action-view>
 	
 	<menuitem name="business-project-root-invoicing-project" order="-102" title="Invoicing project" action="business.project.root.invoicing.project"  icon="fa-tasks" icon-background="#3f6bb9" if="__config__.app.isApp('business-project')"/>

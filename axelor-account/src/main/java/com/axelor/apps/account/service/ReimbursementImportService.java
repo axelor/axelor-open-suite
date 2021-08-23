@@ -56,7 +56,6 @@ public class ReimbursementImportService {
   protected RejectImportService rejectImportService;
   protected AccountConfigService accountConfigService;
   protected ReimbursementRepository reimbursementRepo;
-  protected AppService appService;
 
   @Inject
   public ReimbursementImportService(
@@ -65,8 +64,7 @@ public class ReimbursementImportService {
       MoveLineService moveLineService,
       RejectImportService rejectImportService,
       AccountConfigService accountConfigService,
-      ReimbursementRepository reimbursementRepo,
-      AppService appService) {
+      ReimbursementRepository reimbursementRepo) {
 
     this.moveService = moveService;
     this.moveRepo = moveRepo;
@@ -74,13 +72,12 @@ public class ReimbursementImportService {
     this.rejectImportService = rejectImportService;
     this.accountConfigService = accountConfigService;
     this.reimbursementRepo = reimbursementRepo;
-    this.appService = appService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void runReimbursementImport(Company company) throws AxelorException, IOException {
 
-    String dataUploadDir = appService.getFileUploadDir();
+    String dataUploadDir = AppService.getFileUploadDir();
 
     this.testCompanyField(company);
 
@@ -191,7 +188,8 @@ public class ReimbursementImportService {
                 null,
                 date,
                 null,
-                MoveRepository.TECHNICAL_ORIGIN_IMPORT));
+                MoveRepository.TECHNICAL_ORIGIN_IMPORT,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT));
   }
 
   public BigDecimal getTotalAmount(Move move) {

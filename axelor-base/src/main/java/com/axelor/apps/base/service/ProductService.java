@@ -31,9 +31,11 @@ public interface ProductService {
   @Transactional
   public void updateProductPrice(Product product) throws AxelorException;
 
-  public String getSequence() throws AxelorException;
+  public String getSequence(Product product) throws AxelorException;
 
   public void updateSalePrice(Product product, Company company) throws AxelorException;
+
+  public boolean hasActivePriceList(Product product);
 
   @Transactional
   public void generateProductVariants(Product productModel) throws AxelorException;

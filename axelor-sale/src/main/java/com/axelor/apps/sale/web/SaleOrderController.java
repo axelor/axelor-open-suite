@@ -38,8 +38,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -50,6 +52,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -71,6 +74,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -170,9 +176,11 @@ public class SaleOrderController {
 
       } else if (context.get("id") != null) {
 
-        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+        SaleOrder saleOrder =
+            Beans.get(SaleOrderRepository.class).find(Long.parseLong(context.get("id").toString()));
         title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
         fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        response.setCanClose(true);
 
         logger.debug("Printing " + title);
       } else {
@@ -236,7 +244,7 @@ public class SaleOrderController {
 
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -741,5 +749,62 @@ public class SaleOrderController {
       response.setError(e.getMessage());
     }
     response.setAttr("clientPartner", "domain", domain);
+  }
+
+  public void handleComplementaryProducts(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    try {
+      saleOrder.setSaleOrderLineList(
+          Beans.get(SaleOrderService.class).handleComplementaryProducts(saleOrder));
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    if (Boolean.FALSE.equals(Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())
+        || !Beans.get(SaleOrderLineService.class)
+            .isStartOfPackTypeLineQtyChanged(saleOrder.getSaleOrderLineList())) {
+      return;
+    }
+    try {
+      Beans.get(SaleOrderService.class).updateProductQtyWithPackHeaderQty(saleOrder);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+    response.setReload(true);
+  }
+
+  public void seperateInNewQuotation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
+    Optional<Entry<String, Object>> SOLinesEntry =
+        contextEntry.stream()
+            .filter(entry -> entry.getKey().equals("saleOrderLineList"))
+            .findFirst();
+    if (!SOLinesEntry.isPresent()) {
+      return;
+    }
+
+    Entry<String, Object> entry = SOLinesEntry.get();
+    @SuppressWarnings("unchecked")
+    ArrayList<LinkedHashMap<String, Object>> SOLines =
+        (ArrayList<LinkedHashMap<String, Object>>) entry.getValue();
+
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder copiedSO =
+        Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
+    response.setView(
+        ActionView.define("Sale order")
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .add("grid", "sale-order-grid")
+            .param("forceEdit", "true")
+            .context("_showRecord", copiedSO.getId())
+            .map());
   }
 }

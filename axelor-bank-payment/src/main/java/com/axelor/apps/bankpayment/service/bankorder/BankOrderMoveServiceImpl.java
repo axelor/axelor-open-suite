@@ -144,7 +144,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 partner,
                 this.getDate(bankOrderLine),
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     MoveLine bankMoveLine =
         moveService
@@ -201,7 +202,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 partner,
                 this.getDate(bankOrderLine),
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     MoveLine bankMoveLine =
         moveService

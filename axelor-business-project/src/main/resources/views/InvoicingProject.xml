@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="invoicing-project-grid" title="Invoicing business projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
 	<menubar>
@@ -25,9 +25,8 @@
 			<field name="attachAnnexToInvoice" widget="boolean-switch"  readonlyIf="invoice"/>
 			<button name="generateInvoiceBtn" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
-			<field name="consolidatePhaseWhenInvoicing" showIf="project.projectTypeSelect == 1" onChange="action-invoicing-project-method-fill-in"/>
+			<field name="consolidatePhaseWhenInvoicing" onChange="action-invoicing-project-method-fill-in"/>
 			<button name="seeLinkedTimesheetLinesBtn" title="See Linked Timesheet Lines" onClick="action-invoicing-project-show-timesheet-lines" hidden="true" showIf="invoice != null"/>
-			<field name="project.projectTypeSelect" hidden="true"/>
 		</panel>
 
         <panel name="commentsPanel">
@@ -68,13 +67,6 @@
 							   readonlyIf="invoice"
 							   name="expenseLineSetPanel"/>
 
-				<panel-related field="projectSet" colSpan="12" canNew="false"
-							   canEdit="false" canSelect="false"
-							   form-view="project-form" grid-view="project-grid"
-							   showIf="projectSet &amp;&amp; projectSet.length &gt; 0"
-							   readonlyIf="invoice"
-							   name="projectSetPanel"/>
-
 				<panel-related title="Production" field="manufOrderSet"
 							   colSpan="12" canNew="false" canEdit="false"
 							   canSelect="false"
@@ -86,12 +78,12 @@
 							   if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()"
 							   name="manufOrderSetPanel"/>
 				
-				<panel-related field="teamTaskSet" colSpan="12" canNew="false"
+				<panel-related field="projectTaskSet" colSpan="12" canNew="false"
 							   canEdit="false" canSelect="false"
-							   form-view="team-task-form" grid-view="team-task-invoicing-project-grid"
-							   showIf="teamTaskSet &amp;&amp; teamTaskSet.length &gt; 0"
+							   form-view="project-task-form" grid-view="project-task-invoicing-project-grid"
+							   showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0"
 							   readonlyIf="invoice" 
-							   name="teamTaskSetPanel"/>
+							   name="ProjectTaskSetPanel"/>
 			</panel>
 
 			<panel name="configurationsPanel" title="Configurations" readonlyIf="invoice">
@@ -100,7 +92,7 @@
                 <field name="logTimesSetPrioritySelect"/>
                 <field name="expenseLineSetPrioritySelect"/>
                 <field name="projectSetPrioritySelect"/>
-                <field name="teamTaskSetPrioritySelect"/>
+                <field name="projectTaskSetPrioritySelect"/>
             </panel>
         </panel-tabs>
 
@@ -122,7 +114,6 @@
 
 	<action-attrs name="action-invoicing-project-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
-		<attribute name="title" for="projectSet" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
 	
 	<action-record name="action-invoicing-project-record-default" model="com.axelor.apps.businessproject.db.InvoicingProject">

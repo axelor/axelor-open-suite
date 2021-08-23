@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
@@ -364,7 +366,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             dummyInvoice.getExternalReference(),
             dummyInvoice.getInAti(),
             null,
-            dummyInvoice.getTradingName()) {
+            dummyInvoice.getTradingName(),
+            dummyInvoice.getGroupProductsOnPrintings()) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -411,6 +414,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         && stockMoveList.stream().allMatch(StockMove::getIsReversion)) {
       invoice.setOperationTypeSelect(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
     }
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    invoice.setDisplayStockMoveOnInvoicePrinting(
+        accountConfig.getDisplayStockMoveOnInvoicePrinting());
     stockMoveList.forEach(invoice::addStockMoveSetItem);
     return Optional.of(invoice);
   }
@@ -472,7 +479,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             dummyInvoice.getExternalReference(),
             dummyInvoice.getInAti(),
             null,
-            dummyInvoice.getTradingName()) {
+            dummyInvoice.getTradingName(),
+            null) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -591,6 +599,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setContactPartner(saleOrder.getContactPartner());
       dummyInvoice.setPriceList(saleOrder.getPriceList());
       dummyInvoice.setInAti(saleOrder.getInAti());
+      dummyInvoice.setGroupProductsOnPrintings(saleOrder.getGroupProductsOnPrintings());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -598,6 +607,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getToAddress());
       dummyInvoice.setAddressStr(stockMove.getToAddressStr());
+      dummyInvoice.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
     }
     return dummyInvoice;
   }

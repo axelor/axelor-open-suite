@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <grid name="print-template-grid" title="Print templates" model="com.axelor.apps.base.db.PrintTemplate">
         <toolbar>
 			<button name="exportPrintTemplateBtn" title="Export" onClick="action-export-print-template" />
-			<button name="importPrintTemplateBtn" title="Import" onClick="action-print-template-view-open-import" />
+			<button name="importPrintTemplateBtn" title="btn.import" onClick="action-print-template-view-open-import" />
         </toolbar>
         <field name="name"/>
         <field name="metaModel"/>
@@ -26,7 +26,7 @@
             <field name="documentName"/>
             <field name="metaFileField" help="Name of the field in the model where to save the file"/>
             <field name="isEditable"/>
-            <field name="attach"/>
+            <field name="attach" help="By activating this option, then all related printed document will automatically be attached on dms"/>
             <panel name="headerSettingsPanel" title="Pdf Header Settings" showIf="!hidePrintSettings" colSpan="12">
             	<field name="printTemplatePdfHeader" showTitle="false" widget="html" colSpan="12"/>
             	<field name="logoPositionSelect" onChange="action-print-hide-logo-header-width-field" colSpan="4"/>

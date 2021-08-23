@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="payment-voucher-grid" title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
         <field name="ref" width="120"/>
@@ -27,6 +27,7 @@
 			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
 			 <field name="company" canEdit="false" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-method-fill-bank-details"/>
+			 <field name="tradingName" colSpan="4" form-view="trading-name-form" grid-view="trading-name-grid" onSelect="action-payment-voucher-set-trading-name-domain" onChange="action-group-payment-voucher-reset-imputation"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		
@@ -89,7 +90,6 @@
     
     <action-group name="action-account-payment-voucher-onnew-group">	    
 	    <action name="action-record-payment-voucher-default-record"/>
-	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-payment-voucher-getDate"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
@@ -98,15 +98,16 @@
 		<action name="action-attrs-payment-voucher-hidden-bank-details"/>
 		<action name="action-pv-attrs-auto-imputation"/>
         <action name="action-payment-voucher-from-invoice" if="_invoice"/>
+        <action name="action-attrs-payment-voucher-hide-trading-name"/>
 	</action-group>
     
     <action-group name="action-account-payment-voucher-onload-group">	    
-	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
 	    <action name="action-attrs-payment-voucher-readonly-status"/>
 	    <action name="action-payment-voucher-hidden-fields-if-purchase"/>
 		<action name="action-attrs-payment-voucher-hidden-bank-details"/>
+		<action name="action-attrs-payment-voucher-hide-trading-name"/>
     </action-group>
 
     <action-group name="action-group-account-payment-voucher-confirm-click">
@@ -118,7 +119,6 @@
     
     <action-group name="action-group-account-payment-voucher-paymentmode-onchange">
     	<action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
-    	<action name="action-pv-hide-confirm-button"/>
     	<action name="action-attrs-payment-voucher-hidden-receipt"/>
     	<action name="action-attrs-payment-voucher-readonly-status"/>
         <action name="action-payment-voucher-method-fill-bank-details"/>
@@ -150,10 +150,6 @@
 		<attribute name="readonly" for="paidAmount" expr="eval: moveLine != null"/>
 	</action-attrs>
 	
-   	<action-attrs name="action-pv-hide-confirm-button">
-		<attribute name="hidden" for="confirmPaymentVoucherBtn" expr="eval: statusSelect > __repo__(PaymentVoucher).STATUS_DRAFT || (paymentMode?.typeSelect == 6 &amp;&amp; operationTypeSelect == 3)"/>
-   	</action-attrs>
-   	
 	<action-attrs name="action-attrs-payment-voucher-hidden-receipt">
 		<attribute name="hidden" for="receiptNo" expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != __repo__(PaymentVoucher).STATUS_CONFIRMED"  if="paymentMode != null"/>
 		<attribute name="hidden" for="printPaymentVoucherBtn" expr="eval: __repo__(AccountManagement).all().filter('self.company.id = ?1 AND self.paymentMode.id = ?2',company?.id,paymentMode?.id).fetchOne()?.journal?.editReceiptOk == false || statusSelect != __repo__(PaymentVoucher).STATUS_CONFIRMED"  if="paymentMode != null"/>
@@ -182,6 +178,7 @@
 		<field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
 		<field name="currency"  expr="eval:__user__.activeCompany?.currency"/>
 		<field name="currency"  expr="eval:__repo__(Company).all().fetchOne()?.currency" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+		<field name="tradingName" expr="eval: _invoice.tradingName" if="_invoice"/>
 	</action-record>
 
 	<action-record name="action-payment-voucher-getDate" model="com.axelor.apps.account.db.PaymentVoucher">
@@ -255,5 +252,13 @@
 	<action-method name="action-payment-voucher-reset-imputation">
 		<call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
 	</action-method>
+	
+	<action-attrs name="action-payment-voucher-set-trading-name-domain">
+		<attribute name="domain" for="tradingName" expr="eval: &quot;self.id IN (${company?.tradingNameSet?.collect{it.id}.join(',')})&quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-attrs-payment-voucher-hide-trading-name" model="com.axelor.apps.account.db.PaymentVoucher">
+		<attribute name="hidden" for="tradingName"  expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+	</action-attrs>
 
 </object-views>

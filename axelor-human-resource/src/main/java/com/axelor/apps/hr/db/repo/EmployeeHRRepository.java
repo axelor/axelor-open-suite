@@ -20,10 +20,14 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
+import java.util.Objects;
 
 public class EmployeeHRRepository extends EmployeeRepository {
 
@@ -93,5 +97,38 @@ public class EmployeeHRRepository extends EmployeeRepository {
         partnerRepo.save(partner);
       }
     }
+  }
+
+  /**
+   * Return true if given employee is a New employee or a Former employee at the given date
+   * according to hire date and leaving date, or if given employee is archived.
+   *
+   * @param employee
+   * @param atDate
+   * @return
+   */
+  public static boolean isEmployeeFormerNewOrArchived(Employee employee, LocalDate atDate) {
+    Objects.requireNonNull(employee);
+    return (employee.getLeavingDate() != null && employee.getLeavingDate().compareTo(atDate) < 0)
+        || (employee.getHireDate() != null && employee.getHireDate().compareTo(atDate) > 0)
+        || (employee.getArchived() != null && employee.getArchived());
+  }
+
+  /**
+   * Return true if given employee is a New employee or a Former employee at the current date
+   * according to hire date and leaving date, or if given employee is archived.
+   *
+   * @param employee
+   * @return
+   */
+  public static boolean isEmployeeFormerNewOrArchived(Employee employee) {
+    Objects.requireNonNull(employee);
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+    LocalDate today =
+        appBaseService.getTodayDate(
+            employee.getUser() != null
+                ? employee.getUser().getActiveCompany()
+                : AuthUtils.getUser().getActiveCompany());
+    return isEmployeeFormerNewOrArchived(employee, today);
   }
 }

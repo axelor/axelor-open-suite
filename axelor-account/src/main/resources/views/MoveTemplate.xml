@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="move-template-grid" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
 		<field name="name"/>
@@ -27,28 +27,28 @@
 	 		</panel>
 			<panel showIf="moveTemplateType.typeSelect == 2">
 				<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-amount-form" grid-view="move-template-line-in-amount-grid" onChange="action-move-template-group-line-list-onchange"/>
-				<field name="$totalLines" title="Total lines" colSpan="3" readonly="true">
+				<field name="$totalLines" title="Total lines" type="integer" colSpan="3" readonly="true">
 					<viewer>
 						<![CDATA[
-							<h3>{{record.$totalLines}}</h3>
+							<h3>{{$fmt('$totalLines')}}</h3>
 						]]>
 					</viewer>
 				</field>
-				<field name="$totalDebit" title="Total debit" colSpan="3" readonly="true">
+				<field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true">
 					<viewer>
 						<![CDATA[
 							<h3>{{$fmt('$totalDebit')}}</h3>
 						]]>
 					</viewer>
 				</field>
-				<field name="$totalCredit" title="Total credit" colSpan="3" readonly="true">
+				<field name="$totalCredit" title="Total credit" type="decimal" colSpan="3" readonly="true">
 					<viewer>
 						<![CDATA[
 							<h3>{{$fmt('$totalCredit')}}</h3>
 						]]>
 					</viewer>
 				</field>
-				<field name="$difference" title="Difference" colSpan="3" readonly="true">
+				<field name="$difference" title="Difference" type="decimal" colSpan="3" readonly="true">
 					<viewer>
 						<![CDATA[
 							<h3>
@@ -123,7 +123,7 @@
     </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
-    	<field if="date != null &amp;&amp; LocalDate.parse(date).isAfter(__date__)" name="date" expr="eval:null"/>
+    	<field if="date != null &amp;&amp; LocalDate.parse(date).isAfter(__config__.date)" name="date" expr="eval:null"/>
     	<field name="moveBalance" expr="eval:0" if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0" />
     </action-record>
     

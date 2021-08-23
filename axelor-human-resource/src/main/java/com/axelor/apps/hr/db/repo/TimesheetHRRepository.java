@@ -67,7 +67,7 @@ public class TimesheetHRRepository extends TimesheetRepository {
     if (entity.getStatusSelect() == TimesheetRepository.STATUS_VALIDATED
         && entity.getTimesheetLineList() != null) {
 
-      timesheetService.setTeamTaskTotalRealHrs(entity.getTimesheetLineList(), false);
+      timesheetService.setProjectTaskTotalRealHrs(entity.getTimesheetLineList(), false);
 
       Map<Project, BigDecimal> projectTimeSpentMap =
           timesheetLineService.getProjectTimeSpentMap(entity.getTimesheetLineList());

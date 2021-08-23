@@ -32,7 +32,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
       computeReference(fixedAsset);
       return super.save(fixedAsset);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
   }
@@ -45,7 +45,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
             Beans.get(SequenceService.class).getDraftSequenceNumber(fixedAsset));
       }
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 

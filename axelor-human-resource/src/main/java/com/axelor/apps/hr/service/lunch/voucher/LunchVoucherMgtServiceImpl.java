@@ -92,9 +92,11 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
             .all()
             .filter("self.mainEmploymentContract.payCompany = ?1", company)
             .fetch();
-
     for (Employee employee : employeeList) {
       if (employee != null) {
+        if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
+        }
         LunchVoucherMgtLine lunchVoucherMgtLine = obtainLineFromEmployee(employee, lunchVoucherMgt);
         // the employee doesn't have a line, create it
         if (lunchVoucherMgtLine == null) {

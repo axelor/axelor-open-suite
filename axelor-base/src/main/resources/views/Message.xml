@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
     <form name="message-form" id="base-message-form" title="Email" model="com.axelor.apps.message.db.Message"
     onNew="action-group-base-message-onnew">
@@ -47,12 +47,12 @@
         </panel>
         <panel name="relatedToPanel" title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 4">
 			<field name="company" colSpan="12" form-view="company-form" grid-view="company-grid" canEdit="false"/>
-			<panel colSpan="12" name="relatedTo1SelectPanel">
-				<field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="12"/>
-			</panel>
-			<panel colSpan="12"  name="relatedTo2SelectPanel">
-				<field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId" colSpan="12" showIf="relatedTo1Select != null"/>
-			</panel>
+			<field name="multiRelatedList">
+				<editor>
+					<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" colSpan="12" showTitle="false"/>
+					<field name="relatedToSelectId" hidden="true" />
+				</editor> 
+			</field>
 		</panel>
     </form>
     

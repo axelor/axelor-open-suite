@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
@@ -432,10 +432,12 @@
     
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
-	    <field name="partner" expr="eval:_partner?.id != null ? __repo__(Partner).find(_partner.id) : _partner"/>
+	    <field name="partner" expr="eval:_clientPartner?.id != null ? __repo__(Partner).find(_clientPartner.id) : _clientPartner"/>
 		<field name="contactPartner" expr="eval:_contactPartner?.id != null ? __repo__(Partner).find(_contactPartner.id) : _contactPartner"/>
 	    <field if="_saleOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.sale.db.SaleOrder'"/>
 	    <field name="relatedToSelectId" expr="eval:_saleOrder.id" />
+	    <field name="team" expr="eval:_saleOrder.team" if="_saleOrder != null"/> 
+	    <field name="organizer" expr="call:com.axelor.apps.crm.web.ICalendarUserController:findUser(__user__)"/>
 	</action-record>
     
     <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
@@ -539,7 +541,7 @@
 		<filter title="My Upcoming Tasks">
 			<domain>self.user = :__user__ and self.startDateTime &lt; :_newDate and (self.statusSelect = 11 or self.statusSelect = 12)</domain>
 		</filter>
-		<filter title="My Team Tasks">
+		<filter title="My Project Tasks">
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
 	</search-filters>

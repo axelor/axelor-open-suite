@@ -33,7 +33,7 @@ public class AppBuilderRepo extends AppBuilderRepository {
     try {
       appBuilderService.build(appBuilder);
     } catch (AxelorException e) {
-      throw new ValidationException(e.getMessage());
+      throw new ValidationException(e);
     }
 
     return super.save(appBuilder);

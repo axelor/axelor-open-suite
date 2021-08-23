@@ -48,7 +48,8 @@ public class JsonFieldService {
     }
 
     metaJsonField.setSelection(
-        selectionBuilderService.updateMetaSelectFromText(selectionText, name, null));
+        selectionBuilderService.updateMetaSelectFromText(
+            selectionText, name, metaJsonField.getAppBuilder(), null));
   }
 
   @Transactional

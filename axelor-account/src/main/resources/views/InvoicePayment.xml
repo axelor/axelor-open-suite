@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
 		<hilite if="$moment(paymentDate).diff(invoice.dueDate,'days') &gt; 0" color="warning"/>
@@ -18,8 +18,10 @@
     
     <form name="invoice-payment-form" title="Payment"
         model="com.axelor.apps.account.db.InvoicePayment"
-        onNew="action-invoice-payment-group-new">
+        onNew="action-invoice-payment-group-new"
+        onLoad="action-attrs-invoice-payment-hide-trading-name">
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
+			<field name="typeSelect" showIf="id" colSpan="12" />
             <field name="amount"/>
             <field name="currency" canEdit="false"
                 form-view="currency-form" grid-view="currency-grid"/>
@@ -38,6 +40,7 @@
             <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
             <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
+            <field name="invoice.tradingName"/>
             <field name="invoice" hidden="true" />
 		</panel>
 		<panel name="otherDetailsPanel" showIf="id">
@@ -83,7 +86,12 @@
 		<action name="action-invoice-payment-record-new"/>
 		<action name="action-invoice-payment-attrs-new"/>
 		<action name="action-invoice-payment-method-new"/>
+		<action name="action-attrs-invoice-payment-hide-trading-name"/>
 	</action-group>
+	
+	<action-attrs name="action-attrs-invoice-payment-hide-trading-name" model="com.axelor.apps.account.db.InvoicePayment">
+		<attribute name="hidden" for="invoice.tradingName" expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+	</action-attrs>
 	
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
     	<field name="currency" expr="eval: _invoice?.currency"/>
@@ -97,7 +105,7 @@
     
 	<action-record name="action-invoice-payment-record-mass-payment-new" model="com.axelor.apps.account.db.InvoicePayment">
 	  <field name="currency" expr="eval: __repo__(Invoice).find(_invoices[0])?.currency"/>
-	  <field name="paymentDate" expr="eval: __date__"/>
+	  <field name="paymentDate" expr="eval: __config__.date"/>
 	  <field name="amount" expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) &quot;,_invoices).fetch()?.sum{it.amountRemaining}"/>
 	  <field name="paymentMode" expr="eval: __repo__(Invoice).find(_invoices[0])?.paymentMode"/>
 	  <field name="companyBankDetails" expr="eval: __repo__(Invoice).find(_invoices[0])?.companyBankDetails"/>

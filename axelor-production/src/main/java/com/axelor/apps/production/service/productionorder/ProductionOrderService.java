@@ -21,10 +21,12 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public interface ProductionOrderService {
 
@@ -75,6 +77,10 @@ public interface ProductionOrderService {
       LocalDateTime startDate,
       LocalDateTime endDate,
       SaleOrder saleOrder,
+      SaleOrderLine saleOrderLine,
       int originType)
       throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet);
 }

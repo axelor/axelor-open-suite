@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
@@ -57,7 +58,8 @@ public interface ConfiguratorService {
    * @param jsonIndicators
    */
   void generate(Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
-      throws AxelorException, NoSuchMethodException;
+      throws AxelorException, NoSuchMethodException, ClassNotFoundException,
+          InvocationTargetException, IllegalAccessException;
 
   /**
    * Generate a product from the configurator
@@ -93,7 +95,7 @@ public interface ConfiguratorService {
    *
    * @param calculatedValue the return value of a script.
    * @param indicator an indicator.
-   * @throws AxelorException if the type don't match.
+   * @throws AxelorException if the types don't match.
    */
   void checkType(Object calculatedValue, MetaJsonField indicator) throws AxelorException;
 
@@ -103,4 +105,12 @@ public interface ConfiguratorService {
    * Else return false.
    */
   boolean areCompatible(String targetClassName, String fromClassName);
+
+  /**
+   * Fix relational fields of a product or a sale order line generated from a configurator. This
+   * method may become useless on a future ADK update.
+   *
+   * @param model
+   */
+  void fixRelationalFields(Model model) throws AxelorException;
 }

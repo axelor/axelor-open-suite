@@ -196,7 +196,8 @@ public class ReimbursementExportService {
                         null,
                         partner,
                         null,
-                        MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                        MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                        MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
             first = false;
           }
           // Création d'une ligne au débit
@@ -553,7 +554,7 @@ public class ReimbursementExportService {
                 "self.account.useForPartnerBalance = 'true' "
                     + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
                 MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_ACCOUNTED,
                 partner,
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
             .fetch();

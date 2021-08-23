@@ -39,6 +39,8 @@ import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -77,6 +79,8 @@ import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
+import com.axelor.apps.base.service.ModelEmailLinkService;
+import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -89,6 +93,8 @@ import com.axelor.apps.base.service.PrintTemplateLineService;
 import com.axelor.apps.base.service.PrintTemplateLineServiceImpl;
 import com.axelor.apps.base.service.PrintTemplateService;
 import com.axelor.apps.base.service.PrintTemplateServiceImpl;
+import com.axelor.apps.base.service.ProductCategoryService;
+import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductCompanyServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -126,6 +132,7 @@ import com.axelor.apps.base.service.imports.ImportCityServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
+import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
@@ -160,6 +167,7 @@ public class BaseModule extends AxelorModule {
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
     bind(UserService.class).to(UserServiceImpl.class);
     bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
+    bind(MessageBaseService.class).to(MessageServiceBaseImpl.class);
     bind(MailAccountServiceImpl.class).to(MailAccountServiceBaseImpl.class);
     bind(AccountManagementService.class).to(AccountManagementServiceImpl.class);
     bind(FiscalPositionService.class).to(FiscalPositionServiceImpl.class);
@@ -215,6 +223,7 @@ public class BaseModule extends AxelorModule {
     bind(PartnerService.class).to(PartnerServiceImpl.class);
     bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
+    bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
     bind(GlobalTrackingLogService.class).to(GlobalTrackingLogServiceImpl.class);
     if (AppSettings.get()
         .get("hibernate.session_factory.interceptor", "")
@@ -227,5 +236,7 @@ public class BaseModule extends AxelorModule {
     bind(PrintTemplateLineService.class).to(PrintTemplateLineServiceImpl.class);
     bind(AdvancedImportRepository.class).to(AdvancedImportBaseRepository.class);
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
+    bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
+    bind(ModelEmailLinkService.class).to(ModelEmailLinkServiceImpl.class);
   }
 }

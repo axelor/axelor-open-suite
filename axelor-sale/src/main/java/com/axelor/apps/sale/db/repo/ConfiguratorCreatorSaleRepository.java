@@ -52,7 +52,7 @@ public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorReposi
         return super.save(entity);
       }
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
   
   <module name="studio" package="com.axelor.studio.db" />
   
@@ -31,6 +31,7 @@
      <boolean name="showAction" title="Object"/>
      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
      <many-to-one name="metaModule" ref="com.axelor.meta.db.MetaModule" />
+     <string name="xmlId" title="Id" unique="true"/>
      
      <finder-method name="findByParentMenu" using="parentMenu" all="true"/>
   </entity>

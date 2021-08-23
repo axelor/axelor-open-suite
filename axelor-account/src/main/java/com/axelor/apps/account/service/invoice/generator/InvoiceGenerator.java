@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -78,6 +79,7 @@ public abstract class InvoiceGenerator {
   protected Boolean inAti;
   protected BankDetails companyBankDetails;
   protected TradingName tradingName;
+  protected Boolean groupProductsOnPrintings;
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   protected InvoiceGenerator(
@@ -94,7 +96,8 @@ public abstract class InvoiceGenerator {
       String externalReference,
       Boolean inAti,
       BankDetails companyBankDetails,
-      TradingName tradingName)
+      TradingName tradingName,
+      Boolean groupProductsOnPrintings)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -111,11 +114,13 @@ public abstract class InvoiceGenerator {
     this.inAti = inAti;
     this.companyBankDetails = companyBankDetails;
     this.tradingName = tradingName;
+    this.groupProductsOnPrintings = groupProductsOnPrintings;
     this.today = Beans.get(AppAccountService.class).getTodayDate(company);
   }
 
   /**
-   * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupérés du tiers
+   * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency, groupProductsOnPrintings
+   * récupérés du tiers
    *
    * @param operationType
    * @param company
@@ -245,6 +250,11 @@ public abstract class InvoiceGenerator {
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
     invoice.setTradingName(tradingName);
+
+    if (groupProductsOnPrintings == null) {
+      groupProductsOnPrintings = partner.getGroupProductsOnPrintings();
+    }
+    invoice.setGroupProductsOnPrintings(groupProductsOnPrintings);
 
     // Set ATI mode on invoice
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
@@ -399,6 +409,11 @@ public abstract class InvoiceGenerator {
     invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+
+      if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
+        continue;
+      }
+
       // In the invoice currency
       invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
 

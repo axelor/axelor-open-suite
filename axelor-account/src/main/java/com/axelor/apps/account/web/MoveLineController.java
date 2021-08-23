@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -24,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Currency;
@@ -55,6 +57,18 @@ public class MoveLineController {
         moveLine = Beans.get(MoveLineService.class).computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void balanceCreditDebit(ActionRequest request, ActionResponse response) {
+
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = request.getContext().getParent().asType(Move.class);
+    try {
+      moveLine = Beans.get(MoveLineService.class).balanceCreditDebit(moveLine, move);
+      response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -124,7 +138,7 @@ public class MoveLineController {
         for (Integer it : idList) {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
           if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
-                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
+                  || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED)
               && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
             moveLineList.add(moveLine);
           }
@@ -154,7 +168,8 @@ public class MoveLineController {
             if (moveLine != null && moveLine.getMove() != null) {
               Integer statusSelect = moveLine.getMove().getStatusSelect();
               if (statusSelect.equals(MoveRepository.STATUS_VALIDATED)
-                  || statusSelect.equals(MoveRepository.STATUS_DAYBOOK)) {
+                  || statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)
+                  || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
                 totalCredit = totalCredit.add(moveLine.getCredit());
                 totalDebit = totalDebit.add(moveLine.getDebit());
               }
@@ -225,6 +240,21 @@ public class MoveLineController {
         }
       }
       response.setValue("currencyRate", currencyRate);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void descriptionRequired(ActionRequest request, ActionResponse response) {
+
+    try {
+      Context parentContext = request.getContext().getParent();
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+        response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }

@@ -366,14 +366,12 @@ public class PartnerServiceImpl implements PartnerService {
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner) {
+
     String query =
-        "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "
-            + "(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "
-            + partner.getId()
-            + ") "
-            + "OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "
-            + partner.getId()
-            + ")";
+        String.format(
+            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
+                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
+            partner.getId());
 
     if (partner.getEmailAddress() != null) {
       query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
@@ -704,6 +702,37 @@ public class PartnerServiceImpl implements PartnerService {
     return domain;
   }
 
+  @Override
+  public String getTaxNbrFromRegistrationCode(Partner partner) {
+    String taxNbr = "";
+
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
+      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
+      String regCode = partner.getRegistrationCode();
+
+      if (regCode != null) {
+        regCode = regCode.replaceAll(" ", "");
+
+        if (regCode.length() == 14) {
+          String siren = regCode.substring(0, 9);
+          String taxKey = getTaxKeyFromSIREN(siren);
+
+          taxNbr = String.format("%s%s%s", countryCode, taxKey, siren);
+        }
+      }
+    }
+
+    return taxNbr;
+  }
+
+  protected String getTaxKeyFromSIREN(String sirenStr) {
+    int siren = Integer.parseInt(sirenStr);
+    int taxKey = Math.floorMod(siren, 97);
+    taxKey = Math.floorMod(12 + 3 * taxKey, 97);
+    return Integer.toString(taxKey);
+  }
+
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, true);
   }
@@ -736,5 +765,37 @@ public class PartnerServiceImpl implements PartnerService {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();
+  }
+
+  @Override
+  public String getNicFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String nic = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        nic = regCode.substring(9, 14);
+      }
+    }
+
+    return nic;
+  }
+
+  @Override
+  public String getSirenFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String siren = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        siren = regCode.substring(0, 9);
+      }
+    }
+
+    return siren;
   }
 }

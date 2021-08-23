@@ -35,6 +35,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -147,7 +148,7 @@ public class StockMoveController {
                             traceback.getMessage())));
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -203,8 +204,8 @@ public class StockMoveController {
         fileLink = stockMovePrintService.printStockMoves(ids);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
-        StockMove stockMove = request.getContext().asType(StockMove.class);
-        stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+        StockMove stockMove =
+            Beans.get(StockMoveRepository.class).find(Long.parseLong(context.get("id").toString()));
         title = stockMovePrintService.getFileName(stockMove);
         fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
         logger.debug("Printing " + title);

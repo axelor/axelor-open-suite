@@ -1,0 +1,3 @@
+---
+title: "Configurator: remove save when changing fields value in form view to improve performance."
+type: change

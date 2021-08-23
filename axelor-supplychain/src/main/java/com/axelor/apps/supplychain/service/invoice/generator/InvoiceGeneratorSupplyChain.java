@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.supplychain.service.invoice.generator;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -47,7 +49,9 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         saleOrder.getPaymentCondition(),
         isRefund ? saleOrder.getClientPartner().getOutPaymentMode() : saleOrder.getPaymentMode(),
         saleOrder.getMainInvoicingAddress(),
-        saleOrder.getClientPartner(),
+        saleOrder.getInvoicedPartner() != null
+            ? saleOrder.getInvoicedPartner()
+            : saleOrder.getClientPartner(),
         saleOrder.getContactPartner(),
         saleOrder.getCurrency(),
         saleOrder.getPriceList(),
@@ -55,7 +59,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         saleOrder.getExternalReference(),
         saleOrder.getInAti(),
         saleOrder.getCompanyBankDetails(),
-        saleOrder.getTradingName());
+        saleOrder.getTradingName(),
+        saleOrder.getGroupProductsOnPrintings());
     this.saleOrder = saleOrder;
   }
 
@@ -83,7 +88,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         purchaseOrder.getExternalReference(),
         purchaseOrder.getInAti(),
         purchaseOrder.getCompanyBankDetails(),
-        purchaseOrder.getTradingName());
+        purchaseOrder.getTradingName(),
+        purchaseOrder.getGroupProductsOnPrintings());
     this.purchaseOrder = purchaseOrder;
   }
 
@@ -102,13 +108,17 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
     super(
         invoiceOperationType,
         stockMove.getCompany(),
-        stockMove.getPartner(),
+        stockMove.getInvoicedPartner() != null
+            ? stockMove.getInvoicedPartner()
+            : stockMove.getPartner(),
         null,
         null,
         stockMove.getStockMoveSeq(),
         stockMove.getTrackingNumber(),
         null,
         stockMove.getTradingName());
+
+    this.groupProductsOnPrintings = stockMove.getGroupProductsOnPrintings();
   }
 
   @Override
@@ -125,6 +135,14 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
     } else if (purchaseOrder != null) {
       invoice.setPrintingSettings(purchaseOrder.getPrintingSettings());
+    }
+
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+
+      AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+      invoice.setDisplayStockMoveOnInvoicePrinting(
+          accountConfig.getDisplayStockMoveOnInvoicePrinting());
     }
 
     return invoice;

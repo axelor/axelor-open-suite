@@ -96,6 +96,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.mail.MessagingException;
 import org.apache.commons.collections.CollectionUtils;
+import wslite.json.JSONException;
 
 @Singleton
 public class ExpenseServiceImpl implements ExpenseService {
@@ -253,7 +254,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Message sendConfirmationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -314,7 +315,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Message sendValidationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -340,7 +341,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -399,7 +400,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                 partner,
                 moveDate,
                 partner.getInPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -525,7 +527,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Message sendCancellationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -615,7 +617,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                 partner,
                 paymentDate,
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     move.addMoveLineListItem(
         moveLineService.createMoveLine(

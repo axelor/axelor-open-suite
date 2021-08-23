@@ -51,6 +51,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -82,8 +83,7 @@ public class ManufOrderWorkflowService {
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ManufOrderRepository manufOrderRepo;
   protected ProductCompanyService productCompanyService;
-
-  @Inject ProductionConfigRepository productionConfigRepo;
+  protected ProductionConfigRepository productionConfigRepo;
 
   @Inject
   public ManufOrderWorkflowService(
@@ -91,12 +91,14 @@ public class ManufOrderWorkflowService {
       OperationOrderRepository operationOrderRepo,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderRepository manufOrderRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      ProductionConfigRepository productionConfigRepo) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
     this.productCompanyService = productCompanyService;
+    this.productionConfigRepo = productionConfigRepo;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -164,13 +166,12 @@ public class ManufOrderWorkflowService {
     for (ManufOrder manufOrder : manufOrderList) {
       if (manufOrder.getOperationOrderList() != null) {
         for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-          operationOrderWorkflowService.plan(operationOrder);
+          operationOrderWorkflowService.plan(operationOrder, null);
         }
       }
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
-      //    	manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
       if (manufOrder.getPlannedEndDateT() == null) {
         manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
       }
@@ -189,6 +190,7 @@ public class ManufOrderWorkflowService {
       manufOrder.setCancelReasonStr(null);
 
       manufOrderRepo.save(manufOrder);
+      Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
     }
     return manufOrderList;
   }
@@ -217,6 +219,7 @@ public class ManufOrderWorkflowService {
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }
 
   @Transactional
@@ -312,6 +315,7 @@ public class ManufOrderWorkflowService {
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -327,7 +331,7 @@ public class ManufOrderWorkflowService {
     BigDecimal qty = manufOrder.getQty();
     if (qty.signum() != 0) {
       int scale = Beans.get(AppProductionService.class).getNbDecimalDigitForUnitPrice();
-      return manufOrder.getCostPrice().divide(qty, scale, BigDecimal.ROUND_HALF_EVEN);
+      return manufOrder.getCostPrice().divide(qty, scale, BigDecimal.ROUND_HALF_UP);
     } else {
       return BigDecimal.ZERO;
     }
@@ -409,6 +413,7 @@ public class ManufOrderWorkflowService {
       }
     }
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }
 
   public LocalDateTime computePlannedStartDateT(ManufOrder manufOrder) {
@@ -675,6 +680,6 @@ public class ManufOrderWorkflowService {
     Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
     manufOrder.setPurchaseOrder(purchaseOrder);
 
-    Beans.get(ManufOrderRepository.class).save(manufOrder);
+    manufOrderRepo.save(manufOrder);
   }
 }

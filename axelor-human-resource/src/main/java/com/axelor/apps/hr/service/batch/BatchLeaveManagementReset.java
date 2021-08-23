@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.batch;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
@@ -32,6 +33,8 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BatchLeaveManagementReset extends BatchLeaveManagement {
 
@@ -50,7 +53,11 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
   }
 
   public void resetLeaveManagementLines(List<Employee> employeeList) {
-    for (Employee employee : employeeList) {
+    for (Employee employee :
+        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+        continue;
+      }
       try {
         resetLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
@@ -71,6 +78,9 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
 
   @Transactional(rollbackOn = {Exception.class})
   public void resetLeaveManagement(Employee employee) throws AxelorException {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+      return;
+    }
     LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
     for (LeaveLine leaveLine : employee.getLeaveLineList()) {
       if (leaveReason.equals(leaveLine.getLeaveReason())) {

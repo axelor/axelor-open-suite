@@ -1,4 +1,4 @@
-"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
 "Envoi Devis Client";"SaleOrder";2;;;;"true";;"Votre Devis N° $SaleOrder.saleOrderSeq$";"<p>Bonjour,</p> 
 
 <p>Suite à nos précédents échanges, je vous prie de bien vouloir trouver ci-joint le devis $SaleOrder.saleOrderSeq$.</p>

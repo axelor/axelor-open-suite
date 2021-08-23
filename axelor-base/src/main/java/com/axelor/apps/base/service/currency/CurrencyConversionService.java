@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.http.HTTPResponse;
@@ -125,9 +126,9 @@ public abstract class CurrencyConversionService {
         && previousRate.compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal diffRate = currentRate.subtract(previousRate);
       BigDecimal variation =
-          diffRate.multiply(new BigDecimal(100)).divide(previousRate, RoundingMode.HALF_EVEN);
+          diffRate.multiply(new BigDecimal(100)).divide(previousRate, RoundingMode.HALF_UP);
       variation =
-          variation.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+          variation.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       variations = variation.toString() + "%";
     }
 
@@ -166,6 +167,32 @@ public abstract class CurrencyConversionService {
     ccl.setVariations(variations);
     cclRepo.save(ccl);
   }
+
+  /**
+   * Getting rate of currencyFrom in terms of currencyTo.
+   *
+   * <p>Example: 1 EUR = x USD
+   *
+   * @param currencyFrom
+   * @param currencyTo
+   * @return Pair of rate with the respective date.
+   */
+  public abstract Pair<LocalDate, BigDecimal> getRateWithDate(
+      Currency currencyFrom, Currency currencyTo)
+      throws MalformedURLException, JSONException, AxelorException;
+
+  /**
+   * Validate the response and get the rate.
+   *
+   * @param dayCount
+   * @param currencyFrom
+   * @param currencyTo
+   * @param date
+   * @return Pair of rate with the respective date.
+   */
+  public abstract Pair<LocalDate, Float> validateAndGetRateWithDate(
+      int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
+      throws AxelorException;
 
   @Transactional
   public void saveCurrencyConversionLine(CurrencyConversionLine ccl) {

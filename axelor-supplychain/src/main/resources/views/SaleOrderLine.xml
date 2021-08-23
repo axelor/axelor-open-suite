@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
         model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
@@ -65,6 +65,10 @@
 
 	<action-method name="action-method-sale-order-line-cancel-reservation">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="cancelReservation"/>
+	</action-method>
+
+	<action-method name="action-sale-order-line-supplychain-method-update-reservation-date">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="updateReservationDate"/>
 	</action-method>
 
 	<action-record name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" model="com.axelor.apps.sale.db.SaleOrderLine">

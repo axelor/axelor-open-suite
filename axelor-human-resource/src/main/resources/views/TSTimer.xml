@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="ts-timer-grid" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer" editable="true"
 	onNew="action-hr-ts-timer-record-default" canNew="false">
@@ -17,7 +17,7 @@
 	width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
 		<panel name="startAndStopPanel" title="Start&amp;Stop Timer">
 			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-			<field name="project" form-view="project-form" grid-view="project-grid" domain="self.imputable = true" onChange="action-hr-ts-timer-record-empty-product"/>
+			<field name="project" form-view="project-form" grid-view="project-grid" domain="self.imputable = true AND self.isShowTimeSpent = true" onChange="action-hr-ts-timer-record-empty-product"/>
 			<field name="startDateTime"/>
 			<field name="product" canEdit="false" onSelect="action-hr-timesheet-timer-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" widget="duration" colSpan="2"/>

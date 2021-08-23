@@ -56,8 +56,12 @@ import com.axelor.apps.production.service.PurchaseOrderServiceProductionImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
+import com.axelor.apps.production.service.SopService;
+import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveProductionServiceImpl;
 import com.axelor.apps.production.service.StockRulesServiceProductionImpl;
+import com.axelor.apps.production.service.WorkCenterService;
+import com.axelor.apps.production.service.WorkCenterServiceImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.app.AppProductionServiceImpl;
 import com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl;
@@ -69,6 +73,8 @@ import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLi
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineServiceImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessService;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessServiceImpl;
+import com.axelor.apps.production.service.configurator.ConfiguratorProdProductService;
+import com.axelor.apps.production.service.configurator.ConfiguratorProdProductServiceImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineServiceImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -79,6 +85,8 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPrintServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
+import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
@@ -153,5 +161,9 @@ public class ProductionModule extends AxelorModule {
     bind(MpsChargeService.class).to(MpsChargeServiceImpl.class);
     bind(MachineRepository.class).to(MachineToolManagementRepository.class);
     bind(PurchaseOrderServiceSupplychainImpl.class).to(PurchaseOrderServiceProductionImpl.class);
+    bind(SopService.class).to(SopServiceImpl.class);
+    bind(ManufOrderReservedQtyService.class).to(ManufOrderReservedQtyServiceImpl.class);
+    bind(WorkCenterService.class).to(WorkCenterServiceImpl.class);
+    bind(ConfiguratorProdProductService.class).to(ConfiguratorProdProductServiceImpl.class);
   }
 }

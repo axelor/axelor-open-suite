@@ -31,10 +31,10 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -51,7 +51,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      TeamTaskRepository teamTaskRepository,
+      ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepo,
       TimesheetRepository timeSheetRepository) {
@@ -65,7 +65,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
         userHrService,
         timesheetLineService,
         projectPlanningTimeRepository,
-        teamTaskRepository,
+        projectTaskRepo,
         productCompanyService,
         timesheetLineRepo,
         timeSheetRepository);

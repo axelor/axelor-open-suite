@@ -241,4 +241,30 @@ public interface ManufOrderService {
    * @return the query.
    */
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
+
+  public List<ManufOrder> generateAllSubManufOrder(
+      List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * Merge different manufacturing orders into a single one.
+   *
+   * @param ids List of ids of manufacturing orders to merge
+   * @throws AxelorException
+   */
+  public void merge(List<Long> ids) throws AxelorException;
+
+  /**
+   * Check if the manufacturing orders can be merged.
+   *
+   * @param ids List of ids of manufacturing orders to merge
+   */
+  public boolean canMerge(List<Long> ids);
+
+  /**
+   * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
+   * {@link ManufOrder} on the header of every page.
+   *
+   * @return
+   */
+  public void createBarcode(ManufOrder manufOrder);
 }
