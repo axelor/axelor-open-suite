@@ -17,44 +17,24 @@
  */
 package com.axelor.apps.base.test;
 
-import com.axelor.app.AppModule;
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.base.module.AdminModule;
-import com.axelor.apps.base.module.BaseModule;
-import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.base.test.UserServiceTest.MyModule;
-import com.axelor.apps.message.module.MessageModule;
-import com.axelor.apps.tool.module.ToolModule;
-import com.axelor.inject.Beans;
-import com.axelor.test.GuiceModules;
-import com.axelor.test.GuiceRunner;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
 
-@RunWith(GuiceRunner.class)
-@GuiceModules({MyModule.class})
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.base.service.user.UserServiceImpl;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 public class UserServiceTest {
 
-  static UserService userService;
+  private UserService userService;
 
-  public static class MyModule extends AxelorModule {
-
-    @Override
-    protected void configure() {
-      bind(Beans.class).asEagerSingleton();
-      install(new ToolModule());
-      install(new MessageModule());
-      install(new AdminModule());
-      install(new BaseModule());
-      install(new AppModule());
-    }
-  }
-
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    userService = Beans.get(UserService.class);
+  @Before
+  public void setUp() {
+    userService = mock(UserServiceImpl.class);
+    doCallRealMethod().when(userService).matchPasswordPattern(any());
   }
 
   @Test

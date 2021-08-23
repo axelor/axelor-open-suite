@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -880,6 +880,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="dataType">date-time</property>
                         </structure>
                         <structure>
+                            <property name="name">logo_path</property>
+                            <text-property name="displayName">logo_path</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
                             <property name="name">period_name</property>
                             <text-property name="displayName">period_name</text-property>
                             <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
@@ -904,24 +910,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="dataType">integer</property>
                         </structure>
                         <structure>
-                            <property name="name">global_by_post</property>
-                            <text-property name="displayName">global_by_post</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["global_by_post"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">payment_mode</property>
-                            <text-property name="displayName">payment_mode</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["payment_mode"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
                             <property name="name">currency</property>
                             <text-property name="displayName">currency</text-property>
                             <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
@@ -930,16 +918,20 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <structure>
                             <property name="name">logo_height</property>
                             <text-property name="displayName">logo_height</text-property>
-                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
-                            <property name="dataType">string</property>
-                            <property name="allowExport">true</property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                            <property name="dataType">integer</property>
                         </structure>
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
-                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">payment_mode</property>
+                            <text-property name="displayName">payment_mode</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["payment_mode"]</expression>
                             <property name="dataType">string</property>
-                            <property name="allowExport">true</property>
                         </structure>
                     </list-property>
                     <column id="4158">
