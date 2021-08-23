@@ -4,9 +4,9 @@
   
   <menu-builder name="bpm-product-root" title="Produits" icon="fa-cube" background="red" appBuilder="PRD" xmlId="bpm-product-root" />
   
-  <menu-builder name="menu-json-model-ProductCategory" title="Catégorie de produit" parent="bpm-product-root" appBuilder="PRD" show-action="true"
+  <menu-builder name="menu-json-model-ProductCategory" title="Catégorie de produit" parentMenu="bpm-product-root" appBuilder="PRD" show-action="true"
   	xmlId="menu-json-model-ProductCategory">
-  	<action name="all.json.ProductCategory" title="Catégorie de produit" model="com.axelor.meta.db.MetaJsonRecord"
+  	<action name="menu-json-model-ProductCategory" xmlId="menu-json-model-ProductCategory" title="Catégorie de produit" model="com.axelor.meta.db.MetaJsonRecord"
   		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
   			<view type="grid" name="custom-model-ProductCategory-grid" sequence="1" />
@@ -18,9 +18,9 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="menu-json-model-Product" title="Produits" parent="bpm-product-root" show-action="true" appBuilder="PRD"
-  	xmlId="menu-json-model-ProductCategory">
-  	<action name="all.json.Product" title="Produits" model="com.axelor.meta.db.MetaJsonRecord"
+  <menu-builder name="menu-json-model-Product" title="Produits" parentMenu="bpm-product-root" show-action="true" appBuilder="PRD"
+  	xmlId="menu-json-model-Product">
+  	<action name="menu-json-model-Product" xmlId="menu-json-model-Product" title="Produits" model="com.axelor.meta.db.MetaJsonRecord"
 		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
   			<view type="grid" name="custom-model-Product-grid" sequence="1" />
@@ -32,9 +32,9 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="menu-json-model-ProductOrder" title="Commande produit" parent="bpm-product-root" show-action="true" appBuilder="PRD"
+  <menu-builder name="menu-json-model-ProductOrder" title="Commande produit" parentMenu="bpm-product-root" show-action="true" appBuilder="PRD"
   	xmlId="menu-json-model-ProductOrder">
-  	<action name="all.json.ProductOrder" title="Commande produit" model="com.axelor.meta.db.MetaJsonRecord"
+  	<action name="menu-json-model-ProductOrder" xmlId="menu-json-model-ProductOrder" title="Commande produit" model="com.axelor.meta.db.MetaJsonRecord"
   		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
   			<view type="grid" name="custom-model-ProductOrder-grid" sequence="1" />
@@ -46,9 +46,9 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="menu-json-model-ProductOrderLine" title="Ligne de commande produit" parent="bpm-product-root" show-action="true" appBuilder="PRD"
+  <menu-builder name="menu-json-model-ProductOrderLine" title="Ligne de commande produit" parentMenu="bpm-product-root" show-action="true" appBuilder="PRD"
   	xmlId="menu-json-model-ProductOrderLine">
-  	<action name="all.json.ProductOrderLine" title="Ligne de commande produit" model="com.axelor.meta.db.MetaJsonRecord"
+  	<action name="menu-json-model-ProductOrderLine" xmlId="menu-json-model-ProductOrderLine" title="Ligne de commande produit" model="com.axelor.meta.db.MetaJsonRecord"
   		domain="self.jsonModel = :jsonModel" isJson="true">
   		<views>
   			<view type="grid" name="custom-model-ProductOrderLine-grid" sequence="1" />
@@ -60,22 +60,14 @@
   	</action>
   </menu-builder>
   
-  <menu-builder name="bpm-dashboard-product-dashboard" title="Tableau de bord produit" parent="bpm-product-root" show-action="true" appBuilder="PRD"
+  <menu-builder name="bpm-dashboard-product-dashboard" title="Tableau de bord produit" parentMenu="bpm-product-root" show-action="true" appBuilder="PRD"
   	xmlId="bpm-dashboard-product-dashboard">
-  	<action name="bpm.dashboard.product.dashboard" title="Tableau de bord produit" isJson="true">
+  	<action name="bpm-dashboard-product-dashboard" xmlId="bpm-dashboard-product-dashboard" title="Tableau de bord produit" isJson="true">
   		<views>
   			<view type="dashboard" name="product-dashboard" sequence="1" />
   		</views>
   	</action>
   </menu-builder>
-  
-<!--   <menu-builder name="bpm-dashboard-crm-dashboard" title="Crm dashboard" parent="bpm-dashboard-root" show-action="true"> -->
-<!--   	<action name="bpm.dashboard.sales.dashboard" title="Sales dashboard"> -->
-<!--   		<views> -->
-<!--   			<view type="dashboard" name="sales-order-dashboard" /> -->
-<!--   		</views> -->
-<!--   	</action> -->
-<!--   </menu-builder> -->
   
   
 </menu-builders>
