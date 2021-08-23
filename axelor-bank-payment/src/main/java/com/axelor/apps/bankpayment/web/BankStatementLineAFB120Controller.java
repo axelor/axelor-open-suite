@@ -1,6 +1,5 @@
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementLineAFB120Service;
 import com.axelor.apps.base.db.BankDetails;
@@ -13,7 +12,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.time.LocalDate;
-import java.util.List;
 
 public class BankStatementLineAFB120Controller {
 
@@ -57,13 +55,13 @@ public class BankStatementLineAFB120Controller {
       } else {
         fromDate = initialLine.getOperationDate();
         toDate = finalLine.getOperationDate();
-        String fileLink = bankStatementLineAFB120Service.print(initialLine, finalLine, fromDate, toDate, bankDetails, extention);
+        String fileLink =
+            bankStatementLineAFB120Service.print(
+                initialLine, finalLine, fromDate, toDate, bankDetails, extention);
         String name = "";
         response.setView(ActionView.define(name).add("html", fileLink).map());
         response.setReload(true);
       }
     }
   }
-  
-
 }

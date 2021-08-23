@@ -74,7 +74,7 @@
         form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click" />
       <button name="reconcileBtn" onClick="action-bank-reconciliation-method-reconcile-selected" title="Reconcile selected" colSpan="3" />
       <button name="unreconcileBtn" onClick="action-bank-reconciliation-method-unreconcile" title="Unreconcile selected" colSpan="3" />
-      <panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12" />
+      <panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12" canSearch="true"/>
       <spacer colSpan="6" />
       <panel name="balancesPanel" colSpan="6">
         <button onClick="action-bank-reconciliation-method-compute-balances" name="computeBalances" title="Compute balances" colSpan="12" />

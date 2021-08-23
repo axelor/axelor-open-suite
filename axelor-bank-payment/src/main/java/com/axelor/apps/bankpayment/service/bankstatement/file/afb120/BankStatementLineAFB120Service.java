@@ -137,42 +137,49 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
         fromDate, toDate, BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT, bankDetails);
   }
 
-public String print(BankStatementLineAFB120 initialLine, BankStatementLineAFB120 finalLine, LocalDate fromDate,
-		LocalDate toDate, BankDetails bankDetails, String extention) throws AxelorException {    
-	String reportName =IReport.BANK_STATEMENT_LINES_AFB120;;
-	return ReportFactory.createReport(reportName, initialLine.getBankStatement().getName() + "-${date}")
-	        .addParam("InitialLineId", initialLine.getId())
-	        .addParam("FinalLineId", initialLine.getId())
-	        .addParam("FromDate", fromDate)
-	        .addParam("ToDate", toDate)
-	        .addParam("BankDetails", bankDetails)
-		        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-		        .addParam("Timezone", getTimezone(initialLine))
-		        .addFormat(extention)
-		        .generate()
-		        .getFileLink();
-	
-}
-
-protected String getTimezone(BankStatementLineAFB120 bankStatementLine) {
-	  BankStatement bankStatement = bankStatementLine.getBankStatement();
-  if (bankStatement.getEbicsPartner() == null
-      || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser() == null
-      || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser().getAssociatedUser()
-          == null
-      || bankStatement
-              .getEbicsPartner()
-              .getDefaultSignatoryEbicsUser()
-              .getAssociatedUser()
-              .getActiveCompany()
-          == null) {
-    return null;
+  public String print(
+      BankStatementLineAFB120 initialLine,
+      BankStatementLineAFB120 finalLine,
+      LocalDate fromDate,
+      LocalDate toDate,
+      BankDetails bankDetails,
+      String extention)
+      throws AxelorException {
+    String reportName = IReport.BANK_STATEMENT_LINES_AFB120;
+    ;
+    return ReportFactory.createReport(
+            reportName, initialLine.getBankStatement().getName() + "-${date}")
+        .addParam("InitialLineId", initialLine.getId())
+        .addParam("FinalLineId", initialLine.getId())
+        .addParam("FromDate", fromDate)
+        .addParam("ToDate", toDate)
+        .addParam("BankDetails", bankDetails)
+        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam("Timezone", getTimezone(initialLine))
+        .addFormat(extention)
+        .generate()
+        .getFileLink();
   }
-  return bankStatement
-      .getEbicsPartner()
-      .getDefaultSignatoryEbicsUser()
-      .getAssociatedUser()
-      .getActiveCompany()
-      .getTimezone();
-}
+
+  protected String getTimezone(BankStatementLineAFB120 bankStatementLine) {
+    BankStatement bankStatement = bankStatementLine.getBankStatement();
+    if (bankStatement.getEbicsPartner() == null
+        || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser() == null
+        || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser().getAssociatedUser()
+            == null
+        || bankStatement
+                .getEbicsPartner()
+                .getDefaultSignatoryEbicsUser()
+                .getAssociatedUser()
+                .getActiveCompany()
+            == null) {
+      return null;
+    }
+    return bankStatement
+        .getEbicsPartner()
+        .getDefaultSignatoryEbicsUser()
+        .getAssociatedUser()
+        .getActiveCompany()
+        .getTimezone();
+  }
 }

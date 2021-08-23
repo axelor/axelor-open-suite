@@ -228,6 +228,8 @@
 	</input>
 	
 	<input file="base_mailBatch.csv" separator=";" type="com.axelor.apps.base.db.MailBatch" search="self.code = :code"/>
+  
+  
 
 </csv-inputs>
 

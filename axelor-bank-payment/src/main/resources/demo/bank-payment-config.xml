@@ -24,5 +24,27 @@
   <input file="bankpayment_bankStatementQuery.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatementQuery" search="self.importId = :importId" />
 
   <input file="bankpayment_bankStatementRule.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatementRule" search="self.importId = :importId" />
+  
+  <input file="bankpayment_bankStatement_GG.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatement" search="self.importId = :importId" />
 
+  <input file="bankpayment_bankStatementLine_GG.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" search="self.importId = :importId" />
+  
+      
+  <input file="base_move_inv_GG.csv" separator=";" type="com.axelor.apps.account.db.Move" search="self.importId = :importId" />
+  
+  <input file="base_move_line_inv_GG.csv" separator=";" type="com.axelor.apps.account.db.MoveLine" search="self.importId = :importId" >
+    <bind column="move" search="self.importId = :move" to="move"/>
+  </input>
+  
+  <input file="base_move_pay_GG.csv" separator=";" type="com.axelor.apps.account.db.Move" search="self.importId = :importId" />
+  
+  <input file="base_move_line_pay_GG.csv" separator=";" type="com.axelor.apps.account.db.MoveLine" search="self.importId = :importId" >
+    <bind column="move" search="self.importId = :move" to="move"/>
+  </input>
+  
+  <input file="base_move_line_reconcile_GG.csv" separator=";" type="com.axelor.apps.account.db.Reconcile" search="self.importId = :importId" >
+    <bind column="debitMoveLine" search="self.importId = :moveLine" to="moveLine"/>
+    <bind column="creditMoveLine" search="self.importId = :moveLine" to="moveLine"/>
+  </input>
+  
 </csv-inputs>
