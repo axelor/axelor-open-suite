@@ -33,11 +33,19 @@
         <field name="typeSelect"/>
     </grid>
     
-    <grid name="analytic-move-line-move-line-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis">
+    <grid name="analytic-move-line-move-line-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
         <field name="analyticAxis"/>
         <field name="analyticAccount"/>
         <field name="percentage"/>
         <field name="amount"/>
+        <field name="analyticJournal"/>
+    </grid>
+    
+    <grid name="analytic-move-line-invoice-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis,analyticAccount">
+    	<field name="analyticAxis" hidden="true"/>
+        <field name="analyticAccount"/>
+        <field name="percentage"/>
+        <field name="amount" aggregate="sum"/>
         <field name="analyticJournal"/>
     </grid>
     
