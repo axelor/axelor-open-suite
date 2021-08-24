@@ -1,5 +1,12 @@
 package com.axelor.apps.account.service.fixedasset;
 
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -8,17 +15,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
@@ -168,25 +166,27 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       }
     }
   }
-@Override
-public Optional<FixedAssetLine> findOldestFixedAssetLine(List<FixedAssetLine> fixedAssetLineList, int status,
-		int nbLineToSkip) {
+
+  @Override
+  public Optional<FixedAssetLine> findOldestFixedAssetLine(
+      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip) {
     fixedAssetLineList.sort(
-            (fa1, fa2) -> fa1.getDepreciationDate().compareTo(fa2.getDepreciationDate()));
-        return fixedAssetLineList.stream()
+        (fa1, fa2) -> fa1.getDepreciationDate().compareTo(fa2.getDepreciationDate()));
+    return fixedAssetLineList.stream()
+        .filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == status)
+        .findFirst();
+  }
+
+  @Override
+  public Optional<FixedAssetLine> findNewestFixedAssetLine(
+      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip) {
+    fixedAssetLineList.sort(
+        (fa1, fa2) -> fa2.getDepreciationDate().compareTo(fa1.getDepreciationDate()));
+    Optional<FixedAssetLine> optFixedAssetLine =
+        fixedAssetLineList.stream()
             .filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == status)
+            .skip(nbLineToSkip)
             .findFirst();
-}
-@Override
-public Optional<FixedAssetLine> findNewestFixedAssetLine(List<FixedAssetLine> fixedAssetLineList, int status,
-		int nbLineToSkip) {
-    fixedAssetLineList.sort(
-            (fa1, fa2) -> fa2.getDepreciationDate().compareTo(fa1.getDepreciationDate()));
-        Optional<FixedAssetLine> optFixedAssetLine =
-            fixedAssetLineList.stream()
-                .filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == status)
-                .skip(nbLineToSkip)
-                .findFirst();
-        return optFixedAssetLine;
-}
+    return optFixedAssetLine;
+  }
 }

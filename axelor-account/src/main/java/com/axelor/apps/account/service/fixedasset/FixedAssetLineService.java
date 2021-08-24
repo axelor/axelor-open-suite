@@ -1,12 +1,11 @@
 package com.axelor.apps.account.service.fixedasset;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 public interface FixedAssetLineService {
 
@@ -64,25 +63,28 @@ public interface FixedAssetLineService {
    * @param newFixedAsset
    */
   void copyFixedAssetLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset);
-  
+
   /**
-   * Return line with smallest depreciation date with statusSelect = status.
-   * The method will skip nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
+   * Return line with smallest depreciation date with statusSelect = status. The method will skip
+   * nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
+   *
    * @param fixedAssetLineList
    * @param status
    * @param nbLineToSkip
    * @return {@link Optional} of {@link FixedAssetLine}
    */
-  Optional<FixedAssetLine> findOldestFixedAssetLine(List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
-  
+  Optional<FixedAssetLine> findOldestFixedAssetLine(
+      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
+
   /**
-   * Return line with greatest depreciation date with statusSelect = status.
-   * The method will skip nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
+   * Return line with greatest depreciation date with statusSelect = status. The method will skip
+   * nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
+   *
    * @param fixedAssetLineList
    * @param status
    * @param nbLineToSkip
    * @return {@link Optional} of {@link FixedAssetLine}
    */
   Optional<FixedAssetLine> findNewestFixedAssetLine(
-	      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
+      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
 }

@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -55,6 +42,17 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -493,6 +491,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
     }
   }
+
   @Override
   public void updateDepreciation(FixedAsset fixedAsset) {
     Objects.requireNonNull(fixedAsset);
@@ -504,7 +503,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
       Optional<FixedAssetLine> optFixedAssetLine =
-          fixedAssetLineService.findOldestFixedAssetLine(fixedAssetLineList, FixedAssetLineRepository.STATUS_PLANNED, 0);
+          fixedAssetLineService.findOldestFixedAssetLine(
+              fixedAssetLineList, FixedAssetLineRepository.STATUS_PLANNED, 0);
 
       if (!optFixedAssetLine.isPresent()) {
         return;
@@ -522,7 +522,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               .getAccountingValue()
               .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue()));
       Optional<FixedAssetLine> previousLastRealizedFAL =
-          fixedAssetLineService.findNewestFixedAssetLine(fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
+          fixedAssetLineService.findNewestFixedAssetLine(
+              fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
       if (previousLastRealizedFAL.isPresent()) {
         firstPlannedFixedAssetLine.setCumulativeDepreciation(
             previousLastRealizedFAL
@@ -730,7 +731,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
       }
       FixedAssetLine previousRealizedLine =
-          fixedAssetLineService.findOldestFixedAssetLine(
+          fixedAssetLineService
+              .findOldestFixedAssetLine(
                   fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0)
               .orElse(null);
       if (previousRealizedLine != null
