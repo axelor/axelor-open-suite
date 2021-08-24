@@ -1,9 +1,12 @@
 package com.axelor.apps.account.service.fixedasset;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
-import java.time.LocalDate;
 
 public interface FixedAssetLineService {
 
@@ -16,7 +19,7 @@ public interface FixedAssetLineService {
    * moveLine.originDate != NULL = moveLine.originDate ELSE moveLine.date
    *
    * @param moveLine
-   * @return generated FixedAsset
+   * @return generated {@link FixedAsset}
    */
   FixedAsset generateFixedAsset(MoveLine moveLine);
 
@@ -24,7 +27,7 @@ public interface FixedAssetLineService {
    * This method will call generateFixedAsset(MoveLine) and call save action.
    *
    * @param moveLine
-   * @return Generated fixedAsset
+   * @return Generated {@link FixedAsset}
    */
   FixedAsset generateAndSaveFixedAsset(MoveLine moveLine);
 
@@ -35,7 +38,7 @@ public interface FixedAssetLineService {
    * @param fixedAsset
    * @param disposalDate
    * @param previousRealizedLine
-   * @return generated fixedAssetLine
+   * @return generated {@link FixedAssetLine}
    */
   FixedAssetLine generateProrataDepreciationLine(
       FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine);
@@ -61,4 +64,25 @@ public interface FixedAssetLineService {
    * @param newFixedAsset
    */
   void copyFixedAssetLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset);
+  
+  /**
+   * Return line with smallest depreciation date with statusSelect = status.
+   * The method will skip nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
+   * @param fixedAssetLineList
+   * @param status
+   * @param nbLineToSkip
+   * @return {@link Optional} of {@link FixedAssetLine}
+   */
+  Optional<FixedAssetLine> findOldestFixedAssetLine(List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
+  
+  /**
+   * Return line with greatest depreciation date with statusSelect = status.
+   * The method will skip nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
+   * @param fixedAssetLineList
+   * @param status
+   * @param nbLineToSkip
+   * @return {@link Optional} of {@link FixedAssetLine}
+   */
+  Optional<FixedAssetLine> findNewestFixedAssetLine(
+	      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
 }
