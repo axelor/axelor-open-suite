@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.Assert;
@@ -50,6 +51,7 @@ public class TestFixedAssetService {
   protected AnalyticFixedAssetService analyticFixedAssetService;
   protected FixedAssetLineRepository fixedAssetLineRepo;
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
+  protected SequenceService sequenceService;
 
   /*
    * Prepare dependencies by mocking them
@@ -65,6 +67,7 @@ public class TestFixedAssetService {
     fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
     analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
     fixedAssetDerogatoryLineMoveService = mock(FixedAssetDerogatoryLineMoveService.class);
+    sequenceService = mock(SequenceService.class);
     fixedAssetLineComputationService =
         new FixedAssetLineComputationServiceImpl(
             analyticFixedAssetService,
@@ -80,7 +83,8 @@ public class TestFixedAssetService {
             accountConfigService,
             fixedAssetDerogatoryLineService,
             analyticFixedAssetService,
-            fixedAssetLineRepo);
+            fixedAssetLineRepo,
+            sequenceService);
 
     prepareFixedAssetRepo();
   }

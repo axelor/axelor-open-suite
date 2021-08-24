@@ -26,7 +26,7 @@
 	    <panel name="statusSelectPanel" colSpan="12">
 	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
 	      <field name="reference" colSpan="3"/>
-	      <field name="fixedAssetSeq" colSpan="3"/>
+	      <field name="fixedAssetSeq" colSpan="3" readonlyIf="fixedAssetSeq != null"/>
 	    </panel>
 	    <panel name="mainPanel" colSpan="12">
 	      <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
@@ -85,7 +85,7 @@
 	  </panel-tabs>
 	  <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true">
 	    <button name="computeDepreciationBtn" title="Compute depreciation" hideIf="fixedAssetCategory == null || depreciationPlanSelect == null || depreciationPlanSelect == '' || depreciationPlanSelect.includes(&quot;0&quot;) || (statusSelect > 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0))" onClick="action-fixed-asset-group-compute-depreciation-click"/>
-	    <button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="save,action-fixed-asset-method-compute-depreciation,action-fixed-asset-record-status-validated,save"/>
+	    <button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0)" onClick="save,action-method-account-fixed-asset-validate,save"/>
 	    <button name="disposalBtn" title="Disposal" showIf="statusSelect > 1 &amp;&amp; statusSelect != 4" onClick="save,action-fixed-asset-group-disposal-click"/>
 	    <button name="updateDepreciationSettingsBtn" title="Update depreciation settings" showIf="statusSelect == 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0 &amp;&amp; !$canUpdateDepreciation)" onClick="action-attrs-account-fixed-asset-set-can-update-depreciation"/>
 	    <button name="updateDepreciationBtn" title="Update depreciation" showIf="statusSelect == 2  &amp;&amp; $canUpdateDepreciation" onClick="save, action-method-account-fixed-asset-update-depreciation,  action-attrs-account-fixed-asset-set-false-can-update-depreciation, save"/>
@@ -192,11 +192,9 @@
     	<field name="fixedAssetLineList" expr="eval: null" if="!grossValue"/>
     </action-record>
     
-    <action-record name="action-fixed-asset-record-status-validated" model="com.axelor.apps.account.db.FixedAsset">
-    	<field name="accountingValue" expr="eval:grossValue" if="isEqualToFiscalDepreciation"/>
-    	<field name="accountingValue" expr="eval:grossValue - residualValue" if="!isEqualToFiscalDepreciation"/>
-    	<field name="statusSelect" expr="2"/>
-    </action-record>
+    <action-method name="action-method-account-fixed-asset-validate">
+    	<call class="com.axelor.apps.account.web.FixedAssetController" method="validate"/>
+    </action-method>
     
     <action-method name="action-fixed-asset-method-compute-depreciation">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="computeDepreciation"/>

@@ -66,6 +66,11 @@ public interface FixedAssetService {
 
   void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
 
+  /**
+   * Validate fixedAsset
+   *
+   * @param fixedAsset
+   */
   void validate(FixedAsset fixedAsset);
 
   int massValidation(List<Long> fixedAssetIds);

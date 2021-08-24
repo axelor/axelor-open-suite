@@ -33,6 +33,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -74,6 +76,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected FixedAssetLineRepository fixedAssetLineRepo;
 
+  protected SequenceService sequenceService;
+
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
   public static final String SUFFIX_SPLITTED_FIXED_ASSET = "-%s %.2f";
@@ -87,7 +91,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       AccountConfigService accountConfigService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       AnalyticFixedAssetService analyticFixedAssetService,
-      FixedAssetLineRepository fixedAssetLineRepo) {
+      FixedAssetLineRepository fixedAssetLineRepo,
+      SequenceService sequenceService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
@@ -96,6 +101,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.analyticFixedAssetService = analyticFixedAssetService;
     this.fixedAssetLineRepo = fixedAssetLineRepo;
+    this.sequenceService = sequenceService;
   }
 
   @Override
@@ -451,21 +457,52 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAsset is null
+   */
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(FixedAsset fixedAsset) {
+    Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
-
-      if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
-        fixedAsset.getFixedAssetLineList().clear();
+      if (fixedAsset.getFixedAssetLineList() != null) {
+        if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
+          fixedAsset.getFixedAssetLineList().clear();
+        }
       }
+      if (fixedAsset.getFiscalFixedAssetLineList() != null) {
+        if (!fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
+          fixedAsset.getFiscalFixedAssetLineList().clear();
+        }
+      }
+      if (fixedAsset.getFixedAssetDerogatoryLineList() != null) {
+        if (!fixedAsset.getFixedAssetDerogatoryLineList().isEmpty()) {
+          fixedAsset.getFixedAssetDerogatoryLineList().clear();
+        }
+      }
+
       fixedAsset = generateAndComputeLines(fixedAsset);
+      if (fixedAsset.getIsEqualToFiscalDepreciation()) {
+        fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
+      } else {
+        fixedAsset.setAccountingValue(
+            fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
+      }
+      fixedAsset.setFixedAssetSeq(this.generateSequence(fixedAsset));
 
     } else {
       fixedAsset.getFixedAssetLineList().clear();
     }
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
     fixedAssetRepo.save(fixedAsset);
+  }
+
+  private String generateSequence(FixedAsset fixedAsset) {
+    String seq =
+        sequenceService.getSequenceNumber(SequenceRepository.FIXED_ASSET, fixedAsset.getCompany());
+    return seq;
   }
 
   @Override

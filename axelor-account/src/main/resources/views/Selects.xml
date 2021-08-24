@@ -387,6 +387,7 @@
 		<option value="depositSlip">Deposit slip</option>
 		<option value="subrogationRelease">Subrogation release</option>
 		<option value="partnerAccount">Partner account</option>
+		<option value="fixedAsset">Fixed asset</option>
 	</selection>
 
 	<selection name="account.notification.item.type.select">
