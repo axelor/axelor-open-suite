@@ -1,9 +1,5 @@
 package com.axelor.apps.account.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.service.AnalyticAxisService;
 import com.axelor.common.ObjectUtils;
@@ -13,6 +9,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AnalyticAxisController {
 
@@ -34,31 +33,93 @@ public class AnalyticAxisController {
       TraceBackService.trace(response, e);
     }
   }
-  
-	public void setGroupingDomain(ActionRequest request, ActionResponse response) throws AxelorException {
-		try {
-			AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
 
-			List<Long> idList = new ArrayList<Long>();
-			for (int i = 1;i<=10;i++) {
-				idList.add(Beans.get(AnalyticAxisService.class).getAnalyticGroupingId(analyticAxis, i));
-			}
+  public void setGroupingDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      AnalyticAxis analyticAxis = request.getContext().asType(AnalyticAxis.class);
 
-			if (!ObjectUtils.isEmpty(idList)) {
-				String idListStr = idList.stream().map(id -> id.toString()).collect(Collectors.joining(","));
-				response.setAttr("analyticGrouping1", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id = " +analyticAxis.getId());
-				response.setAttr("analyticGrouping2", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-				response.setAttr("analyticGrouping3", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-				response.setAttr("analyticGrouping4", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-				response.setAttr("analyticGrouping5", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-				response.setAttr("analyticGrouping6", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-				response.setAttr("analyticGrouping7", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-				response.setAttr("analyticGrouping8", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-				response.setAttr("analyticGrouping9", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-				response.setAttr("analyticGrouping10", "domain", "self.id NOT IN (" + idListStr + ") AND self.analyticAxis.id =  " +analyticAxis.getId());
-			}
-		} catch (Exception e) {
-			TraceBackService.trace(response, e);
-		}
-	}
+      List<Long> idList = new ArrayList<Long>();
+      for (int i = 1; i <= 10; i++) {
+        idList.add(Beans.get(AnalyticAxisService.class).getAnalyticGroupingId(analyticAxis, i));
+      }
+
+      if (!ObjectUtils.isEmpty(idList)) {
+        String idListStr =
+            idList.stream().map(id -> id.toString()).collect(Collectors.joining(","));
+        response.setAttr(
+            "analyticGrouping1",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id = "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping2",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping3",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping4",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping5",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping6",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping7",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping8",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping9",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+        response.setAttr(
+            "analyticGrouping10",
+            "domain",
+            "self.id NOT IN ("
+                + idListStr
+                + ") AND self.analyticAxis.id =  "
+                + analyticAxis.getId());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

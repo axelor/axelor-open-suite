@@ -287,7 +287,6 @@ public class MoveLineController {
           }
         }
       }
-      
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
