@@ -22,9 +22,11 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -47,6 +49,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +65,7 @@ public class MoveValidateService {
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
   protected AppBaseService appBaseService;
+  protected FixedAssetLineService fixedAssetLineService;
 
   @Inject
   public MoveValidateService(
@@ -71,7 +75,8 @@ public class MoveValidateService {
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      FixedAssetLineService fixedAssetLineService) {
 
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
@@ -80,6 +85,7 @@ public class MoveValidateService {
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
     this.appBaseService = appBaseService;
+    this.fixedAssetLineService = fixedAssetLineService;
   }
 
   /**
@@ -237,6 +243,7 @@ public class MoveValidateService {
     }
 
     this.completeMoveLines(move);
+    this.generateFixedAssetMoveLine(move);
 
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
 
@@ -246,6 +253,33 @@ public class MoveValidateService {
 
     if (updateCustomerAccount) {
       moveCustAccountService.updateCustomerAccount(move);
+    }
+  }
+
+  /**
+   * This method may generate fixed asset for each moveLine of move. It will generate if
+   * moveLine.fixedAssetCategory != null AND moveLine.account.accountType.technicalTypeSelect =
+   * 'immobilisation'
+   *
+   * @param move
+   * @throws NullPointerException if move is null or if a line does not have an account
+   */
+  public void generateFixedAssetMoveLine(Move move) {
+    log.debug("Starting generation of fixed assets for move " + move);
+    Objects.requireNonNull(move);
+
+    List<MoveLine> moveLineList = move.getMoveLineList();
+    if (moveLineList != null) {
+      moveLineList.forEach(
+          line -> {
+            if (line.getFixedAssetCategory() != null
+                && line.getAccount()
+                    .getAccountType()
+                    .getTechnicalTypeSelect()
+                    .equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
+              fixedAssetLineService.generateAndSaveFixedAsset(line);
+            }
+          });
     }
   }
 

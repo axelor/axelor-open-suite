@@ -36,6 +36,8 @@
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5" initParam="true"/>
     <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
     
+   <!--  Fixed asset fields -->
+    <many-to-one name="fixedAssetCategory" ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category" help="If this field is filled, once the move will change from Draft to Validated, a new fixed asset record will be generated based on this moveLine data and the selected category data"/>
     <!-- 	Field not displayed, used during the payment voucher input -->
 	<decimal name="maxAmountToReconcile" title="Max Amount to reconcile" />
 	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment Schedule line"/>

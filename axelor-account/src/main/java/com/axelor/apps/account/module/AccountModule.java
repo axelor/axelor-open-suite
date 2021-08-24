@@ -108,6 +108,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationServi
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -287,5 +289,7 @@ public class AccountModule extends AxelorModule {
 
     bind(FixedAssetDerogatoryLineMoveService.class)
         .to(FixedAssetDerogatoryLineMoveServiceImpl.class);
+
+    bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
   }
 }
