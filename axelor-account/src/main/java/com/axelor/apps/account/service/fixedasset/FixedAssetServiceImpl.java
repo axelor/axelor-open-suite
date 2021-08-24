@@ -46,7 +46,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +73,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected AnalyticFixedAssetService analyticFixedAssetService;
 
-  protected FixedAssetLineRepository fixedAssetLineRepo;
-
   protected SequenceService sequenceService;
+
+  protected FixedAssetLineService fixedAssetLineService;
 
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
@@ -91,8 +90,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       AccountConfigService accountConfigService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       AnalyticFixedAssetService analyticFixedAssetService,
-      FixedAssetLineRepository fixedAssetLineRepo,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      FixedAssetLineService fixedAssetLineService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
@@ -100,8 +99,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.accountConfigService = accountConfigService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.analyticFixedAssetService = analyticFixedAssetService;
-    this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.sequenceService = sequenceService;
+    this.fixedAssetLineService = fixedAssetLineService;
   }
 
   @Override
@@ -318,7 +317,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
 
       FixedAssetLine depreciationFixedAssetLine =
-          generateProrataDepreciationLine(fixedAsset, disposalDate, previousRealizedLine);
+          fixedAssetLineService.generateProrataDepreciationLine(
+              fixedAsset, disposalDate, previousRealizedLine);
       fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true);
       fixedAssetLineMoveService.generateDisposalMove(depreciationFixedAssetLine, transferredReason);
     } else {
@@ -360,68 +360,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       return FixedAssetRepository.TRANSFERED_REASON_CESSION;
     }
     return FixedAssetRepository.TRANSFERED_REASON_SCRAPPING;
-  }
-
-  protected FixedAssetLine generateProrataDepreciationLine(
-      FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine) {
-    FixedAssetLine fixedAssetLine = new FixedAssetLine();
-    fixedAssetLine.setDepreciationDate(disposalDate);
-    computeDepreciationWithProrata(fixedAsset, fixedAssetLine, previousRealizedLine, disposalDate);
-    fixedAssetLine.setFixedAsset(fixedAsset);
-    fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
-    return fixedAssetLine;
-  }
-
-  private void computeDepreciationWithProrata(
-      FixedAsset fixedAsset,
-      FixedAssetLine fixedAssetLine,
-      FixedAssetLine previousRealizedLine,
-      LocalDate disposalDate) {
-    LocalDate previousRealizedDate =
-        previousRealizedLine != null
-            ? previousRealizedLine.getDepreciationDate()
-            : fixedAsset.getFirstServiceDate();
-    long monthsBetweenDates =
-        ChronoUnit.MONTHS.between(
-            previousRealizedDate.withDayOfMonth(1), disposalDate.withDayOfMonth(1));
-
-    BigDecimal prorataTemporis =
-        BigDecimal.valueOf(monthsBetweenDates)
-            .divide(
-                BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()),
-                CALCULATION_SCALE,
-                RoundingMode.HALF_UP);
-
-    int numberOfDepreciation =
-        fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-            ? fixedAsset.getNumberOfDepreciation() - 1
-            : fixedAsset.getNumberOfDepreciation();
-    BigDecimal depreciationRate =
-        BigDecimal.valueOf(100)
-            .divide(
-                BigDecimal.valueOf(numberOfDepreciation), CALCULATION_SCALE, RoundingMode.HALF_UP);
-    BigDecimal ddRate = BigDecimal.ONE;
-    if (fixedAsset
-        .getComputationMethodSelect()
-        .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      ddRate = fixedAsset.getDegressiveCoef();
-    }
-    BigDecimal deprecationValue =
-        fixedAsset
-            .getGrossValue()
-            .multiply(depreciationRate)
-            .multiply(ddRate)
-            .multiply(prorataTemporis)
-            .divide(new BigDecimal(100), RETURNED_SCALE, RoundingMode.HALF_UP);
-
-    fixedAssetLine.setDepreciation(deprecationValue);
-    BigDecimal cumulativeValue =
-        previousRealizedLine != null
-            ? previousRealizedLine.getCumulativeDepreciation().add(deprecationValue)
-            : deprecationValue;
-    fixedAssetLine.setCumulativeDepreciation(cumulativeValue);
-    fixedAssetLine.setAccountingValue(
-        fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
   }
 
   @Override
@@ -751,39 +689,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   private FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because copy does not copy list
-    copyFixedAssetLineList(fixedAsset, newFixedAsset);
+    fixedAssetLineService.copyFixedAssetLineList(fixedAsset, newFixedAsset);
     fixedAssetDerogatoryLineService.copyFixedAssetDerogatoryLineList(fixedAsset, newFixedAsset);
     newFixedAsset.setStatusSelect(fixedAsset.getStatusSelect());
     newFixedAsset.addAssociatedFixedAssetsSetItem(fixedAsset);
     fixedAsset.addAssociatedFixedAssetsSetItem(newFixedAsset);
     return newFixedAsset;
-  }
-
-  public void copyFixedAssetLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset) {
-    if (newFixedAsset.getFixedAssetLineList() == null) {
-      if (fixedAsset.getFixedAssetLineList() != null) {
-        fixedAsset
-            .getFixedAssetLineList()
-            .forEach(
-                line -> {
-                  FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
-                  copy.setFixedAsset(newFixedAsset);
-                  newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepo.save(copy));
-                });
-      }
-    }
-    if (newFixedAsset.getFiscalFixedAssetLineList() == null) {
-      if (fixedAsset.getFiscalFixedAssetLineList() != null) {
-        fixedAsset
-            .getFiscalFixedAssetLineList()
-            .forEach(
-                line -> {
-                  FixedAssetLine copy = fixedAssetLineRepo.copy(line, false);
-                  copy.setFixedAsset(newFixedAsset);
-                  newFixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLineRepo.save(copy));
-                });
-      }
-    }
   }
 
   @Override
@@ -850,7 +761,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
       }
       // This method already manage null value of previousRealizedLine
-      computeDepreciationWithProrata(
+      fixedAssetLineService.computeDepreciationWithProrata(
           fixedAsset, correspondingFixedAssetLine, previousRealizedLine, disposalDate);
     }
     if (correspondingFixedAssetLine != null) {

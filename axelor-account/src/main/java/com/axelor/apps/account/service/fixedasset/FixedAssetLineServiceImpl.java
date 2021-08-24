@@ -1,12 +1,17 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +19,16 @@ import org.slf4j.LoggerFactory;
 public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
   protected FixedAssetRepository fixedAssetRepository;
+  protected FixedAssetLineRepository fixedAssetLineRepository;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
-  public FixedAssetLineServiceImpl(FixedAssetRepository fixedAssetRepository) {
+  public FixedAssetLineServiceImpl(
+      FixedAssetRepository fixedAssetRepository,
+      FixedAssetLineRepository fixedAssetLineRepository) {
     this.fixedAssetRepository = fixedAssetRepository;
+    this.fixedAssetLineRepository = fixedAssetLineRepository;
   }
   /**
    * {@inheritDoc}
@@ -58,5 +67,101 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   public FixedAsset generateAndSaveFixedAsset(MoveLine moveLine) {
 
     return fixedAssetRepository.save(generateFixedAsset(moveLine));
+  }
+
+  @Override
+  public FixedAssetLine generateProrataDepreciationLine(
+      FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine) {
+    FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    fixedAssetLine.setDepreciationDate(disposalDate);
+    computeDepreciationWithProrata(fixedAsset, fixedAssetLine, previousRealizedLine, disposalDate);
+    fixedAssetLine.setFixedAsset(fixedAsset);
+    fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
+    return fixedAssetLine;
+  }
+
+  @Override
+  public void computeDepreciationWithProrata(
+      FixedAsset fixedAsset,
+      FixedAssetLine fixedAssetLine,
+      FixedAssetLine previousRealizedLine,
+      LocalDate disposalDate) {
+    LocalDate previousRealizedDate =
+        previousRealizedLine != null
+            ? previousRealizedLine.getDepreciationDate()
+            : fixedAsset.getFirstServiceDate();
+    long monthsBetweenDates =
+        ChronoUnit.MONTHS.between(
+            previousRealizedDate.withDayOfMonth(1), disposalDate.withDayOfMonth(1));
+
+    BigDecimal prorataTemporis =
+        BigDecimal.valueOf(monthsBetweenDates)
+            .divide(
+                BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()),
+                FixedAssetServiceImpl.CALCULATION_SCALE,
+                RoundingMode.HALF_UP);
+
+    int numberOfDepreciation =
+        fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
+            ? fixedAsset.getNumberOfDepreciation() - 1
+            : fixedAsset.getNumberOfDepreciation();
+    BigDecimal depreciationRate =
+        BigDecimal.valueOf(100)
+            .divide(
+                BigDecimal.valueOf(numberOfDepreciation),
+                FixedAssetServiceImpl.CALCULATION_SCALE,
+                RoundingMode.HALF_UP);
+    BigDecimal ddRate = BigDecimal.ONE;
+    if (fixedAsset
+        .getComputationMethodSelect()
+        .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+      ddRate = fixedAsset.getDegressiveCoef();
+    }
+    BigDecimal deprecationValue =
+        fixedAsset
+            .getGrossValue()
+            .multiply(depreciationRate)
+            .multiply(ddRate)
+            .multiply(prorataTemporis)
+            .divide(
+                new BigDecimal(100), FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
+
+    fixedAssetLine.setDepreciation(deprecationValue);
+    BigDecimal cumulativeValue =
+        previousRealizedLine != null
+            ? previousRealizedLine.getCumulativeDepreciation().add(deprecationValue)
+            : deprecationValue;
+    fixedAssetLine.setCumulativeDepreciation(cumulativeValue);
+    fixedAssetLine.setAccountingValue(
+        fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
+  }
+
+  @Override
+  public void copyFixedAssetLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset) {
+    if (newFixedAsset.getFixedAssetLineList() == null) {
+      if (fixedAsset.getFixedAssetLineList() != null) {
+        fixedAsset
+            .getFixedAssetLineList()
+            .forEach(
+                line -> {
+                  FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
+                  copy.setFixedAsset(newFixedAsset);
+                  newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
+                });
+      }
+    }
+    if (newFixedAsset.getFiscalFixedAssetLineList() == null) {
+      if (fixedAsset.getFiscalFixedAssetLineList() != null) {
+        fixedAsset
+            .getFiscalFixedAssetLineList()
+            .forEach(
+                line -> {
+                  FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
+                  copy.setFixedAsset(newFixedAsset);
+                  newFixedAsset.addFiscalFixedAssetLineListItem(
+                      fixedAssetLineRepository.save(copy));
+                });
+      }
+    }
   }
 }
