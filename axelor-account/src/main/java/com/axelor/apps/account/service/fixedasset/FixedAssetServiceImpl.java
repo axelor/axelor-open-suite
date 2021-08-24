@@ -867,4 +867,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
     return null;
   }
+
+  @Override
+  @Transactional
+  public FixedAsset splitAndSaveFixedAsset(
+      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate splittingDate, String comments)
+      throws AxelorException {
+    FixedAsset splittedFixedAsset =
+        this.splitFixedAsset(fixedAsset, disposalQty, splittingDate, comments);
+    fixedAssetRepo.save(fixedAsset);
+    return fixedAssetRepo.save(splittedFixedAsset);
+  }
 }

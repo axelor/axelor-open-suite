@@ -120,6 +120,19 @@ public interface FixedAssetService {
   FixedAsset splitFixedAsset(
       FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate disposalDate, String comments)
       throws AxelorException;
+  /**
+   * Call splitFixedAsset and save both fixed asset. (Original and created)
+   *
+   * @param fixedAsset
+   * @param disposalQty
+   * @param splittingDate
+   * @param comments
+   * @return
+   * @throws AxelorException
+   */
+  FixedAsset splitAndSaveFixedAsset(
+      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate splittingDate, String comments)
+      throws AxelorException;
 
   int computeTransferredReason(Integer disposalTypeSelect, Integer disposalQtySelect);
 

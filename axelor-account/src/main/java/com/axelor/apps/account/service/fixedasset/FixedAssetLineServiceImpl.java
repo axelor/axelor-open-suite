@@ -138,6 +138,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
         fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
   }
 
+  @Transactional
   @Override
   public void copyFixedAssetLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset) {
     if (newFixedAsset.getFixedAssetLineList() == null) {

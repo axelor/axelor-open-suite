@@ -250,11 +250,10 @@ public class FixedAssetController {
             I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
             fixedAsset.getQty().toString());
       }
-      FixedAsset splittedFixedAsset =
+      FixedAsset createdFixedAsset =
           Beans.get(FixedAssetService.class)
-              .splitFixedAsset(fixedAsset, disposalQty, LocalDate.now(), fixedAsset.getComments());
-      Beans.get(FixedAssetRepository.class).save(fixedAsset);
-      FixedAsset createdFixedAsset = Beans.get(FixedAssetRepository.class).save(splittedFixedAsset);
+              .splitAndSaveFixedAsset(
+                  fixedAsset, disposalQty, LocalDate.now(), fixedAsset.getComments());
       if (createdFixedAsset != null) {
         response.setView(
             ActionView.define("Fixed asset")

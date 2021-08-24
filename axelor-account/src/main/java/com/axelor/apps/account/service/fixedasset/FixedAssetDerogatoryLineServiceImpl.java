@@ -10,6 +10,7 @@ import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -285,6 +286,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
   }
 
+  @Transactional
   @Override
   public void copyFixedAssetDerogatoryLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset) {
     if (newFixedAsset.getFixedAssetDerogatoryLineList() == null) {
