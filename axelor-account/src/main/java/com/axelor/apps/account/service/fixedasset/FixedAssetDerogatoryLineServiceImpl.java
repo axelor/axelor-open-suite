@@ -237,6 +237,11 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
             .setScale(RETURNED_SCALE, RoundingMode.HALF_UP));
   }
 
+  /**
+   * Generate derogatory cession move.
+   *
+   * @throws NullPointerException if firstPlannedDerogatoryLine is null
+   */
   @Override
   public void generateDerogatoryCessionMove(
       FixedAssetDerogatoryLine firstPlannedDerogatoryLine,

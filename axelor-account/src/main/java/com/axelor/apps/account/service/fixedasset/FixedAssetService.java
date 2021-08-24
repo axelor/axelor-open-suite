@@ -128,6 +128,10 @@ public interface FixedAssetService {
    */
   FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status);
 
+  /**
+   * Method that manage disposal action. The process will be different depending on the
+   * transferredReason.
+   */
   FixedAsset computeDisposal(
       FixedAsset fixedAsset,
       LocalDate disposalDate,

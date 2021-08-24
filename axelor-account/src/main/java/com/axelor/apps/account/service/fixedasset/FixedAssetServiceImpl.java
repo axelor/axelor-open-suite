@@ -48,11 +48,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
+
+  private static final String ARG_FIXED_ASSET_NPE_MSG =
+      "fixedAsset can not be null when calling this function";
 
   protected FixedAssetRepository fixedAssetRepo;
 
@@ -104,9 +108,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     return fixedAsset;
   }
-
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAsset is null
+   */
   @Override
   public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset) {
+    Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
@@ -133,8 +142,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAsset is null
+   */
   @Override
   public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset) {
+    Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
@@ -150,9 +165,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           FixedAssetLineRepository.TYPE_SELECT_FISCAL);
     }
   }
-
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAsset is null
+   */
   @Override
   public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) {
+    Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
@@ -497,9 +517,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
   }
 
+  /** This method */
   @Override
   public void updateDepreciation(FixedAsset fixedAsset) {
-
+    Objects.requireNonNull(fixedAsset);
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (correctedAccountingValue != null
         && correctedAccountingValue.signum() != 0
@@ -540,7 +561,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 .add(firstPlannedFixedAssetLine.getDepreciation())
                 .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
       }
-      // We can do this, since we will never save fixedAsset nor fixedAssetLine in the java process
+      // We can do this, since we will never save fixedAsset in the java process
       fixedAsset.setGrossValue(correctedAccountingValue);
       fixedAsset.setFirstDepreciationDate(
           analyticFixedAssetService.computeFirstDepreciationDate(
@@ -552,8 +573,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       if (fixedAsset
           .getComputationMethodSelect()
           .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
-        // In linear mode we udapte number of depreciation
-        // In degressiv we do not update number of depreciation because it seems the engine for
+        // In linear mode we udapte number of depreciation because the depreciation is computed
+        // depending on number of depreciation.
+        // So must not count lines that are already in the list
+        // In degressive we do not update number of depreciation because it seems the engine need
+        // the full size for
         // calculation the full size
         fixedAsset.setNumberOfDepreciation(
             fixedAsset.getNumberOfDepreciation() - fixedAssetLineList.size());
@@ -561,21 +585,28 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           return;
         }
       }
-      FixedAssetLine initialFixedAssetLine =
-          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
-              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
-      initialFixedAssetLine.setCumulativeDepreciation(
-          initialFixedAssetLine
-              .getCumulativeDepreciation()
-              .add(firstPlannedFixedAssetLine.getCumulativeDepreciation()));
-      fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
-      generateComputedPlannedFixedAssetLine(
-          fixedAsset,
-          initialFixedAssetLine,
-          fixedAssetLineList,
-          FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
-      generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+      updateLines(fixedAsset, firstPlannedFixedAssetLine, fixedAssetLineList);
     }
+  }
+
+  private void updateLines(
+      FixedAsset fixedAsset,
+      FixedAssetLine firstPlannedFixedAssetLine,
+      List<FixedAssetLine> fixedAssetLineList) {
+    FixedAssetLine initialFixedAssetLine =
+        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
+            fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+    initialFixedAssetLine.setCumulativeDepreciation(
+        initialFixedAssetLine
+            .getCumulativeDepreciation()
+            .add(firstPlannedFixedAssetLine.getCumulativeDepreciation()));
+    fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
+    generateComputedPlannedFixedAssetLine(
+        fixedAsset,
+        initialFixedAssetLine,
+        fixedAssetLineList,
+        FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+    generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
   }
 
   private Optional<FixedAssetLine> findOldestFixedAssetLine(
@@ -599,10 +630,20 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return optFixedAssetLine;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @return the new fixed asset created when splitting.
+   * @throws NullPointerException if fixedAsset or disposalQty or splittingDate are null
+   */
   @Override
   public FixedAsset splitFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate disposalDate, String comments)
+      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate splittingDate, String comments)
       throws AxelorException {
+    Objects.requireNonNull(fixedAsset, "fixAsset can not be null when calling this function");
+    Objects.requireNonNull(disposalQty, "disposalQty can not be null when calling this function");
+    Objects.requireNonNull(
+        splittingDate, "disposalDate can not be null when calling this function");
     FixedAsset newFixedAsset = copyFixedAsset(fixedAsset, disposalQty);
 
     BigDecimal prorata =
@@ -632,7 +673,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         String.format(
             I18n.get(FixedAssetRepository.SPLIT_MESSAGE_COMMENT),
             disposalQty,
-            disposalDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     newFixedAsset.setComments(comments);
     newFixedAsset.setComments(
         String.format(
@@ -672,7 +713,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   private FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
-    // Adding this copy because it seems there is a bug with copy.
+    // Adding this copy because copy does not copy list
     copyFixedAssetLineList(fixedAsset, newFixedAsset);
     fixedAssetDerogatoryLineService.copyFixedAssetDerogatoryLineList(fixedAsset, newFixedAsset);
     newFixedAsset.setStatusSelect(fixedAsset.getStatusSelect());
@@ -771,6 +812,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
       }
+      // This method already manage null value of previousRealizedLine
       computeDepreciationWithProrata(
           fixedAsset, correspondingFixedAssetLine, previousRealizedLine, disposalDate);
     }
