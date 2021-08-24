@@ -1402,12 +1402,14 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine) {
-    if (accountConfigRepository.findByCompany(moveLine.getMove().getCompany()) != null) {
-      return (position
-          <= accountConfigRepository
-              .findByCompany(moveLine.getMove().getCompany())
-              .getNbrOfAnalyticAxisSelect());
-    }
+	  if (moveLine != null) {
+		  if (accountConfigRepository.findByCompany(moveLine.getMove().getCompany()) != null) {
+		      return (position
+		          <= accountConfigRepository
+		              .findByCompany(moveLine.getMove().getCompany())
+		              .getNbrOfAnalyticAxisSelect());
+		    }
+	  }
     return false;
   }
 
