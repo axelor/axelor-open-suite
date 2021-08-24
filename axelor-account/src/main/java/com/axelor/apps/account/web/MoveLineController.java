@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -269,6 +270,7 @@ public class MoveLineController {
     try {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine.setMove(request.getContext().getParent().asType(Move.class));
 
       List<Long> analyticAccountList = new ArrayList<Long>();
 
@@ -288,6 +290,66 @@ public class MoveLineController {
         }
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      if (moveLine != null) {
+        if (moveLine.getAccount() != null) {
+          if (moveLine.getAccount().getCompany() != null) {
+            Integer nbrAxis =
+                Beans.get(AccountConfigRepository.class)
+                    .findByCompany(moveLine.getAccount().getCompany())
+                    .getNbrOfAnalyticAxisSelect();
+
+            response.setAttr(
+                "axis1AnalyticAccount",
+                "required",
+                moveLine.getAccount() != null
+                    && moveLine.getAccount().getAnalyticDistributionAuthorized()
+                    && moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines()
+                    && moveLine.getAnalyticDistributionTemplate() == null
+                    && (1 <= nbrAxis));
+            response.setAttr(
+                "axis2AnalyticAccount",
+                "required",
+                moveLine.getAccount() != null
+                    && moveLine.getAccount().getAnalyticDistributionAuthorized()
+                    && moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines()
+                    && moveLine.getAnalyticDistributionTemplate() == null
+                    && (2 <= nbrAxis));
+            response.setAttr(
+                "axis3AnalyticAccount",
+                "required",
+                moveLine.getAccount() != null
+                    && moveLine.getAccount().getAnalyticDistributionAuthorized()
+                    && moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines()
+                    && moveLine.getAnalyticDistributionTemplate() == null
+                    && (3 <= nbrAxis));
+            response.setAttr(
+                "axis4AnalyticAccount",
+                "required",
+                moveLine.getAccount() != null
+                    && moveLine.getAccount().getAnalyticDistributionAuthorized()
+                    && moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines()
+                    && moveLine.getAnalyticDistributionTemplate() == null
+                    && (4 <= nbrAxis));
+            response.setAttr(
+                "axis5AnalyticAccount",
+                "required",
+                moveLine.getAccount() != null
+                    && moveLine.getAccount().getAnalyticDistributionAuthorized()
+                    && moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines()
+                    && moveLine.getAnalyticDistributionTemplate() == null
+                    && (5 <= nbrAxis));
+          }
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

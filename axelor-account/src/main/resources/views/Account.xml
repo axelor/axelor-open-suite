@@ -185,10 +185,10 @@
     </action-attrs>
     
     <action-validate name="action-on-change-distribution-template-account">
-    	<alert if="checkAnalyticAccount == '1'" message="Please put AnalyticDistribution Template"/>
-		<alert if="checkAnalyticAccount == '2'" message="Please put AnalyticDistributionLines in the Analytic Distribution Template"/>
-		<alert if="checkAnalyticAccount == '3'" message="No Analytic Rules find for this account"/>
-    	<alert if="checkAnalyticAccount == '4'" message="The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."/>
+    	<alert if="checkAnalyticAccount == 1" message="Please put AnalyticDistribution Template"/>
+		<alert if="checkAnalyticAccount == 2" message="Please put AnalyticDistributionLines in the Analytic Distribution Template"/>
+		<alert if="checkAnalyticAccount == 3" message="No Analytic Rules find for this account"/>
+    	<alert if="checkAnalyticAccount == 4" message="The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."/>
     </action-validate>
     
 </object-views>

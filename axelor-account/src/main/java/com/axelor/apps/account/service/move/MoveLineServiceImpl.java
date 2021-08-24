@@ -1402,14 +1402,18 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine) {
-	  if (moveLine != null) {
-		  if (accountConfigRepository.findByCompany(moveLine.getMove().getCompany()) != null) {
-		      return (position
-		          <= accountConfigRepository
-		              .findByCompany(moveLine.getMove().getCompany())
-		              .getNbrOfAnalyticAxisSelect());
-		    }
-	  }
+    if (moveLine != null) {
+      if (moveLine.getMove() != null) {
+        if (moveLine.getMove().getCompany() != null) {
+          if (accountConfigRepository.findByCompany(moveLine.getMove().getCompany()) != null) {
+            return (position
+                <= accountConfigRepository
+                    .findByCompany(moveLine.getMove().getCompany())
+                    .getNbrOfAnalyticAxisSelect());
+          }
+        }
+      }
+    }
     return false;
   }
 
@@ -1434,17 +1438,17 @@ public class MoveLineServiceImpl implements MoveLineService {
           analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
         analyticAccountListByAxis.add(analyticAccount.getId());
       }
-
-      if (!accountAnalyticRulesRepository
-          .findAnalyticAccountByAccounts(moveLine.getAccount())
-          .isEmpty()) {
-
-        for (AnalyticAccount analyticAccount :
-            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(moveLine.getAccount())) {
-          analyticAccountListByRules.add(analyticAccount.getId());
+      if (moveLine.getAccount() != null) {
+        if (!accountAnalyticRulesRepository
+            .findAnalyticAccountByAccounts(moveLine.getAccount())
+            .isEmpty()) {
+          for (AnalyticAccount analyticAccount :
+              accountAnalyticRulesRepository.findAnalyticAccountByAccounts(moveLine.getAccount())) {
+            analyticAccountListByRules.add(analyticAccount.getId());
+          }
+          analyticAccountListByAxis =
+              intersection(analyticAccountListByAxis, analyticAccountListByRules);
         }
-        analyticAccountListByAxis =
-            intersection(analyticAccountListByAxis, analyticAccountListByRules);
       }
     }
     return analyticAccountListByAxis;
