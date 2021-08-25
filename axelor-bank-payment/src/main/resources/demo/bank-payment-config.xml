@@ -29,7 +29,6 @@
 
   <input file="bankpayment_bankStatementLine_GG.csv" separator=";" type="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" search="self.importId = :importId" />
   
-      
   <input file="base_move_inv_GG.csv" separator=";" type="com.axelor.apps.account.db.Move" search="self.importId = :importId" />
   
   <input file="base_move_line_inv_GG.csv" separator=";" type="com.axelor.apps.account.db.MoveLine" search="self.importId = :importId" >

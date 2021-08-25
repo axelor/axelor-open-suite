@@ -61,6 +61,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -242,26 +243,31 @@ public class BankReconciliationService {
     List<MoveLine> moveLines;
     MoveLine tempMoveLine;
 
-    /* DONE
-     * Charger tous les rapprochements, ajouter le débit de toutes bankReconciliationLine where isPosted = true;
-     * soustraire le crédit de ces même lignes
+    /*
+     * DONE Charger tous les rapprochements, ajouter le débit de toutes
+     * bankReconciliationLine where isPosted = true; soustraire le crédit de ces
+     * même lignes
      */
     BigDecimal statementReconciledLineBalance = BigDecimal.ZERO;
     /*
-     * Charger tous les moveLines where account = bankReconciliation.cashAccount (if bankReonciliation.cashAccount == null, on compte 0)
+     * Charger tous les moveLines where account = bankReconciliation.cashAccount (if
+     * bankReonciliation.cashAccount == null, on compte 0)
      */
     BigDecimal movesReconciledLineBalance = BigDecimal.ZERO;
-    /* DONE
-     * Charger tous les rapprochements, ajouter le débit de toutes bankReconciliationLine where isPosted = false;
-     * soustraire le crédit de ces même lignes
+    /*
+     * DONE Charger tous les rapprochements, ajouter le débit de toutes
+     * bankReconciliationLine where isPosted = false; soustraire le crédit de ces
+     * même lignes
      */
     BigDecimal statementUnreconciledLineBalance = BigDecimal.ZERO;
     /*
-     * Charger les movelines dont le montant rapproché est différent du crédit ou débit en fonction, et ajouter / soustraire la différence
+     * Charger les movelines dont le montant rapproché est différent du crédit ou
+     * débit en fonction, et ajouter / soustraire la différence
      */
     BigDecimal movesUnreconciledLineBalance = BigDecimal.ZERO;
     /*
-     * Charger tous les rapprochements, ajouter le débit de toutes bankReconciliationLine where isPosted = false; and postedNumber != 0
+     * Charger tous les rapprochements, ajouter le débit de toutes
+     * bankReconciliationLine where isPosted = false; and postedNumber != 0
      */
     BigDecimal statementOngoingReconciledBalance = BigDecimal.ZERO;
     BigDecimal movesOngoingReconciledBalance = BigDecimal.ZERO;
@@ -559,12 +565,26 @@ public class BankReconciliationService {
             .bind("journal", bankReconciliation.getJournal())
             .bind("cashAccount", bankReconciliation.getCashAccount())
             .fetch();
+    BigInteger dateMargin =
+        BigInteger.valueOf(
+            bankReconciliation
+                .getCompany()
+                .getBankPaymentConfig()
+                .getBnkStmtAutoReconcileDateMargin());
+    BigDecimal amountMargin =
+        bankReconciliation
+            .getCompany()
+            .getBankPaymentConfig()
+            .getBnkStmtAutoReconcileAmountMargin()
+            .divide(BigDecimal.valueOf(100));
+    BigDecimal amountMarginLow = BigDecimal.ONE.subtract(amountMargin);
+    BigDecimal amountMarginHigh = BigDecimal.ONE.add(amountMargin);
     bankReconciliationLines =
         bankReconciliationLines.stream()
             .filter(line -> line.getMoveLine() == null)
             .collect(Collectors.toList());
     Context scriptContext;
-    for (BankStatementQuery query : bankStatementQueries) {
+    for (BankStatementQuery bankStatementQuery : bankStatementQueries) {
       for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
         if (bankReconciliationLine.getMoveLine() != null) continue;
         for (MoveLine moveLine : moveLines) {
@@ -573,10 +593,14 @@ public class BankReconciliationService {
               new Context(
                   Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
                   BankStatementLineAFB120.class.getClass());
-          if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query.getQuery()))) {
+          String query = bankStatementQuery.getQuery();
+          query = query.replace("%amt+", amountMarginHigh.toString());
+          query = query.replace("%amt-", amountMarginLow.toString());
+          query = query.replace("%date", dateMargin.toString());
+          if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query))) {
             bankReconciliationLine.setMoveLine(moveLine);
-            bankReconciliationLine.setBankStatementQuery(query);
-            bankReconciliationLine.setConfidenceIndex(query.getConfidenceIndex());
+            bankReconciliationLine.setBankStatementQuery(bankStatementQuery);
+            bankReconciliationLine.setConfidenceIndex(bankStatementQuery.getConfidenceIndex());
             bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
             moveLines.remove(moveLine);
@@ -584,7 +608,7 @@ public class BankReconciliationService {
           }
           bankReconciliationLine.getBankStatementLine().setMoveLine(null);
         }
-        if (bankReconciliationLine.getMoveLine() != null) break;
+        if (bankReconciliationLine.getMoveLine() != null) continue;
       }
     }
     return bankReconciliation;

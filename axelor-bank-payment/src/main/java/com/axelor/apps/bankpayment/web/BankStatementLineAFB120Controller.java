@@ -26,10 +26,8 @@ public class BankStatementLineAFB120Controller {
   public void fillBankDetails(ActionRequest request, ActionResponse response)
       throws AxelorException {
     BankDetails bankDetails;
-    System.err.println(AuthUtils.getUser().getActiveCompany().getBankDetailsList());
     if (ObjectUtils.notEmpty(AuthUtils.getUser().getActiveCompany())) {
       if (ObjectUtils.notEmpty(AuthUtils.getUser().getActiveCompany().getBankDetailsList())) {
-        System.err.println(AuthUtils.getUser().getActiveCompany());
         bankDetails = AuthUtils.getUser().getActiveCompany().getBankDetailsList().get(0);
         response.setValue("bankDetails", bankDetails);
       }
