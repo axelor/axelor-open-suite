@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
 /** This service is used to compute new lines from an existing fixed asset header. */
@@ -44,12 +43,12 @@ public interface FixedAssetLineComputationService {
    */
   FixedAssetLine computePlannedFixedAssetLine(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect);
+
   /**
-   * Multiply fiscal and economic lines of fixedAsset by prorata. Then compute derogatory lines.
+   * Multiply line by prorata
    *
-   * @param newFixedAsset
+   * @param line
    * @param prorata
-   * @throws AxelorException
    */
-  void multiplyLinesBy(FixedAsset newFixedAsset, BigDecimal prorata) throws AxelorException;
+  void multiplyLineBy(FixedAssetLine line, BigDecimal prorata);
 }

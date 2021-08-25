@@ -91,15 +91,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       return;
     }
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
-    if (!isBatch) {
-      if (!isPreviousLineRealized(fixedAssetLine, fixedAsset)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
-      }
+    if (!isBatch && !isPreviousLineRealized(fixedAssetLine, fixedAsset)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
     }
     if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-      if (generateMove) generateMove(fixedAssetLine);
+      if (generateMove) {
+        generateMove(fixedAssetLine);
+      }
       generateImpairementAccountMove(fixedAssetLine);
     }
 

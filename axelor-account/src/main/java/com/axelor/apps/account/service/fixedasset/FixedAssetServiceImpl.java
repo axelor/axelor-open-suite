@@ -606,8 +606,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     BigDecimal remainingProrata =
         BigDecimal.ONE.subtract(prorata).setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
 
-    fixedAssetLineComputationService.multiplyLinesBy(newFixedAsset, prorata);
-    fixedAssetLineComputationService.multiplyLinesBy(fixedAsset, remainingProrata);
+    multiplyLinesBy(newFixedAsset, prorata);
+    multiplyLinesBy(fixedAsset, remainingProrata);
     multiplyFieldsToSplit(newFixedAsset, prorata);
     multiplyFieldsToSplit(fixedAsset, remainingProrata);
     fixedAsset.setQty(fixedAsset.getQty().subtract(disposalQty));
@@ -877,5 +877,29 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         this.splitFixedAsset(fixedAsset, disposalQty, splittingDate, comments);
     fixedAssetRepo.save(fixedAsset);
     return fixedAssetRepo.save(splittedFixedAsset);
+  }
+
+  @Override
+  public void multiplyLinesBy(FixedAsset fixedAsset, BigDecimal prorata) throws AxelorException {
+
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    List<FixedAssetLine> fiscalAssetLineList = fixedAsset.getFiscalFixedAssetLineList();
+    List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
+        fixedAsset.getFixedAssetDerogatoryLineList();
+    if (fixedAssetLineList != null) {
+      fixedAssetLineList.forEach(
+          line -> fixedAssetLineComputationService.multiplyLineBy(line, prorata));
+    }
+    if (fiscalAssetLineList != null) {
+      fiscalAssetLineList.forEach(
+          line -> fixedAssetLineComputationService.multiplyLineBy(line, prorata));
+    }
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
+      if (fixedAssetDerogatoryLineList != null) {
+        fixedAssetDerogatoryLineService.multiplyLinesBy(fixedAssetDerogatoryLineList, prorata);
+      }
+    }
   }
 }

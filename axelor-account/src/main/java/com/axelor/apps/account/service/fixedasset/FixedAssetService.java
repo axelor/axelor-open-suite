@@ -166,4 +166,13 @@ public interface FixedAssetService {
       int transferredReason,
       String comments)
       throws AxelorException;
+
+  /**
+   * Multiply fiscal and economic lines of fixedAsset by prorata. Then compute derogatory lines.
+   *
+   * @param newFixedAsset
+   * @param prorata
+   * @throws AxelorException
+   */
+  void multiplyLinesBy(FixedAsset newFixedAsset, BigDecimal prorata) throws AxelorException;
 }
