@@ -111,4 +111,6 @@ public interface AccountingReportService {
 
   public MetaFile launchN4DSExport(AccountingReport accountingExport)
       throws AxelorException, IOException;
+
+  public String getN4DSExportError(AccountingReport accountingReport);
 }

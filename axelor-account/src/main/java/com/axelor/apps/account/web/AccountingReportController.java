@@ -268,19 +268,24 @@ public class AccountingReportController {
 
         } else {
           // If all controls ok, export file
-          MetaFile accesssFile = accountingReportService.launchN4DSExport(accountingReport);
+          try {
+            MetaFile accesssFile = accountingReportService.launchN4DSExport(accountingReport);
 
-          response.setView(
-              ActionView.define(I18n.get("Export file"))
-                  .model(App.class.getName())
-                  .add(
-                      "html",
-                      "ws/rest/com.axelor.meta.db.MetaFile/"
-                          + accesssFile.getId()
-                          + "/content/download?v="
-                          + accesssFile.getVersion())
-                  .param("download", "true")
-                  .map());
+            response.setView(
+                ActionView.define(I18n.get("Export file"))
+                    .model(App.class.getName())
+                    .add(
+                        "html",
+                        "ws/rest/com.axelor.meta.db.MetaFile/"
+                            + accesssFile.getId()
+                            + "/content/download?v="
+                            + accesssFile.getVersion())
+                    .param("download", "true")
+                    .map());
+          } catch (NullPointerException e) {
+            String message = accountingReportService.getN4DSExportError(accountingReport);
+            response.setFlash(message);
+          }
         }
 
       } else {

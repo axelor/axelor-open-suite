@@ -45,6 +45,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -77,6 +78,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected AccountingReportRepository accountingReportRepo;
 
+  protected AppAccountService appAccountService;
+
   protected AppAccountService appBaseService;
 
   protected AccountConfigService accountConfigService;
@@ -98,12 +101,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       AccountingReportRepository accountingReportRepo,
       AccountRepository accountRepo,
       AccountingReportMoveLineService accountingReportMoveLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService) {
     this.accountingReportRepo = accountingReportRepo;
     this.accountRepo = accountRepo;
     this.appBaseService = appBaseService;
     this.accountingReportMoveLineService = accountingReportMoveLineService;
     this.accountConfigService = accountConfigService;
+    this.appAccountService = appAccountService;
   }
 
   private Boolean compareReportType(AccountingReport accountingReport, int type) {
@@ -1164,7 +1169,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   }
 
   public MetaFile launchN4DSExport(AccountingReport accountingExport)
-      throws AxelorException, IOException {
+      throws AxelorException, IOException, NullPointerException {
 
     String fileName = "N4DS_" + accountingExport.getCompany().getCode() + ".txt";
     MetaFile metaFile =
@@ -1173,5 +1178,54 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     accountingReportMoveLineService.updateN4DSExportStatus(accountingExport);
 
     return metaFile;
+  }
+
+  @Override
+  public String getN4DSExportError(AccountingReport accountingReport) {
+    String message = "";
+    try {
+      Partner dasContactPartner =
+          accountConfigService
+              .getAccountConfig(accountingReport.getCompany())
+              .getDasContactPartner();
+
+      if (ObjectUtils.isEmpty(dasContactPartner.getEmailAddress().getAddress())) {
+        message = message.concat(I18n.get("Pleaset set das contact email address"));
+      }
+    } catch (AxelorException e) {
+      message = message.concat(I18n.get("Please set company's das contact partner."));
+      e.printStackTrace();
+    }
+    if (ObjectUtils.isEmpty(accountingReport.getCompany().getPartner()))
+      message = message.concat(I18n.get("Please set company partner."));
+    else {
+      if (ObjectUtils.isEmpty(accountingReport.getCompany().getPartner().getMainAddress()))
+        message = message.concat(I18n.get("Please set invoicing address for company's partner."));
+      else {
+        if (ObjectUtils.isEmpty(
+            accountingReport.getCompany().getPartner().getMainAddress().getAddressL7Country()))
+          message =
+              message.concat(
+                  I18n.get("Please set country for company's partner invoicing address."));
+        else {
+          if (ObjectUtils.isEmpty(
+              accountingReport
+                  .getCompany()
+                  .getPartner()
+                  .getMainAddress()
+                  .getAddressL7Country()
+                  .getAlpha2Code()))
+            message =
+                message.concat(
+                    I18n.get("Please set country alpha2code for company partner's address."));
+        }
+        if (ObjectUtils.isEmpty(
+            accountingReport.getCompany().getPartner().getMainAddress().getCity())) {
+          message = message.concat(I18n.get("Please set city for company partner address."));
+        }
+      }
+    }
+
+    return message;
   }
 }

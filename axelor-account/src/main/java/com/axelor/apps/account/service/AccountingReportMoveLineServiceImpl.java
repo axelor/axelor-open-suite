@@ -175,7 +175,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
   @Override
   public MetaFile generateN4DSFile(AccountingReport accountingExport, String fileName)
-      throws AxelorException, IOException {
+      throws AxelorException, IOException, NullPointerException {
 
     List<String> lines = Lists.newArrayList();
     lines.addAll(generateN4DSLines(accountingExport));
@@ -188,7 +188,8 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
   }
 
   @Override
-  public List<String> generateN4DSLines(AccountingReport accountingExport) throws AxelorException {
+  public List<String> generateN4DSLines(AccountingReport accountingExport)
+      throws AxelorException, NullPointerException {
 
     List<String> lines = Lists.newArrayList();
 
