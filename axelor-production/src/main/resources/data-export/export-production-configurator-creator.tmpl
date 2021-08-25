@@ -149,6 +149,10 @@
 			if (cf.metaField?.id != null) {
 				configuratorProductFormula += "<metaField>${cf.metaField?.name}</metaField>"
 			}
+            if (cf.metaJsonField != null) {
+	            configuratorProductFormula += """
+	                <metaJsonField>${cf.metaJsonField?.name}</metaJsonField>"""
+            }   			
 			configuratorProductFormula += 	"""
 				<formula>"""
 				if (cf.formula != null) {
@@ -172,6 +176,10 @@
 			if (cf.metaField?.id != null) {
 				configuratorSOLineFormula += "<metaField>${cf.metaField?.name}</metaField>"
 			}
+            if (cf.metaJsonField != null) {
+	            configuratorProductFormula += """
+	                <metaJsonField>${cf.metaJsonField?.name}</metaJsonField>"""
+            }   		  			
 			configuratorSOLineFormula += 	"""
 				<formula>"""
 				if (cf.formula != null) {
@@ -420,6 +428,17 @@
 		}
 		configBom += """</unitFormula>
 		<defUnitAsFormula>${cb.defUnitAsFormula}</defUnitAsFormula>"""
+			if (cb.workshopStockLocation?.id != null) {
+				configBom += """
+				<workshopStockLocation>${cb.workshopStockLocation?.id}</workshopStockLocation>"""
+			}
+			configBom += """
+		<workshopStockLocationFormula>"""
+		if (cb.workshopStockLocationFormula != null) {
+			configBom += "${cb.workshopStockLocationFormula}"
+		}
+		configBom += """</workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>${cb.defWorkshopStockLocationAsFormula}</defWorkshopStockLocationAsFormula>"""
 			if (cb.prodProcess?.id != null) {
 				configBom += "<prodProcessCode>${cb.prodProcess?.code}</prodProcessCode>"
 			}

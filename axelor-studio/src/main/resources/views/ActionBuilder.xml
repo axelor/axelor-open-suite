@@ -16,7 +16,7 @@
 	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
 	      <spacer name="appBuilderSpacer" if="!__config__.app.getApp('bpm').getEnableAppBuilder()"/>
 	      <field name="name" required="true"/>
-	      <field name="xmlId" colSpan="3"/>
+	      <field name="xmlId" colSpan="3" required="true"/>
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
 	      <panel name="modelPanel" colSpan="6" itemSpan="12">
 		      <field name="model"  widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 

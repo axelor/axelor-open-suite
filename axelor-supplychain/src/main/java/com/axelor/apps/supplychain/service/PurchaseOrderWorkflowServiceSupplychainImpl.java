@@ -69,7 +69,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       purchaseOrderStockService.createStockMoveFromPurchaseOrder(purchaseOrder);
     }
 
-    if (appAccountService.getAppBudget().getActive()
+    if (appAccountService.getAppBudget().getApp().getActive()
         && !appAccountService.getAppBudget().getManageMultiBudget()) {
       purchaseOrderSupplychainService.generateBudgetDistribution(purchaseOrder);
     }

@@ -17,10 +17,13 @@
  */
 package com.axelor.studio.service.mapper;
 
+import com.axelor.apps.tool.StringTool;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MapperRecord {
 
   private String targetModel = null;
@@ -29,7 +32,7 @@ public class MapperRecord {
 
   private boolean newRecord = true;
 
-  private boolean createVariable = false;
+  private StringBuilder scriptBuilder = new StringBuilder();
 
   private List<MapperField> fields = new ArrayList<MapperField>();
 
@@ -65,47 +68,62 @@ public class MapperRecord {
     this.sourceModel = sourceModel;
   }
 
-  public boolean getCreateVariable() {
-    return createVariable;
-  }
-
-  public void setCreateVariable(boolean createVariable) {
-    this.createVariable = createVariable;
+  public StringBuilder getScriptBuilder() {
+    return this.scriptBuilder;
   }
 
   public String toScript() {
-    StringBuilder stb = new StringBuilder();
+
+    scriptBuilder = new StringBuilder();
+
+    addTarget();
+
+    if (!Strings.isNullOrEmpty(sourceModel)) {
+
+      addSource();
+    }
+
+    addFields();
+
+    addReturn();
+
+    return scriptBuilder.toString();
+  }
+
+  public void addSource() {
+
+    String src = StringTool.toFirstLower(sourceModel);
+
+    src = "def src = " + src + "\n";
+
+    scriptBuilder.append(src);
+  }
+
+  public StringBuilder addTarget() {
+
     if (newRecord) {
-      stb.append("def rec = $ctx.create('" + targetModel + "')\n");
+      scriptBuilder.append("def rec = $ctx.create('" + targetModel + "')\n");
     } else {
-      stb.append(
+      scriptBuilder.append(
           "def rec = $ctx.find('"
               + targetModel
               + "',"
-              + targetModel.substring(0, 1).toLowerCase()
-              + targetModel.substring(1)
+              + StringTool.toFirstLower(targetModel)
               + "Id)\n");
     }
+    return scriptBuilder;
+  }
 
-    if (!Strings.isNullOrEmpty(sourceModel)) {
-      stb.append(
-          "def src = "
-              + sourceModel.substring(0, 1).toLowerCase()
-              + sourceModel.substring(1)
-              + "\n");
-    }
+  public void addFields() {
 
     if (fields != null) {
       for (MapperField field : fields) {
-        stb.append(field.toScript("rec") + "\n");
+        scriptBuilder.append(field.toScript("rec") + "\n");
       }
     }
+  }
 
-    if (createVariable) {
-      stb.append("$ctx.createVariable($ctx.save(rec), execution)");
-    } else {
-      stb.append("return $ctx.save(rec)");
-    }
-    return stb.toString();
+  public void addReturn() {
+    scriptBuilder.append("return $ctx.save(rec)");
   }
 }

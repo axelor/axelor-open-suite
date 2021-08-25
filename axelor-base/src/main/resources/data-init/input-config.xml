@@ -21,13 +21,19 @@
     	<bind column="birtTemplateSet_importId" to="birtTemplateSet" search="self.importId in :birtTemplateSet_importId" eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
     </input>
 
-    <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp"  />
+    <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.App" search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp"  />
+    
+    <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.app.code = :code">
+    	<bind to="app" column="code" search="self.code = :code" />
+    </input>
 	
 	<input file="base_barcodeTypeConfig.csv" separator=";" type="com.axelor.apps.base.db.BarcodeTypeConfig" search="self.name = :name"/>
   	
   	<input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency" search="self.code = :code"  />
 	
-	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId"  />
+	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId"  >
+		<bind to="appBase" column="appBase" search="self.app.code = :appBase" update="true"/>
+	</input>
 	
     <input file="base_language.csv" separator=";"
         type="com.axelor.apps.base.db.Language"

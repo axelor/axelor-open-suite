@@ -35,6 +35,7 @@ import com.axelor.studio.db.SelectionBuilder;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepository;
+import com.axelor.studio.db.repo.AppLoaderRepository;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
@@ -70,6 +71,8 @@ public class ImportService {
   @Inject private MetaFiles metaFiles;
 
   @Inject private MetaFileRepository metaFileRepo;
+
+  @Inject private AppLoaderRepository appLoaderRepository;
 
   public Object importMetaJsonModel(Object bean, Map<String, Object> values) {
 
@@ -156,7 +159,15 @@ public class ImportService {
 
     AppBuilder appBuilder = (AppBuilder) bean;
 
-    return appBuilderRepo.save(appBuilder);
+    appBuilder = appBuilderRepo.save(appBuilder);
+
+    Long appLoaderId = (Long) values.get("appLoaderId");
+
+    if (appLoaderId != null) {
+      appLoaderRepository.find(appLoaderId).addImportedAppBuilderSetItem(appBuilder);
+    }
+
+    return appBuilder;
   }
 
   // Import methods specific for import from AppBuilder
@@ -195,7 +206,7 @@ public class ImportService {
       return null;
     }
 
-    return field;
+    return metaJsonFieldRepo.save(field);
   }
 
   public MetaJsonField importJsonField(Object bean, Map<String, Object> values) {

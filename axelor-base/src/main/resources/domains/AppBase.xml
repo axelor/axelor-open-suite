@@ -4,8 +4,10 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBase" lang="java" extends="App" >
-
+	<entity name="AppBase" lang="java">
+		
+		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+		
 		<datetime name="today" title="Today date" tz="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
@@ -97,10 +99,13 @@
 
 	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
 
+	   	<one-to-many name="emailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink" title="Email links"/>
+
 	   	<string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
 	   	<string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
 
 		<boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners" default="false"/>
+		<boolean name="manageCcBccRelatedTo" title="Manage related CC &amp; BCC emails"/>
 
 	   	<string name="customAppStyle" title="Custom style" large="true" help="Custom css to personnalize web user interface."/>
 		<extra-code>

@@ -31,6 +31,7 @@ import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ProdProductProductionRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
@@ -552,7 +553,12 @@ public class ManufOrderController {
             if (canMerge) {
               response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
             } else {
-              response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR));
+              if (Beans.get(AppProductionService.class).getAppProduction().getManageWorkshop()) {
+                response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR));
+              } else {
+                response.setError(
+                    I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE));
+              }
             }
           }
         } else {
@@ -640,8 +646,27 @@ public class ManufOrderController {
           prodProductList.stream().map(ProdProduct::getProduct).collect(Collectors.toList());
       List<BillOfMaterial> billOfMaterialList =
           mo.getBillOfMaterial().getBillOfMaterialSet().stream()
-              .filter(billOfMaterial -> productList.contains(billOfMaterial.getProduct()))
+              .filter(
+                  billOfMaterial ->
+                      billOfMaterial.getDefineSubBillOfMaterial()
+                          && billOfMaterial.getProdProcess() != null
+                          && productList.contains(billOfMaterial.getProduct()))
               .collect(Collectors.toList());
+      List<BillOfMaterial> defaultBomList =
+          mo.getBillOfMaterial().getBillOfMaterialSet().stream()
+              .filter(
+                  billOfMaterial ->
+                      !billOfMaterial.getDefineSubBillOfMaterial()
+                          && billOfMaterial.getProduct() != null
+                          && billOfMaterial.getProduct().getDefaultBillOfMaterial() != null
+                          && billOfMaterial.getProduct().getDefaultBillOfMaterial().getProdProcess()
+                              != null
+                          && productList.contains(billOfMaterial.getProduct()))
+              .map(bom -> bom.getProduct().getDefaultBillOfMaterial())
+              .collect(Collectors.toList());
+      if (!defaultBomList.isEmpty()) {
+        billOfMaterialList.addAll(defaultBomList);
+      }
       List<ManufOrder> moList =
           Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialList, mo);
       response.setNotify(String.format(I18n.get(IExceptionMessage.MO_CREATED), moList.size()));

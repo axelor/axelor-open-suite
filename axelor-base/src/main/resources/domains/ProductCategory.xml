@@ -13,8 +13,6 @@
     <many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
     <decimal name="maxDiscount" title="Max discount (%)" scale="2" precision="5" min="0" max="100"/>
 
-    <string name="dtype" insertable="false" updatable="false"/>
-  	
   </entity>
   
 </domain-models>

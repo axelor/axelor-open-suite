@@ -84,8 +84,8 @@ public class ActionScriptBuilderService {
         "<action-script name=\""
             + name
             + "\" "
-            + "id=\"studio-"
-            + name
+            + "id=\""
+            + builder.getXmlId()
             + "\" model=\""
             + MetaJsonRecord.class.getName()
             + "\">\n\t"
@@ -97,7 +97,8 @@ public class ActionScriptBuilderService {
             + code
             + "\n\t]]>\n\t</script>\n</action-script>";
 
-    return metaService.updateMetaAction(builder.getName(), "action-script", xml, null);
+    return metaService.updateMetaAction(
+        builder.getName(), "action-script", xml, null, builder.getXmlId());
   }
 
   private String generateScriptCode(ActionBuilder builder) {

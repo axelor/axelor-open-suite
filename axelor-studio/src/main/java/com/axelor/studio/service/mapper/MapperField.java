@@ -17,6 +17,9 @@
  */
 package com.axelor.studio.service.mapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MapperField {
 
   private String dataPath = null;
@@ -25,17 +28,13 @@ public class MapperField {
 
   private String target = null;
 
-  private String targetJsonModel = null;
+  private String jsonModel = null;
 
   private String name = null;
 
   private String parent = null;
 
   private MapperValue value = null;
-
-  private String field = null;
-
-  private String processId = null;
 
   public String getDataPath() {
     return dataPath;
@@ -85,24 +84,12 @@ public class MapperField {
     this.value = value;
   }
 
-  public String getTargetJsonModel() {
-    return targetJsonModel;
+  public String getJsonModel() {
+    return jsonModel;
   }
 
-  public void setTargetJsonModel(String targetJsonModel) {
-    this.targetJsonModel = targetJsonModel;
-  }
-
-  public String getField() {
-    return field;
-  }
-
-  public String getProcessId() {
-    return processId;
-  }
-
-  public void setProcessId(String processId) {
-    this.processId = processId;
+  public void setJsonModel(String jsonModel) {
+    this.jsonModel = jsonModel;
   }
 
   public String toScript(String parent) {
@@ -110,7 +97,7 @@ public class MapperField {
     this.parent = parent;
     StringBuilder stb = new StringBuilder();
 
-    field = parent + "." + name;
+    String field = parent + "." + name;
 
     stb.append(field + " = " + value.toScript(this));
 

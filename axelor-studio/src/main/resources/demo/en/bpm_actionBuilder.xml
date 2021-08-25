@@ -2,7 +2,8 @@
 <action-builders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
-  <action-builder name="action-create-invoice-from-timesheet" 
+  <action-builder name="action-create-invoice-from-timesheet"
+    xmlId="action-create-invoice-from-timesheet"
   	isJson="false" 
   	typeSelect="0" 
   	appBuilder="PRD"
@@ -32,6 +33,7 @@
   </action-builder>
   
   <action-builder name="action-timesheet-line-invert-to-invoice"
+   	xmlId="action-timesheet-line-invert-to-invoice"
 	isJson="false" 
   	typeSelect="1"
   	appBuilder="PRD" 
@@ -46,6 +48,7 @@
   </action-builder>
   
   <action-builder name="action-create-product-order-from-category"
+  	xmlId="action-create-product-order-from-category"
   	isJson="true" 
   	typeSelect="0" 
   	appBuilder="PRD"
@@ -67,6 +70,7 @@
   </action-builder>
   
   <action-builder name="action-product-order-line-update-total"
+    xmlId="action-product-order-line-update-total"
   	isJson="true" 
   	typeSelect="1" 
   	appBuilder="PRD"
@@ -78,6 +82,7 @@
   </action-builder>
   
   <action-builder name="action-product-order-line-get-product-details"
+    xmlId="action-product-order-line-get-product-details"
   	isJson="true" 
   	typeSelect="1"
   	appBuilder="PRD" 
@@ -89,6 +94,7 @@
   </action-builder>
   
   <action-builder name="action-product-order-update-total"
+    xmlId="action-product-order-update-total"
   	isJson="true" 
   	typeSelect="1" 
   	appBuilder="PRD"

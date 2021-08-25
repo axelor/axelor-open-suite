@@ -95,13 +95,8 @@ public class InvoiceLineController {
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
-    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
 
     Invoice invoice = this.getInvoice(context);
 
@@ -112,6 +107,7 @@ public class InvoiceLineController {
       return;
     }
 
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     BigDecimal exTaxTotal;
     BigDecimal companyExTaxTotal;
     BigDecimal inTaxTotal;
@@ -155,9 +151,6 @@ public class InvoiceLineController {
       throws AxelorException {
     Context context = request.getContext();
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
     Map<String, Object> productInformation = new HashMap<>();
@@ -185,10 +178,6 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
 
     Invoice invoice = this.getInvoice(context);
 
@@ -276,10 +265,6 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
 
     Invoice invoice = this.getInvoice(context);
 
@@ -393,9 +378,6 @@ public class InvoiceLineController {
     Context context = request.getContext();
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
 

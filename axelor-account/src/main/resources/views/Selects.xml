@@ -464,6 +464,7 @@
 		<option value="isSupplier">Supplier</option>
 		<option value="isCarrier">Carrier</option>
 		<option value="isFactor">Factor</option>
+		<option value="isEmployee">Employee</option>
 	</selection>
 	
 	<selection name='iaccount.move.functional.origin.select'>
