@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.Assert;
@@ -71,7 +72,7 @@ public class TestFixedAssetService {
     sequenceService = mock(SequenceService.class);
     fixedAssetLineService = mock(FixedAssetLineService.class);
     fixedAssetLineComputationService =
-        new FixedAssetLineComputationServiceImpl(
+        new FixedAssetLineEconomicComputationServiceImpl(
             analyticFixedAssetService,
             fixedAssetDerogatoryLineService,
             fixedAssetDerogatoryLineMoveService);
@@ -101,7 +102,7 @@ public class TestFixedAssetService {
    * ==  Simple linear fixed asset  ==
    * =================================
    */
-  protected FixedAsset generateAndComputeLineSimpleLinearFixedAsset() {
+  protected FixedAsset generateAndComputeLineSimpleLinearFixedAsset() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -119,7 +120,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesSimpleLinearFixedAsset() {
+  public void testGenerateAndComputeLinesSimpleLinearFixedAsset() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineSimpleLinearFixedAsset();
     Assert.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
@@ -127,7 +128,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesSimpleLinearFixedAssetFirstLine() {
+  public void testGenerateAndComputeLinesSimpleLinearFixedAssetFirstLine() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineSimpleLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -140,7 +141,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesSimpleLinearFixedAssetSecondLine() {
+  public void testGenerateAndComputeLinesSimpleLinearFixedAssetSecondLine() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineSimpleLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -153,7 +154,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesSimpleLinearFixedAssetThirdLine() {
+  public void testGenerateAndComputeLinesSimpleLinearFixedAssetThirdLine() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineSimpleLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -166,7 +167,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesSimpleLinearFixedAssetFourthLine() {
+  public void testGenerateAndComputeLinesSimpleLinearFixedAssetFourthLine() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineSimpleLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -179,7 +180,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesSimpleLinearFixedAssetFifthLine() {
+  public void testGenerateAndComputeLinesSimpleLinearFixedAssetFifthLine() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineSimpleLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -197,7 +198,8 @@ public class TestFixedAssetService {
    * ================================================================================================
    */
 
-  protected FixedAsset generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded() {
+  protected FixedAsset generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded()
+      throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -215,7 +217,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeeded() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeeded()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
     Assert.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
@@ -223,7 +226,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFirstLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFirstLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -236,7 +240,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededSecondLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededSecondLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -249,7 +254,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededThirdLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededThirdLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -262,7 +268,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFourthLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFourthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -275,7 +282,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFifthLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFifthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -293,7 +301,7 @@ public class TestFixedAssetService {
    * ==================================
    */
 
-  protected FixedAsset generateAndComputeLineProrataLinearFixedAsset() {
+  protected FixedAsset generateAndComputeLineProrataLinearFixedAsset() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -311,7 +319,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAsset() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAsset() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
     Assert.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
@@ -319,7 +327,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetFirstLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetFirstLine() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -332,7 +340,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetSecondLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetSecondLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -345,7 +354,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetThirdLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetThirdLine() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -358,7 +367,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetFourthLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetFourthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -371,7 +381,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataLinearFixedAssetFifthLine() {
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetFifthLine() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -389,7 +399,7 @@ public class TestFixedAssetService {
    * =====================================
    */
 
-  protected FixedAsset generateAndComputeLineUsProrataLinearFixedAsset() {
+  protected FixedAsset generateAndComputeLineUsProrataLinearFixedAsset() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -407,7 +417,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesUsProrataLinearFixedAsset() {
+  public void testGenerateAndComputeLinesUsProrataLinearFixedAsset() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     Assert.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
@@ -415,7 +425,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetFirstLine() {
+  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetFirstLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -428,7 +439,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetSecondLine() {
+  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetSecondLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -441,7 +453,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetThirdLine() {
+  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetThirdLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -454,7 +467,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetFourthLine() {
+  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetFourthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -467,7 +481,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetFifthLine() {
+  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetFifthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -480,7 +495,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetSixthLine() {
+  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetSixthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -493,7 +509,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetSeventhLine() {
+  public void testGenerateAndComputeLinesUsProrataLinearFixedAssetSeventhLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -511,7 +528,7 @@ public class TestFixedAssetService {
    * =====================================
    */
 
-  protected FixedAsset generateAndComputeLinesProrataDegressiveFixedAsset() {
+  protected FixedAsset generateAndComputeLinesProrataDegressiveFixedAsset() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
@@ -530,7 +547,7 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataDegressiveFixedAsset() {
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAsset() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
     Assert.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
@@ -538,7 +555,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFirstLine() {
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFirstLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -551,7 +569,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetSecondLine() {
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetSecondLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -564,7 +583,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetThirdLine() {
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetThirdLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -577,7 +597,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFourthLine() {
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFourthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -590,7 +611,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFifthLine() {
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetFifthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -603,7 +625,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetSixthLine() {
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetSixthLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -616,7 +639,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetLastLine() {
+  public void testGenerateAndComputeLinesProrataDegressiveFixedAssetLastLine()
+      throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -629,7 +653,8 @@ public class TestFixedAssetService {
   }
 
   @Test
-  public void testGenerateAndComputeLinesNoProrataDegressiveFixedAssetLastLine() {
+  public void testGenerateAndComputeLinesNoProrataDegressiveFixedAssetLastLine()
+      throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,

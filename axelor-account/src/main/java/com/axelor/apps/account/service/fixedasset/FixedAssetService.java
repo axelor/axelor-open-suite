@@ -33,8 +33,9 @@ public interface FixedAssetService {
    *
    * @param fixedAsset
    * @return
+   * @throws AxelorException
    */
-  FixedAsset generateAndComputeLines(FixedAsset fixedAsset);
+  FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException;
 
   /**
    * Allow to create fixed asset from invoice
@@ -70,10 +71,11 @@ public interface FixedAssetService {
    * Validate fixedAsset
    *
    * @param fixedAsset
+   * @throws AxelorException
    */
-  void validate(FixedAsset fixedAsset);
+  void validate(FixedAsset fixedAsset) throws AxelorException;
 
-  int massValidation(List<Long> fixedAssetIds);
+  int massValidation(List<Long> fixedAssetIds) throws AxelorException;
 
   /**
    * Generate and computes derogatoryLines for fixedAsset
@@ -86,15 +88,17 @@ public interface FixedAssetService {
    * Generate and computes fiscalFixedAssetLines for fixedAsset
    *
    * @param fixedAsset
+   * @throws AxelorException
    */
-  void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset);
+  void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
 
   /**
    * Generate and computes fixedAssetLines for fixedAsset
    *
    * @param fixedAsset
+   * @throws AxelorException
    */
-  void generateAndComputeFixedAssetLines(FixedAsset fixedAsset);
+  void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
 
   /**
    * Compute first depreciation date of fixedAsset

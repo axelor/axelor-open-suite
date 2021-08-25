@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import java.math.BigDecimal;
+import java.util.List;
 
 /** This service is used to compute new lines from an existing fixed asset header. */
 public interface FixedAssetLineComputationService {
@@ -51,4 +52,12 @@ public interface FixedAssetLineComputationService {
    * @param prorata
    */
   void multiplyLineBy(FixedAssetLine line, BigDecimal prorata);
+
+  /**
+   * Multiply economic and fiscal lines by prorata
+   *
+   * @param line
+   * @param prorata
+   */
+  void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata);
 }

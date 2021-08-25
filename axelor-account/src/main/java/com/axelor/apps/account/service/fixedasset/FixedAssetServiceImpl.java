@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -63,8 +64,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
 
-  protected FixedAssetLineComputationService fixedAssetLineComputationService;
-
   protected MoveLineService moveLineService;
 
   protected AccountConfigService accountConfigService;
@@ -94,7 +93,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLineService fixedAssetLineService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
-    this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineService = moveLineService;
     this.accountConfigService = accountConfigService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -104,7 +102,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) {
+  public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException {
 
     generateAndComputeFixedAssetLines(fixedAsset);
     generateAndComputeFiscalFixedAssetLines(fixedAsset);
@@ -150,14 +148,19 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   /**
    * {@inheritDoc}
    *
+   * @throws AxelorException
    * @throws NullPointerException if fixedAsset is null
    */
   @Override
-  public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset) {
+  public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset)
+      throws AxelorException {
     Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+      FixedAssetLineComputationService fixedAssetLineComputationService =
+          FixedAssetLineServiceFactory.getFixedAssetComputationService(
+              FixedAssetLineRepository.TYPE_SELECT_FISCAL);
       FixedAssetLine initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
@@ -173,14 +176,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   /**
    * {@inheritDoc}
    *
+   * @throws AxelorException
    * @throws NullPointerException if fixedAsset is null
    */
   @Override
-  public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) {
+  public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+      FixedAssetLineComputationService fixedAssetLineComputationService =
+          FixedAssetLineServiceFactory.getFixedAssetComputationService(
+              FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       FixedAssetLine initialFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
@@ -198,12 +205,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAsset fixedAsset,
       FixedAssetLine initialFixedAssetLine,
       List<FixedAssetLine> fixedAssetLineList,
-      int typeSelect) {
+      int typeSelect)
+      throws AxelorException {
 
     // counter to avoid too many iterations in case of a current or future mistake
     int c = 0;
     final int MAX_ITERATION = 1000;
     FixedAssetLine fixedAssetLine = initialFixedAssetLine;
+    FixedAssetLineComputationService fixedAssetLineComputationService =
+        FixedAssetLineServiceFactory.getFixedAssetComputationService(typeSelect);
     while (c < MAX_ITERATION && fixedAssetLine.getAccountingValue().signum() != 0) {
       fixedAssetLine =
           fixedAssetLineComputationService.computePlannedFixedAssetLine(
@@ -398,11 +408,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   /**
    * {@inheritDoc}
    *
+   * @throws AxelorException
    * @throws NullPointerException if fixedAsset is null
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void validate(FixedAsset fixedAsset) {
+  public void validate(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
       if (fixedAsset.getFixedAssetLineList() != null) {
@@ -444,7 +455,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  public int massValidation(List<Long> fixedAssetIds) {
+  public int massValidation(List<Long> fixedAssetIds) throws AxelorException {
     int count = 0;
     for (Long id : fixedAssetIds) {
       FixedAsset fixedAsset = fixedAssetRepo.find(id);
@@ -493,7 +504,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  public void updateDepreciation(FixedAsset fixedAsset) {
+  public void updateDepreciation(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (correctedAccountingValue != null
@@ -568,10 +579,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   private void updateLines(
       FixedAsset fixedAsset,
       FixedAssetLine firstPlannedFixedAssetLine,
-      List<FixedAssetLine> fixedAssetLineList) {
+      List<FixedAssetLine> fixedAssetLineList)
+      throws AxelorException {
     FixedAssetLine initialFixedAssetLine =
-        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
-            fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+        FixedAssetLineServiceFactory.getFixedAssetComputationService(
+                FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
+            .computeInitialPlannedFixedAssetLine(
+                fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
     initialFixedAssetLine.setCumulativeDepreciation(
         initialFixedAssetLine
             .getCumulativeDepreciation()
@@ -887,12 +901,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
         fixedAsset.getFixedAssetDerogatoryLineList();
     if (fixedAssetLineList != null) {
-      fixedAssetLineList.forEach(
-          line -> fixedAssetLineComputationService.multiplyLineBy(line, prorata));
+      FixedAssetLineServiceFactory.getFixedAssetComputationService(
+              FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
+          .multiplyLinesBy(fixedAssetLineList, prorata);
     }
     if (fiscalAssetLineList != null) {
-      fiscalAssetLineList.forEach(
-          line -> fixedAssetLineComputationService.multiplyLineBy(line, prorata));
+      FixedAssetLineServiceFactory.getFixedAssetComputationService(
+              FixedAssetLineRepository.TYPE_SELECT_FISCAL)
+          .multiplyLinesBy(fiscalAssetLineList, prorata);
     }
     if (fixedAsset
         .getDepreciationPlanSelect()

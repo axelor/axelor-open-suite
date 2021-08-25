@@ -47,7 +47,7 @@ public class TestFixedAssetLineComputationService {
     analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
     fixedAssetDerogatoryLineMoveService = mock(FixedAssetDerogatoryLineMoveService.class);
     fixedAssetLineComputationService =
-        new FixedAssetLineComputationServiceImpl(
+        new FixedAssetLineEconomicComputationServiceImpl(
             analyticFixedAssetService,
             fixedAssetDerogatoryLineService,
             fixedAssetDerogatoryLineMoveService);
