@@ -1773,6 +1773,7 @@
 "Reconcile group filters","Filtres sur lettrage ",,
 "Reconcile list","Liste des réconciliations",,
 "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company","Réconciliation : Les lignes de mouvement sélectionnées doivent concerner la même société. Rapprocher : %s société \n Ligne de mouvement de débit : %s société \n Ligne de mouvement de crédit : %s société",,
+"Reconciliation cancel date","Date d'annulation de réconciliation",,
 "Reconciliation date","Date de réconciliation",,
 "Ref.","Réf.",,
 "Ref. on","Avo. Le",,

@@ -1772,6 +1772,7 @@
 "Reconcile group filters",,,
 "Reconcile list",,,
 "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company",,,
+"Reconciliation cancel date",,,
 "Reconciliation date",,,
 "Ref.",,,
 "Ref. on",,,
