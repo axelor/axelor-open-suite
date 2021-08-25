@@ -22,7 +22,7 @@ public class AnalyticAxisByCompanyController {
           request.getContext().asType(AnalyticAxisByCompany.class);
 
       if (analyticAxisByCompany.getAccountConfig() != null) {
-        AccountConfig config = analyticAxisByCompany.getAccountConfig();
+        AccountConfig config = request.getContext().getParent().asType(AccountConfig.class);
         List<Long> idList = new ArrayList<Long>();
         for (AnalyticAxisByCompany axisByCompany : config.getAnalyticAxisByCompanyList()) {
           idList.add(axisByCompany.getAnalyticAxis().getId());

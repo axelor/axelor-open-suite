@@ -12,7 +12,7 @@
 	<form name="analytic-axis-by-company-form" title="Analytic Axis By company"
 		model="com.axelor.apps.account.db.AnalyticAxisByCompany" onNew="action-record-analytic-axis-by-company-on-new">
 		<panel name="mainPanel">
-			<field name="orderSelect" />
+			<field name="orderSelect"/>
 			<field name="analyticAxis"/>
 			<field name="accountConfig.company.code" title="Company" hidden="true"/>
 		</panel>
@@ -21,7 +21,7 @@
 	<form name="analytic-axis-by-company-config-form" title="Analytic Axis By company"
 		model="com.axelor.apps.account.db.AnalyticAxisByCompany" onNew="action-group-axis-by-company-on-new">
 		<panel name="mainPanel">
-			<field name="orderSelect" />
+			<field name="orderSelect" readonly="true"/>
 			<field name="analyticAxis" onSelect="action-method-axis-by-company-set-axis-domain"/>
 			<field name="accountConfig.company.code" title="Company" hidden="true"/>
 		</panel>

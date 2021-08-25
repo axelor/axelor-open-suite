@@ -17,7 +17,7 @@
 			<field name="company" required="true"/>
 			<field name="fromAccount" domain="self.company = :company" requiredIf="company != null" readonlyIf="company == null"/>
 			<field name="toAccount" onSelect="action-on-select-to-account-set-domain" requiredIf="company != null" readonlyIf="company == null"/>
-			<field name="analyticAccountSet" colSpan="12" readonlyIf="company == null" domain="self.analyticAxis.company = :company"/>
+			<field name="analyticAccountSet" colSpan="12" readonlyIf="company == null" domain="self.analyticAxis.company = :company" canNew="false" canEdit="false"/>
         </panel>      
     </form>
     

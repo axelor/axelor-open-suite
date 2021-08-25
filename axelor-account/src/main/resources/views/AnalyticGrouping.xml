@@ -12,7 +12,7 @@
         <panel name="mainPanel">
 	        <field name="code"/>
 			<field name="name"/>
-			<field name="analyticAxis"/>
+			<field name="analyticAxis" required="true"/>
 			<field name="analyticGroupingValueList" grid-view="analytic-grouping-value-grouping-grid" form-view="analytic-grouping-value-grouping-form" colSpan="12" canNew="true" canSelect="true"/>
         </panel>      
     </form>

@@ -19,7 +19,7 @@
         <panel name="mainPanel">
 	        <field name="code"/>
 			<field name="name"/>
-			<field name="analyticGrouping"/>
+			<field name="analyticGrouping" required="true"/>
         </panel>      
     </form>
     

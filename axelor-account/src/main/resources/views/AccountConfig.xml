@@ -260,8 +260,7 @@
 				<field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
 				<field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
 				<field name="analyticJournal" domain="self.company = :company" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
-				<field name="analyticAxisByCompanyList" colSpan="12" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" canNew="true" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid" onChange="save"/>
-				
+				<field name="analyticAxisByCompanyList" colSpan="12" canNew="true" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
 			</panel>
 			
 		</panel-tabs>
@@ -300,7 +299,7 @@
 		<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
 		<context name="_company" expr="eval: __this__"/>
 	</action-view>
-	
+
 	<action-validate name="action-validate-account-config-on-save-analytic">
 		<error if="manageAnalyticAccounting &amp;&amp; nbrOfAnalyticAxisSelect != analyticAxisByCompanyList.size" message="The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis."/>
 	</action-validate>

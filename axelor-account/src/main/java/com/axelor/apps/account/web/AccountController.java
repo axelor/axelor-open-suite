@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
@@ -32,6 +33,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -88,6 +90,57 @@ public class AccountController {
             account.getCompany().getName());
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      if (account != null) {
+        if (account.getAnalyticDistributionTemplate() == null) {
+          response.setAlert(I18n.get("Please put AnalyticDistribution Template"));
+
+        } else {
+          if (account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList() == null) {
+            response.setAlert(
+                I18n.get(
+                    "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
+          } else {
+            AccountAnalyticRulesRepository accountAnalyticRulesRepository =
+                Beans.get(AccountAnalyticRulesRepository.class);
+            if (accountAnalyticRulesRepository.findByAccounts(account) != null
+                && !accountAnalyticRulesRepository.findByAccounts(account).isEmpty()) {
+              List<Long> accountAnalyticAccountList = new ArrayList<Long>();
+              List<Long> rulesAnalyticAccountList = new ArrayList<Long>();
+              account
+                  .getAnalyticDistributionTemplate()
+                  .getAnalyticDistributionLineList()
+                  .forEach(
+                      analyticDistributionLine ->
+                          accountAnalyticAccountList.add(
+                              analyticDistributionLine.getAnalyticAccount().getId()));
+              accountAnalyticRulesRepository
+                  .findByAccounts(account)
+                  .forEach(
+                      rules ->
+                          rules
+                              .getAnalyticAccountSet()
+                              .forEach(
+                                  analyticAccount ->
+                                      rulesAnalyticAccountList.add(analyticAccount.getId())));
+              for (Long analyticAccount : accountAnalyticAccountList) {
+                if (!rulesAnalyticAccountList.contains(analyticAccount)) {
+                  response.setAlert(
+                      I18n.get(
+                          "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."));
+                }
+              }
+            }
+          }
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
