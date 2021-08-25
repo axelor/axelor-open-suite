@@ -1050,7 +1050,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               accountingExport.getCompany().getName()),
           ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
     }
-    if (Strings.isNullOrEmpty(companyPartner.getMainActivityCode())) {
+    if (companyPartner.getMainActivity() == null
+        || Strings.isNullOrEmpty(companyPartner.getMainActivity().getCode())) {
       TraceBackService.trace(
           new AxelorException(
               accountingExport,
