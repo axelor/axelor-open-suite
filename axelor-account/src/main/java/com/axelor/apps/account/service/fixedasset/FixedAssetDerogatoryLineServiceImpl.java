@@ -165,7 +165,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     return null;
   }
 
-  private BigDecimal computeDerogatoryBalanceAmount(
+  protected BigDecimal computeDerogatoryBalanceAmount(
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
       BigDecimal derogatoryAmount,
       BigDecimal incomeDepreciationAmount) {
@@ -193,7 +193,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     }
   }
 
-  private void multiplyLineBy(FixedAssetDerogatoryLine line, BigDecimal prorata) {
+  protected void multiplyLineBy(FixedAssetDerogatoryLine line, BigDecimal prorata) {
 
     line.setDepreciationAmount(
         prorata
@@ -243,7 +243,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
         firstPlannedDerogatoryLine, creditAccount, debitAccount, amount);
   }
 
-  private Account computeCessionDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+  protected Account computeCessionDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
     if (fixedAssetDerogatoryLine.getDerogatoryBalanceAmount().compareTo(BigDecimal.ZERO) >= 0) {
       return fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
@@ -251,7 +251,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
   }
 
-  private Account computeCessionCreditAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+  protected Account computeCessionCreditAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
     if (fixedAssetDerogatoryLine.getDerogatoryBalanceAmount().compareTo(BigDecimal.ZERO) >= 0) {
       return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();

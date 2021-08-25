@@ -86,7 +86,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     }
   }
 
-  private BigDecimal computeAmount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+  protected BigDecimal computeAmount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
     // When calling this fonction, incomeDepreciationAmount and derogatoryAmount are not supposed to
     // be both different to 0.
     // Because when computed, only one of theses values is filled. But they can be both equals to 0.
@@ -96,7 +96,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     return fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
   }
 
-  private Account computeDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+  protected Account computeDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
     if (fixedAssetDerogatoryLine.getIncomeDepreciationAmount().signum() != 0) {
       return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
@@ -104,7 +104,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     return fixedAsset.getFixedAssetCategory().getExpenseDepreciationDerogatoryAccount();
   }
 
-  private Account computeCreditAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+  protected Account computeCreditAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
     if (fixedAssetDerogatoryLine.getIncomeDepreciationAmount().signum() != 0) {
       return fixedAsset.getFixedAssetCategory().getIncomeDepreciationDerogatoryAccount();
