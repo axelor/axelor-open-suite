@@ -167,9 +167,27 @@ public class BankReconciliationController {
 
   public void loadBankStatement(ActionRequest request, ActionResponse response) {
     try {
-      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      Context context = request.getContext();
+      BankReconciliation bankReconciliation = context.asType(BankReconciliation.class);
       bankReconciliationService.loadBankStatement(
           bankReconciliationRepository.find(bankReconciliation.getId()));
+      if (bankReconciliation.getCompany() != null) {
+        if (bankReconciliation.getCompany().getBankPaymentConfig() != null) {
+          if (bankReconciliation
+              .getCompany()
+              .getBankPaymentConfig()
+              .getHasAutoMoveFromStatementRule()) {
+            bankReconciliationService.reconciliateAccordingToQueries(
+                bankReconciliationRepository.find(bankReconciliation.getId()));
+          }
+          if (bankReconciliation
+              .getCompany()
+              .getBankPaymentConfig()
+              .getHasAutomaticReconciliation()) {
+            bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+          }
+        }
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -183,6 +201,7 @@ public class BankReconciliationController {
       bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
       bankReconciliation.setIncludeOtherBankStatements(true);
       bankReconciliationService.loadBankStatement(bankReconciliation, false);
+
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

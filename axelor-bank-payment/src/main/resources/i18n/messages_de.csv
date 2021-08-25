@@ -529,6 +529,7 @@
 "Label","Etikett",,
 "Language","Sprache",,
 "Last segment","Letztes Segment",,
+"Legend for dynamic parameter manage in bank payment config : amt+ for a tolerance of +X, amt- for -X, %date for a tolerance of + or - X days",,,
 "Line type","Linientyp",,
 "Load bank statements","Kontoauszüge laden",,
 "Load certificate","Ladezertifikat",,
