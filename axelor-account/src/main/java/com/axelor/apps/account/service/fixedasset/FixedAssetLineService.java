@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,4 +88,15 @@ public interface FixedAssetLineService {
    */
   Optional<FixedAssetLine> findNewestFixedAssetLine(
       List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
+
+  /**
+   * This method group and sort {@link FixedAsset#getFixedAssetLineList()} and {@link
+   * FixedAsset#getFiscalFixedAssetLineList()} by {@link FixedAssetLine#getDepreciationDate()}.
+   * Because it sorted, the method will explicitly return a {@link LinkedHashMap}.
+   *
+   * @param fixedAsset
+   * @return generated {@link LinkedHashMap}
+   */
+  LinkedHashMap<LocalDate, List<FixedAssetLine>> groupAndSortByDateFixedAssetLine(
+      FixedAsset fixedAsset);
 }

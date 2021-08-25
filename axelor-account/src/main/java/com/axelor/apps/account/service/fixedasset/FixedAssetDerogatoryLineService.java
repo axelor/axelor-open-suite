@@ -39,4 +39,20 @@ public interface FixedAssetDerogatoryLineService {
   void copyFixedAssetDerogatoryLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset);
 
   void computeDerogatoryBalanceAmount(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList);
+
+  /**
+   * Method that generates a {@link FixedAssetDerogatoryLine} using econimicFixedAssetLine and
+   * fiscalFixedAssetLine.
+   *
+   * @param economicFixedAssetLine
+   * @param fiscalFixedAssetLine
+   * @param previousFixedAssetDerogatoryLine
+   * @param date
+   * @return generated {@link FixedAssetDerogatoryLine}
+   */
+  FixedAssetDerogatoryLine computePlannedDerogatoryLine(
+      FixedAssetLine economicFixedAssetLine,
+      FixedAssetLine fiscalFixedAssetLine,
+      FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
+      LocalDate date);
 }
