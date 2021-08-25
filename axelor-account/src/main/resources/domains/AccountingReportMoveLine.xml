@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
   
   <entity name="AccountingReportMoveLine" lang="java">
-       <many-to-one ref="com.axelor.apps.account.db.TaxPaymentMoveLine" name="taxPaymentMoveLine" initParam="true" title="Tax payment move line"/>
+       <many-to-one ref="PaymentMoveLineDistribution" name="paymentMoveLineDistribution" initParam="true" title="Payment move line distribution"/>
        <boolean name="excludeFromDas2Report" title="Exclude from DAS2 report" default="false"/>
        <boolean name="exported" title="Exported" default="false"/>
        <many-to-one ref="com.axelor.apps.account.db.AccountingReport" name="accountingReport" title ="Accounting report" initParam="true"/>

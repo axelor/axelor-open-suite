@@ -98,6 +98,4 @@ public interface MoveService {
   Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException;
 
   Move updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(Move move) throws AxelorException;
-
-  public void updateMoveInclusionInDas2Report(MoveLine moveLine, boolean state);
 }

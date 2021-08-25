@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
-import com.axelor.apps.account.db.TaxPaymentMoveLine;
+import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
@@ -30,10 +30,10 @@ import java.util.List;
 public interface AccountingReportMoveLineService {
 
   public void createAccountingReportMoveLines(
-      List<BigInteger> taxPaymentMoveLineIds, AccountingReport accountingReport);
+      List<BigInteger> paymentMoveLineDistributionIds, AccountingReport accountingReport);
 
   public void createAccountingReportMoveLine(
-      TaxPaymentMoveLine taxPaymentMoveLine, AccountingReport accountingReport);
+      PaymentMoveLineDistribution paymentMoveLineDistribution, AccountingReport accountingReport);
 
   public void processExportMoveLine(
       AccountingReportMoveLine reportMoveLine, AccountingReport accountingExport);

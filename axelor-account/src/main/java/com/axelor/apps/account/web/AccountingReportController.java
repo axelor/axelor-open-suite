@@ -17,11 +17,21 @@
  */
 package com.axelor.apps.account.web;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingReportService;
@@ -38,13 +48,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class AccountingReportController {
@@ -64,9 +67,7 @@ public class AccountingReportController {
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
 
       if (accountingReport.getReportType().getTypeSelect()
-              == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS
-          || accountingReport.getReportType().getTypeSelect()
-              == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS) {
 
         if (accountingReportService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
@@ -79,15 +80,15 @@ public class AccountingReportController {
                   "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
         }
 
-        List<BigInteger> moveLineIdList =
-            accountingReportService.getAccountingReportDas2Pieces(accountingReport, true);
+        List<BigInteger> paymentMoveLinedistributionIdList =
+            accountingReportService.getAccountingReportDas2Pieces(accountingReport);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
-        actionViewBuilder.model(MoveLine.class.getName());
-        actionViewBuilder.add("grid", "move-line-das2-grid");
-        actionViewBuilder.add("form", "move-line-form");
-        actionViewBuilder.param("search-filters", "move-line-filters");
-        actionViewBuilder.domain("self.id in (" + Joiner.on(",").join(moveLineIdList) + ")");
+        actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
+        actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
+        actionViewBuilder.add("form", "payment-move-line-distribution-grid");
+        actionViewBuilder.domain(
+            "self.id in (" + Joiner.on(",").join(paymentMoveLinedistributionIdList) + ")");
 
         response.setReload(true);
         response.setView(actionViewBuilder.map());
@@ -212,9 +213,7 @@ public class AccountingReportController {
       logger.debug("Type selected : {}", typeSelect);
 
       if (accountingReport.getReportType().getTypeSelect()
-              == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS
-          || accountingReport.getReportType().getTypeSelect()
-              == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS) {
 
         if (accountingReportService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(

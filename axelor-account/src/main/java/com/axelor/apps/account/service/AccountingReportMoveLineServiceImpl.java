@@ -19,10 +19,10 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
-import com.axelor.apps.account.db.TaxPaymentMoveLine;
+import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportMoveLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
+import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -61,7 +61,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
   protected AccountingReportRepository accountingReportRepo;
 
-  protected TaxPaymentMoveLineRepository taxPaymentmoveLineRepo;
+  protected PaymentMoveLineDistributionRepository paymentMoveLineDistributionRepo;
 
   protected AppAccountService appAccountService;
 
@@ -71,11 +71,11 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
   public AccountingReportMoveLineServiceImpl(
       AccountingReportMoveLineRepository accountingReportMoveLineRepo,
       AccountingReportRepository accountingReportRepo,
-      TaxPaymentMoveLineRepository taxPaymentmoveLineRepo,
+      PaymentMoveLineDistributionRepository paymentMoveLineDistributionRepo,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService) {
     this.accountingReportMoveLineRepo = accountingReportMoveLineRepo;
-    this.taxPaymentmoveLineRepo = taxPaymentmoveLineRepo;
+    this.paymentMoveLineDistributionRepo = paymentMoveLineDistributionRepo;
     this.accountingReportRepo = accountingReportRepo;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
@@ -83,14 +83,15 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
   @Override
   public void createAccountingReportMoveLines(
-      List<BigInteger> taxPaymentMoveLineIds, AccountingReport accountingReport) {
+      List<BigInteger> paymentMoveLineDistributioneIds, AccountingReport accountingReport) {
 
     int i = 0;
-    for (BigInteger id : taxPaymentMoveLineIds) {
-      TaxPaymentMoveLine taxPaymentMoveLine = taxPaymentmoveLineRepo.find(id.longValue());
-      if (taxPaymentMoveLine != null) {
+    for (BigInteger id : paymentMoveLineDistributioneIds) {
+      PaymentMoveLineDistribution paymentMoveLineDistribution =
+          paymentMoveLineDistributionRepo.find(id.longValue());
+      if (paymentMoveLineDistribution != null) {
         createAccountingReportMoveLine(
-            taxPaymentMoveLine, accountingReportRepo.find(accountingReport.getId()));
+            paymentMoveLineDistribution, accountingReportRepo.find(accountingReport.getId()));
         i++;
         if (i % 10 == 0) {
           JPA.clear();
@@ -102,12 +103,12 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
   @Transactional
   @Override
   public void createAccountingReportMoveLine(
-      TaxPaymentMoveLine taxPaymentMoveLine, AccountingReport accountingReport) {
+      PaymentMoveLineDistribution paymentMoveLineDistribution, AccountingReport accountingReport) {
 
     AccountingReportMoveLine accountingReportMoveLine =
-        new AccountingReportMoveLine(taxPaymentMoveLine, accountingReport);
+        new AccountingReportMoveLine(paymentMoveLineDistribution, accountingReport);
     accountingReportMoveLine.setExcludeFromDas2Report(
-        taxPaymentMoveLine.getReconcile().getCreditMoveLine().getExcludeFromDas2Report());
+        paymentMoveLineDistribution.getExcludeFromDas2Report());
     accountingReportMoveLineRepo.save(accountingReportMoveLine);
   }
 
@@ -135,23 +136,12 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     for (AccountingReportMoveLine reportMoveLine : reportMoveLines) {
 
-      Partner partner =
-          reportMoveLine
-              .getTaxPaymentMoveLine()
-              .getReconcile()
-              .getCreditMoveLine()
-              .getMove()
-              .getPartner();
+      Partner partner = reportMoveLine.getPaymentMoveLineDistribution().getPartner();
       if (partner == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_MOVE_LINE_PARTNER_MISSING),
-            reportMoveLine
-                .getTaxPaymentMoveLine()
-                .getReconcile()
-                .getCreditMoveLine()
-                .getMove()
-                .getReference());
+            reportMoveLine.getPaymentMoveLineDistribution().getMove().getReference());
       }
       if (!partners.contains(partner)) {
         partners.add(partner);
@@ -167,7 +157,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     String query =
         "self.accountingExport = ?1 AND self.excludeFromDas2Report != true AND self.exported != true";
     if (checkN4DSCode) {
-      query += "AND self.taxPaymentMoveLine.reconcile.creditMove.serviceType.n4dsCode is not null";
+      query += "AND self.paymentMoveLineDistribution.move.serviceType.n4dsCode is not null";
     }
 
     return accountingReportMoveLineRepo.all().filter(query, accountingExport).fetch();

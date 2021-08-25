@@ -810,98 +810,86 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   @SuppressWarnings("unchecked")
   @Override
-  public List<BigInteger> getAccountingReportDas2Pieces(
-      AccountingReport accountingReport, boolean selectMoveLines) {
+  public List<BigInteger> getAccountingReportDas2Pieces(AccountingReport accountingReport) {
 
-    String select = "CMOVELINE.ID ";
-    if (!selectMoveLines) {
-      select = "TMOVELINE.ID ";
-    }
     String queryStr =
-        "WITH TIERS AS(SELECT PARTNER.ID AS ID "
-            + "FROM ACCOUNT_TAX_PAYMENT_MOVE_LINE TMOVELINE "
-            + "JOIN ACCOUNT_RECONCILE RECONCILE ON TMOVELINE.RECONCILE = RECONCILE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVELINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVELINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE CMOVELINE ON RECONCILE.CREDIT_MOVE_LINE = CMOVELINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE CMOVE ON CMOVELINE.MOVE = CMOVE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVELINE.MOVE = DMOVE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL CJOURNAL ON CMOVE.JOURNAL = CJOURNAL.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE CJOURNAL_TYPE ON CJOURNAL.JOURNAL_type = CJOURNAL_TYPE.ID "
-            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON CMOVE.PARTNER = PARTNER.ID "
-            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON CMOVE.COMPANY = COMPANY.ID "
-            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON CMOVE.COMPANY_CURRENCY = CURRENCY.ID "
-            + "WHERE RECONCILE.STATUS_SELECT IN (2,3) "
-            + "AND TMOVELINE.DATE_VAL >= '"
+        "WITH PARTNERS AS (SELECT PARTNER.ID AS ID "
+            + "FROM ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD "
+            + "LEFT OUTER JOIN ACCOUNT_RECONCILE RECONCILE ON PMVLD.RECONCILE = RECONCILE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON PMVLD.MOVE_LINE = MOVELINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE MOVE ON PMVLD.MOVE = MOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_JOURNAL JOURNAL ON MOVE.JOURNAL = JOURNAL.ID "
+            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE JOURNAL_TYPE ON JOURNAL.JOURNAL_TYPE = JOURNAL_TYPE.ID "
+            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
+            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON MOVE.COMPANY = COMPANY.ID "
+            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
+            + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
+            + "AND PMVLD.OPERATION_DATE >= '"
             + accountingReport.getDateFrom()
             + "' "
-            + "AND TMOVELINE.DATE_VAL <= '"
+            + "AND PMVLD.OPERATION_DATE <= '"
             + accountingReport.getDateTo()
             + "' "
-            + "AND DMOVELINE.SERVICE_TYPE IS NOT NULL "
-            + "AND CMOVELINE.SERVICE_TYPE IS NOT NULL "
-            + "AND DMOVELINE.DAS2ACTIVITY IS NOT NULL "
-            + "AND CMOVELINE.DAS2ACTIVITY IS NOT NULL "
-            + "AND CJOURNAL_TYPE.CODE = 'ACH' "
+            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
+            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
+            + "AND JOURNAL_TYPE.CODE = 'ACH' "
             + "AND COMPANY.ID = "
             + accountingReport.getCompany().getId()
-            + " AND CURRENCY.ID = "
+            + " AND CURRENCY.ID =  "
             + accountingReport.getCurrency().getId()
-            + " AND CMOVE.IGNORE_IN_ACCOUNTING_OK != true "
-            + "AND TMOVELINE.ID NOT IN (SELECT TPMOVE_LINE.ID "
-            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE T "
-            + "LEFT OUTER JOIN ACCOUNT_TAX_PAYMENT_MOVE_LINE TPMOVE_LINE ON T.TAX_PAYMENT_MOVE_LINE = TPMOVE_LINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON T.ACCOUNTING_REPORT = REPORT.ID "
+            + " AND MOVE.IGNORE_IN_ACCOUNTING_OK != true "
+            + "AND PMVLD.ID NOT IN (SELECT PMVLD.ID "
+            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY "
+            + "LEFT OUTER JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON HISTORY.ACCOUNTING_REPORT = REPORT.ID "
             + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT_TYPE REPORT_TYPE ON REPORT.REPORT_TYPE = REPORT_TYPE.ID "
-            + "WHERE T.ACCOUNTING_REPORT != "
+            + "WHERE  "
+            + "ACCOUNTING_REPORT != "
             + accountingReport.getId()
             + " AND REPORT_TYPE.TYPE_SELECT = "
             + accountingReport.getReportType().getTypeSelect()
-            + " AND (T.EXCLUDE_FROM_DAS2REPORT != true OR T.EXPORTED != true) ) "
+            + " AND (HISTORY.EXCLUDE_FROM_DAS2REPORT != true OR HISTORY.EXPORTED != true) ) "
             + "GROUP BY PARTNER.ID "
-            + "HAVING SUM(TMOVELINE.DETAIL_PAYMENT_AMOUNT) >= "
+            + "HAVING SUM(PMVLD.IN_TAX_PRORATED_AMOUNT) >= "
             + accountingReport.getMinAmountExcl()
             + " ) "
-            + "SELECT "
-            + select
-            + "FROM ACCOUNT_TAX_PAYMENT_MOVE_LINE TMOVELINE "
-            + "JOIN ACCOUNT_RECONCILE RECONCILE ON TMOVELINE.RECONCILE = RECONCILE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVELINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVELINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE CMOVELINE ON RECONCILE.CREDIT_MOVE_LINE = CMOVELINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE CMOVE ON CMOVELINE.MOVE = CMOVE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVELINE.MOVE = DMOVE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL CJOURNAL ON CMOVE.JOURNAL = CJOURNAL.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE CJOURNAL_TYPE ON CJOURNAL.JOURNAL_type = CJOURNAL_TYPE.ID "
-            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON CMOVE.PARTNER = PARTNER.ID "
-            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON CMOVE.COMPANY = COMPANY.ID "
-            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON CMOVE.COMPANY_CURRENCY = CURRENCY.ID "
-            + "WHERE RECONCILE.STATUS_SELECT IN (2,3) "
-            + "AND TMOVELINE.DATE_VAL >= '"
+            + "SELECT PMVLD.ID AS PAYMENTMVLD "
+            + "FROM ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD "
+            + "LEFT OUTER JOIN ACCOUNT_RECONCILE RECONCILE ON PMVLD.RECONCILE = RECONCILE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON PMVLD.MOVE_LINE = MOVELINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE MOVE ON PMVLD.MOVE = MOVE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_JOURNAL JOURNAL ON MOVE.JOURNAL = JOURNAL.ID "
+            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE JOURNAL_TYPE ON JOURNAL.JOURNAL_TYPE = JOURNAL_TYPE.ID "
+            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
+            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON MOVE.COMPANY = COMPANY.ID "
+            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
+            + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
+            + "AND PMVLD.OPERATION_DATE >= '"
             + accountingReport.getDateFrom()
             + "' "
-            + "AND TMOVELINE.DATE_VAL <= '"
+            + "AND PMVLD.OPERATION_DATE <= '"
             + accountingReport.getDateTo()
             + "' "
-            + "AND DMOVELINE.SERVICE_TYPE IS NOT NULL "
-            + "AND CMOVELINE.SERVICE_TYPE IS NOT NULL "
-            + "AND DMOVELINE.DAS2ACTIVITY IS NOT NULL "
-            + "AND CMOVELINE.DAS2ACTIVITY IS NOT NULL "
-            + "AND CJOURNAL_TYPE.CODE = 'ACH' "
+            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
+            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
+            + "AND JOURNAL_TYPE.CODE = 'ACH' "
             + "AND COMPANY.ID = "
             + accountingReport.getCompany().getId()
-            + " AND CURRENCY.ID = "
+            + " AND CURRENCY.ID =  "
             + accountingReport.getCurrency().getId()
-            + " AND CMOVE.IGNORE_IN_ACCOUNTING_OK != true "
-            + "AND PARTNER.ID IN (SELECT ID FROM TIERS) "
-            + "AND TMOVELINE.ID NOT IN (SELECT TPMOVE_LINE.ID "
-            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE T "
-            + "LEFT OUTER JOIN ACCOUNT_TAX_PAYMENT_MOVE_LINE TPMOVE_LINE ON T.TAX_PAYMENT_MOVE_LINE = TPMOVE_LINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON T.ACCOUNTING_REPORT = REPORT.ID "
+            + " AND MOVE.IGNORE_IN_ACCOUNTING_OK != true "
+            + "AND PMVLD.ID NOT IN (SELECT PMVLD.ID "
+            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY "
+            + "LEFT OUTER JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID "
+            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON HISTORY.ACCOUNTING_REPORT = REPORT.ID "
             + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT_TYPE REPORT_TYPE ON REPORT.REPORT_TYPE = REPORT_TYPE.ID "
-            + "WHERE T.ACCOUNTING_REPORT != "
+            + "WHERE  "
+            + "ACCOUNTING_REPORT != "
             + accountingReport.getId()
             + " AND REPORT_TYPE.TYPE_SELECT = "
             + accountingReport.getReportType().getTypeSelect()
-            + " AND (T.EXCLUDE_FROM_DAS2REPORT != true OR T.EXPORTED != true) ) ";
+            + " AND (HISTORY.EXCLUDE_FROM_DAS2REPORT != true OR HISTORY.EXPORTED != true) ) "
+            + "AND PARTNER.ID IN (SELECT ID FROM PARTNERS) ";
 
     Query query = JPA.em().createNativeQuery(queryStr);
 
@@ -912,9 +900,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     accountingReport.clearAccountingReportMoveLineList();
 
-    List<BigInteger> taxPaymentMoveLineIds = getAccountingReportDas2Pieces(accountingReport, false);
+    List<BigInteger> paymentMoveLineDistributioneIds =
+        getAccountingReportDas2Pieces(accountingReport);
     accountingReportMoveLineService.createAccountingReportMoveLines(
-        taxPaymentMoveLineIds, accountingReport);
+        paymentMoveLineDistributioneIds, accountingReport);
   }
 
   @Transactional

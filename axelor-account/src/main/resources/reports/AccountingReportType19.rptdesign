@@ -489,48 +489,56 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="columnName">das2activity_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">das2activity_name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">das2activity_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">service_type_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">service_type_code</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">service_type_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">service_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">service_name</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">service_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">address</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">address</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">address</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">code_postal</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">code_postal</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">code_postal</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">registration_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">registration_code</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">registration_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">amount</text-property>
                 </structure>
             </list-property>
@@ -658,16 +666,15 @@ TRIM(CONCAT(ADDRESS.ADDRESSL2,' ',ADDRESS.ADDRESSL3,' ',ADDRESS.ADDRESSL4,' ',AD
 ADDRESS.ADDRESSL6 AS code_postal,
 PARTNER.REGISTRATION_CODE as registration_code ,
 MOVELINE.PARTNER_FULL_NAME as partner,
-SUM(TMOVELINE.DETAIL_PAYMENT_AMOUNT) AS amount
-FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE T
-JOIN ACCOUNT_TAX_PAYMENT_MOVE_LINE TMOVELINE ON T.TAX_PAYMENT_MOVE_LINE = TMOVELINE.ID
-JOIN ACCOUNT_RECONCILE RECONCILE ON (TMOVELINE.RECONCILE = RECONCILE.ID)
-LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON (RECONCILE.CREDIT_MOVE_LINE = MOVELINE.ID)
-LEFT OUTER JOIN PUBLIC.ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (MOVELINE.SERVICE_TYPE = SERVICETYPE.ID)
-LEFT OUTER JOIN BASE_PARTNER PARTNER ON (MOVELINE.PARTNER = PARTNER.ID)
-LEFT OUTER JOIN PUBLIC.BASE_ADDRESS AS ADDRESS ON (PARTNER.MAIN_ADDRESS = ADDRESS.ID)
+SUM(PMVLD.IN_TAX_PRORATED_AMOUNT) AS amount
+FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY
+JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID
+LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON (PMVLD.MOVE_LINE = MOVELINE.ID)
+LEFT OUTER JOIN ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (MOVELINE.SERVICE_TYPE = SERVICETYPE.ID)
+LEFT OUTER JOIN BASE_PARTNER PARTNER ON (PMVLD.PARTNER = PARTNER.ID)
+LEFT OUTER JOIN BASE_ADDRESS AS ADDRESS ON (PARTNER.MAIN_ADDRESS = ADDRESS.ID)
 WHERE ACCOUNTING_REPORT = ?
-AND T.EXCLUDE_FROM_DAS2REPORT != true
+AND HISTORY.EXCLUDE_FROM_DAS2REPORT != true
 GROUP BY MOVELINE.PARTNER_FULL_NAME,MOVELINE.DAS2ACTIVITY_NAME,MOVELINE.SERVICE_TYPE_CODE,SERVICETYPE.NAME,ADDRESS.ADDRESSL6,ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,ADDRESS.ADDRESSL5,PARTNER.REGISTRATION_CODE]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -686,6 +693,9 @@ GROUP BY MOVELINE.PARTNER_FULL_NAME,MOVELINE.DAS2ACTIVITY_NAME,MOVELINE.SERVICE_
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>

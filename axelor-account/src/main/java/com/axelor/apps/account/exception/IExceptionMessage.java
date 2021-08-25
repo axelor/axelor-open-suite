@@ -147,7 +147,7 @@ public interface IExceptionMessage {
 
   static final String ACCOUNTING_REPORT_2 = /*$$(*/
       "%s : Error : You must configure an account export sequence for the company %s" /*)*/;
-  static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/;
+  static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Lines recovered" /*)*/;
   static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/;
   static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/;
   static final String ACCOUNTING_REPORT_7 = /*$$(*/

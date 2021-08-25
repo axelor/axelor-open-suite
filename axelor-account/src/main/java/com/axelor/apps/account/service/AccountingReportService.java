@@ -81,8 +81,7 @@ public interface AccountingReportService {
 
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
 
-  public List<BigInteger> getAccountingReportDas2Pieces(
-      AccountingReport accountingReport, boolean selectMoveLines);
+  public List<BigInteger> getAccountingReportDas2Pieces(AccountingReport accountingReport);
 
   public void processAccountingReportMoveLines(AccountingReport accountingReport);
 
