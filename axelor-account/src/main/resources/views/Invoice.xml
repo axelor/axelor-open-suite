@@ -472,10 +472,10 @@ InvoiceSet.length > 0))"
 						<viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
 					</field>
 				</panel>
-				<panel name="financialDiscountPanel">
-					<field name="financialDiscount" colSpan="6" onChange="action-record-invoice-set-financial-discount-informations"/>
-					<field name="financialDiscountRate" colSpan="6"/>
-					<field name="financialDiscountDeadlineDate" colSpan="6"/>
+				<panel name="financialDiscountPanel" colSpan="12">
+					<field name="financialDiscount" colSpan="6" onChange="action-record-invoice-set-financial-discount-informations" showIf="statusSelect &gt;=3"/>
+					<field name="financialDiscountRate" colSpan="6" showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
+					<field name="financialDiscountDeadlineDate" colSpan="6" showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
 				</panel>
 				
 				
