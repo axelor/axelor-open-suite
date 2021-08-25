@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
@@ -48,6 +39,13 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class AccountingReportController {
