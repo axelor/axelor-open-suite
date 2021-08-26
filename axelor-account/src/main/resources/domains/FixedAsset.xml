@@ -66,6 +66,16 @@
 	<integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month"/>
 	<integer name="fiscalDurationInMonth" title="Fiscal Duration In Month"/>
 	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"/>
+	
+	<boolean name="isIfrsEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
+	<string name="ifrsComputationMethodSelect" title="IFRS Computation Method Select" selection="account.fixed.type.category.fiscal.computation.method.select"/>
+	<decimal name="ifrsDegressiveCoef" title="IFRS Degressive Coef"/>
+	<integer name="ifrsNumberOfDepreciation" title="IFRS Number Of Depreciation"/>
+	<integer name="ifrsPeriodicityTypeSelect" title="IFRS Periodicity Type" selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
+	<integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month"/>
+	<integer name="ifrsDurationInMonth" title="IFRS Duration In Month"/>
+	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List"/>
+	
 	<many-to-many ref="com.axelor.apps.account.db.FixedAsset" name="associatedFixedAssetsSet" title="Associated Fixed Assets Set"/>
 	<string name="comments" title="Comments"/>
 	<integer name="disposalTypeSelect" title="Disposal Type" selection="account.fixed.asset.disposal.type.select" default="1" />

@@ -44,6 +44,7 @@
       <panel name="depreciationAccountsPanel" title="Depreciation">
       	<field name="chargeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" form-view="account-form" grid-view="account-grid"/>
       	<field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
+        <field name="expenseDepreciationIfrsAccount" form-view="account-form"/>
         <field name="debtReceivableAccount" form-view="account-form"/>
       	<field name="provisionTangibleFixedAssetAccount" form-view="account-form"/>
       	<field name="wbProvisionTangibleFixedAssetAccount" form-view="account-form"/>

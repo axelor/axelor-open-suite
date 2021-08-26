@@ -507,6 +507,7 @@
 		<option value="1">Fiscal</option>
 		<option value="2">Economic</option>
 		<option value="3">Derogation</option>
+		<option value="4">IFRS</option>
 	</selection>
 	
 	<selection name="account.fixed.asset.first.depreciation.date.ref.select">
