@@ -76,6 +76,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected FixedAssetLineService fixedAssetLineService;
 
+  protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
   public static final String SUFFIX_SPLITTED_FIXED_ASSET = "-%s %.2f";
@@ -90,7 +92,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       AnalyticFixedAssetService analyticFixedAssetService,
       SequenceService sequenceService,
-      FixedAssetLineService fixedAssetLineService) {
+      FixedAssetLineService fixedAssetLineService,
+      FixedAssetLineServiceFactory fixedAssetLineServiceFactory) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.moveLineService = moveLineService;
@@ -99,6 +102,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.analyticFixedAssetService = analyticFixedAssetService;
     this.sequenceService = sequenceService;
     this.fixedAssetLineService = fixedAssetLineService;
+    this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
   }
 
   @Override
@@ -159,7 +163,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
-          FixedAssetLineServiceFactory.getFixedAssetComputationService(
+          fixedAssetLineServiceFactory.getFixedAssetComputationService(
               FixedAssetLineRepository.TYPE_SELECT_FISCAL);
       FixedAssetLine initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
@@ -186,7 +190,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
-          FixedAssetLineServiceFactory.getFixedAssetComputationService(
+          fixedAssetLineServiceFactory.getFixedAssetComputationService(
               FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       FixedAssetLine initialFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
@@ -213,7 +217,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     final int MAX_ITERATION = 1000;
     FixedAssetLine fixedAssetLine = initialFixedAssetLine;
     FixedAssetLineComputationService fixedAssetLineComputationService =
-        FixedAssetLineServiceFactory.getFixedAssetComputationService(typeSelect);
+        fixedAssetLineServiceFactory.getFixedAssetComputationService(typeSelect);
     while (c < MAX_ITERATION && fixedAssetLine.getAccountingValue().signum() != 0) {
       fixedAssetLine =
           fixedAssetLineComputationService.computePlannedFixedAssetLine(
@@ -582,8 +586,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       List<FixedAssetLine> fixedAssetLineList)
       throws AxelorException {
     FixedAssetLine initialFixedAssetLine =
-        FixedAssetLineServiceFactory.getFixedAssetComputationService(
-                FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
+        fixedAssetLineServiceFactory
+            .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
             .computeInitialPlannedFixedAssetLine(
                 fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
     initialFixedAssetLine.setCumulativeDepreciation(
@@ -901,13 +905,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
         fixedAsset.getFixedAssetDerogatoryLineList();
     if (fixedAssetLineList != null) {
-      FixedAssetLineServiceFactory.getFixedAssetComputationService(
-              FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
+      fixedAssetLineServiceFactory
+          .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
           .multiplyLinesBy(fixedAssetLineList, prorata);
     }
     if (fiscalAssetLineList != null) {
-      FixedAssetLineServiceFactory.getFixedAssetComputationService(
-              FixedAssetLineRepository.TYPE_SELECT_FISCAL)
+      fixedAssetLineServiceFactory
+          .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_FISCAL)
           .multiplyLinesBy(fiscalAssetLineList, prorata);
     }
     if (fixedAsset

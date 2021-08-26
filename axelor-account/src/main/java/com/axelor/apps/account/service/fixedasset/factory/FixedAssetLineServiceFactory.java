@@ -10,7 +10,7 @@ import com.axelor.inject.Beans;
 
 public class FixedAssetLineServiceFactory {
 
-  public static FixedAssetLineComputationService getFixedAssetComputationService(int typeSelect)
+  public FixedAssetLineComputationService getFixedAssetComputationService(int typeSelect)
       throws AxelorException {
 
     switch (typeSelect) {

@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
@@ -54,12 +55,13 @@ public class TestFixedAssetService {
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
   protected SequenceService sequenceService;
   protected FixedAssetLineService fixedAssetLineService;
+  protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
 
   /*
    * Prepare dependencies by mocking them
    */
   @Before
-  public void prepare() {
+  public void prepare() throws AxelorException {
 
     fixedAssetRepo = mock(FixedAssetRepository.class);
     fixedAssetLineRepo = mock(FixedAssetLineRepository.class);
@@ -71,12 +73,14 @@ public class TestFixedAssetService {
     fixedAssetDerogatoryLineMoveService = mock(FixedAssetDerogatoryLineMoveService.class);
     sequenceService = mock(SequenceService.class);
     fixedAssetLineService = mock(FixedAssetLineService.class);
+    fixedAssetLineServiceFactory = mock(FixedAssetLineServiceFactory.class);
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             analyticFixedAssetService,
             fixedAssetDerogatoryLineService,
             fixedAssetDerogatoryLineMoveService);
-
+    when(fixedAssetLineServiceFactory.getFixedAssetComputationService(any(Integer.TYPE)))
+        .thenReturn(fixedAssetLineComputationService);
     fixedAssetService =
         new FixedAssetServiceImpl(
             fixedAssetRepo,
@@ -87,7 +91,8 @@ public class TestFixedAssetService {
             fixedAssetDerogatoryLineService,
             analyticFixedAssetService,
             sequenceService,
-            fixedAssetLineService);
+            fixedAssetLineService,
+            fixedAssetLineServiceFactory);
 
     prepareFixedAssetRepo();
   }
