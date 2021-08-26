@@ -37,8 +37,8 @@
 		</panel>
 		
 		<panel sidebar="true" name="infoPanel" title="Info">
-			<button name="searchBtn" title="Search" hideIf="([12,15,16,17,2000,2001,18,20].indexOf(reportType.typeSelect) != -1) || (reportType.typeSelect == 19  &amp;&amp; statusSelect == 2)" onClick="save,action-accounting-report-method-search-move-line,save" />
-			<button name="exportBtn" title="Print" icon="fa-print" hideIf="(reportType.typeSelect == 19  || reportType.typeSelect == 20) &amp;&amp; statusSelect == 2" onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click" />
+			<button name="searchBtn" title="Search" hideIf="([12,15,16,17,2000,2001,18,20].indexOf(reportType.typeSelect) != -1)" onClick="save,action-accounting-report-method-search-move-line,save" />
+			<button name="exportBtn" title="Print" icon="fa-print" onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click" />
 			<button name="createAccountingExportBtn" title="Create accounting export" icon="fa-cogs" showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19" onClick="save,action-accounting-report-method-create-export-from-report"/>
 			<field name="statusSelect" />
 			<field name="publicationDateTime" />

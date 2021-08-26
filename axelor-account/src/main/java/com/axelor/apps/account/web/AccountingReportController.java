@@ -65,7 +65,7 @@ public class AccountingReportController {
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
 
       if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS) {
+          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
 
         if (accountingReportService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
@@ -211,7 +211,7 @@ public class AccountingReportController {
       logger.debug("Type selected : {}", typeSelect);
 
       if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPERATORY_PROCESS) {
+          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
 
         if (accountingReportService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
@@ -281,7 +281,7 @@ public class AccountingReportController {
                     .map());
           } catch (NullPointerException e) {
             String message = accountingReportService.getN4DSExportError(accountingReport);
-            response.setFlash(message);
+            response.setError(message);
           }
         }
 

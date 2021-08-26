@@ -45,6 +45,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringHTMLListBuilder;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -1172,31 +1173,27 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   @Override
   public String getN4DSExportError(AccountingReport accountingReport) {
-    String message = "";
+    StringHTMLListBuilder message = new StringHTMLListBuilder();
     try {
-      Partner dasContactPartner =
-          accountConfigService
-              .getAccountConfig(accountingReport.getCompany())
-              .getDasContactPartner();
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(accountingReport.getCompany());
+      Partner dasContactPartner = accountConfigService.getDasContactPartner(accountConfig);
 
       if (ObjectUtils.isEmpty(dasContactPartner.getEmailAddress().getAddress())) {
-        message = message.concat(I18n.get("Pleaset set das contact email address"));
+        message.append(I18n.get("Please set das contact email address"));
       }
     } catch (AxelorException e) {
-      message = message.concat(I18n.get("Please set company's das contact partner."));
-      e.printStackTrace();
+      message.append(I18n.get("Please set company's das contact partner."));
     }
     if (ObjectUtils.isEmpty(accountingReport.getCompany().getPartner()))
-      message = message.concat(I18n.get("Please set company partner."));
+      message.append(I18n.get("Please set company partner."));
     else {
       if (ObjectUtils.isEmpty(accountingReport.getCompany().getPartner().getMainAddress()))
-        message = message.concat(I18n.get("Please set invoicing address for company's partner."));
+        message.append(I18n.get("Please set invoicing address for company's partner."));
       else {
         if (ObjectUtils.isEmpty(
             accountingReport.getCompany().getPartner().getMainAddress().getAddressL7Country()))
-          message =
-              message.concat(
-                  I18n.get("Please set country for company's partner invoicing address."));
+          message.append(I18n.get("Please set country for company's partner invoicing address."));
         else {
           if (ObjectUtils.isEmpty(
               accountingReport
@@ -1205,17 +1202,16 @@ public class AccountingReportServiceImpl implements AccountingReportService {
                   .getMainAddress()
                   .getAddressL7Country()
                   .getAlpha2Code()))
-            message =
-                message.concat(
-                    I18n.get("Please set country alpha2code for company partner's address."));
+            message.append(
+                I18n.get("Please set country alpha2code for company partner's address."));
         }
         if (ObjectUtils.isEmpty(
             accountingReport.getCompany().getPartner().getMainAddress().getCity())) {
-          message = message.concat(I18n.get("Please set city for company partner address."));
+          message.append(I18n.get("Please set city for company partner address."));
         }
       }
     }
 
-    return message;
+    return message.toString();
   }
 }
