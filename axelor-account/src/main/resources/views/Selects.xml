@@ -543,7 +543,7 @@
 	
 	<selection name="account.fixed.asset.disposal.type.select">
 		<option value="1">Scrapping</option>
-		<option value="2">Cession</option>
+		<option value="2">Disposal Cession</option>
 	</selection>
 	
 	<selection name="account.fixed.asset.disposal.quantity.select">

@@ -38,6 +38,8 @@ public interface IExceptionMessage {
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
+  static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
+      /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/

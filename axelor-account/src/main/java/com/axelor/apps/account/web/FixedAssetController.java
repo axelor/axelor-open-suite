@@ -54,7 +54,9 @@ public class FixedAssetController {
             .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
       return;
     }
+
     try {
+
       if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
 
         if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
@@ -164,6 +166,11 @@ public class FixedAssetController {
             .find(request.getContext().asType(FixedAsset.class).getId());
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
       try {
+        if (fixedAsset.getGrossValue().signum() <= 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0));
+        }
         Beans.get(FixedAssetService.class).validate(fixedAsset);
       } catch (Exception e) {
         TraceBackService.trace(response, e);

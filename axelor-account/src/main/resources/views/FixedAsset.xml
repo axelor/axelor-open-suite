@@ -34,7 +34,7 @@
 	      <field name="company.currency" title="Currency" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
 	      <field name="fixedAssetCategory" readonlyIf="statusSelect > 1" canEdit="false" onChange="action-group-account-record-on-change-asset-category, action-method-account-fixed-asset-compute-first-depreciation-date" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"/>
 	      <field name="depreciationPlanSelect" showIf="fixedAssetCategory != null" onChange="action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"/>
-	      <field name="qty" title="Quantity" readonlyIf="statusSelect > 1" showIf="trackingNumber == null"/>
+	      <field name="qty" required="true" min="0.01" title="Quantity" readonlyIf="statusSelect > 1" showIf="trackingNumber == null"/>
 	      <field if-module="axelor-supplychain" name="trackingNumber.counter" title="Quantity" showIf="trackingNumber != null"/>
 	      <field if-module="axelor-supplychain" name="stockLocation" canNew="false" canEdit="false" domain="self.company = :company" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field if-module="axelor-supplychain" name="trackingNumber" canNew="false" canEdit="false" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
@@ -45,7 +45,7 @@
 	    <field name="invoiceLine" colSpan="3" domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 	    <field name="purchaseAccountMove" colSpan="3" domain="self.company = :company"/>
 	    <field name="journal" readonlyIf="statusSelect > 1" canEdit="false" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-	    <field name="purchaseAccount" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
+	    <field name="purchaseAccount" required="true" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
 	    <field if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" name="analyticDistributionTemplate" canEdit="false" onChange="action-fixed-asset-method-create-analytic-distribution" domain="self.company = :company" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>    
 	  </panel>
 	  <panel-tabs name="mainPanelTab">
@@ -130,7 +130,7 @@
     		<field name="disposalAmount" showIf="disposalTypeSelect != 1"  type="decimal" title="Disposal amount" min="0.01"/>
     		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal"/>
     		<field name="$generateSaleMove" title="Generate Sale Move" widget="boolean" showIf="disposalTypeSelect == 2"/>
-    		<field name="saleTaxLine" title="Tax line" widget="many-to-one" target="com.axelor.apps.account.db.TaxLine" showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove"/>
+    		<field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line" widget="many-to-one" target="com.axelor.apps.account.db.TaxLine" showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove"/>
     		<field name="comments" colSpan="12" widget="text" showIf="disposalTypeSelect == 2"/>
     		<field name="$originalQty" type="decimal" hidden="true"/>
     	</panel>

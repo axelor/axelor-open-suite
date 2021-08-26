@@ -690,6 +690,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAssetLineService.copyFixedAssetLineList(fixedAsset, newFixedAsset);
     fixedAssetDerogatoryLineService.copyFixedAssetDerogatoryLineList(fixedAsset, newFixedAsset);
     newFixedAsset.setStatusSelect(fixedAsset.getStatusSelect());
+    if (newFixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
+      newFixedAsset.setFixedAssetSeq(generateSequence(newFixedAsset));
+    }
     newFixedAsset.addAssociatedFixedAssetsSetItem(fixedAsset);
     fixedAsset.addAssociatedFixedAssetsSetItem(newFixedAsset);
     return newFixedAsset;

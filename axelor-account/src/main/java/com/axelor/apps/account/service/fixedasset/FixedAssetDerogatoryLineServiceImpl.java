@@ -228,8 +228,16 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       FixedAssetDerogatoryLine lastRealizedDerogatoryLine)
       throws AxelorException {
     Objects.requireNonNull(firstPlannedDerogatoryLine);
-    Account creditAccount = computeCessionCreditAccount(lastRealizedDerogatoryLine);
-    Account debitAccount = computeCessionDebitAccount(lastRealizedDerogatoryLine);
+    Account creditAccount;
+    Account debitAccount;
+    if (lastRealizedDerogatoryLine == null) {
+      creditAccount = computeCessionCreditAccount(firstPlannedDerogatoryLine);
+      debitAccount = computeCessionDebitAccount(firstPlannedDerogatoryLine);
+    } else {
+      creditAccount = computeCessionCreditAccount(lastRealizedDerogatoryLine);
+      debitAccount = computeCessionDebitAccount(lastRealizedDerogatoryLine);
+    }
+
     BigDecimal lastDerogatoryBalanceAmount =
         lastRealizedDerogatoryLine == null
             ? BigDecimal.ZERO
@@ -252,6 +260,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   }
 
   protected Account computeCessionCreditAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
+
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
     if (fixedAssetDerogatoryLine.getDerogatoryBalanceAmount().compareTo(BigDecimal.ZERO) >= 0) {
       return fixedAsset.getFixedAssetCategory().getCapitalDepreciationDerogatoryAccount();
