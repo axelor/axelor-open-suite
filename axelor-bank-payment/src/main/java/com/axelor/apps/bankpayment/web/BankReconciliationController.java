@@ -32,6 +32,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -367,5 +368,23 @@ public class BankReconciliationController {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
     response.setReload(true);
+  }
+
+  public void checkIncompleteBankReconciliationLine(
+      ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    List<BankReconciliationLine> bankReconciliationLines =
+        bankReconciliation.getBankReconciliationLineList();
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+      int status = bankReconciliationLineService.checkIncompleteLine(bankReconciliationLine);
+
+      if (status == BankReconciliationLineService.BANK_RECONCILIATION_LINE_INCOMPLETE) {
+        response.setError(I18n.get("Some lines can't be reconciled"));
+      }
+      if (status == BankReconciliationLineService.BANK_RECONCILIATION_LINE_COMPLETABLE) {
+        if (ObjectUtils.isEmpty(bankReconciliation.getJournal()))
+          response.setError(I18n.get("Please set journal before validating"));
+      }
+    }
   }
 }

@@ -58,7 +58,7 @@
 	</action-record>
 	
 	<action-attrs name="action-bank-reconciliation-line-attrs-account-domain">
-		<attribute name="domain" for="account" expr="eval: &quot;self.company.id = ${__parent__?.company?.id} AND self.id != ${__parent__?.cashAccount?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')}))&quot;" if="__parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
+		<attribute name="domain" for="account" expr="eval: &quot;self.company.id = ${__parent__?.company?.id} AND self.id != ${__parent__?.cashAccount?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')}))&quot;" if="__parent__ != null &amp;&amp; __parent__?.journal != null &amp;&amp; __parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
 		<attribute name="domain" for="account" expr="eval: &quot;self.company.id = ${bankReconciliation?.company?.id} AND self.id != ${bankReconciliation?.cashAccount?.id} AND (self.accountType.id IN (${(bankReconciliation?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(bankReconciliation?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')}))&quot;" if="__parent__ == null || __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
 	</action-attrs>
 	

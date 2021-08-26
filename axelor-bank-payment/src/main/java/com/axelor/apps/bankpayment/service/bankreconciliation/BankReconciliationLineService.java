@@ -37,6 +37,10 @@ import java.util.List;
 
 public class BankReconciliationLineService {
 
+  public static final int BANK_RECONCILIATION_LINE_COMPLETE = 0;
+  public static final int BANK_RECONCILIATION_LINE_COMPLETABLE = 1;
+  public static final int BANK_RECONCILIATION_LINE_INCOMPLETE = 2;
+
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
 
   @Inject
@@ -162,5 +166,16 @@ public class BankReconciliationLineService {
     } else posted = postedNbr;
     moveLine.setPostedNbr(posted);
     return moveLine;
+  }
+
+  public int checkIncompleteLine(BankReconciliationLine bankReconciliationLine) {
+    int brlStatus = BANK_RECONCILIATION_LINE_COMPLETE;
+    if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())) {
+      brlStatus = BANK_RECONCILIATION_LINE_COMPLETABLE;
+      if (ObjectUtils.isEmpty(bankReconciliationLine.getAccount())) {
+        brlStatus = BANK_RECONCILIATION_LINE_INCOMPLETE;
+      }
+    }
+    return brlStatus;
   }
 }
