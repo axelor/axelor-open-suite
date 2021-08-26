@@ -547,27 +547,13 @@ InvoiceSet.length > 0))"
 						<dt>
 							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i></a>
 							<span>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">
-									Paid on
-								</font>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">
-									Canceled payment on
-								</font>
-								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">
-									Pending payment
-								</font>
-								<font x-translate ng-if="record.typeSelect == 3">
-									Ref. on
-								</font>
-								<font x-translate ng-if="record.typeSelect == 4">
-									Inv. on
-								</font>
-								<font x-translate ng-if="record.typeSelect == 5">
-									Other on
-								</font>
-								<font x-translate ng-if="record.typeSelect == 6">
-									Imputed on
-								</font>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">Paid on</font>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">Canceled payment on</font>
+								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
+								<font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
+								<font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
+								<font x-translate ng-if="record.typeSelect == 5">Other on</font>
+								<font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
 								<font>
 									 {{$fmt('paymentDate')}}
 								</font>
@@ -580,27 +566,13 @@ InvoiceSet.length > 0))"
 					<dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
 						<dt>
 							<a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}"><i ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}" ng-if="record.applyFinancialDiscount == true"></i></a>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3 && record.applyFinancialDiscount == true">
-								Discounted on
-							</font>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2 && record.applyFinancialDiscount == true">
-								Canceled discount on
-							</font>
-							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3 && record.applyFinancialDiscount == true">
-								Pending discount
-							</font>
-							<font x-translate ng-if="record.typeSelect == 3 && record.applyFinancialDiscount == true">
-								Ref. on
-							</font>
-							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">
-								Inv. on
-							</font>
-							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">
-								Other on
-							</font>
-							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">
-								Imputed on
-							</font>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3 && record.applyFinancialDiscount == true">Discounted on</font>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2 && record.applyFinancialDiscount == true">Canceled discount on</font>
+							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3 && record.applyFinancialDiscount == true">Pending discount</font>
+							<font x-translate ng-if="record.typeSelect == 3 && record.applyFinancialDiscount == true">Ref. on</font>
+							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">Inv. on</font>
+							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">Other on</font>
+							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">Imputed on</font>
 							<font x-translate ng-if="record.applyFinancialDiscount == true">
 								{{$fmt('paymentDate')}}
 							</font>
