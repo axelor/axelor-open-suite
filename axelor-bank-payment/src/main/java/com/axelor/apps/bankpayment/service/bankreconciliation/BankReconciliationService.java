@@ -560,9 +560,8 @@ public class BankReconciliationService {
         moveLineRepository
             .all()
             .filter(
-                "self.move.journal.id = :journal AND self.account = :cashAccount AND self.move.statusSelect != :statusSelect AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
+                "self.account = :cashAccount AND self.move.statusSelect != :statusSelect AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
             .bind("statusSelect", MoveRepository.STATUS_CANCELED)
-            .bind("journal", bankReconciliation.getJournal())
             .bind("cashAccount", bankReconciliation.getCashAccount())
             .fetch();
     BigInteger dateMargin =

@@ -68,6 +68,7 @@
       <button name="reconcileBtn" title="Reconcile selected" colSpan="3" onClick="action-bank-reconciliation-method-reconcile-selected" />
       <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3" onClick="action-bank-reconciliation-method-unreconcile" />
       <button name="autoReconcileBtn" title="Auto reconcile" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3" onClick="action-bank-reconciliation-method-automatic-reconciliation" />
+      <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3" onClick="save,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
       <panel-dashlet name="showUnreconciledMoveLinesPanel" colSpan="12" canSearch="true" action="action-bank-reconciliation-view-show-unreconciled-move-lines" />
     </panel>
     <panel name="mainBalancePanel" colSpan="12">
@@ -188,7 +189,7 @@
   <action-view name="action-bank-reconciliation-view-show-unreconciled-move-lines" title="Unreconciled move lines" model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-bank-reconciliation-grid" />
     <view type="form" name="move-line-form" />
-    <domain>self.move.journal.id = :journal and ((self.debit &gt; 0 and self.bankReconciledAmount &lt; self.debit) or (self.credit &gt; 0 and self.bankReconciledAmount &lt; self.credit)) and self.account.id = :cashAccount and self.move.statusSelect &lt; 4</domain>
+    <domain>self.account = :cashAccount and ((self.debit &gt; 0 and self.bankReconciledAmount &lt; self.debit) or (self.credit &gt; 0 and self.bankReconciledAmount &lt; self.credit)) and self.account.id = :cashAccount and self.move.statusSelect &lt; 4</domain>
 
   </action-view>
 
