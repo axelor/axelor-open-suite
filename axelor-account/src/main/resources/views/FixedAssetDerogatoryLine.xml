@@ -17,22 +17,22 @@
 		<button name="realizeBtn" title="Realize" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" icon="fa-check-circle" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>	
 	</grid>
 
-	<form name="fixed-asset-derogatory-line-form"
-		title="Fixed asset derogatory lines"
-		model="com.axelor.apps.account.db.FixedAssetDerogatoryLine"
-		onLoad="action-attrs-account-fixed-asset-derogatory-line-title-derogatory-depreciation-move">
-		<panel name="mainPanel">
-	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-	      <field name="fiscalDepreciationAmount"/>
-	      <field name="derogatoryAmount"/>
-	      <field name="incomeDepreciationAmount"/>
-	      <field name="derogatoryBalanceAmount"/>
-	      <field name="derogatoryDepreciationMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
-	      <field name="fixedAsset.statusSelect" hidden="true"/>
-	    </panel>
-	    <panel name="actionsPanel" hideIf="statusSelect == 2">
-	      <button name="realizeBtn" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" title="Realize" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
-	    </panel>
+	<form name="fixed-asset-derogatory-line-form" title="Fixed asset derogatory lines" model="com.axelor.apps.account.db.FixedAssetDerogatoryLine" onLoad="action-attrs-account-fixed-asset-derogatory-line-title-derogatory-depreciation-move">
+	  <panel name="mainPanel">
+	    <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
+	    <panel name="actionsPanel" hideIf="statusSelect == 2" colSpan="6">
+	    	<button name="realizeBtn" title="Realize" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
+	  	</panel>
+	    <field name="depreciationDate"/>
+	    <spacer colSpan="6"/>
+	    <field name="depreciationAmount"/>
+	    <field name="fiscalDepreciationAmount"/>
+	    <field name="derogatoryAmount"/>
+	    <field name="incomeDepreciationAmount"/>
+	    <field name="derogatoryBalanceAmount"/>
+	    <field name="derogatoryDepreciationMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
+	    <field name="fixedAsset.statusSelect" hidden="true"/>
+	  </panel>
 	</form>
 	
 	<action-attrs name="action-attrs-account-fixed-asset-derogatory-line-title-derogatory-depreciation-move">
