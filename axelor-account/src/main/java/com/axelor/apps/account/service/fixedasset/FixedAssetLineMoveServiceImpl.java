@@ -194,6 +194,18 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         }
       }
     }
+    if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+      if (fixedAsset.getIfrsFixedAssetLineList() != null) {
+        FixedAssetLine ifrsFixedAssetLine =
+            fixedAsset.getIfrsFixedAssetLineList().stream()
+                .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+                .findAny()
+                .orElse(null);
+        if (ifrsFixedAssetLine != null) {
+          realize(ifrsFixedAssetLine, isBatch, generateMove);
+        }
+      }
+    }
   }
 
   @Transactional
@@ -325,15 +337,32 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
-    BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
-    BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<>();
 
       String origin = fixedAsset.getReference();
       FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
-      Account debitLineAccount = fixedAssetCategory.getChargeAccount();
-      Account creditLineAccount = fixedAssetCategory.getDepreciationAccount();
+      Account debitLineAccount;
+      Account creditLineAccount;
+      if (fixedAssetLine.getTypeSelect() == FixedAssetLineRepository.TYPE_SELECT_IFRS) {
+        debitLineAccount = fixedAssetCategory.getIfrsChargeAccount();
+        creditLineAccount = fixedAssetCategory.getIfrsDepreciationAccount();
+        if (debitLineAccount == null || creditLineAccount == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING),
+              "ifrsChargeAccount/ifrsDepreciationAccount");
+        }
+      } else {
+        debitLineAccount = fixedAssetCategory.getChargeAccount();
+        creditLineAccount = fixedAssetCategory.getDepreciationAccount();
+        if (debitLineAccount == null || creditLineAccount == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING),
+              "chargeAccount/depreciationAccount");
+        }
+      }
       BigDecimal amount = fixedAssetLine.getDepreciation();
 
       // Creating accounting debit move line

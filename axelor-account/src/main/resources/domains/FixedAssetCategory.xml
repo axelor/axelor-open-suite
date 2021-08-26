@@ -42,7 +42,8 @@
 	<many-to-one ref="com.axelor.apps.account.db.Account" name="debtReceivableAccount" title="Debt Receivable Account"/>
 	<many-to-one ref="com.axelor.apps.account.db.Account" name="provisionTangibleFixedAssetAccount" title="Provision Tangible Fixed Asset Account"/>
 	<many-to-one ref="com.axelor.apps.account.db.Account" name="wbProvisionTangibleFixedAssetAccount" title="WB Provision Tangible Fixed Asset Account"/>
-	<many-to-one ref="com.axelor.apps.account.db.Account" name="expenseDepreciationIfrsAccount" title="Expense Depreciation Ifrs Account"/>
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="ifrsDepreciationAccount" title="IFRS Depreciation Account"/>
+	<many-to-one ref="com.axelor.apps.account.db.Account" name="ifrsChargeAccount" title="IFRS Charge Account"/>
 	
 		<extra-code><![CDATA[
 	

@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.google.inject.Inject;
@@ -105,5 +106,11 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected Integer getPeriodicityInMonth(FixedAsset fixedAsset) {
     return fixedAsset.getPeriodicityInMonth();
+  }
+
+  @Override
+  protected Integer getTypeSelect() {
+
+    return FixedAssetLineRepository.TYPE_SELECT_ECONOMIC;
   }
 }

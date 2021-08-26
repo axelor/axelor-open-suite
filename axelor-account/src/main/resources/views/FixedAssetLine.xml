@@ -47,7 +47,7 @@
     </panel>
   </panel>
   <panel-tabs name="mainPanelTab">
-    <panel name="impairmentPanel" title="Impairment information" showIf="typeSelect == 1" >
+    <panel name="impairmentPanel" title="Impairment information" showIf="typeSelect == 1 || typeSelect == 3" >
       <field name="correctedAccountingValue"/>
       <field name="impairmentValue"/>
       <field name="impairmentAccountMove" showIf="statusSelect == 2"/>

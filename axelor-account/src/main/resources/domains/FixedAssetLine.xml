@@ -31,6 +31,7 @@
 		
 		public static final int TYPE_SELECT_ECONOMIC = 1;
 		public static final int TYPE_SELECT_FISCAL = 2;
+		public static final int TYPE_SELECT_IFRS = 3;
 		
 	]]></extra-code>
 	

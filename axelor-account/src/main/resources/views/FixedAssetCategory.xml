@@ -44,7 +44,6 @@
       <panel name="depreciationAccountsPanel" title="Depreciation">
       	<field name="chargeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" form-view="account-form" grid-view="account-grid"/>
       	<field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
-        <field name="expenseDepreciationIfrsAccount" form-view="account-form"/>
         <field name="debtReceivableAccount" form-view="account-form"/>
       	<field name="provisionTangibleFixedAssetAccount" form-view="account-form"/>
       	<field name="wbProvisionTangibleFixedAssetAccount" form-view="account-form"/>
@@ -57,6 +56,10 @@
       <panel name="exitAccountPanel" title="Assets cession" colspan="12">
         <field name="realisedAssetsValueAccount" form-view="account-form"/>
         <field name="realisedAssetsIncomeAccount" form-view="account-form"/>
+      </panel>
+      <panel name="ifrsAccountsPanel" title="IFRS depreciation">
+      	<field name="ifrsDepreciationAccount" form-view="account-form"/>
+      	<field name="ifrsChargeAccount" form-view="account-form"/>
       </panel>
     </panel>
     <panel if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" name="analyticPanel" title="Analytic">

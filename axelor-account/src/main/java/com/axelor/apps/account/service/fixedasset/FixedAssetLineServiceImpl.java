@@ -169,6 +169,18 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
                 });
       }
     }
+    if (newFixedAsset.getIfrsFixedAssetLineList() == null) {
+      if (fixedAsset.getIfrsFixedAssetLineList() != null) {
+        fixedAsset
+            .getIfrsFixedAssetLineList()
+            .forEach(
+                line -> {
+                  FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
+                  copy.setFixedAsset(newFixedAsset);
+                  newFixedAsset.addIfrsFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
+                });
+      }
+    }
   }
 
   @Override

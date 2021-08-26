@@ -65,6 +65,9 @@ public class FixedAssetController {
         if (!fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
           fixedAsset.getFiscalFixedAssetLineList().clear();
         }
+        if (!fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
+          fixedAsset.getIfrsFixedAssetLineList().clear();
+        }
         fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
 
       } else {
@@ -77,6 +80,7 @@ public class FixedAssetController {
     response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
     response.setValue("fiscalFixedAssetLineList", fixedAsset.getFiscalFixedAssetLineList());
     response.setValue("fixedAssetDerogatoryLineList", fixedAsset.getFixedAssetDerogatoryLineList());
+    response.setValue("ifrsFixedAssetLineList", fixedAsset.getIfrsFixedAssetLineList());
   }
 
   @SuppressWarnings("unchecked")

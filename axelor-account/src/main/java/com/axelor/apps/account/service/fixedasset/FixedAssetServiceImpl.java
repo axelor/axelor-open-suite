@@ -110,8 +110,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     generateAndComputeFixedAssetLines(fixedAsset);
     generateAndComputeFiscalFixedAssetLines(fixedAsset);
-
     generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+    generateAndComputeIfrsFixedAssetLines(fixedAsset);
 
     return fixedAsset;
   }
@@ -156,6 +156,33 @@ public class FixedAssetServiceImpl implements FixedAssetService {
    * @throws NullPointerException if fixedAsset is null
    */
   @Override
+  public void generateAndComputeIfrsFixedAssetLines(FixedAsset fixedAsset) throws AxelorException {
+    Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+      FixedAssetLineComputationService fixedAssetLineComputationService =
+          fixedAssetLineServiceFactory.getFixedAssetComputationService(
+              FixedAssetLineRepository.TYPE_SELECT_IFRS);
+      FixedAssetLine initialFiscalFixedAssetLine =
+          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
+      fixedAsset.addIfrsFixedAssetLineListItem(initialFiscalFixedAssetLine);
+
+      generateComputedPlannedFixedAssetLine(
+          fixedAsset,
+          initialFiscalFixedAssetLine,
+          fixedAsset.getIfrsFixedAssetLineList(),
+          FixedAssetLineRepository.TYPE_SELECT_IFRS);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws AxelorException
+   * @throws NullPointerException if fixedAsset is null
+   */
+  @Override
   public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset)
       throws AxelorException {
     Objects.requireNonNull(fixedAsset, ARG_FIXED_ASSET_NPE_MSG);
@@ -166,8 +193,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
               FixedAssetLineRepository.TYPE_SELECT_FISCAL);
       FixedAssetLine initialFiscalFixedAssetLine =
-          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
-              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
+          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
       fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine);
 
       generateComputedPlannedFixedAssetLine(
@@ -193,8 +219,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
               FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       FixedAssetLine initialFixedAssetLine =
-          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
-              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
       fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
 
       generateComputedPlannedFixedAssetLine(
@@ -220,8 +245,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAssetLineServiceFactory.getFixedAssetComputationService(typeSelect);
     while (c < MAX_ITERATION && fixedAssetLine.getAccountingValue().signum() != 0) {
       fixedAssetLine =
-          fixedAssetLineComputationService.computePlannedFixedAssetLine(
-              fixedAsset, fixedAssetLine, typeSelect);
+          fixedAssetLineComputationService.computePlannedFixedAssetLine(fixedAsset, fixedAssetLine);
       fixedAssetLine.setFixedAsset(fixedAsset);
       fixedAssetLineList.add(fixedAssetLine);
       c++;
@@ -435,6 +459,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset.getFixedAssetDerogatoryLineList().clear();
         }
       }
+      if (fixedAsset.getIfrsFixedAssetLineList() != null) {
+        if (!fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
+          fixedAsset.getIfrsFixedAssetLineList().clear();
+        }
+      }
 
       fixedAsset = generateAndComputeLines(fixedAsset);
       if (fixedAsset.getIsEqualToFiscalDepreciation()) {
@@ -588,8 +617,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     FixedAssetLine initialFixedAssetLine =
         fixedAssetLineServiceFactory
             .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
-            .computeInitialPlannedFixedAssetLine(
-                fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+            .computeInitialPlannedFixedAssetLine(fixedAsset);
     initialFixedAssetLine.setCumulativeDepreciation(
         initialFixedAssetLine
             .getCumulativeDepreciation()
@@ -905,6 +933,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
     List<FixedAssetLine> fiscalAssetLineList = fixedAsset.getFiscalFixedAssetLineList();
+    List<FixedAssetLine> ifrsAssetLineList = fixedAsset.getIfrsFixedAssetLineList();
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
         fixedAsset.getFixedAssetDerogatoryLineList();
     if (fixedAssetLineList != null) {
@@ -916,6 +945,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       fixedAssetLineServiceFactory
           .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_FISCAL)
           .multiplyLinesBy(fiscalAssetLineList, prorata);
+    }
+    if (ifrsAssetLineList != null) {
+      fixedAssetLineServiceFactory
+          .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_IFRS)
+          .multiplyLinesBy(ifrsAssetLineList, prorata);
     }
     if (fixedAsset
         .getDepreciationPlanSelect()

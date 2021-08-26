@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import java.math.BigDecimal;
@@ -68,8 +67,7 @@ public class TestFixedAssetLineComputationService {
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     FixedAssetLine fixedAssetLine =
-        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
-            fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -96,8 +94,7 @@ public class TestFixedAssetLineComputationService {
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     FixedAssetLine fixedAssetLine =
-        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
-            fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -130,7 +127,7 @@ public class TestFixedAssetLineComputationService {
     fixedAsset.addFixedAssetLineListItem(firstFixedAssetLine);
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
-            fixedAsset, firstFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+            fixedAsset, firstFixedAssetLine);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -162,7 +159,7 @@ public class TestFixedAssetLineComputationService {
             new BigDecimal("476.11"));
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
-            fixedAsset, firstFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+            fixedAsset, firstFixedAssetLine);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -194,7 +191,7 @@ public class TestFixedAssetLineComputationService {
             new BigDecimal("100.00"));
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
-            fixedAsset, previousFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+            fixedAsset, previousFixedAssetLine);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -226,7 +223,7 @@ public class TestFixedAssetLineComputationService {
             new BigDecimal("76.11"));
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
-            fixedAsset, previousFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+            fixedAsset, previousFixedAssetLine);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -258,7 +255,7 @@ public class TestFixedAssetLineComputationService {
             new BigDecimal("7331.32"));
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
-            fixedAsset, previousFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+            fixedAsset, previousFixedAssetLine);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -286,8 +283,7 @@ public class TestFixedAssetLineComputationService {
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
     FixedAssetLine fixedAssetLine =
-        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(
-            fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+        fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -321,7 +317,7 @@ public class TestFixedAssetLineComputationService {
     fixedAsset.addFixedAssetLineListItem(previousFixedAssetLine);
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
-            fixedAsset, previousFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+            fixedAsset, previousFixedAssetLine);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
@@ -367,7 +363,7 @@ public class TestFixedAssetLineComputationService {
     fixedAsset.addFixedAssetLineListItem(previousFixedAssetLine);
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
-            fixedAsset, previousFixedAssetLine, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+            fixedAsset, previousFixedAssetLine);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(

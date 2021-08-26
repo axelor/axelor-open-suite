@@ -540,6 +540,7 @@
 	<selection name="account.fixed.asset.line.type.select">
 		<option value="1">Economic</option>
 		<option value="2">Fiscal</option>
+		<option value="3">IFRS</option>
 	</selection>
 	
 	<selection name="account.fixed.asset.disposal.type.select">

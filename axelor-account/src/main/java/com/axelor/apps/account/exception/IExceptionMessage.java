@@ -31,7 +31,9 @@ public interface IExceptionMessage {
   static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
   static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset:  disposal move could not be generated because fixed  category is one ofmissing theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset:  disposal move could not be generated because fixed  category is missing one of theses account %s" /*)*/;
+  static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
+      /*$$(*/ "Fixed asset:  could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
   static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset category is missing one of theses account %s" /*)*/;
   static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =

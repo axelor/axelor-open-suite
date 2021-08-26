@@ -179,4 +179,12 @@ public interface FixedAssetService {
    * @throws AxelorException
    */
   void multiplyLinesBy(FixedAsset newFixedAsset, BigDecimal prorata) throws AxelorException;
+
+  /**
+   * Generates and compute ifrs lines for fixedAsset
+   *
+   * @throws AxelorException
+   * @throws NullPointerException if fixedAsset is null
+   */
+  void generateAndComputeIfrsFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
 }

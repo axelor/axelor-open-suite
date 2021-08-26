@@ -32,7 +32,7 @@ public interface FixedAssetLineComputationService {
    * @param typeSelect typeSelect of the fixedAssetLine
    * @return the created fixed asset line
    */
-  FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect);
+  FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset);
 
   /**
    * Compute the next fixed asset line from a fixed asset and the previous line.
@@ -43,7 +43,7 @@ public interface FixedAssetLineComputationService {
    * @return the created fixed asset line
    */
   FixedAssetLine computePlannedFixedAssetLine(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect);
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine);
 
   /**
    * Multiply line by prorata

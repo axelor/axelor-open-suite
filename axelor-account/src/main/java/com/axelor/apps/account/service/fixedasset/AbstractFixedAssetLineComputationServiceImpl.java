@@ -41,9 +41,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected abstract Integer getPeriodicityInMonth(FixedAsset fixedAsset);
 
+  protected abstract Integer getTypeSelect();
+
   @Override
   public FixedAssetLine computePlannedFixedAssetLine(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, int typeSelect) {
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
 
     BigDecimal depreciation =
         computeDepreciation(
@@ -62,11 +64,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         cumulativeDepreciation,
         accountingValue,
         depreciationBase,
-        typeSelect);
+        getTypeSelect());
   }
 
   @Override
-  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset, int typeSelect) {
+  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset) {
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
@@ -80,7 +82,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         depreciation,
         accountingValue,
         depreciationBase,
-        typeSelect);
+        getTypeSelect());
   }
 
   @Override

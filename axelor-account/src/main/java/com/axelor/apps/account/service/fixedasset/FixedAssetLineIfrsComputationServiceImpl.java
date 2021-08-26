@@ -3,13 +3,12 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.google.inject.servlet.RequestScoped;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-@RequestScoped
-public class FixedAssetLineFiscalComputationServiceImpl
+public class FixedAssetLineIfrsComputationServiceImpl
     extends AbstractFixedAssetLineComputationServiceImpl {
 
   @Override
@@ -19,6 +18,12 @@ public class FixedAssetLineFiscalComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
+    if (!fixedAsset.getIsIfrsEqualToFiscalDepreciation()
+        && fixedAsset
+            .getIfrsComputationMethodSelect()
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+      return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
+    }
     return fixedAsset.getGrossValue();
   }
 
@@ -34,32 +39,32 @@ public class FixedAssetLineFiscalComputationServiceImpl
 
   @Override
   protected List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset) {
-    return fixedAsset.getFiscalFixedAssetLineList();
+    return fixedAsset.getIfrsFixedAssetLineList();
   }
 
   @Override
   protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getFiscalNumberOfDepreciation();
+    return fixedAsset.getIfrsNumberOfDepreciation();
   }
 
   @Override
   protected String getComputationMethodSelect(FixedAsset fixedAsset) {
-    return fixedAsset.getFiscalComputationMethodSelect();
+    return fixedAsset.getIfrsComputationMethodSelect();
   }
 
   @Override
   protected BigDecimal getDegressiveCoef(FixedAsset fixedAsset) {
-    return fixedAsset.getFiscalDegressiveCoef();
+    return fixedAsset.getIfrsDegressiveCoef();
   }
 
   @Override
   protected Integer getPeriodicityInMonth(FixedAsset fixedAsset) {
-    return fixedAsset.getFiscalPeriodicityInMonth();
+    return fixedAsset.getIfrsPeriodicityInMonth();
   }
 
   @Override
   protected Integer getTypeSelect() {
 
-    return FixedAssetLineRepository.TYPE_SELECT_FISCAL;
+    return FixedAssetLineRepository.TYPE_SELECT_IFRS;
   }
 }
