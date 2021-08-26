@@ -383,7 +383,9 @@ public class BankReconciliationController {
       }
       if (status == BankReconciliationLineService.BANK_RECONCILIATION_LINE_COMPLETABLE) {
         if (ObjectUtils.isEmpty(bankReconciliation.getJournal()))
-          response.setError(I18n.get("Please set journal before validating"));
+          response.setError(
+              I18n.get(
+                  "The journal is required. Some entries from the reconciliation have an empty moveLine and an account filled"));
       }
     }
   }
