@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportMoveLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Address;
@@ -33,8 +32,6 @@ import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -121,46 +118,39 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     accountingReportMoveLineRepo.save(reportMoveLine);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public List<Partner> getDasToDeclarePartnersFromAccountingExport(
       AccountingReport accountingExport) throws AxelorException {
 
-    List<AccountingReportMoveLine> reportMoveLines =
-        getDasToDeclareLinesFromAccountingExport(accountingExport, false);
-
-    List<Partner> partners = Lists.newArrayList();
-
-    if (CollectionUtils.isEmpty(reportMoveLines)) {
-      return partners;
-    }
-
-    for (AccountingReportMoveLine reportMoveLine : reportMoveLines) {
-
-      Partner partner = reportMoveLine.getPaymentMoveLineDistribution().getPartner();
-      if (partner == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_MOVE_LINE_PARTNER_MISSING),
-            reportMoveLine.getPaymentMoveLineDistribution().getMove().getReference());
-      }
-      if (!partners.contains(partner)) {
-        partners.add(partner);
-      }
-    }
-    return partners;
+    return Lists.newArrayList();
+    // FIXME retourner la liste des tiers de la table d'historisation AccoutingReportMoveLine
+    //    Query dateQuery =
+    //        JPA.em()
+    //            .createQuery(
+    //                "SELECT partner.id FROM AccountingReportMoveLine self "
+    //                + "JOIN Partner partner ON "
+    //                    + "WHERE self.paymentMoveLineDistribution = partner.id "
+    //                    + "AND self.accountingExport = "
+    //                    + accountingExport.getId()
+    //                    + " AND self.excludeFromDas2Report != true "
+    //                    + " AND self.exported != true "
+    //                    + "GROUP BY partner.id order by partner.id");
+    //
+    //    return dateQuery.getResultList();
   }
 
   @Override
   public List<AccountingReportMoveLine> getDasToDeclareLinesFromAccountingExport(
-      AccountingReport accountingExport, boolean checkN4DSCode) {
+      AccountingReport accountingExport) {
 
-    String query =
-        "self.accountingExport = ?1 AND self.excludeFromDas2Report != true AND self.exported != true";
-    if (checkN4DSCode) {
-      query += "AND self.paymentMoveLineDistribution.move.serviceType.n4dsCode is not null";
-    }
-
-    return accountingReportMoveLineRepo.all().filter(query, accountingExport).fetch();
+    return accountingReportMoveLineRepo
+        .all()
+        .filter(
+            "self.accountingExport = ?1 AND self.excludeFromDas2Report != true "
+                + "AND self.exported != true AND self.paymentMoveLineDistribution.moveLine.serviceType.n4dsCode is not null",
+            accountingExport)
+        .fetch();
   }
 
   @Override
@@ -396,32 +386,32 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     String queryStr =
         "SELECT "
-            + "MOVELINE.DAS2ACTIVITY_NAME AS ACTIVITY, "
-            + "PARTNER.PARTNER_TYPE_SELECT AS TYPE, "
-            + "PARTNER.NAME AS NAME, "
-            + "PARTNER.FIRST_NAME AS FIRST_NAME, "
-            + "PARTNER.REGISTRATION_CODE as REGISTRATION_CODE, "
-            + "TRIM(CONCAT(ADDRESS.ADDRESSL2,' ',ADDRESS.ADDRESSL3)) AS ADDRESS_CONSTRUCTION, "
-            + "ADDRESS.ADDRESSL4 AS ADDRESSL4, "
-            + "CITY.ZIP AS ZIP, "
-            + "CITY.NAME AS CITY, "
-            + "COUNTRY.ALPHA2CODE AS COUNTRY, "
-            + "SERVICETYPE.N4DS_CODE AS SERVICE_TYPE, "
-            + "SUM(TMOVELINE.DETAIL_PAYMENT_AMOUNT) AS AMOUNT "
-            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE T "
-            + "JOIN ACCOUNT_TAX_PAYMENT_MOVE_LINE TMOVELINE ON T.TAX_PAYMENT_MOVE_LINE = TMOVELINE.ID "
-            + "JOIN ACCOUNT_RECONCILE RECONCILE ON (TMOVELINE.RECONCILE = RECONCILE.ID) "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON (RECONCILE.CREDIT_MOVE_LINE = MOVELINE.ID) "
-            + "LEFT OUTER JOIN ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (MOVELINE.SERVICE_TYPE = SERVICETYPE.ID) "
-            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON (MOVELINE.PARTNER = PARTNER.ID) "
-            + "LEFT OUTER JOIN BASE_ADDRESS AS ADDRESS ON (PARTNER.MAIN_ADDRESS = ADDRESS.ID) "
-            + "LEFT OUTER JOIN BASE_COUNTRY AS COUNTRY ON (ADDRESS.ADDRESSL7COUNTRY = COUNTRY.ID) "
-            + "LEFT OUTER JOIN BASE_CITY AS CITY ON (ADDRESS.CITY = CITY.ID) "
-            + "WHERE T.ACCOUNTING_EXPORT = "
+            + "MOVELINE.DAS2ACTIVITY_NAME AS ACTIVITY,  "
+            + "PARTNER.PARTNER_TYPE_SELECT AS TYPE,  "
+            + "PARTNER.NAME AS NAME,  "
+            + "PARTNER.FIRST_NAME AS FIRST_NAME,  "
+            + "PARTNER.REGISTRATION_CODE as REGISTRATION_CODE,  "
+            + "TRIM(CONCAT(ADDRESS.ADDRESSL2,' ',ADDRESS.ADDRESSL3)) AS ADDRESS_CONSTRUCTION,  "
+            + "ADDRESS.ADDRESSL4 AS ADDRESSL4,  "
+            + "CITY.ZIP AS ZIP,  "
+            + "CITY.NAME AS CITY,  "
+            + "COUNTRY.ALPHA2CODE AS COUNTRY,  "
+            + "SERVICETYPE.N4DS_CODE AS SERVICE_TYPE,  "
+            + "SUM(PMVLD.IN_TAX_PRORATED_AMOUNT) AS AMOUNT  "
+            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY "
+            + "JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID  "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON (PMVLD.MOVE_LINE = MOVELINE.ID)  "
+            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON (PMVLD.PARTNER = PARTNER.ID)  "
+            + "LEFT OUTER JOIN BASE_ADDRESS AS ADDRESS ON (PARTNER.MAIN_ADDRESS = ADDRESS.ID)  "
+            + "LEFT OUTER JOIN BASE_COUNTRY AS COUNTRY ON (ADDRESS.ADDRESSL7COUNTRY = COUNTRY.ID)  "
+            + "LEFT OUTER JOIN BASE_CITY AS CITY ON (ADDRESS.CITY = CITY.ID)  "
+            + "LEFT OUTER JOIN ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (MOVELINE.SERVICE_TYPE = SERVICETYPE.ID)  "
+            + "WHERE HISTORY.ACCOUNTING_EXPORT =  "
             + accountingExport.getId()
-            + " AND T.EXCLUDE_FROM_DAS2REPORT != true "
-            + "AND SERVICETYPE.IS_DAS2DECLARABLE = true "
-            + "GROUP BY PARTNER_TYPE_SELECT,DAS2ACTIVITY_NAME,PARTNER.NAME,PARTNER.FIRST_NAME,PARTNER.REGISTRATION_CODE, "
+            + " AND HISTORY.EXCLUDE_FROM_DAS2REPORT != true  "
+            + "AND SERVICETYPE.IS_DAS2DECLARABLE = true  "
+            + "AND SERVICETYPE.N4DS_CODE IS NOT NULL "
+            + "GROUP BY PARTNER_TYPE_SELECT,DAS2ACTIVITY_NAME,PARTNER.NAME,PARTNER.FIRST_NAME,PARTNER.REGISTRATION_CODE,  "
             + "ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,CITY.ZIP,CITY.NAME,COUNTRY.ALPHA2CODE,SERVICETYPE.N4DS_CODE";
 
     Query query = JPA.em().createNativeQuery(queryStr);
@@ -434,7 +424,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     int i = 0;
     List<AccountingReportMoveLine> accountingReportMoveLines =
-        getDasToDeclareLinesFromAccountingExport(accountingExport, false);
+        getDasToDeclareLinesFromAccountingExport(accountingExport);
     if (CollectionUtils.isEmpty(accountingReportMoveLines)) {
       return;
     }

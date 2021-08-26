@@ -45,7 +45,7 @@ public interface AccountingReportMoveLineService {
       throws AxelorException, IOException;
 
   public List<AccountingReportMoveLine> getDasToDeclareLinesFromAccountingExport(
-      AccountingReport accountingExport, boolean checkN4DSCode);
+      AccountingReport accountingExport);
 
   public List<String> generateN4DSLines(AccountingReport accountingExport) throws AxelorException;
 

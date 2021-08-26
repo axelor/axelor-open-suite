@@ -1076,7 +1076,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
             accountingExport);
 
     if (CollectionUtils.isEmpty(partners)) {
-      return false;
+      return true;
     }
 
     for (Partner partner : partners) {
@@ -1160,6 +1160,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public MetaFile launchN4DSExport(AccountingReport accountingExport)
       throws AxelorException, IOException, NullPointerException {
 
+    // TODO manage sequence in fileNaming
     String fileName = "N4DS_" + accountingExport.getCompany().getCode() + ".txt";
     MetaFile metaFile =
         accountingReportMoveLineService.generateN4DSFile(accountingExport, fileName);
