@@ -1292,28 +1292,29 @@ public class MoveLineServiceImpl implements MoveLineService {
     return moveLine;
   }
 
-	@Override
-	public MoveLine setCurrencyAmount(MoveLine moveLine) {
-		Move move = moveLine.getMove();
-		if (move.getMoveLineList().size() == 0)
-			try {
-				moveLine.setCurrencyRate(
-						currencyService.getCurrencyConversionRate(move.getCurrency(), move.getCompany().getCurrency()));
-			} catch (AxelorException e1) {
-				e1.printStackTrace();
-			}
-		else
-			moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
-		if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
-			BigDecimal unratedAmount = BigDecimal.ZERO;
-			if (!moveLine.getDebit().equals(BigDecimal.ZERO)) {
-				unratedAmount = moveLine.getDebit();
-			}
-			if (!moveLine.getCredit().equals(BigDecimal.ZERO)) {
-				unratedAmount = moveLine.getCredit();
-			}
-			moveLine.setCurrencyAmount(unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
-		}
-		return null;
-	}
+  @Override
+  public MoveLine setCurrencyAmount(MoveLine moveLine) {
+    Move move = moveLine.getMove();
+    if (move.getMoveLineList().size() == 0)
+      try {
+        moveLine.setCurrencyRate(
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompany().getCurrency()));
+      } catch (AxelorException e1) {
+        e1.printStackTrace();
+      }
+    else moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
+    if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
+      BigDecimal unratedAmount = BigDecimal.ZERO;
+      if (!moveLine.getDebit().equals(BigDecimal.ZERO)) {
+        unratedAmount = moveLine.getDebit();
+      }
+      if (!moveLine.getCredit().equals(BigDecimal.ZERO)) {
+        unratedAmount = moveLine.getCredit();
+      }
+      moveLine.setCurrencyAmount(
+          unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
+    }
+    return moveLine;
+  }
 }

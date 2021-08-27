@@ -105,6 +105,6 @@ public interface MoveService {
   void setOriginAndDescriptionOnMoveLineList(Move move);
 
   Account getAccountingAccountFromAccountConfig(Move move);
-  
+
   TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount);
 }

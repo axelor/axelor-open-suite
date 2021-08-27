@@ -19,15 +19,11 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -53,19 +49,18 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Singleton
 public class MoveLineController {
 
-	protected MoveService moveService;
-	protected MoveLineService moveLineService;
-	
-	@Inject
-	public MoveLineController(MoveService moveService,MoveLineService moveLineService) {
-		this.moveService = moveService;
-		this.moveLineService = moveLineService;
-	}
+  protected MoveService moveService;
+  protected MoveLineService moveLineService;
+
+  @Inject
+  public MoveLineController(MoveService moveService, MoveLineService moveLineService) {
+    this.moveService = moveService;
+    this.moveLineService = moveLineService;
+  }
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
 
@@ -282,7 +277,7 @@ public class MoveLineController {
         response.setError(I18n.get("Please select a partner"));
       } else {
         Account accountingAccount = moveService.getAccountingAccountFromAccountConfig(move);
-        
+
         if (accountingAccount != null) {
           response.setValue("account", accountingAccount);
           if (!accountingAccount.getUseForPartnerBalance()) {
