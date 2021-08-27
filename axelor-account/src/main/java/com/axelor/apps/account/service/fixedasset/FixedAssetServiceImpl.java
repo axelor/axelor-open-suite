@@ -108,13 +108,40 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException {
 
-    generateAndComputeFixedAssetLines(fixedAsset);
-    generateAndComputeFiscalFixedAssetLines(fixedAsset);
-    generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
-    generateAndComputeIfrsFixedAssetLines(fixedAsset);
+    if (fixedAsset.getGrossValue().signum() > 0) {
+
+      if (fixedAsset.getFixedAssetLineList() != null
+          && !fixedAsset.getFixedAssetLineList().isEmpty()) {
+        fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
+      }
+      if (fixedAsset.getFiscalFixedAssetLineList() != null
+          && !fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
+        fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
+      }
+      if (fixedAsset.getIfrsFixedAssetLineList() != null
+          && !fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
+        fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
+      }
+
+      generateAndComputeFixedAssetLines(fixedAsset);
+      generateAndComputeFiscalFixedAssetLines(fixedAsset);
+      generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+      generateAndComputeIfrsFixedAssetLines(fixedAsset);
+    } else {
+      if (fixedAsset.getFixedAssetLineList() != null) {
+        fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
+      }
+      if (fixedAsset.getFiscalFixedAssetLineList() != null) {
+        fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
+      }
+      if (fixedAsset.getIfrsFixedAssetLineList() != null) {
+        fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
+      }
+    }
 
     return fixedAsset;
   }
+
   /**
    * {@inheritDoc}
    *
@@ -373,6 +400,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       fixedAsset.removeFixedAssetLineListItem(fixedAssetLine);
     }
+    fixedAssetLineService.clear(fixedAssetLineList);
 
     setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
     fixedAssetRepo.save(fixedAsset);
@@ -446,22 +474,22 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
       if (fixedAsset.getFixedAssetLineList() != null) {
         if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
-          fixedAsset.getFixedAssetLineList().clear();
+          fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
         }
       }
       if (fixedAsset.getFiscalFixedAssetLineList() != null) {
         if (!fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
-          fixedAsset.getFiscalFixedAssetLineList().clear();
+          fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
         }
       }
       if (fixedAsset.getFixedAssetDerogatoryLineList() != null) {
         if (!fixedAsset.getFixedAssetDerogatoryLineList().isEmpty()) {
-          fixedAsset.getFixedAssetDerogatoryLineList().clear();
+          fixedAssetDerogatoryLineService.clear(fixedAsset.getFixedAssetDerogatoryLineList());
         }
       }
       if (fixedAsset.getIfrsFixedAssetLineList() != null) {
         if (!fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
-          fixedAsset.getIfrsFixedAssetLineList().clear();
+          fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
         }
       }
 
@@ -475,7 +503,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       fixedAsset.setFixedAssetSeq(this.generateSequence(fixedAsset));
 
     } else {
-      fixedAsset.getFixedAssetLineList().clear();
+      fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
+      fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
+      fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
+      fixedAssetDerogatoryLineService.clear(fixedAsset.getFixedAssetDerogatoryLineList());
     }
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
     fixedAssetRepo.save(fixedAsset);
@@ -555,10 +586,20 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
       // We can proceed the next part.
       // We remove all fixedAssetLine that are not realized.
+      List<FixedAssetLine> linesToRemove =
+          fixedAssetLineList.stream()
+              .filter(
+                  fixedAssetLine ->
+                      fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
+                          && !fixedAssetLine.equals(optFixedAssetLine.get()))
+              .collect(Collectors.toList());
+
       fixedAssetLineList.removeIf(
           fixedAssetLine ->
               fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
                   && !fixedAssetLine.equals(optFixedAssetLine.get()));
+      fixedAssetLineService.clear(linesToRemove);
+
       FixedAssetLine firstPlannedFixedAssetLine = optFixedAssetLine.get();
       firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
       firstPlannedFixedAssetLine.setImpairmentValue(
@@ -581,6 +622,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 .add(firstPlannedFixedAssetLine.getDepreciation())
                 .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
       }
+
       // We can do this, since we will never save fixedAsset in the java process
       fixedAsset.setGrossValue(correctedAccountingValue);
       fixedAsset.setFirstDepreciationDate(
@@ -728,20 +770,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status) {
-    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
-    List<FixedAssetLine> fiscalFixedAssetLineList = fixedAsset.getFiscalFixedAssetLineList();
-    List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
-        fixedAsset.getFixedAssetDerogatoryLineList();
-
-    if (fixedAssetLineList != null) {
-      fixedAssetLineList.removeIf(line -> line.getStatusSelect() == status);
-    }
-    if (fiscalFixedAssetLineList != null) {
-      fiscalFixedAssetLineList.removeIf(line -> line.getStatusSelect() == status);
-    }
-    if (fixedAssetDerogatoryLineList != null) {
-      fixedAssetDerogatoryLineList.removeIf(line -> line.getStatusSelect() == status);
-    }
+    Objects.requireNonNull(fixedAsset);
+    fixedAssetLineService.filterListByStatus(fixedAsset.getFixedAssetLineList(), status);
+    fixedAssetLineService.filterListByStatus(fixedAsset.getFiscalFixedAssetLineList(), status);
+    fixedAssetLineService.filterListByStatus(fixedAsset.getIfrsFixedAssetLineList(), status);
+    fixedAssetDerogatoryLineService.filterListByStatus(
+        fixedAsset.getFixedAssetDerogatoryLineList(), status);
     return fixedAsset;
   }
 

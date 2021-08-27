@@ -142,7 +142,7 @@ public interface FixedAssetService {
 
   /**
    * Filter lines from fixedAssetLineList / fiscalAssetLineList / fixedAssetDerogatoryLineList with
-   * line.status = status.
+   * line.status = status. Line that doesn't match the status will be removed from database.
    *
    * @param fixedAsset
    * @param statusPlanned

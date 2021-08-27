@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -99,4 +100,26 @@ public interface FixedAssetLineService {
    */
   LinkedHashMap<LocalDate, List<FixedAssetLine>> groupAndSortByDateFixedAssetLine(
       FixedAsset fixedAsset);
+  /**
+   * This method will remove every fixedAssetLine from database, then use {@link List#clear()}
+   *
+   * @param fixedAssetLineList
+   */
+  void clear(List<FixedAssetLine> fixedAssetLineList);
+
+  /**
+   * Call {@link FixedAssetLineRepository#remove(FixedAssetLine)} on line
+   *
+   * @param line
+   */
+  void remove(FixedAssetLine line);
+
+  /**
+   * Filter list with statusSelect = status. Filtered lines will be remove from database by calling
+   * {@link FixedAssetLineRepository#remove(FixedAssetLine)}
+   *
+   * @param fixedAssetLineList
+   * @param status
+   */
+  void filterListByStatus(List<FixedAssetLine> fixedAssetLineList, int status);
 }

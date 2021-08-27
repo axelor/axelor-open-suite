@@ -237,4 +237,43 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             Collectors.groupingBy(
                 FixedAssetLine::getDepreciationDate, LinkedHashMap::new, Collectors.toList()));
   }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAssetDerogatoryLineList is null
+   */
+  @Override
+  public void clear(List<FixedAssetLine> fixedAssetLineList) {
+    Objects.requireNonNull(fixedAssetLineList);
+    fixedAssetLineList.forEach(
+        line -> {
+          remove(line);
+        });
+    fixedAssetLineList.clear();
+  }
+
+  @Override
+  @Transactional
+  public void remove(FixedAssetLine line) {
+    Objects.requireNonNull(line);
+    line.setFixedAsset(null);
+    line.setStatusSelect(-1);
+    fixedAssetLineRepository.save(line);
+    // Should delete but there is NPE at GlobalAuditIntercept and can't figure out why
+    // fixedAssetLineRepository.remove(line);
+  }
+
+  @Override
+  public void filterListByStatus(List<FixedAssetLine> fixedAssetLineList, int status) {
+
+    List<FixedAssetLine> linesToRemove = new ArrayList<>();
+    if (fixedAssetLineList != null) {
+      fixedAssetLineList.stream()
+          .filter(line -> line.getStatusSelect() == status)
+          .forEach(line -> linesToRemove.add(line));
+      fixedAssetLineList.removeIf(line -> line.getStatusSelect() == status);
+    }
+    clear(linesToRemove);
+  }
 }

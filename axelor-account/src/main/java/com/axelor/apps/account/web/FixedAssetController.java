@@ -56,24 +56,8 @@ public class FixedAssetController {
     }
 
     try {
+      fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
 
-      if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
-
-        if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
-          fixedAsset.getFixedAssetLineList().clear();
-        }
-        if (!fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
-          fixedAsset.getFiscalFixedAssetLineList().clear();
-        }
-        if (!fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
-          fixedAsset.getIfrsFixedAssetLineList().clear();
-        }
-        fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
-
-      } else {
-        fixedAsset.getFixedAssetLineList().clear();
-        fixedAsset.getFiscalFixedAssetLineList().clear();
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

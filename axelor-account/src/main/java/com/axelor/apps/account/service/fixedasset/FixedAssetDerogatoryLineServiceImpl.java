@@ -285,4 +285,42 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
               });
     }
   }
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAssetDerogatoryLineList is null
+   */
+  @Override
+  public void clear(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList) {
+
+    Objects.requireNonNull(fixedAssetDerogatoryLineList);
+    fixedAssetDerogatoryLineList.forEach(
+        line -> {
+          remove(line);
+        });
+    fixedAssetDerogatoryLineList.clear();
+  }
+
+  @Transactional
+  public void remove(FixedAssetDerogatoryLine line) {
+    Objects.requireNonNull(line);
+    line.setStatusSelect(-1);
+    line.setFixedAsset(null);
+    fixedAssetDerogatoryLineRepository.save(line);
+    // Should delete but there is NPE at GlobalAuditIntercept and can't figure out why
+    // fixedAssetDerogatoryLineRepository.remove(line);
+  }
+
+  @Override
+  public void filterListByStatus(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status) {
+    List<FixedAssetDerogatoryLine> derogatoryLinesToRemove = new ArrayList<>();
+    if (fixedAssetDerogatoryLineList != null) {
+      fixedAssetDerogatoryLineList.stream()
+          .filter(line -> line.getStatusSelect() == status)
+          .forEach(line -> derogatoryLinesToRemove.add(line));
+      fixedAssetDerogatoryLineList.removeIf(line -> line.getStatusSelect() == status);
+    }
+    clear(derogatoryLinesToRemove);
+  }
 }

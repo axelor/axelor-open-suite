@@ -87,10 +87,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       throws AxelorException {
 
     if (fixedAssetLine == null
-        || fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED) {
+        || fixedAssetLine.getStatusSelect() != FixedAssetLineRepository.STATUS_PLANNED) {
       return;
     }
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+    if (fixedAsset == null) {
+      return;
+    }
     if (!isBatch && !isPreviousLineRealized(fixedAssetLine, fixedAsset)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -103,12 +106,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       generateImpairementAccountMove(fixedAssetLine);
     }
 
-    fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
-
-    if (fixedAssetLine.getTypeSelect() == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC) {
+    if (fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
+        && fixedAssetLine.getTypeSelect() == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC) {
       BigDecimal accountingValue = fixedAsset.getAccountingValue();
       fixedAsset.setAccountingValue(accountingValue.subtract(fixedAssetLine.getDepreciation()));
     }
+
+    fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
 
     FixedAssetLine plannedFixedAssetLine =
         fixedAsset.getFixedAssetLineList().stream()

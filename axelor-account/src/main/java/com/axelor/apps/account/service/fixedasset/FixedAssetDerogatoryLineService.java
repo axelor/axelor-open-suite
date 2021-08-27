@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -55,4 +56,21 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetLine fiscalFixedAssetLine,
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
       LocalDate date);
+
+  /**
+   * This method will remove every fixedAssetDerogatoryLine from database, then use {@link
+   * List#clear()}
+   *
+   * @param fixedAssetDerogatoryLineList
+   */
+  void clear(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList);
+
+  /**
+   * Filter list with statusSelect = status. Filtered lines will be remove from database by calling
+   * {@link FixedAssetDerogatoryLineRepository#remove(FixedAssetLine)}
+   *
+   * @param fixedAssetLineList
+   * @param status
+   */
+  void filterListByStatus(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status);
 }
