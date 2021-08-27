@@ -985,12 +985,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice != null) {
       if (invoice.getFinancialDiscount() != null) {
         AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
-        if (invoice.getFinancialDiscount().getDiscountBaseSelect() == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
+        if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
           return invoice
               .getExTaxTotal()
               .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3));
-        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect() == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-            && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+                == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+            && (invoice.getOperationTypeSelect()
+                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             && accountConfig.getPurchFinancialDiscountTax() != null) {
           return invoice
               .getInTaxTotal()
@@ -1002,8 +1006,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                       .getValue()
                       .add(new BigDecimal(1)),
                   3);
-        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect() == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-            && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+                == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+            && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                || invoice.getOperationTypeSelect()
+                    == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             && accountConfig.getSaleFinancialDiscountTax() != null) {
           return invoice
               .getInTaxTotal()
@@ -1025,8 +1032,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice != null) {
       if (invoice.getFinancialDiscount() != null) {
         AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
-        if (invoice.getFinancialDiscount().getDiscountBaseSelect() == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-            && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+                == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+            && (invoice.getOperationTypeSelect()
+                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             && accountConfig.getPurchFinancialDiscountTax() != null) {
           return invoice
               .getInTaxTotal()
@@ -1040,8 +1050,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                       .add(new BigDecimal(1)),
                   5,
                   RoundingMode.CEILING);
-        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect() == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-            && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+                == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+            && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                || invoice.getOperationTypeSelect()
+                    == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             && accountConfig.getSaleFinancialDiscountTax() != null) {
           return invoice
               .getInTaxTotal()
