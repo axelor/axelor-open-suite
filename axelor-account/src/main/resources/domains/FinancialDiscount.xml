@@ -17,8 +17,8 @@
 		<extra-code><![CDATA[
 	
 		// DISCOUNT BASE SELECT
-	    public static final int BASE_HT = 0;
-	    public static final int BASE_VAT = 1;
+	    public static final int DISCOUNT_BASE_HT = 0;
+	    public static final int DISCOUNT_BASE_VAT = 1;
 		
 		]]></extra-code>
 		

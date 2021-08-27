@@ -204,12 +204,12 @@ public class InvoicePaymentController {
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
       if (invoiceId > 0) {
         Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
-        Boolean applyDiscount = Beans.get(InvoiceService.class).applyFinancialDiscount(invoiceId);
+        Boolean applyDiscount = Beans.get(InvoiceService.class).applyFinancialDiscount(invoice);
         response.setValue("applyFinancialDiscount", applyDiscount);
         response.setValue(
             "amount",
             Beans.get(InvoiceService.class)
-                .calculateAmountRemainingInPayment(invoiceId, applyDiscount));
+                .calculateAmountRemainingInPayment(invoice, applyDiscount));
         if (invoice.getFinancialDiscountDeadlineDate() != null) {
           response.setValue(
               "financialDiscountDeadlineDate", invoice.getFinancialDiscountDeadlineDate());
@@ -219,13 +219,13 @@ public class InvoicePaymentController {
         }
         response.setValue(
             "financialDiscountAmount",
-            Beans.get(InvoiceService.class).calculateFinancialDiscountAmount(invoiceId));
+            Beans.get(InvoiceService.class).calculateFinancialDiscountAmount(invoice));
         response.setValue(
             "financialDiscountTaxAmount",
-            Beans.get(InvoiceService.class).calculateFinancialDiscountTaxAmount(invoiceId));
+            Beans.get(InvoiceService.class).calculateFinancialDiscountTaxAmount(invoice));
         response.setValue(
             "financialDiscountTotalAmount",
-            Beans.get(InvoiceService.class).calculateFinancialDiscountTotalAmount(invoiceId));
+            Beans.get(InvoiceService.class).calculateFinancialDiscountTotalAmount(invoice));
         response.setAttr(
             "amount", "title", Beans.get(InvoiceService.class).setAmountTitle(applyDiscount));
       }

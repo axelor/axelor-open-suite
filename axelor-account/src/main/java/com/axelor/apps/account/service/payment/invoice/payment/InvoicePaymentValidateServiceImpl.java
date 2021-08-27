@@ -49,6 +49,9 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -176,24 +179,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       }
       customerAccount = invoiceMoveLine.getAccount();
     }
-    String origin = invoicePayment.getInvoice().getInvoiceId();
-    if (invoicePayment.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_CHEQUE
-        || invoicePayment.getPaymentMode().getTypeSelect()
-            == PaymentModeRepository.TYPE_IPO_CHEQUE) {
-      origin = invoicePayment.getChequeNumber() != null ? invoicePayment.getChequeNumber() : origin;
-    } else if (invoicePayment.getPaymentMode().getTypeSelect()
-        == PaymentModeRepository.TYPE_BANK_CARD) {
-      origin =
-          invoicePayment.getInvoicePaymentRef() != null
-              ? invoicePayment.getInvoicePaymentRef()
-              : origin;
-    }
-    if (invoicePayment.getInvoice().getOperationTypeSelect()
-            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-        || invoicePayment.getInvoice().getOperationTypeSelect()
-            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-      origin = invoicePayment.getInvoice().getSupplierInvoiceNb();
-    }
+
+    String origin = getOriginFromInvoicePayment(invoicePayment);
 
     Move move =
         moveService
@@ -246,244 +233,10 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     } else if (invoicePayment.getApplyFinancialDiscount()
         && invoicePayment.getFinancialDiscount() != null
         && Beans.get(AppAccountService.class).getAppAccount().getManageFinancialDiscount()) {
-
-      BigDecimal paymentAmount =
-          invoicePayment
-              .getAmount()
-              .add(
-                  invoicePayment
-                      .getFinancialDiscountAmount()
-                      .add(invoicePayment.getFinancialDiscountTaxAmount()));
-
-      BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
-
-      if (invoice.getOperationTypeSelect() == 1) {
-
-        Account purchAccount = new Account();
-
-        for (AccountManagement accountManagement :
-            accountConfigRepo
-                .findByCompany(company)
-                .getPurchFinancialDiscountTax()
-                .getAccountManagementList()) {
-          if (accountManagement.getCompany().equals(company)) {
-            purchAccount = accountManagement.getFinancialDiscountAccount();
-          }
-        }
-
-        if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect() == 0
-            && purchAccount != null) {
-          System.err.println("Sans taxes achat");
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  paymentModeService.getPaymentModeAccount(
-                      paymentMode, company, companyBankDetails),
-                  paymentAmountWithoutDiscount,
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  1,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  accountConfigRepo.findByCompany(company).getPurchFinancialDiscountAccount(),
-                  invoicePayment.getFinancialDiscountAmount(),
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  2,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          customerMoveLine =
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  customerAccount,
-                  paymentAmount,
-                  !isDebitInvoice,
-                  paymentDate,
-                  null,
-                  3,
-                  origin,
-                  invoicePayment.getDescription());
-
-        } else if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect() == 1
-            && purchAccount != null) {
-
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  paymentModeService.getPaymentModeAccount(
-                      paymentMode, company, companyBankDetails),
-                  paymentAmountWithoutDiscount,
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  1,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  accountConfigRepo.findByCompany(company).getPurchFinancialDiscountAccount(),
-                  invoicePayment.getFinancialDiscountAmount(),
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  2,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  purchAccount,
-                  invoicePayment.getFinancialDiscountTaxAmount(),
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  3,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          customerMoveLine =
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  customerAccount,
-                  paymentAmount,
-                  !isDebitInvoice,
-                  paymentDate,
-                  null,
-                  4,
-                  origin,
-                  invoicePayment.getDescription());
-        }
-
-      } else if (invoice.getOperationTypeSelect() == 3) {
-
-        Account saleAccount = new Account();
-        for (AccountManagement accountManagement :
-            accountConfigRepo
-                .findByCompany(company)
-                .getSaleFinancialDiscountTax()
-                .getAccountManagementList()) {
-          if (accountManagement.getCompany().equals(company)) {
-            saleAccount = accountManagement.getFinancialDiscountAccount();
-          }
-        }
-
-        if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect() == 0
-            && saleAccount != null) {
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  paymentModeService.getPaymentModeAccount(
-                      paymentMode, company, companyBankDetails),
-                  paymentAmountWithoutDiscount,
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  1,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  accountConfigRepo.findByCompany(company).getSaleFinancialDiscountAccount(),
-                  invoicePayment.getFinancialDiscountAmount(),
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  2,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          customerMoveLine =
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  customerAccount,
-                  paymentAmount,
-                  !isDebitInvoice,
-                  paymentDate,
-                  null,
-                  3,
-                  origin,
-                  invoicePayment.getDescription());
-
-        } else if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect() == 1
-            && saleAccount != null) {
-
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  paymentModeService.getPaymentModeAccount(
-                      paymentMode, company, companyBankDetails),
-                  paymentAmountWithoutDiscount,
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  1,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  accountConfigRepo.findByCompany(company).getSaleFinancialDiscountAccount(),
-                  invoicePayment.getFinancialDiscountAmount(),
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  2,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          move.addMoveLineListItem(
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  saleAccount,
-                  invoicePayment.getFinancialDiscountTaxAmount(),
-                  isDebitInvoice,
-                  paymentDate,
-                  null,
-                  3,
-                  origin,
-                  invoicePayment.getDescription()));
-
-          customerMoveLine =
-              moveLineService.createMoveLine(
-                  move,
-                  partner,
-                  customerAccount,
-                  paymentAmount,
-                  !isDebitInvoice,
-                  paymentDate,
-                  null,
-                  4,
-                  origin,
-                  invoicePayment.getDescription());
-        }
-      }
-      move.addMoveLineListItem(customerMoveLine);
+    	
+    	List<Object> list = getMoveWithFinancialDiscount(invoicePayment, move, customerAccount);
+    	move = (Move) list.get(0);
+    	customerMoveLine = (MoveLine) list.get(1);
     }
 
     moveService.getMoveValidateService().validate(move);
@@ -499,5 +252,279 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     invoicePaymentRepository.save(invoicePayment);
 
     return invoicePayment;
+  }
+
+  public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
+    String origin = invoicePayment.getInvoice().getInvoiceId();
+    if (invoicePayment.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_CHEQUE
+        || invoicePayment.getPaymentMode().getTypeSelect()
+            == PaymentModeRepository.TYPE_IPO_CHEQUE) {
+      origin = invoicePayment.getChequeNumber() != null ? invoicePayment.getChequeNumber() : origin;
+    } else if (invoicePayment.getPaymentMode().getTypeSelect()
+        == PaymentModeRepository.TYPE_BANK_CARD) {
+      origin =
+          invoicePayment.getInvoicePaymentRef() != null
+              ? invoicePayment.getInvoicePaymentRef()
+              : origin;
+    }
+    if (invoicePayment.getInvoice().getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoicePayment.getInvoice().getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      origin = invoicePayment.getInvoice().getSupplierInvoiceNb();
+    }
+    return origin;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public List<Object> getMoveWithFinancialDiscount(
+      InvoicePayment invoicePayment, Move move, Account customerAccount) throws AxelorException {
+
+    Invoice invoice = invoicePayment.getInvoice();
+    Company company = invoice.getCompany();
+    PaymentMode paymentMode = invoicePayment.getPaymentMode();
+    Partner partner = invoice.getPartner();
+    LocalDate paymentDate = invoicePayment.getPaymentDate();
+    BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
+    boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
+    String origin = getOriginFromInvoicePayment(invoicePayment);
+    MoveLine customerMoveLine = null;
+    List<Object> list= new ArrayList<Object>();
+
+    BigDecimal paymentAmount =
+        invoicePayment
+            .getAmount()
+            .add(
+                invoicePayment
+                    .getFinancialDiscountAmount()
+                    .add(invoicePayment.getFinancialDiscountTaxAmount()));
+
+    BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
+
+    if (invoice.getOperationTypeSelect() == 1) {
+
+      Account purchAccount = new Account();
+
+      for (AccountManagement accountManagement :
+          accountConfigRepo
+              .findByCompany(company)
+              .getPurchFinancialDiscountTax()
+              .getAccountManagementList()) {
+        if (accountManagement.getCompany().equals(company)) {
+          purchAccount = accountManagement.getFinancialDiscountAccount();
+        }
+      }
+
+      if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect() == 0
+          && purchAccount != null) {
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+                paymentAmountWithoutDiscount,
+                isDebitInvoice,
+                paymentDate,
+                null,
+                1,
+                origin,
+                invoicePayment.getDescription()));
+
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                accountConfigRepo.findByCompany(company).getPurchFinancialDiscountAccount(),
+                invoicePayment.getFinancialDiscountAmount(),
+                isDebitInvoice,
+                paymentDate,
+                null,
+                2,
+                origin,
+                invoicePayment.getDescription()));
+
+        customerMoveLine =
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                customerAccount,
+                paymentAmount,
+                !isDebitInvoice,
+                paymentDate,
+                null,
+                3,
+                origin,
+                invoicePayment.getDescription());
+
+      } else if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect() == 1
+          && purchAccount != null) {
+
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+                paymentAmountWithoutDiscount,
+                isDebitInvoice,
+                paymentDate,
+                null,
+                1,
+                origin,
+                invoicePayment.getDescription()));
+
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                accountConfigRepo.findByCompany(company).getPurchFinancialDiscountAccount(),
+                invoicePayment.getFinancialDiscountAmount(),
+                isDebitInvoice,
+                paymentDate,
+                null,
+                2,
+                origin,
+                invoicePayment.getDescription()));
+
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                purchAccount,
+                invoicePayment.getFinancialDiscountTaxAmount(),
+                isDebitInvoice,
+                paymentDate,
+                null,
+                3,
+                origin,
+                invoicePayment.getDescription()));
+
+        customerMoveLine =
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                customerAccount,
+                paymentAmount,
+                !isDebitInvoice,
+                paymentDate,
+                null,
+                4,
+                origin,
+                invoicePayment.getDescription());
+      }
+
+    } else if (invoice.getOperationTypeSelect() == 3) {
+
+      Account saleAccount = new Account();
+      for (AccountManagement accountManagement :
+          accountConfigRepo
+              .findByCompany(company)
+              .getSaleFinancialDiscountTax()
+              .getAccountManagementList()) {
+        if (accountManagement.getCompany().equals(company)) {
+          saleAccount = accountManagement.getFinancialDiscountAccount();
+        }
+      }
+
+      if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect() == 0
+          && saleAccount != null) {
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+                paymentAmountWithoutDiscount,
+                isDebitInvoice,
+                paymentDate,
+                null,
+                1,
+                origin,
+                invoicePayment.getDescription()));
+
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                accountConfigRepo.findByCompany(company).getSaleFinancialDiscountAccount(),
+                invoicePayment.getFinancialDiscountAmount(),
+                isDebitInvoice,
+                paymentDate,
+                null,
+                2,
+                origin,
+                invoicePayment.getDescription()));
+
+        customerMoveLine =
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                customerAccount,
+                paymentAmount,
+                !isDebitInvoice,
+                paymentDate,
+                null,
+                3,
+                origin,
+                invoicePayment.getDescription());
+
+      } else if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect() == 1
+          && saleAccount != null) {
+
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+                paymentAmountWithoutDiscount,
+                isDebitInvoice,
+                paymentDate,
+                null,
+                1,
+                origin,
+                invoicePayment.getDescription()));
+
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                accountConfigRepo.findByCompany(company).getSaleFinancialDiscountAccount(),
+                invoicePayment.getFinancialDiscountAmount(),
+                isDebitInvoice,
+                paymentDate,
+                null,
+                2,
+                origin,
+                invoicePayment.getDescription()));
+
+        move.addMoveLineListItem(
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                saleAccount,
+                invoicePayment.getFinancialDiscountTaxAmount(),
+                isDebitInvoice,
+                paymentDate,
+                null,
+                3,
+                origin,
+                invoicePayment.getDescription()));
+
+        customerMoveLine =
+            moveLineService.createMoveLine(
+                move,
+                partner,
+                customerAccount,
+                paymentAmount,
+                !isDebitInvoice,
+                paymentDate,
+                null,
+                4,
+                origin,
+                invoicePayment.getDescription());
+      }
+    }
+    move.addMoveLineListItem(customerMoveLine);
+    list.add(move);
+    list.add(customerMoveLine);
+    return list;
   }
 }

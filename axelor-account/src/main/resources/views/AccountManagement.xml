@@ -16,7 +16,7 @@
   </grid>
  
 	<grid name="account-management-tax-grid" title="Account management list" model="com.axelor.apps.account.db.AccountManagement" editable="true"
-		  onNew="action-account-management-record-default, action-account-management-attrs-type, financialDiscountAccount">
+		  onNew="action-account-management-record-default, action-account-management-attrs-type">
 		<field name="typeSelect" hidden="true"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"
 			onChange="action-group-account-account-management-onchange-common" canEdit="false" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -55,10 +55,6 @@
 	<action-attrs name="action-account-management-fill-default-bank-details">
         <attribute for="bankDetails" name="value" expr="null"/>
 		<attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails" if="company?.defaultBankDetails?.active"/>
-	</action-attrs>
-	
-	<action-attrs name="action-attrs-show-if-manage-financial-discount-account-management">
-		<attribute name="hidden" for="financialDiscountAccount" expr="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
 	</action-attrs>
 
 </object-views>

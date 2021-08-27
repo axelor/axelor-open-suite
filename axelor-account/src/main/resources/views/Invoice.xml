@@ -433,7 +433,7 @@ InvoiceSet.length > 0))"
 				<panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note" colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
 					<field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
-				<panel name="legalNoticePanel" title="Legal Notice" colSpan="12">
+				<panel name="legalNoticePanel" title="Legal Notice" colSpan="12" if="__config__.app.getApp('account').getManageFinancialDiscount()">
 					<field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
@@ -472,7 +472,7 @@ InvoiceSet.length > 0))"
 						<viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
 					</field>
 				</panel>
-				<panel name="financialDiscountPanel" colSpan="12">
+				<panel name="financialDiscountPanel" colSpan="12" if="__config__.app.getApp('account').getManageFinancialDiscount()">
 					<field name="financialDiscount" colSpan="6" onChange="action-record-invoice-set-financial-discount-informations" showIf="statusSelect &gt;=3"/>
 					<field name="financialDiscountRate" colSpan="6" showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
 					<field name="financialDiscountDeadlineDate" colSpan="6" showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
@@ -937,7 +937,6 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-record-set-dummy-field-language"/>
         <action name="action-invoice-method-set-default-group-products-on-printings"/>
         <action name="action-invoice-record-set-display-stock-move-on-invoice-printing" if="__config__.app.isApp('supplychain')"/>
-        <action name="action-attrs-show-if-manage-financial-discount"/>
         <action name="action-attrs-set-null-manage-financial-discount"/>
     </action-group>
 
@@ -956,7 +955,6 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
     	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
-      <action name="action-attrs-show-if-manage-financial-discount"/>
       <action name="action-attrs-set-null-manage-financial-discount"/>
     </action-group>
 
@@ -1675,11 +1673,6 @@ InvoiceSet.length > 0))"
 		<field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
 		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate &amp;&amp; financialDiscount"/>
 	</action-record>
-
-	<action-attrs name="action-attrs-show-if-manage-financial-discount">
-		<attribute name="hidden" for="financialDiscountPanel" expr="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
-		<attribute name="hidden" for="legalNotice" expr="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
-	</action-attrs>
 	
 	<action-record name="action-attrs-set-null-manage-financial-discount" model="com.axelor.apps.account.db.Invoice">
 		<field name="financialDiscount" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
