@@ -124,20 +124,21 @@
 		</panel>
     </form>
 
-  <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" onNew="action-account-move-line-onnew-group" canNew="false" canDelete="false" onLoad="action-account-moveline-onload-group"
-    canArchive="false">
-    <panel name="mainPanel" readonly="true">
-      <field name="name" colSpan="8" showTitle="false">
-        <viewer depends="name">
+	<form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
+	onNew="action-account-move-line-onnew-group"
+	canNew="false" canDelete="false" onLoad="action-account-moveline-onload-group" canArchive="false">
+		<panel name="mainPanel" readonly="true">
+			<field name="name" colSpan="8" showTitle="false">
+				<viewer depends="name">
 					<![CDATA[
 						<h3>
 							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Move line</span> {{record.name}}</span>
 						</h3>
 					]]>
 				</viewer>
-      </field>
-      <field name="reconcileGroup.code" colSpan="4" showTitle="false">
-        <viewer depends="reconcileGroup.code">
+			</field>
+			<field name="reconcileGroup.code" colSpan="4" showTitle="false">
+				<viewer depends="reconcileGroup.code">
 					<![CDATA[
 						<h3>
 							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial; text-align:right; display:block; width:100%;">{{record.reconcileGroup.code}}</span>
@@ -145,47 +146,43 @@
 					]]>
 				</viewer>
       </field>
-      <panel name="datesPanel" colSpan="12">
-        <field name="date" onChange="account-move-line-group-date-onchange" />
-        <field name="dueDate" showIf="dueDate" />
-        <field name="originDate" />
-      </panel>
-      <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" />
-      <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
-        onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount" />
-      <field name="debit" readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3" />
-      <field name="credit" readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3" />
-      <field name="amountRemaining" colSpan="3" />
-      <field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4" />
-      <field name="origin" colSpan="12" />
-      <field name="description" colSpan="12" />
-      <field name="taxAmount" hidden="true" />
-      <field name="account.reconcileOk" hidden="true" />
-    </panel>
-    <panel-tabs name="mainPanelTab">
-      <panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00"
-        field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false" />
-      <panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(credit) &gt; 0.00"
-        field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false" />
-      <panel-related name="taxPaymentMoveLinePanel" showIf="taxPaymentMoveLineList != null &amp;&amp; taxPaymentMoveLineList.length > 0" readonlyIf="move.statusSelect &gt; 2" field="taxPaymentMoveLineList"
-        canNew="false" canRemove="false" onChange="account-move-line-compute-tax-amount-method-on-change" />
-      <panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)" colSpan="12">
-        <panel name="irrecoverableDetailsPanel" colSpan="12">
-          <field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6" />
-          <field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange" colSpan="6" />
-          <field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" canEdit="false" colSpan="6" />
-          <field name="irrecoverableStatusSelect" colSpan="12" />
-          <field name="managementObject" form-view="management-object-form" grid-view="management-object-grid" colSpan="12" />
-        </panel>
-        <panel name="irrecoverableActionPanel" colSpan="12">
-          <button name="passInIrrecoverableBtn" title="Shift into irrecoverable" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6" />
-          <button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable" colSpan="6" />
-        </panel>
-      </panel>
-      <panel name="currency" title="Currency">
-        <field name="currency" title="Currency and exchange rate">
-          <viewer>
-						<![CDATA[
+			</field>
+			<panel name="datesPanel" colSpan="12">
+				<field name="date" onChange="account-move-line-group-date-onchange"/>
+				<field name="dueDate" showIf="dueDate"/>
+				<field name="originDate"/>
+			</panel>
+			<field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
+	        <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
+	        <field name="debit" readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+	        <field name="credit" readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+			<field name="amountRemaining" colSpan="3"/>
+			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
+			<field name="origin" colSpan="12"/>
+			<field name="description" colSpan="12"/>
+			<field name="taxAmount" hidden="true"/>
+			<field name="account.reconcileOk" hidden="true" />
+		</panel>
+		<panel-tabs name="mainPanelTab">
+			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related name="taxPaymentMoveLinePanel" showIf="taxPaymentMoveLineList != null &amp;&amp; taxPaymentMoveLineList.length > 0" readonlyIf="move.statusSelect &gt; 2" field="taxPaymentMoveLineList" canNew="false" canRemove="false" onChange="account-move-line-compute-tax-amount-method-on-change"/>
+			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)" colSpan="12">
+			<panel name="irrecoverableDetailsPanel" colSpan="12">
+				<field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
+				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
+				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" canEdit="false" colSpan="6"/>
+				<field name="irrecoverableStatusSelect" colSpan="12"/>
+				<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid" colSpan="12"/>
+			</panel>
+			<panel name="irrecoverableActionPanel" colSpan="12">
+				<button name="passInIrrecoverableBtn" title="Shift into irrecoverable" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable" colSpan="6"/>
+				<button name="notPassInIrrecoverableBtn" title="Do not shift into irrecoverable" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable" colSpan="6"/>
+			</panel>
+			</panel>
+			<panel name="currency" title="Currency">
+				<field name="currency" title="Currency and exchange rate">
+					<viewer>						<![CDATA[
 							<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>
 						]]>
 					</viewer>
