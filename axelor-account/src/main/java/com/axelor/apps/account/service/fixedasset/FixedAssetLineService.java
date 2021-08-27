@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,16 +22,18 @@ public interface FixedAssetLineService {
    *
    * @param moveLine
    * @return generated {@link FixedAsset}
+   * @throws AxelorException
    */
-  FixedAsset generateFixedAsset(MoveLine moveLine);
+  FixedAsset generateFixedAsset(MoveLine moveLine) throws AxelorException;
 
   /**
    * This method will call generateFixedAsset(MoveLine) and call save action.
    *
    * @param moveLine
    * @return Generated {@link FixedAsset}
+   * @throws AxelorException
    */
-  FixedAsset generateAndSaveFixedAsset(MoveLine moveLine);
+  FixedAsset generateAndSaveFixedAsset(MoveLine moveLine) throws AxelorException;
 
   /**
    * Generate a fixedAssetLine with values are computed with prorata (based on disposalDate, and

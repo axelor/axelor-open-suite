@@ -5,6 +5,10 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -41,12 +45,18 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
    * @throws NullPointerException if moveLine is null
    */
   @Override
-  public FixedAsset generateFixedAsset(MoveLine moveLine) {
+  public FixedAsset generateFixedAsset(MoveLine moveLine) throws AxelorException {
     log.debug("Starting generation of fixed asset for move line :" + moveLine);
     Objects.requireNonNull(moveLine);
 
     FixedAsset fixedAsset = new FixedAsset();
     fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+    if (moveLine.getDescription() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
+          moveLine.getName());
+    }
     fixedAsset.setName(moveLine.getDescription());
     if (moveLine.getMove() != null) {
       fixedAsset.setCompany(moveLine.getMove().getCompany());
@@ -55,9 +65,11 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     fixedAsset.setFixedAssetCategory(moveLine.getFixedAssetCategory());
     fixedAsset.setPartner(moveLine.getPartner());
     fixedAsset.setPurchaseAccount(moveLine.getAccount());
-    if (moveLine.getFixedAssetCategory() != null)
+    if (moveLine.getFixedAssetCategory() != null) {
       fixedAsset.setAnalyticDistributionTemplate(
           moveLine.getFixedAssetCategory().getAnalyticDistributionTemplate());
+    }
+
     LocalDate acquisitionDate =
         moveLine.getOriginDate() != null ? moveLine.getOriginDate() : moveLine.getDate();
     fixedAsset.setAcquisitionDate(acquisitionDate);
@@ -69,7 +81,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
   @Transactional
   @Override
-  public FixedAsset generateAndSaveFixedAsset(MoveLine moveLine) {
+  public FixedAsset generateAndSaveFixedAsset(MoveLine moveLine) throws AxelorException {
 
     return fixedAssetRepository.save(generateFixedAsset(moveLine));
   }

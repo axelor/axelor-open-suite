@@ -243,7 +243,6 @@ public class MoveValidateService {
     }
 
     this.completeMoveLines(move);
-    this.generateFixedAssetMoveLine(move);
 
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
 
@@ -262,24 +261,24 @@ public class MoveValidateService {
    * 'immobilisation'
    *
    * @param move
+   * @throws AxelorException
    * @throws NullPointerException if move is null or if a line does not have an account
    */
-  public void generateFixedAssetMoveLine(Move move) {
+  public void generateFixedAssetMoveLine(Move move) throws AxelorException {
     log.debug("Starting generation of fixed assets for move " + move);
     Objects.requireNonNull(move);
 
     List<MoveLine> moveLineList = move.getMoveLineList();
     if (moveLineList != null) {
-      moveLineList.forEach(
-          line -> {
-            if (line.getFixedAssetCategory() != null
-                && line.getAccount()
-                    .getAccountType()
-                    .getTechnicalTypeSelect()
-                    .equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
-              fixedAssetLineService.generateAndSaveFixedAsset(line);
-            }
-          });
+      for (MoveLine line : moveLineList) {
+        if (line.getFixedAssetCategory() != null
+            && line.getAccount()
+                .getAccountType()
+                .getTechnicalTypeSelect()
+                .equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
+          fixedAssetLineService.generateAndSaveFixedAsset(line);
+        }
+      }
     }
   }
 
@@ -332,6 +331,7 @@ public class MoveValidateService {
     } else {
       move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
       move.setValidationDate(appBaseService.getTodayDate(move.getCompany()));
+      this.generateFixedAssetMoveLine(move);
     }
   }
 

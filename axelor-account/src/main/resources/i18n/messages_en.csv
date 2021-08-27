@@ -2095,6 +2095,7 @@
 "The move %s cannot be empty",,,
 "The move is validated and so can not be canceled.",,,
 "The move lines %s are reconciled and should not have been removed.",,,
+"The move line %s is missing description in order to create fixed asset",,,
 "The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company.",,,
 "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation.",,,
 "The partner is blocked for invoicing.",,,
