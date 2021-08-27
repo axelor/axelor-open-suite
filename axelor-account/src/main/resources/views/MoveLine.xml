@@ -325,222 +325,212 @@
     </panel>
   </form>
 
-  <action-method name="action-method-accounting-reconcile">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="accountingReconcile" />
-  </action-method>
+    <action-method name="action-method-accounting-reconcile">
+    	<call class="com.axelor.apps.account.web.MoveLineController" method="accountingReconcile"/>
+    </action-method>
 
-  <action-method name="account-move-line-compute-tax-amount-method-on-change" model="com.axelor.apps.account.db.MoveLine">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="computeTaxAmount" />
-  </action-method>
+    <action-method name="account-move-line-compute-tax-amount-method-on-change" model="com.axelor.apps.account.db.MoveLine">
+    	<call class="com.axelor.apps.account.web.MoveLineController" method="computeTaxAmount"/>
+    </action-method>
 
-  <action-group name="action-account-move-line-onnew-group">
-    <action name="action-move-line-record-get-move-informations" />
-    <action name="action-move-line-record-get-first-move-line-informations" />
-    <action name="action-move-line-record-get-creditdebit-balance" />
-    <action name="action-move-line-attrs-hidden-reconcileLists" />
-    <action name="action-move-line-method-set-currencyRate" />
-    <action name="action-move-line-record-set-currencyAmount" />
-    <action name="action-move-line-method-description-required" />
-  </action-group>
+    <action-group name="action-account-move-line-onnew-group">
+	    <action name="action-move-line-record-get-move-informations"/>
+	    <action name="action-move-line-record-get-first-move-line-informations"/>
+	    <action name="action-move-line-record-get-creditdebit-balance"/>
+	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
+	    <action name="action-move-line-method-set-currencyRate"/>
+	    <action name="action-move-line-record-set-currencyAmount"/>
+	    <action name="action-move-line-method-description-required"/>
+    </action-group>
 
-  <action-group name="action-group-account-moveline-debitcredit-onchange">
-    <action name="action-move-line-debit-credit-validate" />
-    <action name="action-move-line-debit-credit-clean" />
-    <action name="action-move-line-method-compute-analytic-distribution" />
-    <action name="action-move-line-record-set-currencyAmount" />
-  </action-group>
+	<action-group name="action-group-account-moveline-debitcredit-onchange">
+		<action name="action-move-line-debit-credit-validate"/>
+		<action name="action-move-line-debit-credit-clean"/>
+		<action name="action-move-line-method-compute-analytic-distribution"/>
+		<action name="action-move-line-record-set-currencyAmount"/>
+	</action-group>
 
-  <action-group name="action-account-moveline-onload-group">
-    <action name="action-move-line-attrs-readonly" />
-    <action name="action-move-line-attrs-show-tax-amount" />
-    <action name="action-move-line-method-description-required" />
-  </action-group>
+     <action-group name="action-account-moveline-onload-group">
+		<action name="action-move-line-attrs-readonly"/>
+		<action name="action-move-line-attrs-show-tax-amount"/>
+		<action name="action-move-line-method-description-required"/>
+	</action-group>
 
-  <action-group name="action-group-account-moveline-usher-process-onchange">
-    <action name="save" />
-    <action name="action-method-account-moveline-usher-process" />
-  </action-group>
+    <action-group name="action-group-account-moveline-usher-process-onchange">
+    	<action name="save"/>
+    	<action name="action-method-account-moveline-usher-process"/>
+    </action-group>
 
-  <action-group name="action-account-move-line-partner-group">
-    <action name="action-account-move-line-method-filter-partner" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'" />
-    <action name="action-move-line-attrs-domain-partner" if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'" />
-  </action-group>
+     <action-group name="action-account-move-line-partner-group">
+		<action name="action-account-move-line-method-filter-partner" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
+	    <action name="action-move-line-attrs-domain-partner" if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'"/>
+    </action-group>
 
-  <action-group name="account-move-line-group-date-onchange">
-    <action name="account-move-line-record-date-onchange" />
-    <action name="action-move-line-method-compute-analytic-distribution" />
-    <action name="action-move-line-validate-check-date-in-period" />
-  </action-group>
+	<action-group name="account-move-line-group-date-onchange">
+		<action name="account-move-line-record-date-onchange"/>
+		<action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-validate-check-date-in-period"/>
+	</action-group>
 
-  <action-method name="action-move-line-method-compute-analytic-distribution">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution" />
-  </action-method>
+    <action-method name="action-move-line-method-compute-analytic-distribution">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution"/>
+	</action-method>
 
-  <action-method name="action-move-line-method-create-analytic-distribution">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="createAnalyticDistributionWithTemplate" />
-  </action-method>
+    <action-method name="action-move-line-method-create-analytic-distribution">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="createAnalyticDistributionWithTemplate"/>
+	</action-method>
 
-  <action-method name="action-method-account-moveline-usher-process">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess" />
-  </action-method>
+    <action-method name="action-method-account-moveline-usher-process">
+    	<call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>
+    </action-method>
 
-  <action-method name="action-account-move-line-method-calculate-balance">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance" />
-  </action-method>
+    <action-method name="action-account-move-line-method-calculate-balance">
+      <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
+    </action-method>
 
-  <action-attrs name="action-move-line-attrs-readonly">
-    <attribute name="readonly" for="informationsPanel" expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4" />
-    <attribute name="readonly" for="irrecoverableDetailsPanel,currency,othersPanel" expr="eval: move?.statusSelect == 3 " />
-  </action-attrs>
+	<action-attrs name="action-move-line-attrs-readonly">
+		<attribute name="readonly" for="informationsPanel" expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
+		<attribute name="readonly" for="irrecoverableDetailsPanel,currency,othersPanel" expr="eval: move?.statusSelect == 3 "/>
+	</action-attrs>
 
-  <action-attrs name="action-move-line-attrs-domain-account">
-    <attribute for="account" name="domain" if="__parent__ == null || __parent__?._model != 'com.axelor.apps.account.db.Move'"
-      expr="eval: &quot; self.company.id = ${move?.company?.id} AND (self.accountType.id IN (${(move?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(move?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;" />
-    <attribute for="account" name="domain" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"
-      expr="eval: &quot; self.company.id = ${__parent__?.company?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;" />
-  </action-attrs>
+	<action-attrs name="action-move-line-attrs-domain-account">
+		<attribute for="account" name="domain" if="__parent__ == null || __parent__?._model != 'com.axelor.apps.account.db.Move'" expr="eval: &quot; self.company.id = ${move?.company?.id} AND (self.accountType.id IN (${(move?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(move?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;" />
+		<attribute for="account" name="domain" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'" expr="eval: &quot; self.company.id = ${__parent__?.company?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;" />
+	</action-attrs>
 
-  <action-attrs name="action-move-line-attrs-domain-partner">
-    <attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${move?.company?.id} MEMBER OF self.companySet&quot;"
-      if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'" />
-  </action-attrs>
+	<action-attrs name="action-move-line-attrs-domain-partner">
+		<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${move?.company?.id} MEMBER OF self.companySet&quot;" if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'"/>
+	</action-attrs>
 
-  <action-attrs name="action-move-line-attrs-set-domain-analytic-distribution-template">
-    <attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;" />
-  </action-attrs>
+	<action-attrs name="action-move-line-attrs-set-domain-analytic-distribution-template">
+		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
+	</action-attrs>
 
-  <action-record name="action-account-move-line-record-calculate-balance" model="com.axelor.apps.base.db.Wizard">
-    <field name="$credit" expr="eval: _credit" if="_credit != null" />
-    <field name="$debit" expr="eval: _debit" if="_debit != null" />
-    <field name="$balance" expr="eval: _balance" if="_balance != null" />
-  </action-record>
+    <action-record name="action-account-move-line-record-calculate-balance" model="com.axelor.apps.base.db.Wizard">
+      <field name="$credit" expr="eval: _credit" if="_credit != null"/>
+      <field name="$debit" expr="eval: _debit" if="_debit != null"/>
+      <field name="$balance" expr="eval: _balance" if="_balance != null"/>
+    </action-record>
 
-  <action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
-    <field name="partner" expr="eval: __parent__?.partner" />
-    <field name="date" expr="eval: __parent__?.date" />
-    <field name="dueDate" expr="eval: __parent__?.date" />
-    <field name="originDate" expr="eval: date" />
-  </action-record>
+	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
+		<field name="partner" expr="eval: __parent__?.partner"/>
+		<field name="date" expr="eval: __parent__?.date"/>
+		<field name="dueDate" expr="eval: __parent__?.date"/>
+		<field name="originDate" expr="eval: date"/>
+	</action-record>
 
-  <action-record name="action-move-line-record-update-due-date" model="com.axelor.apps.account.db.MoveLine">
-    <field name="dueDate" expr="eval: date" />
-  </action-record>
+	<action-record name="action-move-line-record-update-due-date" model="com.axelor.apps.account.db.MoveLine">
+		<field name="dueDate" expr="eval: date"/>
+	</action-record>
 
-  <action-record name="action-move-line-record-get-first-move-line-informations" model="com.axelor.apps.account.db.MoveLine">
-    <field name="interbankCodeLine" expr="eval: __parent__?.moveLineList.get(0).interbankCodeLine"
-      if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0" />
-    <field name="description" expr="eval: __parent__?.moveLineList.get(0).description"
-      if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0" />
-    <field name="exportedDirectDebitOk" expr="eval: __parent__?.moveLineList.get(0).exportedDirectDebitOk"
-      if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0" />
-    <field name="partner" expr="eval: __parent__?.moveLineList.get(0).partner"
-      if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0" />
-    <field name="origin" expr="eval: __parent__?.moveLineList.get(0).origin"
-      if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0" />
-  </action-record>
+	<action-record name="action-move-line-record-get-first-move-line-informations" model="com.axelor.apps.account.db.MoveLine">
+		<field name="interbankCodeLine" expr="eval: __parent__?.moveLineList.get(0).interbankCodeLine" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
+		<field name="description" expr="eval: __parent__?.moveLineList.get(0).description" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
+		<field name="exportedDirectDebitOk" expr="eval: __parent__?.moveLineList.get(0).exportedDirectDebitOk" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
+		<field name="partner" expr="eval: __parent__?.moveLineList.get(0).partner" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
+		<field name="origin" expr="eval: __parent__?.moveLineList.get(0).origin" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
+	</action-record>
 
-  <action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"
-      if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &gt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" />
-    <field name="credit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum()"
-      if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" />
-  </action-record>
+	<action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &gt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" />
+		<field name="credit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
+	</action-record>
 
-  <action-method name="action-move-line-method-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="computeCurrentRate" />
-  </action-method>
+	<action-method name="action-move-line-method-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="computeCurrentRate"/>
+	</action-method>
 
-  <action-record name="action-move-line-record-set-currencyAmount" model="com.axelor.apps.account.db.MoveLine">
-    <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0" />
-    <field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0" />
-    <field name="currencyAmount" expr="eval: 0" if="debit == 0 &amp;&amp; credit == 0" />
-  </action-record>
+	<action-record name="action-move-line-record-set-currencyAmount" model="com.axelor.apps.account.db.MoveLine">
+		<field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
+		<field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0"/>
+		<field name="currencyAmount" expr="eval: 0" if="debit == 0 &amp;&amp; credit == 0"/>
+	</action-record>
 
-  <action-record name="action-move-line-record-set-amount" model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit" expr="eval: currencyRate * currencyAmount" if="debit != 0" />
-    <field name="credit" expr="eval: currencyRate * currencyAmount" if="credit != 0" />
-  </action-record>
+	<action-record name="action-move-line-record-set-amount" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="eval: currencyRate * currencyAmount" if="debit != 0"/>
+		<field name="credit" expr="eval: currencyRate * currencyAmount" if="credit != 0"/>
+	</action-record>
 
-  <action-attrs name="action-move-line-attrs-hidden-reconcileLists">
-    <attribute name="hidden" for="reconcileLists" expr="eval: __parent__?.statusSelect == 1" if="eval: __parent__?.statusSelect != null" />
-  </action-attrs>
+	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
+    	<attribute name="hidden" for="reconcileLists" expr="eval: __parent__?.statusSelect == 1" if="eval: __parent__?.statusSelect != null"/>
+	</action-attrs>
 
-  <action-validate name="action-move-line-debit-credit-validate">
-    <alert message="An accounting moveline must have either a credit value or a debit value." if="debit &gt; 0 &amp;&amp; credit &gt; 0" />
-    <alert message="Debit and credit value cannot be negative." if="(debit != null &amp;&amp; debit &lt; 0)||(credit != null &amp;&amp; credit &lt; 0)" />
-  </action-validate>
+	<action-validate name="action-move-line-debit-credit-validate">
+		<alert message="An accounting moveline must have either a credit value or a debit value." if="debit &gt; 0 &amp;&amp; credit &gt; 0"/>
+		<alert message="Debit and credit value cannot be negative." if="(debit != null &amp;&amp; debit &lt; 0)||(credit != null &amp;&amp; credit &lt; 0)"/>
+	</action-validate> 
 
-  <action-record name="action-move-line-debit-credit-clean" model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit" expr="0" if="debit &lt; 0" />
-    <field name="credit" expr="0" if="credit &lt; 0" />
-  </action-record>
+	<action-record name="action-move-line-debit-credit-clean" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="0" if="debit &lt; 0"/>
+		<field name="credit" expr="0" if="credit &lt; 0"/>
+	</action-record>
 
-  <action-record name="action-record-account-moveline-debit-onchange" model="com.axelor.apps.account.db.MoveLine">
-    <field name="credit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
-  </action-record>
+	<action-record name="action-record-account-moveline-debit-onchange" model="com.axelor.apps.account.db.MoveLine">
+		<field name="credit" expr="0" if="credit != 0 &amp;&amp; debit != 0"/>
+    </action-record>
 
-  <action-record name="action-record-account-moveline-credit-onchange" model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
-  </action-record>
+	<action-record name="action-record-account-moveline-credit-onchange" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="0" if="credit != 0 &amp;&amp; debit != 0"/>
+    </action-record>
 
-  <action-record name="account-move-line-record-date-onchange" model="com.axelor.apps.account.db.MoveLine">
-    <field name="originDate" expr="eval: date" />
-  </action-record>
+	<action-record name="account-move-line-record-date-onchange" model="com.axelor.apps.account.db.MoveLine">
+		<field name="originDate" expr="eval: date"/>
+	</action-record>
 
-  <action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">
-    <view type="grid" name="move-line-grid" />
-    <view type="form" name="move-line-form" />
-    <domain>self.account.id = :_id</domain>
-  </action-view>
+	<action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">
+		<view type="grid" name="move-line-grid"/>
+		<view type="form" name="move-line-form"/>
+		<domain>self.account.id = :_id</domain>
+	</action-view>
 
-  <action-view name="action-move-line-view-bank-reconciliation-lines" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
-    <view type="grid" name="bank-reconciliation-line-grid" />
-    <view type="form" name="bank-reconciliation-line-form" />
-    <domain>self.moveLine = :_id</domain>
-    <context name="_id" expr="eval: id" />
-  </action-view>
+	<action-view name="action-move-line-view-bank-reconciliation-lines" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+		<view type="grid" name="bank-reconciliation-line-grid"/>
+		<view type="form" name="bank-reconciliation-line-form"/>
+		<domain>self.moveLine = :_id</domain>
+ 		<context name="_id" expr="eval: id"/>
+	</action-view>
 
-  <action-attrs name="action-move-line-attrs-show-tax-amount" model="com.axelor.apps.account.db.MoveLine">
-    <attribute name="hidden" for="taxAmount" expr="eval: !( account?.reconcileOk &amp;&amp; account?.useForPartnerBalance)" />
-  </action-attrs>
+	<action-attrs name="action-move-line-attrs-show-tax-amount" model="com.axelor.apps.account.db.MoveLine">
+		<attribute name="hidden" for="taxAmount" expr="eval: !( account?.reconcileOk &amp;&amp; account?.useForPartnerBalance)"/>
+    </action-attrs>
 
-  <action-method name="action-account-move-line-method-filter-partner">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner" />
-  </action-method>
+	<action-method name="action-account-move-line-method-filter-partner">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
+	</action-method>
 
-  <action-method name="action-move-line-method-description-required">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="descriptionRequired" />
-  </action-method>
+	<action-method name="action-move-line-method-description-required">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="descriptionRequired"/>
+	</action-method>
 
-  <search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
-    <field name="move.period" title="Period" />
-    <field name="move.journal" title="Journal" />
-    <field name="move.statusSelect" title="Status" />
-    <field name="move.company" title="Company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()" />
-    <field name="account.reconcileOk" title="Reconcilable" />
-    <field name="analyticMoveLineList" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()" />
-    <field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()" />
-    <filter title="Sale Entries">
-      <domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
-    </filter>
-    <filter title="Due Sale Entries">
-      <domain>(self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
-    </filter>
-    <filter title="Purchase Entries">
-      <domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
-    </filter>
-  </search-filters>
+	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
+		<field name="move.period" title="Period"/>
+		<field name="move.journal" title="Journal"/>
+		<field name="move.statusSelect" title="Status"/>
+		<field name="move.company" title="Company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="account.reconcileOk" title="Reconcilable"/>
+		<field name="analyticMoveLineList" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<filter title="Sale Entries">
+			<domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
+		</filter>
+		<filter title="Due Sale Entries">
+			<domain>(self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
+		</filter>
+		<filter title="Purchase Entries">
+			<domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
+		</filter>
+	</search-filters>
 
-  <action-validate name="action-move-line-validate-check-date-in-period">
-    <error message="The selected date is out of the accounting period."
-      if="eval: (move &amp;&amp; move.period &amp;&amp; (date &lt; move.period.fromDate || date &gt; move.period.toDate))
+	<action-validate name="action-move-line-validate-check-date-in-period">
+		<error message="The selected date is out of the accounting period."
+			if="eval: (move &amp;&amp; move.period &amp;&amp; (date &lt; move.period.fromDate || date &gt; move.period.toDate))
 			|| (__parent__ &amp;&amp; __parent__.period &amp;&amp; (date &lt; __parent__.period.fromDate || date &gt; __parent__.period.toDate))"
-      action="action-update-move-line-record-update-date-from-move" />
-  </action-validate>
+			action="action-update-move-line-record-update-date-from-move"/>
+	</action-validate>
 
-  <action-record name="action-update-move-line-record-update-date-from-move" model="com.axelor.apps.account.db.MoveLine">
-    <field name="date" expr="eval: move.date" if="move" />
-    <field name="date" expr="eval: __parent__.date" if="__parent__" />
-  </action-record>
+	<action-record name="action-update-move-line-record-update-date-from-move" model="com.axelor.apps.account.db.MoveLine">
+		<field name="date" expr="eval: move.date" if="move"/>
+		<field name="date" expr="eval: __parent__.date" if="__parent__"/>
+	</action-record>
 
 </object-views>
