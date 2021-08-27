@@ -379,7 +379,9 @@ public class BankReconciliationController {
       int status = bankReconciliationLineService.checkIncompleteLine(bankReconciliationLine);
 
       if (status == BankReconciliationLineService.BANK_RECONCILIATION_LINE_INCOMPLETE) {
-        response.setError(I18n.get("To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Accounting account, Third party). This in order to generate automatically a move line on the accounting account and journal associated with the reconciliation session"));
+        response.setError(
+            I18n.get(
+                "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Accounting account, Third party). This in order to generate automatically a move line on the accounting account and journal associated with the reconciliation session"));
       }
       if (status == BankReconciliationLineService.BANK_RECONCILIATION_LINE_COMPLETABLE) {
         if (ObjectUtils.isEmpty(bankReconciliation.getJournal()))
