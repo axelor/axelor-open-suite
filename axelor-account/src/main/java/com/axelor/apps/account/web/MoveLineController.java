@@ -48,6 +48,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -57,13 +58,22 @@ import java.util.stream.Collectors;
 @Singleton
 public class MoveLineController {
 
+	protected MoveService moveService;
+	protected MoveLineService moveLineService;
+	
+	@Inject
+	public MoveLineController(MoveService moveService,MoveLineService moveLineService) {
+		this.moveService = moveService;
+		this.moveLineService = moveLineService;
+	}
+
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
 
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
     try {
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-        moveLine = Beans.get(MoveLineService.class).computeAnalyticDistribution(moveLine);
+        moveLine = moveLineService.computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
@@ -77,7 +87,7 @@ public class MoveLineController {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      moveLine = Beans.get(MoveLineService.class).createAnalyticDistributionWithTemplate(moveLine);
+      moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
     } catch (Exception e) {
@@ -91,7 +101,7 @@ public class MoveLineController {
     moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
 
     try {
-      Beans.get(MoveLineService.class).usherProcess(moveLine);
+      moveLineService.usherProcess(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -143,7 +153,7 @@ public class MoveLineController {
       }
 
       if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
+        moveLineService.reconcileMoveLinesWithCacheManagement(moveLineList);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -208,7 +218,7 @@ public class MoveLineController {
 
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine = Beans.get(MoveLineService.class).computeTaxAmount(moveLine);
+      moveLine = moveLineService.computeTaxAmount(moveLine);
       response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -271,78 +281,16 @@ public class MoveLineController {
       if (ObjectUtils.isEmpty(partner)) {
         response.setError(I18n.get("Please select a partner"));
       } else {
-        List<AccountingSituation> accountConfigs =
-            partner.getAccountingSituationList().stream()
-                .filter(
-                    accountingSituation ->
-                        accountingSituation.getCompany().equals(move.getCompany()))
-                .collect(Collectors.toList());
-        Account accountingAccount = null;
-        if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
-          if (accountConfigs.size() > 0) {
-            accountingAccount = accountConfigs.get(0).getDefaultExpenseAccount();
-          }
-        } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
-          if (accountConfigs.size() > 0)
-            accountingAccount = accountConfigs.get(0).getDefaultIncomeAccount();
-        } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
-          if (move.getPaymentMode() != null) {
-            if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.IN)) {
-              if (accountConfigs.size() > 0) {
-                accountingAccount = accountConfigs.get(0).getCustomerAccount();
-              }
-            } else if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.OUT)) {
-              if (accountConfigs.size() > 0) {
-                accountingAccount = accountConfigs.get(0).getSupplierAccount();
-              }
-            }
-          }
-        }
+        Account accountingAccount = moveService.getAccountingAccountFromAccountConfig(move);
+        
         if (accountingAccount != null) {
           response.setValue("account", accountingAccount);
           if (!accountingAccount.getUseForPartnerBalance()) {
             response.setValue("partner", null);
           }
         }
-        List<TaxLine> taxLineList;
-        TaxLine taxLine = null;
-        if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
-          if (accountingAccount != null)
-            if (accountingAccount.getDefaultTax() != null) {
-              taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
-              if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-                taxLineList =
-                    accountingAccount.getDefaultTax().getTaxLineList().stream()
-                        .filter(
-                            tl ->
-                                !moveLine.getDate().isBefore(tl.getEndDate())
-                                    && !tl.getStartDate().isAfter(moveLine.getDate()))
-                        .collect(Collectors.toList());
-                if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
-              }
-            }
-        } else {
-          for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
-            if (accountingAccount != null)
-              if (taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
-                taxLine = taxEquiv.getToTax().getActiveTaxLine();
-                if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-                  taxLineList =
-                      taxEquiv.getToTax().getTaxLineList().stream()
-                          .filter(
-                              tl ->
-                                  !moveLine.getDate().isBefore(tl.getEndDate())
-                                      && !tl.getStartDate().isAfter(moveLine.getDate()))
-                          .collect(Collectors.toList());
-                  if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
-                }
-                break;
-              }
-          }
-        }
+
+        TaxLine taxLine = moveService.getTaxLine(move, moveLine, accountingAccount);
         if (taxLine != null) response.setValue("taxLine", taxLine);
       }
     }

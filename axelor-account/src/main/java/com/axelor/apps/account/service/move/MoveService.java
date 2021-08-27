@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
@@ -102,4 +103,8 @@ public interface MoveService {
   MoveLine createCounterpartMoveLine(Move move);
 
   void setOriginAndDescriptionOnMoveLineList(Move move);
+
+  Account getAccountingAccountFromAccountConfig(Move move);
+  
+  TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount);
 }
