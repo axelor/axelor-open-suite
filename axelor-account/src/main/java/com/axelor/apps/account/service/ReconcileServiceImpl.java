@@ -383,7 +383,6 @@ public class ReconcileServiceImpl implements ReconcileService {
     BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
     Reconcile reconcile =
         this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
-
     if (reconcile != null) {
       this.confirmReconcile(reconcile, updateInvoicePayments);
       return reconcile;

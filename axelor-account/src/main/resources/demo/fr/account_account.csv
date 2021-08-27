@@ -448,7 +448,7 @@
 447;445511;445510;"TVA N à décaisser taux normal";"tax";;1;;;;
 448;445512;445510;"TVA R1 à décaisser taux intermédiaire";"tax";;1;;;;
 449;445513;445510;"TVA R2 à décaisser taux réduit";"tax";;1;;;;
-450;445514;445510;"TVA décaissée (autre taux : U...)";"tax";;1;;;;
+450;445514;445510;"TVA décaissée (autre taux : U...)";"tax";;1;;;;
 451;445580;445500;"Taxes assimilées à la TVA";"tax";;1;;;;
 452;445600;445000;"Taxes sur le chiffre d'affaires déductibles";"tax";;1;;;;
 453;445620;445600;"TVA sur immobilisations";"tax";;1;;;;
@@ -462,7 +462,7 @@
 461;445711;445710;"TVA N collectée taux normal";"tax";;1;;;;
 462;445712;445710;"TVA R1 collectée taux intermédiaire";"tax";;1;;;;
 463;445713;445710;"TVA R2 collectée taux réduit";"tax";;1;;;;
-464;445714;445710;"TVA collectée (autre taux : U...)";"tax";;1;;;;
+464;445714;445710;"TVA collectée (autre taux : U...)";"tax";;1;;;;
 465;445780;445700;"Taxes assimilées à la TVA";"tax";;1;;;;
 466;445800;445000;"Taxes sur le chiffre d'affaires à régulariser ou en attente";"tax";;1;;;;
 467;445810;445800;"Acomptes - Régime simplifié d'imposition";"tax";;1;;;;
@@ -596,389 +596,389 @@
 595;590400;590;"Autres titres conférant un droit de propriété ";"cash";;1;;;;
 596;590600;590;"Obligations";"cash";;1;;;;
 597;590800;590;"Autres valeurs mobilières de placement et créances assimilées (provisions)";"cash";;1;;;;
-598;600;"CL6";"Achats(sauf 603)";"view";;1;;;"true";"true"
-599;601000;600;"Achats stockés - Matières premières (et fournitures)";"charge";;1;;;"true";"true"
-600;601100;601000;"Matières (ou groupe) A";"charge";;1;;;"true";"true"
-601;601200;601000;"Matières (ou groupe) B";"charge";;1;;;"true";"true"
-602;601700;601000;"Fournitures A, B, C, ..";"charge";;1;;;"true";"true"
-603;602000;600;"Achats stockés - Autres approvisionnements";"charge";;1;;;"true";"true"
-604;602100;602000;"Matières consommables";"charge";;1;;;"true";"true"
-605;602110;602100;"Matières (ou groupe) C";"charge";;1;;;"true";"true"
-606;602120;602100;"Matières (ou groupe) D";"charge";;1;;;"true";"true"
-607;602200;602000;"Fournitures consommables";"charge";;1;;;"true";"true"
-608;602210;602200;"Combustibles";"charge";;1;;;"true";"true"
-609;602220;602200;"Produits d'entretien";"charge";;1;;;"true";"true"
-610;602230;602200;"Fournitures d'atelier et d'usine";"charge";;1;;;"true";"true"
-611;602240;602200;"Fournitures de magasin";"charge";;1;;;"true";"true"
-612;602250;602200;"Fournitures de bureau";"charge";;1;;;"true";"true"
-613;602600;602000;"Emballages";"charge";;1;;;"true";"true"
-614;602610;602600;"Emballages perdus";"charge";;1;;;"true";"true"
-615;602650;602600;"Emballages récupérables non identifiables";"charge";;1;;;"true";"true"
-616;602670;602600;"Emballages à usage mixte";"charge";;1;;;"true";"true"
-617;603000;600;"Variation des stocks (approvisionnements et marchandises)";"charge";;1;;;"true";"true"
-618;603100;603000;"Variation des stocks de matières premières (et fournitures)";"charge";;1;;;"true";"true"
-619;603200;603000;"Variation des stocks des autres approvisionnements";"charge";;1;;;"true";"true"
-620;603700;603000;"Variation des stocks de marchandises";"charge";;1;;;"true";"true"
-621;604000;600;"Achats d'études et prestations de services";"charge";;1;;;"true";"true"
-622;605000;600;"Achats de matériel équipements et travaux";"charge";;1;;;"true";"true"
-623;606000;600;"Achats non stockés de matières et fournitures";"charge";;1;;;"true";"true"
-624;606100;606000;"Fournitures non stockables (eau, énergie...) ";"charge";;1;;;"true";"true"
-625;606300;606000;"Fournitures d'entretien et de petit équipement";"charge";;1;;;"true";"true"
-626;606400;606000;"Fournitures administratives";"charge";;1;;;"true";"true"
-627;606800;606000;"Autres matières et fournitures";"charge";;1;;;"true";"true"
-628;607000;600;"Achats de marchandises";"charge";;1;;;"true";"true"
-629;607100;607000;"Marchandise (ou groupe) A";"charge";;1;;;"true";"true"
-630;607200;607000;"Marchandise (ou groupe) B";"charge";;1;;;"true";"true"
-631;608000;600;"Frais accessoires incorporés aux achats";"charge";;1;;;"true";"true"
-632;609000;600;"Rabais, remises et ristournes obtenus sur achats";"charge";;1;;;"true";"true"
-633;609100;609000;"- de matières premières (et fournitures)";"charge";;1;;;"true";"true"
-634;609200;609000;"- d'autres approvisionnements stockés";"charge";;1;;;"true";"true"
-635;609400;609000;"- d'études et prestations de services";"charge";;1;;;"true";"true"
-636;609500;609000;"- de matériel, équipements et travaux";"charge";;1;;;"true";"true"
-637;609600;609000;"- d'approvisionnements non stockés";"charge";;1;;;"true";"true"
-638;609700;609000;"- de marchandises";"charge";;1;;;"true";"true"
-639;609800;609000;"Rabais, remises et ristournes non affectés";"charge";;1;;;"true";"true"
-640;610;"CL6";"Services extérieurs";"view";;1;;;"true";"true"
-641;611000;610;"Sous-traitance générale";"charge";;1;;;"true";"true"
-642;612000;610;"Redevances de crédit-bail";"charge";;1;;;"true";"true"
-643;612200;612000;"Crédit-bail mobilier";"charge";;1;;;"true";"true"
-644;612500;612000;"Crédit-bail immobilier";"charge";;1;;;"true";"true"
-645;613000;610;"Locations";"charge";;1;;;"true";"true"
-646;613200;613000;"Locations immobilières";"charge";;1;;;"true";"true"
-647;613500;613000;"Locations mobilières";"charge";;1;;;"true";"true"
-648;613600;613000;"Malis sur emballages";"charge";;1;;;"true";"true"
-649;614000;610;"Charges locatives et de copropriété";"charge";;1;;;"true";"true"
-650;615000;610;"Entretien et réparations";"charge";;1;;;"true";"true"
-651;615200;615000;"- sur biens immobiliers";"charge";;1;;;"true";"true"
-652;615500;615000;"- sur biens mobiliers";"charge";;1;;;"true";"true"
-653;615600;615000;"Maintenance";"charge";;1;;;"true";"true"
-654;616000;610;"Primes d'assurance";"charge";;1;;;"true";"true"
-655;616100;616000;"Multirisques";"charge";;1;;;"true";"true"
-656;616200;616000;"Assurance obligatoire dommage construction ";"charge";;1;;;"true";"true"
-657;616300;616000;"Assurance transport";"charge";;1;;;"true";"true"
-658;616360;616300;"Assurance transport sur achats";"charge";;1;;;"true";"true"
-659;616370;616300;"Assurance transportsur ventes";"charge";;1;;;"true";"true"
-660;616380;616300;"Assurance transport sur autres biens";"charge";;1;;;"true";"true"
-661;616400;616000;"Risques d'exploitation";"charge";;1;;;"true";"true"
-662;616500;616000;"Insolvabilité clients";"charge";;1;;;"true";"true"
-663;617000;610;"Études et recherches";"charge";;1;;;"true";"true"
-664;618000;610;"Divers";"charge";;1;;;"true";"true"
-665;618100;618000;"Documentation générale";"charge";;1;;;"true";"true"
-666;618300;618000;"Documentation technique";"charge";;1;;;"true";"true"
-667;618500;618000;"Frais de colloques, séminaires, conférences";"charge";;1;;;"true";"true"
-668;619000;610;"Rabais, remises et ristournes obtenus sur services extérieurs";"charge";;1;;;"true";"true"
-669;620;"CL6";"Autres services extérieurs";"view";;1;;;"true";"true"
-670;621000;620;"Personnel extérieur à l'entreprise";"charge";;1;;;"true";"true"
-671;621100;621000;"Personnel intérimaire";"charge";;1;;;"true";"true"
-672;621400;621000;"Personnel détaché ou prêté à l'entreprise";"charge";;1;;;"true";"true"
-673;622000;620;"Rémunérations d'intermédiaires et honoraires ";"charge";;1;;;"true";"true"
-674;622100;622000;"Commissions et courtages sur achats ";"charge";;1;;;"true";"true"
-675;622200;622000;"Commissions et courtages sur ventes";"charge";;1;;;"true";"true"
-676;622400;622000;"Rémunérations des transitaires";"charge";;1;;;"true";"true"
-677;622500;622000;"Rémunérations d'affacturage";"charge";;1;;;"true";"true"
-678;622600;622000;"Honoraires";"charge";;1;;;"true";"true"
-679;622700;622000;"Frais d'actes et de contentieux";"charge";;1;;;"true";"true"
-680;622800;622000;"Divers";"charge";;1;;;"true";"true"
-681;623000;620;"Publicité, publications, relations publiques";"charge";;1;;;"true";"true"
-682;623100;623000;"Annonces et insertions";"charge";;1;;;"true";"true"
-683;623200;623000;"Échantillons";"charge";;1;;;"true";"true"
-684;623300;623000;"Foires et expositions";"charge";;1;;;"true";"true"
-685;623400;623000;"Cadeaux à la clientèle";"charge";;1;;;"true";"true"
-686;623500;623000;"Primes";"charge";;1;;;"true";"true"
-687;623600;623000;"Catalogues et imprimés";"charge";;1;;;"true";"true"
-688;623700;623000;"Publications";"charge";;1;;;"true";"true"
-689;623800;623000;"Divers (pourboires, dons courants...)";"charge";;1;;;"true";"true"
-690;624000;620;"Transports de biens et transports collectifs du personnel";"charge";;1;;;"true";"true"
-691;624100;624000;"Transports sur achats";"charge";;1;;;"true";"true"
-692;624200;624000;"Transports sur ventes";"charge";;1;;;"true";"true"
-693;624300;624000;"Transports entre établissements ou chantiers";"charge";;1;;;"true";"true"
-694;624400;624000;"Transports administratifs";"charge";;1;;;"true";"true"
-695;624700;624000;"Transports collectifs du personnel";"charge";;1;;;"true";"true"
-696;624800;624000;"Divers";"charge";;1;;;"true";"true"
-697;625000;620;"Déplacements missions et réceptions";"charge";;1;;;"true";"true"
-698;625100;625000;"Voyages et déplacements";"charge";;1;;;"true";"true"
-699;625500;625000;"Frais de déménagement";"charge";;1;;;"true";"true"
-700;625600;625000;"Missions";"charge";;1;;;"true";"true"
-701;625700;625000;"Réceptions";"charge";;1;;;"true";"true"
-702;626000;620;"Frais postaux et frais de télécommunications";"charge";;1;;;"true";"true"
-703;627000;620;"Services bancaires et assimilés";"charge";;1;;;"true";"true"
-704;627100;627000;"Frais sur titres (achat, vente, garde)";"charge";;1;;;"true";"true"
-705;627200;627000;"Commissions et frais sur émission d'emprunts";"charge";;1;;;"true";"true"
-706;627500;627000;"Frais sur effets";"charge";;1;;;"true";"true"
-707;627600;627000;"Location de coffres";"charge";;1;;;"true";"true"
-708;627800;627000;"Autres frais et commissions sur prestations de services";"charge";;1;;;"true";"true"
-709;628000;620;"Divers";"charge";;1;;;"true";"true"
-710;628100;628000;"Concours divers (cotisations...)";"charge";;1;;;"true";"true"
-711;628400;628000;"Frais de recrutement de personnel";"charge";;1;;;"true";"true"
-712;629000;620;"Rabais, remises et ristournes obtenus sur autres services extérieurs";"charge";;1;;;"true";"true"
-713;630;"CL6";"Impôts, taxes et versements assimilés";"view";;1;;;"true";"true"
-714;631000;630;"Impôts, taxes et versements assimilés sur rémunérations (administration des impôts)";"charge";;1;;;"true";"true"
-715;631100;631000;"Taxe sur les salaires";"charge";;1;;;"true";"true"
-716;631200;631000;"Taxe d'apprentissage";"charge";;1;;;"true";"true"
-717;631300;631000;"Participation des employeurs à la formation professionnelle continue";"charge";;1;;;"true";"true"
-718;631400;631000;"Cotisation pour défaut d'investissement obligatoire dans la construction";"charge";;1;;;"true";"true"
-719;631800;631000;"Autres";"charge";;1;;;"true";"true"
-720;633000;630;"Impôts, taxes et versements assimilés sur rémunérations (autres organismes)";"charge";;1;;;"true";"true"
-721;633100;633000;"Versement de transport";"charge";;1;;;"true";"true"
-722;633200;633000;"Allocation logement";"charge";;1;;;"true";"true"
-723;633300;633000;"Participation des employeurs à la formation professionnelle continue";"charge";;1;;;"true";"true"
-724;633400;633000;"Participation des employeurs à l'effort de construction";"charge";;1;;;"true";"true"
-725;633500;633000;"Versements libératoires ouvrant droit à l'exonération de la taxe d'apprentissage";"charge";;1;;;"true";"true"
-726;633800;633000;"Autres";"charge";;1;;;"true";"true"
-727;635000;630;"Autres impôts, taxes et versements assimilés (administration des impôts)";"charge";;1;;;"true";"true"
-728;635100;635000;"Impôts directs (sauf impôts sur les bénéfices)";"charge";;1;;;"true";"true"
-729;635110;635100;"Taxe professionnelle";"charge";;1;;;"true";"true"
-730;635120;635100;"Taxes foncières";"charge";;1;;;"true";"true"
-731;635130;635100;"Autres impôts locaux";"charge";;1;;;"true";"true"
-732;635140;635100;"Taxe sur les véhicules des sociétés";"charge";;1;;;"true";"true"
-733;635200;635000;"Taxes sur le chiffre d'affaires non récupérables ";"charge";;1;;;"true";"true"
-734;635300;635000;"Impôts indirects";"charge";;1;;;"true";"true"
-735;635400;635000;"Droits d'enregistrement et de timbre";"charge";;1;;;"true";"true"
-736;635410;635400;"Droits de mutation";"charge";;1;;;"true";"true"
-737;635800;635000;"Autres droits";"charge";;1;;;"true";"true"
-738;637000;630;"Autres impôts, taxes et versements assimilés (autres organismes)";"charge";;1;;;"true";"true"
-739;637100;637000;"Contribution sociale de solidarité à la charge des sociétés";"charge";;1;;;"true";"true"
-740;637200;637000;"Taxes perçues par les organismes publics internationaux";"charge";;1;;;"true";"true"
-741;637400;637000;"Impôts et taxes exigibles à l'étranger";"charge";;1;;;"true";"true"
-742;637800;637000;"Taxes diverses";"charge";;1;;;"true";"true"
-743;640;"CL6";"Charges de personnel";"view";;1;;;"true";"true"
-744;641000;640;"Rémunérations du personnel";"charge";;1;;;"true";"true"
-745;641100;641000;"Salaires et appointements";"charge";;1;;;"true";"true"
-746;641200;641000;"Congés payés";"charge";;1;;;"true";"true"
-747;641300;641000;"Primes et gratifications";"charge";;1;;;"true";"true"
-748;641400;641000;"Indemnités et avantages divers";"charge";;1;;;"true";"true"
-749;641500;641000;"Supplément familial";"charge";;1;;;"true";"true"
-750;644000;640;"Rémunération du travail de l'exploitant";"charge";;1;;;"true";"true"
-751;645;640;"Charges de Sécurité sociale et de prévoyance";"charge";;1;;;"true";"true"
-752;645100;645;"Cotisations à l'URSSAF";"charge";;1;;;"true";"true"
-753;645200;645;"Cotisations aux mutuelles";"charge";;1;;;"true";"true"
-754;645300;645;"Cotisations aux caisses de retraites";"charge";;1;;;"true";"true"
-755;645400;645;"Cotisations aux ASSEDIC";"charge";;1;;;"true";"true"
-756;645800;645;"Cotisations aux autres organismes sociaux";"charge";;1;;;"true";"true"
-757;646;640;"Cotisations sociales personnelles de l'exploitant";"charge";;1;;;"true";"true"
-758;647000;640;"Autres charges sociales";"charge";;1;;;"true";"true"
-759;647100;647000;"Prestations directes";"charge";;1;;;"true";"true"
-760;647200;647000;"Versements aux comités d'entreprise et d'établissement";"charge";;1;;;"true";"true"
-761;647300;647000;"Versements aux comités d'hygiène et de sécurité";"charge";;1;;;"true";"true"
-762;647400;647000;"Versements aux autres oeuvres sociales";"charge";;1;;;"true";"true"
-763;647500;647000;"Médecine du travail pharmacie";"charge";;1;;;"true";"true"
-764;648000;640;"Autres charges de personnel";"charge";;1;;;"true";"true"
-765;650;"CL6";"Autres charges de gestion courante";"view";;1;;;"true";"true"
-766;651000;650;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"charge";;1;;;"true";"true"
-767;651100;651000;"Redevances pour concessions brevets, licences, marques, procédés, logiciels ";"charge";;1;;;"true";"true"
-768;651600;651000;"Droits d'auteur et de reproduction";"charge";;1;;;"true";"true"
-769;651800;651000;"Autres droits et valeurs similaires";"charge";;1;;;"true";"true"
-770;653000;650;"Jetons de présence";"charge";;1;;;"true";"true"
-771;654000;650;"Pertes sur créances irrécouvrables";"charge";;1;;;"true";"true"
-772;654100;654000;"Créances de l'exercice";"charge";;1;;;"true";"true"
-773;654400;654000;"Créances des exercices antérieurs";"charge";;1;;;"true";"true"
-774;655000;650;"Quotes-parts de résultat sur opérations faites en commun";"charge";;1;;;"true";"true"
-775;655100;655000;"Quote-part de bénéfice transférée (comptabilité du gérant)";"charge";;1;;;"true";"true"
-776;655500;655000;"Quote-part de perte supportée (comptabilité des associés non gérants)";"charge";;1;;;"true";"true"
-777;658000;650;"Charges diverses de gestion courante";"charge";;1;;;"true";"true"
-778;660;"CL6";"Charges financières";"view";;1;;;"true";"true"
-779;661000;660;"Charges d'intérêt";"charge";;1;;;"true";"true"
-780;661100;661000;"Intérêts des emprunts et dettes";"charge";;1;;;"true";"true"
-781;661160;661100;"Intérêts des emprunts et dettes assimilées";"charge";;1;;;"true";"true"
-782;661170;661100;"Intérêts des dettes rattachées à des participations";"charge";;1;;;"true";"true"
-783;661500;661000;"Intérêts des comptes courants et des dépôts créditeurs";"charge";;1;;;"true";"true"
-784;661600;661000;"Intérêts bancaires et sur opérations de financement (escompte, ...)";"charge";;1;;;"true";"true"
-785;661700;661000;"Intérêts des obligations cautionnées";"charge";;1;;;"true";"true"
-786;661800;661000;"Intérêts des autres dettes";"charge";;1;;;"true";"true"
-787;661810;661800;"Intérêts des dettes commerciales";"charge";;1;;;"true";"true"
-788;661880;661800;"Intérêts des dettes diverses";"charge";;1;;;"true";"true"
-789;664000;660;"Pertes sur créances liées à des participations";"charge";;1;;;"true";"true"
-790;665000;660;"Escomptes accordés";"charge";;1;;;"true";"false"
-791;666000;660;"Pertes de change";"charge";;1;;;"true";"true"
-792;667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"charge";;1;;;"true";"true"
-793;668000;660;"Autres charges financières";"charge";;1;;;"true";"true"
-794;670;"CL6";"Charges exceptionnelles";"view";;1;;;"true";"true"
-795;671000;670;"Charges exceptionnelles sur opérations de gestion";"charge";;1;;;"true";"true"
-796;671100;671000;"Pénalités sur marchés (et dédits payés sur achats et ventes)";"charge";;1;;;"true";"true"
-797;671200;671000;"Pénalités, amendes fiscales et pénales ";"charge";;1;;;"true";"true"
-798;671300;671000;"Dons, libéralités";"charge";;1;;;"true";"true"
-799;671400;671000;"Créances devenues irrécouvrables dans l'exercice";"charge";;1;;;"true";"true"
-800;671500;671000;"Subventions accordées";"charge";;1;;;"true";"true"
-801;671700;671000;"Rappels d'impôts (autres qu'impôts sur les bénéfices)";"charge";;1;;;"true";"true"
-802;671800;671000;"Autres charges exceptionnelles sur opération de gestion";"charge";;1;;;"true";"true"
-803;672000;670;"Charges sur exercices antérieurs (en cours d'exercice seulement)";"charge";;1;;;"true";"true"
-804;675000;670;"Valeurs comptables des éléments d'actif cédés";"charge";;1;;;"true";"true"
-805;675100;675000;"Immobilisations incorporelles";"charge";;1;;;"true";"true"
-806;675200;675000;"Immobilisations corporelles";"charge";;1;;;"true";"true"
-807;675600;675000;"Immobilisations financières";"charge";;1;;;"true";"true"
-808;675800;675000;"Autres éléments d'actif";"charge";;1;;;"true";"true"
-809;678000;670;"Autres charges exceptionnelles";"charge";;1;;;"true";"true"
-810;678100;678000;"Malis provenant de clauses d'indexation ";"charge";;1;;;"true";"true"
-811;678200;678000;"Lots";"charge";;1;;;"true";"true"
-812;678300;678000;"Malis provenant du rachat par l'entreprise d'actions et obligations émises par elle-même";"charge";;1;;;"true";"true"
-813;678800;678000;"Charges exceptionnelles diverses";"charge";;1;;;"true";"true"
-814;680;"CL6";"Dotations aux amortissements, dépréciations et provisions";"view";;1;;;"true";"true"
-815;681000;680;"Dotations aux amortissements, dépréciations et provisions - Charges d'exploitation, Amortisation, depreciation and provisions - Operating expenses";"charge";;1;;;"true";"true"
-816;681100;681000;"Dotations aux amortissements des immobilisations incorporelles et corporelles ";"charge";;1;;;"true";"true"
-817;681110;681100;"Immobilisations incorporelles";"charge";;1;;;"true";"true"
-818;681120;681100;"Immobilisations corporelles";"charge";;1;;;"true";"true"
-819;681200;681000;"Dotations aux amortissements des charges d'exploitation à répartir";"charge";;1;;;"true";"true"
-820;681500;681000;"Dotations aux provisions pour risques et charges d'exploitation";"charge";;1;;;"true";"true"
-821;681600;681000;"Dotations pour dépréciations des immobilisations incorporelles et corporelles";"charge";;1;;;"true";"true"
-822;681610;681600;"Immobilisations incorporelles";"charge";;1;;;"true";"true"
-823;681620;681600;"Immobilisations corporelles";"charge";;1;;;"true";"true"
-824;681700;681000;"Dotations aux provisions pour dépréciation des actifs circulants";"charge";;1;;;"true";"true"
-825;681730;681700;"Stocks et en-cours";"charge";;1;;;"true";"true"
-826;681740;681700;"Créances";"charge";;1;;;"true";"true"
-827;686000;680;"Dotations aux amortissements, dépréciations et provisions - Charges financières";"charge";;1;;;"true";"true"
-828;686100;686000;"Dotations aux amortissements des primes de remboursement des obligations";"charge";;1;;;"true";"true"
-829;686500;686000;"Dotations aux provisions pour risques et charges financiers";"charge";;1;;;"true";"true"
-830;686600;686000;"Dotations aux dépréciation des éléments financiers";"charge";;1;;;"true";"true"
-831;686620;686600;"Immobilisations financières";"charge";;1;;;"true";"true"
-832;686650;686600;"Valeurs mobilières de placement";"charge";;1;;;"true";"true"
-833;686800;686000;"Autres dotations";"charge";;1;;;"true";"true"
-834;687000;680;"Dotations aux amortissements, dépréciations et provisions - Charges exceptionnelles";"charge";;1;;;"true";"true"
-835;687100;687000;"Dotations aux amortissements exceptionnels des immobilisations";"charge";;1;;;"true";"true"
-836;687200;687000;"Dotations aux provisions réglementées (immobilisations)";"charge";;1;;;"true";"true"
-837;687250;687200;"Amortissements dérogatoires";"charge";;1;;;"true";"true"
-838;687300;687000;"Dotations aux provisions réglementées (stocks)";"charge";;1;;;"true";"true"
-839;687400;687000;"Dotations aux autres provisions réglementées";"charge";;1;;;"true";"true"
-840;687500;687000;"Dotations aux provisions exceptionnelles";"charge";;1;;;"true";"true"
-841;687600;687000;"Dotations aux dépréciations exceptionnelles";"charge";;1;;;"true";"true"
-842;690;"CL6";"Participation des salariés - Impôts sur les bénéfices et assimilés";"view";;1;;;"true";"true"
-843;691000;690;"Participation des salariés aux résultats";"charge";;1;;;"true";"true"
-844;695000;690;"Impôts sur les bénéfices";"charge";;1;;;"true";"true"
-845;695100;695000;"Impôts dus en France";"charge";;1;;;"true";"true"
-846;695200;695000;"Contribution additionnelle à l'impôt sur les bénéfices";"charge";;1;;;"true";"true"
-847;695400;695000;"Impôts dus à l'étranger";"charge";;1;;;"true";"true"
-848;696000;690;"Supplément d'impôt sur les sociétés lié aux distributions";"charge";;1;;;"true";"true"
-849;697000;690;"Imposition forfaitaire annuelle des sociétés";"charge";;1;;;"true";"true"
-850;698000;690;"Intégration fiscale";"charge";;1;;;"true";"true"
-851;698100;698000;"Intégration fiscale - Charges";"charge";;1;;;"true";"true"
-852;698900;698000;"Intégration fiscale - Produits";"charge";;1;;;"true";"true"
-853;699000;690;"Produits, Reports en arrière des déficits";"charge";;1;;;"true";"true"
-854;700;"CL7";"Ventes de produits fabriqués - Prestations de service - Marchandises";"view";;1;;;"true";"true"
-855;701000;700;"Ventes de produits finis";"income";;1;;;"true";"true"
-856;701200;701000;"Produits finis (ou groupe) B";"income";;1;;;"true";"true"
-857;702000;700;"Ventes de produits intermédiaires";"income";;1;;;"true";"true"
-858;703000;700;"Ventes de produits résiduels";"income";;1;;;"true";"true"
-859;704000;700;"Travaux";"income";;1;;;"true";"true"
-860;704100;704000;"Travaux de catégorie (ou activité) A";"income";;1;;;"true";"true"
-861;704200;704000;"Travaux de catégorie (ou activité) B";"income";;1;;;"true";"true"
-862;705000;700;"Études";"income";;1;;;"true";"true"
-863;706000;700;"Prestations de services";"income";;1;;;"true";"true"
-864;707000;700;"Ventes de marchandises";"income";;1;;;"true";"true"
-865;707100;707000;"Marchandises (ou groupe) A";"income";;1;;;"true";"true"
-866;707200;707000;"Marchandises (ou groupe) B";"income";;1;;;"true";"true"
-867;707210;707200;"Ventes de produits textiles";"income";;1;;;"true";"true"
-868;707300;707000;"Marchandises à l'exportation";"income";;1;;;"true";"true"
-869;708000;700;"Produits des activités annexes";"income";;1;;;"true";"true"
-870;708100;708000;"Produits des services exploités dans l'intérêt du personnel";"income";;1;;;"true";"true"
-871;708200;708000;"Commissions et courtages";"income";;1;;;"true";"true"
-872;708300;708000;"Locations diverses";"income";;1;;;"true";"true"
-873;708400;708000;"Mise à disposition de personnel facturée ";"income";;1;;;"true";"true"
-874;708500;708000;"Ports et frais accessoires facturés";"income";;1;;;"true";"true"
-875;708600;708000;"Bonis sur reprises d'emballages consignés";"income";;1;;;"true";"true"
-876;708700;708000;"Bonifications obtenues des clients et primes sur ventes";"income";;1;;;"true";"true"
-877;708800;708000;"Autres produits d'activités annexes (cessions d'approvisionnements...)";"income";;1;;;"true";"true"
-878;709000;700;"Rabais, remises et ristournes accordés par l'entreprise";"income";;1;;;"true";"true"
-879;709100;709000;"- sur ventes de produits finis";"income";;1;;;"true";"true"
-880;709200;709000;"- sur ventes de produits intermédiaires ";"income";;1;;;"true";"true"
-881;709400;709000;"- sur travaux";"income";;1;;;"true";"true"
-882;709500;709000;"- sur études";"income";;1;;;"true";"true"
-883;709600;709000;"- sur prestations de services";"income";;1;;;"true";"true"
-884;709700;709000;"- sur ventes de marchandises";"income";;1;;;"true";"true"
-885;709800;709000;"- sur produits des activités annexes";"income";;1;;;"true";"true"
-886;710;"CL7";"Production stockée (ou déstockage)";"view";;1;;;"true";"true"
-887;713000;710;"Variation des stocks (en-cours de production, produits)";"income";;1;;;"true";"true"
-888;713300;713000;"Variation des en-cours de production de biens";"income";;1;;;"true";"true"
-889;713310;713300;"Produits en cours";"income";;1;;;"true";"true"
-890;713350;713300;"Travaux en cours";"income";;1;;;"true";"true"
-891;713400;713000;"Variation des en-cours de production de services";"income";;1;;;"true";"true"
-892;713410;713400;"Études en cours";"income";;1;;;"true";"true"
-893;713450;713400;"Prestations de services en cours";"income";;1;;;"true";"true"
-894;713500;713000;"Variation des stocks de produits";"income";;1;;;"true";"true"
-895;713510;713500;"Produits intermédiaires ";"income";;1;;;"true";"true"
-896;713550;713500;"Produits finis";"income";;1;;;"true";"true"
-897;713580;713500;"Produits résiduels";"income";;1;;;"true";"true"
-898;720;"CL7";"Production immobilisée";"view";;1;;;"true";"true"
-899;721000;720;"Immobilisations incorporelles ";"income";;1;;;"true";"true"
-900;722000;720;"Immobilisations corporelles";"income";;1;;;"true";"true"
-901;740;"CL7";"Subventions d'exploitation";"view";;1;;;"true";"true"
-902;750;"CL7";"Autres produits de gestion courante";"view";;1;;;"true";"true"
-903;751000;750;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"income";;1;;;"true";"true"
-904;751100;751000;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels ";"income";;1;;;"true";"true"
-905;751600;751000;"Droits d'auteur et de reproduction";"income";;1;;;"true";"true"
-906;751800;751000;"Autres droits et valeurs similaires";"income";;1;;;"true";"true"
-907;752000;750;"Revenus des immeubles non affectés aux activités professionnelles";"income";;1;;;"true";"true"
-908;753000;750;"Jetons de présence et rémunérations d'administrateurs, gérants...";"income";;1;;;"true";"true"
-909;754000;750;"Ristournes perçues des coopératives (provenant des excédents)";"income";;1;;;"true";"true"
-910;755000;750;"Quotes-parts de résultats sur opérations faites en commun";"income";;1;;;"true";"true"
-911;755100;755000;"Quote-part de perte transférée (comptabilité du gérant)";"income";;1;;;"true";"true"
-912;755500;755000;"Quote-part de bénéfice attribuée (comptabilité des associés non-gérants)";"income";;1;;;"true";"true"
-913;758000;750;"Produits divers de gestion courante";"income";;1;;;"true";"true"
-914;760;"CL7";"Produits financiers";"view";;1;;;"true";"true"
-915;761000;760;"Produits de participations";"income";;1;;;"true";"true"
-916;761100;761000;"Revenus des titres de participation";"income";;1;;;"true";"true"
-917;761600;761000;"Revenus sur autres formes de participation ";"income";;1;;;"true";"true"
-918;761700;761000;"Revenus des créances rattachées à des participations";"income";;1;;;"true";"true"
-919;762000;760;"Produits des autres immobilisations financières";"income";;1;;;"true";"true"
-920;762100;762000;"Revenus des titres immobilisés";"income";;1;;;"true";"true"
-921;762600;762000;"Revenus des prêts";"income";;1;;;"true";"true"
-922;762700;762000;"Revenus des créances immobilisées";"income";;1;;;"true";"true"
-923;763000;760;"Revenus des autres créances";"income";;1;;;"true";"true"
-924;763100;763000;"Revenus des créances commerciales ";"income";;1;;;"true";"true"
-925;763800;763000;"Revenus des créances diverses";"income";;1;;;"true";"true"
-926;764000;760;"Revenus des valeurs mobilières de placement";"income";;1;;;"true";"true"
-927;765000;760;"Escomptes obtenus";"income";;1;;;"true";"false"
-928;766000;760;"Gains de change";"income";;1;;;"true";"true"
-929;767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"income";;1;;;"true";"true"
-930;768000;760;"Autres produits financiers";"income";;1;;;"true";"true"
-931;770;"CL7";"Produits exceptionnels";"view";;1;;;"true";"true"
-932;771000;770;"Produits exceptionnels sur opérations de gestion";"income";;1;;;"true";"true"
-933;771100;771000;"Dédits et pénalités perçus sur achats et sur ventes";"income";;1;;;"true";"true"
-934;771300;771000;"Libéralités reçues";"income";;1;;;"true";"true"
-935;771400;771000;"Rentrées sur créances amorties";"income";;1;;;"true";"true"
-936;771500;771000;"Subventions d'équilibre";"income";;1;;;"true";"true"
-937;771700;771000;"Dégrèvements d'impôts autres qu'impôts sur les bénéfices";"income";;1;;;"true";"true"
-938;771800;771000;"Autres produits exceptionnels sur opérations de gestion";"income";;1;;;"true";"true"
-939;772000;770;"Produits sur exercices antérieurs (en cours d'exercice seulement)";"income";;1;;;"true";"true"
-940;775000;770;"Produits des cessions d'éléments d'actif";"income";;1;;;"true";"true"
-941;775100;775000;"Immobilisations incorporelles";"income";;1;;;"true";"true"
-942;775200;775000;"Immobilisations corporelles";"income";;1;;;"true";"true"
-943;775600;775000;"Immobilisations financières";"income";;1;;;"true";"true"
-944;775800;775000;"Autres éléments d'actif";"income";;1;;;"true";"true"
-945;777000;770;"Quote-part des subventions d'investissement virée au résultat de l'exercice";"income";;1;;;"true";"true"
-946;778000;770;"Autres produits exceptionnels";"income";;1;;;"true";"true"
-947;778100;778000;"Bonis provenant de clauses d'indexation ";"income";;1;;;"true";"true"
-948;778200;778000;"Lots";"income";;1;;;"true";"true"
-949;778300;778000;"Bonis provenant du rachat par l'entreprise d'actions et d'obligations émises par elle-même";"income";;1;;;"true";"true"
-950;778800;778000;"Produits exceptionnels divers";"income";;1;;;"true";"true"
-951;780;"CL7";"Reprises sur amortissements, dépréciations et provisions";"view";;1;;;"true";"true"
-952;781000;780;"Reprises sur amortissements, dépréciations et provisions (à inscrire dans les produits d'exploitation)";"income";;1;;;"true";"true"
-953;781100;781000;"Reprises sur amortissements des immobilisations incorporelles et corporelles ";"income";;1;;;"true";"true"
-954;781110;781100;"Immobilisations incorporelles";"income";;1;;;"true";"true"
-955;781120;781100;"Immobilisations corporelles";"income";;1;;;"true";"true"
-956;781500;781000;"Reprises sur provisions d'exploitation";"income";;1;;;"true";"true"
-957;781600;781000;"Reprises sur dépréciations des immobilisations corporelles et incorporelles";"income";;1;;;"true";"true"
-958;781610;781600;"Immobilisations incorporelles";"income";;1;;;"true";"true"
-959;781620;781600;"Immobilisations corporelles";"income";;1;;;"true";"true"
-960;781700;781000;"Reprises sur dépréciations des actifs circulants";"income";;1;;;"true";"true"
-961;781730;781700;"Stocks et en-cours";"income";;1;;;"true";"true"
-962;781740;781700;"Créances";"income";;1;;;"true";"true"
-963;786000;780;"Reprises sur dépréciations et provisions (à inscrire dans les produits financiers)";"income";;1;;;"true";"true"
-964;786500;786000;"Reprises sur provisions financiers";"income";;1;;;"true";"true"
-965;786600;786000;"Reprises sur dépréciations des éléments financiers";"income";;1;;;"true";"true"
-966;786620;786600;"Immobilisations financières";"income";;1;;;"true";"true"
-967;786650;786600;"Valeurs mobilières de placement";"income";;1;;;"true";"true"
-968;787000;780;"Reprises sur dépréciations et provisions (à inscrire dans les produits exceptionnels)";"income";;1;;;"true";"true"
-969;787200;787000;"Reprises sur provisions réglementées (immobilisations)";"income";;1;;;"true";"true"
-970;787250;787200;"Amortissements dérogatoires";"income";;1;;;"true";"true"
-971;787260;787200;"Provision spéciale de réévaluation";"income";;1;;;"true";"true"
-972;787270;787200;"Plus-values réinvesties";"income";;1;;;"true";"true"
-973;787300;787000;"Reprises sur provisions réglementées (stocks) ";"income";;1;;;"true";"true"
-974;787400;787000;"Reprises sur autres provisions réglementées ";"income";;1;;;"true";"true"
-975;787500;787000;"Reprises sur provisions exceptionnelles";"income";;1;;;"true";"true"
-976;787600;787000;"Reprises pour dépréciations exceptionnelles";"income";;1;;;"true";"true"
-977;790;"CL7";"Transferts de charges";"view";;1;;;"true";"true"
-978;791000;790;"Transferts de charges d'exploitation";"income";;1;;;"true";"true"
-979;796000;790;"Transferts de charges financières";"income";;1;;;"true";"true"
-980;797000;790;"Transferts de charges exceptionnelles";"income";;1;;;"true";"true"
+598;600;"CL6";"Achats(sauf 603)";"view";;1;;;true;true
+599;601000;600;"Achats stockés - Matières premières (et fournitures)";"charge";;1;;;true;true
+600;601100;601000;"Matières (ou groupe) A";"charge";;1;;;true;true
+601;601200;601000;"Matières (ou groupe) B";"charge";;1;;;true;true
+602;601700;601000;"Fournitures A, B, C, ..";"charge";;1;;;true;true
+603;602000;600;"Achats stockés - Autres approvisionnements";"charge";;1;;;true;true
+604;602100;602000;"Matières consommables";"charge";;1;;;true;true
+605;602110;602100;"Matières (ou groupe) C";"charge";;1;;;true;true
+606;602120;602100;"Matières (ou groupe) D";"charge";;1;;;true;true
+607;602200;602000;"Fournitures consommables";"charge";;1;;;true;true
+608;602210;602200;"Combustibles";"charge";;1;;;true;true
+609;602220;602200;"Produits d'entretien";"charge";;1;;;true;true
+610;602230;602200;"Fournitures d'atelier et d'usine";"charge";;1;;;true;true
+611;602240;602200;"Fournitures de magasin";"charge";;1;;;true;true
+612;602250;602200;"Fournitures de bureau";"charge";;1;;;true;true
+613;602600;602000;"Emballages";"charge";;1;;;true;true
+614;602610;602600;"Emballages perdus";"charge";;1;;;true;true
+615;602650;602600;"Emballages récupérables non identifiables";"charge";;1;;;true;true
+616;602670;602600;"Emballages à usage mixte";"charge";;1;;;true;true
+617;603000;600;"Variation des stocks (approvisionnements et marchandises)";"charge";;1;;;true;true
+618;603100;603000;"Variation des stocks de matières premières (et fournitures)";"charge";;1;;;true;true
+619;603200;603000;"Variation des stocks des autres approvisionnements";"charge";;1;;;true;true
+620;603700;603000;"Variation des stocks de marchandises";"charge";;1;;;true;true
+621;604000;600;"Achats d'études et prestations de services";"charge";;1;;;true;true
+622;605000;600;"Achats de matériel équipements et travaux";"charge";;1;;;true;true
+623;606000;600;"Achats non stockés de matières et fournitures";"charge";;1;;;true;true
+624;606100;606000;"Fournitures non stockables (eau, énergie...) ";"charge";;1;;;true;true
+625;606300;606000;"Fournitures d'entretien et de petit équipement";"charge";;1;;;true;true
+626;606400;606000;"Fournitures administratives";"charge";;1;;;true;true
+627;606800;606000;"Autres matières et fournitures";"charge";;1;;;true;true
+628;607000;600;"Achats de marchandises";"charge";;1;;;true;true
+629;607100;607000;"Marchandise (ou groupe) A";"charge";;1;;;true;true
+630;607200;607000;"Marchandise (ou groupe) B";"charge";;1;;;true;true
+631;608000;600;"Frais accessoires incorporés aux achats";"charge";;1;;;true;true
+632;609000;600;"Rabais, remises et ristournes obtenus sur achats";"charge";;1;;;true;true
+633;609100;609000;"- de matières premières (et fournitures)";"charge";;1;;;true;true
+634;609200;609000;"- d'autres approvisionnements stockés";"charge";;1;;;true;true
+635;609400;609000;"- d'études et prestations de services";"charge";;1;;;true;true
+636;609500;609000;"- de matériel, équipements et travaux";"charge";;1;;;true;true
+637;609600;609000;"- d'approvisionnements non stockés";"charge";;1;;;true;true
+638;609700;609000;"- de marchandises";"charge";;1;;;true;true
+639;609800;609000;"Rabais, remises et ristournes non affectés";"charge";;1;;;true;true
+640;610;"CL6";"Services extérieurs";"view";;1;;;true;true
+641;611000;610;"Sous-traitance générale";"charge";;1;;;true;true
+642;612000;610;"Redevances de crédit-bail";"charge";;1;;;true;true
+643;612200;612000;"Crédit-bail mobilier";"charge";;1;;;true;true
+644;612500;612000;"Crédit-bail immobilier";"charge";;1;;;true;true
+645;613000;610;"Locations";"charge";;1;;;true;true
+646;613200;613000;"Locations immobilières";"charge";;1;;;true;true
+647;613500;613000;"Locations mobilières";"charge";;1;;;true;true
+648;613600;613000;"Malis sur emballages";"charge";;1;;;true;true
+649;614000;610;"Charges locatives et de copropriété";"charge";;1;;;true;true
+650;615000;610;"Entretien et réparations";"charge";;1;;;true;true
+651;615200;615000;"- sur biens immobiliers";"charge";;1;;;true;true
+652;615500;615000;"- sur biens mobiliers";"charge";;1;;;true;true
+653;615600;615000;"Maintenance";"charge";;1;;;true;true
+654;616000;610;"Primes d'assurance";"charge";;1;;;true;true
+655;616100;616000;"Multirisques";"charge";;1;;;true;true
+656;616200;616000;"Assurance obligatoire dommage construction ";"charge";;1;;;true;true
+657;616300;616000;"Assurance transport";"charge";;1;;;true;true
+658;616360;616300;"Assurance transport sur achats";"charge";;1;;;true;true
+659;616370;616300;"Assurance transportsur ventes";"charge";;1;;;true;true
+660;616380;616300;"Assurance transport sur autres biens";"charge";;1;;;true;true
+661;616400;616000;"Risques d'exploitation";"charge";;1;;;true;true
+662;616500;616000;"Insolvabilité clients";"charge";;1;;;true;true
+663;617000;610;"Études et recherches";"charge";;1;;;true;true
+664;618000;610;"Divers";"charge";;1;;;true;true
+665;618100;618000;"Documentation générale";"charge";;1;;;true;true
+666;618300;618000;"Documentation technique";"charge";;1;;;true;true
+667;618500;618000;"Frais de colloques, séminaires, conférences";"charge";;1;;;true;true
+668;619000;610;"Rabais, remises et ristournes obtenus sur services extérieurs";"charge";;1;;;true;true
+669;620;"CL6";"Autres services extérieurs";"view";;1;;;true;true
+670;621000;620;"Personnel extérieur à l'entreprise";"charge";;1;;;true;true
+671;621100;621000;"Personnel intérimaire";"charge";;1;;;true;true
+672;621400;621000;"Personnel détaché ou prêté à l'entreprise";"charge";;1;;;true;true
+673;622000;620;"Rémunérations d'intermédiaires et honoraires ";"charge";;1;;;true;true
+674;622100;622000;"Commissions et courtages sur achats ";"charge";;1;;;true;true
+675;622200;622000;"Commissions et courtages sur ventes";"charge";;1;;;true;true
+676;622400;622000;"Rémunérations des transitaires";"charge";;1;;;true;true
+677;622500;622000;"Rémunérations d'affacturage";"charge";;1;;;true;true
+678;622600;622000;"Honoraires";"charge";;1;;;true;true
+679;622700;622000;"Frais d'actes et de contentieux";"charge";;1;;;true;true
+680;622800;622000;"Divers";"charge";;1;;;true;true
+681;623000;620;"Publicité, publications, relations publiques";"charge";;1;;;true;true
+682;623100;623000;"Annonces et insertions";"charge";;1;;;true;true
+683;623200;623000;"Échantillons";"charge";;1;;;true;true
+684;623300;623000;"Foires et expositions";"charge";;1;;;true;true
+685;623400;623000;"Cadeaux à la clientèle";"charge";;1;;;true;true
+686;623500;623000;"Primes";"charge";;1;;;true;true
+687;623600;623000;"Catalogues et imprimés";"charge";;1;;;true;true
+688;623700;623000;"Publications";"charge";;1;;;true;true
+689;623800;623000;"Divers (pourboires, dons courants...)";"charge";;1;;;true;true
+690;624000;620;"Transports de biens et transports collectifs du personnel";"charge";;1;;;true;true
+691;624100;624000;"Transports sur achats";"charge";;1;;;true;true
+692;624200;624000;"Transports sur ventes";"charge";;1;;;true;true
+693;624300;624000;"Transports entre établissements ou chantiers";"charge";;1;;;true;true
+694;624400;624000;"Transports administratifs";"charge";;1;;;true;true
+695;624700;624000;"Transports collectifs du personnel";"charge";;1;;;true;true
+696;624800;624000;"Divers";"charge";;1;;;true;true
+697;625000;620;"Déplacements missions et réceptions";"charge";;1;;;true;true
+698;625100;625000;"Voyages et déplacements";"charge";;1;;;true;true
+699;625500;625000;"Frais de déménagement";"charge";;1;;;true;true
+700;625600;625000;"Missions";"charge";;1;;;true;true
+701;625700;625000;"Réceptions";"charge";;1;;;true;true
+702;626000;620;"Frais postaux et frais de télécommunications";"charge";;1;;;true;true
+703;627000;620;"Services bancaires et assimilés";"charge";;1;;;true;true
+704;627100;627000;"Frais sur titres (achat, vente, garde)";"charge";;1;;;true;true
+705;627200;627000;"Commissions et frais sur émission d'emprunts";"charge";;1;;;true;true
+706;627500;627000;"Frais sur effets";"charge";;1;;;true;true
+707;627600;627000;"Location de coffres";"charge";;1;;;true;true
+708;627800;627000;"Autres frais et commissions sur prestations de services";"charge";;1;;;true;true
+709;628000;620;"Divers";"charge";;1;;;true;true
+710;628100;628000;"Concours divers (cotisations...)";"charge";;1;;;true;true
+711;628400;628000;"Frais de recrutement de personnel";"charge";;1;;;true;true
+712;629000;620;"Rabais, remises et ristournes obtenus sur autres services extérieurs";"charge";;1;;;true;true
+713;630;"CL6";"Impôts, taxes et versements assimilés";"view";;1;;;true;true
+714;631000;630;"Impôts, taxes et versements assimilés sur rémunérations (administration des impôts)";"charge";;1;;;true;true
+715;631100;631000;"Taxe sur les salaires";"charge";;1;;;true;true
+716;631200;631000;"Taxe d'apprentissage";"charge";;1;;;true;true
+717;631300;631000;"Participation des employeurs à la formation professionnelle continue";"charge";;1;;;true;true
+718;631400;631000;"Cotisation pour défaut d'investissement obligatoire dans la construction";"charge";;1;;;true;true
+719;631800;631000;"Autres";"charge";;1;;;true;true
+720;633000;630;"Impôts, taxes et versements assimilés sur rémunérations (autres organismes)";"charge";;1;;;true;true
+721;633100;633000;"Versement de transport";"charge";;1;;;true;true
+722;633200;633000;"Allocation logement";"charge";;1;;;true;true
+723;633300;633000;"Participation des employeurs à la formation professionnelle continue";"charge";;1;;;true;true
+724;633400;633000;"Participation des employeurs à l'effort de construction";"charge";;1;;;true;true
+725;633500;633000;"Versements libératoires ouvrant droit à l'exonération de la taxe d'apprentissage";"charge";;1;;;true;true
+726;633800;633000;"Autres";"charge";;1;;;true;true
+727;635000;630;"Autres impôts, taxes et versements assimilés (administration des impôts)";"charge";;1;;;true;true
+728;635100;635000;"Impôts directs (sauf impôts sur les bénéfices)";"charge";;1;;;true;true
+729;635110;635100;"Taxe professionnelle";"charge";;1;;;true;true
+730;635120;635100;"Taxes foncières";"charge";;1;;;true;true
+731;635130;635100;"Autres impôts locaux";"charge";;1;;;true;true
+732;635140;635100;"Taxe sur les véhicules des sociétés";"charge";;1;;;true;true
+733;635200;635000;"Taxes sur le chiffre d'affaires non récupérables ";"charge";;1;;;true;true
+734;635300;635000;"Impôts indirects";"charge";;1;;;true;true
+735;635400;635000;"Droits d'enregistrement et de timbre";"charge";;1;;;true;true
+736;635410;635400;"Droits de mutation";"charge";;1;;;true;true
+737;635800;635000;"Autres droits";"charge";;1;;;true;true
+738;637000;630;"Autres impôts, taxes et versements assimilés (autres organismes)";"charge";;1;;;true;true
+739;637100;637000;"Contribution sociale de solidarité à la charge des sociétés";"charge";;1;;;true;true
+740;637200;637000;"Taxes perçues par les organismes publics internationaux";"charge";;1;;;true;true
+741;637400;637000;"Impôts et taxes exigibles à l'étranger";"charge";;1;;;true;true
+742;637800;637000;"Taxes diverses";"charge";;1;;;true;true
+743;640;"CL6";"Charges de personnel";"view";;1;;;true;true
+744;641000;640;"Rémunérations du personnel";"charge";;1;;;true;true
+745;641100;641000;"Salaires et appointements";"charge";;1;;;true;true
+746;641200;641000;"Congés payés";"charge";;1;;;true;true
+747;641300;641000;"Primes et gratifications";"charge";;1;;;true;true
+748;641400;641000;"Indemnités et avantages divers";"charge";;1;;;true;true
+749;641500;641000;"Supplément familial";"charge";;1;;;true;true
+750;644000;640;"Rémunération du travail de l'exploitant";"charge";;1;;;true;true
+751;645;640;"Charges de Sécurité sociale et de prévoyance";"charge";;1;;;true;true
+752;645100;645;"Cotisations à l'URSSAF";"charge";;1;;;true;true
+753;645200;645;"Cotisations aux mutuelles";"charge";;1;;;true;true
+754;645300;645;"Cotisations aux caisses de retraites";"charge";;1;;;true;true
+755;645400;645;"Cotisations aux ASSEDIC";"charge";;1;;;true;true
+756;645800;645;"Cotisations aux autres organismes sociaux";"charge";;1;;;true;true
+757;646;640;"Cotisations sociales personnelles de l'exploitant";"charge";;1;;;true;true
+758;647000;640;"Autres charges sociales";"charge";;1;;;true;true
+759;647100;647000;"Prestations directes";"charge";;1;;;true;true
+760;647200;647000;"Versements aux comités d'entreprise et d'établissement";"charge";;1;;;true;true
+761;647300;647000;"Versements aux comités d'hygiène et de sécurité";"charge";;1;;;true;true
+762;647400;647000;"Versements aux autres oeuvres sociales";"charge";;1;;;true;true
+763;647500;647000;"Médecine du travail pharmacie";"charge";;1;;;true;true
+764;648000;640;"Autres charges de personnel";"charge";;1;;;true;true
+765;650;"CL6";"Autres charges de gestion courante";"view";;1;;;true;true
+766;651000;650;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"charge";;1;;;true;true
+767;651100;651000;"Redevances pour concessions brevets, licences, marques, procédés, logiciels ";"charge";;1;;;true;true
+768;651600;651000;"Droits d'auteur et de reproduction";"charge";;1;;;true;true
+769;651800;651000;"Autres droits et valeurs similaires";"charge";;1;;;true;true
+770;653000;650;"Jetons de présence";"charge";;1;;;true;true
+771;654000;650;"Pertes sur créances irrécouvrables";"charge";;1;;;true;true
+772;654100;654000;"Créances de l'exercice";"charge";;1;;;true;true
+773;654400;654000;"Créances des exercices antérieurs";"charge";;1;;;true;true
+774;655000;650;"Quotes-parts de résultat sur opérations faites en commun";"charge";;1;;;true;true
+775;655100;655000;"Quote-part de bénéfice transférée (comptabilité du gérant)";"charge";;1;;;true;true
+776;655500;655000;"Quote-part de perte supportée (comptabilité des associés non gérants)";"charge";;1;;;true;true
+777;658000;650;"Charges diverses de gestion courante";"charge";;1;;;true;true
+778;660;"CL6";"Charges financières";"view";;1;;;true;true
+779;661000;660;"Charges d'intérêt";"charge";;1;;;true;true
+780;661100;661000;"Intérêts des emprunts et dettes";"charge";;1;;;true;true
+781;661160;661100;"Intérêts des emprunts et dettes assimilées";"charge";;1;;;true;true
+782;661170;661100;"Intérêts des dettes rattachées à des participations";"charge";;1;;;true;true
+783;661500;661000;"Intérêts des comptes courants et des dépôts créditeurs";"charge";;1;;;true;true
+784;661600;661000;"Intérêts bancaires et sur opérations de financement (escompte, ...)";"charge";;1;;;true;true
+785;661700;661000;"Intérêts des obligations cautionnées";"charge";;1;;;true;true
+786;661800;661000;"Intérêts des autres dettes";"charge";;1;;;true;true
+787;661810;661800;"Intérêts des dettes commerciales";"charge";;1;;;true;true
+788;661880;661800;"Intérêts des dettes diverses";"charge";;1;;;true;true
+789;664000;660;"Pertes sur créances liées à des participations";"charge";;1;;;true;true
+790;665000;660;"Escomptes accordés";"charge";;1;;;true;true
+791;666000;660;"Pertes de change";"charge";;1;;;true;true
+792;667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"charge";;1;;;true;true
+793;668000;660;"Autres charges financières";"charge";;1;;;true;true
+794;670;"CL6";"Charges exceptionnelles";"view";;1;;;true;true
+795;671000;670;"Charges exceptionnelles sur opérations de gestion";"charge";;1;;;true;true
+796;671100;671000;"Pénalités sur marchés (et dédits payés sur achats et ventes)";"charge";;1;;;true;true
+797;671200;671000;"Pénalités, amendes fiscales et pénales ";"charge";;1;;;true;true
+798;671300;671000;"Dons, libéralités";"charge";;1;;;true;true
+799;671400;671000;"Créances devenues irrécouvrables dans l'exercice";"charge";;1;;;true;true
+800;671500;671000;"Subventions accordées";"charge";;1;;;true;true
+801;671700;671000;"Rappels d'impôts (autres qu'impôts sur les bénéfices)";"charge";;1;;;true;true
+802;671800;671000;"Autres charges exceptionnelles sur opération de gestion";"charge";;1;;;true;true
+803;672000;670;"Charges sur exercices antérieurs (en cours d'exercice seulement)";"charge";;1;;;true;true
+804;675000;670;"Valeurs comptables des éléments d'actif cédés";"charge";;1;;;true;true
+805;675100;675000;"Immobilisations incorporelles";"charge";;1;;;true;true
+806;675200;675000;"Immobilisations corporelles";"charge";;1;;;true;true
+807;675600;675000;"Immobilisations financières";"charge";;1;;;true;true
+808;675800;675000;"Autres éléments d'actif";"charge";;1;;;true;true
+809;678000;670;"Autres charges exceptionnelles";"charge";;1;;;true;true
+810;678100;678000;"Malis provenant de clauses d'indexation ";"charge";;1;;;true;true
+811;678200;678000;"Lots";"charge";;1;;;true;true
+812;678300;678000;"Malis provenant du rachat par l'entreprise d'actions et obligations émises par elle-même";"charge";;1;;;true;true
+813;678800;678000;"Charges exceptionnelles diverses";"charge";;1;;;true;true
+814;680;"CL6";"Dotations aux amortissements, dépréciations et provisions";"view";;1;;;true;true
+815;681000;680;"Dotations aux amortissements, dépréciations et provisions - Charges d'exploitation, Amortisation, depreciation and provisions - Operating expenses";"charge";;1;;;true;true
+816;681100;681000;"Dotations aux amortissements des immobilisations incorporelles et corporelles ";"charge";;1;;;true;true
+817;681110;681100;"Immobilisations incorporelles";"charge";;1;;;true;true
+818;681120;681100;"Immobilisations corporelles";"charge";;1;;;true;true
+819;681200;681000;"Dotations aux amortissements des charges d'exploitation à répartir";"charge";;1;;;true;true
+820;681500;681000;"Dotations aux provisions pour risques et charges d'exploitation";"charge";;1;;;true;true
+821;681600;681000;"Dotations pour dépréciations des immobilisations incorporelles et corporelles";"charge";;1;;;true;true
+822;681610;681600;"Immobilisations incorporelles";"charge";;1;;;true;true
+823;681620;681600;"Immobilisations corporelles";"charge";;1;;;true;true
+824;681700;681000;"Dotations aux provisions pour dépréciation des actifs circulants";"charge";;1;;;true;true
+825;681730;681700;"Stocks et en-cours";"charge";;1;;;true;true
+826;681740;681700;"Créances";"charge";;1;;;true;true
+827;686000;680;"Dotations aux amortissements, dépréciations et provisions - Charges financières";"charge";;1;;;true;true
+828;686100;686000;"Dotations aux amortissements des primes de remboursement des obligations";"charge";;1;;;true;true
+829;686500;686000;"Dotations aux provisions pour risques et charges financiers";"charge";;1;;;true;true
+830;686600;686000;"Dotations aux dépréciation des éléments financiers";"charge";;1;;;true;true
+831;686620;686600;"Immobilisations financières";"charge";;1;;;true;true
+832;686650;686600;"Valeurs mobilières de placement";"charge";;1;;;true;true
+833;686800;686000;"Autres dotations";"charge";;1;;;true;true
+834;687000;680;"Dotations aux amortissements, dépréciations et provisions - Charges exceptionnelles";"charge";;1;;;true;true
+835;687100;687000;"Dotations aux amortissements exceptionnels des immobilisations";"charge";;1;;;true;true
+836;687200;687000;"Dotations aux provisions réglementées (immobilisations)";"charge";;1;;;true;true
+837;687250;687200;"Amortissements dérogatoires";"charge";;1;;;true;true
+838;687300;687000;"Dotations aux provisions réglementées (stocks)";"charge";;1;;;true;true
+839;687400;687000;"Dotations aux autres provisions réglementées";"charge";;1;;;true;true
+840;687500;687000;"Dotations aux provisions exceptionnelles";"charge";;1;;;true;true
+841;687600;687000;"Dotations aux dépréciations exceptionnelles";"charge";;1;;;true;true
+842;690;"CL6";"Participation des salariés - Impôts sur les bénéfices et assimilés";"view";;1;;;true;true
+843;691000;690;"Participation des salariés aux résultats";"charge";;1;;;true;true
+844;695000;690;"Impôts sur les bénéfices";"charge";;1;;;true;true
+845;695100;695000;"Impôts dus en France";"charge";;1;;;true;true
+846;695200;695000;"Contribution additionnelle à l'impôt sur les bénéfices";"charge";;1;;;true;true
+847;695400;695000;"Impôts dus à l'étranger";"charge";;1;;;true;true
+848;696000;690;"Supplément d'impôt sur les sociétés lié aux distributions";"charge";;1;;;true;true
+849;697000;690;"Imposition forfaitaire annuelle des sociétés";"charge";;1;;;true;true
+850;698000;690;"Intégration fiscale";"charge";;1;;;true;true
+851;698100;698000;"Intégration fiscale - Charges";"charge";;1;;;true;true
+852;698900;698000;"Intégration fiscale - Produits";"charge";;1;;;true;true
+853;699000;690;"Produits, Reports en arrière des déficits";"charge";;1;;;true;true
+854;700;"CL7";"Ventes de produits fabriqués - Prestations de service - Marchandises";"view";;1;;;true;true
+855;701000;700;"Ventes de produits finis";"income";;1;;;true;true
+856;701200;701000;"Produits finis (ou groupe) B";"income";;1;;;true;true
+857;702000;700;"Ventes de produits intermédiaires";"income";;1;;;true;true
+858;703000;700;"Ventes de produits résiduels";"income";;1;;;true;true
+859;704000;700;"Travaux";"income";;1;;;true;true
+860;704100;704000;"Travaux de catégorie (ou activité) A";"income";;1;;;true;true
+861;704200;704000;"Travaux de catégorie (ou activité) B";"income";;1;;;true;true
+862;705000;700;"Études";"income";;1;;;true;true
+863;706000;700;"Prestations de services";"income";;1;;;true;true
+864;707000;700;"Ventes de marchandises";"income";;1;;;true;true
+865;707100;707000;"Marchandises (ou groupe) A";"income";;1;;;true;true
+866;707200;707000;"Marchandises (ou groupe) B";"income";;1;;;true;true
+867;707210;707200;"Ventes de produits textiles";"income";;1;;;true;true
+868;707300;707000;"Marchandises à l'exportation";"income";;1;;;true;true
+869;708000;700.;"Produits des activités annexes";"income";;1;;;true;true
+870;708100;708000;"Produits des services exploités dans l'intérêt du personnel";"income";;1;;;true;true
+871;708200;708000;"Commissions et courtages";"income";;1;;;true;true
+872;708300;708000;"Locations diverses";"income";;1;;;true;true
+873;708400;708000;"Mise à disposition de personnel facturée ";"income";;1;;;true;true
+874;708500;708000;"Ports et frais accessoires facturés";"income";;1;;;true;true
+875;708600;708000;"Bonis sur reprises d'emballages consignés";"income";;1;;;true;true
+876;708700;708000;"Bonifications obtenues des clients et primes sur ventes";"income";;1;;;true;true
+877;708800;708000;"Autres produits d'activités annexes (cessions d'approvisionnements...)";"income";;1;;;true;true
+878;709000;700;"Rabais, remises et ristournes accordés par l'entreprise";"income";;1;;;true;true
+879;709100;709000;"- sur ventes de produits finis";"income";;1;;;true;true
+880;709200;709000;"- sur ventes de produits intermédiaires ";"income";;1;;;true;true
+881;709400;709000;"- sur travaux";"income";;1;;;true;true
+882;709500;709000;"- sur études";"income";;1;;;true;true
+883;709600;709000;"- sur prestations de services";"income";;1;;;true;true
+884;709700;709000;"- sur ventes de marchandises";"income";;1;;;true;true
+885;709800;709000;"- sur produits des activités annexes";"income";;1;;;true;true
+886;710;"CL7";"Production stockée (ou déstockage)";"view";;1;;;true;true
+887;713000;710;"Variation des stocks (en-cours de production, produits)";"income";;1;;;true;true
+888;713300;713000;"Variation des en-cours de production de biens";"income";;1;;;true;true
+889;713310;713300;"Produits en cours";"income";;1;;;true;true
+890;713350;713300;"Travaux en cours";"income";;1;;;true;true
+891;713400;713000;"Variation des en-cours de production de services";"income";;1;;;true;true
+892;713410;713400;"Études en cours";"income";;1;;;true;true
+893;713450;713400;"Prestations de services en cours";"income";;1;;;true;true
+894;713500;713000;"Variation des stocks de produits";"income";;1;;;true;true
+895;713510;713500;"Produits intermédiaires ";"income";;1;;;true;true
+896;713550;713500;"Produits finis";"income";;1;;;true;true
+897;713580;713500;"Produits résiduels";"income";;1;;;true;true
+898;720;"CL7";"Production immobilisée";"view";;1;;;true;true
+899;721000;720;"Immobilisations incorporelles ";"income";;1;;;true;true
+900;722000;720;"Immobilisations corporelles";"income";;1;;;true;true
+901;740;"CL7";"Subventions d'exploitation";"view";;1;;;true;true
+902;750;"CL7";"Autres produits de gestion courante";"view";;1;;;true;true
+903;751000;750;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"income";;1;;;true;true
+904;751100;751000;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels ";"income";;1;;;true;true
+905;751600;751000;"Droits d'auteur et de reproduction";"income";;1;;;true;true
+906;751800;751000;"Autres droits et valeurs similaires";"income";;1;;;true;true
+907;752000;750;"Revenus des immeubles non affectés aux activités professionnelles";"income";;1;;;true;true
+908;753000;750;"Jetons de présence et rémunérations d'administrateurs, gérants...";"income";;1;;;true;true
+909;754000;750;"Ristournes perçues des coopératives (provenant des excédents)";"income";;1;;;true;true
+910;755000;750;"Quotes-parts de résultats sur opérations faites en commun";"income";;1;;;true;true
+911;755100;755000;"Quote-part de perte transférée (comptabilité du gérant)";"income";;1;;;true;true
+912;755500;755000;"Quote-part de bénéfice attribuée (comptabilité des associés non-gérants)";"income";;1;;;true;true
+913;758000;750;"Produits divers de gestion courante";"income";;1;;;true;true
+914;760;"CL7";"Produits financiers";"view";;1;;;true;true
+915;761000;760;"Produits de participations";"income";;1;;;true;true
+916;761100;761000;"Revenus des titres de participation";"income";;1;;;true;true
+917;761600;761000;"Revenus sur autres formes de participation ";"income";;1;;;true;true
+918;761700;761000;"Revenus des créances rattachées à des participations";"income";;1;;;true;true
+919;762000;760;"Produits des autres immobilisations financières";"income";;1;;;true;true
+920;762100;762000;"Revenus des titres immobilisés";"income";;1;;;true;true
+921;762600;762000;"Revenus des prêts";"income";;1;;;true;true
+922;762700;762000;"Revenus des créances immobilisées";"income";;1;;;true;true
+923;763000;760;"Revenus des autres créances";"income";;1;;;true;true
+924;763100;763000;"Revenus des créances commerciales ";"income";;1;;;true;true
+925;763800;763000;"Revenus des créances diverses";"income";;1;;;true;true
+926;764000;760;"Revenus des valeurs mobilières de placement";"income";;1;;;true;true
+927;765000;760;"Escomptes obtenus";"income";;1;;;true;true
+928;766000;760;"Gains de change";"income";;1;;;true;true
+929;767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"income";;1;;;true;true
+930;768000;760;"Autres produits financiers";"income";;1;;;true;true
+931;770;"CL7";"Produits exceptionnels";"view";;1;;;true;true
+932;771000;770;"Produits exceptionnels sur opérations de gestion";"income";;1;;;true;true
+933;771100;771000;"Dédits et pénalités perçus sur achats et sur ventes";"income";;1;;;true;true
+934;771300;771000;"Libéralités reçues";"income";;1;;;true;true
+935;771400;771000;"Rentrées sur créances amorties";"income";;1;;;true;true
+936;771500;771000;"Subventions d'équilibre";"income";;1;;;true;true
+937;771700;771000;"Dégrèvements d'impôts autres qu'impôts sur les bénéfices";"income";;1;;;true;true
+938;771800;771000;"Autres produits exceptionnels sur opérations de gestion";"income";;1;;;true;true
+939;772000;770;"Produits sur exercices antérieurs (en cours d'exercice seulement)";"income";;1;;;true;true
+940;775000;770;"Produits des cessions d'éléments d'actif";"income";;1;;;true;true
+941;775100;775000;"Immobilisations incorporelles";"income";;1;;;true;true
+942;775200;775000;"Immobilisations corporelles";"income";;1;;;true;true
+943;775600;775000;"Immobilisations financières";"income";;1;;;true;true
+944;775800;775000;"Autres éléments d'actif";"income";;1;;;true;true
+945;777000;770;"Quote-part des subventions d'investissement virée au résultat de l'exercice";"income";;1;;;true;true
+946;778000;770;"Autres produits exceptionnels";"income";;1;;;true;true
+947;778100;778000;"Bonis provenant de clauses d'indexation ";"income";;1;;;true;true
+948;778200;778000;"Lots";"income";;1;;;true;true
+949;778300;778000;"Bonis provenant du rachat par l'entreprise d'actions et d'obligations émises par elle-même";"income";;1;;;true;true
+950;778800;778000;"Produits exceptionnels divers";"income";;1;;;true;true
+951;780;"CL7";"Reprises sur amortissements, dépréciations et provisions";"view";;1;;;true;true
+952;781000;780;"Reprises sur amortissements, dépréciations et provisions (à inscrire dans les produits d'exploitation)";"income";;1;;;true;true
+953;781100;781000;"Reprises sur amortissements des immobilisations incorporelles et corporelles ";"income";;1;;;true;true
+954;781110;781100;"Immobilisations incorporelles";"income";;1;;;true;true
+955;781120;781100;"Immobilisations corporelles";"income";;1;;;true;true
+956;781500;781000;"Reprises sur provisions d'exploitation";"income";;1;;;true;true
+957;781600;781000;"Reprises sur dépréciations des immobilisations corporelles et incorporelles";"income";;1;;;true;true
+958;781610;781600;"Immobilisations incorporelles";"income";;1;;;true;true
+959;781620;781600;"Immobilisations corporelles";"income";;1;;;true;true
+960;781700;781000;"Reprises sur dépréciations des actifs circulants";"income";;1;;;true;true
+961;781730;781700;"Stocks et en-cours";"income";;1;;;true;true
+962;781740;781700;"Créances";"income";;1;;;true;true
+963;786000;780;"Reprises sur dépréciations et provisions (à inscrire dans les produits financiers)";"income";;1;;;true;true
+964;786500;786000;"Reprises sur provisions financiers";"income";;1;;;true;true
+965;786600;786000;"Reprises sur dépréciations des éléments financiers";"income";;1;;;true;true
+966;786620;786600;"Immobilisations financières";"income";;1;;;true;true
+967;786650;786600;"Valeurs mobilières de placement";"income";;1;;;true;true
+968;787000;780;"Reprises sur dépréciations et provisions (à inscrire dans les produits exceptionnels)";"income";;1;;;true;true
+969;787200;787000;"Reprises sur provisions réglementées (immobilisations)";"income";;1;;;true;true
+970;787250;787200;"Amortissements dérogatoires";"income";;1;;;true;true
+971;787260;787200;"Provision spéciale de réévaluation";"income";;1;;;true;true
+972;787270;787200;"Plus-values réinvesties";"income";;1;;;true;true
+973;787300;787000;"Reprises sur provisions réglementées (stocks) ";"income";;1;;;true;true
+974;787400;787000;"Reprises sur autres provisions réglementées ";"income";;1;;;true;true
+975;787500;787000;"Reprises sur provisions exceptionnelles";"income";;1;;;true;true
+976;787600;787000;"Reprises pour dépréciations exceptionnelles";"income";;1;;;true;true
+977;790;"CL7";"Transferts de charges";"view";;1;;;true;true
+978;791000;790;"Transferts de charges d'exploitation";"income";;1;;;true;true
+979;796000;790;"Transferts de charges financières";"income";;1;;;true;true
+980;797000;790;"Transferts de charges exceptionnelles";"income";;1;;;true;true
 981;800;"CL8";"Engagements";"view";;1;;;;
 982;801000;800;"Engagements donnés par l'entité";"commitment";;1;;;;
 983;801100;801000;"Avals, cautions, garanties";"commitment";;1;;;;
