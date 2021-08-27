@@ -19,9 +19,9 @@
         </panel>      
     </form>
     
-    <action-attrs name="action-analytic-distribution-account-on-change">
-    	<attribute name="value" for="analyticAxis" expr="eval: analyticAccount.analyticAxis" if="analyticAccount != null &amp;&amp; analyticAccount.analyticAxis != null"/>
-    </action-attrs>
+    <action-record name="action-analytic-distribution-account-on-change" model="com.axelor.apps.account.db.AnalyticDistributionLine">
+    	<field name="analyticAxis" expr="eval: analyticAccount.analyticAxis" if="analyticAccount != null &amp;&amp; analyticAccount.analyticAxis != null"/>
+    </action-record>
     
     <action-attrs name="action-axis-change-remove-account">
     	<attribute name="value" for="analyticAccount" expr="eval: null"/>
@@ -34,7 +34,7 @@
     </action-group>
 
     <action-attrs name="action-attrs-domain-axis-distribution-line">
-    	<attribute name="domain" for="analyticAxis" expr="eval: &quot;self.company.id = ${__parent__?.company?.id} &quot;" if="__parent__ &amp;&amp; __parent__.company"/>
+    	<attribute name="domain" for="analyticAxis" expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id} &quot;" if="__parent__ &amp;&amp; __parent__.company"/>
     	<attribute name="domain" for="analyticAxis" expr="eval: null" if="!(__parent__ &amp;&amp; __parent__.company)"/>
     </action-attrs>
     
