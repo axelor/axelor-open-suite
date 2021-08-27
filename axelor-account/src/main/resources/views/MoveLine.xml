@@ -5,7 +5,7 @@
     
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine"  canArchive="false" canDelete="false" canNew="false">
   	<toolbar>
-  		<button name="accountingReconcileBtn" title="Accounting Reconcile" hideIf="_isSimulatedMoveLine" onClick="action-method-accounting-reconcile"/>
+  		<button name="accountingReconcileBtn" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
       <button name="calculateBtn" title="Calculation of totals" onClick="action-account-move-line-method-calculate-balance"/>
   	</toolbar>
   	<hilite color="info" if="$get('move.statusSelect') == 1"/>
@@ -517,6 +517,9 @@
 		</filter>
 		<filter title="Purchase Entries">
 			<domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
+		</filter>
+		<filter title="Simulated Move Lines">
+			<domain>self.move.statusSelect = 5</domain>
 		</filter>
 	</search-filters>
 	
