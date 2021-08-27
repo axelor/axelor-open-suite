@@ -296,15 +296,15 @@
 	
 	<action-group name="action-account-config-group-on-save">
 	    <action name="action-account-config-validate-is-activate-simulated-move"/>
-	    <action name="action-account-config-method-remove-simultated-moves"/>
+	    <action name="action-account-config-method-deactivate-simultated-moves"/>
 	</action-group>
 	
 	<action-validate name="action-account-config-validate-is-activate-simulated-move" model="com.axelor.apps.account.db.AccountConfig">
 	    <alert message="By deactivating simulated moves, all moves (including move lines) in this status will be deleted for the company ${company.name}. Do you wish to continue ?" if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
 	</action-validate>
 	
-	<action-method name="action-account-config-method-remove-simultated-moves">
-	    <call class="com.axelor.apps.account.web.AccountConfigController" method="removeSimulatedMoves"/>
+	<action-method name="action-account-config-method-deactivate-simultated-moves">
+	    <call class="com.axelor.apps.account.web.AccountConfigController" method="deactivateSimulatedMoves" if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
 	</action-method>
 	
 </object-views>

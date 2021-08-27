@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
@@ -41,6 +42,7 @@ import java.util.List;
 public class AccountConfigService {
 
   @Inject protected MoveRepository moveRepo;
+  @Inject protected JournalRepository journalRepo;
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
 
@@ -606,7 +608,7 @@ public class AccountConfigService {
   }
 
   @Transactional
-  public void removeSimulatedMoves(Company company) {
+  public void deactivateSimulatedMoves(Company company) {
     List<Move> moveList =
         moveRepo
             .all()
@@ -617,6 +619,15 @@ public class AccountConfigService {
             .fetch();
     for (Move move : moveList) {
       moveRepo.remove(move);
+    }
+    List<Journal> journalList =
+        journalRepo
+            .all()
+            .filter("self.company = ?1 and self.authorizeSimulatedMove = true", company)
+            .fetch();
+    for (Journal journal : journalList) {
+      journal.setAuthorizeSimulatedMove(false);
+      journalRepo.save(journal);
     }
   }
 }

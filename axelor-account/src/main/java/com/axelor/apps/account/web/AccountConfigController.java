@@ -27,9 +27,9 @@ import com.google.inject.Singleton;
 @Singleton
 public class AccountConfigController {
 
-  public void removeSimulatedMoves(ActionRequest request, ActionResponse response) {
+  public void deactivateSimulatedMoves(ActionRequest request, ActionResponse response) {
 
     AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
-    Beans.get(AccountConfigService.class).removeSimulatedMoves(accountConfig.getCompany());
+    Beans.get(AccountConfigService.class).deactivateSimulatedMoves(accountConfig.getCompany());
   }
 }

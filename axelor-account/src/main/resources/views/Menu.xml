@@ -133,7 +133,7 @@
 		<view type="grid" name="move-grid" />
 		<view type="form" name="move-form"/>
 		<view-param name="search-filters" value="move-filters"/>
-		<domain>self.statusSelect != 5</domain>
+		<context name="_isActivateSimulatedMoves" expr="eval:__user__.activeCompany.accountConfig.isActivateSimulatedMove"/>
 	</action-view>
 
 	<menuitem name="account-root-move-move-line" parent="account-root-move"
@@ -144,10 +144,9 @@
 		<view type="grid" name="move-line-grid" />
 		<view type="form" name="move-line-form"/>
 		<view-param name="search-filters" value="move-line-filters"/>
-		<domain>self.move.statusSelect != 5</domain>
 	</action-view>
 	
-	<menuitem name="account-root-move-moves-simulated" parent="account-root-move"
+	<!-- <menuitem name="account-root-move-moves-simulated" parent="account-root-move"
 		title="Moves Simulated" action="account.root.move.moves.simulated" order="15" if="__repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne()).fetchOne()?.isActivateSimulatedMove"/>
 
 	<action-view name="account.root.move.moves.simulated" title="Moves Simulated"
@@ -168,7 +167,7 @@
 		<view-param name="search-filters" value="move-line-filters"/>
 		<domain>self.move.statusSelect = 5</domain>
 		<context name="_isSimulatedMoveLine" expr="true"/>
-	</action-view>
+	</action-view> -->
 
 	<menuitem name="account-root-payments" parent="account-root"
 		title="Payments" order="5"/>
