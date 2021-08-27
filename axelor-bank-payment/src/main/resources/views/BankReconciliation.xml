@@ -37,7 +37,6 @@
           grid-view="journal-grid" />
         <field name="fromDate" colSpan="3" requiredIf="includeOtherBankStatements" />
         <field name="toDate" colSpan="3" requiredIf="includeOtherBankStatements" />
-
         <field name="cashAccount" colSpan="3" canEdit="false" onSelect="action-bank-reconciliation-method-set-cash-account-domain" form-view="account-form" grid-view="account-grid" />
       </panel>
       <panel name="actionsPanel" colSpan="12">
