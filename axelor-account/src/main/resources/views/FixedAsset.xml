@@ -20,7 +20,7 @@
     
     <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date" onNew="action-fixed-asset-record-default">
     <toolbar>
-    	<button name="splitBtn" title="Split" onClick="save,action-fixed-asset-view-show-split-wizard"/>
+    	<button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0" onClick="save,action-fixed-asset-view-show-split-wizard"/>
     </toolbar>
 	  <panel>
 	    <panel name="statusSelectPanel" colSpan="12">
@@ -73,9 +73,9 @@
 	      <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
 	    </panel>
 	    <panel name="derogatoryPanel" title="Derogatory" showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)">
-	      <panel-related name="fixedAssetDerogatoryLineListPanel" readonlyIf="statusSelect > 1"  field="fixedAssetDerogatoryLineList" colSpan="12" form-view="fixed-asset-derogatory-line-form" grid-view="fixed-asset-derogatory-line-grid"/>
+	      <panel-related name="fixedAssetDerogatoryLineListPanel" readonlyIf="statusSelect > 1"  field="fixedAssetDerogatoryLineList" colSpan="12" form-view="fixed-asset-derogatory-line-form" grid-view="fixed-asset-derogatory-line-grid" canNew="false"/>
 	    </panel>
-	    <panel name="ifrsPanel" title="IFRS" readonlyIf="statusSelect > 1" showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))">
+	    <panel name="ifrsPanel" title="IFRS" readonlyIf="statusSelect > 1" showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))">
 	      <field name="isIfrsEqualToFiscalDepreciation" colSpan="12" widget="boolean" onChange="action-attrs-fixed-asset-ifrs-depreciation-equal"/>
 	      <field name="ifrsComputationMethodSelect"/>
 	      <field name="ifrsDegressiveCoef" showIf="ifrsComputationMethodSelect == 'degressive'"/>
@@ -313,9 +313,9 @@
     <action-group name="action-group-account-record-on-change-depreciation-plan">
     	<action name="action-account-attrs-reset-sub-panels" if=" depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;0&quot;)"/>
     	<action name="action-account-attrs-fill-fiscal-panel" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;)"/>
-    	<action name="action-account-attrs-fill-ifrs-panel" if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
+    	<action name="action-account-attrs-fill-ifrs-panel" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
     	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;)"/>
-    	<action name="action-attrs-fixed-asset-ifrs-depreciation-equal" if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
+    	<action name="action-attrs-fixed-asset-ifrs-depreciation-equal" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
     	<action name="action-fixed-asset-record-onchange-set-values" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
     </action-group>
     

@@ -63,7 +63,7 @@
 	<decimal name="fiscalDegressiveCoef" title="Fiscal Degressive Coef"/>
 	<integer name="fiscalNumberOfDepreciation" title="Fiscal Number Of Depreciation"/>
 	<integer name="fiscalPeriodicityTypeSelect" title="Fiscal Periodicity Type" selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
-	<integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month"/>
+	<integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month" default="12"/>
 	<integer name="fiscalDurationInMonth" title="Fiscal Duration In Month"/>
 	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"/>
 	
@@ -72,7 +72,7 @@
 	<decimal name="ifrsDegressiveCoef" title="IFRS Degressive Coef"/>
 	<integer name="ifrsNumberOfDepreciation" title="IFRS Number Of Depreciation"/>
 	<integer name="ifrsPeriodicityTypeSelect" title="IFRS Periodicity Type" selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
-	<integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month"/>
+	<integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month" default="12"/>
 	<integer name="ifrsDurationInMonth" title="IFRS Duration In Month"/>
 	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List"/>
 	
