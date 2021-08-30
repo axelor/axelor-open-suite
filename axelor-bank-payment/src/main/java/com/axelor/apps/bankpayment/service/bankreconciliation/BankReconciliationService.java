@@ -60,6 +60,8 @@ import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -592,15 +594,9 @@ public class BankReconciliationService {
               new Context(
                   Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
                   BankStatementLineAFB120.class.getClass());
-          String query = bankStatementQuery.getQuery();
-          query = query.replace("%amt+", amountMarginHigh.toString());
-          query = query.replace("%amt-", amountMarginLow.toString());
-          query = query.replace("%date", dateMargin.toString());
+          String query = computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
           if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query))) {
-            bankReconciliationLine.setMoveLine(moveLine);
-            bankReconciliationLine.setBankStatementQuery(bankStatementQuery);
-            bankReconciliationLine.setConfidenceIndex(bankStatementQuery.getConfidenceIndex());
-            bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
             moveLines.remove(moveLine);
             break;
@@ -611,6 +607,24 @@ public class BankReconciliationService {
       }
     }
     return bankReconciliation;
+  }
+  
+  protected BankReconciliationLine updateBankReconciliationLine(BankReconciliationLine bankReconciliationLine,MoveLine moveLine, BankStatementQuery bankStatementQuery)
+  {            
+	  bankReconciliationLine.setMoveLine(moveLine);
+	  bankReconciliationLine.setBankStatementQuery(bankStatementQuery);
+	  bankReconciliationLine.setConfidenceIndex(bankStatementQuery.getConfidenceIndex());
+	  bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+	  return bankReconciliationLine;
+  }
+  
+  protected String computeQuery(BankStatementQuery bankStatementQuery, BigInteger dateMargin, BigDecimal amountMarginLow, BigDecimal amountMarginHigh)
+  {
+      String query = bankStatementQuery.getQuery();
+      query = query.replace("%amt+", amountMarginHigh.toString());
+      query = query.replace("%amt-", amountMarginLow.toString());
+      query = query.replace("%date", dateMargin.toString());
+	  return query;
   }
 
   public void unreconcileLines(List<BankReconciliationLine> bankReconciliationLines) {
