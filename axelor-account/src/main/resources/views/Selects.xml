@@ -517,8 +517,11 @@
 	<selection name="account.fixed.asset.origin">
 		<option value="1">Manual</option>
 		<option value="2">Invoice</option>
-		<option value="3">Writing</option>
+		<option value="3">Move line</option>
 		<option value="4">Scission</option>
+		<option value="5">Partial Scrapping</option>
+		<option value="6">Partial Sale</option>
+		<option value="99">Import</option>
 	</selection>
 	
 	<selection name="account.fixed.type.category.fiscal.computation.method.select">

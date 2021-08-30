@@ -53,6 +53,7 @@
 	<date name="firstServiceDate" title="First Service Date"/>
 	<date name="failoverDate" title="Failover Date"/>
 	<decimal name="pastDepreciation" title="Past Depreciation"/>
+	<integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>
 	<decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
 	<decimal name="accountingValue" title="Accounting value"/>
 	<decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
@@ -121,6 +122,9 @@
 		public static final int ORIGINAL_SELECT_INVOICE = 2;
 		public static final int ORIGINAL_SELECT_WRITING = 3;
 		public static final int ORIGINAL_SELECT_SCISSION = 4;
+		public static final int ORIGINAL_SELECT_PARTIAL_SCRAPPING = 5;
+		public static final int ORIGINAL_SELECT_PARTIAL_SALE = 6;
+		public static final int ORIGINAL_SELECT_IMPORT = 99;
 		
 		//Split message
 		public static final String SPLIT_MESSAGE_COMMENT = "Split of %.2f realized on %s";
