@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
@@ -35,41 +34,30 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringHTMLListBuilder;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +75,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected AccountingReportMoveLineService accountingReportMoveLineService;
 
+  protected AccountingReportDas2Service accountingReportDas2Service;
+
+  protected AccountingReportPrintService accountingReportPrintService;
+
+  protected MoveLineExportService moveLineExportService;
+
   protected String query = "";
 
   protected AccountRepository accountRepo;
@@ -98,18 +92,46 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   @Inject
   public AccountingReportServiceImpl(
-      AppAccountService appBaseService,
       AccountingReportRepository accountingReportRepo,
-      AccountRepository accountRepo,
-      AccountingReportMoveLineService accountingReportMoveLineService,
+      AppAccountService appAccountService,
+      AppAccountService appBaseService,
       AccountConfigService accountConfigService,
-      AppAccountService appAccountService) {
+      AccountingReportMoveLineService accountingReportMoveLineService,
+      AccountingReportDas2Service accountingReportDas2Service,
+      AccountingReportPrintService accountingReportPrintService,
+      MoveLineExportService moveLineExportService,
+      AccountRepository accountRepo) {
     this.accountingReportRepo = accountingReportRepo;
-    this.accountRepo = accountRepo;
-    this.appBaseService = appBaseService;
-    this.accountingReportMoveLineService = accountingReportMoveLineService;
-    this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
+    this.appBaseService = appBaseService;
+    this.accountConfigService = accountConfigService;
+    this.accountingReportMoveLineService = accountingReportMoveLineService;
+    this.accountingReportDas2Service = accountingReportDas2Service;
+    this.accountingReportPrintService = accountingReportPrintService;
+    this.moveLineExportService = moveLineExportService;
+    this.accountRepo = accountRepo;
+  }
+
+  @Override
+  public String print(AccountingReport accountingReport) throws AxelorException, IOException {
+    if (accountingReport.getReportType().getTypeSelect()
+        == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
+      return accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
+    }
+    String fileLink = accountingReportPrintService.print(accountingReport);
+    setStatus(accountingReport);
+    return fileLink;
+  }
+
+  @Override
+  public MetaFile export(AccountingReport accountingReport) throws AxelorException, IOException {
+
+    int typeSelect = accountingReport.getReportType().getTypeSelect();
+    if (typeSelect == AccountingReportRepository.EXPORT_N4DS) {
+      return accountingReportDas2Service.exportN4DSFile(accountingReport);
+    } else {
+      return moveLineExportService.exportMoveLine(accountingReport);
+    }
   }
 
   private Boolean compareReportType(AccountingReport accountingReport, int type) {
@@ -454,19 +476,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     accountingReportRepo.save(accountingReport);
   }
 
-  /** @param accountingReport */
-  @Transactional
-  public void setPublicationDateTime(AccountingReport accountingReport) {
-    accountingReport.setPublicationDateTime(appBaseService.getTodayDateTime());
-    accountingReportRepo.save(accountingReport);
-  }
-
-  @Transactional
-  public void setExported(AccountingReport accountingReport) {
-    accountingReport.setExported(true);
-    accountingReportRepo.save(accountingReport);
-  }
-
   /** @return */
   public BigDecimal getDebitBalance() {
 
@@ -559,36 +568,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CLOSE_NO_REPORTED_BALANCE_DATE));
     }
-  }
-
-  @Override
-  public String getReportFileLink(AccountingReport accountingReport, String name)
-      throws AxelorException {
-    String file = "";
-    if (accountingReport.getReportType().getTemplate() != null) {
-      file =
-          String.format(
-              "%s/%s",
-              AppService.getFileUploadDir(),
-              accountingReport.getReportType().getTemplate().getFilePath());
-
-    } else {
-      file =
-          String.format(
-              IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getReportType().getTypeSelect());
-    }
-    return ReportFactory.createReport(file, name + "-${date}")
-        .addParam("AccountingReportId", accountingReport.getId())
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .addParam(
-            "Timezone",
-            accountingReport.getCompany() != null
-                ? accountingReport.getCompany().getTimezone()
-                : null)
-        .addFormat(accountingReport.getExportTypeSelect())
-        .toAttach(accountingReport)
-        .generate()
-        .getFileLink();
   }
 
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
@@ -770,143 +749,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return this.query;
   }
 
-  public boolean isThereAlreadyDraftReportInPeriod(AccountingReport accountingReport) {
-
-    if (accountingReportRepo
-            .all()
-            .filter(
-                "self.id != ?1 AND self.reportType.typeSelect = ?2 "
-                    + "AND self.dateFrom <= ?3 AND self.dateTo >= ?4 AND self.statusSelect = 1",
-                accountingReport.getId(),
-                accountingReport.getReportType().getTypeSelect(),
-                accountingReport.getDateFrom(),
-                accountingReport.getDateTo())
-            .count()
-        > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public boolean isThereAlreadyDas2ExportInPeriod(
-      AccountingReport accountingReport, boolean isExported) {
-
-    if (accountingReportRepo
-            .all()
-            .filter(
-                "self.reportType.typeSelect = ?1 "
-                    + "AND self.dateFrom <= ?2 AND self.dateTo >= ?3 AND self.statusSelect = 2 AND self.exported = ?4",
-                AccountingReportRepository.EXPORT_N4DS,
-                accountingReport.getDateFrom(),
-                accountingReport.getDateTo(),
-                isExported)
-            .count()
-        > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public List<BigInteger> getAccountingReportDas2Pieces(AccountingReport accountingReport) {
-
-    String queryStr =
-        "WITH PARTNERS AS (SELECT PARTNER.ID AS ID "
-            + "FROM ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD "
-            + "LEFT OUTER JOIN ACCOUNT_RECONCILE RECONCILE ON PMVLD.RECONCILE = RECONCILE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON PMVLD.MOVE_LINE = MOVELINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE MOVE ON PMVLD.MOVE = MOVE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL JOURNAL ON MOVE.JOURNAL = JOURNAL.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE JOURNAL_TYPE ON JOURNAL.JOURNAL_TYPE = JOURNAL_TYPE.ID "
-            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
-            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON MOVE.COMPANY = COMPANY.ID "
-            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
-            + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
-            + "AND PMVLD.OPERATION_DATE >= '"
-            + accountingReport.getDateFrom()
-            + "' "
-            + "AND PMVLD.OPERATION_DATE <= '"
-            + accountingReport.getDateTo()
-            + "' "
-            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
-            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
-            + "AND JOURNAL_TYPE.CODE = 'ACH' "
-            + "AND COMPANY.ID = "
-            + accountingReport.getCompany().getId()
-            + " AND CURRENCY.ID =  "
-            + accountingReport.getCurrency().getId()
-            + " AND MOVE.IGNORE_IN_ACCOUNTING_OK != true "
-            + "AND PMVLD.ID NOT IN (SELECT PMVLD.ID "
-            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY "
-            + "LEFT OUTER JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON HISTORY.ACCOUNTING_REPORT = REPORT.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT_TYPE REPORT_TYPE ON REPORT.REPORT_TYPE = REPORT_TYPE.ID "
-            + "WHERE  "
-            + "ACCOUNTING_REPORT != "
-            + accountingReport.getId()
-            + " AND REPORT_TYPE.TYPE_SELECT = "
-            + accountingReport.getReportType().getTypeSelect()
-            + " AND (HISTORY.EXCLUDE_FROM_DAS2REPORT != true OR HISTORY.EXPORTED != true) ) "
-            + "GROUP BY PARTNER.ID "
-            + "HAVING SUM(PMVLD.IN_TAX_PRORATED_AMOUNT) >= "
-            + accountingReport.getMinAmountExcl()
-            + " ) "
-            + "SELECT PMVLD.ID AS PAYMENTMVLD "
-            + "FROM ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD "
-            + "LEFT OUTER JOIN ACCOUNT_RECONCILE RECONCILE ON PMVLD.RECONCILE = RECONCILE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON PMVLD.MOVE_LINE = MOVELINE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE MOVE ON PMVLD.MOVE = MOVE.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL JOURNAL ON MOVE.JOURNAL = JOURNAL.ID "
-            + "LEFT OUTER JOIN ACCOUNT_JOURNAL_TYPE JOURNAL_TYPE ON JOURNAL.JOURNAL_TYPE = JOURNAL_TYPE.ID "
-            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
-            + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON MOVE.COMPANY = COMPANY.ID "
-            + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
-            + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
-            + "AND PMVLD.OPERATION_DATE >= '"
-            + accountingReport.getDateFrom()
-            + "' "
-            + "AND PMVLD.OPERATION_DATE <= '"
-            + accountingReport.getDateTo()
-            + "' "
-            + "AND MOVELINE.SERVICE_TYPE IS NOT NULL  "
-            + "AND MOVELINE.DAS2ACTIVITY IS NOT NULL  "
-            + "AND JOURNAL_TYPE.CODE = 'ACH' "
-            + "AND COMPANY.ID = "
-            + accountingReport.getCompany().getId()
-            + " AND CURRENCY.ID =  "
-            + accountingReport.getCurrency().getId()
-            + " AND MOVE.IGNORE_IN_ACCOUNTING_OK != true "
-            + "AND PMVLD.ID NOT IN (SELECT PMVLD.ID "
-            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY "
-            + "LEFT OUTER JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT REPORT ON HISTORY.ACCOUNTING_REPORT = REPORT.ID "
-            + "LEFT OUTER JOIN ACCOUNT_ACCOUNTING_REPORT_TYPE REPORT_TYPE ON REPORT.REPORT_TYPE = REPORT_TYPE.ID "
-            + "WHERE  "
-            + "ACCOUNTING_REPORT != "
-            + accountingReport.getId()
-            + " AND REPORT_TYPE.TYPE_SELECT = "
-            + accountingReport.getReportType().getTypeSelect()
-            + " AND (HISTORY.EXCLUDE_FROM_DAS2REPORT != true OR HISTORY.EXPORTED != true) ) "
-            + "AND PARTNER.ID IN (SELECT ID FROM PARTNERS) ";
-
-    Query query = JPA.em().createNativeQuery(queryStr);
-
-    return query.getResultList();
-  }
-
-  public void processAccountingReportMoveLines(AccountingReport accountingReport) {
-
-    accountingReport.clearAccountingReportMoveLineList();
-
-    List<BigInteger> paymentMoveLineDistributioneIds =
-        getAccountingReportDas2Pieces(accountingReport);
-    accountingReportMoveLineService.createAccountingReportMoveLines(
-        paymentMoveLineDistributioneIds, accountingReport);
-  }
-
   @Transactional
   @Override
   public AccountingReport createAccountingExportFromReport(
@@ -942,276 +784,5 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     setStatus(accountingExport);
     return accountingExport;
-  }
-
-  @Override
-  public List<Long> checkMandatoryDataForDas2Export(AccountingReport accountingExport)
-      throws AxelorException {
-
-    if (!checkDasToDeclarePartners(accountingExport)) {
-      return null;
-    }
-    checkDasContactPartner(accountingExport);
-
-    checkDasDeclarantCompany(accountingExport);
-
-    return Beans.get(TraceBackRepository.class).all()
-        .filter("self.refId = ?1 AND self.archived != true", accountingExport.getId()).select("id")
-        .fetch(0, 0).stream()
-        .map(m -> (Long) m.get("id"))
-        .collect(Collectors.toList());
-  }
-
-  @Override
-  public void checkDasContactPartner(AccountingReport accountingExport) throws AxelorException {
-
-    AccountConfig accountConfig =
-        accountConfigService.getAccountConfig(accountingExport.getCompany());
-    Partner partner = accountConfig.getDasContactPartner();
-    if (partner == null) {
-      TraceBackService.trace(
-          new AxelorException(
-              accountingExport,
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_MISSING)),
-          ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-    } else {
-      if (partner.getTitleSelect() == null) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING)),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      }
-      if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
-          && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE)),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      }
-      if (partner.getFirstName() == null) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING)),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      }
-      if (partner.getEmailAddress() == null) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING)),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      }
-      if (Strings.isNullOrEmpty(partner.getFixedPhone())
-          && Strings.isNullOrEmpty(partner.getMobilePhone())) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING)),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      }
-    }
-  }
-
-  @Override
-  public void checkDasDeclarantCompany(AccountingReport accountingExport) {
-
-    Partner companyPartner = accountingExport.getCompany().getPartner();
-
-    if (Strings.isNullOrEmpty(appBaseService.getAppAccount().getDasActiveNorm())) {
-      TraceBackService.trace(
-          new AxelorException(
-              accountingExport,
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_ACTIVE_NORM)),
-          ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-    }
-    if (Strings.isNullOrEmpty(companyPartner.getRegistrationCode())) {
-      TraceBackService.trace(
-          new AxelorException(
-              accountingExport,
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(
-                  IExceptionMessage
-                      .ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_REGISTRATION_CODE),
-              accountingExport.getCompany().getName()),
-          ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-    }
-    if (companyPartner.getMainActivity() == null
-        || Strings.isNullOrEmpty(companyPartner.getMainActivity().getCode())) {
-      TraceBackService.trace(
-          new AxelorException(
-              accountingExport,
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF),
-              accountingExport.getCompany().getName()),
-          ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-    }
-
-    if (companyPartner.getMainAddress() == null) {
-      TraceBackService.trace(
-          new AxelorException(
-              accountingExport,
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS),
-              accountingExport.getCompany().getName()),
-          ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-    }
-  }
-
-  @Override
-  @Transactional
-  public boolean checkDasToDeclarePartners(AccountingReport accountingExport)
-      throws AxelorException {
-
-    List<Partner> partners =
-        accountingReportMoveLineService.getDasToDeclarePartnersFromAccountingExport(
-            accountingExport);
-
-    if (CollectionUtils.isEmpty(partners)) {
-      return true;
-    }
-
-    for (Partner partner : partners) {
-      checkDasToDeclarePartner(partner, accountingExport);
-    }
-    return true;
-  }
-
-  @Override
-  @Transactional
-  public void checkDasToDeclarePartner(Partner partner, AccountingReport accountingExport)
-      throws AxelorException {
-
-    if (partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY) {
-      if (partner.getMainAddress() == null) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS),
-                partner.getPartnerSeq(),
-                partner.getSimpleFullName()),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      } else if (!partner.getMainAddress().getAddressL7Country().getAlpha2Code().equals("FR")) {
-        throw new AxelorException(
-            accountingExport,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE),
-            partner.getPartnerSeq(),
-            partner.getSimpleFullName());
-      } else {
-        if (Strings.isNullOrEmpty(partner.getRegistrationCode())) {
-          TraceBackService.trace(
-              new AxelorException(
-                  accountingExport,
-                  TraceBackRepository.CATEGORY_MISSING_FIELD,
-                  I18n.get(
-                      IExceptionMessage
-                          .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE),
-                  partner.getPartnerSeq(),
-                  partner.getSimpleFullName()),
-              ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-        }
-      }
-    } else {
-      if (partner.getTitleSelect() == null) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING),
-                partner.getPartnerSeq(),
-                partner.getSimpleFullName()),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      }
-      if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
-          && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE),
-                partner.getPartnerSeq(),
-                partner.getSimpleFullName()),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      }
-      if (partner.getFirstName() == null) {
-        TraceBackService.trace(
-            new AxelorException(
-                accountingExport,
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(
-                    IExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING),
-                partner.getPartnerSeq(),
-                partner.getSimpleFullName()),
-            ExceptionOriginRepository.MOVE_LINE_EXPORT_ORIGIN);
-      }
-    }
-  }
-
-  public MetaFile launchN4DSExport(AccountingReport accountingExport)
-      throws AxelorException, IOException, NullPointerException {
-
-    // TODO manage sequence in fileNaming
-    String fileName = "N4DS_" + accountingExport.getCompany().getCode() + ".txt";
-    MetaFile metaFile =
-        accountingReportMoveLineService.generateN4DSFile(accountingExport, fileName);
-    setExported(accountingExport);
-    accountingReportMoveLineService.updateN4DSExportStatus(accountingExport);
-
-    return metaFile;
-  }
-
-  @Override
-  public String getN4DSExportError(AccountingReport accountingReport) {
-    StringHTMLListBuilder message = new StringHTMLListBuilder();
-    try {
-      AccountConfig accountConfig =
-          accountConfigService.getAccountConfig(accountingReport.getCompany());
-      Partner dasContactPartner = accountConfigService.getDasContactPartner(accountConfig);
-
-      if (ObjectUtils.isEmpty(dasContactPartner.getEmailAddress().getAddress())) {
-        message.append(I18n.get("Please set das contact email address"));
-      }
-    } catch (AxelorException e) {
-      message.append(I18n.get("Please set company's das contact partner."));
-    }
-    if (ObjectUtils.isEmpty(accountingReport.getCompany().getPartner()))
-      message.append(I18n.get("Please set company partner."));
-    else {
-      if (ObjectUtils.isEmpty(accountingReport.getCompany().getPartner().getMainAddress()))
-        message.append(I18n.get("Please set invoicing address for company's partner."));
-      else {
-        if (ObjectUtils.isEmpty(
-            accountingReport.getCompany().getPartner().getMainAddress().getAddressL7Country()))
-          message.append(I18n.get("Please set country for company's partner invoicing address."));
-        else {
-          if (ObjectUtils.isEmpty(
-              accountingReport
-                  .getCompany()
-                  .getPartner()
-                  .getMainAddress()
-                  .getAddressL7Country()
-                  .getAlpha2Code()))
-            message.append(
-                I18n.get("Please set country alpha2code for company partner's address."));
-        }
-        if (ObjectUtils.isEmpty(
-            accountingReport.getCompany().getPartner().getMainAddress().getCity())) {
-          message.append(I18n.get("Please set city for company partner address."));
-        }
-      }
-    }
-
-    return message.toString();
   }
 }

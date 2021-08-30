@@ -20,17 +20,18 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.List;
 
 public interface AccountingReportService {
+
+  String print(AccountingReport accountingReport) throws AxelorException, IOException;
+
+  MetaFile export(AccountingReport accountingReport) throws AxelorException, IOException;
 
   public String getMoveLineList(AccountingReport accountingReport) throws AxelorException;
 
@@ -52,10 +53,6 @@ public interface AccountingReportService {
   @Transactional
   public void setStatus(AccountingReport accountingReport);
 
-  /** @param accountingReport */
-  @Transactional
-  public void setPublicationDateTime(AccountingReport accountingReport);
-
   /**
    * @param queryFilter
    * @return
@@ -74,42 +71,11 @@ public interface AccountingReportService {
 
   public BigDecimal getCreditBalanceType4();
 
-  public String getReportFileLink(AccountingReport accountingReport, String name)
-      throws AxelorException;
-
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
 
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
 
-  public List<BigInteger> getAccountingReportDas2Pieces(AccountingReport accountingReport);
-
-  public void processAccountingReportMoveLines(AccountingReport accountingReport);
-
-  public boolean isThereAlreadyDraftReportInPeriod(AccountingReport accountingReport)
-      throws AxelorException;
-
-  public boolean isThereAlreadyDas2ExportInPeriod(
-      AccountingReport accountingReport, boolean isExported) throws AxelorException;
-
   public AccountingReport createAccountingExportFromReport(
       AccountingReport accountingReport, int exportTypeSelect, boolean isComplementary)
       throws AxelorException;
-
-  public List<Long> checkMandatoryDataForDas2Export(AccountingReport accountingExport)
-      throws AxelorException;
-
-  public void checkDasContactPartner(AccountingReport accountingExport) throws AxelorException;
-
-  public void checkDasDeclarantCompany(AccountingReport accountingExport);
-
-  public boolean checkDasToDeclarePartners(AccountingReport accountingExport)
-      throws AxelorException;
-
-  public void checkDasToDeclarePartner(Partner partner, AccountingReport accountingExport)
-      throws AxelorException;
-
-  public MetaFile launchN4DSExport(AccountingReport accountingExport)
-      throws AxelorException, IOException;
-
-  public String getN4DSExportError(AccountingReport accountingReport);
 }

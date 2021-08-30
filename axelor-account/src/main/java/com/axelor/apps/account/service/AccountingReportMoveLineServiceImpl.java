@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
@@ -155,7 +156,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
   @Override
   public MetaFile generateN4DSFile(AccountingReport accountingExport, String fileName)
-      throws AxelorException, IOException, NullPointerException {
+      throws AxelorException, IOException {
 
     List<String> lines = Lists.newArrayList();
     lines.addAll(generateN4DSLines(accountingExport));
@@ -168,10 +169,9 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
   }
 
   @Override
-  public List<String> generateN4DSLines(AccountingReport accountingExport)
-      throws AxelorException, NullPointerException {
+  public List<String> generateN4DSLines(AccountingReport accountingExport) throws AxelorException {
 
-    List<String> lines = Lists.newArrayList();
+    List<String> lines = new ArrayList<>();
 
     Partner companyPartner = accountingExport.getCompany().getPartner();
     Address address = companyPartner.getMainAddress();

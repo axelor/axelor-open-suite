@@ -25,10 +25,12 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingReportDas2Service;
+import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
+import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
-import com.axelor.exception.db.TraceBack;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -43,7 +45,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,28 +59,32 @@ public class AccountingReportController {
    */
   public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
-    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
-
     try {
+      AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+      AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
+      AccountingReportToolService accountingReportToolService =
+          Beans.get(AccountingReportToolService.class);
 
       if (accountingReport.getReportType().getTypeSelect()
           == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
 
-        if (accountingReportService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
+        AccountingReportDas2Service accountingReportDas2Service =
+            Beans.get(AccountingReportDas2Service.class);
+        if (accountingReportToolService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
               I18n.get(
                   "There is already an ongoing accounting report of this type in draft status for this same period."));
         }
-        if (accountingReportService.isThereAlreadyDas2ExportInPeriod(accountingReport, false)) {
+        if (accountingReportDas2Service.isThereAlreadyDas2ExportInPeriod(accountingReport, false)) {
           response.setAlert(
               I18n.get(
                   "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
         }
 
         List<BigInteger> paymentMoveLinedistributionIdList =
-            accountingReportService.getAccountingReportDas2Pieces(accountingReport);
+            accountingReportDas2Service.getAccountingReportDas2Pieces(accountingReport);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
@@ -186,11 +191,10 @@ public class AccountingReportController {
    */
   public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
-    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
-    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
-
     try {
+      AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+      accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
+      AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
       int typeSelect = accountingReport.getReportType().getTypeSelect();
 
@@ -210,29 +214,13 @@ public class AccountingReportController {
 
       logger.debug("Type selected : {}", typeSelect);
 
-      if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
-
-        if (accountingReportService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
-          response.setError(
-              I18n.get(
-                  "There is already an ongoing accounting report of this type in draft status for this same period."));
-        }
-        if (accountingReportService.isThereAlreadyDas2ExportInPeriod(accountingReport, false)) {
-          response.setAlert(
-              I18n.get(
-                  "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
-        }
-
-        accountingReportService.processAccountingReportMoveLines(accountingReport);
-      }
-
       if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
           && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
-        MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
+        MetaFile accessFile = accountingReportService.export(accountingReport);
 
-        MetaFile accesssFile = moveLineExportService.exportMoveLine(accountingReport);
-        if (typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION && accesssFile != null) {
+        if ((typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION
+                || typeSelect == AccountingReportRepository.EXPORT_N4DS)
+            && accessFile != null) {
 
           response.setView(
               ActionView.define(I18n.get("Export file"))
@@ -240,63 +228,32 @@ public class AccountingReportController {
                   .add(
                       "html",
                       "ws/rest/com.axelor.meta.db.MetaFile/"
-                          + accesssFile.getId()
+                          + accessFile.getId()
                           + "/content/download?v="
-                          + accesssFile.getVersion())
+                          + accessFile.getVersion())
                   .param("download", "true")
                   .map());
         }
-      }
-      if (typeSelect == AccountingReportRepository.EXPORT_N4DS) {
-
-        // check mandatory datas
-        List<Long> traceBackIds =
-            accountingReportService.checkMandatoryDataForDas2Export(accountingReport);
-
-        if (!CollectionUtils.isEmpty(traceBackIds)) {
-          ActionViewBuilder actionViewBuilder =
-              ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANOMALIES));
-          actionViewBuilder.model(TraceBack.class.getName());
-          actionViewBuilder.add("grid", "trace-back-lite-grid");
-          actionViewBuilder.add("form", "trace-back-form");
-          actionViewBuilder.domain("self.id in (" + Joiner.on(",").join(traceBackIds) + ")");
-
-          response.setView(actionViewBuilder.map());
-
-        } else {
-          // If all controls ok, export file
-          try {
-            MetaFile accesssFile = accountingReportService.launchN4DSExport(accountingReport);
-
-            response.setView(
-                ActionView.define(I18n.get("Export file"))
-                    .model(App.class.getName())
-                    .add(
-                        "html",
-                        "ws/rest/com.axelor.meta.db.MetaFile/"
-                            + accesssFile.getId()
-                            + "/content/download?v="
-                            + accesssFile.getVersion())
-                    .param("download", "true")
-                    .map());
-          } catch (NullPointerException e) {
-            String message = accountingReportService.getN4DSExportError(accountingReport);
-            response.setError(message);
-          }
+      } else {
+        if (typeSelect == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS
+            && Beans.get(AccountingReportDas2Service.class)
+                .isThereAlreadyDas2ExportInPeriod(accountingReport, false)) {
+          response.setAlert(
+              I18n.get(
+                  "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
+          return;
         }
 
-      } else {
-        accountingReportService.setPublicationDateTime(accountingReport);
-
-        String name = accountingReport.getReportType().getName() + " " + accountingReport.getRef();
-
-        String fileLink = accountingReportService.getReportFileLink(accountingReport, name);
-
-        logger.debug("Printing " + name);
-
+        if (Beans.get(AccountingReportToolService.class)
+            .isThereAlreadyDraftReportInPeriod(accountingReport)) {
+          response.setError(
+              I18n.get(
+                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+          return;
+        }
+        String fileLink = accountingReportService.print(accountingReport);
+        String name = Beans.get(AccountingReportPrintService.class).computeName(accountingReport);
         response.setView(ActionView.define(name).add("html", fileLink).map());
-
-        accountingReportService.setStatus(accountingReport);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -309,9 +266,11 @@ public class AccountingReportController {
     accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
 
     AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+    AccountingReportDas2Service accountingReportDas2Service =
+        Beans.get(AccountingReportDas2Service.class);
     boolean complementaryExport = false;
     try {
-      if (accountingReportService.isThereAlreadyDas2ExportInPeriod(accountingReport, true)) {
+      if (accountingReportDas2Service.isThereAlreadyDas2ExportInPeriod(accountingReport, true)) {
         complementaryExport = true;
         response.setNotify(
             I18n.get(

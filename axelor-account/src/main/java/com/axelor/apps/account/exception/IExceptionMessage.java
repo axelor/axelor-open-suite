@@ -162,6 +162,21 @@ public interface IExceptionMessage {
       "Report type not found" /*)*/;
   static final String ACCOUNTING_REPORT_ANOMALIES = /*$$(*/ "Anomalies generated" /*)*/;
 
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER = /*$$(*/
+      "Company partner is missing" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS = /*$$(*/
+      "Company partner main address is missing" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7 = /*$$(*/
+      "Country is missing in company partner main address" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE = /*$$(*/
+      "Country alpha2code is missing in company partner main address" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY = /*$$(*/
+      "City is missing in company partner main address" /*)*/;
+
   static final String ACCOUNTING_REPORT_DAS2_ACTIVE_NORM = /*$$(*/
       "DAS2 active norm is missing" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_CONTACT_MISSING = /*$$(*/
