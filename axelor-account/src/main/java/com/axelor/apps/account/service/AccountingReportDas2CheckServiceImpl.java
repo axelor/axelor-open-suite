@@ -139,8 +139,7 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
     return errorList;
   }
 
-  protected List<String> checkDasToDeclarePartners(AccountingReport accountingExport)
-      throws AxelorException {
+  protected List<String> checkDasToDeclarePartners(AccountingReport accountingExport) {
 
     List<Partner> partners =
         accountingReportMoveLineService.getDasToDeclarePartnersFromAccountingExport(

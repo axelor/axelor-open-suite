@@ -39,7 +39,7 @@ public interface AccountingReportMoveLineService {
       AccountingReportMoveLine reportMoveLine, AccountingReport accountingExport);
 
   public List<Partner> getDasToDeclarePartnersFromAccountingExport(
-      AccountingReport accountingExport) throws AxelorException;
+      AccountingReport accountingExport);
 
   public MetaFile generateN4DSFile(AccountingReport accountingExport, String fileName)
       throws AxelorException, IOException;

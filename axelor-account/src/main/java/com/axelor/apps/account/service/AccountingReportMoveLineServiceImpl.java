@@ -67,18 +67,22 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
   protected AccountConfigService accountConfigService;
 
+  protected PartnerRepository partnerRepository;
+
   @Inject
   public AccountingReportMoveLineServiceImpl(
       AccountingReportMoveLineRepository accountingReportMoveLineRepo,
       AccountingReportRepository accountingReportRepo,
       PaymentMoveLineDistributionRepository paymentMoveLineDistributionRepo,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PartnerRepository partnerRepository) {
     this.accountingReportMoveLineRepo = accountingReportMoveLineRepo;
     this.paymentMoveLineDistributionRepo = paymentMoveLineDistributionRepo;
     this.accountingReportRepo = accountingReportRepo;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
+    this.partnerRepository = partnerRepository;
   }
 
   @Override
@@ -121,26 +125,30 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     accountingReportMoveLineRepo.save(reportMoveLine);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public List<Partner> getDasToDeclarePartnersFromAccountingExport(
-      AccountingReport accountingExport) throws AxelorException {
+      AccountingReport accountingExport) {
 
-    return Lists.newArrayList();
-    // FIXME retourner la liste des tiers de la table d'historisation AccoutingReportMoveLine
-    //    Query dateQuery =
-    //        JPA.em()
-    //            .createQuery(
-    //                "SELECT partner.id FROM AccountingReportMoveLine self "
-    //                + "JOIN Partner partner ON "
-    //                    + "WHERE self.paymentMoveLineDistribution = partner.id "
-    //                    + "AND self.accountingExport = "
-    //                    + accountingExport.getId()
-    //                    + " AND self.excludeFromDas2Report != true "
-    //                    + " AND self.exported != true "
-    //                    + "GROUP BY partner.id order by partner.id");
-    //
-    //    return dateQuery.getResultList();
+    List<Long> partnerIdList =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT(self.paymentMoveLineDistribution.partner.id) FROM AccountingReportMoveLine self "
+                    + "WHERE self.accountingExport.id = :accountingExportId"
+                    + " AND self.excludeFromDas2Report != true "
+                    + " AND self.exported != true ",
+                Long.class)
+            .setParameter("accountingExportId", accountingExport.getId())
+            .getResultList();
+
+    if (partnerIdList.isEmpty()) {
+      return new ArrayList<>();
+    } else {
+      return partnerRepository
+          .all()
+          .filter("self.id IN (:idList)")
+          .bind("idList", partnerIdList)
+          .fetch();
+    }
   }
 
   @Override
