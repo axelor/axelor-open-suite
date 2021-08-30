@@ -38,9 +38,13 @@ public interface IExceptionMessage {
   static final String NO_MOVES_SELECTED = /*$$(*/
       "Please select 'Draft' or 'Simulated' moves" /*)*/;
 
+  static final String NO_NEW_MOVES_SELECTED = /*$$(*/
+      "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
+
   static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
       "Error in move validation, please check the log" /*)*/;
   static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+  static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
   static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;

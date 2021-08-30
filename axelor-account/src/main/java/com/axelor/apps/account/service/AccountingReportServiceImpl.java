@@ -281,7 +281,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     List<Integer> statusSelects = new ArrayList<>();
     statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
     statusSelects.add(MoveRepository.STATUS_VALIDATED);
-    if (accountingReport.getDisplaySimulatedMove()) {
+    if (accountConfigService
+            .getAccountConfig(accountingReport.getCompany())
+            .getIsActivateSimulatedMove()
+        && accountingReport.getDisplaySimulatedMove()) {
       statusSelects.add(MoveRepository.STATUS_SIMULATED);
     }
 

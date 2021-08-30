@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -48,8 +47,6 @@ import java.util.Map;
 
 @Singleton
 public class MoveController {
-
-  private static final String IS_SIMULATED_MOVE = "_isSimulatedMove";
 
   public void validate(ActionRequest request, ActionResponse response) {
 
@@ -153,6 +150,34 @@ public class MoveController {
     } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
   }
 
+  @SuppressWarnings("unchecked")
+  public void simulateMultipleMoves(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+    if (moveIds != null && !moveIds.isEmpty()) {
+
+      List<? extends Move> moveList =
+          Beans.get(MoveRepository.class)
+              .all()
+              .filter(
+                  "self.id in ?1 AND self.statusSelect = ?2 AND self.journal.authorizeSimulatedMove = true",
+                  moveIds,
+                  MoveRepository.STATUS_NEW)
+              .order("date")
+              .fetch();
+
+      if (!moveList.isEmpty()) {
+        Beans.get(MoveService.class).getMoveValidateService().simulateMultiple(moveList);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
+        response.setReload(true);
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
+      }
+    } else {
+      response.setFlash(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
+    }
+  }
+
   public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -163,20 +188,13 @@ public class MoveController {
 
       if (!move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
 
-        ActionViewBuilder actionViewBuilder =
+        response.setView(
             ActionView.define(I18n.get("Moves"))
                 .model(Move.class.getName())
                 .add("grid", "move-grid")
                 .add("form", "move-form")
-                .param("search-filters", "move-filters");
-        if (request.getContext().containsKey(IS_SIMULATED_MOVE)
-            && request.getContext().get(IS_SIMULATED_MOVE).equals("true")) {
-          actionViewBuilder.domain("self.statusSelect = 5");
-        } else {
-          actionViewBuilder.domain("self.statusSelect != 5");
-        }
-
-        response.setView(actionViewBuilder.map());
+                .param("search-filters", "move-filters")
+                .map());
         response.setCanClose(true);
       }
 
@@ -261,28 +279,17 @@ public class MoveController {
 
   public void showMoveLines(ActionRequest request, ActionResponse response) {
 
-    StringBuilder moveLineDomain = new StringBuilder();
     ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Move Lines"));
     actionViewBuilder.model(MoveLine.class.getName());
     actionViewBuilder.add("grid", "move-line-grid");
     actionViewBuilder.add("form", "move-line-form");
     actionViewBuilder.param("search-filters", "move-line-filters");
-    if (request.getContext().containsKey(IS_SIMULATED_MOVE)
-        && request.getContext().get(IS_SIMULATED_MOVE).equals("true")) {
-      moveLineDomain.append("self.move.statusSelect = 5");
-    } else {
-      moveLineDomain.append("self.move.statusSelect != 5");
-    }
 
     if (request.getContext().get("_accountingReportId") != null) {
       Long accountingReportId =
           Long.valueOf(request.getContext().get("_accountingReportId").toString());
-      if (ObjectUtils.notEmpty(moveLineDomain)) {
-        moveLineDomain.append(" AND ");
-      }
-      moveLineDomain.append("self.move.accountingReport.id = " + accountingReportId);
+      actionViewBuilder.domain("self.move.accountingReport.id = " + accountingReportId);
     }
-    actionViewBuilder.domain(moveLineDomain.toString());
     response.setView(actionViewBuilder.map());
   }
 
