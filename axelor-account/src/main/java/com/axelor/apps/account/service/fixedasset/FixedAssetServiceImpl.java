@@ -195,7 +195,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
       fixedAsset.addIfrsFixedAssetLineListItem(initialFiscalFixedAssetLine);
 
-      generateComputedPlannedFixedAssetLine(
+      generateComputedPlannedFixedAssetLines(
           fixedAsset,
           initialFiscalFixedAssetLine,
           fixedAsset.getIfrsFixedAssetLineList(),
@@ -223,7 +223,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
       fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine);
 
-      generateComputedPlannedFixedAssetLine(
+      generateComputedPlannedFixedAssetLines(
           fixedAsset,
           initialFiscalFixedAssetLine,
           fixedAsset.getFiscalFixedAssetLineList(),
@@ -249,7 +249,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
       fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
 
-      generateComputedPlannedFixedAssetLine(
+      generateComputedPlannedFixedAssetLines(
           fixedAsset,
           initialFixedAssetLine,
           fixedAsset.getFixedAssetLineList(),
@@ -257,7 +257,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
   }
 
-  private List<FixedAssetLine> generateComputedPlannedFixedAssetLine(
+  private List<FixedAssetLine> generateComputedPlannedFixedAssetLines(
       FixedAsset fixedAsset,
       FixedAssetLine initialFixedAssetLine,
       List<FixedAssetLine> fixedAssetLineList,
@@ -665,7 +665,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             .getCumulativeDepreciation()
             .add(firstPlannedFixedAssetLine.getCumulativeDepreciation()));
     fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
-    generateComputedPlannedFixedAssetLine(
+    generateComputedPlannedFixedAssetLines(
         fixedAsset,
         initialFixedAssetLine,
         fixedAssetLineList,

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -248,7 +249,10 @@ public class FixedAssetController {
       FixedAsset createdFixedAsset =
           Beans.get(FixedAssetService.class)
               .splitAndSaveFixedAsset(
-                  fixedAsset, disposalQty, LocalDate.now(), fixedAsset.getComments());
+                  fixedAsset,
+                  disposalQty,
+                  Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
+                  fixedAsset.getComments());
       if (createdFixedAsset != null) {
         response.setView(
             ActionView.define("Fixed asset")
