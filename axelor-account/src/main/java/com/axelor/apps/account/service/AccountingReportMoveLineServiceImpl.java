@@ -17,6 +17,21 @@
  */
 package com.axelor.apps.account.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.persistence.Query;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
@@ -39,17 +54,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Query;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
 
 public class AccountingReportMoveLineServiceImpl implements AccountingReportMoveLineService {
 
@@ -167,6 +172,35 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     InputStream is = new FileInputStream(file);
     return Beans.get(MetaFiles.class).upload(is, fileName);
   }
+  
+  protected String compileStringValue(String regex,String value) {
+	  
+	    Pattern pattern = Pattern.compile(regex);
+	    Matcher matcher = pattern.matcher(value);
+	    return matcher.replaceAll("");
+  }
+  
+  /** Replace unauthorized characters for identity fields
+   * @param value
+   * @return value
+   */
+  protected String compileIdentityValue(String value) {
+	  
+      String regex = "[0-9!\\\"#$%&()*+,./:;<=>?\\@\\[\\\\\\]_`\\{|\\}~¡¢£¤¥¦§©«»¬®°±μ¶·¿ÆÐ×ØÞßð÷øþ^]";
+	  
+	  return compileStringValue(regex, value);
+  }
+  
+  /** Replace unauthorized characters for address fields
+   * @param value
+   * @return value 
+   */
+  protected String compileAddressValue(String value) {
+	  
+	  String regex = "[!\\\"#$%&()*+,./:;<=>?\\@\\[\\\\\\]_`\\{|\\}~¡¢£¤¥¦§©«»¬®°±μ¶·¿ÆÐ×ØÞßð÷øþ^]";
+	  
+	  return compileStringValue(regex, value);
+  }
 
   @Override
   public List<String> generateN4DSLines(AccountingReport accountingExport) throws AxelorException {
@@ -180,32 +214,31 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     String siren = computeSiren(registrationCode, alpha2code);
     String nic = computeNic(registrationCode, alpha2code);
 
-    // TODO regex identités et adresses
 
     // S10.G10.00
     lines.add(setN4DSLine("S10.G01.00.001.001", siren));
     lines.add(setN4DSLine("S10.G01.00.001.002", nic));
-    lines.add(setN4DSLine("S10.G01.00.002", companyPartner.getName()));
+    lines.add(setN4DSLine("S10.G01.00.002", compileIdentityValue(companyPartner.getName())));
     String addressL2L3 = null;
     if (!Strings.isNullOrEmpty(address.getAddressL2())) {
       addressL2L3 = address.getAddressL2().trim();
     }
     if (!Strings.isNullOrEmpty(address.getAddressL3())) {
       if (Strings.isNullOrEmpty(addressL2L3)) {
-        addressL2L3 = address.getAddressL3().trim();
+        addressL2L3 = compileAddressValue(address.getAddressL3().trim());
       } else {
-        addressL2L3 += " " + address.getAddressL3().trim();
+        addressL2L3 = compileAddressValue(addressL2L3 + " " + address.getAddressL3().trim());
       }
     }
     if (!Strings.isNullOrEmpty(addressL2L3)) {
       lines.add(setN4DSLine("S10.G01.00.003.001", addressL2L3));
     }
     if (!Strings.isNullOrEmpty(address.getAddressL4())) {
-      lines.add(setN4DSLine("S10.G01.00.003.006", address.getAddressL4()));
+      lines.add(setN4DSLine("S10.G01.00.003.006", compileAddressValue(address.getAddressL4())));
     }
     if (alpha2code.equals("FR")) {
-      lines.add(setN4DSLine("S10.G01.00.003.010", address.getCity().getZip()));
-      lines.add(setN4DSLine("S10.G01.00.003.012", address.getCity().getName()));
+      lines.add(setN4DSLine("S10.G01.00.003.010", compileAddressValue(address.getCity().getZip())));
+      lines.add(setN4DSLine("S10.G01.00.003.012", compileAddressValue(address.getCity().getName())));
     } else {
       lines.add(setN4DSLine("S10.G01.00.003.013", alpha2code));
     }
@@ -226,7 +259,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             dasContactPartner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)
                 ? "02"
                 : "01"));
-    lines.add(setN4DSLine("S10.G01.01.001.002", dasContactPartner.getSimpleFullName()));
+    lines.add(setN4DSLine("S10.G01.01.001.002", compileIdentityValue(dasContactPartner.getSimpleFullName())));
     lines.add(setN4DSLine("S10.G01.01.002", "01"));
     lines.add(setN4DSLine("S10.G01.01.005", dasContactPartner.getEmailAddress().getAddress()));
     lines.add(
@@ -268,11 +301,11 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
       lines.add(setN4DSLine("S20.G01.00.009.001", addressL2L3));
     }
     if (!Strings.isNullOrEmpty(address.getAddressL4())) {
-      lines.add(setN4DSLine("S20.G01.00.009.006", address.getAddressL4()));
+      lines.add(setN4DSLine("S20.G01.00.009.006", compileAddressValue(address.getAddressL4())));
     }
     if (alpha2code.equals("FR")) {
-      lines.add(setN4DSLine("S20.G01.00.009.010", address.getCity().getZip()));
-      lines.add(setN4DSLine("S20.G01.00.009.012", address.getCity().getName()));
+      lines.add(setN4DSLine("S20.G01.00.009.010", compileAddressValue(address.getCity().getZip())));
+      lines.add(setN4DSLine("S20.G01.00.009.012", compileAddressValue(address.getCity().getName())));
     } else {
       lines.add(setN4DSLine("S20.G01.00.009.013", alpha2code));
     }
@@ -303,18 +336,18 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         lines.add(setN4DSLine("S70.G10.00.003.002", declarantNic));
         lines.add(setN4DSLine("S70.G10.00.003.003", listObj[2].toString()));
       } else {
-        lines.add(setN4DSLine("S70.G10.00.002.001", listObj[2].toString()));
-        lines.add(setN4DSLine("S70.G10.00.002.002", listObj[3].toString()));
+        lines.add(setN4DSLine("S70.G10.00.002.001", compileIdentityValue(listObj[2].toString())));
+        lines.add(setN4DSLine("S70.G10.00.002.002", compileIdentityValue(listObj[3].toString())));
       }
       if (listObj[5] != null && !Strings.isNullOrEmpty(listObj[5].toString())) {
-        lines.add(setN4DSLine("S70.G10.00.004.001", listObj[6].toString()));
+        lines.add(setN4DSLine("S70.G10.00.004.001", compileAddressValue(listObj[5].toString())));
       }
       if (listObj[6] != null && !Strings.isNullOrEmpty(listObj[6].toString())) {
-        lines.add(setN4DSLine("S70.G10.00.004.006", listObj[6].toString()));
+        lines.add(setN4DSLine("S70.G10.00.004.006", compileAddressValue(listObj[6].toString())));
       }
       if (countryAlpha2code.equals("FR")) {
-        lines.add(setN4DSLine("S70.G10.00.004.010", listObj[7].toString()));
-        lines.add(setN4DSLine("S70.G10.00.004.012", listObj[8].toString()));
+        lines.add(setN4DSLine("S70.G10.00.004.010", compileAddressValue(listObj[7].toString())));
+        lines.add(setN4DSLine("S70.G10.00.004.012", compileAddressValue(listObj[8].toString())));
       } else {
         lines.add(setN4DSLine("S70.G10.00.004.013", countryAlpha2code));
       }
@@ -331,11 +364,11 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
       lines.add(setN4DSLine("S80.G01.00.003.001", addressL2L3));
     }
     if (!Strings.isNullOrEmpty(address.getAddressL4())) {
-      lines.add(setN4DSLine("S80.G01.00.003.006", address.getAddressL4()));
+      lines.add(setN4DSLine("S80.G01.00.003.006", compileAddressValue(address.getAddressL4())));
     }
     if (alpha2code.equals("FR")) {
-      lines.add(setN4DSLine("S80.G01.00.003.010", address.getCity().getZip()));
-      lines.add(setN4DSLine("S80.G01.00.003.012", address.getCity().getName()));
+      lines.add(setN4DSLine("S80.G01.00.003.010", compileAddressValue(address.getCity().getZip())));
+      lines.add(setN4DSLine("S80.G01.00.003.012", compileAddressValue(address.getCity().getName())));
     } else {
       lines.add(setN4DSLine("S80.G01.00.003.013", alpha2code));
     }
