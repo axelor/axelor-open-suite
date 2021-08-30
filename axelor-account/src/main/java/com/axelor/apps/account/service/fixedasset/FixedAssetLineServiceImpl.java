@@ -1,7 +1,9 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
@@ -45,7 +47,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
    * @throws NullPointerException if moveLine is null
    */
   @Override
-  public FixedAsset generateFixedAsset(MoveLine moveLine) throws AxelorException {
+  public FixedAsset generateFixedAsset(Move move, MoveLine moveLine) throws AxelorException {
     log.debug("Starting generation of fixed asset for move line :" + moveLine);
     Objects.requireNonNull(moveLine);
 
@@ -62,28 +64,62 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       fixedAsset.setCompany(moveLine.getMove().getCompany());
       fixedAsset.setJournal(moveLine.getMove().getJournal());
     }
-    fixedAsset.setFixedAssetCategory(moveLine.getFixedAssetCategory());
+    FixedAssetCategory fixedAssetCategory = moveLine.getFixedAssetCategory();
+    fixedAsset.setFixedAssetCategory(fixedAssetCategory);
     fixedAsset.setPartner(moveLine.getPartner());
     fixedAsset.setPurchaseAccount(moveLine.getAccount());
-    if (moveLine.getFixedAssetCategory() != null) {
-      fixedAsset.setAnalyticDistributionTemplate(
-          moveLine.getFixedAssetCategory().getAnalyticDistributionTemplate());
+    if (fixedAssetCategory != null) {
+      copyInfos(fixedAssetCategory, fixedAsset);
     }
-
+    fixedAsset.setGrossValue(moveLine.getDebit());
     LocalDate acquisitionDate =
         moveLine.getOriginDate() != null ? moveLine.getOriginDate() : moveLine.getDate();
     fixedAsset.setAcquisitionDate(acquisitionDate);
-    fixedAsset.setFirstServiceDate(acquisitionDate);
-    fixedAsset.setFirstDepreciationDate(acquisitionDate);
+    fixedAsset.setPurchaseAccountMove(move);
     log.debug("Generated fixed asset : " + fixedAsset);
     return fixedAsset;
   }
 
+  protected void copyInfos(FixedAssetCategory fixedAssetCategory, FixedAsset fixedAsset) {
+    fixedAsset.setAnalyticDistributionTemplate(
+        fixedAssetCategory.getAnalyticDistributionTemplate());
+
+    fixedAsset.setDepreciationPlanSelect(fixedAssetCategory.getDepreciationPlanSelect());
+    String computationMethodSelect = fixedAssetCategory.getComputationMethodSelect();
+    Integer numberOfDepreciation = fixedAssetCategory.getNumberOfDepreciation();
+    Integer periodicityInMonth = fixedAssetCategory.getPeriodicityInMonth();
+    Integer periodicityTypeSelect = fixedAssetCategory.getPeriodicityTypeSelect();
+    Integer durationInMonth = fixedAssetCategory.getDurationInMonth();
+
+    fixedAsset.setComputationMethodSelect(computationMethodSelect);
+    fixedAsset.setIfrsComputationMethodSelect(computationMethodSelect);
+    fixedAsset.setFiscalComputationMethodSelect(computationMethodSelect);
+
+    fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
+    fixedAsset.setFiscalNumberOfDepreciation(numberOfDepreciation);
+    fixedAsset.setIfrsNumberOfDepreciation(numberOfDepreciation);
+
+    fixedAsset.setPeriodicityInMonth(periodicityInMonth);
+    fixedAsset.setFiscalPeriodicityInMonth(periodicityInMonth);
+    fixedAsset.setIfrsPeriodicityInMonth(periodicityInMonth);
+
+    fixedAsset.setPeriodicityTypeSelect(periodicityTypeSelect);
+    fixedAsset.setFiscalPeriodicityTypeSelect(periodicityTypeSelect);
+    fixedAsset.setIfrsPeriodicityTypeSelect(periodicityTypeSelect);
+
+    fixedAsset.setDurationInMonth(durationInMonth);
+    fixedAsset.setFiscalDurationInMonth(durationInMonth);
+    fixedAsset.setIfrsDurationInMonth(durationInMonth);
+
+    fixedAsset.setIsEqualToFiscalDepreciation(true);
+    fixedAsset.setIsIfrsEqualToFiscalDepreciation(true);
+  }
+
   @Transactional
   @Override
-  public FixedAsset generateAndSaveFixedAsset(MoveLine moveLine) throws AxelorException {
+  public FixedAsset generateAndSaveFixedAsset(Move move, MoveLine moveLine) throws AxelorException {
 
-    return fixedAssetRepository.save(generateFixedAsset(moveLine));
+    return fixedAssetRepository.save(generateFixedAsset(move, moveLine));
   }
 
   @Override

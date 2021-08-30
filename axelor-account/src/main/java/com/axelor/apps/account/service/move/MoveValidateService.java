@@ -276,7 +276,7 @@ public class MoveValidateService {
                 .getAccountType()
                 .getTechnicalTypeSelect()
                 .equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
-          fixedAssetLineService.generateAndSaveFixedAsset(line);
+          fixedAssetLineService.generateAndSaveFixedAsset(move, line);
         }
       }
     }
