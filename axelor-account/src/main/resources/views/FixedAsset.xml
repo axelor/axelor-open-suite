@@ -26,7 +26,7 @@
 	    <panel name="statusSelectPanel" colSpan="12">
 	      <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
 	      <field name="reference" colSpan="3"/>
-	      <field name="fixedAssetSeq" colSpan="3" readonlyIf="fixedAssetSeq != null"/>
+	      <field name="fixedAssetSeq" colSpan="3" readonly="true"/>
 	    </panel>
 	    <panel name="mainPanel" colSpan="12">
 	      <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
@@ -91,8 +91,8 @@
 	      <field name="associatedFixedAssetsSet" showIf="id" colSpan="12" widget="many-to-many" canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid" domain="self.company = :company"/>
 	    </panel>
 	    <panel name="commentsPanel" title="Commentary">
-	      <field name="originSelect" readonlyIf="statusSelect > 1"/>
-	      <field name="comments" colSpan="12"/>
+	      <field name="originSelect" readonly="true"/>
+	      <field name="comments" colSpan="12" widget="html" x-lite="true"/>
 	    </panel>
 	  </panel-tabs>
 	  <panel name="actionsPanel" title="Actions" hideIf="statusSelect == 4" sidebar="true">
@@ -143,7 +143,7 @@
     		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal"/>
     		<field name="$generateSaleMove" title="Generate Sale Move" widget="boolean" showIf="disposalTypeSelect == 2"/>
     		<field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line" widget="many-to-one" target="com.axelor.apps.account.db.TaxLine" showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove"/>
-    		<field name="comments" colSpan="12" widget="text" showIf="disposalTypeSelect == 2"/>
+    		<field name="comments" colSpan="12" widget="html" x-lite="true" showIf="disposalTypeSelect == 2"/>
     		<field name="$originalQty" type="decimal" hidden="true"/>
     	</panel>
     </form>
@@ -187,6 +187,7 @@
     	<field name="acquisitionDate" expr="eval: __config__.date"/>
     	<field name="firstServiceDate" expr="eval: __config__.date"/>
     	<field name="firstDepreciationDate" expr="eval: __config__.date"/>
+    	<field name="originSelect" expr="eval:'1'"/>
     </action-record>
     
     <action-record name="action-fixed-asset-record-onchange-set-values" model="com.axelor.apps.account.db.FixedAsset">

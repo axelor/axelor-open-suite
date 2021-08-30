@@ -77,7 +77,7 @@
 	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List"/>
 	
 	<many-to-many ref="com.axelor.apps.account.db.FixedAsset" name="associatedFixedAssetsSet" title="Associated Fixed Assets Set"/>
-	<string name="comments" title="Comments"/>
+	<string name="comments" large="true" multiline="true" title="Comments"/>
 	<integer name="disposalTypeSelect" title="Disposal Type" selection="account.fixed.asset.disposal.type.select" default="1" />
 	<integer name="disposalQtySelect" title="Disposal Quantity select" selection="account.fixed.asset.disposal.quantity.select" default="1" />
 	<decimal name="qty" title="Disposal Quantity" />
