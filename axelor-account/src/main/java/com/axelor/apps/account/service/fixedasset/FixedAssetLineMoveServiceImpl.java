@@ -194,7 +194,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 .findAny()
                 .orElse(null);
         if (fixedAssetDerogatoryLine != null) {
-          fixedAssetDerogatoryLineMoveService.realize(fixedAssetDerogatoryLine);
+          fixedAssetDerogatoryLineMoveService.realize(
+              fixedAssetDerogatoryLine, isBatch, generateMove);
         }
       }
     }

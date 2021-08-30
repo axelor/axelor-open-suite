@@ -73,4 +73,6 @@ public interface FixedAssetDerogatoryLineService {
    * @param status
    */
   void filterListByStatus(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status);
+
+  public void remove(FixedAssetDerogatoryLine line);
 }

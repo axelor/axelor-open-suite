@@ -36,7 +36,7 @@ public class FixedAssetDerogatoryLineController {
         Beans.get(FixedAssetDerogatoryLineRepository.class).find(fixedAssetLine.getId());
 
     try {
-      Beans.get(FixedAssetDerogatoryLineMoveService.class).realize(fixedAssetLine);
+      Beans.get(FixedAssetDerogatoryLineMoveService.class).realize(fixedAssetLine, false, true);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

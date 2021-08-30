@@ -247,8 +247,9 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
             .getDerogatoryBalanceAmount()
             .subtract(lastDerogatoryBalanceAmount)
             .abs();
-    fixedAssetDerogatoryLineMoveService.generateMove(
-        firstPlannedDerogatoryLine, creditAccount, debitAccount, amount);
+    firstPlannedDerogatoryLine.setDerogatoryDepreciationMove(
+        fixedAssetDerogatoryLineMoveService.generateMove(
+            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount));
   }
 
   protected Account computeCessionDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
@@ -292,7 +293,6 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
    */
   @Override
   public void clear(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList) {
-
     Objects.requireNonNull(fixedAssetDerogatoryLineList);
     fixedAssetDerogatoryLineList.forEach(
         line -> {
@@ -301,14 +301,13 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     fixedAssetDerogatoryLineList.clear();
   }
 
+  @Override
   @Transactional
   public void remove(FixedAssetDerogatoryLine line) {
     Objects.requireNonNull(line);
-    line.setStatusSelect(-1);
     line.setFixedAsset(null);
-    fixedAssetDerogatoryLineRepository.save(line);
-    // Should delete but there is NPE at GlobalAuditIntercept and can't figure out why
-    // fixedAssetDerogatoryLineRepository.remove(line);
+    line.setStatusSelect(-1);
+    fixedAssetDerogatoryLineRepository.remove(line);
   }
 
   @Override

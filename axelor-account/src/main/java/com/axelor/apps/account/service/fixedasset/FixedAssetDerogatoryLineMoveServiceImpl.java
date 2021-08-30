@@ -50,13 +50,26 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
 
   @Override
   @Transactional
-  public void realize(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException {
+  public void realize(
+      FixedAssetDerogatoryLine fixedAssetDerogatoryLine, boolean isBatch, boolean generateMove)
+      throws AxelorException {
     log.debug("Computing action 'realize' on " + fixedAssetDerogatoryLine);
 
     if (fixedAssetDerogatoryLine == null
         || fixedAssetDerogatoryLine.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED) {
       return;
     }
+    FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
+    if (fixedAsset == null) {
+      return;
+    }
+
+    if (!isBatch && !isPreviousLineRealized(fixedAssetDerogatoryLine, fixedAsset)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
+    }
+
     BigDecimal derogatoryAmount = fixedAssetDerogatoryLine.getDerogatoryAmount();
     BigDecimal incomeDepreciationAmount = fixedAssetDerogatoryLine.getIncomeDepreciationAmount();
     BigDecimal derogatoryBalanceAmount = fixedAssetDerogatoryLine.getDerogatoryBalanceAmount();
@@ -68,11 +81,12 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         || (derogatoryBalanceAmount != null && derogatoryBalanceAmount.signum() != 0)) {
 
       BigDecimal amount = computeAmount(fixedAssetDerogatoryLine);
-      generateMove(
-          fixedAssetDerogatoryLine,
-          computeCreditAccount(fixedAssetDerogatoryLine),
-          computeDebitAccount(fixedAssetDerogatoryLine),
-          amount);
+      fixedAssetDerogatoryLine.setDerogatoryDepreciationMove(
+          generateMove(
+              fixedAssetDerogatoryLine,
+              computeCreditAccount(fixedAssetDerogatoryLine),
+              computeDebitAccount(fixedAssetDerogatoryLine),
+              amount));
     }
     fixedAssetDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
     fixedAssetDerogatoryLineRepository.save(fixedAssetDerogatoryLine);
@@ -81,9 +95,32 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       fixedAssetLineMoveService.realizeOthersLines(
           fixedAssetDerogatoryLine.getFixedAsset(),
           fixedAssetDerogatoryLine.getDepreciationDate(),
-          false,
-          true);
+          isBatch,
+          generateMove);
     }
+  }
+
+  protected boolean isPreviousLineRealized(
+      FixedAssetDerogatoryLine fixedAssetDerogatoryLine, FixedAsset fixedAsset) {
+    List<FixedAssetDerogatoryLine> fixedAssetLineList =
+        fixedAsset.getFixedAssetDerogatoryLineList();
+    fixedAssetLineList.sort(
+        (line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
+    for (int i = 0; i < fixedAssetLineList.size(); i++) {
+      if (fixedAssetDerogatoryLine
+          .getDepreciationDate()
+          .equals(fixedAssetLineList.get(i).getDepreciationDate())) {
+        if (i > 0) {
+          if (fixedAssetLineList.get(i - 1).getStatusSelect()
+              != FixedAssetLineRepository.STATUS_REALIZED) {
+            return false;
+          }
+          return true;
+        }
+        return true;
+      }
+    }
+    return true;
   }
 
   protected BigDecimal computeAmount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
@@ -114,7 +151,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateMove(
+  public Move generateMove(
       FixedAssetDerogatoryLine fixedAssetDerogatoryLine,
       Account creditLineAccount,
       Account debitLineAccount,
@@ -193,7 +230,6 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       move.getMoveLineList().addAll(moveLines);
     }
 
-    moveRepo.save(move);
-    fixedAssetDerogatoryLine.setDerogatoryDepreciationMove(move);
+    return moveRepo.save(move);
   }
 }

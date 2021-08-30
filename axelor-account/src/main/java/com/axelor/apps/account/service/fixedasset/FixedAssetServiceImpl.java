@@ -166,7 +166,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                   .filter(
                       line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED)
                   .collect(Collectors.toList());
-          fixedAsset.clearFixedAssetDerogatoryLineList();
+          fixedAssetDerogatoryLineService.clear(fixedAsset.getFixedAssetDerogatoryLineList());
           fixedAsset.getFixedAssetDerogatoryLineList().addAll(linesToKeep);
           fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
         }
