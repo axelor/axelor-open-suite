@@ -43,6 +43,7 @@
     
     
     <finder-method name="findByBankDetails" using="bankDetails" all="true"/>
+    <finder-method name="findOneByBankDetails" using="bankDetails" orderBy="-id"/>
     
 	<extra-code><![CDATA[
 	

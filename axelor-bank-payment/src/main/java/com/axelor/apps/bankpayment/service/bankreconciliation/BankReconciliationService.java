@@ -34,6 +34,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.BankStatementRule;
@@ -49,6 +50,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -60,8 +62,6 @@ import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -245,32 +245,10 @@ public class BankReconciliationService {
     List<MoveLine> moveLines;
     MoveLine tempMoveLine;
 
-    /*
-     * DONE Charger tous les rapprochements, ajouter le débit de toutes
-     * bankReconciliationLine where isPosted = true; soustraire le crédit de ces
-     * même lignes
-     */
     BigDecimal statementReconciledLineBalance = BigDecimal.ZERO;
-    /*
-     * Charger tous les moveLines where account = bankReconciliation.cashAccount (if
-     * bankReonciliation.cashAccount == null, on compte 0)
-     */
     BigDecimal movesReconciledLineBalance = BigDecimal.ZERO;
-    /*
-     * DONE Charger tous les rapprochements, ajouter le débit de toutes
-     * bankReconciliationLine where isPosted = false; soustraire le crédit de ces
-     * même lignes
-     */
     BigDecimal statementUnreconciledLineBalance = BigDecimal.ZERO;
-    /*
-     * Charger les movelines dont le montant rapproché est différent du crédit ou
-     * débit en fonction, et ajouter / soustraire la différence
-     */
     BigDecimal movesUnreconciledLineBalance = BigDecimal.ZERO;
-    /*
-     * Charger tous les rapprochements, ajouter le débit de toutes
-     * bankReconciliationLine where isPosted = false; and postedNumber != 0
-     */
     BigDecimal statementOngoingReconciledBalance = BigDecimal.ZERO;
     BigDecimal movesOngoingReconciledBalance = BigDecimal.ZERO;
 
@@ -291,7 +269,7 @@ public class BankReconciliationService {
                 statementUnreconciledLineBalance.subtract(brl.getDebit());
             statementUnreconciledLineBalance =
                 statementUnreconciledLineBalance.add(brl.getCredit());
-            if (Strings.isNullOrEmpty(brl.getPostedNbr())) {
+            if (!Strings.isNullOrEmpty(brl.getPostedNbr())) {
               statementOngoingReconciledBalance =
                   statementOngoingReconciledBalance.subtract(brl.getDebit());
               statementOngoingReconciledBalance =
@@ -594,9 +572,10 @@ public class BankReconciliationService {
               new Context(
                   Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
                   BankStatementLineAFB120.class.getClass());
-          String query = computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
+          String query =
+              computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
           if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query))) {
-
+        	  bankReconciliationLine = updateBankReconciliationLine(bankReconciliationLine, moveLine, bankStatementQuery);
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
             moveLines.remove(moveLine);
             break;
@@ -608,23 +587,28 @@ public class BankReconciliationService {
     }
     return bankReconciliation;
   }
-  
-  protected BankReconciliationLine updateBankReconciliationLine(BankReconciliationLine bankReconciliationLine,MoveLine moveLine, BankStatementQuery bankStatementQuery)
-  {            
-	  bankReconciliationLine.setMoveLine(moveLine);
-	  bankReconciliationLine.setBankStatementQuery(bankStatementQuery);
-	  bankReconciliationLine.setConfidenceIndex(bankStatementQuery.getConfidenceIndex());
-	  bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
-	  return bankReconciliationLine;
+
+  protected BankReconciliationLine updateBankReconciliationLine(
+      BankReconciliationLine bankReconciliationLine,
+      MoveLine moveLine,
+      BankStatementQuery bankStatementQuery) {
+    bankReconciliationLine.setMoveLine(moveLine);
+    bankReconciliationLine.setBankStatementQuery(bankStatementQuery);
+    bankReconciliationLine.setConfidenceIndex(bankStatementQuery.getConfidenceIndex());
+    bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+    return bankReconciliationLine;
   }
-  
-  protected String computeQuery(BankStatementQuery bankStatementQuery, BigInteger dateMargin, BigDecimal amountMarginLow, BigDecimal amountMarginHigh)
-  {
-      String query = bankStatementQuery.getQuery();
-      query = query.replace("%amt+", amountMarginHigh.toString());
-      query = query.replace("%amt-", amountMarginLow.toString());
-      query = query.replace("%date", dateMargin.toString());
-	  return query;
+
+  protected String computeQuery(
+      BankStatementQuery bankStatementQuery,
+      BigInteger dateMargin,
+      BigDecimal amountMarginLow,
+      BigDecimal amountMarginHigh) {
+    String query = bankStatementQuery.getQuery();
+    query = query.replace("%amt+", amountMarginHigh.toString());
+    query = query.replace("%amt-", amountMarginLow.toString());
+    query = query.replace("%date", dateMargin.toString());
+    return query;
   }
 
   public void unreconcileLines(List<BankReconciliationLine> bankReconciliationLines) {
@@ -669,5 +653,39 @@ public class BankReconciliationService {
       }
     }
     return hasChanged;
+  }
+
+  @Transactional
+  public BankReconciliation computeInitialBalance(BankReconciliation bankReconciliation) {
+    BankDetails bankDetails = bankReconciliation.getBankDetails();
+    BankReconciliation previousBankReconciliation =
+        bankReconciliationRepository
+            .all()
+            .filter("self.bankDetails = :bankDetails AND self.id != :id")
+            .bind("bankDetails", bankDetails)
+            .bind("id", bankReconciliation.getId())
+            .order("-id")
+            .fetchOne();
+    BigDecimal startingBalance = BigDecimal.ZERO;
+    if (ObjectUtils.isEmpty(previousBankReconciliation)) {
+      BankStatementLine initialsBankStatementLine =
+          bankStatementLineAFB120Repository
+              .all()
+              .filter(
+                  "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect")
+              .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+              .bind("bankStatement", bankReconciliation.getBankStatement())
+              .order("sequence")
+              .fetchOne();
+      startingBalance =
+          initialsBankStatementLine.getCredit().subtract(initialsBankStatementLine.getDebit());
+    } else {
+      if (previousBankReconciliation.getStatusSelect()
+          == BankReconciliationRepository.STATUS_VALIDATED) {
+        startingBalance = previousBankReconciliation.getEndingBalance();
+      } else return null;
+    }
+    bankReconciliation.setStartingBalance(startingBalance);
+    return bankReconciliation;
   }
 }

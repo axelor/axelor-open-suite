@@ -31,6 +31,7 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
@@ -169,27 +170,36 @@ public class BankReconciliationController {
   public void loadBankStatement(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      BankReconciliation bankReconciliation = context.asType(BankReconciliation.class);
-      bankReconciliationService.loadBankStatement(
-          bankReconciliationRepository.find(bankReconciliation.getId()));
-      if (bankReconciliation.getCompany() != null) {
-        if (bankReconciliation.getCompany().getBankPaymentConfig() != null) {
-          if (bankReconciliation
-              .getCompany()
-              .getBankPaymentConfig()
-              .getHasAutoMoveFromStatementRule()) {
-            bankReconciliationService.reconciliateAccordingToQueries(
-                bankReconciliationRepository.find(bankReconciliation.getId()));
-          }
-          if (bankReconciliation
-              .getCompany()
-              .getBankPaymentConfig()
-              .getHasAutomaticReconciliation()) {
-            bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+      BankReconciliation bankReconciliation =
+          bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
+      Company company = bankReconciliation.getCompany();
+      if (company != null) {
+        bankReconciliation = bankReconciliationService.computeInitialBalance(bankReconciliation);
+      }
+      if (bankReconciliation != null) {
+        bankReconciliationService.loadBankStatement(
+            bankReconciliationRepository.find(bankReconciliation.getId()));
+        if (company != null) {
+          if (company.getBankPaymentConfig() != null) {
+            if (bankReconciliation
+                .getCompany()
+                .getBankPaymentConfig()
+                .getHasAutoMoveFromStatementRule()) {
+              bankReconciliationService.reconciliateAccordingToQueries(
+                  bankReconciliationRepository.find(bankReconciliation.getId()));
+            }
+            if (bankReconciliation
+                .getCompany()
+                .getBankPaymentConfig()
+                .getHasAutomaticReconciliation()) {
+              bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+            }
           }
         }
+        response.setReload(true);
+      } else {
+        response.setAlert(I18n.get("Can't load while another reconciliation is open"));
       }
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
