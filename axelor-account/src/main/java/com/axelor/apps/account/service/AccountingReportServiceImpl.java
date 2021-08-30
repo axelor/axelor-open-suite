@@ -114,11 +114,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   @Override
   public String print(AccountingReport accountingReport) throws AxelorException, IOException {
+    String fileLink;
     if (accountingReport.getReportType().getTypeSelect()
         == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
-      return accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
+      fileLink = accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
+    } else {
+      fileLink = accountingReportPrintService.print(accountingReport);
     }
-    String fileLink = accountingReportPrintService.print(accountingReport);
     setStatus(accountingReport);
     return fileLink;
   }
