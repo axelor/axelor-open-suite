@@ -294,10 +294,10 @@ public interface InvoiceService {
 
   @CallMethod
   public BigDecimal calculateAmountRemainingInPayment(
-      Invoice invoice, Boolean apply, BigDecimal amount);
+      Invoice invoice, boolean apply, BigDecimal amount);
 
   public boolean applyFinancialDiscount(Invoice invoice);
 
   @CallMethod
-  public String setAmountTitle(Boolean applyFinancialDiscount);
+  public String setAmountTitle(boolean applyFinancialDiscount);
 }
