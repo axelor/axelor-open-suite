@@ -367,7 +367,7 @@
 "AccountingReportType20.moveLineDate","Date pièce",,
 "AccountingReportType20.moveLineName","Numéro pièce",,
 "AccountingReportType20.serviceType","DAS",,
-"AccountingReportType20.title","DAS2 - Justificatif de déclaration d’honoraires",,
+"AccountingReportType20.title","Liste des pièces éventuellement concernées par la Déclaration",,
 "AccountingReportType20.to","Au",,
 "AccountingReportType20.total_report","Montant total",,
 "AccountingReportType2.account","Compte",,
