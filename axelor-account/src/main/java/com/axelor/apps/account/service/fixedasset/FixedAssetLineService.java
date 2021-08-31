@@ -126,4 +126,26 @@ public interface FixedAssetLineService {
    * @param status
    */
   void filterListByStatus(List<FixedAssetLine> fixedAssetLineList, int status);
+
+  /**
+   * This method will compute on cession closest line from realized lines.
+   *
+   * @param fixedAsset
+   * @param disposalDate
+   * @return computed {@link FixedAssetLine}
+   * @throws AxelorException
+   */
+  FixedAssetLine computeCessionLine(FixedAsset fixedAsset, LocalDate disposalDate)
+      throws AxelorException;
+
+  /**
+   * This method will return any line that have the same year as disposalDate.
+   *
+   * @param fixedAsset
+   * @param disposalDate
+   * @param lineStatus
+   * @return {@link FixedAssetLine} or null if there is no line with same year.
+   */
+  FixedAssetLine getExistingLineWithSameYear(
+      FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus);
 }

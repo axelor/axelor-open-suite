@@ -29,7 +29,21 @@ public interface FixedAssetLineMoveService {
   void realize(FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove)
       throws AxelorException;
 
-  void generateDisposalMove(FixedAssetLine fixedAssetLine, int transferredReason)
+  /**
+   * This method will generate a disposal move on fixedAsset at disposalDate. The move will have 2
+   * or 3 move lines, depending on value of fixedAssetLine. (it can be null)
+   *
+   * @param fixedAsset
+   * @param fixedAssetLine
+   * @param transferredReason
+   * @param disposalDate
+   * @throws AxelorException
+   */
+  void generateDisposalMove(
+      FixedAsset fixedAsset,
+      FixedAssetLine fixedAssetLine,
+      int transferredReason,
+      LocalDate disposalDate)
       throws AxelorException;
 
   /**

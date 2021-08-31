@@ -234,6 +234,9 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   @Override
   public Optional<FixedAssetLine> findOldestFixedAssetLine(
       List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip) {
+    if (fixedAssetLineList == null || fixedAssetLineList.isEmpty()) {
+      return Optional.empty();
+    }
     fixedAssetLineList.sort(
         (fa1, fa2) -> fa1.getDepreciationDate().compareTo(fa2.getDepreciationDate()));
     return fixedAssetLineList.stream()
@@ -244,6 +247,9 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   @Override
   public Optional<FixedAssetLine> findNewestFixedAssetLine(
       List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip) {
+    if (fixedAssetLineList == null || fixedAssetLineList.isEmpty()) {
+      return Optional.empty();
+    }
     fixedAssetLineList.sort(
         (fa1, fa2) -> fa2.getDepreciationDate().compareTo(fa1.getDepreciationDate()));
     Optional<FixedAssetLine> optFixedAssetLine =
@@ -323,5 +329,87 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       fixedAssetLineList.removeIf(line -> line.getStatusSelect() == status);
     }
     clear(linesToRemove);
+  }
+
+  @Override
+  public FixedAssetLine computeCessionLine(FixedAsset fixedAsset, LocalDate disposalDate)
+      throws AxelorException {
+    FixedAssetLine correspondingFixedAssetLine;
+    if (isLastDayOfTheYear(disposalDate)) {
+      correspondingFixedAssetLine = getExistingLineWithSameDate(fixedAsset, disposalDate);
+    } else {
+      // If it is not a last day of the year we will apply a prorata on the line.
+      if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
+        correspondingFixedAssetLine =
+            getExistingLineWithSameYear(
+                fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
+      } else {
+        correspondingFixedAssetLine =
+            getExistingLineWithSameMonth(
+                fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
+      }
+      FixedAssetLine previousRealizedLine =
+          findOldestFixedAssetLine(
+                  fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0)
+              .orElse(null);
+      if (previousRealizedLine != null
+          && disposalDate.isBefore(previousRealizedLine.getDepreciationDate())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
+      }
+      if (correspondingFixedAssetLine != null) {
+        computeDepreciationWithProrata(
+            fixedAsset, correspondingFixedAssetLine, previousRealizedLine, disposalDate);
+      }
+    }
+    return correspondingFixedAssetLine;
+  }
+
+  protected FixedAssetLine getExistingLineWithSameDate(
+      FixedAsset fixedAsset, LocalDate disposalDate) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    if (fixedAssetLineList != null) {
+      return fixedAssetLineList.stream()
+          .filter(line -> line.getDepreciationDate().equals(disposalDate))
+          .findAny()
+          .orElse(null);
+    }
+    return null;
+  }
+
+  protected boolean isLastDayOfTheYear(LocalDate disposalDate) {
+    return disposalDate.getMonthValue() == 12 && disposalDate.getDayOfMonth() == 31;
+  }
+
+  @Override
+  public FixedAssetLine getExistingLineWithSameYear(
+      FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    if (fixedAssetLineList != null) {
+      return fixedAssetLineList.stream()
+          .filter(
+              line ->
+                  line.getDepreciationDate().getYear() == disposalDate.getYear()
+                      && line.getStatusSelect() == lineStatus)
+          .findAny()
+          .orElse(null);
+    }
+    return null;
+  }
+
+  protected FixedAssetLine getExistingLineWithSameMonth(
+      FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    if (fixedAssetLineList != null) {
+      return fixedAssetLineList.stream()
+          .filter(
+              line ->
+                  line.getDepreciationDate().getMonth() == disposalDate.getMonth()
+                      && line.getStatusSelect() == lineStatus)
+          .findAny()
+          .orElse(null);
+    }
+    return null;
   }
 }

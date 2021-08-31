@@ -420,14 +420,16 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateDisposalMove(FixedAssetLine fixedAssetLine, int transferredReason)
+  public void generateDisposalMove(
+      FixedAsset fixedAsset,
+      FixedAssetLine fixedAssetLine,
+      int transferredReason,
+      LocalDate disposalDate)
       throws AxelorException {
 
-    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
-    LocalDate date = fixedAssetLine.getDepreciationDate();
 
     // Creating move
     Move move =
@@ -436,7 +438,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             company,
             company.getCurrency(),
             partner,
-            date,
+            disposalDate,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
@@ -448,8 +450,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Account chargeAccount;
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       Account purchaseAccount = fixedAsset.getPurchaseAccount();
-      BigDecimal chargeAmount = fixedAssetLine.getAccountingValue();
-      BigDecimal cumulativeDepreciationAmount = fixedAssetLine.getCumulativeDepreciation();
+      BigDecimal chargeAmount =
+          fixedAssetLine != null
+              ? fixedAssetLine.getAccountingValue()
+              : fixedAsset.getAccountingValue();
+      BigDecimal cumulativeDepreciationAmount =
+          fixedAssetLine != null ? fixedAssetLine.getCumulativeDepreciation() : null;
       if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION
           || transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
         if (fixedAsset.getFixedAssetCategory().getRealisedAssetsValueAccount() == null) {
@@ -471,7 +477,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               move,
               partner,
               chargeAccount,
-              date,
+              disposalDate,
               null,
               1,
               chargeAmount,
@@ -480,32 +486,33 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               origin,
               null,
               BigDecimal.ZERO,
-              date);
+              disposalDate);
       moveLines.add(chargeAccountDebitMoveLine);
 
       this.addAnalyticToMoveLine(
           fixedAsset.getAnalyticDistributionTemplate(), chargeAccountDebitMoveLine);
 
-      // Creating accounting debit move line for deprecation account
-      MoveLine deprecationAccountDebitMoveLine =
-          new MoveLine(
-              move,
-              partner,
-              depreciationAccount,
-              date,
-              null,
-              1,
-              cumulativeDepreciationAmount,
-              BigDecimal.ZERO,
-              fixedAsset.getName(),
-              origin,
-              null,
-              BigDecimal.ZERO,
-              date);
-      moveLines.add(deprecationAccountDebitMoveLine);
-
-      this.addAnalyticToMoveLine(
-          fixedAsset.getAnalyticDistributionTemplate(), deprecationAccountDebitMoveLine);
+      if (cumulativeDepreciationAmount != null) {
+        // Creating accounting debit move line for deprecation account
+        MoveLine deprecationAccountDebitMoveLine =
+            new MoveLine(
+                move,
+                partner,
+                depreciationAccount,
+                disposalDate,
+                null,
+                1,
+                cumulativeDepreciationAmount,
+                BigDecimal.ZERO,
+                fixedAsset.getName(),
+                origin,
+                null,
+                BigDecimal.ZERO,
+                disposalDate);
+        moveLines.add(deprecationAccountDebitMoveLine);
+        this.addAnalyticToMoveLine(
+            fixedAsset.getAnalyticDistributionTemplate(), deprecationAccountDebitMoveLine);
+      }
 
       // Creating accounting credit move line
       MoveLine creditMoveLine =
@@ -513,7 +520,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               move,
               partner,
               purchaseAccount,
-              date,
+              disposalDate,
               null,
               2,
               BigDecimal.ZERO,
@@ -522,7 +529,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               origin,
               null,
               BigDecimal.ZERO,
-              date);
+              disposalDate);
       moveLines.add(creditMoveLine);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
