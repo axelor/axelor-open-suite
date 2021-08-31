@@ -80,15 +80,22 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
 
   private final ThreadLocal<GlobalAuditTracker> globalTracker = new ThreadLocal<>();
 
+  private void init() {
+    if (globalTracker.get() == null) {
+      globalTracker.set(new GlobalAuditTracker());
+      globalTracker.get().init();
+    }
+  }
+
   @Override
   public void afterTransactionBegin(Transaction tx) {
-    globalTracker.set(new GlobalAuditTracker());
-    globalTracker.get().init();
+    init();
     super.afterTransactionBegin(tx);
   }
 
   @Override
   public void beforeTransactionCompletion(Transaction tx) {
+    init();
     globalTracker.get().onComplete(tx, AuthUtils.getUser());
     super.beforeTransactionCompletion(tx);
   }
@@ -111,6 +118,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       return false;
     }
 
+    init();
     GlobalTrackingLog log =
         globalTracker
             .get()
@@ -171,10 +179,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       return false;
     }
 
-    if (globalTracker.get() == null) {
-      globalTracker.set(new GlobalAuditTracker());
-      globalTracker.get().init();
-    }
+    init();
     GlobalTrackingLog log =
         globalTracker
             .get()
@@ -260,6 +265,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
 
   @Override
   public void onCollectionUpdate(Object collection, Serializable key) {
+    init();
     globalTracker.get().addCollectionModification(collection, (Long) key);
   }
 }
