@@ -56,7 +56,6 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     copy.setStatusSelect(STATUS_DRAFT);
     copy.setFixedAssetSeq(null);
     copy.setReference(null);
-    copy.setAccountingValue(entity.getGrossValue());
     copy.setFixedAssetLineList(null);
     copy.setFiscalFixedAssetLineList(null);
     copy.setFixedAssetDerogatoryLineList(null);

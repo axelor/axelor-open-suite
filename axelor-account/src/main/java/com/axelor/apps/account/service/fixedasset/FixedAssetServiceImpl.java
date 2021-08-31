@@ -493,7 +493,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         }
       }
 
-      fixedAsset = generateAndComputeLines(fixedAsset);
+      if (!fixedAsset
+          .getDepreciationPlanSelect()
+          .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+        fixedAsset = generateAndComputeLines(fixedAsset);
+      }
+
       if (fixedAsset.getIsEqualToFiscalDepreciation()) {
         fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
       } else {
