@@ -21,7 +21,7 @@
         onNew="action-invoice-payment-group-new">
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
 			<field name="typeSelect" showIf="id" colSpan="12" />
-            <field name="amount"/>
+            <field name="amount" onChange="action-invoice-payment-on-change-amount"/>
             <field name="currency" canEdit="false"
                 form-view="currency-form" grid-view="currency-grid"/>
             <field name="paymentMode" canEdit="false"
@@ -157,8 +157,12 @@
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
 	</action-method>
 	
+	<action-method name="action-invoice-payment-on-change-amount">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="changeAmount"/>
+	</action-method>
+	
 	<action-record name="action-record-on-change-invoice-payment-financial-discount" model="com.axelor.apps.account.db.InvoicePayment">
-		<field name="amount" expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount)" if="invoice"/>	
+		<field name="amount" expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount,amount)" if="invoice"/>	
 	</action-record>
 	
 	<action-attrs name="action-attrs-on-change-invoice-payment-financial-discount">

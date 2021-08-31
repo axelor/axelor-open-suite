@@ -552,7 +552,7 @@ InvoiceSet.length > 0))"
 								<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
 								<font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
 								<font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
-								<font x-translate ng-if="record.typeSelect == 5">Other on</font>
+								<font x-translate ng-if="record.typeSelect == 5">On</font>
 								<font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
 								<font>
 									 {{$fmt('paymentDate')}}
@@ -571,7 +571,7 @@ InvoiceSet.length > 0))"
 							<font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3 && record.applyFinancialDiscount == true">Pending discount</font>
 							<font x-translate ng-if="record.typeSelect == 3 && record.applyFinancialDiscount == true">Ref. on</font>
 							<font x-translate ng-if="record.typeSelect == 4 && record.applyFinancialDiscount == true">Inv. on</font>
-							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">Other on</font>
+							<font x-translate ng-if="record.typeSelect == 5 && record.applyFinancialDiscount == true">On</font>
 							<font x-translate ng-if="record.typeSelect == 6 && record.applyFinancialDiscount == true">Imputed on</font>
 							<font x-translate ng-if="record.applyFinancialDiscount == true">
 								{{$fmt('paymentDate')}}

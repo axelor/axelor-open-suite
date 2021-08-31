@@ -107,6 +107,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AccountConfigService accountConfigService;
   protected MoveToolService moveToolService;
   protected AccountConfigRepository accountConfigRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -120,7 +121,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      AccountConfigRepository accountConfigRepository) {
+      AccountConfigRepository accountConfigRepository,
+      AppBaseService appBaseService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -133,6 +135,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
     this.accountConfigRepository = accountConfigRepository;
+    this.appBaseService = appBaseService;
   }
 
   // WKF
@@ -981,12 +984,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .size();
   }
 
-  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice) {
+  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount) {
     if (invoice != null) {
       if (invoice.getFinancialDiscount() != null) {
         AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
         if (invoice.getFinancialDiscount().getDiscountBaseSelect()
             == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
+          if (amount.longValue() > 0) {
+            return amount.multiply(
+                invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3));
+          }
           return invoice
               .getExTaxTotal()
               .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3));
@@ -996,6 +1003,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
                 || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             && accountConfig.getPurchFinancialDiscountTax() != null) {
+          if (amount.longValue() > 0) {
+            return amount
+                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+                .divide(
+                    accountConfig
+                        .getPurchFinancialDiscountTax()
+                        .getActiveTaxLine()
+                        .getValue()
+                        .add(new BigDecimal(1)),
+                    3);
+          }
           return invoice
               .getInTaxTotal()
               .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
@@ -1012,6 +1030,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 || invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             && accountConfig.getSaleFinancialDiscountTax() != null) {
+          if (amount.longValue() > 0) {
+            return amount
+                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+                .divide(
+                    accountConfig
+                        .getSaleFinancialDiscountTax()
+                        .getActiveTaxLine()
+                        .getValue()
+                        .add(new BigDecimal(1)),
+                    3);
+          }
           return invoice
               .getInTaxTotal()
               .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
@@ -1028,7 +1057,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return BigDecimal.ZERO;
   }
 
-  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice) {
+  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount) {
     if (invoice != null) {
       if (invoice.getFinancialDiscount() != null) {
         AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
@@ -1038,6 +1067,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
                 || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             && accountConfig.getPurchFinancialDiscountTax() != null) {
+          if (amount.longValue() > 0) {
+            return amount
+                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+                .multiply(
+                    accountConfig.getPurchFinancialDiscountTax().getActiveTaxLine().getValue())
+                .divide(
+                    accountConfig
+                        .getPurchFinancialDiscountTax()
+                        .getActiveTaxLine()
+                        .getValue()
+                        .add(new BigDecimal(1)),
+                    2,
+                    RoundingMode.HALF_UP);
+          }
           return invoice
               .getInTaxTotal()
               .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
@@ -1048,14 +1091,27 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                       .getActiveTaxLine()
                       .getValue()
                       .add(new BigDecimal(1)),
-                  5,
-                  RoundingMode.CEILING);
+                  2,
+                  RoundingMode.HALF_UP);
         } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
                 == FinancialDiscountRepository.DISCOUNT_BASE_VAT
             && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
                 || invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             && accountConfig.getSaleFinancialDiscountTax() != null) {
+          if (amount.longValue() > 0) {
+            return amount
+                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+                .multiply(accountConfig.getSaleFinancialDiscountTax().getActiveTaxLine().getValue())
+                .divide(
+                    accountConfig
+                        .getSaleFinancialDiscountTax()
+                        .getActiveTaxLine()
+                        .getValue()
+                        .add(new BigDecimal(1)),
+                    2,
+                    RoundingMode.HALF_UP);
+          }
           return invoice
               .getInTaxTotal()
               .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
@@ -1066,35 +1122,35 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                       .getActiveTaxLine()
                       .getValue()
                       .add(new BigDecimal(1)),
-                  5,
-                  RoundingMode.CEILING);
+                  2,
+                  RoundingMode.HALF_UP);
         }
       }
     }
     return BigDecimal.ZERO;
   }
 
-  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice) {
-    return calculateFinancialDiscountAmount(invoice)
-        .add(calculateFinancialDiscountTaxAmount(invoice));
+  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount) {
+    return calculateFinancialDiscountAmount(invoice, amount)
+        .add(calculateFinancialDiscountTaxAmount(invoice, amount));
   }
 
-  public BigDecimal calculateAmountRemainingInPayment(Invoice invoice, Boolean apply) {
+  public BigDecimal calculateAmountRemainingInPayment(
+      Invoice invoice, Boolean apply, BigDecimal amount) {
     if (apply && invoice != null) {
       return invoice
           .getAmountRemaining()
-          .subtract(calculateFinancialDiscountTaxAmount(invoice))
-          .subtract(calculateFinancialDiscountAmount(invoice));
+          .subtract(calculateFinancialDiscountTaxAmount(invoice, amount))
+          .subtract(calculateFinancialDiscountAmount(invoice, amount));
     }
     return invoice.getAmountRemaining();
   }
 
   public boolean applyFinancialDiscount(Invoice invoice) {
-    if (invoice != null) {
-      if (invoice.getFinancialDiscountDeadlineDate() != null
-          && invoice.getFinancialDiscountDeadlineDate().compareTo(LocalDate.now()) >= 0) {
-        return true;
-      }
+    if (invoice.getFinancialDiscountDeadlineDate() != null
+        && invoice.getFinancialDiscountDeadlineDate().compareTo(appBaseService.getTodayDate())
+            >= 0) {
+      return true;
     }
     return false;
   }

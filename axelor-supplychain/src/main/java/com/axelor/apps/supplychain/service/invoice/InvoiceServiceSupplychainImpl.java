@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -74,7 +75,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       AccountConfigRepository accountConfigRepository,
-      InvoiceLineRepository invoiceLineRepo) {
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -86,7 +88,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceLineService,
         accountConfigService,
         moveToolService,
-        accountConfigRepository);
+        accountConfigRepository,
+        appBaseService);
     this.invoiceLineRepo = invoiceLineRepo;
   }
 

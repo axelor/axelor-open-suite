@@ -50,8 +50,6 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -155,7 +153,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     Partner partner = invoice.getPartner();
     LocalDate paymentDate = invoicePayment.getPaymentDate();
-
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
 
     Account customerAccount;
@@ -195,19 +192,22 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
       if (!invoicePayment.getApplyFinancialDiscount()) {
 
-        List<Object> list = getMoveWithoutFinancialDiscount(invoicePayment, move, customerAccount);
-        move = (Move) list.get(0);
-        customerMoveLine = (MoveLine) list.get(1);
+        move = getMoveWithoutFinancialDiscount(invoicePayment, move, customerAccount);
 
       } else if (invoicePayment.getApplyFinancialDiscount()
           && invoicePayment.getFinancialDiscount() != null
           && Beans.get(AppAccountService.class).getAppAccount().getManageFinancialDiscount()) {
-        List<Object> list = getMoveWithFinancialDiscount(invoicePayment, move, customerAccount);
-        move = (Move) list.get(0);
-        customerMoveLine = (MoveLine) list.get(1);
+
+        move = getMoveWithFinancialDiscount(invoicePayment, move, customerAccount);
       }
 
       moveService.getMoveValidateService().validate(move);
+
+      for (MoveLine moveline : move.getMoveLineList()) {
+        if (moveline.getAccount() == customerAccount) {
+          customerMoveLine = moveline;
+        }
+      }
 
       if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         Reconcile reconcile =
@@ -245,12 +245,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<Object> getMoveWithoutFinancialDiscount(
+  public Move getMoveWithoutFinancialDiscount(
       InvoicePayment invoicePayment, Move move, Account customerAccount) throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
-    MoveLine customerMoveLine = null;
     BigDecimal paymentAmount = invoicePayment.getAmount();
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     Partner partner = invoice.getPartner();
@@ -258,7 +257,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
     boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
     String origin = getOriginFromInvoicePayment(invoicePayment);
-    List<Object> list = new ArrayList<Object>();
 
     move.addMoveLineListItem(
         moveLineService.createMoveLine(
@@ -273,7 +271,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             origin,
             invoicePayment.getDescription()));
 
-    customerMoveLine =
+    move.addMoveLineListItem(
         moveLineService.createMoveLine(
             move,
             partner,
@@ -284,23 +282,17 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             null,
             2,
             origin,
-            invoicePayment.getDescription());
+            invoicePayment.getDescription()));
 
-    move.addMoveLineListItem(customerMoveLine);
-
-    list.add(move);
-    list.add(customerMoveLine);
-    return list;
+    return move;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<Object> getMoveWithFinancialDiscount(
+  public Move getMoveWithFinancialDiscount(
       InvoicePayment invoicePayment, Move move, Account customerAccount) throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
-    MoveLine customerMoveLine = null;
-    List<Object> list = new ArrayList<Object>();
 
     if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
 
@@ -320,14 +312,14 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               == FinancialDiscountRepository.DISCOUNT_BASE_HT
           && purchAccount != null) {
 
-        list =
+        move =
             getPurchaseMoveWithFinancialDiscountTaxExcluded(
                 invoicePayment, move, customerAccount, purchAccount);
       } else if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
               == FinancialDiscountRepository.DISCOUNT_BASE_VAT
           && purchAccount != null) {
 
-        list =
+        move =
             getPurchaseMoveWithFinancialDiscountTaxIncluded(
                 invoicePayment, move, customerAccount, purchAccount);
       }
@@ -348,26 +340,24 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               == FinancialDiscountRepository.DISCOUNT_BASE_HT
           && saleAccount != null) {
 
-        list =
+        move =
             getSaleMoveWithFinancialDiscountTaxExcluded(
                 invoicePayment, move, customerAccount, saleAccount);
       } else if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
               == FinancialDiscountRepository.DISCOUNT_BASE_VAT
           && saleAccount != null) {
 
-        list =
+        move =
             getSaleMoveWithFinancialDiscountTaxIncluded(
                 invoicePayment, move, customerAccount, saleAccount);
       }
     }
-    move.addMoveLineListItem((MoveLine) list.get(1));
-    list.add(move);
-    list.add(customerMoveLine);
-    return list;
+
+    return move;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<Object> getPurchaseMoveWithFinancialDiscountTaxExcluded(
+  public Move getPurchaseMoveWithFinancialDiscountTaxExcluded(
       InvoicePayment invoicePayment, Move move, Account customerAccount, Account purchAccount)
       throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
@@ -378,9 +368,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
     boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
     String origin = getOriginFromInvoicePayment(invoicePayment);
-    MoveLine customerMoveLine = null;
     BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
-    List<Object> list = new ArrayList<Object>();
 
     BigDecimal paymentAmount =
         invoicePayment
@@ -416,7 +404,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             origin,
             invoicePayment.getDescription()));
 
-    customerMoveLine =
+    move.addMoveLineListItem(
         moveLineService.createMoveLine(
             move,
             partner,
@@ -427,14 +415,13 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             null,
             3,
             origin,
-            invoicePayment.getDescription());
-    list.add(move);
-    list.add(customerMoveLine);
-    return list;
+            invoicePayment.getDescription()));
+
+    return move;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<Object> getPurchaseMoveWithFinancialDiscountTaxIncluded(
+  public Move getPurchaseMoveWithFinancialDiscountTaxIncluded(
       InvoicePayment invoicePayment, Move move, Account customerAccount, Account purchAccount)
       throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
@@ -445,9 +432,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
     boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
     String origin = getOriginFromInvoicePayment(invoicePayment);
-    MoveLine customerMoveLine = null;
     BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
-    List<Object> list = new ArrayList<Object>();
 
     BigDecimal paymentAmount =
         invoicePayment
@@ -496,7 +481,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             origin,
             invoicePayment.getDescription()));
 
-    customerMoveLine =
+    move.addMoveLineListItem(
         moveLineService.createMoveLine(
             move,
             partner,
@@ -507,14 +492,13 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             null,
             4,
             origin,
-            invoicePayment.getDescription());
-    list.add(move);
-    list.add(customerMoveLine);
-    return list;
+            invoicePayment.getDescription()));
+
+    return move;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<Object> getSaleMoveWithFinancialDiscountTaxExcluded(
+  public Move getSaleMoveWithFinancialDiscountTaxExcluded(
       InvoicePayment invoicePayment, Move move, Account customerAccount, Account saleAccount)
       throws AxelorException {
 
@@ -526,9 +510,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
     boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
     String origin = getOriginFromInvoicePayment(invoicePayment);
-    MoveLine customerMoveLine = null;
     BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
-    List<Object> list = new ArrayList<Object>();
 
     BigDecimal paymentAmount =
         invoicePayment
@@ -564,7 +546,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             origin,
             invoicePayment.getDescription()));
 
-    customerMoveLine =
+    move.addMoveLineListItem(
         moveLineService.createMoveLine(
             move,
             partner,
@@ -575,14 +557,13 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             null,
             3,
             origin,
-            invoicePayment.getDescription());
-    list.add(move);
-    list.add(customerMoveLine);
-    return list;
+            invoicePayment.getDescription()));
+
+    return move;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<Object> getSaleMoveWithFinancialDiscountTaxIncluded(
+  public Move getSaleMoveWithFinancialDiscountTaxIncluded(
       InvoicePayment invoicePayment, Move move, Account customerAccount, Account saleAccount)
       throws AxelorException {
 
@@ -594,9 +575,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
     boolean isDebitInvoice = moveService.getMoveToolService().isDebitCustomer(invoice, true);
     String origin = getOriginFromInvoicePayment(invoicePayment);
-    MoveLine customerMoveLine = null;
     BigDecimal paymentAmountWithoutDiscount = invoicePayment.getAmount();
-    List<Object> list = new ArrayList<Object>();
 
     BigDecimal paymentAmount =
         invoicePayment
@@ -645,7 +624,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             origin,
             invoicePayment.getDescription()));
 
-    customerMoveLine =
+    move.addMoveLineListItem(
         moveLineService.createMoveLine(
             move,
             partner,
@@ -656,10 +635,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             null,
             4,
             origin,
-            invoicePayment.getDescription());
+            invoicePayment.getDescription()));
 
-    list.add(move);
-    list.add(customerMoveLine);
-    return list;
+    return move;
   }
 }
