@@ -363,4 +363,19 @@ public class SaleOrderLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void computePricingScale(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      saleOrderLineService.computePricingScale(saleOrder, saleOrderLine);
+
+      response.setValues(saleOrderLine);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
