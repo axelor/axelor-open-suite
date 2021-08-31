@@ -396,6 +396,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     } else {
       lines.add(setN4DSLine("S80.G01.00.003.013", alpha2code));
     }
+    lines.add(setN4DSLine("S80.G01.00.005", "02"));
     lines.add(setN4DSLine("S80.G01.00.006", companyPartner.getMainActivity().getCode()));
     lines.add(setN4DSLine("S90.G01.00.001", String.valueOf(lines.size() + 2)));
     lines.add(setN4DSLine("S90.G01.00.002", "1"));
