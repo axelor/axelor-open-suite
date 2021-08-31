@@ -89,17 +89,12 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
   public void createAccountingReportMoveLines(
       List<BigInteger> paymentMoveLineDistributioneIds, AccountingReport accountingReport) {
 
-    int i = 0;
     for (BigInteger id : paymentMoveLineDistributioneIds) {
       PaymentMoveLineDistribution paymentMoveLineDistribution =
           paymentMoveLineDistributionRepo.find(id.longValue());
       if (paymentMoveLineDistribution != null) {
         createAccountingReportMoveLine(
             paymentMoveLineDistribution, accountingReportRepo.find(accountingReport.getId()));
-        i++;
-        if (i % 10 == 0) {
-          JPA.clear();
-        }
       }
     }
   }

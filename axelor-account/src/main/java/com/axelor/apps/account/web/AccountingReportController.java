@@ -76,11 +76,7 @@ public class AccountingReportController {
           response.setError(
               I18n.get(
                   "There is already an ongoing accounting report of this type in draft status for this same period."));
-        }
-        if (accountingReportDas2Service.isThereAlreadyDas2ExportInPeriod(accountingReport, false)) {
-          response.setAlert(
-              I18n.get(
-                  "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
+          return;
         }
 
         List<BigInteger> paymentMoveLinedistributionIdList =
@@ -235,15 +231,6 @@ public class AccountingReportController {
                   .map());
         }
       } else {
-        if (typeSelect == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS
-            && Beans.get(AccountingReportDas2Service.class)
-                .isThereAlreadyDas2ExportInPeriod(accountingReport, false)) {
-          response.setAlert(
-              I18n.get(
-                  "There is already an ongoing DAS2 export for this period that has not been exported yet. Do you want to proceed ?"));
-          return;
-        }
-
         if (Beans.get(AccountingReportToolService.class)
             .isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
@@ -268,18 +255,27 @@ public class AccountingReportController {
     AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
     AccountingReportDas2Service accountingReportDas2Service =
         Beans.get(AccountingReportDas2Service.class);
-    boolean complementaryExport = false;
-    try {
-      if (accountingReportDas2Service.isThereAlreadyDas2ExportInPeriod(accountingReport, true)) {
-        complementaryExport = true;
-        response.setNotify(
-            I18n.get(
-                "There is already N4DS export for this period. The accounting export created will generate complementary N4DS export."));
-      }
-      AccountingReport accountingExport =
-          accountingReportService.createAccountingExportFromReport(
-              accountingReport, AccountingReportRepository.EXPORT_N4DS, complementaryExport);
 
+    try {
+      AccountingReport accountingExport =
+          accountingReportDas2Service.getAssociatedDas2Export(accountingReport);
+
+      if (accountingExport != null) {
+        response.setNotify(I18n.get("There is already N4DS export generated for this report."));
+
+      } else {
+        boolean complementaryExport = false;
+
+        if (accountingReportDas2Service.isThereAlreadyDas2ExportInPeriod(accountingReport)) {
+          complementaryExport = true;
+          response.setNotify(
+              I18n.get(
+                  "There is already N4DS export for this period. The accounting export created will generate complementary N4DS export."));
+        }
+        accountingExport =
+            accountingReportService.createAccountingExportFromReport(
+                accountingReport, AccountingReportRepository.EXPORT_N4DS, complementaryExport);
+      }
       response.setView(
           ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_8))
               .model(AccountingReport.class.getName())

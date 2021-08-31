@@ -65,7 +65,6 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
     return launchN4DSExport(accountingReport);
   }
 
-  @SuppressWarnings("unchecked")
   protected void processAccountingReportMoveLines(AccountingReport accountingReport) {
 
     accountingReport.clearAccountingReportMoveLineList();
@@ -77,8 +76,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
   }
 
   @Override
-  public boolean isThereAlreadyDas2ExportInPeriod(
-      AccountingReport accountingReport, boolean isExported) {
+  public boolean isThereAlreadyDas2ExportInPeriod(AccountingReport accountingReport) {
 
     return accountingReportRepo
             .all()
@@ -88,7 +86,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
                 AccountingReportRepository.EXPORT_N4DS,
                 accountingReport.getDateFrom(),
                 accountingReport.getDateTo(),
-                isExported)
+                true)
             .count()
         > 0;
   }
@@ -198,5 +196,13 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
   protected void setExported(AccountingReport accountingReport) {
     accountingReport.setExported(true);
     accountingReportRepo.save(accountingReport);
+  }
+
+  public AccountingReport getAssociatedDas2Export(AccountingReport accountingReport) {
+
+    if (CollectionUtils.isEmpty(accountingReport.getAccountingReportMoveLineList())) {
+      return null;
+    }
+    return accountingReport.getAccountingReportMoveLineList().get(0).getAccountingExport();
   }
 }

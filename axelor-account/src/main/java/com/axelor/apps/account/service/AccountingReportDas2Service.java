@@ -14,7 +14,9 @@ public interface AccountingReportDas2Service {
 
   MetaFile exportN4DSFile(AccountingReport accountingReport) throws AxelorException, IOException;
 
-  boolean isThereAlreadyDas2ExportInPeriod(AccountingReport accountingReport, boolean isExported);
+  boolean isThereAlreadyDas2ExportInPeriod(AccountingReport accountingReport);
 
   List<BigInteger> getAccountingReportDas2Pieces(AccountingReport accountingReport);
+
+  AccountingReport getAssociatedDas2Export(AccountingReport accountingReport);
 }
