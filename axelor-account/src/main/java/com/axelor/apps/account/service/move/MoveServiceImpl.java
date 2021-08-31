@@ -691,6 +691,7 @@ public class MoveServiceImpl implements MoveService {
   @Override
   public MoveLine createCounterpartMoveLine(Move move) {
     MoveLine moveLine = new MoveLine();
+    moveLine.setMove(moveRepository.find(move.getId()));
     moveLine.setDate(move.getDate());
     moveLine.setOrigin(move.getOrigin());
     moveLine.setOriginDate(move.getOriginDate());

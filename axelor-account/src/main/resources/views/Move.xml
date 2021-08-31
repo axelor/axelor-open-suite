@@ -101,7 +101,7 @@
         <button name="validateBtn" title="Validate" onClick="action-account-move-group-validate-click" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" />
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 5" />
-        <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-method-generate-counterpart,action-account-move-method-compute-totals" colSpan="12" />
+        <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals,action-account-move-method-generate-counterpart,action-account-move-method-compute-totals" colSpan="12" />
       </panel>
     </panel>
 

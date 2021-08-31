@@ -1135,6 +1135,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
           BigDecimal debit = moveLine.getDebit();
           BigDecimal credit = moveLine.getCredit();
+          BigDecimal currencyRate = moveLine.getCurrencyRate();
+          BigDecimal currencyAmount;
           LocalDate date = moveLine.getDate();
           Company company = move.getCompany();
 
@@ -1153,7 +1155,6 @@ public class MoveLineServiceImpl implements MoveLineService {
           }
 
           Account newAccount = newOrUpdatedMoveLine.getAccount();
-
           if (newAccount == null) {
             throw new AxelorException(
                 move,
@@ -1161,6 +1162,11 @@ public class MoveLineServiceImpl implements MoveLineService {
                 I18n.get(IExceptionMessage.MOVE_LINE_6),
                 taxLine.getName(),
                 company.getName());
+          }
+          if (move.getPartner().getFiscalPosition() != null) {
+            newAccount =
+                fiscalPositionAccountService.getAccount(
+                    move.getPartner().getFiscalPosition(), newAccount);
           }
 
           String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
@@ -1183,6 +1189,8 @@ public class MoveLineServiceImpl implements MoveLineService {
             newOrUpdatedMoveLine.setCredit(
                 newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
           }
+          newOrUpdatedMoveLine.setMove(move);
+          newOrUpdatedMoveLine = setCurrencyAmount(newOrUpdatedMoveLine);
           newOrUpdatedMoveLine.setOrigin(move.getOrigin());
           newOrUpdatedMoveLine.setDescription(move.getDescription());
           newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
@@ -1305,13 +1313,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       }
     else moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
-      BigDecimal unratedAmount = BigDecimal.ZERO;
-      if (!moveLine.getDebit().equals(BigDecimal.ZERO)) {
-        unratedAmount = moveLine.getDebit();
-      }
-      if (!moveLine.getCredit().equals(BigDecimal.ZERO)) {
-        unratedAmount = moveLine.getCredit();
-      }
+      BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
       moveLine.setCurrencyAmount(
           unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
     }
