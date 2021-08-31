@@ -108,6 +108,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected MoveToolService moveToolService;
   protected AccountConfigRepository accountConfigRepository;
   protected AppBaseService appBaseService;
+  
+  private final int RETURN_SCALE = 2;
+  private final int CALCULATION_SCALE = 10;
 
   @Inject
   public InvoiceServiceImpl(
@@ -992,11 +995,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
           if (amount.longValue() > 0) {
             return amount.multiply(
-                invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3));
+                invoice.getFinancialDiscountRate().divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP));
           }
           return invoice
               .getExTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3));
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP));
         } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
                 == FinancialDiscountRepository.DISCOUNT_BASE_VAT
             && (invoice.getOperationTypeSelect()
@@ -1005,25 +1008,25 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             && accountConfig.getPurchFinancialDiscountTax() != null) {
           if (amount.longValue() > 0) {
             return amount
-                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
                 .divide(
                     accountConfig
                         .getPurchFinancialDiscountTax()
                         .getActiveTaxLine()
                         .getValue()
                         .add(new BigDecimal(1)),
-                    3);
+                    RETURN_SCALE, RoundingMode.HALF_UP);
           }
           return invoice
               .getInTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
               .divide(
                   accountConfig
                       .getPurchFinancialDiscountTax()
                       .getActiveTaxLine()
                       .getValue()
                       .add(new BigDecimal(1)),
-                  3);
+                  RETURN_SCALE, RoundingMode.HALF_UP);
         } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
                 == FinancialDiscountRepository.DISCOUNT_BASE_VAT
             && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
@@ -1032,25 +1035,25 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             && accountConfig.getSaleFinancialDiscountTax() != null) {
           if (amount.longValue() > 0) {
             return amount
-                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
                 .divide(
                     accountConfig
                         .getSaleFinancialDiscountTax()
                         .getActiveTaxLine()
                         .getValue()
                         .add(new BigDecimal(1)),
-                    3);
+                    RETURN_SCALE, RoundingMode.HALF_UP);
           }
           return invoice
               .getInTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
               .divide(
                   accountConfig
                       .getSaleFinancialDiscountTax()
                       .getActiveTaxLine()
                       .getValue()
                       .add(new BigDecimal(1)),
-                  3);
+                  RETURN_SCALE, RoundingMode.HALF_UP);
         }
       }
     }
@@ -1069,7 +1072,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             && accountConfig.getPurchFinancialDiscountTax() != null) {
           if (amount.longValue() > 0) {
             return amount
-                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
                 .multiply(
                     accountConfig.getPurchFinancialDiscountTax().getActiveTaxLine().getValue())
                 .divide(
@@ -1078,12 +1081,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                         .getActiveTaxLine()
                         .getValue()
                         .add(new BigDecimal(1)),
-                    2,
-                    RoundingMode.HALF_UP);
+                    RETURN_SCALE, RoundingMode.HALF_UP);
           }
           return invoice
               .getInTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
               .multiply(accountConfig.getPurchFinancialDiscountTax().getActiveTaxLine().getValue())
               .divide(
                   accountConfig
@@ -1091,8 +1093,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                       .getActiveTaxLine()
                       .getValue()
                       .add(new BigDecimal(1)),
-                  2,
-                  RoundingMode.HALF_UP);
+                  RETURN_SCALE, RoundingMode.HALF_UP);
         } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
                 == FinancialDiscountRepository.DISCOUNT_BASE_VAT
             && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
@@ -1101,7 +1102,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             && accountConfig.getSaleFinancialDiscountTax() != null) {
           if (amount.longValue() > 0) {
             return amount
-                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
                 .multiply(accountConfig.getSaleFinancialDiscountTax().getActiveTaxLine().getValue())
                 .divide(
                     accountConfig
@@ -1109,12 +1110,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                         .getActiveTaxLine()
                         .getValue()
                         .add(new BigDecimal(1)),
-                    2,
-                    RoundingMode.HALF_UP);
+                    RETURN_SCALE, RoundingMode.HALF_UP);
           }
           return invoice
               .getInTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), 3))
+              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
               .multiply(accountConfig.getSaleFinancialDiscountTax().getActiveTaxLine().getValue())
               .divide(
                   accountConfig
@@ -1122,8 +1122,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                       .getActiveTaxLine()
                       .getValue()
                       .add(new BigDecimal(1)),
-                  2,
-                  RoundingMode.HALF_UP);
+                  RETURN_SCALE, RoundingMode.HALF_UP);
         }
       }
     }
@@ -1147,12 +1146,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   public boolean applyFinancialDiscount(Invoice invoice) {
-    if (invoice.getFinancialDiscountDeadlineDate() != null
-        && invoice.getFinancialDiscountDeadlineDate().compareTo(appBaseService.getTodayDate())
-            >= 0) {
-      return true;
-    }
-    return false;
+	  return (invoice != null && invoice.getFinancialDiscountDeadlineDate() != null
+			  && invoice.getFinancialDiscountDeadlineDate().compareTo(appBaseService.getTodayDate())>= 0);
   }
 
   public String setAmountTitle(Boolean applyFinancialDiscount) {
