@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
@@ -43,6 +44,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -54,6 +56,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -77,6 +81,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetLineService fixedAssetLineService;
 
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;
@@ -310,6 +315,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
       FixedAsset fixedAsset = new FixedAsset();
       fixedAsset.setFixedAssetCategory(invoiceLine.getFixedAssetCategory());
+      if (fixedAsset.getFixedAssetCategory() != null) {
+        fixedAsset.setDepreciationPlanSelect(
+            fixedAsset.getFixedAssetCategory().getDepreciationPlanSelect());
+      }
       if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
         fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
       } else {
@@ -317,17 +326,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
       fixedAsset.setAcquisitionDate(invoice.getInvoiceDate());
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
+      fixedAsset.setFirstServiceDate(invoice.getInvoiceDate());
       fixedAsset.setReference(invoice.getInvoiceId());
       fixedAsset.setName(invoiceLine.getProductName() + " (" + invoiceLine.getQty() + ")");
       fixedAsset.setCompany(fixedAsset.getFixedAssetCategory().getCompany());
       fixedAsset.setJournal(fixedAsset.getFixedAssetCategory().getJournal());
-      fixedAsset.setComputationMethodSelect(
-          fixedAsset.getFixedAssetCategory().getComputationMethodSelect());
-      fixedAsset.setDegressiveCoef(fixedAsset.getFixedAssetCategory().getDegressiveCoef());
-      fixedAsset.setNumberOfDepreciation(
-          fixedAsset.getFixedAssetCategory().getNumberOfDepreciation());
-      fixedAsset.setPeriodicityInMonth(fixedAsset.getFixedAssetCategory().getPeriodicityInMonth());
-      fixedAsset.setDurationInMonth(fixedAsset.getFixedAssetCategory().getDurationInMonth());
+      copyInfos(fixedAsset.getFixedAssetCategory(), fixedAsset);
       fixedAsset.setGrossValue(invoiceLine.getCompanyExTaxTotal());
       fixedAsset.setPartner(invoice.getPartner());
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
@@ -577,6 +581,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
+  @Transactional
   public void updateDepreciation(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
@@ -632,7 +637,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
                 .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
       }
 
-      // We can do this, since we will never save fixedAsset in the java process
+      // To recompute we will change value of fixed asset. And we must revert theses change at the
+      // end.
+      BigDecimal originalGrossValue = fixedAsset.getGrossValue();
+      LocalDate originalFirstDepreciationDate = fixedAsset.getFirstDepreciationDate();
+      LocalDate originalFirstServiceDate = fixedAsset.getFirstServiceDate();
+      Integer originalNumberOfDepreciation = fixedAsset.getNumberOfDepreciation();
       fixedAsset.setGrossValue(correctedAccountingValue);
       fixedAsset.setFirstDepreciationDate(
           analyticFixedAssetService.computeFirstDepreciationDate(
@@ -657,6 +667,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         }
       }
       updateLines(fixedAsset, firstPlannedFixedAssetLine, fixedAssetLineList);
+      fixedAsset.setGrossValue(originalGrossValue);
+      fixedAsset.setFirstDepreciationDate(originalFirstDepreciationDate);
+      fixedAsset.setFirstServiceDate(originalFirstServiceDate);
+      fixedAsset.setNumberOfDepreciation(originalNumberOfDepreciation);
+      fixedAssetRepo.save(fixedAsset);
     }
   }
 
@@ -928,5 +943,92 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAssetDerogatoryLineService.multiplyLinesBy(fixedAssetDerogatoryLineList, prorata);
       }
     }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if moveLine is null
+   */
+  @Override
+  public FixedAsset generateFixedAsset(Move move, MoveLine moveLine) throws AxelorException {
+    log.debug("Starting generation of fixed asset for move line :" + moveLine);
+    Objects.requireNonNull(moveLine);
+
+    FixedAsset fixedAsset = new FixedAsset();
+    fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+    if (moveLine.getDescription() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
+          moveLine.getName());
+    }
+    fixedAsset.setName(moveLine.getDescription());
+    if (moveLine.getMove() != null) {
+      fixedAsset.setCompany(moveLine.getMove().getCompany());
+      fixedAsset.setJournal(moveLine.getMove().getJournal());
+    }
+    FixedAssetCategory fixedAssetCategory = moveLine.getFixedAssetCategory();
+    fixedAsset.setFixedAssetCategory(fixedAssetCategory);
+    fixedAsset.setPartner(moveLine.getPartner());
+    fixedAsset.setPurchaseAccount(moveLine.getAccount());
+    if (fixedAssetCategory != null) {
+      copyInfos(fixedAssetCategory, fixedAsset);
+    }
+    fixedAsset.setGrossValue(moveLine.getDebit());
+    LocalDate acquisitionDate =
+        moveLine.getOriginDate() != null ? moveLine.getOriginDate() : moveLine.getDate();
+    fixedAsset.setAcquisitionDate(acquisitionDate);
+    fixedAsset.setPurchaseAccountMove(move);
+    log.debug("Generated fixed asset : " + fixedAsset);
+    return fixedAsset;
+  }
+
+  @Transactional
+  @Override
+  public FixedAsset generateAndSaveFixedAsset(Move move, MoveLine moveLine) throws AxelorException {
+
+    return fixedAssetRepo.save(generateFixedAsset(move, moveLine));
+  }
+
+  @Override
+  public void copyInfos(FixedAssetCategory fixedAssetCategory, FixedAsset fixedAsset) {
+    fixedAsset.setAnalyticDistributionTemplate(
+        fixedAssetCategory.getAnalyticDistributionTemplate());
+
+    fixedAsset.setDepreciationPlanSelect(fixedAssetCategory.getDepreciationPlanSelect());
+    String computationMethodSelect = fixedAssetCategory.getComputationMethodSelect();
+    Integer numberOfDepreciation = fixedAssetCategory.getNumberOfDepreciation();
+    Integer periodicityInMonth = fixedAssetCategory.getPeriodicityInMonth();
+    Integer periodicityTypeSelect = fixedAssetCategory.getPeriodicityTypeSelect();
+    Integer durationInMonth = fixedAssetCategory.getDurationInMonth();
+    BigDecimal degressiveCoef = fixedAssetCategory.getDegressiveCoef();
+
+    fixedAsset.setComputationMethodSelect(computationMethodSelect);
+    fixedAsset.setIfrsComputationMethodSelect(computationMethodSelect);
+    fixedAsset.setFiscalComputationMethodSelect(computationMethodSelect);
+
+    fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
+    fixedAsset.setFiscalNumberOfDepreciation(numberOfDepreciation);
+    fixedAsset.setIfrsNumberOfDepreciation(numberOfDepreciation);
+
+    fixedAsset.setPeriodicityInMonth(periodicityInMonth);
+    fixedAsset.setFiscalPeriodicityInMonth(periodicityInMonth);
+    fixedAsset.setIfrsPeriodicityInMonth(periodicityInMonth);
+
+    fixedAsset.setPeriodicityTypeSelect(periodicityTypeSelect);
+    fixedAsset.setFiscalPeriodicityTypeSelect(periodicityTypeSelect);
+    fixedAsset.setIfrsPeriodicityTypeSelect(periodicityTypeSelect);
+
+    fixedAsset.setDurationInMonth(durationInMonth);
+    fixedAsset.setFiscalDurationInMonth(durationInMonth);
+    fixedAsset.setIfrsDurationInMonth(durationInMonth);
+
+    fixedAsset.setDegressiveCoef(degressiveCoef);
+    fixedAsset.setFiscalDegressiveCoef(degressiveCoef);
+    fixedAsset.setIfrsDegressiveCoef(degressiveCoef);
+
+    fixedAsset.setIsEqualToFiscalDepreciation(true);
+    fixedAsset.setIsIfrsEqualToFiscalDepreciation(true);
   }
 }

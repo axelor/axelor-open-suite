@@ -19,7 +19,9 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
@@ -187,4 +189,36 @@ public interface FixedAssetService {
    * @throws NullPointerException if fixedAsset is null
    */
   void generateAndComputeIfrsFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
+
+  /**
+   * This method will generate a fixed asset based on the moveLine. fixetAsset.name =
+   * moveLine.description fixetAsset.company = moveLine.move.company fixetAsset.fixedAssetCategory =
+   * moveLine.fixedAssetCategory fixetAsset.partner = moveLine.partner fixedAsset.purchaseAccount =
+   * moveLine.account fixedAsset.journal = moveLine.journal fixedAsset.analyticDistributionTemplate
+   * = moveLine.fixedAsset.analyticDistributionTemplate fixedAsset.acquisitionDate = SI
+   * moveLine.originDate != NULL = moveLine.originDate ELSE moveLine.date
+   *
+   * @param moveLine
+   * @return generated {@link FixedAsset}
+   * @throws AxelorException
+   */
+  FixedAsset generateFixedAsset(Move move, MoveLine moveLine) throws AxelorException;
+
+  /**
+   * This method will call generateFixedAsset(MoveLine) and call save action.
+   *
+   * @param moveLine
+   * @return Generated {@link FixedAsset}
+   * @throws AxelorException
+   */
+  FixedAsset generateAndSaveFixedAsset(Move move, MoveLine moveLine) throws AxelorException;
+
+  /**
+   * Copy fixedAssetCategory infos such as computationMethodSelect, numberOfDepreciation, etc.. in
+   * fixedAsset
+   *
+   * @param fixedAssetCategory
+   * @param fixedAsset
+   */
+  void copyInfos(FixedAssetCategory fixedAssetCategory, FixedAsset fixedAsset);
 }

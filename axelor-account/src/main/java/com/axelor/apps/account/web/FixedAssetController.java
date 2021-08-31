@@ -222,12 +222,11 @@ public class FixedAssetController {
 
   public void updateDepreciation(ActionRequest request, ActionResponse response) {
     try {
-      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      FixedAsset fixedAsset =
+          Beans.get(FixedAssetRepository.class)
+              .find(request.getContext().asType(FixedAsset.class).getId());
       Beans.get(FixedAssetService.class).updateDepreciation(fixedAsset);
-      response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
-      response.setValue("fiscalFixedAssetLineList", fixedAsset.getFiscalFixedAssetLineList());
-      response.setValue(
-          "fixedAssetDerogatoryLineList", fixedAsset.getFixedAssetDerogatoryLineList());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -65,7 +65,7 @@ public class MoveValidateService {
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
   protected AppBaseService appBaseService;
-  protected FixedAssetLineService fixedAssetLineService;
+  protected FixedAssetService fixedAssetService;
 
   @Inject
   public MoveValidateService(
@@ -76,7 +76,7 @@ public class MoveValidateService {
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
       AppBaseService appBaseService,
-      FixedAssetLineService fixedAssetLineService) {
+      FixedAssetService fixedAssetService) {
 
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
@@ -85,7 +85,7 @@ public class MoveValidateService {
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
     this.appBaseService = appBaseService;
-    this.fixedAssetLineService = fixedAssetLineService;
+    this.fixedAssetService = fixedAssetService;
   }
 
   /**
@@ -276,7 +276,7 @@ public class MoveValidateService {
                 .getAccountType()
                 .getTechnicalTypeSelect()
                 .equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
-          fixedAssetLineService.generateAndSaveFixedAsset(move, line);
+          fixedAssetService.generateAndSaveFixedAsset(move, line);
         }
       }
     }

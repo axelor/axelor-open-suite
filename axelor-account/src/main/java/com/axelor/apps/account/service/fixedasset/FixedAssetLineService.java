@@ -2,8 +2,6 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
@@ -12,29 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FixedAssetLineService {
-
-  /**
-   * This method will generate a fixed asset based on the moveLine. fixetAsset.name =
-   * moveLine.description fixetAsset.company = moveLine.move.company fixetAsset.fixedAssetCategory =
-   * moveLine.fixedAssetCategory fixetAsset.partner = moveLine.partner fixedAsset.purchaseAccount =
-   * moveLine.account fixedAsset.journal = moveLine.journal fixedAsset.analyticDistributionTemplate
-   * = moveLine.fixedAsset.analyticDistributionTemplate fixedAsset.acquisitionDate = SI
-   * moveLine.originDate != NULL = moveLine.originDate ELSE moveLine.date
-   *
-   * @param moveLine
-   * @return generated {@link FixedAsset}
-   * @throws AxelorException
-   */
-  FixedAsset generateFixedAsset(Move move, MoveLine moveLine) throws AxelorException;
-
-  /**
-   * This method will call generateFixedAsset(MoveLine) and call save action.
-   *
-   * @param moveLine
-   * @return Generated {@link FixedAsset}
-   * @throws AxelorException
-   */
-  FixedAsset generateAndSaveFixedAsset(Move move, MoveLine moveLine) throws AxelorException;
 
   /**
    * Generate a fixedAssetLine with values are computed with prorata (based on disposalDate, and
