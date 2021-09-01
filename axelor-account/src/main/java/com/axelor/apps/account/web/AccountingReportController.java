@@ -85,7 +85,7 @@ public class AccountingReportController {
             ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
         actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
-        actionViewBuilder.add("form", "payment-move-line-distribution-grid");
+        actionViewBuilder.add("form", "payment-move-line-distribution-form");
         actionViewBuilder.domain(
             "self.id in (" + Joiner.on(",").join(paymentMoveLinedistributionIdList) + ")");
 

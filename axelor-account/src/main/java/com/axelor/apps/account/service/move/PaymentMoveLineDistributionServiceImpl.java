@@ -60,7 +60,10 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
   @Transactional(rollbackOn = {Exception.class})
   public void generatePaymentMoveLineDistributionList(Move move, Reconcile reconcile) {
 
-    BigDecimal invoiceTotalAmount = move.getInvoice().getCompanyInTaxTotal();
+    BigDecimal invoiceTotalAmount =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getDebit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     BigDecimal paymentAmount = reconcile.getAmount();
 
     for (MoveLine moveLine : move.getMoveLineList()) {
