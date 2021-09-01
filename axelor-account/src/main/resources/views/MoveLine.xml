@@ -40,9 +40,9 @@
     <field name="account.analyticDistributionAuthorized" hidden="true" />
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true" />
     <field name="date" width="100" onChange="account-move-line-group-date-onchange" hidden="true"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0" />
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"  onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"
-      onChange="action-move-line-method-compute-analytic-distribution" />
+      onChange="action-move-line-method-compute-analytic-distribution,action-account-move-line-method-set-partner-readonly" />
     <field name="currencyAmount" onChange="action-move-line-record-set-debitcredit" readonlyIf="!isOtherCurrency"/>
     <field name="currencyRate" onChange="action-move-line-record-set-debitcredit" readonlyIf="!isOtherCurrency"/>
     <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0" />
@@ -393,7 +393,7 @@
   <action-group name="action-account-move-line-partner-group">
     <action name="action-account-move-line-method-filter-partner" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'" />
     <action name="action-move-line-attrs-domain-partner" if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'" />
-    <action name="action-account-move-line-attrs-set-partner-readonlyIf"/>
+    <action name="action-account-move-line-method-set-partner-readonly"/>
   </action-group>
 
   <action-group name="account-move-line-group-date-onchange">
@@ -584,8 +584,8 @@
     <field name="date" expr="eval: __parent__.date" if="__parent__" />
   </action-record>
   
-  <action-attrs name="action-account-move-line-attrs-set-partner-readonlyIf">
-    <attribute name="readonlyIf" for="partner" expr="eval: account?.useForPartnerBalance &amp;&amp; amountPaid &gt; 0"/>
-  </action-attrs>
+  <action-method name="action-account-move-line-method-set-partner-readonly">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="setPartnerReadonlyIf" />
+  </action-method>
   
 </object-views>

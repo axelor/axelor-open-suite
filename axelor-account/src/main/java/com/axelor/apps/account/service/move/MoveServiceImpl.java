@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
@@ -822,6 +823,27 @@ public class MoveServiceImpl implements MoveService {
         }
       }
     }
+
+    return accountingAccount;
+  }
+
+  protected Account accountAcceptedInJournal(Move move, Account accountingAccount) {
+    Journal journal = move.getJournal();
+    boolean isInJournal = false;
+    for (Account account : journal.getValidAccountSet()) {
+      if (account.getId() == accountingAccount.getId()) {
+        isInJournal = true;
+        break;
+      }
+    }
+
+    for (AccountType accountType : journal.getValidAccountTypeSet()) {
+      if (accountType.getId() == accountingAccount.getAccountType().getId()) {
+        isInJournal = true;
+        break;
+      }
+    }
+    if (!isInJournal) accountingAccount = null;
     return accountingAccount;
   }
 

@@ -295,4 +295,15 @@ public class MoveLineController {
     Move move = parent.asType(Move.class);
     response.setValue("isOtherCurrency", !move.getCurrency().equals(move.getCompanyCurrency()));
   }
+
+  public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
+    boolean readonly = false;
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) readonly = true;
+    if (moveLine.getAccount() != null) {
+      if (moveLine.getAccount().getUseForPartnerBalance()) readonly = true;
+    }
+    System.err.println(readonly);
+    response.setAttr("partner", "readonly", readonly);
+  }
 }
