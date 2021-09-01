@@ -101,31 +101,20 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
         log.debug("Amount paid without move : {}", invoicePayment.getAmount());
 
-        if (!invoicePayment.getApplyFinancialDiscount()) {
-
-          amountPaid =
-              amountPaid.add(
-                  currencyService.getAmountCurrencyConvertedAtDate(
-                      invoicePayment.getCurrency(),
-                      invoiceCurrency,
-                      invoicePayment.getAmount(),
-                      invoicePayment.getPaymentDate()));
-
-        } else if (invoicePayment.getApplyFinancialDiscount()) {
-
-          amountPaid =
-              amountPaid.add(
-                  currencyService.getAmountCurrencyConvertedAtDate(
-                      invoicePayment.getCurrency(),
-                      invoiceCurrency,
-                      invoicePayment
-                          .getAmount()
-                          .add(
-                              invoicePayment
-                                  .getFinancialDiscountAmount()
-                                  .add(invoicePayment.getFinancialDiscountTaxAmount())),
-                      invoicePayment.getPaymentDate()));
+        BigDecimal paymentAmount = invoicePayment.getAmount();
+        if (invoicePayment.getApplyFinancialDiscount()) {
+          paymentAmount =
+              invoicePayment
+                  .getFinancialDiscountAmount()
+                  .add(invoicePayment.getFinancialDiscountTaxAmount());
         }
+        amountPaid =
+            amountPaid.add(
+                currencyService.getAmountCurrencyConvertedAtDate(
+                    invoicePayment.getCurrency(),
+                    invoiceCurrency,
+                    paymentAmount,
+                    invoicePayment.getPaymentDate()));
       }
     }
 
