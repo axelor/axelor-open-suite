@@ -781,6 +781,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     accountingExport.setYear(accountingReport.getYear());
     accountingExport.setDateFrom(accountingReport.getDateFrom());
     accountingExport.setDateTo(accountingReport.getDateTo());
+    accountingExport.setMinAmountExcl(accountingReport.getMinAmountExcl());
 
     for (AccountingReportMoveLine reportMoveLine :
         accountingReport.getAccountingReportMoveLineList()) {

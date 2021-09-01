@@ -171,7 +171,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         FileTool.writer(
             Beans.get(AppService.class).getDataExportDir(), fileName, (List<String>) lines);
     InputStream is = new FileInputStream(file);
-    return Beans.get(MetaFiles.class).upload(is, fileName);
+    return Beans.get(MetaFiles.class).attach(is, fileName, accountingExport).getMetaFile();
   }
 
   protected String compileStringValue(String regex, String value, String replaceString) {
