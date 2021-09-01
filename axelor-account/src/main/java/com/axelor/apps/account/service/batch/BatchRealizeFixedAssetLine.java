@@ -58,7 +58,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
         && startDate != null
         && endDate != null
         && startDate.isBefore(endDate)) {
-      query += " AND self.depreciationDate < :endDate AND self.depreciationDate > :startDate";
+      query += " AND self.depreciationDate <= :endDate AND self.depreciationDate >= :startDate";
     } else {
       query += " AND self.depreciationDate < :dateNow";
     }
