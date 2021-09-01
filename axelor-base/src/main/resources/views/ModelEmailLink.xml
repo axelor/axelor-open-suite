@@ -11,7 +11,7 @@
 
 	<form name="model-email-link-form" title="Model email link" model="com.axelor.apps.base.db.ModelEmailLink">
 		<panel name="mainPanel">
-			<field name="metaModel" required="true" widget="ref-text"/>
+			<field name="metaModel" required="true"/>
 			<field name="emailField" required="true"/>
 			<field name="addressTypeSelect"/>
 		</panel>

@@ -128,14 +128,32 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   @Override
   public void manageRelatedTo(Message message) {
 
-    EmailAddress fromEmailAddress = message.getFromEmailAddress();
-    Set<EmailAddress> toEmailAddressList = message.getToEmailAddressSet();
-
-    List<String> emailAddresses =
-        toEmailAddressList.stream().map(EmailAddress::getAddress).collect(Collectors.toList());
     AppBase appBase = appBaseService.getAppBase();
     if (ObjectUtils.isEmpty(appBase.getEmailLinkList())) {
       return;
+    }
+
+    EmailAddress fromEmailAddress = message.getFromEmailAddress();
+    Set<EmailAddress> toEmailAddressList = message.getToEmailAddressSet();
+    List<String> emailAddresses = null;
+    if (ObjectUtils.notEmpty(toEmailAddressList)) {
+      emailAddresses =
+          toEmailAddressList.stream().map(EmailAddress::getAddress).collect(Collectors.toList());
+    }
+
+    if (appBase.getManageCcBccRelatedTo()) {
+      Set<EmailAddress> ccEmailAddressList = message.getCcEmailAddressSet();
+      Set<EmailAddress> bccEmailAddressList = message.getBccEmailAddressSet();
+      if (ObjectUtils.notEmpty(ccEmailAddressList)) {
+        emailAddresses.addAll(
+            ccEmailAddressList.stream().map(EmailAddress::getAddress).collect(Collectors.toList()));
+      }
+      if (ObjectUtils.notEmpty(bccEmailAddressList)) {
+        emailAddresses.addAll(
+            bccEmailAddressList.stream()
+                .map(EmailAddress::getAddress)
+                .collect(Collectors.toList()));
+      }
     }
 
     for (ModelEmailLink modelEmailLink : appBase.getEmailLinkList()) {

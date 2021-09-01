@@ -46,8 +46,8 @@
     <!-- Configuration menu -->
 
     <menuitem name="app-builder-config" title="Configuration" parent="app-builder-root" order="40" />
-
-    <menuitem name="app-builder-app-builders" title="App builders" parent="app-builder-config" order="0" action="action.app.builders.view" if="__config__.app.getApp('bpm').getEnableAppBuilder()" />
+	
+    <menuitem name="app-builder-app-builders" title="App builders" parent="app-builder-config" order="5" action="action.app.builders.view" if="__config__.app.getApp('bpm').getEnableAppBuilder()" />
 
     <action-view name="action.app.builders.view" title="App builders" model="com.axelor.studio.db.AppBuilder">
         <view type="grid" name="app-builder-grid" />
@@ -112,5 +112,14 @@
 		<view type="grid" name="value-mapper-grid" />
 		<view type="form" name="value-mapper-form"/>
 	</action-view>
+	
+	<menuitem name="app-builder-app-loaders" title="App Loaders" parent="app-builder-config" order="55" action="action.app.loaders.view" if="__config__.app.getApp('bpm').getEnableAppBuilder()" />
+
+    <action-view name="action.app.loaders.view" title="App Loaders" model="com.axelor.studio.db.AppLoader">
+        <view type="grid" name="app-loader-grid" />
+        <view type="form" name="app-loader-form" />
+        <view-param name="details-view" value="true"/>
+    </action-view>
+	
 
 </object-views>
