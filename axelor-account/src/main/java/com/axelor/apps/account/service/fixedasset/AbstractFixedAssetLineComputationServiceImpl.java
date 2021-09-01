@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.tool.date.DateTool;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 public abstract class AbstractFixedAssetLineComputationServiceImpl
     implements FixedAssetLineComputationService {
+  protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
 
   protected abstract LocalDate computeStartDepreciationDate(FixedAsset fixedAsset);
 
@@ -42,6 +44,12 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected abstract Integer getPeriodicityInMonth(FixedAsset fixedAsset);
 
   protected abstract Integer getTypeSelect();
+
+  @Inject
+  public AbstractFixedAssetLineComputationServiceImpl(
+      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
+    this.fixedAssetFailOverControlService = fixedAssetFailOverControlService;
+  }
 
   @Override
   public FixedAssetLine computePlannedFixedAssetLine(

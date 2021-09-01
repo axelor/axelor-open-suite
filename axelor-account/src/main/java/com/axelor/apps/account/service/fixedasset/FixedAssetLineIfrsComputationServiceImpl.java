@@ -4,12 +4,19 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public class FixedAssetLineIfrsComputationServiceImpl
     extends AbstractFixedAssetLineComputationServiceImpl {
+
+  @Inject
+  public FixedAssetLineIfrsComputationServiceImpl(
+      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
+    super(fixedAssetFailOverControlService);
+  }
 
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {

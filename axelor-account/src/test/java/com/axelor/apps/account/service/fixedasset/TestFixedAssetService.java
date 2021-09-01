@@ -56,6 +56,7 @@ public class TestFixedAssetService {
   protected SequenceService sequenceService;
   protected FixedAssetLineService fixedAssetLineService;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
 
   /*
    * Prepare dependencies by mocking them
@@ -74,11 +75,13 @@ public class TestFixedAssetService {
     sequenceService = mock(SequenceService.class);
     fixedAssetLineService = mock(FixedAssetLineService.class);
     fixedAssetLineServiceFactory = mock(FixedAssetLineServiceFactory.class);
+    fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             analyticFixedAssetService,
             fixedAssetDerogatoryLineService,
-            fixedAssetDerogatoryLineMoveService);
+            fixedAssetDerogatoryLineMoveService,
+            fixedAssetFailOverControlService);
     when(fixedAssetLineServiceFactory.getFixedAssetComputationService(any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);
     fixedAssetService =

@@ -42,6 +42,14 @@ public interface IExceptionMessage {
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
   static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
       /*$$(*/ "Gross value must be greater than 0 to validate" /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
+      /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM =
+      /*$$(*/ "The input failover date is not conforme compare with the dates and configured depreciation duration." /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE =
+      /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
+  static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_NON_CONSISTENT_VALUES =
+      /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
   static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   /** Bank statement service */
   static final String BANK_STATEMENT_1 = /*$$(*/

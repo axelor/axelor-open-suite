@@ -39,17 +39,20 @@ public class TestFixedAssetLineComputationService {
   protected AnalyticFixedAssetService analyticFixedAssetService;
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
+  protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
 
   @Before
   public void prepare() {
     fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
     analyticFixedAssetService = mock(AnalyticFixedAssetService.class);
     fixedAssetDerogatoryLineMoveService = mock(FixedAssetDerogatoryLineMoveService.class);
+    fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             analyticFixedAssetService,
             fixedAssetDerogatoryLineService,
-            fixedAssetDerogatoryLineMoveService);
+            fixedAssetDerogatoryLineMoveService,
+            fixedAssetFailOverControlService);
   }
 
   @Test

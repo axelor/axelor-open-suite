@@ -40,7 +40,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
   public FixedAssetLineEconomicComputationServiceImpl(
       AnalyticFixedAssetService analyticFixedAssetService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
-      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService) {
+      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
+      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
+    super(fixedAssetFailOverControlService);
     this.analyticFixedAssetService = analyticFixedAssetService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
@@ -48,6 +50,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      return fixedAsset.getFailoverDate();
+    }
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
       return analyticFixedAssetService.computeFirstDepreciationDate(
           fixedAsset, fixedAsset.getFirstServiceDate());
@@ -57,6 +62,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      return fixedAsset.getGrossValue().subtract(fixedAsset.getAlreadyDepreciatedAmount());
+    }
     if (!fixedAsset.getIsEqualToFiscalDepreciation()
         && fixedAsset
             .getComputationMethodSelect()
@@ -90,6 +98,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      return fixedAsset.getNumberOfDepreciation() - fixedAsset.getNbrOfPastDepreciations();
+    }
     return fixedAsset.getNumberOfDepreciation();
   }
 
