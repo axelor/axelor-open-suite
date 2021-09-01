@@ -108,7 +108,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected MoveToolService moveToolService;
   protected AccountConfigRepository accountConfigRepository;
   protected AppBaseService appBaseService;
-  
+
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
 
@@ -987,170 +987,137 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .size();
   }
 
+  @Override
   public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount) {
-    if (invoice != null) {
-      if (invoice.getFinancialDiscount() != null) {
-        AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
-        if (invoice.getFinancialDiscount().getDiscountBaseSelect()
-            == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
-          if (amount.longValue() > 0) {
-            return amount.multiply(
-                invoice.getFinancialDiscountRate().divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP));
-          }
-          return invoice
-              .getExTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP));
-        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
-                == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-            && (invoice.getOperationTypeSelect()
-                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            && accountConfig.getPurchFinancialDiscountTax() != null) {
-          if (amount.longValue() > 0) {
-            return amount
-                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
-                .divide(
-                    accountConfig
-                        .getPurchFinancialDiscountTax()
-                        .getActiveTaxLine()
-                        .getValue()
-                        .add(new BigDecimal(1)),
-                    RETURN_SCALE, RoundingMode.HALF_UP);
-          }
-          return invoice
-              .getInTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
-              .divide(
-                  accountConfig
-                      .getPurchFinancialDiscountTax()
-                      .getActiveTaxLine()
-                      .getValue()
-                      .add(new BigDecimal(1)),
-                  RETURN_SCALE, RoundingMode.HALF_UP);
-        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
-                == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-            && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-                || invoice.getOperationTypeSelect()
-                    == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
-            && accountConfig.getSaleFinancialDiscountTax() != null) {
-          if (amount.longValue() > 0) {
-            return amount
-                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
-                .divide(
-                    accountConfig
-                        .getSaleFinancialDiscountTax()
-                        .getActiveTaxLine()
-                        .getValue()
-                        .add(new BigDecimal(1)),
-                    RETURN_SCALE, RoundingMode.HALF_UP);
-          }
-          return invoice
-              .getInTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
-              .divide(
-                  accountConfig
-                      .getSaleFinancialDiscountTax()
-                      .getActiveTaxLine()
-                      .getValue()
-                      .add(new BigDecimal(1)),
-                  RETURN_SCALE, RoundingMode.HALF_UP);
-        }
-      }
-    }
-    return BigDecimal.ZERO;
+    return calculateFinancialDiscountAmountUnscaled(invoice, amount)
+        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
   }
 
+  protected BigDecimal calculateFinancialDiscountAmountUnscaled(
+      Invoice invoice, BigDecimal amount) {
+    if (invoice == null || invoice.getFinancialDiscount() == null) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal baseAmount = computeBaseAmount(invoice, amount);
+    AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
+
+    BigDecimal baseAmountByRate =
+        baseAmount.multiply(
+            invoice
+                .getFinancialDiscountRate()
+                .divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP));
+
+    if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
+      return baseAmountByRate.setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+    } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        && accountConfig.getPurchFinancialDiscountTax() != null) {
+      return baseAmountByRate.divide(
+          accountConfig
+              .getPurchFinancialDiscountTax()
+              .getActiveTaxLine()
+              .getValue()
+              .add(new BigDecimal(1)),
+          CALCULATION_SCALE,
+          RoundingMode.HALF_UP);
+    } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+            == FinancialDiscountRepository.DISCOUNT_BASE_VAT
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        && accountConfig.getSaleFinancialDiscountTax() != null) {
+      return baseAmountByRate.divide(
+          accountConfig
+              .getSaleFinancialDiscountTax()
+              .getActiveTaxLine()
+              .getValue()
+              .add(new BigDecimal(1)),
+          CALCULATION_SCALE,
+          RoundingMode.HALF_UP);
+    } else {
+      return BigDecimal.ZERO;
+    }
+  }
+
+  @Override
   public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount) {
-    if (invoice != null) {
-      if (invoice.getFinancialDiscount() != null) {
-        AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
-        if (invoice.getFinancialDiscount().getDiscountBaseSelect()
-                == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-            && (invoice.getOperationTypeSelect()
-                    == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            && accountConfig.getPurchFinancialDiscountTax() != null) {
-          if (amount.longValue() > 0) {
-            return amount
-                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
-                .multiply(
-                    accountConfig.getPurchFinancialDiscountTax().getActiveTaxLine().getValue())
-                .divide(
-                    accountConfig
-                        .getPurchFinancialDiscountTax()
-                        .getActiveTaxLine()
-                        .getValue()
-                        .add(new BigDecimal(1)),
-                    RETURN_SCALE, RoundingMode.HALF_UP);
-          }
-          return invoice
-              .getInTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
-              .multiply(accountConfig.getPurchFinancialDiscountTax().getActiveTaxLine().getValue())
-              .divide(
-                  accountConfig
-                      .getPurchFinancialDiscountTax()
-                      .getActiveTaxLine()
-                      .getValue()
-                      .add(new BigDecimal(1)),
-                  RETURN_SCALE, RoundingMode.HALF_UP);
-        } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
-                == FinancialDiscountRepository.DISCOUNT_BASE_VAT
-            && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-                || invoice.getOperationTypeSelect()
-                    == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
-            && accountConfig.getSaleFinancialDiscountTax() != null) {
-          if (amount.longValue() > 0) {
-            return amount
-                .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
-                .multiply(accountConfig.getSaleFinancialDiscountTax().getActiveTaxLine().getValue())
-                .divide(
-                    accountConfig
-                        .getSaleFinancialDiscountTax()
-                        .getActiveTaxLine()
-                        .getValue()
-                        .add(new BigDecimal(1)),
-                    RETURN_SCALE, RoundingMode.HALF_UP);
-          }
-          return invoice
-              .getInTaxTotal()
-              .multiply(invoice.getFinancialDiscountRate().divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP))
-              .multiply(accountConfig.getSaleFinancialDiscountTax().getActiveTaxLine().getValue())
-              .divide(
-                  accountConfig
-                      .getSaleFinancialDiscountTax()
-                      .getActiveTaxLine()
-                      .getValue()
-                      .add(new BigDecimal(1)),
-                  RETURN_SCALE, RoundingMode.HALF_UP);
-        }
-      }
+    return calculateFinancialDiscountTaxAmountUnscaled(invoice, amount)
+        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal calculateFinancialDiscountTaxAmountUnscaled(
+      Invoice invoice, BigDecimal amount) {
+    if (invoice == null
+        || invoice.getFinancialDiscount() == null
+        || invoice.getFinancialDiscount().getDiscountBaseSelect()
+            != FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal financialDiscountAmount = calculateFinancialDiscountAmountUnscaled(invoice, amount);
+
+    AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
+    if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        && accountConfig.getPurchFinancialDiscountTax() != null) {
+      return financialDiscountAmount.multiply(
+          accountConfig.getPurchFinancialDiscountTax().getActiveTaxLine().getValue());
+    } else if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        && accountConfig.getSaleFinancialDiscountTax() != null) {
+      return financialDiscountAmount.multiply(
+          accountConfig.getSaleFinancialDiscountTax().getActiveTaxLine().getValue());
     }
     return BigDecimal.ZERO;
   }
 
-  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount) {
-    return calculateFinancialDiscountAmount(invoice, amount)
-        .add(calculateFinancialDiscountTaxAmount(invoice, amount));
+  protected BigDecimal computeBaseAmount(Invoice invoice, BigDecimal amount) {
+    if (amount.signum() > 0) {
+      return amount;
+    } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
+      return invoice.getExTaxTotal();
+    } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return invoice.getInTaxTotal();
+    } else {
+      return BigDecimal.ZERO;
+    }
   }
 
+  @Override
+  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount) {
+    return (calculateFinancialDiscountAmountUnscaled(invoice, amount)
+            .add(calculateFinancialDiscountTaxAmountUnscaled(invoice, amount)))
+        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+  }
+
+  @Override
   public BigDecimal calculateAmountRemainingInPayment(
-      Invoice invoice, Boolean apply, BigDecimal amount) {
-    if (apply && invoice != null) {
+      Invoice invoice, boolean apply, BigDecimal amount) {
+    if (apply) {
       return invoice
           .getAmountRemaining()
-          .subtract(calculateFinancialDiscountTaxAmount(invoice, amount))
-          .subtract(calculateFinancialDiscountAmount(invoice, amount));
+          .subtract(calculateFinancialDiscountTaxAmountUnscaled(invoice, amount))
+          .subtract(calculateFinancialDiscountAmountUnscaled(invoice, amount))
+          .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return invoice.getAmountRemaining();
   }
 
   public boolean applyFinancialDiscount(Invoice invoice) {
-	  return (invoice != null && invoice.getFinancialDiscountDeadlineDate() != null
-			  && invoice.getFinancialDiscountDeadlineDate().compareTo(appBaseService.getTodayDate())>= 0);
+    return (invoice != null
+        && invoice.getFinancialDiscountDeadlineDate() != null
+        && invoice
+                .getFinancialDiscountDeadlineDate()
+                .compareTo(appBaseService.getTodayDate(invoice.getCompany()))
+            >= 0);
   }
 
-  public String setAmountTitle(Boolean applyFinancialDiscount) {
+  public String setAmountTitle(boolean applyFinancialDiscount) {
     if (applyFinancialDiscount) {
       return I18n.get("Financial discount deducted");
     }
