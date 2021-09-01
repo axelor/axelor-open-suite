@@ -25,12 +25,16 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
@@ -101,10 +105,11 @@ public class BankReconciliationController {
         moveLineRepository
             .all()
             .filter(
-                "self.isSelectedBankReconciliation = true AND self.move.journal = :journal AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
+                "(self.date >= :fromDate OR self.dueDate >= :fromDate) AND (self.date <= :toDate OR self.dueDate <= :toDate) AND self.isSelectedBankReconciliation = true AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
             .bind("cashAccount", br.getCashAccount())
             .bind("statusSelect", MoveRepository.STATUS_CANCELED)
-            .bind("journal", br.getJournal())
+            .bind("fromDate", br.getFromDate())
+            .bind("toDate", br.getToDate())
             .fetch();
     if (br.getBankReconciliationLineList().stream()
                 .filter(line -> line.getIsSelectedBankReconciliation())
@@ -400,5 +405,39 @@ public class BankReconciliationController {
                   "The journal is required. Some entries from the reconciliation have an empty moveLine and an account filled"));
       }
     }
+  }
+
+  public void onChangeBankStatement(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    boolean uniqueBankDetails = true;
+    BankDetails bankDetails = null;
+    if (bankReconciliation.getBankStatement() != null) {
+      bankReconciliation.setToDate(bankReconciliation.getBankStatement().getToDate());
+      bankReconciliation.setFromDate(bankReconciliation.getBankStatement().getFromDate());
+      List<BankStatementLine> bankStatementLines =
+          Beans.get(BankStatementLineRepository.class)
+              .findByBankStatement(bankReconciliation.getBankStatement())
+              .fetch();
+      for (BankStatementLine bankStatementLine : bankStatementLines) {
+        if (bankDetails == null) {
+          bankDetails = bankStatementLine.getBankDetails();
+        }
+        if (!bankDetails.equals(bankStatementLine.getBankDetails())) {
+          uniqueBankDetails = false;
+        }
+      }
+      if (uniqueBankDetails) {
+        bankReconciliation.setBankDetails(bankDetails);
+      }
+      else
+    	  bankReconciliation.setBankDetails(null);
+      response.setValues(bankReconciliation);
+    }
+  }
+
+  public void setBankStatementIsFullyReconciled(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    Beans.get(BankStatementService.class)
+        .setIsFullyReconciled(bankReconciliation.getBankStatement());
   }
 }

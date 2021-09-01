@@ -181,6 +181,7 @@ public class BankReconciliationService {
 
     move.setPartner(bankStatementRule.getPartner());
     move.setCurrency(bankReconciliationLine.getBankStatementLine().getCurrency());
+    move.setCompanyCurrency(move.getCompany().getCurrency());
     move.setPaymentMode(bankStatementRule.getAccountManagement().getPaymentMode());
     move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
     move.setFunctionalOriginSelect(MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
@@ -278,11 +279,10 @@ public class BankReconciliationService {
               if (tempMoveLine != null) {
                 if (tempMoveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
                   movesOngoingReconciledBalance =
-                      movesOngoingReconciledBalance.add(tempMoveLine.getBankReconciledAmount());
+                      movesOngoingReconciledBalance.add(brl.getCredit().add(brl.getDebit()));
                 } else {
                   movesOngoingReconciledBalance =
-                      movesOngoingReconciledBalance.subtract(
-                          tempMoveLine.getBankReconciledAmount());
+                      movesOngoingReconciledBalance.subtract(brl.getCredit().add(brl.getDebit()));
                 }
               }
             }
@@ -540,9 +540,11 @@ public class BankReconciliationService {
         moveLineRepository
             .all()
             .filter(
-                "self.account = :cashAccount AND self.move.statusSelect != :statusSelect AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
+                "(self.date >= :fromDate OR self.dueDate >= :fromDate) AND (self.date <= :toDate OR self.dueDate <= :toDate) AND self.account = :cashAccount AND self.move.statusSelect != :statusSelect AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
             .bind("statusSelect", MoveRepository.STATUS_CANCELED)
             .bind("cashAccount", bankReconciliation.getCashAccount())
+            .bind("fromDate", bankReconciliation.getFromDate())
+            .bind("toDate", bankReconciliation.getToDate())
             .fetch();
     BigInteger dateMargin =
         BigInteger.valueOf(
@@ -575,7 +577,8 @@ public class BankReconciliationService {
           String query =
               computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
           if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query))) {
-        	  bankReconciliationLine = updateBankReconciliationLine(bankReconciliationLine, moveLine, bankStatementQuery);
+            bankReconciliationLine =
+                updateBankReconciliationLine(bankReconciliationLine, moveLine, bankStatementQuery);
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
             moveLines.remove(moveLine);
             break;
