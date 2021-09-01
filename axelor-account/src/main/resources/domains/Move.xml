@@ -81,6 +81,9 @@
       <field name="companyCurrency" />
       <field name="ignoreInAccountingOk" />
       <field name="ignoreInDebtRecoveryOk" />
+      <field name="originDate"/>
+      <field name="origin"/>
+      <field name="description"/>
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
       <message if="statusSelect == 2" tag="info">Accounted move</message>

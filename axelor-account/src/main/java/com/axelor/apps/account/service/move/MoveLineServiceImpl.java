@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -49,6 +50,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -90,6 +92,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected CompanyConfigService companyConfigService;
   protected MoveLineRepository moveLineRepository;
   protected TaxPaymentMoveLineService taxPaymentMoveLineService;
+  protected TaxLineRepository taxLineRepository;
+  protected TaxService taxService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -101,7 +105,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       CurrencyService currencyService,
       CompanyConfigService companyConfigService,
       MoveLineRepository moveLineRepository,
-      TaxPaymentMoveLineService taxPaymentMoveLineService) {
+      TaxPaymentMoveLineService taxPaymentMoveLineService,
+      TaxLineRepository taxLineRepository,
+      TaxService taxService) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -111,6 +117,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.companyConfigService = companyConfigService;
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
+    this.taxLineRepository = taxLineRepository;
+    this.taxService = taxService;
   }
 
   @Override
@@ -1318,5 +1326,18 @@ public class MoveLineServiceImpl implements MoveLineService {
           unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
     }
     return moveLine;
+  }
+
+  @Override
+  public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException {
+    TaxLine taxLine = null;
+    LocalDate date = moveLine.getDate();
+    if (date == null) date = moveLine.getDueDate();
+    if (moveLine.getAccount() != null) {
+      if (moveLine.getAccount().getDefaultTax() != null) {
+        taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
+      }
+    }
+    return taxLine;
   }
 }

@@ -44,7 +44,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -53,22 +52,13 @@ import java.util.List;
 @Singleton
 public class MoveLineController {
 
-  protected MoveService moveService;
-  protected MoveLineService moveLineService;
-
-  @Inject
-  public MoveLineController(MoveService moveService, MoveLineService moveLineService) {
-    this.moveService = moveService;
-    this.moveLineService = moveLineService;
-  }
-
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
 
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
     try {
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-        moveLine = moveLineService.computeAnalyticDistribution(moveLine);
+        moveLine = Beans.get(MoveLineService.class).computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
@@ -82,7 +72,7 @@ public class MoveLineController {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
+      moveLine = Beans.get(MoveLineService.class).createAnalyticDistributionWithTemplate(moveLine);
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
     } catch (Exception e) {
@@ -96,7 +86,7 @@ public class MoveLineController {
     moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
 
     try {
-      moveLineService.usherProcess(moveLine);
+      Beans.get(MoveLineService.class).usherProcess(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -148,7 +138,7 @@ public class MoveLineController {
       }
 
       if (!moveLineList.isEmpty()) {
-        moveLineService.reconcileMoveLinesWithCacheManagement(moveLineList);
+        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -213,7 +203,7 @@ public class MoveLineController {
 
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine = moveLineService.computeTaxAmount(moveLine);
+      moveLine = Beans.get(MoveLineService.class).computeTaxAmount(moveLine);
       response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -275,7 +265,8 @@ public class MoveLineController {
       if (ObjectUtils.isEmpty(partner)) {
         response.setError(I18n.get("Please select a partner"));
       } else {
-        Account accountingAccount = moveService.getAccountingAccountFromAccountConfig(move);
+        Account accountingAccount =
+            Beans.get(MoveService.class).getAccountingAccountFromAccountConfig(move);
 
         if (accountingAccount != null) {
           response.setValue("account", accountingAccount);
@@ -284,8 +275,10 @@ public class MoveLineController {
           }
         }
 
-        TaxLine taxLine = moveService.getTaxLine(move, moveLine, accountingAccount);
+        TaxLine taxLine =
+            Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
         if (taxLine != null) response.setValue("taxLine", taxLine);
+        else response.setValue("taxLine", null);
       }
     }
   }
@@ -303,7 +296,6 @@ public class MoveLineController {
     if (moveLine.getAccount() != null) {
       if (moveLine.getAccount().getUseForPartnerBalance()) readonly = true;
     }
-    System.err.println(readonly);
     response.setAttr("partner", "readonly", readonly);
   }
 }

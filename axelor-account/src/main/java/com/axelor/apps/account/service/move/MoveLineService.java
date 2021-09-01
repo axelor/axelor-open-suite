@@ -145,4 +145,6 @@ public interface MoveLineService {
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 
   public MoveLine setCurrencyAmount(MoveLine moveLine);
+
+  public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException;
 }

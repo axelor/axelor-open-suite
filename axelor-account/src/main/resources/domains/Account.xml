@@ -58,6 +58,8 @@
       <field name="analyticDistributionAuthorized" />
       <field name="isTaxAuthorizedOnMoveLine" />
       <field name="isTaxRequiredOnMoveLine" />
+      <field name="commonPosition"/>
+      <field name="defaultTax"/>
     </track>
 
 

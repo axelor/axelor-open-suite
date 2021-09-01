@@ -42,7 +42,7 @@
     <field name="date" width="100" onChange="account-move-line-group-date-onchange" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"  onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0"
-      onChange="action-move-line-method-compute-analytic-distribution,action-account-move-line-method-set-partner-readonly" />
+      onChange="action-account-move-line-account-group-on-change" />
     <field name="currencyAmount" onChange="action-move-line-record-set-debitcredit" readonlyIf="!isOtherCurrency"/>
     <field name="currencyRate" onChange="action-move-line-record-set-debitcredit" readonlyIf="!isOtherCurrency"/>
     <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0" />
@@ -395,6 +395,12 @@
     <action name="action-move-line-attrs-domain-partner" if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'" />
     <action name="action-account-move-line-method-set-partner-readonly"/>
   </action-group>
+  
+  <action-group name="action-account-move-line-account-group-on-change">
+    <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-account-move-line-method-set-partner-readonly"/>
+    <action name="action-move-line-method-get-account-informations"/>
+  </action-group>
 
   <action-group name="account-move-line-group-date-onchange">
     <action name="account-move-line-record-date-onchange" />
@@ -496,7 +502,7 @@
     <field name="debit" expr="eval: currencyRate * currencyAmount" if="debit != 0" />
     <field name="credit" expr="eval: currencyRate * currencyAmount" if="credit != 0" />
   </action-record>
-
+  
   <action-attrs name="action-move-line-attrs-hidden-reconcileLists">
     <attribute name="hidden" for="reconcileLists" expr="eval: __parent__?.statusSelect == 1" if="eval: __parent__?.statusSelect != null" />
   </action-attrs>
@@ -551,6 +557,10 @@
 
   <action-method name="action-move-line-method-description-required">
     <call class="com.axelor.apps.account.web.MoveLineController" method="descriptionRequired" />
+  </action-method>
+  
+  <action-method name="action-account-move-line-method-update-tax-move-line">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxMoveLine" />
   </action-method>
 
   <search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
