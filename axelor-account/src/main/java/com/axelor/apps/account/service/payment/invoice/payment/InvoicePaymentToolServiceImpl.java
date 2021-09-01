@@ -104,9 +104,10 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         BigDecimal paymentAmount = invoicePayment.getAmount();
         if (invoicePayment.getApplyFinancialDiscount()) {
           paymentAmount =
-              invoicePayment
-                  .getFinancialDiscountAmount()
-                  .add(invoicePayment.getFinancialDiscountTaxAmount());
+              paymentAmount.add(
+                  invoicePayment
+                      .getFinancialDiscountAmount()
+                      .add(invoicePayment.getFinancialDiscountTaxAmount()));
         }
         amountPaid =
             amountPaid.add(
