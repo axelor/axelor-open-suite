@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -470,54 +470,63 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="columnName">partner</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">partner</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">journal_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">journal_code</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">journal_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">move_reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">move_reference</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">move_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_val</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_val</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">date_val</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">description</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">account_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">account_code</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">account_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">moveline_currency</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">moveline_currency</text-property>
+                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">moveline_currency</text-property>
                 </structure>
             </list-property>
@@ -664,6 +673,7 @@ LEFT JOIN account_service_type ServiceType ON (MoveLine.service_type = ServiceTy
 LEFT JOIN account_move Move ON (MoveLine.Move = Move.id)
 LEFT JOIN account_account Account ON (MoveLine.account = Account.id)
 LEFT JOIN account_journal Journal ON (Move.journal = Journal.id)
+LEFT JOIN account_journal_type JournalType ON (Journal.journal_type = JournalType.id)
 LEFT JOIN account_accounting_report AccountingReport on (AccountingReport.id = ?)
 WHERE (AccountingReport.currency = Move.company_currency)
 AND (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from)
@@ -674,6 +684,8 @@ AND (
   ((MoveLine.service_type IS NULL OR ServiceType.code = 'NDAS') AND MoveLine.das2activity IS NOT NULL)
   OR (MoveLine.das2activity IS NULL AND MoveLine.service_type IS NOT NULL AND ServiceType.code != 'NDAS')
 )
+AND Move.status_select = 3
+AND JournalType.code = 'ACH'
 order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name;
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -693,6 +705,9 @@ order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name;
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
+        <design:inputAttributes>
+          <design:elementAttributes/>
+        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
@@ -1800,7 +1815,7 @@ order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name;
                                         <property name="borderLeftStyle">none</property>
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
-                                        <property name="textAlign">left</property>
+                                        <property name="textAlign">right</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
@@ -1836,7 +1851,7 @@ order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name;
                                         <property name="borderLeftStyle">none</property>
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
-                                        <property name="textAlign">left</property>
+                                        <property name="textAlign">right</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>

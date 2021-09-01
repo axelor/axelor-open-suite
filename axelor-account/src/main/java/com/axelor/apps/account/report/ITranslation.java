@@ -681,6 +681,8 @@ public interface ITranslation {
       "AccountingReportType20.credit"; /*)*/
   public static final String ACCOUNTING_REPORT_20_DEBIT = /*$$(*/
       "AccountingReportType20.debit"; /*)*/
+  public static final String ACCOUNTING_REPORT_20_DESCRIPTION = /*$$(*/
+      "AccountingReportType20.description"; /*)*/
   public static final String ACCOUNTING_REPORT_20_FROM =
       /*$$(*/ "AccountingReportType20.from"; /*)*/
   public static final String ACCOUNTING_REPORT_20_JOURNAL =
