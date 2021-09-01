@@ -492,7 +492,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       this.addAnalyticToMoveLine(
           fixedAsset.getAnalyticDistributionTemplate(), chargeAccountDebitMoveLine);
 
-      if (cumulativeDepreciationAmount != null) {
+      if (cumulativeDepreciationAmount != null && cumulativeDepreciationAmount.signum() > 0) {
         // Creating accounting debit move line for deprecation account
         MoveLine deprecationAccountDebitMoveLine =
             new MoveLine(
