@@ -1077,14 +1077,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected BigDecimal computeBaseAmount(Invoice invoice, BigDecimal amount) {
     if (amount.signum() > 0) {
       return amount;
-    } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
-        == FinancialDiscountRepository.DISCOUNT_BASE_HT) {
-      return invoice.getExTaxTotal();
-    } else if (invoice.getFinancialDiscount().getDiscountBaseSelect()
-        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
-      return invoice.getInTaxTotal();
     } else {
-      return BigDecimal.ZERO;
+      return invoice.getAmountRemaining();
     }
   }
 
@@ -1122,5 +1116,51 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return I18n.get("Financial discount deducted");
     }
     return I18n.get("Amount");
+  }
+
+  @Override
+  public InvoicePayment computeDatasForFinancialDiscount(
+      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount) {
+
+    if (invoice.getFinancialDiscountDeadlineDate() != null) {
+      invoicePayment.setFinancialDiscountDeadlineDate(invoice.getFinancialDiscountDeadlineDate());
+    }
+    if (invoice.getFinancialDiscount() != null) {
+      invoicePayment.setFinancialDiscount(invoice.getFinancialDiscount());
+    }
+    BigDecimal amount = invoicePayment.getAmount();
+    invoicePayment = changeFinancialDiscountAmounts(invoicePayment, invoice, amount);
+    invoicePayment.setAmount(
+        calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
+
+    return invoicePayment;
+  }
+
+  @Override
+  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice) {
+
+    if (invoicePayment
+            .getAmount()
+            .add(calculateFinancialDiscountTotalAmount(invoice, invoicePayment.getAmount()))
+            .longValue()
+        > invoice.getAmountRemaining().longValue()) {
+      invoicePayment.setAmount(
+          calculateAmountRemainingInPayment(
+              invoice, invoicePayment.getApplyFinancialDiscount(), new BigDecimal(0)));
+    } else {
+      invoicePayment =
+          changeFinancialDiscountAmounts(invoicePayment, invoice, invoicePayment.getAmount());
+    }
+    return invoicePayment;
+  }
+
+  public InvoicePayment changeFinancialDiscountAmounts(
+      InvoicePayment invoicePayment, Invoice invoice, BigDecimal amount) {
+    invoicePayment.setFinancialDiscountAmount(calculateFinancialDiscountAmount(invoice, amount));
+    invoicePayment.setFinancialDiscountTaxAmount(
+        calculateFinancialDiscountTaxAmount(invoice, amount));
+    invoicePayment.setFinancialDiscountTotalAmount(
+        calculateFinancialDiscountTotalAmount(invoice, amount));
+    return invoicePayment;
   }
 }

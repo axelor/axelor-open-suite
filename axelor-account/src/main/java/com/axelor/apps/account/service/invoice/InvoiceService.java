@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -300,4 +301,9 @@ public interface InvoiceService {
 
   @CallMethod
   public String setAmountTitle(boolean applyFinancialDiscount);
+
+  public InvoicePayment computeDatasForFinancialDiscount(
+      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount);
+
+  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice);
 }

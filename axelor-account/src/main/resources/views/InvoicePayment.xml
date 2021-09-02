@@ -21,7 +21,7 @@
         onNew="action-invoice-payment-group-new">
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
 			<field name="typeSelect" showIf="id" colSpan="12" />
-            <field name="amount" onChange="action-invoice-payment-on-change-amount"/>
+            <field name="amount" onChange="action-invoice-payment-method-change-amount"/>
             <field name="currency" canEdit="false"
                 form-view="currency-form" grid-view="currency-grid"/>
             <field name="paymentMode" canEdit="false"
@@ -43,7 +43,7 @@
             <field name="invoice" hidden="true"/>
 		</panel>
 		<panel name="discountPanel" title="Financial Discount" if="__config__.app.getApp('account').getManageFinancialDiscount()">
-			<field name="applyFinancialDiscount" readonlyIf="!financialDiscount" onChange="action-record-on-change-invoice-payment-financial-discount,action-attrs-on-change-invoice-payment-financial-discount"/>
+			<field name="applyFinancialDiscount" readonlyIf="!financialDiscount" onChange="action-invoice-payment-method-change-amount,action-attrs-on-change-invoice-payment-financial-discount"/>
 			<field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
 			<field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount" readonly="true"/>
 			<field name="financialDiscountAmount" showIf="applyFinancialDiscount" readonly="true"/>
@@ -132,6 +132,10 @@
 	<action-method name="action-invoice-payment-method-new-discount">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="computeDatasForFinancialDiscount"/>
 	</action-method>
+	
+	<action-method name="action-invoice-payment-method-change-amount">
+        <call class="com.axelor.apps.account.web.InvoicePaymentController" method="changeAmount"/>
+	</action-method>
 
     <action-method name="action-invoice-payment-method-cancel">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="cancelInvoicePayment"/>
@@ -152,15 +156,7 @@
 	<action-method name="action-invoice-payment-method-check-and-save">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
 	</action-method>
-	
-	<action-method name="action-method-invoice-payment-calculate-discount">
-		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
-	</action-method>
-	
-	<action-method name="action-invoice-payment-on-change-amount">
-		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="changeAmount"/>
-	</action-method>
-	
+
 	<action-record name="action-record-on-change-invoice-payment-financial-discount" model="com.axelor.apps.account.db.InvoicePayment">
 		<field name="amount" expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount,amount)" if="invoice"/>	
 	</action-record>

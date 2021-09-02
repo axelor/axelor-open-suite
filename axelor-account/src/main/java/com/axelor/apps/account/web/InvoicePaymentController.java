@@ -44,7 +44,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,33 +204,15 @@ public class InvoicePaymentController {
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
       if (invoiceId > 0) {
         Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
-        Boolean applyDiscount = Beans.get(InvoiceService.class).applyFinancialDiscount(invoice);
-        response.setValue("applyFinancialDiscount", applyDiscount);
-        response.setValue(
-            "amount",
-            Beans.get(InvoiceService.class)
-                .calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
-        if (invoice.getFinancialDiscountDeadlineDate() != null) {
-          response.setValue(
-              "financialDiscountDeadlineDate", invoice.getFinancialDiscountDeadlineDate());
-        }
-        if (invoice.getFinancialDiscount() != null) {
-          response.setValue("financialDiscount", invoice.getFinancialDiscount());
-        }
-        response.setValue(
-            "financialDiscountAmount",
-            Beans.get(InvoiceService.class)
-                .calculateFinancialDiscountAmount(invoice, new BigDecimal(0)));
-        response.setValue(
-            "financialDiscountTaxAmount",
-            Beans.get(InvoiceService.class)
-                .calculateFinancialDiscountTaxAmount(invoice, new BigDecimal(0)));
-        response.setValue(
-            "financialDiscountTotalAmount",
-            Beans.get(InvoiceService.class)
-                .calculateFinancialDiscountTotalAmount(invoice, new BigDecimal(0)));
-        response.setAttr(
-            "amount", "title", Beans.get(InvoiceService.class).setAmountTitle(applyDiscount));
+        InvoiceService invoiceService = Beans.get(InvoiceService.class);
+        Boolean applyDiscount = invoiceService.applyFinancialDiscount(invoice);
+        invoicePayment =
+            invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, applyDiscount);
+
+        invoicePayment.setApplyFinancialDiscount(applyDiscount);
+
+        response.setValues(invoicePayment);
+        response.setAttr("amount", "title", invoiceService.setAmountTitle(applyDiscount));
       }
 
     } catch (Exception e) {
@@ -247,33 +228,11 @@ public class InvoicePaymentController {
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
       if (invoiceId > 0) {
         Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
-        Boolean applyDiscount = Beans.get(InvoiceService.class).applyFinancialDiscount(invoice);
+        InvoiceService invoiceService = Beans.get(InvoiceService.class);
 
-        if (invoicePayment
-                .getAmount()
-                .add(
-                    Beans.get(InvoiceService.class)
-                        .calculateFinancialDiscountTotalAmount(invoice, new BigDecimal(0)))
-                .longValue()
-            > invoice.getAmountRemaining().longValue()) {
-          response.setValue(
-              "amount",
-              Beans.get(InvoiceService.class)
-                  .calculateAmountRemainingInPayment(invoice, applyDiscount, new BigDecimal(0)));
-        } else {
-          response.setValue(
-              "financialDiscountAmount",
-              Beans.get(InvoiceService.class)
-                  .calculateFinancialDiscountAmount(invoice, invoicePayment.getAmount()));
-          response.setValue(
-              "financialDiscountTaxAmount",
-              Beans.get(InvoiceService.class)
-                  .calculateFinancialDiscountTaxAmount(invoice, invoicePayment.getAmount()));
-          response.setValue(
-              "financialDiscountTotalAmount",
-              Beans.get(InvoiceService.class)
-                  .calculateFinancialDiscountTotalAmount(invoice, invoicePayment.getAmount()));
-        }
+        invoicePayment = invoiceService.changeAmount(invoicePayment, invoice);
+
+        response.setValues(invoicePayment);
       }
 
     } catch (Exception e) {
