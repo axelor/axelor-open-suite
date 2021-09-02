@@ -325,6 +325,30 @@ public class BankReconciliationController {
     }
   }
 
+  public void printBankReconciliation2(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    try {
+      String fileLink =
+          ReportFactory.createReport(
+                  IReport.BANK_RECONCILIATION, "Bank Reconciliation" + "-${date}")
+              .addParam("BankReconciliationId", bankReconciliation.getId())
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "Timezone",
+                  bankReconciliation.getCompany() != null
+                      ? bankReconciliation.getCompany().getTimezone()
+                      : null)
+              .addFormat("pdf")
+              .toAttach(bankReconciliation)
+              .generate()
+              .getFileLink();
+
+      response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setJournalDomain(ActionRequest request, ActionResponse response) {
 
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
@@ -428,9 +452,9 @@ public class BankReconciliationController {
       }
       if (uniqueBankDetails) {
         bankReconciliation.setBankDetails(bankDetails);
+      } else {
+        bankReconciliation.setBankDetails(null);
       }
-      else
-    	  bankReconciliation.setBankDetails(null);
       response.setValues(bankReconciliation);
     }
   }

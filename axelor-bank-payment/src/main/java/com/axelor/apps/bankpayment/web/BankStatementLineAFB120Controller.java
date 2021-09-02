@@ -38,7 +38,6 @@ public class BankStatementLineAFB120Controller {
     Context context = request.getContext();
     LocalDate fromDate = LocalDate.parse((String) context.get("fromDate"));
     LocalDate toDate = LocalDate.parse((String) context.get("toDate"));
-    String extention = (String) context.get("");
     BankDetails bankDetails = (BankDetails) context.get("bankDetails");
     BankStatementLineAFB120 initialLine =
         bankStatementLineAFB120Service.getFirstInitialLineBetweenDate(
@@ -53,9 +52,7 @@ public class BankStatementLineAFB120Controller {
       } else {
         fromDate = initialLine.getOperationDate();
         toDate = finalLine.getOperationDate();
-        String fileLink =
-            bankStatementLineAFB120Service.print(
-                initialLine, finalLine, fromDate, toDate, bankDetails, extention);
+        String fileLink = "";
         String name = "";
         response.setView(ActionView.define(name).add("html", fileLink).map());
         response.setReload(true);

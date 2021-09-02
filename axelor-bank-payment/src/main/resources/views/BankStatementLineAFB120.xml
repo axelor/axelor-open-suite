@@ -4,9 +4,6 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="bank-statement-line-afb-120-grid" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="-bankStatement.toDate,bankDetails,-sequence" edit-icon="true">
-	    <toolbar>
-      <button onClick="action-bank-statement-line-afb120-view-print-wizard" name="printExportBtn" title="Print"/>
-    </toolbar>  
     <hilite color="info" if="lineTypeSelect == 1"/>
 	  <hilite color="primary" if="lineTypeSelect == 3"/>
 	  <hilite color="danger" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &gt;= debit &amp;&amp; amountRemainToReconcile &gt;= credit"/>
