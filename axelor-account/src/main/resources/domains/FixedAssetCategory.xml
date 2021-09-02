@@ -9,21 +9,21 @@
   
   	<string name="name" title="Name" required="true"/>
   	
-	<many-to-one name="fixedAssetType" ref="com.axelor.apps.account.db.FixedAssetType" title="Fixed asset type"/>
+	<many-to-one name="fixedAssetType"  massUpdate="true" ref="com.axelor.apps.account.db.FixedAssetType" title="Fixed asset type"/>
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	
 	<string name="computationMethodSelect" title="Computation method" selection="account.fixed.type.category.computation.method.select"/>
 	
 	<decimal name="degressiveCoef" title="Degressive coef"/>
 	
-	<boolean name="isValidateFixedAsset" title="Validate automatically fixed assets generated from invoice"/>
+	<boolean name="isValidateFixedAsset" massUpdate="true" title="Validate automatically fixed assets generated from invoice"/>
 	
 	<integer name="periodicityInMonth" title="Periodicity in month" default="12"/>
 	<integer name="numberOfDepreciation" title="Number of depreciation" default="1"/>
 	<integer name="durationInMonth" title="Duration in month"/>
 	<string  name="depreciationPlanSelect" title="Depreciation Plan" selection="account.fixed.asset.depreciation.plan"/>
 	<integer name="periodicityTypeSelect" title="Periodicity Type" selection="account.fixed.asset.periodicity.type" default="12"/>
-	<integer name="firstDepreciationDateInitSelect" title="Reference Date for first depreciation" selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
+	<integer name="firstDepreciationDateInitSelect" massUpdate="true" title="Reference Date for first depreciation" selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
 	
 	<boolean name="isProrataTemporis" title="Prorata temporis"/>
 	<boolean name="isUSProrataTemporis" title="Use US prorata temoris" default="false"/>
