@@ -283,6 +283,24 @@ public class MoveLineController {
     }
   }
 
+  public void refreshAccountInformation(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    if (parentContext != null) {
+      Move move = parentContext.asType(Move.class);
+      Account accountingAccount = moveLine.getAccount();
+      if (accountingAccount != null) {
+        if (!accountingAccount.getUseForPartnerBalance()) {
+          response.setValue("partner", null);
+        }
+      }
+
+      TaxLine taxLine = Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
+      if (taxLine != null) response.setValue("taxLine", taxLine);
+      else response.setValue("taxLine", null);
+    }
+  }
+
   public void setIsOtherCurrency(ActionRequest request, ActionResponse response) {
     Context parent = request.getContext().getParent();
     Move move = parent.asType(Move.class);

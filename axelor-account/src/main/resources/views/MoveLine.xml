@@ -399,7 +399,7 @@
   <action-group name="action-account-move-line-account-group-on-change">
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-account-move-line-method-set-partner-readonly"/>
-    <action name="action-move-line-method-get-account-informations"/>
+    <action name="action-move-line-method-refresh-account-informations"/>
   </action-group>
 
   <action-group name="account-move-line-group-date-onchange">
@@ -427,7 +427,11 @@
   <action-method name="action-move-line-method-get-account-informations">
     <call class="com.axelor.apps.account.web.MoveLineController" method="loadAccountInformation" />
   </action-method>
-
+  
+  <action-method name="action-move-line-method-refresh-account-informations">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="refreshAccountInformation" />
+  </action-method>
+  
   <action-attrs name="action-move-line-attrs-readonly">
     <attribute name="readonly" for="informationsPanel" expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4" />
     <attribute name="readonly" for="irrecoverableDetailsPanel,currency,othersPanel" expr="eval: move?.statusSelect == 3 " />

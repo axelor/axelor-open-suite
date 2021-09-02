@@ -888,4 +888,11 @@ public class MoveServiceImpl implements MoveService {
     }
     return null;
   }
+
+  @Override
+  @Transactional
+  public void generateCounterpartMoveLine(Move move) {
+    move.addMoveLineListItem(createCounterpartMoveLine(move));
+    moveRepository.save(move);
+  }
 }

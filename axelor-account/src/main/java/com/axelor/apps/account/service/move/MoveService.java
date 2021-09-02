@@ -107,4 +107,6 @@ public interface MoveService {
   Account getAccountingAccountFromAccountConfig(Move move);
 
   TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount);
+
+  void generateCounterpartMoveLine(Move move);
 }

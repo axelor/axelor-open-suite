@@ -312,13 +312,14 @@ public class MoveController {
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Move move = request.getContext().asType(Move.class);
+    Move move =
+        Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
     if (move.getMoveLineList() != null
         && !move.getMoveLineList().isEmpty()
         && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
             || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
       Beans.get(MoveService.class).getMoveLineService().autoTaxLineGenerate(move);
-      response.setValue("moveLineList", move.getMoveLineList());
+      response.setReload(true);
     }
   }
 
@@ -379,14 +380,10 @@ public class MoveController {
 
   public void generateCounterpart(ActionRequest request, ActionResponse response) {
 
-    try {
-      Move moveView = request.getContext().asType(Move.class);
-      moveView.addMoveLineListItem(
-          Beans.get(MoveService.class).createCounterpartMoveLine(moveView));
-      response.setValue("moveLineList", moveView.getMoveLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Move move =
+        Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+    Beans.get(MoveService.class).generateCounterpartMoveLine(move);
+    response.setReload(true);
   }
 
   public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {

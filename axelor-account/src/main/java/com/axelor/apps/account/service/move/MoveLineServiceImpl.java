@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -1094,6 +1095,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
+  @Transactional
   public void autoTaxLineGenerate(Move move) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
@@ -1125,8 +1127,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
         String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
 
-        moveLine.setCredit(BigDecimal.ZERO);
-        moveLine.setDebit(BigDecimal.ZERO);
+        //        moveLine.setCredit(BigDecimal.ZERO);
+        //        moveLine.setDebit(BigDecimal.ZERO);
         map.put(sourceTaxLineKey, moveLine);
         moveLineItr.remove();
         continue;
@@ -1206,6 +1208,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
 
     moveLineList.addAll(newMap.values());
+    Beans.get(MoveRepository.class).save(move);
   }
 
   @Override
