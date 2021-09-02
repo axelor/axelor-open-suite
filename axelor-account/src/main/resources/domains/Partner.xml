@@ -33,6 +33,9 @@
 		
 		<boolean name="hasBlockedAccount" title="Account blocked" />
 		<boolean name="hasManuallyBlockedAccount" title="Account manually blocked" />
+		
+		<many-to-one ref="com.axelor.apps.account.db.FinancialDiscount" name="financialDiscount" title="Financial discount" help="Field allowing to make this partner profit a discount and define its parameters"/>
+		
     </entity>
 
 </domain-models>

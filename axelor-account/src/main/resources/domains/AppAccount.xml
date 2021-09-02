@@ -28,6 +28,7 @@
         <boolean name="paymentVouchersOnInvoice" />
         
         <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
+        <boolean name="manageFinancialDiscount" title="Manage financial discount" help="Field allowing to activate the financial discounts"/>
         
 		<extra-code><![CDATA[
 	
@@ -52,6 +53,7 @@
 			<field name="partnerBalConfigSelect" on="UPDATE"/>
 			<field name="manageAdvancePaymentInvoice" on="UPDATE"/>
 			<field name="paymentVouchersOnInvoice" on="UPDATE"/>
+			<field name="manageFinancialDiscount" on="UPDATE"/>
 		</track>
 	</entity>
 
