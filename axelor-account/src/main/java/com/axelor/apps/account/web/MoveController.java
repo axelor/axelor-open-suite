@@ -40,7 +40,6 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,7 +50,6 @@ import java.util.Map;
 public class MoveController {
 
   private static final String IS_SIMULATED_MOVE = "_isSimulatedMove";
-
 
   public void validate(ActionRequest request, ActionResponse response) {
 
@@ -144,7 +142,8 @@ public class MoveController {
               .order("date")
               .fetch();
       if (!moveList.isEmpty()) {
-        boolean error = Beans.get(MoveService.class).getMoveValidateService().validateMultiple(moveList);
+        boolean error =
+            Beans.get(MoveService.class).getMoveValidateService().validateMultiple(moveList);
         if (error) response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
         else {
           response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
@@ -219,7 +218,8 @@ public class MoveController {
           if (moveList.size() == 1) {
             this.removeOneMove(moveList.get(0), response);
           } else {
-            int errorNB = Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
+            int errorNB =
+                Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
             if (errorNB > 0) {
               response.setFlash(
                   String.format(
@@ -312,7 +312,7 @@ public class MoveController {
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Move move = Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+    Move move = request.getContext().asType(Move.class);
     if (move.getMoveLineList() != null
         && !move.getMoveLineList().isEmpty()
         && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
@@ -381,7 +381,8 @@ public class MoveController {
 
     try {
       Move moveView = request.getContext().asType(Move.class);
-      moveView.addMoveLineListItem(Beans.get(MoveService.class).createCounterpartMoveLine(moveView));
+      moveView.addMoveLineListItem(
+          Beans.get(MoveService.class).createCounterpartMoveLine(moveView));
       response.setValue("moveLineList", moveView.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -390,7 +391,8 @@ public class MoveController {
 
   public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
     try {
-      Move move = Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move =
+          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
       Beans.get(MoveService.class).setOriginAndDescriptionOnMoveLineList(move);
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {

@@ -1124,9 +1124,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       if (sourceTaxLine != null) {
 
         String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
-        
-//        moveLine.setCredit(BigDecimal.ZERO);
-//        moveLine.setDebit(BigDecimal.ZERO);
+
+        moveLine.setCredit(BigDecimal.ZERO);
+        moveLine.setDebit(BigDecimal.ZERO);
         map.put(sourceTaxLineKey, moveLine);
         moveLineItr.remove();
         continue;
