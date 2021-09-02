@@ -53,7 +53,7 @@
 	<date name="firstServiceDate" title="First Service Date"/>
 	<date name="failoverDate" title="Failover Date"/>
 	<decimal name="pastDepreciation" title="Past Depreciation"/>
-	<integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>
+	<integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>  
 	<decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
 	<decimal name="accountingValue" title="Accounting value"/>
 	<decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
