@@ -47,76 +47,15 @@ public class AnalyticAxisController {
       if (!ObjectUtils.isEmpty(idList)) {
         String idListStr =
             idList.stream().map(id -> id.toString()).collect(Collectors.joining(","));
-        response.setAttr(
-            "analyticGrouping1",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id = "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping2",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping3",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping4",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping5",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping6",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping7",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping8",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping9",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
-        response.setAttr(
-            "analyticGrouping10",
-            "domain",
-            "self.id NOT IN ("
-                + idListStr
-                + ") AND self.analyticAxis.id =  "
-                + analyticAxis.getId());
+        for (int i = 1; i <= 10; i++) {
+          response.setAttr(
+              "analyticGrouping" + i,
+              "domain",
+              "self.id NOT IN ("
+                  + idListStr
+                  + ") AND self.analyticAxis.id = "
+                  + analyticAxis.getId());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

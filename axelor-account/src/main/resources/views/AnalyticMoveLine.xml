@@ -170,8 +170,7 @@
     	<attribute name="domain" for="analyticJournal" expr="eval: &quot;self.company.id = ${analyticAxis.company.id} &quot;" if="analyticAxis &amp;&amp; analyticAxis?.company"/>
     	<attribute name="domain" for="analyticJournal" expr="eval: null" if="!(analyticAxis &amp;&amp; analyticAxis?.company)"/>
     	<attribute name="domain" for="analyticAccount" expr="eval: &quot;self.analyticAxis.id = ${analyticAxis.id} &quot;" if="analyticAxis"/>
-    	<attribute name="readonly" for="analyticAccount" expr="eval: true" if="!analyticAxis"/>
-    	<attribute name="readonly" for="analyticAccount" expr="eval: false" if="analyticAxis"/>
+    	<attribute name="readonly" for="analyticAccount" expr="eval: !analyticAxis" if="eval: !analyticAxis"/>
     	<attribute name="value" for="analyticAccount" expr="eval: null" if="!analyticAxis"/>
     </action-attrs>
 

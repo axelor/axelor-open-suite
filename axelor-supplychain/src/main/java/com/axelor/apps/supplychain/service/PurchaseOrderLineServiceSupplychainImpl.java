@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -54,7 +55,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
   @Inject protected AppAccountService appAccountService;
 
-  @Inject protected AccountConfigRepository accountConfigRepository;
+  @Inject protected AccountConfigService accountConfigService;
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -104,10 +105,10 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
   }
 
   public PurchaseOrderLine getAndComputeAnalyticDistribution(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
-    if (accountConfigRepository
-            .findByCompany(purchaseOrder.getCompany())
+    if (accountConfigService
+            .getAccountConfig(purchaseOrder.getCompany())
             .getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return purchaseOrderLine;

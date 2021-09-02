@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
@@ -76,7 +77,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AppAccountService appAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AppSupplychainService appSupplychainService;
-  protected AccountConfigRepository accountConfigRepository;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -90,7 +91,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
-      AccountConfigRepository accountConfigRepository) {
+      AccountConfigService accountConfigService) {
     super(
         currencyService,
         priceListService,
@@ -102,7 +103,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
-    this.accountConfigRepository = accountConfigRepository;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -119,10 +120,10 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   public SaleOrderLine getAndComputeAnalyticDistribution(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    if (accountConfigRepository
-            .findByCompany(saleOrder.getCompany())
+    if (accountConfigService
+            .getAccountConfig(saleOrder.getCompany())
             .getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;

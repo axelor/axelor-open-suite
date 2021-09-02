@@ -18,8 +18,10 @@ public class AccountAnalyticRulesRepository extends AnalyticRulesRepository {
 
   public List<AnalyticAccount> findAnalyticAccountByAccounts(Account account) {
     List<AnalyticAccount> analyticAccountList = new ArrayList<AnalyticAccount>();
-    if (findByAccounts(account) != null) {
-      for (AnalyticRules analyticRule : findByAccounts(account)) {
+    List<AnalyticRules> analyticRulesList = findByAccounts(account);
+
+    if (analyticRulesList != null && !analyticRulesList.isEmpty()) {
+      for (AnalyticRules analyticRule : analyticRulesList) {
         if (analyticRule.getAnalyticAccountSet() != null) {
           for (AnalyticAccount analyticAccount : analyticRule.getAnalyticAccountSet()) {
             analyticAccountList.add(analyticAccount);

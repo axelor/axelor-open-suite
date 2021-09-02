@@ -111,7 +111,6 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
   protected PaymentModeService paymentModeService;
-  protected AccountConfigRepository accountConfigRepository;
 
   @Inject
   public ExpenseServiceImpl(
@@ -125,8 +124,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       AnalyticMoveLineService analyticMoveLineService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      PaymentModeService paymentModeService,
-      AccountConfigRepository accountConfigRepository) {
+      PaymentModeService paymentModeService) {
 
     this.moveService = moveService;
     this.expenseRepository = expenseRepository;
@@ -139,14 +137,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.paymentModeService = paymentModeService;
-    this.accountConfigRepository = accountConfigRepository;
   }
 
   @Override
-  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense) {
+  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
+      throws AxelorException {
 
-    if (accountConfigRepository
-            .findByCompany(expense.getCompany())
+    if (accountConfigService
+            .getAccountConfig(expense.getCompany())
             .getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return expenseLine;

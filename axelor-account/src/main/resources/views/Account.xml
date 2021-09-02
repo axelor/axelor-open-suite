@@ -63,7 +63,6 @@
 		      	<field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
 		      	<field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
 		        <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" onChange="action-on-change-distribution-template-account" domain="self.company = :company"/>
-		      	<field name="$checkAnalyticAccount" hidden="true" expr="call:com.axelor.apps.account.service.AccountService:checkAnalyticAccount(__self__)"/>
 		      </panel>  
 		    </panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">

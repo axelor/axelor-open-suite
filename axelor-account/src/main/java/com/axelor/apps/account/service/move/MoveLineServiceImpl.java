@@ -33,7 +33,6 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -44,10 +43,12 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
@@ -57,6 +58,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -100,8 +102,10 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AnalyticAccountRepository analyticAccountRepository;
   protected AccountRepository accountRepository;
-  protected AccountConfigRepository accountConfigRepository;
+  protected AccountConfigService accountConfigService;
   protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
+  protected AnalyticMoveLineServiceImpl analyticMoveLineServiceImpl;
+  protected ListToolService listToolService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -118,8 +122,10 @@ public class MoveLineServiceImpl implements MoveLineService {
       AnalyticMoveLineRepository analyticMoveLineRepository,
       AnalyticAccountRepository analyticAccountRepository,
       AccountRepository accountRepository,
-      AccountConfigRepository accountConfigRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository) {
+      AccountConfigService accountConfigService,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      AnalyticMoveLineServiceImpl analyticMoveLineServiceImpl,
+      ListToolService listToolService) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -133,8 +139,10 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.analyticAccountRepository = analyticAccountRepository;
     this.accountRepository = accountRepository;
-    this.accountConfigRepository = accountConfigRepository;
+    this.accountConfigService = accountConfigService;
     this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
+    this.analyticMoveLineServiceImpl = analyticMoveLineServiceImpl;
+    this.listToolService = listToolService;
   }
 
   @Override
@@ -1314,46 +1322,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     return moveLine;
   }
 
-  public AnalyticMoveLine computeAnalyticMoveLine(
-      MoveLine moveLine, AnalyticAccount analyticAccount) {
-    AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
-    if (accountConfigRepository
-            .findByCompany(analyticAccount.getAnalyticAxis().getCompany())
-            .getAnalyticJournal()
-        != null) {
-
-      analyticMoveLine.setAnalyticJournal(
-          accountConfigRepository
-              .findByCompany(analyticAccount.getAnalyticAxis().getCompany())
-              .getAnalyticJournal());
-    }
-
-    analyticMoveLine.setDate(moveLine.getDate());
-    analyticMoveLine.setPercentage(new BigDecimal(100));
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
-    if (moveLine.getAccount() != null) {
-      analyticMoveLine.setAccount(moveLine.getAccount());
-      if (moveLine.getAccount().getAccountType() != null) {
-        analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
-      }
-    } else {
-      analyticMoveLine.setAccount(accountRepository.find((long) 1));
-    }
-
-    if (analyticAccount != null) {
-      analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
-      analyticMoveLine.setAnalyticAccount(analyticAccount);
-    }
-    if (moveLine.getCredit().intValue() > 0) {
-      analyticMoveLine.setAmount(moveLine.getCredit());
-    } else if (moveLine.getDebit().intValue() > 0) {
-      analyticMoveLine.setAmount(moveLine.getDebit());
-    }
-    return analyticMoveLine;
-  }
-
   @Override
-  public MoveLine analyzeMoveLine(MoveLine moveLine) {
+  public MoveLine analyzeMoveLine(MoveLine moveLine) throws AxelorException {
     if (moveLine != null) {
 
       if (moveLine.getAnalyticMoveLineList() == null) {
@@ -1365,59 +1335,52 @@ public class MoveLineServiceImpl implements MoveLineService {
       AnalyticMoveLine analyticMoveLine = null;
 
       if (moveLine.getAxis1AnalyticAccount() != null) {
-        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis1AnalyticAccount());
+        analyticMoveLine =
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
+                moveLine, moveLine.getAxis1AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis2AnalyticAccount() != null) {
-        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis2AnalyticAccount());
+        analyticMoveLine =
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
+                moveLine, moveLine.getAxis2AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis3AnalyticAccount() != null) {
-        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis3AnalyticAccount());
+        analyticMoveLine =
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
+                moveLine, moveLine.getAxis3AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis4AnalyticAccount() != null) {
-        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis4AnalyticAccount());
+        analyticMoveLine =
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
+                moveLine, moveLine.getAxis4AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis5AnalyticAccount() != null) {
-        analyticMoveLine = computeAnalyticMoveLine(moveLine, moveLine.getAxis5AnalyticAccount());
+        analyticMoveLine =
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
+                moveLine, moveLine.getAxis5AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
     }
     return moveLine;
   }
 
-  public <T> List<T> intersection(List<T> list1, List<T> list2) {
-    List<T> list = new ArrayList<T>();
-
-    for (T t : list1) {
-      if (list2.contains(t)) {
-        list.add(t);
-      }
-    }
-
-    return list;
-  }
-
   @Override
-  public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine) {
-    if (moveLine != null) {
-      if (moveLine.getMove() != null) {
-        if (moveLine.getMove().getCompany() != null) {
-          if (accountConfigRepository.findByCompany(moveLine.getMove().getCompany()) != null) {
-            return (position
-                <= accountConfigRepository
-                    .findByCompany(moveLine.getMove().getCompany())
-                    .getNbrOfAnalyticAxisSelect());
-          }
-        }
-      }
-    }
-    return false;
+  public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine)
+      throws AxelorException {
+    return moveLine != null
+        && moveLine.getMove() != null
+        && moveLine.getMove().getCompany() != null
+        && position
+            <= accountConfigService
+                .getAccountConfig(moveLine.getMove().getCompany())
+                .getNbrOfAnalyticAxisSelect();
   }
 
-  public List<Long> setAxisDomains(MoveLine moveLine, int position) {
+  public List<Long> setAxisDomains(MoveLine moveLine, int position) throws AxelorException {
     List<Long> analyticAccountListByAxis = new ArrayList<Long>();
     List<Long> analyticAccountListByRules = new ArrayList<Long>();
 
@@ -1426,8 +1389,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     if (compareNbrOfAnalyticAxisSelect(position, moveLine)) {
 
       for (AnalyticAxisByCompany axis :
-          accountConfigRepository
-              .findByCompany(moveLine.getMove().getCompany())
+          accountConfigService
+              .getAccountConfig(moveLine.getMove().getCompany())
               .getAnalyticAxisByCompanyList()) {
         if (axis.getOrderSelect() == position) {
           analyticAxis = axis.getAnalyticAxis();
@@ -1439,15 +1402,14 @@ public class MoveLineServiceImpl implements MoveLineService {
         analyticAccountListByAxis.add(analyticAccount.getId());
       }
       if (moveLine.getAccount() != null) {
-        if (!accountAnalyticRulesRepository
-            .findAnalyticAccountByAccounts(moveLine.getAccount())
-            .isEmpty()) {
-          for (AnalyticAccount analyticAccount :
-              accountAnalyticRulesRepository.findAnalyticAccountByAccounts(moveLine.getAccount())) {
+        List<AnalyticAccount> analyticAccountList =
+            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(moveLine.getAccount());
+        if (!analyticAccountList.isEmpty()) {
+          for (AnalyticAccount analyticAccount : analyticAccountList) {
             analyticAccountListByRules.add(analyticAccount.getId());
           }
           analyticAccountListByAxis =
-              intersection(analyticAccountListByAxis, analyticAccountListByRules);
+              listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
         }
       }
     }

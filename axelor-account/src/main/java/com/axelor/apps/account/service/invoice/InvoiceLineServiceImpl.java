@@ -97,8 +97,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.accountConfigRepository = accountConfigRepository;
   }
 
+  @Override
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
-      InvoiceLine invoiceLine, Invoice invoice) {
+      InvoiceLine invoiceLine, Invoice invoice) throws AxelorException {
     if (accountConfigRepository
             .findByCompany(invoice.getCompany())
             .getAnalyticDistributionTypeSelect()

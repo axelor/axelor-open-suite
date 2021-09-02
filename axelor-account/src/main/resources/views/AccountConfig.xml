@@ -255,7 +255,7 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="analyticPanel" showIf="AppAccount.manageAnalyticAccounting = true" title="Analytic">
+			<panel name="analyticPanel" if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
 				<field name="manageAnalyticAccounting"/>
 				<field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
 				<field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>

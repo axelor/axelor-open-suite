@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -92,7 +93,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected UnitConversionService unitConversionService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected ReconcileService reconcileService;
-  protected AccountConfigRepository accountConfigRepository;
+  protected AccountConfigService accountConfigService;
   protected int counter = 0;
 
   @Inject
@@ -114,7 +115,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       UnitConversionService unitConversionService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       ReconcileService reconcileService,
-      AccountConfigRepository accountConfigRepository) {
+      AccountConfigService accountConfigService) {
 
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -133,7 +134,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.unitConversionService = unitConversionService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.reconcileService = reconcileService;
-    this.accountConfigRepository = accountConfigRepository;
+    this.accountConfigService = accountConfigService;
   }
 
   public List<StockMove> getStockMoves(
@@ -564,9 +565,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     return moveLine;
   }
 
-  protected void getAndComputeAnalyticDistribution(Product product, Move move, MoveLine moveLine) {
+  protected void getAndComputeAnalyticDistribution(Product product, Move move, MoveLine moveLine)
+      throws AxelorException {
 
-    if (accountConfigRepository.findByCompany(move.getCompany()).getAnalyticDistributionTypeSelect()
+    if (accountConfigService.getAccountConfig(move.getCompany()).getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return;
     }

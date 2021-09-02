@@ -33,17 +33,13 @@
     </action-group>
     
     <action-validate name="action-validate-analytic-distribution-template-check-company">
-    	<alert if="analyticDistributionLineList.any{!(it.analyticAxis.company == company)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company."/>
-    	<alert if="analyticDistributionLineList.any{!(it.analyticAxis.company == company)} &amp;&amp; !analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticAxis doesn't belong to the select company."/>
-    	<alert if="!analyticDistributionLineList.any{!(it.analyticAxis.company == company)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticJournal doesn't belong to the select company."/>
+    	<alert if="analyticDistributionLineList.any{!(it.analyticAxis.company == company OR it.analyticAxis.company IS NULL)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company."/>
+    	<alert if="analyticDistributionLineList.any{!(it.analyticAxis.company == company OR it.analyticAxis.company IS NULL)} &amp;&amp; !analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticAxis doesn't belong to the select company."/>
+    	<alert if="!analyticDistributionLineList.any{!(it.analyticAxis.company == company OR it.analyticAxis.company IS NULL)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticJournal doesn't belong to the select company."/>
     </action-validate>
     
     <search-filters name="analytic-distribution-template-filters" model="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic distribution template filters">
     	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     </search-filters>
-    
-    <action-validate name="action-validate-analytic-distribution-template-check-percentages">
-    	<alert if="" message=""/>
-    </action-validate>
-    
+
 </object-views>
