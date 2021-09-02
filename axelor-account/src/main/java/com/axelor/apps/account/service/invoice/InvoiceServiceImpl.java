@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -106,7 +105,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
   protected MoveToolService moveToolService;
-  protected AccountConfigRepository accountConfigRepository;
   protected AppBaseService appBaseService;
 
   private final int RETURN_SCALE = 2;
@@ -124,7 +122,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      AccountConfigRepository accountConfigRepository,
       AppBaseService appBaseService) {
 
     this.validateFactory = validateFactory;
@@ -137,7 +134,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
-    this.accountConfigRepository = accountConfigRepository;
     this.appBaseService = appBaseService;
   }
 
@@ -988,19 +984,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount) {
+  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException {
     return calculateFinancialDiscountAmountUnscaled(invoice, amount)
         .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal calculateFinancialDiscountAmountUnscaled(
-      Invoice invoice, BigDecimal amount) {
+  protected BigDecimal calculateFinancialDiscountAmountUnscaled(Invoice invoice, BigDecimal amount)
+      throws AxelorException {
     if (invoice == null || invoice.getFinancialDiscount() == null) {
       return BigDecimal.ZERO;
     }
 
     BigDecimal baseAmount = computeBaseAmount(invoice, amount);
-    AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
 
     BigDecimal baseAmountByRate =
         baseAmount.multiply(
@@ -1043,13 +1040,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount) {
+  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException {
     return calculateFinancialDiscountTaxAmountUnscaled(invoice, amount)
         .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal calculateFinancialDiscountTaxAmountUnscaled(
-      Invoice invoice, BigDecimal amount) {
+      Invoice invoice, BigDecimal amount) throws AxelorException {
     if (invoice == null
         || invoice.getFinancialDiscount() == null
         || invoice.getFinancialDiscount().getDiscountBaseSelect()
@@ -1059,7 +1057,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     BigDecimal financialDiscountAmount = calculateFinancialDiscountAmountUnscaled(invoice, amount);
 
-    AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
     if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
         && accountConfig.getPurchFinancialDiscountTax() != null) {
@@ -1083,7 +1081,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount) {
+  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException {
     return (calculateFinancialDiscountAmountUnscaled(invoice, amount)
             .add(calculateFinancialDiscountTaxAmountUnscaled(invoice, amount)))
         .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
@@ -1091,7 +1090,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public BigDecimal calculateAmountRemainingInPayment(
-      Invoice invoice, boolean apply, BigDecimal amount) {
+      Invoice invoice, boolean apply, BigDecimal amount) throws AxelorException {
     if (apply) {
       return invoice
           .getAmountRemaining()
@@ -1120,7 +1119,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public InvoicePayment computeDatasForFinancialDiscount(
-      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount) {
+      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount)
+      throws AxelorException {
 
     if (invoice.getFinancialDiscountDeadlineDate() != null) {
       invoicePayment.setFinancialDiscountDeadlineDate(invoice.getFinancialDiscountDeadlineDate());
@@ -1137,7 +1137,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice) {
+  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
+      throws AxelorException {
 
     if (invoicePayment
             .getAmount()
@@ -1155,7 +1156,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   public InvoicePayment changeFinancialDiscountAmounts(
-      InvoicePayment invoicePayment, Invoice invoice, BigDecimal amount) {
+      InvoicePayment invoicePayment, Invoice invoice, BigDecimal amount) throws AxelorException {
     invoicePayment.setFinancialDiscountAmount(calculateFinancialDiscountAmount(invoice, amount));
     invoicePayment.setFinancialDiscountTaxAmount(
         calculateFinancialDiscountTaxAmount(invoice, amount));

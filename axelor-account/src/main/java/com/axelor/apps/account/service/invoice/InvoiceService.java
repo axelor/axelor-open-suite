@@ -287,15 +287,18 @@ public interface InvoiceService {
 
   public String getPfpValidatorUserDomain(Invoice invoice);
 
-  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount);
+  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException;
 
-  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount);
+  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException;
 
-  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount);
+  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException;
 
   @CallMethod
   public BigDecimal calculateAmountRemainingInPayment(
-      Invoice invoice, boolean apply, BigDecimal amount);
+      Invoice invoice, boolean apply, BigDecimal amount) throws AxelorException;
 
   public boolean applyFinancialDiscount(Invoice invoice);
 
@@ -303,7 +306,8 @@ public interface InvoiceService {
   public String setAmountTitle(boolean applyFinancialDiscount);
 
   public InvoicePayment computeDatasForFinancialDiscount(
-      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount);
+      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount) throws AxelorException;
 
-  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice);
+  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
+      throws AxelorException;
 }

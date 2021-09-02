@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -74,7 +73,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      AccountConfigRepository accountConfigRepository,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService) {
     super(
@@ -88,7 +86,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceLineService,
         accountConfigService,
         moveToolService,
-        accountConfigRepository,
         appBaseService);
     this.invoiceLineRepo = invoiceLineRepo;
   }
