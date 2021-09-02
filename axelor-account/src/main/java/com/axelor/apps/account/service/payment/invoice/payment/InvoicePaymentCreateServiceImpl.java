@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -246,7 +247,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   @Override
   @Transactional
-  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails) {
+  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
+      throws AxelorException {
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoice,
@@ -256,6 +258,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
+    manageFinancialDiscount(invoicePayment, invoice, true);
     return invoicePaymentRepository.save(invoicePayment);
   }
 
@@ -289,7 +292,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber)
+      String chequeNumber,
+      boolean applyDiscount)
       throws AxelorException {
 
     List<InvoicePayment> invoicePaymentList = new ArrayList<>();
@@ -302,12 +306,28 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       InvoicePayment invoicePayment =
           this.createInvoicePayment(
               invoice, paymentMode, companyBankDetails, paymentDate, bankDepositDate, chequeNumber);
+
+      manageFinancialDiscount(invoicePayment, invoice, applyDiscount);
+
       invoicePaymentList.add(invoicePayment);
       invoice.addInvoicePaymentListItem(invoicePayment);
       invoicePaymentToolService.updateAmountPaid(invoice);
     }
 
     return invoicePaymentList;
+  }
+
+  private void manageFinancialDiscount(
+      InvoicePayment invoicePayment, Invoice invoice, boolean applyDiscount)
+      throws AxelorException {
+    if (Beans.get(AppAccountService.class).getAppAccount().getManageFinancialDiscount()
+        && applyDiscount) {
+      InvoiceService invoiceService = Beans.get(InvoiceService.class);
+      Boolean apply = invoiceService.applyFinancialDiscount(invoice);
+      invoicePayment =
+          invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, apply);
+      invoicePayment.setApplyFinancialDiscount(apply);
+    }
   }
 
   @Override

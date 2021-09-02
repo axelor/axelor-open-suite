@@ -82,6 +82,10 @@
             <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4 || paymentMode.typeSelect == 3"/>
             <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
             <field name="description" colSpan="12"/>
+	        <panel name="discountPanel" title="Financial Discount" if="__config__.app.getApp('account').getManageFinancialDiscount()">
+				<field name="applyFinancialDiscount" readonlyIf="!financialDiscount"/>
+				<field name="financialDiscount" hidden="true"/>
+			</panel>
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoicesSelected" hidden="true"/>
        		<button name="validateBtn" title="Validate" onClick="action-invoice-payment-method-validate-mass-payment,close"/>
@@ -115,6 +119,8 @@
 	  <field name="typeSelect" expr="2"/>
 	  <field name="_selectedInvoices" expr="eval: _invoices"/>
    	  <field name="_invoice" expr="eval: __repo__(Invoice).find(_invoices[0])"/>
+   	  <field name="applyFinancialDiscount" expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) AND self.financialDiscount is not null &quot;,_invoices).fetchOne() != null"/>
+	  <field name="financialDiscount" expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) AND self.financialDiscount is not null &quot;,_invoices).fetchOne()?.financialDiscount"/>
 	</action-record>
 
 

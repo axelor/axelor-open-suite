@@ -172,7 +172,8 @@ public class InvoicePaymentController {
                 invoicePayment.getCompanyBankDetails(),
                 invoicePayment.getPaymentDate(),
                 invoicePayment.getBankDepositDate(),
-                invoicePayment.getChequeNumber());
+                invoicePayment.getChequeNumber(),
+                invoicePayment.getApplyFinancialDiscount());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
