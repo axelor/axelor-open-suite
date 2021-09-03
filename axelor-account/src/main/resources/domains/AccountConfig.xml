@@ -168,10 +168,15 @@
 		<boolean name="hasLatePaymentAccountBlocking" title="Late payment account blocking"/>
 		<integer name="numberOfDaysBeforeAccountBlocking" title="Number of days before account blocking"/>
 		
+		<!-- Discount accounts -->
 		<many-to-one name="purchFinancialDiscountAccount" ref="com.axelor.apps.account.db.Account" title="Purchase financial discount account" />
 		<many-to-one name="saleFinancialDiscountAccount" ref="com.axelor.apps.account.db.Account" title="Sale financial discount account" /> 
 		<many-to-one name="purchFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax" title="Purchase financial discount tax" />
 		<many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax" title="Sale financial discount tax" />
+		
+		<!-- Holdback accounts -->
+		<many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Holdback Customer account"/>
+        <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account" title="Holdback Supplier account"/> 
 
     <finder-method name="findByCompany" using="company"/>
 

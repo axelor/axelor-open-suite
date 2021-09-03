@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="invoice-term-grid" title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
+    <hilite color="danger" if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0" />
+    <field name="sequence"/>
+    <field name="name" />
+    <field name="dueDate" />
+    <field name="amount" />
+    <field name="amountRemaining" />
+    <field name="isHoldBack" />
+    <field name="percentage"/>
+    <field name="paymentMode"/>
+    <field name="invoice.financialDiscountBase"/>
+    <field name="invoice.financialDiscountRate"/>
+  </grid>
+
+  <grid name="invoice-term-invoice-grid" title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate">
+    <field name="name" />
+    <field name="dueDate"/>
+    <field name="amount"/>
+    <field name="paymentMode"/>
+    <field name="amountRemaining"/>
+    <field name="isPaid"/>
+    <field name="isHoldBack"/>
+    <field name="percentage"/>
+    <field name="invoice.financialDiscountRate"/>
+    <field name="invoice.finDiscountDeadlineDate"/>
+  </grid>
+
+  <form name="invoice-term-invoice-form" title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
+    <panel name="mainPanel">
+      <field name="sequence"/>
+      <field name="name" readonly="true" />
+      <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" readonly="true" />
+      <field name="isPaid" readonly="true" />
+      <field name="isHoldBack" readonly="true" />
+      <field name="percentage" readonly="true"/>
+      <field name="dueDate" readonlyIf="(invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3 ||
+       ((invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid)"/>
+      <field name="estimatedPaymentDate" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')" />
+      <field name="amount" readonly="true" />
+      <field name="amountRemaining" readonly="true" />
+      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
+      <field name="invoice.discountRate"/>
+      <field name="invoice.finDiscountDeadlineDate"/>
+      <field name="financialDiscount"/>
+      <field name="paymentMode"/>
+      <field name="invoice.company" hidden="true" />
+    </panel>
+  </form>
+
+  <form name="invoice-term-form" title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
+    <panel name="mainPanel">
+      <field name="sequence"/>
+      <field name="name" readonly="true" />
+      <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" readonly="true" />
+      <field name="isPaid" readonly="true" />
+      <field name="isHoldBack" readonly="true" />
+      <field name="percentage" readonly="true"/>
+      <field name="dueDate" />
+      <field name="estimatedPaymentDate" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')" />
+      <field name="amount" readonly="true" />
+      <field name="amountRemaining" readonly="true" />
+      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true" showIf="moveLine" />
+      <field name="invoice.discountRate"/>
+      <field name="invoice.finDiscountDeadlineDate"/>
+      <field name="financialDiscount"/>
+      <field name="paymentMode"/>
+      <field name="invoice.company" hidden="true" />
+    </panel>
+  </form>
+
+</object-views>

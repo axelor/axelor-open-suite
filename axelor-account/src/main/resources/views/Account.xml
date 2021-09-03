@@ -53,6 +53,7 @@
 				<spacer name="parentAccountSpacer" colSpan="6"/>
 				<field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
 				<field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
+				<field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3" showIf="useForPartnerBalance"/>
 				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
 				<field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4" onChange="action-account-record-uncheck-analytic-distribution-required"/>
 				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized"/>
