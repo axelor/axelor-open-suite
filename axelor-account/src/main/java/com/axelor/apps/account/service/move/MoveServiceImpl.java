@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -824,6 +825,12 @@ public class MoveServiceImpl implements MoveService {
       }
     }
 
+    if (move.getPartner().getFiscalPosition() != null) {
+      accountingAccount =
+          Beans.get(FiscalPositionAccountService.class)
+              .getAccount(move.getPartner().getFiscalPosition(), accountingAccount);
+    }
+
     return accountingAccount;
   }
 
@@ -886,7 +893,7 @@ public class MoveServiceImpl implements MoveService {
           }
       }
     }
-    return null;
+    return taxLine;
   }
 
   @Override
