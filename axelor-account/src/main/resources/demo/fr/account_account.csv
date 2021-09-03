@@ -788,7 +788,7 @@
 787;661810;661800;"Intérêts des dettes commerciales";"charge";;1;;;true;true
 788;661880;661800;"Intérêts des dettes diverses";"charge";;1;;;true;true
 789;664000;660;"Pertes sur créances liées à des participations";"charge";;1;;;true;true
-790;665000;660;"Escomptes accordés";"charge";;1;;;true;true
+790;665000;660;"Escomptes accordés";"charge";;1;;;true;false
 791;666000;660;"Pertes de change";"charge";;1;;;true;true
 792;667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"charge";;1;;;true;true
 793;668000;660;"Autres charges financières";"charge";;1;;;true;true
