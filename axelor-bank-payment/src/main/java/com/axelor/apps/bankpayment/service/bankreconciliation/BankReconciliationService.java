@@ -259,10 +259,10 @@ public class BankReconciliationService {
             .order("id")
             .fetch(limit, offset);
     if (bankReconciliations.size() != 0) {
-    	movesReconciledLineBalance =
-                statementReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance());
-        statementReconciledLineBalance =
-        		movesReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance());
+    	statementReconciledLineBalance =
+          statementReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance());
+      movesReconciledLineBalance =
+          movesReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance());
     }
     do {
       for (BankReconciliation br : bankReconciliations) {
