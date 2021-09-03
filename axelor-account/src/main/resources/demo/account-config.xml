@@ -37,6 +37,8 @@
 	
 	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" />
 	
+	<input file="account_paymentConditionLine.csv" separator=";" type="com.axelor.apps.account.db.PaymentConditionLine" search="self.importId = :importId" />
+	
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" />
 	
 	<input file="account_analyticJournal.csv" separator=";" type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId" />
