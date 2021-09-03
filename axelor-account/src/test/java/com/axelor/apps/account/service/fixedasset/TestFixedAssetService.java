@@ -82,7 +82,8 @@ public class TestFixedAssetService {
             fixedAssetDerogatoryLineService,
             fixedAssetDerogatoryLineMoveService,
             fixedAssetFailOverControlService);
-    when(fixedAssetLineServiceFactory.getFixedAssetComputationService(any(Integer.TYPE)))
+    when(fixedAssetLineServiceFactory.getFixedAssetComputationService(
+            any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);
     fixedAssetService =
         new FixedAssetServiceImpl(

@@ -74,4 +74,9 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
     return FixedAssetLineRepository.TYPE_SELECT_IFRS;
   }
+
+  @Override
+  protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
+    return fixedAsset.getFixedAssetCategory().getIsProrataTemporis();
+  }
 }

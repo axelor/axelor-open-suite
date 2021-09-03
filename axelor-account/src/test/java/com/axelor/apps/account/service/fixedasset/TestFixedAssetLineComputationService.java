@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.Before;
@@ -56,7 +57,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeInitialPlannedFixedAssetLineWithoutProrata() {
+  public void testComputeInitialPlannedFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -83,7 +84,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeInitialPlannedFixedAssetLineWithProrata() {
+  public void testComputeInitialPlannedFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -110,7 +111,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputePlannedFixedAssetLineWithoutProrata() {
+  public void testComputePlannedFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -143,7 +144,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputePlannedFixedAssetLineWithProrata() {
+  public void testComputePlannedFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -175,7 +176,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithoutProrata() {
+  public void testComputeLastFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -207,7 +208,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithProrata() {
+  public void testComputeLastFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -239,7 +240,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithUsProrata() {
+  public void testComputeLastFixedAssetLineWithUsProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -271,7 +272,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeFirstDegressiveAssetLine() {
+  public void testComputeFirstDegressiveAssetLine() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
@@ -299,7 +300,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeOngoingDegressiveAssetLine() {
+  public void testComputeOngoingDegressiveAssetLine() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
@@ -333,7 +334,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeOngoingDegressiveAssetLineSwitchToLinear() {
+  public void testComputeOngoingDegressiveAssetLineSwitchToLinear() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,

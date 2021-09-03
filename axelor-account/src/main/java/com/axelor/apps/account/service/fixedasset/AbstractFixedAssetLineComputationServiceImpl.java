@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -45,6 +46,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected abstract Integer getTypeSelect();
 
+  protected abstract Boolean isProrataTemporis(FixedAsset fixedAsset);
+
   @Inject
   public AbstractFixedAssetLineComputationServiceImpl(
       FixedAssetFailOverControlService fixedAssetFailOverControlService) {
@@ -53,7 +56,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   @Override
   public FixedAssetLine computePlannedFixedAssetLine(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) throws AxelorException {
 
     BigDecimal depreciation =
         computeDepreciation(
@@ -76,7 +79,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   @Override
-  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset) {
+  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
+      throws AxelorException {
     LocalDate firstDepreciationDate;
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
@@ -130,7 +134,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       // Theses cases is for when user want to depreciate in one year.
       // This case is if list is not empty when calling this method
       if (getFixedAssetLineList(fixedAsset) != null
-          && getFixedAssetLineList(fixedAsset).size() == getNumberOfDepreciation(fixedAsset) - 1) {
+          && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
         return baseValue;
       }
       if (getFixedAssetLineList(fixedAsset) == null && getNumberOfDepreciation(fixedAsset) == 1) {
@@ -168,8 +172,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     LocalDate acquisitionDate = computeProrataTemporisAcquisitionDate(fixedAsset);
     LocalDate depreciationDate = computeProrataTemporisFirstDepreciationDate(fixedAsset);
 
-    if (fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
-        && !acquisitionDate.equals(depreciationDate)) {
+    if (isProrataTemporis(fixedAsset) && !acquisitionDate.equals(depreciationDate)) {
       prorataTemporis = computeProrataBetween(fixedAsset, acquisitionDate, depreciationDate);
     }
     return prorataTemporis;
@@ -291,10 +294,14 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
             .getAccountingValue()
             .divide(
                 BigDecimal.valueOf(
-                    getNumberOfDepreciation(fixedAsset) - getFixedAssetLineList(fixedAsset).size()),
+                    getNumberOfDepreciation(fixedAsset) - numberOfDepreciationDone(fixedAsset)),
                 RETURNED_SCALE,
                 RoundingMode.HALF_UP);
     return degressiveDepreciation.max(linearDepreciation);
+  }
+
+  protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
+    return getFixedAssetLineList(fixedAsset).size();
   }
 
   protected BigDecimal computeDegressiveDepreciation(BigDecimal baseValue, FixedAsset fixedAsset) {
@@ -330,7 +337,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       if (getFixedAssetLineList(fixedAsset) != null
-          && getFixedAssetLineList(fixedAsset).size() == getNumberOfDepreciation(fixedAsset) - 1) {
+          && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
         depreciation = previousFixedAssetLine.getAccountingValue();
       } else {
         depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine);

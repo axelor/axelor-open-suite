@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -31,8 +32,9 @@ public interface FixedAssetLineComputationService {
    * @param fixedAsset a fixed asset with no lines
    * @param typeSelect typeSelect of the fixedAssetLine
    * @return the created fixed asset line
+   * @throws AxelorException
    */
-  FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset);
+  FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset) throws AxelorException;
 
   /**
    * Compute the next fixed asset line from a fixed asset and the previous line.
@@ -41,9 +43,10 @@ public interface FixedAssetLineComputationService {
    * @param previousFixedAssetLine the previous line
    * @param typeSelect typeSelect of the fixedAssetLine
    * @return the created fixed asset line
+   * @throws AxelorException
    */
   FixedAssetLine computePlannedFixedAssetLine(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine);
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) throws AxelorException;
 
   /**
    * Multiply line by prorata

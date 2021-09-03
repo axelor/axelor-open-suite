@@ -78,4 +78,9 @@ public class FixedAssetLineFiscalComputationServiceImpl
 
     return FixedAssetLineRepository.TYPE_SELECT_FISCAL;
   }
+
+  @Override
+  protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
+    return fixedAsset.getFixedAssetCategory().getIsProrataTemporis();
+  }
 }

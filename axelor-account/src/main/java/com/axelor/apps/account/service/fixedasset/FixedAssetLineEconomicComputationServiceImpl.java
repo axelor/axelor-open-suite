@@ -124,4 +124,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
     return FixedAssetLineRepository.TYPE_SELECT_ECONOMIC;
   }
+
+  @Override
+  protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
+    return fixedAsset.getFixedAssetCategory().getIsProrataTemporis();
+  }
 }

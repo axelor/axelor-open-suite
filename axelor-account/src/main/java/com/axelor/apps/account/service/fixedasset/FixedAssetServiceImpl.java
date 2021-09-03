@@ -37,7 +37,6 @@ import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceF
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -53,7 +52,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -195,7 +193,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
-              FixedAssetLineRepository.TYPE_SELECT_IFRS);
+              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_IFRS);
       FixedAssetLine initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
       fixedAsset.addIfrsFixedAssetLineListItem(initialFiscalFixedAssetLine);
@@ -204,7 +202,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset,
           initialFiscalFixedAssetLine,
           fixedAsset.getIfrsFixedAssetLineList(),
-          FixedAssetLineRepository.TYPE_SELECT_IFRS);
+          fixedAssetLineComputationService);
     }
   }
 
@@ -223,7 +221,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
-              FixedAssetLineRepository.TYPE_SELECT_FISCAL);
+              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
       FixedAssetLine initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
       fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine);
@@ -232,7 +230,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset,
           initialFiscalFixedAssetLine,
           fixedAsset.getFiscalFixedAssetLineList(),
-          FixedAssetLineRepository.TYPE_SELECT_FISCAL);
+          fixedAssetLineComputationService);
     }
   }
   /**
@@ -249,7 +247,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
-              FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       FixedAssetLine initialFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
       fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
@@ -258,7 +256,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset,
           initialFixedAssetLine,
           fixedAsset.getFixedAssetLineList(),
-          FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+          fixedAssetLineComputationService);
     }
   }
 
@@ -266,15 +264,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAsset fixedAsset,
       FixedAssetLine initialFixedAssetLine,
       List<FixedAssetLine> fixedAssetLineList,
-      int typeSelect)
+      FixedAssetLineComputationService fixedAssetLineComputationService)
       throws AxelorException {
 
     // counter to avoid too many iterations in case of a current or future mistake
     int c = 0;
     final int MAX_ITERATION = 1000;
     FixedAssetLine fixedAssetLine = initialFixedAssetLine;
-    FixedAssetLineComputationService fixedAssetLineComputationService =
-        fixedAssetLineServiceFactory.getFixedAssetComputationService(typeSelect);
     while (c < MAX_ITERATION && fixedAssetLine.getAccountingValue().signum() != 0) {
       fixedAssetLine =
           fixedAssetLineComputationService.computePlannedFixedAssetLine(fixedAsset, fixedAssetLine);
@@ -590,111 +586,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         && fixedAsset
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
-      List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
-      Optional<FixedAssetLine> optFixedAssetLine =
-          fixedAssetLineService.findOldestFixedAssetLine(
-              fixedAssetLineList, FixedAssetLineRepository.STATUS_PLANNED, 0);
-
-      if (!optFixedAssetLine.isPresent()) {
-        return;
-      }
-      // We can proceed the next part.
-      // We remove all fixedAssetLine that are not realized.
-      List<FixedAssetLine> linesToRemove =
-          fixedAssetLineList.stream()
-              .filter(
-                  fixedAssetLine ->
-                      fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
-                          && !fixedAssetLine.equals(optFixedAssetLine.get()))
-              .collect(Collectors.toList());
-
-      fixedAssetLineList.removeIf(
-          fixedAssetLine ->
-              fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
-                  && !fixedAssetLine.equals(optFixedAssetLine.get()));
-      fixedAssetLineService.clear(linesToRemove);
-
-      FixedAssetLine firstPlannedFixedAssetLine = optFixedAssetLine.get();
-      firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
-      firstPlannedFixedAssetLine.setImpairmentValue(
-          firstPlannedFixedAssetLine
-              .getAccountingValue()
-              .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue()));
-      Optional<FixedAssetLine> previousLastRealizedFAL =
-          fixedAssetLineService.findNewestFixedAssetLine(
-              fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
-      if (previousLastRealizedFAL.isPresent()) {
-        firstPlannedFixedAssetLine.setCumulativeDepreciation(
-            previousLastRealizedFAL
-                .get()
-                .getCumulativeDepreciation()
-                .add(firstPlannedFixedAssetLine.getDepreciation())
-                .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
-      } else {
-        firstPlannedFixedAssetLine.setCumulativeDepreciation(
-            BigDecimal.ZERO
-                .add(firstPlannedFixedAssetLine.getDepreciation())
-                .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
-      }
-
-      // To recompute we will change value of fixed asset. And we must revert theses change at the
-      // end.
-      BigDecimal originalGrossValue = fixedAsset.getGrossValue();
-      LocalDate originalFirstDepreciationDate = fixedAsset.getFirstDepreciationDate();
-      LocalDate originalFirstServiceDate = fixedAsset.getFirstServiceDate();
-      Integer originalNumberOfDepreciation = fixedAsset.getNumberOfDepreciation();
-      fixedAsset.setGrossValue(correctedAccountingValue);
-      fixedAsset.setFirstDepreciationDate(
-          analyticFixedAssetService.computeFirstDepreciationDate(
-              fixedAsset,
-              DateTool.plusMonths(
-                  firstPlannedFixedAssetLine.getDepreciationDate(),
-                  fixedAsset.getPeriodicityInMonth())));
-      fixedAsset.setFirstServiceDate(fixedAsset.getFirstDepreciationDate());
-      if (fixedAsset
-          .getComputationMethodSelect()
-          .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
-        // In linear mode we udapte number of depreciation because the depreciation is computed
-        // depending on number of depreciation.
-        // So must not count lines that are already in the list
-        // In degressive we do not update number of depreciation because it seems the engine need
-        // the full size for
-        // calculation the full size
-        fixedAsset.setNumberOfDepreciation(
-            fixedAsset.getNumberOfDepreciation() - fixedAssetLineList.size());
-        if (fixedAsset.getNumberOfDepreciation() <= 0) {
-          return;
-        }
-      }
-      updateLines(fixedAsset, firstPlannedFixedAssetLine, fixedAssetLineList);
-      fixedAsset.setGrossValue(originalGrossValue);
-      fixedAsset.setFirstDepreciationDate(originalFirstDepreciationDate);
-      fixedAsset.setFirstServiceDate(originalFirstServiceDate);
-      fixedAsset.setNumberOfDepreciation(originalNumberOfDepreciation);
+      generateAndComputeFixedAssetLines(fixedAsset);
+      generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
       fixedAssetRepo.save(fixedAsset);
     }
-  }
-
-  private void updateLines(
-      FixedAsset fixedAsset,
-      FixedAssetLine firstPlannedFixedAssetLine,
-      List<FixedAssetLine> fixedAssetLineList)
-      throws AxelorException {
-    FixedAssetLine initialFixedAssetLine =
-        fixedAssetLineServiceFactory
-            .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
-            .computeInitialPlannedFixedAssetLine(fixedAsset);
-    initialFixedAssetLine.setCumulativeDepreciation(
-        initialFixedAssetLine
-            .getCumulativeDepreciation()
-            .add(firstPlannedFixedAssetLine.getCumulativeDepreciation()));
-    fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine);
-    generateComputedPlannedFixedAssetLines(
-        fixedAsset,
-        initialFixedAssetLine,
-        fixedAssetLineList,
-        FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
-    generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
   }
 
   /**
@@ -923,17 +818,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset.getFixedAssetDerogatoryLineList();
     if (fixedAssetLineList != null) {
       fixedAssetLineServiceFactory
-          .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
+          .getFixedAssetComputationService(
+              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
           .multiplyLinesBy(fixedAssetLineList, prorata);
     }
     if (fiscalAssetLineList != null) {
       fixedAssetLineServiceFactory
-          .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_FISCAL)
+          .getFixedAssetComputationService(fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL)
           .multiplyLinesBy(fiscalAssetLineList, prorata);
     }
     if (ifrsAssetLineList != null) {
       fixedAssetLineServiceFactory
-          .getFixedAssetComputationService(FixedAssetLineRepository.TYPE_SELECT_IFRS)
+          .getFixedAssetComputationService(fixedAsset, FixedAssetLineRepository.TYPE_SELECT_IFRS)
           .multiplyLinesBy(ifrsAssetLineList, prorata);
     }
     if (fixedAsset
