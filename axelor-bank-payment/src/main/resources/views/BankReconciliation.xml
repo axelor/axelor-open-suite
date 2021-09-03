@@ -79,21 +79,21 @@
         <label name="bankStatementLabel" title="Bank statement" colSpan="4" />
         <spacer colSpan="4" />
         <label name="accountingLabel" title="Accounting" colSpan="4"/>
-        <field name="statementReconciledLineBalance" showTitle="false" colSpan="4"/>
+        <field name="statementReconciledLineBalance" showTitle="false" colSpan="4" readonly="true"/>
         <label name="alreadyPointedLabel" title="Already reconciled" colSpan="4"/>
-        <field name="movesReconciledLineBalance" showTitle="false" colSpan="4"/>
-        <field name="statementUnreconciledLineBalance" showTitle="false" colSpan="4"/>
+        <field name="movesReconciledLineBalance" showTitle="false" colSpan="4" readonly="true"/>
+        <field name="statementUnreconciledLineBalance" showTitle="false" colSpan="4" readonly="true"/>
         <label name="notPointedLabel" title="Not reconciled and onGoing" colSpan="4"/>
-        <field name="movesUnreconciledLineBalance" showTitle="false" colSpan="4"/>
-        <field name="statementOngoingReconciledBalance" showTitle="false" colSpan="4"/>
+        <field name="movesUnreconciledLineBalance" showTitle="false" colSpan="4" readonly="true"/>
+        <field name="statementOngoingReconciledBalance" showTitle="false" colSpan="4" readonly="true"/>
         <label name="balanceLabel" title="Ongoing" colSpan="4"/>
-        <field name="movesOngoingReconciledBalance" showTitle="false" colSpan="4"/>
-        <field name="statementAmountRemainingToReconcile" showTitle="false" colSpan="4"/>
+        <field name="movesOngoingReconciledBalance" showTitle="false" colSpan="4" readonly="true"/>
+        <field name="statementAmountRemainingToReconcile" showTitle="false" colSpan="4" readonly="true"/>
         <label name="selectedLabel" title="Remains to be reconciled" colSpan="4"/>
-        <field name="movesAmountRemainingToReconcile" showTitle="false" colSpan="4"/>
-        <field name="statementTheoreticalBalance" showTitle="false" colSpan="4"/>
+        <field name="movesAmountRemainingToReconcile" showTitle="false" colSpan="4" readonly="true"/>
+        <field name="statementTheoreticalBalance" showTitle="false" colSpan="4" readonly="true"/>
         <label name="newBankBalanceLabel" title="New theoretical balance" colSpan="4"/>
-        <field name="movesTheoreticalBalance" showTitle="false" colSpan="4"/>
+        <field name="movesTheoreticalBalance" showTitle="false" colSpan="4" readonly="true"/>
 
       </panel>
       <label name="balanceEqualLabel" title="Computed balance in accounting and Ending Balance of the statement should be equal to validate the Statement" showIf="computedBalance != movesTheoreticalBalance"
