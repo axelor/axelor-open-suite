@@ -48,6 +48,7 @@ public class BankReconciliationValidateService {
   protected MoveLineService moveLineService;
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
+  protected BankReconciliationService bankReconciliationService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -56,7 +57,8 @@ public class BankReconciliationValidateService {
       MoveLineRepository moveLineRepository,
       MoveLineService moveLineService,
       BankReconciliationRepository bankReconciliationRepository,
-      BankReconciliationLineService bankReconciliationLineService) {
+      BankReconciliationLineService bankReconciliationLineService,
+      BankReconciliationService bankReconciliationService) {
 
     this.moveService = moveService;
     this.moveRepository = moveRepository;
@@ -64,6 +66,7 @@ public class BankReconciliationValidateService {
     this.moveLineService = moveLineService;
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
+    this.bankReconciliationService = bankReconciliationService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -91,30 +94,8 @@ public class BankReconciliationValidateService {
     bankReconciliation.setValidatedByUser(AuthUtils.getUser());
     bankReconciliation.setValidatedDate(
         Beans.get(AppBaseService.class).getTodayDate(bankReconciliation.getCompany()));
-    bankReconciliation = computeEndingBalance(bankReconciliation);
+    bankReconciliation = bankReconciliationService.computeEndingBalance(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
-  }
-
-  protected BankReconciliation computeEndingBalance(BankReconciliation bankReconciliation) {
-    BigDecimal endingBalance = BigDecimal.ZERO;
-    BigDecimal amount = BigDecimal.ZERO;
-    endingBalance = endingBalance.add(bankReconciliation.getStartingBalance());
-    BankStatementLine bankStatementLine;
-    for (BankReconciliationLine bankReconciliationLine :
-        bankReconciliation.getBankReconciliationLineList()) {
-      amount = BigDecimal.ZERO;
-      bankStatementLine = bankReconciliationLine.getBankStatementLine();
-      if (bankStatementLine.getCredit().compareTo(BigDecimal.ZERO) != 0) {
-        amount =
-            bankStatementLine.getCredit().subtract(bankStatementLine.getAmountRemainToReconcile());
-      } else {
-        amount =
-            bankStatementLine.getAmountRemainToReconcile().subtract(bankStatementLine.getDebit());
-      }
-      endingBalance = endingBalance.add(amount);
-    }
-    bankReconciliation.setEndingBalance(endingBalance);
-    return bankReconciliation;
   }
 
   protected void validate(BankReconciliationLine bankReconciliationLine) throws AxelorException {

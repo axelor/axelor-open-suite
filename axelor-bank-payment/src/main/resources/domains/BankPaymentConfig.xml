@@ -22,7 +22,7 @@
         <many-to-one name="natTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence" title="National treasury transfer"/>
         <many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence" title="Other bank order types"/>
         
-        <boolean name="hasAutomaticReconciliation" title="Automatic pointing" />
+        <boolean name="hasAutomaticReconciliation" title="Automatic pointing" help="Field allowing to enable automatic pointing during reconciliation. Pointing can still be done manually when incomplete"/>
         <boolean name="hasAutoMoveFromStatementRule" title="Automatic accounting ?" help="If actived, on the bankReconciliation form, once the button Load Statement will be clicked, accounting of entries will be executed"/> 
         
         <decimal name="bnkStmtAutoReconcileAmountMargin" title="Amount of the semi-interval of confidence for the amounts" min="0.00" max="1000.00"/> 

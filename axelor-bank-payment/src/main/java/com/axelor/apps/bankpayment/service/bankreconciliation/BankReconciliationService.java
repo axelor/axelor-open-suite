@@ -256,7 +256,13 @@ public class BankReconciliationService {
     bankReconciliations =
         bankReconciliationRepository
             .findByBankDetails(bankReconciliation.getBankDetails())
+            .order("id")
             .fetch(limit, offset);
+    if (bankReconciliations.size() != 0) {
+      System.err.println(bankReconciliations.get(0).getStartingBalance());
+      statementReconciledLineBalance =
+          statementReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance());
+    }
     do {
       for (BankReconciliation br : bankReconciliations) {
         for (BankReconciliationLine brl : br.getBankReconciliationLineList()) {
@@ -354,6 +360,7 @@ public class BankReconciliationService {
         statementReconciledLineBalance.add(statementOngoingReconciledBalance));
     bankReconciliation.setMovesTheoreticalBalance(
         movesReconciledLineBalance.add(movesOngoingReconciledBalance));
+    bankReconciliation = computeEndingBalance(bankReconciliation);
     return saveBR(bankReconciliation);
   }
 
@@ -689,6 +696,28 @@ public class BankReconciliationService {
       } else return null;
     }
     bankReconciliation.setStartingBalance(startingBalance);
+    return bankReconciliation;
+  }
+
+  public BankReconciliation computeEndingBalance(BankReconciliation bankReconciliation) {
+    BigDecimal endingBalance = BigDecimal.ZERO;
+    BigDecimal amount = BigDecimal.ZERO;
+    endingBalance = endingBalance.add(bankReconciliation.getStartingBalance());
+    BankStatementLine bankStatementLine;
+    for (BankReconciliationLine bankReconciliationLine :
+        bankReconciliation.getBankReconciliationLineList()) {
+      amount = BigDecimal.ZERO;
+      bankStatementLine = bankReconciliationLine.getBankStatementLine();
+      if (bankStatementLine.getCredit().compareTo(BigDecimal.ZERO) != 0) {
+        amount =
+            bankStatementLine.getCredit().subtract(bankStatementLine.getAmountRemainToReconcile());
+      } else {
+        amount =
+            bankStatementLine.getAmountRemainToReconcile().subtract(bankStatementLine.getDebit());
+      }
+      endingBalance = endingBalance.add(amount);
+    }
+    bankReconciliation.setEndingBalance(endingBalance);
     return bankReconciliation;
   }
 }

@@ -43,9 +43,9 @@
       <panel name="actionsPanel" colSpan="12">
         <button name="loadBankStatementBtn" title="Load bank statements" readonlyIf="!(bankStatement &amp;&amp; !bankReconciliationLineList.length > 0)" colSpan="3"
           onClick="save,action-bank-reconciliation-method-load-bank-statement" />
-        <button name="loadOtherBankStatementBtn" title="Load other bank statements" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements"
+        <button name="loadOtherBankStatementBtn" title="Load other bank statements" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; includeOtherBankStatements"
           readonlyIf="statusSelect == 2" colSpan="3" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" />
-        <button name="autoAccounting" title="Auto accounting" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3" onClick="action-bank-reconciliation-method-auto-accounting" />
+        <button name="autoAccounting" title="Auto accounting" readonlyIf="statusSelect == 2" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3" onClick="action-bank-reconciliation-method-auto-accounting" />
         <button name="showReconciledMoveLineBtn" title="Show reconciled move lines" showIf="statusSelect == 2" colSpan="3" onClick="action-bank-reconciliation-view-show-reconciled-move-lines" />
       </panel>
     </panel>
@@ -65,7 +65,7 @@
         </field>
       </panel>
       <panel-related name="bankReconciliationLineListPanel" colSpan="12" field="bankReconciliationLineList" form-view="bank-reconciliation-line-form" grid-view="bank-reconciliation-line-grid"
-        editable="true" onChange="action-group-bankreconciliation-compute-click" x-can-copy="true" />
+        editable="true" onChange="action-group-bankreconciliation-compute-click" x-can-copy="true" orderBy="effectDate"/>
       <button name="autoReconcileBtn" title="Auto reconcile" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3" onClick="action-bank-reconciliation-method-automatic-reconciliation" />
       <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3" onClick="save,action-bank-reconciliation-view-multiple-reconcile-wizard" />
       <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3" onClick="action-bank-reconciliation-method-unreconcile" />

@@ -190,15 +190,15 @@ public class BankReconciliationController {
                 .getCompany()
                 .getBankPaymentConfig()
                 .getHasAutoMoveFromStatementRule()) {
-                bankReconciliationService.generateMovesAutoAccounting(
-                        bankReconciliationRepository.find(bankReconciliation.getId()));
+              bankReconciliationService.generateMovesAutoAccounting(
+                  bankReconciliationRepository.find(bankReconciliation.getId()));
             }
             if (bankReconciliation
                 .getCompany()
                 .getBankPaymentConfig()
                 .getHasAutomaticReconciliation()) {
-                bankReconciliationService.reconciliateAccordingToQueries(
-                        bankReconciliationRepository.find(bankReconciliation.getId()));
+              bankReconciliationService.reconciliateAccordingToQueries(
+                  bankReconciliationRepository.find(bankReconciliation.getId()));
             }
           }
         }
@@ -331,7 +331,7 @@ public class BankReconciliationController {
     try {
       String fileLink =
           ReportFactory.createReport(
-                  IReport.BANK_RECONCILIATION, "Bank Reconciliation" + "-${date}")
+                  IReport.BANK_RECONCILIATION2, "Bank Reconciliation" + "-${date}")
               .addParam("BankReconciliationId", bankReconciliation.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(

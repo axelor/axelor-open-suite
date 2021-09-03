@@ -21,8 +21,16 @@
     <many-to-one name="fixedAssetCategory" ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category" />
 
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Interbank code" />
-
-    <unique-constraint columns="interbankCodeLine,bankDetails,paymentMode"/>
+    <string name="name">
+          <![CDATA[
+      String name = "";
+        if (company != null) name += (name.isEmpty()?"":"-") +company.getName();
+        if (paymentMode != null) name += (name.isEmpty()?"":"-") + paymentMode.getName(); 
+        if (interbankCodeLine != null) name += (name.isEmpty()?"":"-") + interbankCodeLine.getName(); 
+      return name;
+      ]]>
+    </string>
+    <unique-constraint columns="interbankCodeLine,bankDetails,paymentMode" />
   </entity>
 
 </domain-models>
