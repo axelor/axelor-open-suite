@@ -190,14 +190,15 @@ public class BankReconciliationController {
                 .getCompany()
                 .getBankPaymentConfig()
                 .getHasAutoMoveFromStatementRule()) {
-              bankReconciliationService.reconciliateAccordingToQueries(
-                  bankReconciliationRepository.find(bankReconciliation.getId()));
+                bankReconciliationService.generateMovesAutoAccounting(
+                        bankReconciliationRepository.find(bankReconciliation.getId()));
             }
             if (bankReconciliation
                 .getCompany()
                 .getBankPaymentConfig()
                 .getHasAutomaticReconciliation()) {
-              bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+                bankReconciliationService.reconciliateAccordingToQueries(
+                        bankReconciliationRepository.find(bankReconciliation.getId()));
             }
           }
         }
