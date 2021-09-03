@@ -452,6 +452,8 @@ public class BankReconciliationController {
       }
       if (uniqueBankDetails) {
         bankReconciliation.setBankDetails(bankDetails);
+        bankReconciliation.setCashAccount(bankDetails.getBankAccount());
+        bankReconciliation.setJournal(bankDetails.getJournal());
       } else {
         bankReconciliation.setBankDetails(null);
       }
