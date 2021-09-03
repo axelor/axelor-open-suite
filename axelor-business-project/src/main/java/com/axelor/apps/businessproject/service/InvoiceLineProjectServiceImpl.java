@@ -19,11 +19,11 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -49,7 +49,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigRepository accountConfigRepository) {
+      AccountConfigService accountConfigService) {
     super(
         currencyService,
         priceListService,
@@ -60,7 +60,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigRepository);
+        accountConfigService);
   }
 
   @Transactional

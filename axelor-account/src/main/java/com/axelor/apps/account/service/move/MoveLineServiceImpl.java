@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -1414,5 +1415,25 @@ public class MoveLineServiceImpl implements MoveLineService {
       }
     }
     return analyticAccountListByAxis;
+  }
+
+  @Override
+  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException {
+    if (moveLine != null && moveLine.getAccount() != null) {
+      if (moveLine.getAccount().getAnalyticDistributionAuthorized()
+          && moveLine.getAccount().getAnalyticDistributionTemplate() != null
+          && accountConfigService
+                  .getAccountConfig(moveLine.getAccount().getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+        moveLine.setAnalyticDistributionTemplate(
+            moveLine.getAccount().getAnalyticDistributionTemplate());
+      }
+    } else {
+      moveLine.setAnalyticDistributionTemplate(null);
+    }
+    moveLine.getAnalyticMoveLineList().clear();
+    moveLine = computeAnalyticDistribution(moveLine);
+    return moveLine;
   }
 }

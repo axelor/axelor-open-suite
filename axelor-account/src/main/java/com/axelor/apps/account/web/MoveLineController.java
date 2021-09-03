@@ -325,4 +325,17 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine = Beans.get(MoveLineService.class).selectDefaultDistributionTemplate(moveLine);
+      response.setValue("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+      response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

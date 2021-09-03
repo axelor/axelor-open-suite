@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.AppInvoice;
 import com.axelor.apps.base.db.Company;
@@ -72,7 +73,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected ProductCompanyService productCompanyService;
   protected InvoiceLineRepository invoiceLineRepo;
   protected AppBaseService appBaseService;
-  protected AccountConfigRepository accountConfigRepository;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -84,7 +85,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigRepository accountConfigRepository) {
+      AccountConfigService accountConfigService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -94,14 +95,14 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.productCompanyService = productCompanyService;
     this.invoiceLineRepo = invoiceLineRepo;
     this.appBaseService = appBaseService;
-    this.accountConfigRepository = accountConfigRepository;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
       InvoiceLine invoiceLine, Invoice invoice) throws AxelorException {
-    if (accountConfigRepository
-            .findByCompany(invoice.getCompany())
+    if (accountConfigService
+            .getAccountConfig(invoice.getCompany())
             .getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return MoreObjects.firstNonNull(invoiceLine.getAnalyticMoveLineList(), new ArrayList<>());
@@ -406,8 +407,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("description", null);
     }
 
-    if (accountConfigRepository
-            .findByCompany(invoice.getCompany())
+    if (accountConfigService
+            .getAccountConfig(invoice.getCompany())
             .getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
       productInformation.put("analyticMoveLineList", null);
@@ -563,6 +564,28 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
       }
     }
+    return invoiceLine;
+  }
+
+  @Override
+  public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
+      throws AxelorException {
+
+    if (invoiceLine != null && invoiceLine.getAccount() != null) {
+      if (invoiceLine.getAccount().getAnalyticDistributionAuthorized()
+          && invoiceLine.getAccount().getAnalyticDistributionTemplate() != null
+          && accountConfigService
+                  .getAccountConfig(invoiceLine.getAccount().getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+
+        invoiceLine.setAnalyticDistributionTemplate(
+            invoiceLine.getAccount().getAnalyticDistributionTemplate());
+      }
+    } else {
+      invoiceLine.setAnalyticDistributionTemplate(null);
+    }
+
     return invoiceLine;
   }
 }

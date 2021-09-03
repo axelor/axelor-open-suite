@@ -150,4 +150,6 @@ public interface MoveLineService {
       throws AxelorException;
 
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
 }

@@ -290,8 +290,7 @@
 	<selection name='account.general.analytic.distribution.type.select'>
 		<option value='1'>Free</option>
 		<option value='2'>Per partner</option>
-		<option value='3'>Per product/family</option>
-		<option value="4">Account</option>
+		<option value='3'>Per product/family/account</option>
 	</selection>
 	
 	<selection name="invoice.payment.type.select">
