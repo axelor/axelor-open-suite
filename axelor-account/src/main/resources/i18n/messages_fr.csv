@@ -881,6 +881,8 @@
 "DAS2 declarant company %s : Registration code is missing","Le SIRET de la société déclarant : %s est manquant",,
 "DAS2 declared partner %s %s : Registration code is missing","Le SIRET du tiers %s %s est manquant",,
 "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual","%s %s : Le bénéficiaire étranger est obligatoirement une personne physique",,
+"DAS2 declared partner %s %s : address city is missing","La ville dans l'adresse du tiers %s %s est manquante",,
+"DAS2 declared partner %s %s : address city zip is missing","Le code postal de la ville dans l'adresse du tiers %s %s est manquant",,
 "DAS2 declared partner %s %s : address is missing","L'adresse du tiers %s %s est manquante",,
 "DAS2 declared partner %s %s : first name is missing","Le prénom du tiers %s %s est manquant",,
 "DAS2 declared partner %s %s : title is missing","La civilité du tiers %s %s est manquante",,

@@ -211,6 +211,10 @@ public interface IExceptionMessage {
       "DAS2 declared partner %s %s : Registration code is missing" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS = /*$$(*/
       "DAS2 declared partner %s %s : address is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY = /*$$(*/
+      "DAS2 declared partner %s %s : address city is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY_ZIP = /*$$(*/
+      "DAS2 declared partner %s %s : address city zip is missing" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE = /*$$(*/
       "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual" /*)*/;
   static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING = /*$$(*/

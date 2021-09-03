@@ -881,6 +881,8 @@
 "DAS2 declarant company %s : Registration code is missing",,,
 "DAS2 declared partner %s %s : Registration code is missing",,,
 "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual",,,
+"DAS2 declared partner %s %s : address city is missing",,,
+"DAS2 declared partner %s %s : address city zip is missing",,,
 "DAS2 declared partner %s %s : address is missing",,,
 "DAS2 declared partner %s %s : first name is missing",,,
 "DAS2 declared partner %s %s : title is missing",,,
