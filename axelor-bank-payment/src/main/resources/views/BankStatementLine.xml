@@ -56,13 +56,13 @@
     </panel>
   </form>
 
-  <form name="bank-statement-line-print-wizard-form" title="Bank Statement line print wizard" model="com.axelor.apps.base.db.Wizard" onNew="action-attrs-bank-payment-line-print-wizard-on-new">
+  <form name="bank-statement-line-print-wizard-form" title="Bank Statement line print wizard" model="com.axelor.apps.base.db.Wizard" onNew="action-attrs-bank-payment-bank-statement-line-print-wizard-on-new">
     <panel name="mainPanel" colSpan="12">
-      <field name="$bankDetails" title="Bank details" type="many-to-one" x-target="com.axelor.apps.base.db.BankDetails" x-target-name="fullName" required="true" />
       <field name="$fromDate" title="From" type="date" required="true" />
       <field name="$toDate" title="To" type="date" required="true" />
+      <field name="$bankDetails" title="Bank details" type="many-to-one" x-target="com.axelor.apps.base.db.BankDetails" x-target-name="fullName" required="true" />
       <field name="$exportTypeSelect" title="Export type select" type="string" selection="iadministration.export.type.select" readonly="true" />
-      <button name="printLinesBtn" title="Print" onClick="action-method-bankpayment-print-lines,close" readonlyIf="$bankDetails==null || $fromDate==null || $toDate==null" />
+      <button name="printLinesBtn" title="Print" onClick="action-bank-payment-bank-statement-line-method-print-lines,close" readonlyIf="$bankDetails==null || $fromDate==null || $toDate==null" />
     </panel>
   </form>
 
@@ -74,13 +74,13 @@
     <view-param name="popup-save" value="false" />
   </action-view>
 
-  <action-attrs name="action-attrs-bank-payment-line-print-wizard-on-new">
+  <action-attrs name="action-attrs-bank-payment-bank-statement-line-print-wizard-on-new">
     <attribute for="$bankDetails" name="value" expr="eval: __user__.activeCompany.defaultBankDetails" />
     <attribute for="$toDate" name="value" expr="eval: __date__" />
     <attribute for="$exportTypeSelect" name="value" expr="eval: 'pdf'" />
   </action-attrs>
 
-  <action-method name="action-method-bankpayment-print-lines">
+  <action-method name="action-bank-payment-bank-statement-line-method-print-lines">
     <call class="com.axelor.apps.bankpayment.web.BankStatementLineController" method="print" />
   </action-method>
 

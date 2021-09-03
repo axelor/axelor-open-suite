@@ -34,9 +34,9 @@ public class BankStatementLineController {
   public void print(ActionRequest request, ActionResponse response) {
     try {
       LocalDate fromDate = LocalDate.parse(request.getContext().get("fromDate").toString());
-      LocalDate toDate = LocalDate.parse(request.getContext().get("toDate").toString());      
+      LocalDate toDate = LocalDate.parse(request.getContext().get("toDate").toString());
       Long bankDetail =
-              Long.valueOf((Integer) ((Map) request.getContext().get("bankDetails")).get("id"));
+          Long.valueOf((Integer) ((Map) request.getContext().get("bankDetails")).get("id"));
       BankDetails bankDetails = Beans.get(BankDetailsRepository.class).find(bankDetail);
       String exportType = (String) request.getContext().get("exportTypeSelect");
 
