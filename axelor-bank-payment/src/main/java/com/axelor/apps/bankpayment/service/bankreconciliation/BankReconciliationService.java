@@ -259,7 +259,7 @@ public class BankReconciliationService {
             .order("id")
             .fetch(limit, offset);
     if (bankReconciliations.size() != 0) {
-    	statementReconciledLineBalance =
+      statementReconciledLineBalance =
           statementReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance());
       movesReconciledLineBalance =
           movesReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance());

@@ -198,7 +198,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/aos_wip_6_2_temp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -365,6 +365,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">starting_balance</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">moves_reconciled_line_balance</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">moves_reconciled_line_balance</text-property>
+                    <text-property name="heading">moves_reconciled_line_balance</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">currency</property>
                     <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
@@ -480,46 +486,51 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">9</property>
+                        <property name="name">moves_reconciled_line_balance</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">journal</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">header</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">footer</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">logoPosition</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">cash_account</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">account</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">iban</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -585,62 +596,69 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">9</property>
+                    <property name="name">moves_reconciled_line_balance</property>
+                    <property name="nativeName">moves_reconciled_line_balance</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">journal</property>
                     <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
                     <property name="name">header</property>
                     <property name="nativeName">header</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">13</property>
                     <property name="name">footer</property>
                     <property name="nativeName">footer</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">logoPosition</property>
                     <property name="nativeName">logoPosition</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">cash_account</property>
                     <property name="nativeName">cash_account</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">16</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">17</property>
                     <property name="name">account</property>
                     <property name="nativeName">account</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">18</property>
                     <property name="name">iban</property>
                     <property name="nativeName">iban</property>
                     <property name="dataType">string</property>
@@ -656,6 +674,7 @@ bankReconciliation.created_on AS report_date ,
 bankReconciliation.from_date AS from_date,
 bankReconciliation.to_date AS to_date,
 bankReconciliation.starting_balance AS starting_balance,
+bankReconciliation.moves_reconciled_line_balance AS moves_reconciled_line_balance,
 currency.code AS currency ,  
 journal.name AS journal , 
 PrintingSettings.pdf_header as "header", 
@@ -2099,6 +2118,11 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                     <text-property name="displayName">logoPosition</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">moves_reconciled_line_balance</property>
+                    <expression name="expression" type="javascript">dataSetRow["moves_reconciled_line_balance"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <column id="5141">
@@ -3689,7 +3713,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                         </structure>
                                         <structure>
                                             <property name="name">Starting balance</property>
-                                            <expression name="expression" type="javascript">row._outer["starting_balance"]</expression>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]>0?Math.abs(row._outer["starting_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
@@ -3697,6 +3721,18 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="name">iban</property>
                                             <expression name="expression" type="javascript">row._outer["iban"]</expression>
                                             <property name="dataType">string</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">debitStartingBalance</property>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]&lt;0?Math.abs(row._outer["starting_balance"]):0</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">creditStartingBalance</property>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]>0?Math.abs(row._outer["starting_balance"]):0</expression>
+                                            <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
                                     </list-property>
@@ -3781,14 +3817,12 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <data id="7321">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["starting_balance"] > 0</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="resultSetColumn">Starting balance</property>
+                                                    <property name="resultSetColumn">debitStartingBalance</property>
                                                 </data>
                                             </cell>
                                             <cell id="7322">
@@ -3796,16 +3830,13 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
-                                                <data id="7323">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7677">
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["starting_balance"] &lt; 0</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="resultSetColumn">Starting balance</property>
+                                                    <property name="resultSetColumn">creditStartingBalance</property>
                                                 </data>
                                             </cell>
                                             <cell id="7324">
@@ -4067,6 +4098,24 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">string</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">moves_reconciled_line_balance</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]</expression>
+                                            <property name="dataType">string</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">debitMovesReconciledLineBalance</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">creditMovesReconciledLineBalance</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7544">
                                         <property name="width">12%</property>
@@ -4104,12 +4153,30 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
+                                                <data id="7681">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">debitMovesReconciledLineBalance</property>
+                                                </data>
                                             </cell>
                                             <cell id="7509">
                                                 <property name="borderBottomStyle">none</property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
+                                                <data id="7682">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">creditMovesReconciledLineBalance</property>
+                                                </data>
                                             </cell>
                                             <cell id="7510">
                                                 <property name="colSpan">3</property>
@@ -4427,6 +4494,40 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">string</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">debit_reconciliation_balance</property>
+                                            <expression name="expression" type="javascript">if(row._outer["starting_balance"]>0) { row._outer["starting_balance"] + row["sum_credit"] - row["sum_debit"] }
+else if(row._outer["starting_balance"]==0 &amp;&amp; ((row["sum_credit"] - row["sum_debit"])>0)) { row["sum_credit"] - row["sum_debit"]}
+else {0};</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">credit_reconciliation_balance</property>
+                                            <expression name="expression" type="javascript">if(row._outer["starting_balance"]&lt;0) { Math.abs(row._outer["starting_balance"]) - row["sum_credit"] + row["sum_debit"] }
+else if(row._outer["starting_balance"]==0 &amp;&amp; ((row["sum_credit"] - row["sum_debit"])&lt;0)) { -row["sum_credit"] + row["sum_debit"]}
+else {0};</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">credit_general_balance</property>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]>0?row._outer["starting_balance"] + row["sum_credit"] + row["credit_reconciliation_balance"]:row["sum_credit"] + row["credit_reconciliation_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">debit_general _balance</property>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]&lt;0?Math.abs(row._outer["starting_balance"]) + row["sum_debit"] + row["debit_reconciliation_balance"]:row["sum_debit"] + row["debit_reconciliation_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">is_posted_1</property>
+                                            <text-property name="displayName">is_posted</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["is_posted"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7420">
                                         <property name="width">18%</property>
@@ -4494,25 +4595,23 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 </text>
                                             </cell>
                                             <cell id="7405">
-                                                <data id="7406">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7661">
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
-                                                    <property name="resultSetColumn">sum_debit</property>
+                                                    <property name="resultSetColumn">debit_reconciliation_balance</property>
                                                 </data>
                                             </cell>
                                             <cell id="7407">
-                                                <data id="7408">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7662">
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
-                                                    <property name="resultSetColumn">sum_credit</property>
+                                                    <property name="resultSetColumn">credit_reconciliation_balance</property>
                                                 </data>
                                             </cell>
                                             <cell id="7409"/>
@@ -4579,32 +4678,56 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 </text>
                                             </cell>
                                             <cell id="7415">
-                                                <text id="7416">
+                                                <data id="7680">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">debit_general _balance</property>
+                                                </data>
+                                                <data id="7406">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">(row["account_balance"] + row._outer["starting_balance"]) &lt; 0</expression>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
                                                         </structure>
                                                     </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["account_balance"] + row._outer["starting_balance"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">sum_debit</property>
+                                                </data>
                                             </cell>
                                             <cell id="7417">
-                                                <text id="7418">
+                                                <data id="7676">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">credit_general_balance</property>
+                                                </data>
+                                                <data id="7408">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">(row["account_balance"] + row._outer["starting_balance"]) > 0</expression>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
                                                         </structure>
                                                     </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["account_balance"] + row._outer["starting_balance"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">sum_credit</property>
+                                                </data>
                                             </cell>
                                             <cell id="7419"/>
                                         </row>
@@ -4769,6 +4892,40 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">string</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">debit_move_balance</property>
+                                            <expression name="expression" type="javascript">if(row._outer["moves_reconciled_line_balance"]&lt;0) { Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] - row["sum_move_debit"] }
+else if(row._outer["moves_reconciled_line_balance"]==0 &amp;&amp; ((row["sum_move_credit"] - row["sum_move_debit"])>0)) { row["sum_move_credit"] - row["sum_move_debit"]}
+else {0};</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">credit_move_balance</property>
+                                            <expression name="expression" type="javascript">if(row._outer["moves_reconciled_line_balance"]>0) { row._outer["moves_reconciled_line_balance"] - row["sum_move_credit"] + row["sum_move_debit"] }
+else if(row._outer["moves_reconciled_line_balance"]==0 &amp;&amp; ((row["sum_move_credit"] - row["sum_move_debit"])&lt;0)) { -row["sum_move_credit"] + row["sum_move_debit"]}
+else {0};</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">is_posted_2</property>
+                                            <text-property name="displayName">is_posted</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["is_posted"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">debit_move_general</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_debit"] + row["debit_move_balance"]:row["sum_move_debit"] + row["debit_move_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">credit_move_general</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7606">
                                         <property name="width">12%</property>
@@ -4798,25 +4955,23 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="rowSpan">1</property>
                                             </cell>
                                             <cell id="7590">
-                                                <data id="7591">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7665">
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
-                                                    <property name="resultSetColumn">sum_move_debit</property>
+                                                    <property name="resultSetColumn">debit_move_balance</property>
                                                 </data>
                                             </cell>
                                             <cell id="7592">
-                                                <data id="7593">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7667">
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
-                                                    <property name="resultSetColumn">sum_move_credit</property>
+                                                    <property name="resultSetColumn">credit_move_balance</property>
                                                 </data>
                                             </cell>
                                             <cell id="7594">
@@ -4883,32 +5038,56 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="borderTopWidth">thin</property>
                                             <cell id="7599"/>
                                             <cell id="7600">
-                                                <text id="7601">
+                                                <data id="7683">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">debit_move_general</property>
+                                                </data>
+                                                <data id="7591">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row["amount"] + row._outer["starting_balance"] &lt;= 0</expression>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
                                                         </structure>
                                                     </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount"] + row._outer["starting_balance"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">sum_move_debit</property>
+                                                </data>
                                             </cell>
                                             <cell id="7602">
-                                                <text id="7603">
+                                                <data id="7684">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">credit_move_general</property>
+                                                </data>
+                                                <data id="7593">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row["amount"] + row._outer["starting_balance"] > 0</expression>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
                                                         </structure>
                                                     </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount"] + row._outer["starting_balance"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">sum_move_credit</property>
+                                                </data>
                                             </cell>
                                             <cell id="7604">
                                                 <property name="colSpan">3</property>
@@ -5065,6 +5244,11 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                     <text-property name="displayName">logoPosition</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">moves_reconciled_line_balance</property>
+                    <expression name="expression" type="javascript">dataSetRow["moves_reconciled_line_balance"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <column id="6490">
@@ -6578,6 +6762,18 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">string</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">debitStartingBalance</property>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]&lt;0?Math.abs(row._outer["starting_balance"]):0</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">creditStartingBalance</property>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]>0?Math.abs(row._outer["starting_balance"]):0</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
                                     </list-property>
                                     <column id="6947">
                                         <property name="width">15%</property>
@@ -6655,16 +6851,14 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
-                                                <data id="6917">
+                                                <data id="7685">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["starting_balance"] > 0</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="resultSetColumn">Starting balance</property>
+                                                    <property name="resultSetColumn">debitStartingBalance</property>
                                                 </data>
                                             </cell>
                                             <cell id="6918">
@@ -6672,16 +6866,13 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
-                                                <data id="6919">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7686">
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["starting_balance"] &lt; 0</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="resultSetColumn">Starting balance</property>
+                                                    <property name="resultSetColumn">creditStartingBalance</property>
                                                 </data>
                                             </cell>
                                         </row>
@@ -6912,6 +7103,24 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">string</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">moves_reconciled_line_balance</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">debitMovesReconciledLineBalance</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">creditMovesReconciledLineBalance</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7069">
                                         <property name="width">10%</property>
@@ -6940,12 +7149,30 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
+                                                <data id="7690">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">debitMovesReconciledLineBalance</property>
+                                                </data>
                                             </cell>
                                             <cell id="7038">
                                                 <property name="borderBottomStyle">none</property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
+                                                <data id="7691">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">creditMovesReconciledLineBalance</property>
+                                                </data>
                                             </cell>
                                             <cell id="7039">
                                                 <property name="colSpan">3</property>
@@ -7259,6 +7486,34 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">string</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">debit_reconciliation_balance</property>
+                                            <expression name="expression" type="javascript">if(row._outer["starting_balance"]>0) { row._outer["starting_balance"] + row["sum_credit"] - row["sum_debit"] }
+else if(row._outer["starting_balance"]==0 &amp;&amp; ((row["sum_credit"] - row["sum_debit"])>0)) { row["sum_credit"] - row["sum_debit"]}
+else {0};</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">credit_reconciliation_balance</property>
+                                            <expression name="expression" type="javascript">if(row._outer["starting_balance"]&lt;0) { Math.abs(row._outer["starting_balance"]) - row["sum_credit"] + row["sum_debit"] }
+else if(row._outer["starting_balance"]==0 &amp;&amp; ((row["sum_credit"] - row["sum_debit"])&lt;0)) { -row["sum_credit"] + row["sum_debit"]}
+else {0};</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">debit_general_balance</property>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]&lt;0?Math.abs(row._outer["starting_balance"]) + row["sum_debit"] + row["debit_reconciliation_balance"]:row["sum_debit"] + row["debit_reconciliation_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">credit_general_balance</property>
+                                            <expression name="expression" type="javascript">row._outer["starting_balance"]>0?row._outer["starting_balance"] + row["sum_credit"] + row["credit_reconciliation_balance"]:row["sum_credit"] + row["credit_reconciliation_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7003">
                                         <property name="width">15%</property>
@@ -7323,32 +7578,24 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 </text>
                                             </cell>
                                             <cell id="6990">
-                                                <text id="6991">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7687">
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">(row["account_balance"] + row._outer["starting_balance"]) &lt; 0</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["account_balance"] + row._outer["starting_balance"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">debit_reconciliation_balance</property>
+                                                </data>
                                             </cell>
                                             <cell id="6992">
-                                                <text id="6993">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7670">
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
                                                     <property name="textAlign">right</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">(row["account_balance"] + row._outer["starting_balance"]) > 0</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["account_balance"] + row._outer["starting_balance"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">credit_reconciliation_balance</property>
+                                                </data>
                                             </cell>
                                         </row>
                                         <row id="6994">
@@ -7414,83 +7661,57 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             </cell>
                                             <cell id="6999">
                                                 <property name="textAlign">center</property>
-                                                <text id="7000">
+                                                <data id="7688">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">6pt</property>
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">normal</property>
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                    <property name="textAlign">center</property>
-                                                    <property name="display">inline</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="paramBindings">
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">debit_general_balance</property>
+                                                </data>
+                                                <data id="7657">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <list-property name="visibility">
                                                         <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'BankReconciliationStatementNew.toBeConfirmed'</value>
-                                                            </simple-property-list>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
                                                         </structure>
                                                     </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">message_key</property>
-                                                            <text-property name="displayName">message_key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">sum_debit</property>
+                                                </data>
                                             </cell>
                                             <cell id="7001">
                                                 <property name="textAlign">center</property>
-                                                <text id="7002">
+                                                <data id="7689">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">6pt</property>
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">normal</property>
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                    <property name="textAlign">center</property>
-                                                    <property name="display">inline</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="paramBindings">
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">credit_general_balance</property>
+                                                </data>
+                                                <data id="7658">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <list-property name="visibility">
                                                         <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'BankReconciliationStatementNew.toBeConfirmed'</value>
-                                                            </simple-property-list>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
                                                         </structure>
                                                     </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">message_key</property>
-                                                            <text-property name="displayName">message_key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">sum_credit</property>
+                                                </data>
                                             </cell>
                                         </row>
                                     </footer>
@@ -7641,6 +7862,34 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">string</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">debit_move_balance</property>
+                                            <expression name="expression" type="javascript">if(row._outer["moves_reconciled_line_balance"]&lt;0) { Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] - row["sum_move_debit"] }
+else if(row._outer["moves_reconciled_line_balance"]==0 &amp;&amp; ((row["sum_move_credit"] - row["sum_move_debit"])>0)) { row["sum_move_credit"] - row["sum_move_debit"]}
+else {0};</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">credit_move_balance</property>
+                                            <expression name="expression" type="javascript">if(row._outer["moves_reconciled_line_balance"]>0) { row._outer["moves_reconciled_line_balance"] - row["sum_move_credit"] + row["sum_move_debit"] }
+else if(row._outer["moves_reconciled_line_balance"]==0 &amp;&amp; ((row["sum_move_credit"] - row["sum_move_debit"])&lt;0)) { -row["sum_move_credit"] + row["sum_move_debit"]}
+else {0};</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">debit_move_general</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_debit"] + row["debit_move_balance"]:row["sum_move_debit"] + row["debit_move_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">credit_move_general</property>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
+                                            <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7123">
                                         <property name="width">10%</property>
@@ -7663,25 +7912,23 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="borderTopStyle">solid</property>
                                             <property name="borderTopWidth">thin</property>
                                             <cell id="7108">
-                                                <data id="7109">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7671">
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
-                                                    <property name="resultSetColumn">sum_move_debit</property>
+                                                    <property name="resultSetColumn">debit_move_balance</property>
                                                 </data>
                                             </cell>
                                             <cell id="7110">
-                                                <data id="7111">
-                                                    <property name="fontFamily">sans-serif</property>
+                                                <data id="7672">
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
-                                                    <property name="resultSetColumn">sum_move_credit</property>
+                                                    <property name="resultSetColumn">credit_move_balance</property>
                                                 </data>
                                             </cell>
                                             <cell id="7112">
@@ -7748,83 +7995,57 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="borderTopWidth">thin</property>
                                             <cell id="7117">
                                                 <property name="textAlign">center</property>
-                                                <text id="7118">
+                                                <data id="7692">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">6pt</property>
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">normal</property>
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                    <property name="textAlign">center</property>
-                                                    <property name="display">inline</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="paramBindings">
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">debit_move_general</property>
+                                                </data>
+                                                <data id="7659">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <list-property name="visibility">
                                                         <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'BankReconciliationStatementNew.toBeConfirmed'</value>
-                                                            </simple-property-list>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
                                                         </structure>
                                                     </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">message_key</property>
-                                                            <text-property name="displayName">message_key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">sum_move_debit</property>
+                                                </data>
                                             </cell>
                                             <cell id="7119">
                                                 <property name="textAlign">center</property>
-                                                <text id="7120">
+                                                <data id="7693">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">6pt</property>
-                                                    <property name="fontWeight">bold</property>
-                                                    <property name="fontStyle">normal</property>
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                    <property name="textAlign">center</property>
-                                                    <property name="display">inline</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="paramBindings">
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="resultSetColumn">credit_move_general</property>
+                                                </data>
+                                                <data id="7660">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <structure name="numberFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">###,##0.00</property>
+                                                    </structure>
+                                                    <property name="textAlign">right</property>
+                                                    <list-property name="visibility">
                                                         <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'BankReconciliationStatementNew.toBeConfirmed'</value>
-                                                            </simple-property-list>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
                                                         </structure>
                                                     </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">message_key</property>
-                                                            <text-property name="displayName">message_key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                                </text>
+                                                    <property name="resultSetColumn">sum_move_credit</property>
+                                                </data>
                                             </cell>
                                             <cell id="7121">
                                                 <property name="colSpan">3</property>
