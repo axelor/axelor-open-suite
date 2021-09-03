@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -28,7 +29,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -37,8 +37,6 @@ import java.util.Map;
 
 @Singleton
 public class ImportCityController {
-
-  @Inject private ImportCityService importCityService;
 
   /**
    * Import cities
@@ -89,10 +87,11 @@ public class ImportCityController {
    * @param downloadFileName
    * @param typeSelect
    * @return
-   * @throws Exception
+   * @throws AxelorException if there is a problem when downloading the zip file
    */
   private List<ImportHistory> importFromGeonamesAutoConfig(
-      String downloadFileName, String typeSelect) throws Exception {
+      String downloadFileName, String typeSelect) throws AxelorException {
+    ImportCityService importCityService = Beans.get(ImportCityService.class);
     MetaFile zipImportDataFile = importCityService.downloadZip(downloadFileName, GEONAMES_FILE.ZIP);
     MetaFile dumpImportDataFile =
         importCityService.downloadZip(downloadFileName, GEONAMES_FILE.DUMP);
@@ -119,7 +118,8 @@ public class ImportCityController {
     if (map != null) {
       MetaFile dataFile =
           Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
-      importHistoryList.add(importCityService.importCity(typeSelect + "-dump", dataFile));
+      importHistoryList.add(
+          Beans.get(ImportCityService.class).importCity(typeSelect + "-dump", dataFile));
     }
 
     return importHistoryList;

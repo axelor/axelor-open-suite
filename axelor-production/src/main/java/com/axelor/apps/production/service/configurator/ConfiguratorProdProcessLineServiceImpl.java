@@ -19,7 +19,9 @@ package com.axelor.apps.production.service.configurator;
 
 import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
+import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ConfiguratorProdProcessLineRepository;
@@ -37,26 +39,33 @@ import com.axelor.rpc.JsonContext;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdProcessLineService {
 
   protected ConfiguratorService configuratorService;
   protected WorkCenterService workCenterService;
   protected AppProductionService appProdService;
+  protected ConfiguratorProdProductService confProdProductService;
 
   @Inject
   public ConfiguratorProdProcessLineServiceImpl(
       ConfiguratorService configuratorService,
       WorkCenterService workCenterService,
-      AppProductionService appProdService) {
+      AppProductionService appProdService,
+      ConfiguratorProdProductService confProdProductService) {
     this.configuratorService = configuratorService;
     this.workCenterService = workCenterService;
     this.appProdService = appProdService;
+    this.confProdProductService = confProdProductService;
   }
 
   @Override
   public ProdProcessLine generateProdProcessLine(
-      ConfiguratorProdProcessLine confProdProcessLine, JsonContext attributes)
+      ConfiguratorProdProcessLine confProdProcessLine,
+      boolean isConsProOnOperation,
+      JsonContext attributes)
       throws AxelorException {
     if (confProdProcessLine == null || !checkConditions(confProdProcessLine, attributes)) {
       return null;
@@ -229,6 +238,22 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
     prodProcessLine.setDurationPerCycle(durationPerCycle);
     prodProcessLine.setTimingOfImplementation(timingOfImplementation);
+
+    if (isConsProOnOperation) {
+      List<ConfiguratorProdProduct> confProdProductLines =
+          confProdProcessLine.getConfiguratorProdProductList();
+      if (CollectionUtils.isNotEmpty(confProdProductLines)) {
+        for (ConfiguratorProdProduct confProdProduct : confProdProductLines) {
+          ProdProduct generatedProdProduct =
+              confProdProductService.generateProdProduct(confProdProduct, attributes);
+          if (generatedProdProduct != null) {
+            prodProcessLine.addToConsumeProdProductListItem(generatedProdProduct);
+          }
+        }
+      }
+    }
+
+    configuratorService.fixRelationalFields(prodProcessLine);
 
     return prodProcessLine;
   }

@@ -33,9 +33,9 @@
     </action-group>
     
     <action-validate name="action-validate-analytic-distribution-template-check-company">
-    	<alert if="analyticDistributionLineList.any{!(it.analyticAxis.company == company OR it.analyticAxis.company IS NULL)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company."/>
-    	<alert if="analyticDistributionLineList.any{!(it.analyticAxis.company == company OR it.analyticAxis.company IS NULL)} &amp;&amp; !analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticAxis doesn't belong to the select company."/>
-    	<alert if="!analyticDistributionLineList.any{!(it.analyticAxis.company == company OR it.analyticAxis.company IS NULL)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticJournal doesn't belong to the select company."/>
+    	<alert if="analyticDistributionLineList.any{!(it.analyticAxis.company == company || it.analyticAxis.company == null)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company."/>
+    	<alert if="analyticDistributionLineList.any{!(it.analyticAxis.company == company || it.analyticAxis.company == null)} &amp;&amp; !analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticAxis doesn't belong to the select company."/>
+    	<alert if="!analyticDistributionLineList.any{!(it.analyticAxis.company == company || it.analyticAxis.company == null)} &amp;&amp; analyticDistributionLineList.any{!(it.analyticJournal.company == company)}" message="Selected AnalyticJournal doesn't belong to the select company."/>
     </action-validate>
     
     <search-filters name="analytic-distribution-template-filters" model="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic distribution template filters">

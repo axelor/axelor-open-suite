@@ -701,16 +701,15 @@ public class SaleOrderController {
     response.setAttr("priceList", "domain", domain);
   }
 
-  public void updateSaleOrderLineTax(ActionRequest request, ActionResponse response)
+  public void updateSaleOrderLineList(ActionRequest request, ActionResponse response)
       throws AxelorException {
+
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
     Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-
     response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 
-  public void addPack(ActionRequest request, ActionResponse response) {
+  public void addPack(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
 
     String saleOrderId = context.get("_id").toString();

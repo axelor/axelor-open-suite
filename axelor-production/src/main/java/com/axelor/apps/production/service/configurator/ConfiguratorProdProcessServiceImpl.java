@@ -61,6 +61,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     StockLocation stockLocation;
     StockLocation producedProductStockLocation;
     StockLocation workshopStockLocation;
+    Boolean isConsProOnOperation;
 
     if (confProdProcess.getDefNameAsFormula()) {
       Object computedName =
@@ -117,6 +118,25 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     } else {
       workshopStockLocation = confProdProcess.getWorkshopStockLocation();
     }
+    if (confProdProcess.getDefIsConsProOnOperationAsFormula()) {
+      Object computedIsConsProOnOperation =
+          configuratorService.computeFormula(
+              confProdProcess.getIsConsProOnOperationFormula(), attributes);
+      if (computedIsConsProOnOperation == null) {
+        throw new AxelorException(
+            confProdProcess,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(
+                I18n.get(
+                    IExceptionMessage
+                        .CONFIGURATOR_PROD_PROCESS_INCONSISTENT_IS_CONS_PRO_ON_OPERATION_FORMULA),
+                confProdProcess.getId()));
+      } else {
+        isConsProOnOperation = (Boolean) computedIsConsProOnOperation;
+      }
+    } else {
+      isConsProOnOperation = confProdProcess.getIsConsProOnOperation();
+    }
 
     ProdProcess prodProcess =
         createProdProcessHeader(
@@ -126,6 +146,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
             stockLocation,
             producedProductStockLocation,
             workshopStockLocation,
+            isConsProOnOperation,
             product);
 
     List<ConfiguratorProdProcessLine> confLines =
@@ -133,12 +154,18 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     if (confLines != null) {
       for (ConfiguratorProdProcessLine confLine : confLines) {
         ProdProcessLine generatedProdProcessLine =
-            confProdProcessLineService.generateProdProcessLine(confLine, attributes);
+            confProdProcessLineService.generateProdProcessLine(
+                confLine,
+                (isConsProOnOperation != null ? isConsProOnOperation : false),
+                attributes);
         if (generatedProdProcessLine != null) {
           prodProcess.addProdProcessLineListItem(generatedProdProcessLine);
         }
       }
     }
+
+    configuratorService.fixRelationalFields(prodProcess);
+
     return prodProcess;
   }
 
@@ -150,6 +177,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
       StockLocation stockLocation,
       StockLocation producedProductStockLocation,
       StockLocation workshopStockLocation,
+      Boolean isConsProOnOperation,
       Product product) {
     ProdProcess prodProcess = new ProdProcess();
     prodProcess.setName(name);
@@ -159,6 +187,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
     prodProcess.setStockLocation(stockLocation);
     prodProcess.setProducedProductStockLocation(producedProductStockLocation);
     prodProcess.setWorkshopStockLocation(workshopStockLocation);
+    prodProcess.setIsConsProOnOperation(isConsProOnOperation);
     prodProcess.setProduct(product);
     return prodProcessRepository.save(prodProcess);
   }

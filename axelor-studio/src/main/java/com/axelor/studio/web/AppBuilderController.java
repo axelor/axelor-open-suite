@@ -17,15 +17,20 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppBuilder;
+import com.axelor.studio.db.repo.AppBuilderRepository;
 import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -46,7 +51,7 @@ public class AppBuilderController {
 
     try {
       InputStream inputStream = this.getClass().getResourceAsStream(config);
-      File configFile = File.createTempFile("config", ".xml");
+      File configFile = MetaFiles.createTempFile("config", ".xml").toFile();
       FileOutputStream fout = new FileOutputStream(configFile);
       IOUtil.copyCompletely(inputStream, fout);
 
@@ -103,5 +108,27 @@ public class AppBuilderController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    AppBuilder appBuilder = request.getContext().asType(AppBuilder.class);
+    appBuilder = Beans.get(AppBuilderRepository.class).find(appBuilder.getId());
+
+    App app = appBuilder.getGeneratedApp();
+    Beans.get(AppService.class).installApp(app, null);
+
+    response.setSignal("refresh-app", true);
+  }
+
+  public void uninstallApp(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    AppBuilder appBuilder = request.getContext().asType(AppBuilder.class);
+    appBuilder = Beans.get(AppBuilderRepository.class).find(appBuilder.getId());
+
+    App app = appBuilder.getGeneratedApp();
+    Beans.get(AppService.class).unInstallApp(app);
+
+    response.setSignal("refresh-app", true);
   }
 }

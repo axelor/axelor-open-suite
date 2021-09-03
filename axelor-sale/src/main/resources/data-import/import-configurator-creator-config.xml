@@ -32,6 +32,11 @@
        </bind>
        <bind node="unitFormula" to="unitFormula"/>
        <bind node="defUnitAsFormula" to="defUnitAsFormula"/>
+       <bind node="workshopStockLocation" to="workshopStockLocation" search="self.id = :workshopStockLocationId" if="workshopStockLocationId">
+         <bind node="text()" to="id" alias="workshopStockLocationId"/>
+       </bind>
+       <bind node="workshopStockLocationFormula" to="workshopStockLocationFormula"/>
+       <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
        <bind node="prodProcessCode" to="prodProcess" search="self.code = :prodProcessCode" if="prodProcessCode">
          <bind node="text()" to="code" alias="prodProcessCode"/>
        </bind>
@@ -63,6 +68,9 @@
          </bind>
          <bind node="workshopStockLocationFormula" to="workshopStockLocationFormula"/>
          <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
+         <bind node="isConsProOnOperation" to="isConsProOnOperation"/>
+         <bind node="isConsProOnOperationFormula" to="isConsProOnOperationFormula"/>
+         <bind node="defIsConsProOnOperationAsFormula" to="defIsConsProOnOperationAsFormula"/>
          <bind node="configuratorProdProcessLineList/configuratorProdProcessLine" to="configuratorProdProcessLineList">
            <bind node="name" to="name"/>
            <bind node="nameFormula" to="nameFormula"/>
@@ -74,7 +82,7 @@
              <bind node="text()" to="id" alias="workCenterId"/>
            </bind>
            <bind node="workCenterFormula" to="workCenterFormula"/>
-           <bind node="defWorkCenterFormula" to="defWorkCenterFormula"/>
+           <bind node="defWorkCenterAsFormula" to="defWorkCenterAsFormula"/>
            <bind node="stockLocation" to="stockLocation" search="self.id = :stockLocationId" if="stockLocationId">
              <bind node="text()" to="id" alias="stockLocationId"/>
            </bind>
@@ -97,6 +105,21 @@
            <bind node="timingOfImplementationFormula" to="timingOfImplementationFormula"/>
            <bind node="defTimingOfImplementationFormula" to="defTimingOfImplementationFormula"/>
            <bind node="useCondition" to="useCondition"/>
+           <bind node="configuratorProdProductList/configuratorProdProduct" to="configuratorProdProductList">
+			<bind node="product" to="product" search="self.id = :productId" if="productId">
+				<bind node="text()" to="id" alias="productId"/>
+			</bind>
+			<bind node="productFormula" to="productFormula"/>
+			<bind node="defProductAsFormula" to="defProductAsFormula"/>
+			<bind node="qty" to="qty"/>
+			<bind node="qtyFormula" to="qtyFormula"/>
+			<bind node="defQtyAsFormula" to="defQtyAsFormula"/>
+			<bind node="unit" to="unit" search="self.id = :unitId" if="unitId">
+				<bind node="text()" to="id" alias="unitId"/>
+			</bind>
+			<bind node="unitFormula" to="unitFormula"/>
+			<bind node="defUnitAsFormula" to="defUnitAsFormula"/>
+           </bind>
          </bind>
        </bind>
          
@@ -162,6 +185,7 @@
 
        <bind node="configuratorProductFormulaList/configuratorProductFormula" to="configuratorProductFormulaList">
          <bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = 'Product'" />
+         <bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.modelField = :metaField"/>
          <bind node="formula" to="formula"/>
          <bind node="showOnConfigurator" to="showOnConfigurator"/>
          <bind node="configuratorCreatorImportId" to="productCreator" search="self.importId = :configCreatorImportId" create="false">
@@ -171,6 +195,7 @@
 
        <bind node="configuratorSOLineFormulaList/configuratorSOLineFormula" to="configuratorSOLineFormulaList">
          <bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = 'SaleOrderLine'"/>
+         <bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.modelField = :metaField"/>     
          <bind node="formula" to="formula"/>
          <bind node="showOnConfigurator" to="showOnConfigurator"/>
          <bind node="updateFromSelect" to="updateFromSelect"/>

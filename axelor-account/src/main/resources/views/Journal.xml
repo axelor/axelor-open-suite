@@ -60,6 +60,8 @@
 					<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
 					<field name="descriptionModel"/>
 					<field name="descriptionIdentificationOk"/>
+					<field name="authorizeSimulatedMove" showIf="company.accountConfig.isActivateSimulatedMove"/>
+					<field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
 				</panel>  
 				<spacer name="moveLineSpacer"/>
 				<panel name="paymentsPanel" title="Payments" colSpan="12">

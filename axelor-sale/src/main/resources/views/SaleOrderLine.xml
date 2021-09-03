@@ -453,6 +453,7 @@
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
+    	<action name="action-sale-order-line-method-compute-pricing-scale"/>
     	<action name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty" if="__config__.app.isApp('supplychain') &amp;&amp; saleOrder?.statusSelect == 3"/>
     	<action name="action-sale-order-line-method-get-discount"/>
     	<action name="action-sale-order-line-method-compute"/>
@@ -565,6 +566,10 @@
 		<field name="discountAmount" expr="eval: discountTypeSelect == __repo__(PriceListLine).AMOUNT_TYPE_FIXED ? discountDerogation * price / 100 : discountDerogation"/>
 	</action-record>
    	<!-- ACTION METHOD -->
+   	
+   	<action-method name="action-sale-order-line-method-compute-pricing-scale">
+   		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="computePricingScale"/>
+   	</action-method>
 	
 	<action-method name="action-sale-order-line-method-compute">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="compute"/>

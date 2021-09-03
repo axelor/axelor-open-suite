@@ -150,8 +150,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
     if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1) {
 
-      BigDecimal termAmount =
-          inTaxAmount.divide(new BigDecimal(nbrTerm), 2, RoundingMode.HALF_EVEN);
+      BigDecimal termAmount = inTaxAmount.divide(new BigDecimal(nbrTerm), 2, RoundingMode.HALF_UP);
       BigDecimal cumul = BigDecimal.ZERO;
 
       for (int i = 1; i < nbrTerm + 1; i++) {

@@ -104,6 +104,11 @@
                        x-code-syntax="groovy" height="100" colSpan="12"/>
             </panel>
         </panel>
+		<panel name="configuratorProdProductListPanel" colSpan="12" hidden="true">
+			<field name="configuratorProdProductList" colSpan="12"
+	               form-view="configurator-prod-product-form"
+	               grid-view="configurator-prod-product-grid"/>
+		</panel>        
     </form>
     
     <form model="com.axelor.apps.production.db.ConfiguratorProdProcessLine" title="Work center group selection"
@@ -125,6 +130,7 @@
     	<attribute name="hidden" for="workCenterPanel" expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
 		<attribute name="required" for="workCenter" expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup() &amp;&amp; !defWorkCenterAsFormula"/>
 		<attribute name="hidden" for="workCenterGroupPanel" expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup()"/>
+		<attribute name="hidden" for="configuratorProdProductListPanel" expr="eval: !(__parent__?._model == 'com.axelor.apps.production.db.ConfiguratorProdProcess' &amp;&amp; (__parent__.defIsConsProOnOperationAsFormula || __parent__.isConsProOnOperation))"/>
     </action-attrs>
     
     <action-attrs name="action-attrs-production-configurator-set-work-center-group-wizard-domain" model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">

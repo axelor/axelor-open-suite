@@ -169,9 +169,10 @@
 	<action-view name="account.root.move.move" title="Moves"
 		model="com.axelor.apps.account.db.Move">
 		<view type="grid" name="move-grid" />
-		<view type="form" name="move-form" />
-		<view-param name="search-filters" value="move-filters" />
+		<view type="form" name="move-form"/>
+		<view-param name="search-filters" value="move-filters"/>
 		<domain>self.statusSelect != 5</domain>
+		<context name="_isActivateSimulatedMoves" expr="eval:__user__.activeCompany.accountConfig.isActivateSimulatedMove"/>
 	</action-view>
 
 	<menuitem name="account-root-move-move-line"
@@ -181,10 +182,14 @@
 	<action-view name="account.root.move.move.line"
 		title="Move lines" model="com.axelor.apps.account.db.MoveLine">
 		<view type="grid" name="move-line-grid" />
-		<view type="form" name="move-line-form" />
-		<view-param name="search-filters" value="move-line-filters" />
+		<view type="form" name="move-line-form"/>
+		<view-param name="search-filters" value="move-line-filters"/>
 		<domain>self.move.statusSelect != 5</domain>
 	</action-view>
+	
+	<!-- <menuitem name="account-root-move-moves-simulated" parent="account-root-move"
+		title="Moves Simulated" action="account.root.move.moves.simulated" order="15" if="__repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne()).fetchOne()?.isActivateSimulatedMove"/>
+>>>>>>> e6745d1735b21109f9e92b32bebca22c61b941c7
 
 	<menuitem name="account-root-move-moves-simulated"
 		parent="account-root-move" title="Moves Simulated"
@@ -197,6 +202,12 @@
 		<domain>self.statusSelect = 5</domain>
 		<context name="_isSimulatedMove" expr="true" />
 	</action-view>
+<<<<<<< HEAD
+=======
+	
+	<menuitem name="account-root-move-move-line-simulated" parent="account-root-move"
+		title="Move Lines Simulated" action="account.root.move.move.line.simulated" order="20" if="__repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne()).fetchOne()?.isActivateSimulatedMove"/>
+>>>>>>> e6745d1735b21109f9e92b32bebca22c61b941c7
 
 	<menuitem name="account-root-move-move-line-simulated"
 		parent="account-root-move" title="Move Lines Simulated"
@@ -209,8 +220,13 @@
 		<view type="form" name="move-line-form" />
 		<view-param name="search-filters" value="move-line-filters" />
 		<domain>self.move.statusSelect = 5</domain>
+<<<<<<< HEAD
 		<context name="_isSimulatedMoveLine" expr="true" />
 	</action-view>
+=======
+		<context name="_isSimulatedMoveLine" expr="true"/>
+	</action-view> -->
+
 
 	<menuitem name="account-root-payments" parent="account-root"
 		title="Payments" order="5" />
@@ -698,7 +714,22 @@
 		<view type="form" name="tax-form" />
 		<view-param name="search-filters" value="tax-filters" />
 	</action-view>
+	
+	<menuitem name="account-conf-financial-tax-number" parent="account-conf-financial"
+		title="Tax numbers" action="account.conf.financial.tax.number" />
 
+	<action-view name="account.conf.financial.tax.number" title="Tax number" model="com.axelor.apps.account.db.TaxNumber">
+		<view type="grid" name="tax-number-grid" />
+		<view type="form" name="tax-number-form" />
+	</action-view>
+	
+	<menuitem name="account-conf-financial-financial-discount" title="Financial Discount" parent="account-conf-financial" action="financial.discount" />
+	
+	<action-view name="financial.discount" title="Financial Discount" model="com.axelor.apps.account.db.FinancialDiscount">
+		<view type="grid" name="financial-discount-grid"/>
+		<view type="form" name="financial-discount-form"/>
+	</action-view>
+	
 	<menuitem name="account-conf-analytic" parent="account-conf"
 		title="Analytic" />
 
@@ -1089,7 +1120,7 @@
 		<view type="grid" name="analytic-rules-grid"/>
 		<view type="form" name="analytic-rules-form"/>
 	</action-view>
-	
+
 	<menuitem name="account-analytic-grouping-value"
 		parent="account-conf-analytic"
 		action="account.conf.analytic.grouping.values" title="Analytic Regrouping Values" order="90"/>

@@ -119,7 +119,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile =
           new Reconcile(
               debitMoveLine.getMove().getCompany(),
-              amount.setScale(2, RoundingMode.HALF_EVEN),
+              amount.setScale(2, RoundingMode.HALF_UP),
               debitMoveLine,
               creditMoveLine,
               ReconcileRepository.STATUS_DRAFT,

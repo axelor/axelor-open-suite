@@ -5,7 +5,7 @@
     
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine"  canArchive="false" canDelete="false" canNew="false">
   	<toolbar>
-  		<button name="accountingReconcileBtn" title="Accounting Reconcile" hideIf="_isSimulatedMoveLine" onClick="action-method-accounting-reconcile"/>
+  		<button name="accountingReconcileBtn" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
       <button name="calculateBtn" title="Calculation of totals" onClick="action-account-move-line-method-calculate-balance"/>
   	</toolbar>
   	<hilite color="info" if="$get('move.statusSelect') == 1"/>
@@ -356,7 +356,7 @@
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-record-get-move-informations"/>
 	    <action name="action-move-line-record-get-first-move-line-informations"/>
-	    <action name="action-move-line-record-get-creditdebit-balance"/>
+	    <action name="action-move-line-method-get-creditdebit-balance"/>
 	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
 	    <action name="action-move-line-method-set-currencyRate"/>
 	    <action name="action-move-line-record-set-currencyAmount"/>
@@ -458,10 +458,9 @@
 		<field name="origin" expr="eval: __parent__?.moveLineList.get(0).origin" if="eval: __parent__?.getInfoFromFirstMoveLineOk == true &amp;&amp; __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
 	</action-record>
 	
-	<action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">
-		<field name="debit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &gt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" />
-		<field name="credit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
-	</action-record>
+	<action-method name="action-move-line-method-get-creditdebit-balance">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="balanceCreditDebit"/>
+	</action-method>
 
 	<action-method name="action-move-line-method-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="computeCurrentRate"/>
@@ -545,6 +544,9 @@
 		</filter>
 		<filter title="Purchase Entries">
 			<domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
+		</filter>
+		<filter title="Simulated Move Lines">
+			<domain>self.move.statusSelect = 5</domain>
 		</filter>
 	</search-filters>
 	

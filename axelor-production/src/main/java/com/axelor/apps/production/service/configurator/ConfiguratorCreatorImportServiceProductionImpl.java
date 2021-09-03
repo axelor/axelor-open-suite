@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.configurator;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
+import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -38,6 +39,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ConfiguratorCreatorImportServiceProductionImpl
     extends ConfiguratorCreatorImportServiceImpl {
@@ -128,6 +130,13 @@ public class ConfiguratorCreatorImportServiceProductionImpl
     }
     for (ConfiguratorProdProcessLine configuratorProdProcessLine : configuratorProdProcessLines) {
       updateAllFormulaFields(configuratorProdProcessLine, oldName, newName);
+      List<ConfiguratorProdProduct> confProdProductList =
+          configuratorProdProcessLine.getConfiguratorProdProductList();
+      if (CollectionUtils.isNotEmpty(confProdProductList)) {
+        for (ConfiguratorProdProduct confProdProduct : confProdProductList) {
+          updateAllFormulaFields(confProdProduct, oldName, newName);
+        }
+      }
     }
   }
 

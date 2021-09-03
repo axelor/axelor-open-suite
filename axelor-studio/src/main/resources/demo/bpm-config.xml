@@ -22,6 +22,12 @@
 			<bind node="@title" to="title" />
 			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
 			<bind to="formWidth" eval="'large'" />
+			<bind node="isGenerateMenu" to="isGenerateMenu" />
+			<bind node="menuBuilder" to="menuBuilder" search="self.xmlId = :xmlId" if="menuBuilderName != null">
+            	<bind node="@name" to="name" alias="menuBuilderName"/>
+            	<bind node="@title" to="title"/>
+            	<bind node="@xmlId" to="xmlId" />
+            </bind>
 			<bind node="fields/field" to="fields">
 				<bind node="@name" to="name"/>
 				<bind node="@title" to="title" />
@@ -107,16 +113,18 @@
 	</input>
 	
 	<input file="bpm_menuBuilder.xml" root="menu-builders">
-		<bind node="menu-builder" type="com.axelor.studio.db.MenuBuilder" call="com.axelor.studio.service.ImportService:importMenuBuilder">
+		<bind node="menu-builder" type="com.axelor.studio.db.MenuBuilder" call="com.axelor.studio.service.ImportService:importMenuBuilder" search="self.xmlId = :xmlId" update="true">
 			<bind node="@name" to="name" />
+			<bind node="@xmlId" to="xmlId" />
 			<bind node="@title" to="title" />
 			<bind node="@icon" to="icon" />
 			<bind node="@background" to="iconBackground" />
-			<bind node="@parent" to="parentMenu" search="self.name = :parentMenu" />
+			<bind node="@parentMenu" to="parentMenu" search="self.name = :parentMenu" />
 			<bind node="@show-action" to="showAction" />
 			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
-			<bind node="action" to="actionBuilder" if="actionName != null">
+			<bind node="action" to="actionBuilder" if="actionName != null" search="self.xmlId = :xmlId">
 				<bind node="@name" to="name" alias="actionName"  />
+				<bind node="@xmlId" to="xmlId" />
 				<bind node="@model" to="model" />
 				<bind node="@isJson" to="isJson" />
 				<bind node="@title" to="title" />
@@ -138,6 +146,7 @@
 	<input file="bpm_actionBuilder.xml" root="action-builders">
 		<bind node="action-builder" type="com.axelor.studio.db.ActionBuilder" call="com.axelor.studio.service.ImportService:importActionBuilder">
 			<bind node="@name" to="name" />
+			<bind node="@xmlId" to="xmlId" />
 			<bind node="@isJson" to="isJson" />
 			<bind node="@typeSelect" to="typeSelect" />
 			<bind node="@model" to="model" />

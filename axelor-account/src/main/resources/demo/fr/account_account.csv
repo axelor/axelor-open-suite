@@ -448,7 +448,7 @@
 447;445511;445510;"TVA N à décaisser taux normal";"tax";;1;;;;
 448;445512;445510;"TVA R1 à décaisser taux intermédiaire";"tax";;1;;;;
 449;445513;445510;"TVA R2 à décaisser taux réduit";"tax";;1;;;;
-450;445514;445510;"TVA décaissée (autre taux : U...)";"tax";;1;;;;
+450;445514;445510;"TVA décaissée (autre taux : U...)";"tax";;1;;;;
 451;445580;445500;"Taxes assimilées à la TVA";"tax";;1;;;;
 452;445600;445000;"Taxes sur le chiffre d'affaires déductibles";"tax";;1;;;;
 453;445620;445600;"TVA sur immobilisations";"tax";;1;;;;
@@ -462,7 +462,7 @@
 461;445711;445710;"TVA N collectée taux normal";"tax";;1;;;;
 462;445712;445710;"TVA R1 collectée taux intermédiaire";"tax";;1;;;;
 463;445713;445710;"TVA R2 collectée taux réduit";"tax";;1;;;;
-464;445714;445710;"TVA collectée (autre taux : U...)";"tax";;1;;;;
+464;445714;445710;"TVA collectée (autre taux : U...)";"tax";;1;;;;
 465;445780;445700;"Taxes assimilées à la TVA";"tax";;1;;;;
 466;445800;445000;"Taxes sur le chiffre d'affaires à régulariser ou en attente";"tax";;1;;;;
 467;445810;445800;"Acomptes - Régime simplifié d'imposition";"tax";;1;;;;

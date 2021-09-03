@@ -90,7 +90,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   private String userName = null;
 
-  protected Template template = null;
+  protected Template messageTemplate = null;
   protected boolean isDefaultTemplate = false;
   protected Map<String, Object> templatesContext;
   protected Templates templates;
@@ -355,7 +355,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   @Override
   protected String template(MailMessage message, Model entity) throws IOException {
-    if (template == null) {
+    if (messageTemplate == null) {
       return super.template(message, entity);
     }
 
@@ -374,7 +374,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       templatesContext.put("comment", text);
     }
 
-    return templates.fromText(template.getContent()).make(templatesContext).render();
+    return templates.fromText(messageTemplate.getContent()).make(templatesContext).render();
   }
 
   @Override
@@ -382,12 +382,13 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (message == null) {
       return null;
     }
-    template = this.getTemplateByModel(entity);
-    if (template == null) {
-      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+    messageTemplate = this.getTemplateByModel(entity);
+    if (messageTemplate == null) {
+      messageTemplate =
+          Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
     }
-    if (template == null) {
+    if (messageTemplate == null) {
       return super.getSubject(message, entity);
     }
     templatesContext = Maps.newHashMap();
@@ -402,16 +403,16 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     try {
       Beans.get(TemplateMessageService.class)
           .computeTemplateContexts(
-              template.getTemplateContextList(),
+              messageTemplate.getTemplateContextList(),
               entity.getId(),
               klass.getCanonicalName(),
-              template.getIsJson(),
+              messageTemplate.getIsJson(),
               templatesContext);
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
     }
-    templates = createTemplates(template);
-    return templates.fromText(template.getSubject()).make(templatesContext).render();
+    templates = createTemplates(messageTemplate);
+    return templates.fromText(messageTemplate.getSubject()).make(templatesContext).render();
   }
 
   protected Templates createTemplates(Template template) {
@@ -440,13 +441,13 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected void setRecipients(MailBuilder builder, String recipient, Model entity) {
     builder.to(recipient);
 
-    if (template == null) {
+    if (messageTemplate == null) {
       return;
     }
 
-    builder.cc(getRecipients(template.getCcRecipients()));
-    builder.bcc(getRecipients(template.getBccRecipients()));
-    builder.to(getRecipients(template.getToRecipients()));
+    builder.cc(getRecipients(messageTemplate.getCcRecipients()));
+    builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
+    builder.to(getRecipients(messageTemplate.getToRecipients()));
   }
 
   protected String[] getRecipients(String recipients) {

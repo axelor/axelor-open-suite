@@ -430,7 +430,7 @@
 "Error in getting ssl certificate","Erreur lors de la récupération du certificat SSL",,
 "Error with EBICS partner %s: %s","Erreur avec le contrat EBICS %s : %s",,
 "Exempt","Exonéré",,
-"Expense","Dépense",,
+"Expense","Note de frais",,
 "Export","Export",,
 "F - Receiver label","F - Libellé complémentaire",,
 "Failed to create bank order from invoice payment","Échec lors de la création de l'ordre bancaire provenant du paiement de facture",,

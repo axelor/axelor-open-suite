@@ -48,4 +48,6 @@
 		<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userImportId)"/>
 	</input>
 	
+	<input file="crm_crmConfig.csv" separator=";" type="com.axelor.apps.crm.db.CrmConfig" search="self.importId = :importId"/>
+	
 </csv-inputs>

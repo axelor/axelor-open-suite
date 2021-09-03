@@ -50,7 +50,7 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
     AppRecruitment appRecruitment = appRecruitmentRepo.all().fetchOne();
 
     if (appRecruitment != null
-        && appRecruitment.getActive()
+        && appRecruitment.getApp().getActive()
         && message.getMailAccount() != null
         && message.getMailAccount().getServerTypeSelect() > 1) {
 

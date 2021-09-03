@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -50,7 +51,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      InvoiceLineRepository invoiceLineRepo) {
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -62,7 +64,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         invoiceLineService,
         accountConfigService,
         moveToolService,
-        invoiceLineRepo);
+        invoiceLineRepo,
+        appBaseService);
   }
 
   @Override

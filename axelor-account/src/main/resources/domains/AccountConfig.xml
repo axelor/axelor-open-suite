@@ -162,16 +162,24 @@
 		
 		<!-- Move Line -->
 		<boolean name="isDescriptionRequired" title="Description required"/>
+		<boolean name="isActivateSimulatedMove" title="Activate Simulated Moves ?" help="Field used to activate the Simulated status on the Move entries. Simulated move have no direct accounting impact but can be optionally used on accounting reports to perform simulations."/>
 
 		<!-- Late payment blocking  -->
 		<boolean name="hasLatePaymentAccountBlocking" title="Late payment account blocking"/>
 		<integer name="numberOfDaysBeforeAccountBlocking" title="Number of days before account blocking"/>
-		
+
 		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting" help="If this field is activated, the management of cost accounting will be offered at each place where the entry or choice of parameters related to cost accounting is necessary at the same time as the company."/>
 		<integer name="nbrOfAnalyticAxisSelect" title="Nbr. of analytic axis" selection="account.general.analytic.axis.type.select" default="1" help="This field indicates the number of Analytical Axes that will be managed on the company, and in particular for entering the analytical breakdown during the creation of accounting entries. The order of the analytical axes is to be defined in the Order of analytical axes table below."/>
 		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
 		<one-to-many name="analyticAxisByCompanyList" ref="AnalyticAxisByCompany" title="Order of Analytic Axis" mappedBy="accountConfig"/>
 		<many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Default analytic journal"/>
+
+		<many-to-one name="purchFinancialDiscountAccount" ref="com.axelor.apps.account.db.Account" title="Purchase financial discount account" />
+		<many-to-one name="saleFinancialDiscountAccount" ref="com.axelor.apps.account.db.Account" title="Sale financial discount account" /> 
+		<many-to-one name="purchFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax" title="Purchase financial discount tax" />
+		<many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax" title="Sale financial discount tax" />
+
+
     <finder-method name="findByCompany" using="company"/>
 
 		<extra-code><![CDATA[
