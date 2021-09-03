@@ -460,6 +460,7 @@
 "Fax","Fax",,
 "Fees imputation","Imputação de taxas",,
 "Field allowing to enable automatic pointing during reconciliation. Pointing can still be done manually when incomplete",,,
+"Field indicating the confidence index for automatic reconcile. Green dot means 'Equal amount and date in range', orange dot means 'Equal amount and date out of range', red dot means 'Amount and date in range'",,,
 "File","Arquivo",,
 "File format","Formato do arquivo",,
 "File generation date","Data de geração do arquivo",,

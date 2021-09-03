@@ -460,6 +460,7 @@
 "Fax","Fax",,
 "Fees imputation","Mode d'imputation des frais",,
 "Field allowing to enable automatic pointing during reconciliation. Pointing can still be done manually when incomplete","Champ permettant si coché d'activer la fonction de pointage automatique lors des sessions de rapprochements bancaires. Le pointage peut également être effectué manuellement en complément.",,
+"Field indicating the confidence index for automatic reconcile. Green dot means 'Equal amount and date in range', orange dot means 'Equal amount and date out of range', red dot means 'Amount and date in range'","Champ permettant d’indiquer l’indice de confiance dans les rapprochements automatique. La pastille verte signifie : ‘Montants égaux et dates dans les fourchettes’. La pastille orange : ‘Montants égaux et dates hors fourchettes’. La pastille rouge : ‘Montants ou dates dans la fourchette avec intervalles élargis’",,
 "File","Fichier",,
 "File format","Format du fichier",,
 "File generation date","Date de génération du fichier",,
