@@ -46,6 +46,12 @@
 						<field name="supplierAccountSequence" help="Sequence to be used to generate supplier accounts' codes" canNew="true" canEdit="true"
                                showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
 					</panel>
+					<panel name="discountPanel" title="Discount Accounts" colSpan="12">
+						<field name="purchFinancialDiscountAccount" requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+						<field name="saleFinancialDiscountAccount" requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+						<field name="purchFinancialDiscountTax" requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+						<field name="saleFinancialDiscountTax" requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+					</panel>
 					<panel title="AccountConfig.Employees" colSpan="12">
 						<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"
 							   help="Select the default employee account to be used in eg. expense payments. It will also be used as parent account if automatic account creation is enabled."/>
@@ -129,6 +135,7 @@
 					<field name="invoicingProduct" domain="self.dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
 					<field name="advancePaymentProduct" domain="self.dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
 				</panel>
+				
 
 				<panel name="printingSettingsPanel" title="Printing settings" colSpan="12">
 					<field name="displayDelAddrOnPrinting" widget="boolean-switch"/>

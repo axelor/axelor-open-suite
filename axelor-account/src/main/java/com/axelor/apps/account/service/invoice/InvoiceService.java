@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -33,7 +34,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -283,4 +286,28 @@ public interface InvoiceService {
   public User getPfpValidatorUser(Invoice invoice);
 
   public String getPfpValidatorUserDomain(Invoice invoice);
+
+  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException;
+
+  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException;
+
+  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount)
+      throws AxelorException;
+
+  @CallMethod
+  public BigDecimal calculateAmountRemainingInPayment(
+      Invoice invoice, boolean apply, BigDecimal amount) throws AxelorException;
+
+  public boolean applyFinancialDiscount(Invoice invoice);
+
+  @CallMethod
+  public String setAmountTitle(boolean applyFinancialDiscount);
+
+  public InvoicePayment computeDatasForFinancialDiscount(
+      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount) throws AxelorException;
+
+  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
+      throws AxelorException;
 }

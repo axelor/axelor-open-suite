@@ -565,7 +565,7 @@
 		<view type="grid" name="service-type-grid"/>
 		<view type="form" name="service-type-form"/>
 	</action-view>
-	
+
 	<menuitem name="account-conf-financial-tax-number" parent="account-conf-financial"
 		title="Tax numbers" action="account.conf.financial.tax.number" />
 
@@ -574,6 +574,13 @@
 		<view type="form" name="tax-number-form" />
 	</action-view>
 	
+	<menuitem name="account-conf-financial-financial-discount" title="Financial Discount" parent="account-conf-financial" action="financial.discount" />
+
+	<action-view name="financial.discount" title="Financial Discount" model="com.axelor.apps.account.db.FinancialDiscount">
+		<view type="grid" name="financial-discount-grid"/>
+		<view type="form" name="financial-discount-form"/>
+	</action-view>
+
 	<menuitem name="account-conf-analytic" parent="account-conf"
 		title="Analytic" />
 
@@ -849,10 +856,10 @@
 		<view type="grid" name="payment-delay-reason-grid"/>
 		<view type="form" name="payment-delay-reason-form"/>
 	</action-view>
-	
-	
+
+
 	<!-- Conf Referential -->
-	
+
 	<menuitem name="referential-conf-das2-activity" parent="referential-conf"
 		title="DAS2 activities"
 		action="account.referential.conf.das2.activity" />
@@ -862,5 +869,5 @@
 		<view type="grid" name="das2-activity-grid"/>
 		<view type="form" name="das2-activity-form"/>
 	</action-view>
-		
+
 </object-views>

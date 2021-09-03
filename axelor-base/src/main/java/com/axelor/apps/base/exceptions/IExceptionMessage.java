@@ -445,4 +445,11 @@ public interface IExceptionMessage {
       "The geonames file type is invalid." /*)*/;
 
   public static final String INVALID_FIELD = /*$$(*/ "'%s' field for '%s' is invalid." /*)*/;
+
+  /* Pricing scale */
+  public static final String PRICING_1 = /*$$(*/
+      "Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected." /*)*/;
+
+  public static final String PRICING_2 = /*$$(*/
+      "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
 }
