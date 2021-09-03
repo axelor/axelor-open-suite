@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -65,8 +66,10 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -536,6 +539,41 @@ public class BankReconciliationService {
     return cashAccount;
   }
 
+  public String getRequestMoveLines(BankReconciliation bankReconciliation) {
+    String query =
+        "(self.date >= :fromDate OR self.dueDate >= :fromDate) AND (self.date <= :toDate OR self.dueDate <= :toDate) AND self.move.statusSelect != :statusSelect AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))";
+    if (bankReconciliation.getJournal() != null) {
+      query = query + " AND self.move.journal = :journal";
+    }
+    if (bankReconciliation.getCashAccount() != null) {
+      query = query + " AND self.account = :cashAccount";
+    } else {
+      if (bankReconciliation.getJournal() != null) {
+        // query = query + " AND self.account.accountType = :accountType";
+      }
+    }
+    return query;
+  }
+
+  public Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("fromDate", bankReconciliation.getFromDate());
+    params.put("toDate", bankReconciliation.getToDate());
+    params.put("statusSelect", MoveRepository.STATUS_CANCELED);
+    params.put("statusSelect", MoveRepository.STATUS_CANCELED);
+    if (bankReconciliation.getJournal() != null) {
+      params.put("journal", bankReconciliation.getJournal());
+    }
+    if (bankReconciliation.getCashAccount() != null) {
+      params.put("cashAccount", bankReconciliation.getCashAccount());
+    } else {
+      if (bankReconciliation.getJournal() != null) {
+        params.put("accountType", AccountTypeRepository.TYPE_CASH);
+      }
+    }
+    return params;
+  }
+
   @Transactional
   public BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation) {
     List<BankStatementQuery> bankStatementQueries =
@@ -547,12 +585,8 @@ public class BankReconciliationService {
     List<MoveLine> moveLines =
         moveLineRepository
             .all()
-            .filter(
-                "(self.date >= :fromDate OR self.dueDate >= :fromDate) AND (self.date <= :toDate OR self.dueDate <= :toDate) AND self.account = :cashAccount AND self.move.statusSelect != :statusSelect AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
-            .bind("statusSelect", MoveRepository.STATUS_CANCELED)
-            .bind("cashAccount", bankReconciliation.getCashAccount())
-            .bind("fromDate", bankReconciliation.getFromDate())
-            .bind("toDate", bankReconciliation.getToDate())
+            .filter(getRequestMoveLines(bankReconciliation))
+            .bind(getBindRequestMoveLine(bankReconciliation))
             .fetch();
     BigInteger dateMargin =
         BigInteger.valueOf(
@@ -709,13 +743,11 @@ public class BankReconciliationService {
         bankReconciliation.getBankReconciliationLineList()) {
       amount = BigDecimal.ZERO;
       bankStatementLine = bankReconciliationLine.getBankStatementLine();
-      if (bankStatementLine.getCredit().compareTo(BigDecimal.ZERO) != 0) {
-        amount =
-            bankStatementLine.getCredit().subtract(bankStatementLine.getAmountRemainToReconcile());
-      } else {
-        amount =
-            bankStatementLine.getAmountRemainToReconcile().subtract(bankStatementLine.getDebit());
-      }
+      amount =
+          bankStatementLine
+              .getMoveLine()
+              .getCredit()
+              .subtract(bankStatementLine.getMoveLine().getDebit());
       endingBalance = endingBalance.add(amount);
     }
     bankReconciliation.setEndingBalance(endingBalance);

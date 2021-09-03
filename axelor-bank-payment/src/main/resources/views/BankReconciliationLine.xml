@@ -4,8 +4,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
    
     <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false" canNew="false">
-        <hilite if="isSelectedBankReconciliation" color="green" />
-        <hilite if="!isSelectedBankReconciliation" color="black" />
+        <hilite if="isSelectedBankReconciliation" background="grey" />
+        <hilite if="!isSelectedBankReconciliation" background="white" />
+        <hilite if="debit > 0" color="red"/>
+        <hilite if="credit > 0" color="green"/>
         <field name="postedNbr"/>
         <field name="confidenceIndex" readonly="true">
            <hilite if="confidenceIndex == 1" color="green"/>
@@ -25,7 +27,7 @@
    	    <field name="moveLine" width="135" canEdit="false" onChange="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected" onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
   	    <field name="isPosted" readonly="true"/>
         <field name="isSelectedBankReconciliation" hidden="true"/>
-        <button onClick="action-bank-reconciliation-line-record-set-selected,save" name="select" title="Select / Unselect" icon="fa-cog" />
+        <button onClick="action-bank-reconciliation-line-record-set-selected,save" name="select" title="Select / Unselect" icon="fa-circle-check" />
     </grid>
   
      <form name="bank-reconciliation-line-form" title="Bank reconciliation Line" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large">

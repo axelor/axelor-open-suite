@@ -43,6 +43,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -52,6 +53,7 @@ import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -466,5 +468,23 @@ public class BankReconciliationController {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     Beans.get(BankStatementService.class)
         .setIsFullyReconciled(bankReconciliation.getBankStatement());
+  }
+
+  public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    BankReconciliationService bankReconciliationService =
+        Beans.get(BankReconciliationService.class);
+    ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
+    actionViewBuilder.model(MoveLine.class.getName());
+    actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
+    actionViewBuilder.add("form", "move-line-form");
+    actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
+    Map<String, Object> params =
+        bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
+    Set<String> keys = params.keySet();
+    for (String key : keys) {
+      actionViewBuilder.context(key, params.get(key));
+    }
+    response.setView(actionViewBuilder.map());
   }
 }
