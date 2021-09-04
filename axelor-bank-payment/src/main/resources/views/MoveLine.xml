@@ -17,7 +17,7 @@
     <field name="bankReconciledAmount" if-module="axelor-bank-payment" />
     <field name="move.statusSelect" />
     <field name="isSelectedBankReconciliation" hidden="true" />
-    <button onClick="action-move-line-method-set-selected,save,reload" name="select" title="Select / Unselect" icon="fa-cog" />
+    <button onClick="action-move-line-method-set-selected,save,reload" name="select" title="Select / Unselect" icon="fa-circle-check" />
   </grid>
 
   <action-group name="action-group-account-moveline-debitcredit-onchange" id="banck-payment-action-group-account-moveline-debitcredit-onchange">
