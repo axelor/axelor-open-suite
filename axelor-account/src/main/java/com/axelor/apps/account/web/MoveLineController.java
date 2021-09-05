@@ -249,7 +249,7 @@ public class MoveLineController {
 
     try {
       Context parentContext = request.getContext().getParent();
-      if (parentContext != null) {
+      if (parentContext != null && parentContext.getClass().equals(Move.class)) {
         Move move = parentContext.asType(Move.class);
         AccountConfig accountConfig =
             Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
