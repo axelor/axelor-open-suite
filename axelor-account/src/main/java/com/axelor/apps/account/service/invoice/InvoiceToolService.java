@@ -258,6 +258,7 @@ public class InvoiceToolService {
     copy.setAmountPaid(BigDecimal.ZERO);
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
+    copy.setPaymentProgress(0);
     copy.clearBatchSet();
     copy.setDebitNumber(null);
     copy.setDoubtfulCustomerOk(false);

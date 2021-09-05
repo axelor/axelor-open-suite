@@ -90,7 +90,7 @@
 	</action-view>	
 	
 	<menuitem name="invoice-root-invoice-terms" parent="invoice-root" order="21"
-      title="Invoice terms" action="invoice.root.invoice.terms" />
+      title="Terms list" action="invoice.root.invoice.terms"/>
 
     <action-view name="invoice.root.invoice.terms" title="Terms list"
       model="com.axelor.apps.account.db.InvoiceTerm">

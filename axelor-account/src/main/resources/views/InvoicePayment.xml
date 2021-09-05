@@ -29,9 +29,6 @@
         	hidden="true" showIf="invoice.invoiceTermList.length &gt; 1 &amp;&amp; invoice.operationTypeSelect != 4 &amp;&amp; invoice.operationTypeSelect != 2"/>
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
 			<field name="typeSelect" showIf="id" colSpan="12" />
-            <!-- TODO update methods -->   
-            <!--field name="amount" onChange="action-invoice-payement-method-update-invoice-terms-to-pay"/-->
-            <!--field name="currency" onChange="action-invoice-payement-method-update-invoice-terms-to-pay" canEdit="false" form-view="currency-form" grid-view="currency-grid"/-->
             <field name="amount" onChange="action-invoice-payment-method-change-amount"/>
             <field name="currency" canEdit="false"
                 form-view="currency-form" grid-view="currency-grid"/>
@@ -98,13 +95,12 @@
 		</panel>
 	</form>
 
-        <!--TODO CHECK compatibility discount & invoiceTerms -->
 	<action-group name="action-invoice-payment-group-new">
 		<action name="action-invoice-payment-record-new"/>
 		<action name="action-invoice-payment-attrs-new"/>
 		<action name="action-invoice-payment-method-new"/>
 		<action name="action-invoice-payment-method-new-discount"/>
-                <action name="action-invoice-payment-method-load-invoice-terms"/>
+        <action name="action-invoice-payment-method-load-invoice-terms"/>
 	</action-group>
 	
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">

@@ -218,11 +218,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
           invoicePayment.addReconcileListItem(
               reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false));
         }
-
-        for (MoveLine invoiceMoveLine : invoiceMoveLines) {
-          invoicePayment.addReconcileListItem(
-              reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false));
-        }
       }
       invoicePayment.setMove(move);
 

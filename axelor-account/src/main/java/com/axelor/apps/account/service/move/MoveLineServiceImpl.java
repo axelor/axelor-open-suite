@@ -659,7 +659,7 @@ public class MoveLineServiceImpl implements MoveLineService {
                 origin,
                 null);
         invoiceTerm.setMoveLine(holdBackMoveLine);
-        move.addMoveLineListItem(holdBackMoveLine);
+        moveLines.add(holdBackMoveLine);
       } else {
         if (moveLine == null) {
           moveLine =
@@ -704,7 +704,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       if (!invoiceTerm.getIsHoldBack()) invoiceTerm.setMoveLine(moveLine);
     }
-    move.addMoveLineListItem(moveLine);
+    moveLines.add(moveLine);
     return moveLines;
   }
 

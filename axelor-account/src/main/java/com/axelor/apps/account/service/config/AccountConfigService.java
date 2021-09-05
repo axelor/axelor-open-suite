@@ -413,7 +413,7 @@ public class AccountConfigService {
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
-    return accountConfig.getHoldBackCustomerAccount();
+    return accountConfig.getHoldBackSupplierAccount();
   }
 
   /** ****************************** TVA ******************************************* */

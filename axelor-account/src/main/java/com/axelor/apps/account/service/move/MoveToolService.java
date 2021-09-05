@@ -150,7 +150,9 @@ public class MoveToolService {
     List<MoveLine> moveLines = Lists.newArrayList();
     if (!CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
-        moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
+        if (!moveLines.contains(invoiceTermPayment.getInvoiceTerm().getMoveLine())) {
+          moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
+        }
       }
     }
     return moveLines;

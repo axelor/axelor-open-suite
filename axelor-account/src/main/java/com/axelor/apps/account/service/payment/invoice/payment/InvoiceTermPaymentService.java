@@ -33,7 +33,7 @@ public interface InvoiceTermPaymentService {
    * @param invoiceTermsToPay
    * @return
    */
-  public List<InvoiceTermPayment> initInvoiceTermPayments(
+  public InvoicePayment initInvoiceTermPayments(
       InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay);
 
   /**
@@ -44,7 +44,7 @@ public interface InvoiceTermPaymentService {
    * @param availableAmount
    * @return
    */
-  public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
+  public InvoicePayment initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount)

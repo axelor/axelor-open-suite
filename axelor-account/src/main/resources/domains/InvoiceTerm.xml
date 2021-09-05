@@ -17,6 +17,7 @@
   	<boolean name="isHoldBack" title="Holdback" default="false"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
     <many-to-one name="financialDiscount" ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
 <!--     <integer name="discountBaseSelect" title="Discount base" selection="account.financial.discount.discount.base.select"/> -->
 <!--     <decimal name="discountRate" title="Discount rate" /> -->
 <!--     <date name="finDiscountDeadlineDate" title="Financial discount deadline date"/> -->

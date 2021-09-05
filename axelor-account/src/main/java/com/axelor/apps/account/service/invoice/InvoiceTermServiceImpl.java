@@ -94,6 +94,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
+    invoiceTerm.setPercentage(paymentConditionLine.getPaymentPercentage());
     return invoiceTerm;
   }
 
@@ -164,8 +165,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (amountRemaining.compareTo(BigDecimal.ZERO) <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
+        invoiceTerm.setPaymentMode(invoicePayment.getPaymentMode());
+        if (invoicePayment.getApplyFinancialDiscount()) {
+          invoiceTerm.setFinancialDiscount(invoicePayment.getFinancialDiscount());
+          invoiceTerm.setFinancialDiscountAmount(invoicePayment.getFinancialDiscountTotalAmount());
+        }
       }
-
       invoiceTerm.setAmountRemaining(amountRemaining);
     }
   }

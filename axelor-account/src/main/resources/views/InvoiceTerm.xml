@@ -4,16 +4,17 @@
 
   <grid name="invoice-term-grid" title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <hilite color="danger" if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0" />
-    <field name="sequence"/>
-    <field name="name" />
-    <field name="dueDate" />
-    <field name="amount" />
-    <field name="amountRemaining" />
-    <field name="isHoldBack" />
+    <field name="name"/>
+    <field name="invoice"/>
+    <field name="dueDate"/>
+    <field name="amount"/>
+    <field name="amountRemaining"/>
+    <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
-    <field name="invoice.financialDiscountBase"/>
-    <field name="invoice.financialDiscountRate"/>
+    <field name="financialDiscount.discountRate"/>
+    <field name="financialDiscountAmount"/>
+    <field name="invoice.financialDiscountDeadlineDate"/>
   </grid>
 
   <grid name="invoice-term-invoice-grid" title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm" orderBy="dueDate">
@@ -25,50 +26,59 @@
     <field name="isPaid"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
-    <field name="invoice.financialDiscountRate"/>
-    <field name="invoice.finDiscountDeadlineDate"/>
+    <field name="financialDiscount.discountRate"/>
+    <field name="financialDiscountAmount"/>
+    <field name="invoice.financialDiscountDeadlineDate"/>
   </grid>
 
   <form name="invoice-term-invoice-form" title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
     <panel name="mainPanel">
-      <field name="sequence"/>
-      <field name="name" readonly="true" />
-      <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" readonly="true" />
-      <field name="isPaid" readonly="true" />
-      <field name="isHoldBack" readonly="true" />
-      <field name="percentage" readonly="true"/>
+      <!-- TODO Manage sequence -->
+      <field name="name" readonly="true" colSpan="4"/>
+      <spacer colSpan="4"/>
+      <field name="isPaid" readonly="true" colSpan="4"/>
+      <separator colSpan="12"/>
+      <field name="amount" readonly="true"/>
+      <field name="amountRemaining" readonly="true"/>
       <field name="dueDate" readonlyIf="(invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3 ||
        ((invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid)"/>
-      <field name="estimatedPaymentDate" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')" />
-      <field name="amount" readonly="true" />
-      <field name="amountRemaining" readonly="true" />
-      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
-      <field name="invoice.discountRate"/>
-      <field name="invoice.finDiscountDeadlineDate"/>
-      <field name="financialDiscount"/>
+      <field name="estimatedPaymentDate" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+      <field name="percentage" readonly="true"/>
+      <field name="isHoldBack" readonly="true"/>
       <field name="paymentMode"/>
-      <field name="invoice.company" hidden="true" />
+      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
+      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4" hidden="true" showIf="financialDiscount != null" >
+          <field name="financialDiscount" readonly="true"/>
+          <field name="financialDiscount.discountRate"/>
+          <field name="financialDiscountAmount"/>
+          <field name="invoice.financialDiscountDeadlineDate"/>
+          <field name="invoice.company" hidden="true" />
+      </panel>
     </panel>
   </form>
 
   <form name="invoice-term-form" title="Invoice term" model="com.axelor.apps.account.db.InvoiceTerm">
     <panel name="mainPanel">
-      <field name="sequence"/>
-      <field name="name" readonly="true" />
-      <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" readonly="true" />
-      <field name="isPaid" readonly="true" />
-      <field name="isHoldBack" readonly="true" />
+      <!-- TODO Manage sequence -->
+      <field name="name" readonly="true" colSpan="4"/>
+      <field name="invoice" readonly="true" colSpan="4" form-view="invoice-form" grid-view="invoice-grid"/>
+      <field name="isPaid" readonly="true" colSpan="4"/>
+      <separator colSpan="12"/>
+      <field name="amount" readonly="true"/>
+      <field name="amountRemaining" readonly="true"/>
+      <field name="dueDate" readonly="true"/>
+      <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
       <field name="percentage" readonly="true"/>
-      <field name="dueDate" />
-      <field name="estimatedPaymentDate" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')" />
-      <field name="amount" readonly="true" />
-      <field name="amountRemaining" readonly="true" />
-      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true" showIf="moveLine" />
-      <field name="invoice.discountRate"/>
-      <field name="invoice.finDiscountDeadlineDate"/>
-      <field name="financialDiscount"/>
-      <field name="paymentMode"/>
-      <field name="invoice.company" hidden="true" />
+      <field name="isHoldBack" readonly="true"/>
+      <field name="paymentMode" readonly="true"/>
+      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
+      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4" hidden="true" showIf="financialDiscount != null" >
+          <field name="financialDiscount" readonly="true"/>
+          <field name="financialDiscount.discountRate"/>
+          <field name="financialDiscountAmount"/>
+          <field name="invoice.financialDiscountDeadlineDate"/>
+          <field name="invoice.company" hidden="true" />
+      </panel>
     </panel>
   </form>
 

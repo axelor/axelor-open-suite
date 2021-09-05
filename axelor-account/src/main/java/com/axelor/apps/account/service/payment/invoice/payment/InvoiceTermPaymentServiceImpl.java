@@ -26,7 +26,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -50,16 +49,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   @Override
-  public List<InvoiceTermPayment> initInvoiceTermPayments(
+  public InvoicePayment initInvoiceTermPayments(
       InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay) {
 
-    List<InvoiceTermPayment> invoiceTermPayments = Lists.newArrayList();
+    invoicePayment.clearInvoiceTermPaymentList();
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
-      invoiceTermPayments.add(
+      invoicePayment.addInvoiceTermPaymentListItem(
           createInvoiceTermPayment(invoicePayment, invoiceTerm, invoiceTerm.getAmountRemaining()));
     }
 
-    return invoiceTermPayments;
+    return invoicePayment;
   }
 
   @Override
@@ -74,19 +73,17 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     if (CollectionUtils.isEmpty(invoiceTerms)) {
       return;
     }
-    invoicePayment.setInvoiceTermPaymentList(
-        initInvoiceTermPaymentsWithAmount(
-            invoicePayment, invoiceTerms, invoicePayment.getAmount()));
+    initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, invoicePayment.getAmount());
   }
 
   @Override
-  public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
+  public InvoicePayment initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount)
       throws AxelorException {
 
-    List<InvoiceTermPayment> invoiceTermPayments = Lists.newArrayList();
+    invoicePayment.clearInvoiceTermPaymentList();
 
     availableAmount =
         currencyService
@@ -101,17 +98,18 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       if (availableAmount.compareTo(BigDecimal.ZERO) > 0) {
         BigDecimal invoiceTermAmount = invoiceTerm.getAmountRemaining();
         if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
-          invoiceTermPayments.add(
+          invoicePayment.addInvoiceTermPaymentListItem(
               createInvoiceTermPayment(invoicePayment, invoiceTerm, availableAmount));
           availableAmount = BigDecimal.ZERO;
         } else {
-          invoiceTermPayments.add(
+          invoicePayment.addInvoiceTermPaymentListItem(
               createInvoiceTermPayment(invoicePayment, invoiceTerm, invoiceTermAmount));
           availableAmount = availableAmount.subtract(invoiceTermAmount);
         }
       }
     }
-    return invoiceTermPayments;
+
+    return invoicePayment;
   }
 
   @Override
