@@ -73,8 +73,6 @@ public class VentilateState extends WorkflowInvoice {
 
   protected InvoiceTermService invoiceTermService;
 
-  protected InvoiceService invoiceService;
-
   @Inject
   public VentilateState(
       SequenceService sequenceService,
@@ -85,8 +83,7 @@ public class VentilateState extends WorkflowInvoice {
       WorkflowVentilationService workflowService,
       UserService userService,
       FixedAssetService fixedAssetService,
-      InvoiceTermService invoiceTermService,
-      InvoiceService invoiceService) {
+      InvoiceTermService invoiceTermService) {
     this.sequenceService = sequenceService;
     this.moveService = moveService;
     this.accountConfigService = accountConfigService;
@@ -96,7 +93,6 @@ public class VentilateState extends WorkflowInvoice {
     this.userService = userService;
     this.fixedAssetService = fixedAssetService;
     this.invoiceTermService = invoiceTermService;
-    this.invoiceService = invoiceService;
   }
 
   @Override
@@ -137,7 +133,7 @@ public class VentilateState extends WorkflowInvoice {
   protected void setPartnerAccount() throws AxelorException {
     // Partner account is actually set upon validation but we keep this for backward compatibility
     if (invoice.getPartnerAccount() == null) {
-      Account account = invoiceService.getPartnerAccount(invoice, false);
+      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, false);
 
       if (account == null) {
         throw new AxelorException(
@@ -157,7 +153,7 @@ public class VentilateState extends WorkflowInvoice {
   protected void setJournal() throws AxelorException {
     // Journal is actually set upon validation but we keep this for backward compatibility
     if (invoice.getJournal() == null) {
-      invoice.setJournal(invoiceService.getJournal(invoice));
+      invoice.setJournal(Beans.get(InvoiceService.class).getJournal(invoice));
     }
   }
 

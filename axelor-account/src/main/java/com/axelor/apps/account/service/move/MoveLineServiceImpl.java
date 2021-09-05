@@ -92,7 +92,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected CompanyConfigService companyConfigService;
   protected MoveLineRepository moveLineRepository;
   protected TaxPaymentMoveLineService taxPaymentMoveLineService;
-  protected InvoiceService invoiceService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -104,8 +103,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       CurrencyService currencyService,
       CompanyConfigService companyConfigService,
       MoveLineRepository moveLineRepository,
-      TaxPaymentMoveLineService taxPaymentMoveLineService,
-      InvoiceService invoiceService) {
+      TaxPaymentMoveLineService taxPaymentMoveLineService) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -115,7 +113,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.companyConfigService = companyConfigService;
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
-    this.invoiceService = invoiceService;
   }
 
   @Override
@@ -639,7 +636,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
-        account = invoiceService.getPartnerAccount(invoice, true);
+        account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, true);
         holdBackMoveLine =
             this.createMoveLine(
                 move,
