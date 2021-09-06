@@ -1130,8 +1130,8 @@ bankStatementLine.value_date AS value_date ,
 (bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount , 
 (SUM(bankStatementLine.credit) - SUM(bankStatementLine.debit)) AS account_balance
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
-LEFT JOIN public.bankpayment_bank_statement_line_afb120 AS bankStatementLine ON bankStatementLine.bank_statement = bankReconciliation.bank_statement
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
+LEFT JOIN public.bankpayment_bank_statement_line_afb120 AS bankStatementLine ON bankStatementLine.id = bankReconciliationLine.bank_statement_line
 LEFT JOIN public.bankpayment_bank_statement AS bankStatement ON bankReconciliation.bank_statement = bankStatement.id
 WHERE bankReconciliation.id = ?
 GROUP BY bankStatement.name , 
