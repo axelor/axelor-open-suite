@@ -238,7 +238,19 @@ public class InvoiceController {
       if (invoice.getPaymentCondition() == null) {
         return;
       }
-      invoice = Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        if (!invoiceTermService.checkInvoiceTermsSum(invoice)) {
+          response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_AMOUNT_MISMATCH));
+          return;
+        }
+        if (!invoiceTermService.checkInvoiceTermsPercentageSum(invoice)) {
+          response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH));
+          return;
+        }
+        return;
+      }
+      invoice = invoiceTermService.computeInvoiceTerms(invoice);
       response.setValues(invoice);
 
     } catch (Exception e) {
@@ -249,10 +261,11 @@ public class InvoiceController {
   public void computeInvoiceTermsDueDates(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       if (InvoiceToolService.isPurchase(invoice)) {
         if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
           if (invoice.getOriginDate() != null)

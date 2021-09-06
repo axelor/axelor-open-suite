@@ -91,4 +91,28 @@ public interface InvoiceTermService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateInvoiceTermsAmountRemaining(InvoicePayment invoicePayment)
       throws AxelorException;
+
+  /**
+   * Check if invoice term were customized
+   *
+   * @param invoice
+   * @return
+   */
+  public boolean checkIfCustomizedInvoiceTerms(Invoice invoice);
+
+  /**
+   * Check if the sum of invoice terms amounts equals invoice inTaxTotal
+   *
+   * @param invoice
+   * @throws AxelorException
+   */
+  public boolean checkInvoiceTermsSum(Invoice invoice) throws AxelorException;
+
+  /**
+   * Check if the sum of invoice terms percentage equals 100
+   *
+   * @param invoice
+   * @throws AxelorException
+   */
+  public boolean checkInvoiceTermsPercentageSum(Invoice invoice) throws AxelorException;
 }

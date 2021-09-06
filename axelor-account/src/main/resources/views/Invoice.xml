@@ -1058,7 +1058,6 @@ InvoiceSet.length > 0))"
         <action name="action-invoice-method-generate-invoice-terms"/>
         <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
         <action name="action-invoice-record-due-date"/>
-        <action name="action-invoice-method-estimated-payment-dates"/>
    </action-group>
 
 	<action-attrs name="action-invoice-attrs-in-ati">

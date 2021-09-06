@@ -793,6 +793,11 @@ public interface IExceptionMessage {
   static final String
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
+  static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
+      "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/refund" /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH = /*$$(*/
+      "The sum of invoice payment term lines must be equal to 100%" /*)*/;
 
   /** Invoice payment controller */
   static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/

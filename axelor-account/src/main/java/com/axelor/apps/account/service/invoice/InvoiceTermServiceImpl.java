@@ -47,6 +47,45 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  public boolean checkInvoiceTermsSum(Invoice invoice) throws AxelorException {
+
+    BigDecimal totalAmount = BigDecimal.ZERO;
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      totalAmount = totalAmount.add(invoiceTerm.getAmount());
+    }
+    if (invoice.getInTaxTotal().compareTo(totalAmount) != 0) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public boolean checkInvoiceTermsPercentageSum(Invoice invoice) throws AxelorException {
+
+    BigDecimal sum = BigDecimal.ZERO;
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      sum = sum.add(invoiceTerm.getPercentage());
+    }
+    if (new BigDecimal(100).compareTo(sum) != 0) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public boolean checkIfCustomizedInvoiceTerms(Invoice invoice) {
+
+    if (!CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getIsCustomized()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
   public Invoice computeInvoiceTerms(Invoice invoice) throws AxelorException {
 
     if (invoice.getPaymentCondition() == null

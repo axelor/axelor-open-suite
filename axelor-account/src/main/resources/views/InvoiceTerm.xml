@@ -35,15 +35,15 @@
     <panel name="mainPanel">
       <!-- TODO Manage sequence -->
       <field name="name" readonly="true" colSpan="4"/>
-      <spacer colSpan="4"/>
+      <field name="isCustomized" readonly="true" colSpan="4"/>
       <field name="isPaid" readonly="true" colSpan="4"/>
       <separator colSpan="12"/>
-      <field name="amount" readonly="true"/>
+      <field name="amount" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-method-compute-customized-percentage"/>
       <field name="amountRemaining" readonly="true"/>
       <field name="dueDate" readonlyIf="((invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3) ||
        ((invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid)"/>
-      <field name="estimatedPaymentDate" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-      <field name="percentage" readonly="true"/>
+      <field name="estimatedPaymentDate" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+      <field name="percentage" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
       <field name="isHoldBack" readonly="true"/>
       <field name="paymentMode"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
@@ -52,8 +52,10 @@
           <field name="financialDiscount.discountRate"/>
           <field name="financialDiscountAmount"/>
           <field name="invoice.financialDiscountDeadlineDate"/>
-          <field name="invoice.company" hidden="true" />
       </panel>
+      <field name="invoice.company" hidden="true" />
+      <field name="paymentConditionLine.paymentCondition.isFree" hidden="true" />
+      <field name="paymentConditionLine.paymentPercentage" hidden="true"/>
     </panel>
   </form>
 
@@ -81,5 +83,18 @@
       </panel>
     </panel>
   </form>
+  
+  <action-record name="action-invoice-term-record-update-customized" model="com.axelor.apps.account.db.InvoiceTerm">
+     <field name="isCustomized" expr="true" if="percentage != paymentConditionLine.paymentPercentage"/>
+     <field name="isCustomized" expr="false" if="percentage == paymentConditionLine.paymentPercentage"/>
+  </action-record>
+  
+  <action-method name="action-invoice-term-method-compute-customized-amount">
+     <call class="com.axelor.apps.account.web.InvoiceTermController" method="computeCustomizedAmount"/>
+  </action-method>
+  
+  <action-method name="action-invoice-term-method-compute-customized-percentage">
+     <call class="com.axelor.apps.account.web.InvoiceTermController" method="computeCustomizedPercentage"/>
+  </action-method>
 
 </object-views>
