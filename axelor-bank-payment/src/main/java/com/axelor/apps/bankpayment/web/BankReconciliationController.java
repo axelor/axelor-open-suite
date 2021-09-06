@@ -336,6 +336,8 @@ public class BankReconciliationController {
                   IReport.BANK_RECONCILIATION2, "Bank Reconciliation" + "-${date}")
               .addParam("BankReconciliationId", bankReconciliation.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam("FooterHeight", 10.00)
+              .addParam("HeaderHeight", 10.00)
               .addParam(
                   "Timezone",
                   bankReconciliation.getCompany() != null
