@@ -51,7 +51,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
@@ -141,10 +140,13 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense) {
+  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
+      throws AxelorException {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigService
+            .getAccountConfig(expense.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return expenseLine;
     }
 
@@ -376,6 +378,8 @@ public class ExpenseServiceImpl implements ExpenseService {
       moveDate = appAccountService.getTodayDate(expense.getCompany());
       expense.setMoveDate(moveDate);
     }
+    String origin = expense.getExpenseSeq();
+    String description = expense.getFullName();
     Company company = expense.getCompany();
     Partner partner = expense.getUser().getPartner();
 
@@ -401,7 +405,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 moveDate,
                 partner.getInPaymentMode(),
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
+                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
+                origin,
+                description);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -594,6 +600,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     LocalDate paymentDate = expense.getPaymentDate();
     BigDecimal paymentAmount = expense.getInTaxTotal();
     BankDetails companyBankDetails = company.getDefaultBankDetails();
+    String origin = expense.getExpenseSeq();
 
     Account employeeAccount;
 
@@ -618,7 +625,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 paymentDate,
                 paymentMode,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                null);
 
     move.addMoveLineListItem(
         moveLineService.createMoveLine(
@@ -630,7 +639,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             paymentDate,
             null,
             1,
-            expense.getExpenseSeq(),
+            origin,
             null));
 
     MoveLine employeeMoveLine =
@@ -643,7 +652,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             paymentDate,
             null,
             2,
-            expense.getExpenseSeq(),
+            origin,
             null);
     employeeMoveLine.setTaxAmount(expense.getTaxTotal());
 

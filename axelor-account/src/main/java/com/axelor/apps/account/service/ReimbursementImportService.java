@@ -189,7 +189,10 @@ public class ReimbursementImportService {
                 date,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_IMPORT,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT));
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                null,
+                null));
+    // TODO determine origin
   }
 
   public BigDecimal getTotalAmount(Move move) {

@@ -710,23 +710,28 @@ public class SaleOrderController {
   }
 
   public void addPack(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
+    try {
 
-    String saleOrderId = context.get("_id").toString();
-    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(Long.parseLong(saleOrderId));
+      Context context = request.getContext();
 
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> packMap =
-        (LinkedHashMap<String, Object>) request.getContext().get("pack");
-    String packId = packMap.get("id").toString();
-    Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
+      String saleOrderId = context.get("_id").toString();
+      SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(Long.parseLong(saleOrderId));
 
-    String qty = context.get("qty").toString();
-    BigDecimal packQty = new BigDecimal(qty);
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> packMap =
+          (LinkedHashMap<String, Object>) request.getContext().get("pack");
+      String packId = packMap.get("id").toString();
+      Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
 
-    saleOrder = Beans.get(SaleOrderService.class).addPack(saleOrder, pack, packQty);
+      String qty = context.get("qty").toString();
+      BigDecimal packQty = new BigDecimal(qty);
 
-    response.setCanClose(true);
+      saleOrder = Beans.get(SaleOrderService.class).addPack(saleOrder, pack, packQty);
+
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void getSaleOrderPartnerDomain(ActionRequest request, ActionResponse response) {

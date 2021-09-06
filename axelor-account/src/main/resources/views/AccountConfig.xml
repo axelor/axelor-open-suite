@@ -83,6 +83,7 @@
 				</panel>
 				<panel name="exportsPanel" title="Exports" colSpan="12">
 					<field name="exportPath"/>
+					<field name="dasContactPartner" domain="self.isEmployee = true" form-view="partner-form" grid-view="partner-grid"/>
 					<!-- <field name="exportFileName"/> -->
 				</panel>
 				<panel name="holdBackPanel" title="Holdback" colSpan="12">
@@ -267,6 +268,13 @@
 					</editor>
 				</field>
 			</panel>
+			<panel name="analyticPanel" if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
+				<field name="manageAnalyticAccounting"/>
+				<field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
+				<field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
+				<field name="analyticJournal" domain="self.company = :company" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
+				<field name="analyticAxisByCompanyList" colSpan="12" canNew="true" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+			</panel>
 			
 		</panel-tabs>
 		
@@ -304,10 +312,15 @@
 		<context name="_showRecord" expr="eval: __self__.accountConfig?.id"/>
 		<context name="_company" expr="eval: __this__"/>
 	</action-view>
+
+	<action-validate name="action-validate-account-config-on-save-analytic">
+		<error if="manageAnalyticAccounting &amp;&amp; nbrOfAnalyticAxisSelect != analyticAxisByCompanyList.size" message="The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis."/>
+	</action-validate>
 	
 	<action-group name="action-account-config-group-on-save">
 	    <action name="action-account-config-validate-is-activate-simulated-move"/>
 	    <action name="action-account-config-method-deactivate-simultated-moves"/>
+	    <action name="action-validate-account-config-on-save-analytic"/>
 	</action-group>
 	
 	<action-validate name="action-account-config-validate-is-activate-simulated-move" model="com.axelor.apps.account.db.AccountConfig">

@@ -156,7 +156,8 @@ public interface SaleOrderLineService {
       SaleOrder saleOrder,
       BigDecimal packQty,
       BigDecimal conversionRate,
-      Integer sequence);
+      Integer sequence)
+      throws AxelorException;
 
   /**
    * Get unique values of type field from pack lines

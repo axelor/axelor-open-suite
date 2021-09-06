@@ -16,10 +16,7 @@
 		<one-to-many name="payerQualityConfigLineList" ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)" />
 		
 		<boolean name="manageCustomerCredit" title="Manage customerCredit"/>
-		
 		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
-		<integer name="analyticDistributionTypeSelect" title="Analytic distribution type" selection="account.general.analytic.distribution.type.select" default="1"/>
-
 		<boolean name="manageFactors" />
 
         <integer name="partnerBalConfigSelect" title="Partner balance viewer configuration" selection="account.partner.bal.config.select" default="1"/>
@@ -29,6 +26,10 @@
         
         <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
         <boolean name="manageFinancialDiscount" title="Manage financial discount" help="Field allowing to activate the financial discounts"/>
+        
+        <!-- DAS2 - N4DS -->
+        <many-to-one name="defaultServiceTypeTypology" ref="com.axelor.apps.account.db.ServiceType" title="Default service type" />
+        <string name="dasActiveNorm" title="Current version of N4DS standard"/>
         
 		<extra-code><![CDATA[
 	
@@ -47,7 +48,6 @@
 			<field name="manageCustomerCredit" on="UPDATE"/>
 
 			<field name="manageAnalyticAccounting" on="UPDATE"/>
-			<field name="analyticDistributionTypeSelect" on="UPDATE"/>
 
 			<field name="manageFactors" on="UPDATE"/>
 			<field name="partnerBalConfigSelect" on="UPDATE"/>

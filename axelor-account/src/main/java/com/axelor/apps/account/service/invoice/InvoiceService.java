@@ -287,6 +287,9 @@ public interface InvoiceService {
 
   public String getPfpValidatorUserDomain(Invoice invoice);
 
+  @CallMethod
+  public List<Long> getInvoiceLineIds(Invoice invoice);
+
   public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount)
       throws AxelorException;
 

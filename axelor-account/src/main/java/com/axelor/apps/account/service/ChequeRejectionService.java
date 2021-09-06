@@ -127,7 +127,9 @@ public class ChequeRejectionService {
                 rejectionDate,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                chequeRejection.getName(),
+                description);
 
     int ref = 1;
 
@@ -145,7 +147,7 @@ public class ChequeRejectionService {
                 rejectionDate,
                 ref,
                 chequeRejection.getName(),
-                chequeRejection.getDescription());
+                description);
         move.getMoveLineList().add(debitMoveLine);
         debitMoveLine.setInterbankCodeLine(interbankCodeLine);
         debitMoveLine.setDescription(description);

@@ -19,6 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -31,6 +32,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
@@ -47,7 +49,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       SaleOrderLineRepository saleOrderLineRepo,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      AccountConfigService accountConfigService) {
     super(
         currencyService,
         priceListService,
@@ -58,7 +61,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         saleOrderLineRepo,
         appAccountService,
         analyticMoveLineService,
-        appSupplychainService);
+        appSupplychainService,
+        accountConfigService);
   }
 
   @Override
@@ -67,7 +71,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       SaleOrder saleOrder,
       BigDecimal packQty,
       BigDecimal conversionRate,
-      Integer sequence) {
+      Integer sequence)
+      throws AxelorException {
 
     SaleOrderLine soLine =
         super.createSaleOrderLine(packLine, saleOrder, packQty, conversionRate, sequence);

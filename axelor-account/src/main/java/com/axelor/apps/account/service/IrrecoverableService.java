@@ -844,7 +844,9 @@ public class IrrecoverableService {
                 payerPartner,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_SALE);
+                MoveRepository.FUNCTIONAL_ORIGIN_SALE,
+                irrecoverableName,
+                invoice.getInvoiceId());
 
     int seq = 1;
 
@@ -965,7 +967,9 @@ public class IrrecoverableService {
                 payerPartner,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                moveLine.getMove().getFunctionalOriginSelect());
+                moveLine.getMove().getFunctionalOriginSelect(),
+                irrecoverableName,
+                moveLine.getDescription());
 
     int seq = 1;
 
