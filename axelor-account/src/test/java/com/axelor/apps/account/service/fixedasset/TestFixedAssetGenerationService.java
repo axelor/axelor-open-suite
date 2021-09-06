@@ -41,9 +41,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 
-public class TestFixedAssetService {
+public class TestFixedAssetGenerationService {
 
-  protected FixedAssetService fixedAssetService;
+  protected FixedAssetGenerationService fixedAssetGenerationService;
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
@@ -85,18 +85,14 @@ public class TestFixedAssetService {
     when(fixedAssetLineServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);
-    fixedAssetService =
-        new FixedAssetServiceImpl(
-            fixedAssetRepo,
-            fixedAssetLineMoveService,
-            fixedAssetLineComputationService,
-            moveLineService,
-            accountConfigService,
-            fixedAssetDerogatoryLineService,
-            analyticFixedAssetService,
-            sequenceService,
+    fixedAssetGenerationService =
+        new FixedAssetGenerationServiceImpl(
             fixedAssetLineService,
-            fixedAssetLineServiceFactory);
+            fixedAssetDerogatoryLineService,
+            fixedAssetRepo,
+            fixedAssetLineServiceFactory,
+            sequenceService,
+            accountConfigService);
 
     prepareFixedAssetRepo();
   }
@@ -124,7 +120,7 @@ public class TestFixedAssetService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
-    fixedAssetService.generateAndComputeLines(fixedAsset);
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
   }
 
@@ -221,7 +217,7 @@ public class TestFixedAssetService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
-    fixedAssetService.generateAndComputeLines(fixedAsset);
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
   }
 
@@ -323,7 +319,7 @@ public class TestFixedAssetService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
-    fixedAssetService.generateAndComputeLines(fixedAsset);
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
   }
 
@@ -421,7 +417,7 @@ public class TestFixedAssetService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
-    fixedAssetService.generateAndComputeLines(fixedAsset);
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
   }
 
@@ -551,7 +547,7 @@ public class TestFixedAssetService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2021, 12, 31));
-    fixedAssetService.generateAndComputeLines(fixedAsset);
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     return fixedAsset;
   }
 
@@ -677,7 +673,7 @@ public class TestFixedAssetService {
     when(analyticFixedAssetService.computeFirstDepreciationDate(
             fixedAsset, fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2021, 12, 31));
-    fixedAssetService.generateAndComputeLines(fixedAsset);
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
     Assert.assertEquals(
         LocalDate.of(2027, 12, 31),
         fixedAsset.getFixedAssetLineList().get(6).getDepreciationDate());

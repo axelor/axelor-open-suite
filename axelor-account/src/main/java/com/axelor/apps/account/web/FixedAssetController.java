@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -58,7 +59,7 @@ public class FixedAssetController {
     }
 
     try {
-      fixedAsset = Beans.get(FixedAssetService.class).generateAndComputeLines(fixedAsset);
+      fixedAsset = Beans.get(FixedAssetGenerationService.class).generateAndComputeLines(fixedAsset);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

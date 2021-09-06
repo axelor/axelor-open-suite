@@ -26,7 +26,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -68,7 +68,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected UserService userService;
 
-  protected FixedAssetService fixedAssetService;
+  protected FixedAssetGenerationService fixedAssetGenerationService;
 
   @Inject
   public VentilateState(
@@ -79,7 +79,7 @@ public class VentilateState extends WorkflowInvoice {
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
       UserService userService,
-      FixedAssetService fixedAssetService) {
+      FixedAssetGenerationService fixedAssetGenerationService) {
     this.sequenceService = sequenceService;
     this.moveService = moveService;
     this.accountConfigService = accountConfigService;
@@ -87,7 +87,7 @@ public class VentilateState extends WorkflowInvoice {
     this.invoiceRepo = invoiceRepo;
     this.workflowService = workflowService;
     this.userService = userService;
-    this.fixedAssetService = fixedAssetService;
+    this.fixedAssetGenerationService = fixedAssetGenerationService;
   }
 
   @Override
@@ -271,7 +271,7 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("Generate fixed asset");
     // Create fixed asset
-    fixedAssetService.createFixedAssets(invoice);
+    fixedAssetGenerationService.createFixedAssets(invoice);
   }
 
   /**
