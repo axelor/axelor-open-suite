@@ -11,7 +11,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class AnalyticAxisByCompanyController {
 
-  public void setAxisDomain(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void setAxisDomain(ActionRequest request, ActionResponse response) {
     try {
       AnalyticAxisByCompany analyticAxisByCompany =
           request.getContext().asType(AnalyticAxisByCompany.class);
@@ -21,7 +21,6 @@ public class AnalyticAxisByCompanyController {
             Beans.get(AnalyticAxisByCompanyService.class)
                 .getAxisDomain(analyticAxisByCompany.getAccountConfig());
         if (domain != null) {
-          System.err.println(domain);
           response.setAttr("analyticAxis", "domain", domain);
         }
       }
