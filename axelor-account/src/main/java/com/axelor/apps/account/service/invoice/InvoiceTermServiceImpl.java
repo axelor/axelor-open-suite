@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -173,6 +174,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         }
       }
       invoiceTerm.setAmountRemaining(amountRemaining);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateInvoiceTermsAmountRemaining(InvoicePayment invoicePayment)
+      throws AxelorException {
+
+    for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+      InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
+      BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
+      invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
+      if (invoiceTerm.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        invoiceTerm.setIsPaid(false);
+        invoiceTermRepo.save(invoiceTerm);
+      }
     }
   }
 }

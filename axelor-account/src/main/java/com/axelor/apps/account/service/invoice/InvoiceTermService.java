@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -81,4 +82,13 @@ public interface InvoiceTermService {
    * @param invoicePayment
    */
   public void updateInvoiceTermsPaidAmount(InvoicePayment invoicePayment) throws AxelorException;
+
+  /**
+   * Update amount remaining and paid status after unreconcile
+   *
+   * @param invoicePayment
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateInvoiceTermsAmountRemaining(InvoicePayment invoicePayment)
+      throws AxelorException;
 }
