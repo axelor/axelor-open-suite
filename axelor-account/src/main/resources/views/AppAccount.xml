@@ -16,6 +16,9 @@
 				<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 			</panel>
+			<panel name="accountingExportPanel" title="Accounting exports">
+			    <field name="dasActiveNorm"/>
+			</panel>
             <field name="partnerBalConfigSelect"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
@@ -26,6 +29,9 @@
 			<panel name="payerQualityPanel" title="Payer quality" colSpan="12">
 				<button name="payerQualityProcessBtn" title="Compute payers quality" colSpan="2" onClick="action-app-account-method-payer-quality-process"/>
 				<field name="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
+			</panel>
+			<panel name="das2Panel" title="DAS2" colSpan="12">
+				<field name="defaultServiceTypeTypology" form-view="service-type-form" grid-view="service-type-grid"/>
 			</panel>
 		</panel-tabs>
 		<panel-mail name="mailPanel">

@@ -82,6 +82,8 @@
 		<option order="15" value="14">General ledger (old presentation)</option>
 		<option order="17" value="16" >Acquisitions</option>
 		<option order="18" value="17" >Summary of gross values and depreciation</option>
+		<option order="19" value="19" >Preparatory Process for fees declaration</option>
+		<option order="20" value="20" >Fees declaration supporting file</option>
 		<option value="1000">Export journal entry -> Administration</option>
 		<option value="1001">Export journal entry -> Acc. Soft.</option>
 		<option value="1006">Export sale -> Acc. Soft.</option>
@@ -89,6 +91,7 @@
 		<option value="1008">Export treasury -> Acc. Soft.</option>
 		<option value="1009">Export purchase -> Acc. Soft.</option>
 		<option value="1010">Export general balance -> Acc. Soft.</option>
+		<option value="1011">Export N4DS</option>
 		<option order="2000" value="2000">Analytic balance</option>
 		<option order="2001" value="2001">Analytic general ledger</option>
 		<option order="3000" value="3000">Custom state</option>
@@ -102,6 +105,7 @@
 		<option value="1008">Export treasury -> Acc. Soft.</option>
 		<option value="1009">Export purchase -> Acc. Soft.</option>
 		<option value="1010">Export general balance -> Acc. Soft.</option>
+		<option value="1011">Export N4DS</option>
 	</selection>
 
 	<selection name='accounting.report.config.line.type.select'>

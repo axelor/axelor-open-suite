@@ -204,7 +204,7 @@
 	</action-view>
 <<<<<<< HEAD
 =======
-	
+
 	<menuitem name="account-root-move-move-line-simulated" parent="account-root-move"
 		title="Move Lines Simulated" action="account.root.move.move.line.simulated" order="20" if="__repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne()).fetchOne()?.isActivateSimulatedMove"/>
 >>>>>>> e6745d1735b21109f9e92b32bebca22c61b941c7
@@ -715,6 +715,15 @@
 		<view-param name="search-filters" value="tax-filters" />
 	</action-view>
 	
+	<menuitem name="account-conf-financial-service-types" parent="account-conf-financial"
+						title="Service types" action="account.conf.financial.service.types"/>
+
+	<action-view name="account.conf.financial.service.types"
+							 title="Service types" model="com.axelor.apps.account.db.ServiceType">
+		<view type="grid" name="service-type-grid"/>
+		<view type="form" name="service-type-form"/>
+	</action-view>
+
 	<menuitem name="account-conf-financial-tax-number" parent="account-conf-financial"
 		title="Tax numbers" action="account.conf.financial.tax.number" />
 
@@ -724,12 +733,12 @@
 	</action-view>
 	
 	<menuitem name="account-conf-financial-financial-discount" title="Financial Discount" parent="account-conf-financial" action="financial.discount" />
-	
+
 	<action-view name="financial.discount" title="Financial Discount" model="com.axelor.apps.account.db.FinancialDiscount">
 		<view type="grid" name="financial-discount-grid"/>
 		<view type="form" name="financial-discount-form"/>
 	</action-view>
-	
+
 	<menuitem name="account-conf-analytic" parent="account-conf"
 		title="Analytic" />
 
@@ -1087,6 +1096,20 @@
 	</action-view>
 
 
+	<!-- Conf Referential -->
+
+	<menuitem name="referential-conf-das2-activity" parent="referential-conf"
+		title="DAS2 activities"
+		action="account.referential.conf.das2.activity" />
+
+	<action-view name="account.referential.conf.das2.activity"
+							 title="DAS2 activities" model="com.axelor.apps.account.db.Das2Activity">
+		<view type="grid" name="das2-activity-grid"/>
+		<view type="form" name="das2-activity-form"/>
+	</action-view>
+
+
+
 	<menuitem name="account-analytic-grouping"
 		parent="account-conf-analytic" title="Analytic Grouping"
 		action="account.analytic.grouping" />
@@ -1109,7 +1132,7 @@
 		model="com.axelor.apps.account.db.AnalyticAccount">
 		<view type="tree" name="analytic-account-axis-tree" />
 	</action-view>
-	
+
 	<menuitem name="account-analytic-rules"
 		parent="account-conf-analytic"
 		action="account.conf.analytic.rules" title="Analytic Rules"/>

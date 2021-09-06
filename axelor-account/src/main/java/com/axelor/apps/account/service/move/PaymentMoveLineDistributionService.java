@@ -15,11 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service;
+package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.Reconcile;
 
-public interface AccountingReportBankPaymentService {
+public interface PaymentMoveLineDistributionService {
 
-  public String createDomainForBankDetails(AccountingReport accountingReport);
+  public void updateMoveInclusionInDas2Report(Move move, boolean state);
+
+  public void generatePaymentMoveLineDistributionList(Move move, Reconcile reconcile);
+
+  public void reversePaymentMoveLineDistributionList(Reconcile reconcile);
 }

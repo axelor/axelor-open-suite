@@ -50,7 +50,6 @@
 		      <field name="accountType" required="true" form-view="account-type-form" grid-view="account-type-grid"/>
 		      <field name="company" readonlyIf="parentAccount != null" widget="SuggestBox" canEdit="false" onChange="action-account-validate" required="true" form-view="company-form" grid-view="company-grid"/>
 		      <field name="parentAccount" onChange="action-account-validate" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-		      <spacer name="parentAccountSpacer" colSpan="6"/>
 		      <field name="useForPartnerBalance" colSpan="3" widget="boolean-switch"/>
 		      <field name="reconcileOk" colSpan="3" widget="boolean-switch"/>
 		      <field name="compatibleAccountSet" showIf="reconcileOk" widget="TagSelect"/>
@@ -63,8 +62,11 @@
 		      	<field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
 		      	<field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
 		        <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" onChange="action-on-change-distribution-template-account" domain="self.company = :company"/>
-		      </panel>  
-		    </panel>
+		      </panel>
+			</panel>
+			<panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">
+				<field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
+			</panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
 				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>
       		</panel>
@@ -128,6 +130,7 @@
     <action-record name="action-account-record-new" model="com.axelor.apps.account.db.Account">
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
         <field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+        <field name="serviceType" expr="eval:__config__.app.getApp('account').defaultServiceTypeTypology"/>
     </action-record>
 
     <action-validate name="action-account-validate">
@@ -182,5 +185,5 @@
     <action-method name="action-on-change-distribution-template-account">
     	<call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
     </action-method>
-    
+
 </object-views>

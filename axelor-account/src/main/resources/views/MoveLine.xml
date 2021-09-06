@@ -125,7 +125,7 @@
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>
-
+    
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false">
     	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" showIf="account.analyticDistributionAuthorized">
 			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized"
@@ -176,6 +176,8 @@
 			<field name="description" colSpan="12"/>
 			<field name="taxAmount" hidden="true"/>
 			<field name="account.reconcileOk" hidden="true" />
+			<field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
+			<field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
@@ -274,8 +276,10 @@
 			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
 			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
-			<field name="origin" colSpan="12"/>
-			<field name="description" colSpan="12" requiredIf="$isDescriptionRequired"/>
+			<field name="origin" colSpan="6"/>
+			<field name="serviceType" form-view="service-type-form" grid-view="service-type-grid" colSpan="3"/>
+			<field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid" colSpan="3"/>
+			<field name="description" colSpan="6" requiredIf="$isDescriptionRequired"/>
 			<field name="$isDescriptionRequired" type="boolean" hidden="true"/>
 			<field name="taxAmount" hidden="true"/>
 			<field name="move.statusSelect" hidden="true"/>
@@ -373,7 +377,7 @@
      <action-group name="action-account-moveline-onload-group">
 		<action name="action-move-line-attrs-readonly"/>
 		<action name="action-move-line-attrs-show-tax-amount"/>
-		<action name="action-move-line-method-description-required"/>
+		<action name="action-move-line-method-description-required" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
 	</action-group>
 	
 	<action-group name="action-account-moveline-move-onload-group">
@@ -414,7 +418,7 @@
     <action-method name="action-account-move-line-method-calculate-balance">
       <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
     </action-method>
-	
+    
 	<action-attrs name="action-move-line-attrs-readonly">
 		<attribute name="readonly" for="informationsPanel" expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
 		<attribute name="readonly" for="irrecoverableDetailsPanel,currency,othersPanel" expr="eval: move?.statusSelect == 3 "/>

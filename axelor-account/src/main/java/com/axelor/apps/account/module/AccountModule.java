@@ -60,8 +60,18 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountingCloseAnnualService;
 import com.axelor.apps.account.service.AccountingCloseAnnualServiceImpl;
+import com.axelor.apps.account.service.AccountingReportDas2CheckService;
+import com.axelor.apps.account.service.AccountingReportDas2CheckServiceImpl;
+import com.axelor.apps.account.service.AccountingReportDas2Service;
+import com.axelor.apps.account.service.AccountingReportDas2ServiceImpl;
+import com.axelor.apps.account.service.AccountingReportMoveLineService;
+import com.axelor.apps.account.service.AccountingReportMoveLineServiceImpl;
+import com.axelor.apps.account.service.AccountingReportPrintService;
+import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportServiceImpl;
+import com.axelor.apps.account.service.AccountingReportToolService;
+import com.axelor.apps.account.service.AccountingReportToolServiceImpl;
 import com.axelor.apps.account.service.AccountingReportTypeService;
 import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -130,6 +140,8 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveLineServiceImpl;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.move.MoveServiceImpl;
+import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
+import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -178,6 +190,14 @@ public class AccountModule extends AxelorModule {
     bind(AccountingReportRepository.class).to(AccountingReportManagementRepository.class);
 
     bind(AccountingReportService.class).to(AccountingReportServiceImpl.class);
+
+    bind(AccountingReportDas2Service.class).to(AccountingReportDas2ServiceImpl.class);
+
+    bind(AccountingReportDas2CheckService.class).to(AccountingReportDas2CheckServiceImpl.class);
+
+    bind(AccountingReportPrintService.class).to(AccountingReportPrintServiceImpl.class);
+
+    bind(AccountingReportToolService.class).to(AccountingReportToolServiceImpl.class);
 
     bind(AccountingReportTypeService.class).to(AccountingReportTypeServiceImpl.class);
 
@@ -295,5 +315,9 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticAxisFetchService.class).to(AnalyticAxisFetchServiceImpl.class);
 
     bind(AnalyticAxisByCompanyService.class).to(AnalyticAxisByCompanyServiceImpl.class);
+
+    bind(AccountingReportMoveLineService.class).to(AccountingReportMoveLineServiceImpl.class);
+
+    bind(PaymentMoveLineDistributionService.class).to(PaymentMoveLineDistributionServiceImpl.class);
   }
 }
