@@ -329,7 +329,7 @@ public class BankReconciliationController {
     }
   }
 
-  public void printBankReconciliation2(ActionRequest request, ActionResponse response) {
+  public void printBankReconciliationDetailed(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     try {
       String fileLink =
@@ -455,9 +455,12 @@ public class BankReconciliationController {
   }
 
   public void setBankStatementIsFullyReconciled(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    BankReconciliation bankReconciliation =
+        bankReconciliationRepository.find(
+            request.getContext().asType(BankReconciliation.class).getId());
     Beans.get(BankStatementService.class)
         .setIsFullyReconciled(bankReconciliation.getBankStatement());
+    response.setReload(true);
   }
 
   public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response) {
