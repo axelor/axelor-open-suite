@@ -34,18 +34,6 @@
             <property name="id">4</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">12</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">12</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">12</property>
-        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -170,7 +158,7 @@
         <scalar-parameter name="FromDate" id="4090">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="dataType">string</property>
+            <property name="dataType">date</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -182,7 +170,7 @@
         <scalar-parameter name="ToDate" id="4091">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="dataType">string</property>
+            <property name="dataType">date</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -258,6 +246,12 @@ list.join(" - ");</expression>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">sequence</text-property>
                     <text-property name="heading">sequence</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bank_statement_line_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">bank_statement_line_id</text-property>
+                    <text-property name="heading">bank_statement_line_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">operation_date</property>
@@ -364,6 +358,36 @@ list.join(" - ");</expression>
                     <text-property name="displayName">currency_code</text-property>
                     <text-property name="heading">currency_code</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">header</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">header</text-property>
+                    <text-property name="heading">header</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">footer</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">footer</text-property>
+                    <text-property name="heading">footer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logoPosition</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <text-property name="heading">logoPosition</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -430,81 +454,111 @@ list.join(" - ");</expression>
                     </structure>
                     <structure>
                         <property name="position">2</property>
+                        <property name="name">bank_statement_line_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
                         <property name="name">operation_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">3</property>
+                        <property name="position">4</property>
                         <property name="name">value_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">5</property>
                         <property name="name">line_type_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">description</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">reference</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">commission_exemption_index_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">unavailability_index_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">origin</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">debit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">credit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">bank_details_iban</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">bank_details_owner_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">bank_details_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">bank_full_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">currency_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">header</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">footer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">logoPosition</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
                         <property name="name">bank_details_full_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -517,99 +571,157 @@ list.join(" - ");</expression>
                     <property name="name">sequence</property>
                     <property name="nativeName">sequence</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">operation_date</property>
-                    <property name="nativeName">operation_date</property>
-                    <property name="dataType">date</property>
+                    <property name="name">bank_statement_line_id</property>
+                    <property name="nativeName">bank_statement_line_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">value_date</property>
-                    <property name="nativeName">value_date</property>
+                    <property name="name">operation_date</property>
+                    <property name="nativeName">operation_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">line_type_select</property>
-                    <property name="nativeName">line_type_select</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">value_date</property>
+                    <property name="nativeName">value_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">description</property>
-                    <property name="nativeName">description</property>
-                    <property name="dataType">string</property>
+                    <property name="name">line_type_select</property>
+                    <property name="nativeName">line_type_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">reference</property>
-                    <property name="nativeName">reference</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">commission_exemption_index_select</property>
-                    <property name="nativeName">commission_exemption_index_select</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">reference</property>
+                    <property name="nativeName">reference</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">unavailability_index_select</property>
-                    <property name="nativeName">unavailability_index_select</property>
+                    <property name="name">commission_exemption_index_select</property>
+                    <property name="nativeName">commission_exemption_index_select</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">origin</property>
-                    <property name="nativeName">origin</property>
-                    <property name="dataType">string</property>
+                    <property name="name">unavailability_index_select</property>
+                    <property name="nativeName">unavailability_index_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">debit</property>
-                    <property name="nativeName">debit</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">origin</property>
+                    <property name="nativeName">origin</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">credit</property>
-                    <property name="nativeName">credit</property>
+                    <property name="name">debit</property>
+                    <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">bank_details_iban</property>
-                    <property name="nativeName">bank_details_iban</property>
-                    <property name="dataType">string</property>
+                    <property name="name">credit</property>
+                    <property name="nativeName">credit</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">bank_details_owner_name</property>
-                    <property name="nativeName">bank_details_owner_name</property>
+                    <property name="name">bank_details_iban</property>
+                    <property name="nativeName">bank_details_iban</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
-                    <property name="name">bank_details_code</property>
-                    <property name="nativeName">bank_details_code</property>
+                    <property name="name">bank_details_owner_name</property>
+                    <property name="nativeName">bank_details_owner_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">bank_full_name</property>
-                    <property name="nativeName">bank_full_name</property>
+                    <property name="name">bank_details_code</property>
+                    <property name="nativeName">bank_details_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
+                    <property name="name">bank_full_name</property>
+                    <property name="nativeName">bank_full_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
                     <property name="name">currency_code</property>
                     <property name="nativeName">currency_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">header</property>
+                    <property name="nativeName">header</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">footer</property>
+                    <property name="nativeName">footer</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">logoPosition</property>
+                    <property name="nativeName">logoPosition</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select sequence,
+            <xml-property name="queryText"><![CDATA[select sequence, BankStatementLine.id as bank_statement_line_id,
 	operation_date, value_date, line_type_select, description, reference,
 	commission_exemption_index_select, unavailability_index_select,
 	origin, debit, credit,
@@ -617,7 +729,12 @@ list.join(" - ");</expression>
 	BankDetails.owner_name as bank_details_owner_name,
 	BankDetails.code as bank_details_code,
 	Bank.full_name as bank_full_name,
-	Currency.code as currency_code 
+	Currency.code as currency_code,
+	Company.height as "logo_height",
+	Company.width as "logo_width",
+	PrintingSettings.pdf_header as "header", 
+	PrintingSettings.pdf_footer as "footer",
+	PrintingSettings.logo_position_select as "logoPosition"
 from bankpayment_bank_statement_line_afb120 as BankStatementLine
 left join base_bank_details as BankDetails
 on BankStatementLine.bank_details = BankDetails.id
@@ -625,8 +742,14 @@ left join base_bank as Bank
 on BankDetails.bank = Bank.id
 left join base_currency as Currency
 on BankDetails.currency = Currency.id
+left join account_account as Account
+on BankDetails.bank_account = Account.id
+left join base_company as Company
+on Account.company = Company.id
+left join base_printing_settings as PrintingSettings 
+on Company.printing_settings = PrintingSettings.id
 where BankStatementLine.id = ? or BankStatementLine.id = ? or (BankStatementLine.operation_date >= ? and BankStatementLine.operation_date <= ? and BankStatementLine.bank_details = ?)
-order by BankStatementLine.sequence]]></xml-property>
+order by BankStatementLine.sequence, BankStatementLine.line_type_select, BankStatementLine.operation_date]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
             <property name="nullsOrdering">nulls lowest</property>
@@ -763,6 +886,63 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <column id="17">
                         <property name="width">30%</property>
                     </column>
+                    <row id="4413">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <cell id="4414">
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                            <property name="textAlign">left</property>
+                            <text id="4417">
+                                <property name="fontSize">8pt</property>
+                                <property name="dataSet">BankStatementLineDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_height</property>
+                                        <text-property name="displayName">logo_height</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_width</property>
+                                        <text-property name="displayName">logo_width</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">header</property>
+                                        <text-property name="displayName">header</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["header"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logoPosition</property>
+                                        <text-property name="displayName">logoPosition</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                </list-property>
+                                <structure name="toc"/>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<TABLE >
+	<TR>
+		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
+		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></td>"
+		} else if(row["logoPosition"] == 1) {
+		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD/><TD>"+row["header"]+"</TD>"
+		} else if(row["logoPosition"] == 2) {
+			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD>"+row["header"]+"</TD>"
+		}else if(row["logoPosition"] == null) {
+			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/>"
+		}else {
+		"<TD/><TD/><TD>"+row["header"]+"</TD>"
+		}
+ 		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
                     <row id="18">
                         <cell id="19"/>
                         <cell id="20">
@@ -981,46 +1161,157 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </grid>
             </page-header>
             <page-footer>
-                <grid id="3801">
-                    <column id="3802"/>
-                    <column id="3803"/>
-                    <column id="3804">
-                        <property name="width">10%</property>
+                <grid id="3692">
+                    <property name="height">1.825625cm</property>
+                    <property name="width">28.11929411764706cm</property>
+                    <property name="dataSet">BankStatementLineDS</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">footer</property>
+                            <text-property name="displayName">footer</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">bank_statement_line_id</property>
+                            <text-property name="displayName">bank_statement_line_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["bank_statement_line_id"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                    </list-property>
+                    <column id="3693">
+                        <property name="width">8.270588235294118in</property>
                     </column>
-                    <row id="3805">
-                        <cell id="3806"/>
-                        <cell id="3807"/>
-                        <cell id="3808">
-                            <grid id="3809">
-                                <column id="3810">
-                                    <property name="width">45%</property>
+                    <column id="3714">
+                        <property name="textAlign">right</property>
+                        <property name="width">7.111999999999999cm</property>
+                    </column>
+                    <row id="3695">
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <cell id="3696">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">2</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <text id="3729">
+                                <property name="fontSize">xx-small</property>
+                                <property name="textAlign">left</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["footer"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="3713">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="verticalAlign">top</property>
+                            <grid id="5359">
+                                <property name="width">3.5189583333333334cm</property>
+                                <column id="5360">
+                                    <property name="width">6%</property>
                                 </column>
-                                <column id="3811"/>
-                                <column id="3812">
-                                    <property name="width">45%</property>
+                                <column id="5361">
+                                    <property name="width">3%</property>
                                 </column>
-                                <row id="3813">
-                                    <cell id="3814">
-                                        <auto-text id="3815">
-                                            <property name="textAlign">right</property>
+                                <column id="5362">
+                                    <property name="width">6%</property>
+                                </column>
+                                <row id="5363">
+                                    <cell id="5364">
+                                        <auto-text id="5365">
                                             <property name="type">page-number</property>
                                         </auto-text>
                                     </cell>
-                                    <cell id="3816">
-                                        <text id="3817">
-                                            <property name="textAlign">right</property>
+                                    <cell id="5366">
+                                        <text id="5367">
+                                            <property name="textAlign">center</property>
                                             <property name="contentType">plain</property>
                                             <text-property name="content"><![CDATA[/]]></text-property>
                                         </text>
                                     </cell>
-                                    <cell id="3818">
-                                        <auto-text id="3819">
-                                            <property name="textAlign">right</property>
+                                    <cell id="5368">
+                                        <auto-text id="5369">
+                                            <property name="textAlign">left</property>
                                             <property name="type">total-page</property>
                                         </auto-text>
                                     </cell>
                                 </row>
                             </grid>
+                        </cell>
+                    </row>
+                    <row id="5238">
+                        <cell id="5240">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="verticalAlign">top</property>
+                            <text id="5233">
+                                <property name="fontSize">xx-small</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">if (row["status_select"] == "1") {
+	'Invoice.draftInvoiceNo'
+} else if(row["status_select"] == "2") {
+	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.invoiceAdvPaymentNo'
+	} else {
+		'Invoice.draftInvoiceNo'
+	}
+} else if(row["status_select"] == "3") {
+	if (row["operation_type_select"] == "1") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.purchaseInvoiceBalanceNo'
+		} else {
+			'Invoice.purchaseInvoiceNo'
+		}
+	} else if (row["operation_type_select"] == "2") {
+		'Invoice.purchaseRefundNo'
+	} else if (row["operation_type_select"] == "3") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.invoiceBalanceNo'
+		} else {
+			'Invoice.invoiceNo'
+		}
+	} else if (row["operation_type_select"] == "4") {
+		'Invoice.refundNo'
+	}
+} else if(row["status_select"] == "4") {
+	'Invoice.cancelInvoiceNo'
+}</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">key</property>
+                                        <text-property name="displayName">key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF>row._outer["bank_statement_line_id"]</VALUE-OF>]]></text-property>
+                            </text>
                         </cell>
                     </row>
                 </grid>
@@ -1173,6 +1464,48 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expression" type="javascript">row["operation_date"]</expression>
                     <property name="dataType">date</property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">bank_details_owner_name</property>
+                    <text-property name="displayName">bank_details_owner_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["bank_details_owner_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">bank_details_code</property>
+                    <text-property name="displayName">bank_details_code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["bank_details_code"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">header</property>
+                    <text-property name="displayName">header</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["header"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">footer</property>
+                    <text-property name="displayName">footer</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">logoPosition</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <column id="3993">
