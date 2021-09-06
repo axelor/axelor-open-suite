@@ -6,7 +6,7 @@
 	<grid name="account-grid" title="Accounting.Accounts" model="com.axelor.apps.account.db.Account">
 	  <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	  <field name="name"/>
-	  <field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/> 
+	  <field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
 	  <field name="commonPosition"/>
 	  <field name="reconcileOk"/>
 	  <field name="parentAccount" form-view="account-form" grid-view="account-grid"/>
@@ -37,39 +37,48 @@
         </node>
     </tree>
 
-<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large" onLoad="action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company" onNew="action-account-record-new">
-  <panel name="mainPanel">
-    <panel name="accountDetailsPanel" colSpan="8">
-      <field name="code" colSpan="3" css="bold" x-bind="{{code|unaccent|uppercase}}"/>
-      <field name="name" colSpan="9" css="bold"/>
-    </panel>
-    <panel name="balancePanel" showIf="id" colSpan="4">
-      <button name="$balanceBtn" title="Total balance" icon="fa-money" onClick="action-account-view-show-move-lines" widget="info-button" x-currency="company.currency.symbol"/>
-    </panel>
-    <panel name="settingsPanel" title="Settings" colSpan="12">
-      <field name="accountType" required="true" form-view="account-type-form" grid-view="account-type-grid"/>
-      <field name="commonPosition"/>
-      <field name="company" readonlyIf="parentAccount != null" widget="SuggestBox" canEdit="false" onChange="action-account-validate" required="true" form-view="company-form" grid-view="company-grid"/>
-      <field name="parentAccount" onChange="action-account-validate" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-      <field name="useForPartnerBalance" colSpan="3" widget="boolean-switch"/>
-      <field name="reconcileOk" colSpan="3" widget="boolean-switch"/>
-      <field name="compatibleAccountSet" showIf="reconcileOk" widget="TagSelect"/>
-      <field name="analyticDistributionAuthorized" colSpan="3" widget="boolean-switch" onChange="action-account-record-uncheck-analytic-distribution-required"/>
-      <field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="3" widget="boolean-switch"/>
-      <field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="3" widget="boolean-switch"/>
-      <spacer colSpan="3"/>
-      <field name="isTaxAuthorizedOnMoveLine" colSpan="3" widget="boolean-switch" onChange="action-account-record-uncheck-tax-required"/>
-      <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="3" widget="boolean-switch"/>
-      <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="6"/>
-    </panel>
-    <panel name="showMoveLinesPanel" showIf="id" colSpan="12">
-      <button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>
-    </panel>
-  </panel>
-  <panel-mail name="mailPanel">
-    <mail-messages limit="4"/>
-  </panel-mail>
-</form>
+	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large"
+		onNew="action-account-record-new" onLoad="action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company,save,action-on-change-distribution-template-account">
+		<panel name="mainPanel">
+			<panel name="accountDetailsPanel" colSpan="8">
+				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
+				<field name="name" colSpan="9" css="bold"/>
+			</panel>
+			<panel name="balancePanel" colSpan="4" showIf="id">
+				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
+                onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
+			</panel>
+			<panel name="settingsPanel" title="Settings" colSpan="12">
+				<field name="accountType" required="true" form-view="account-type-form" grid-view="account-type-grid"/>
+        <field name="commonPosition"/>
+				<field name="company" required="true" canEdit="false" widget="SuggestBox" onChange="action-account-validate" readonlyIf="parentAccount != null" form-view="company-form" grid-view="company-grid"/>
+				<field name="parentAccount" onChange="action-account-validate" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+				<field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
+				<field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
+				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
+        <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
+          <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch" onChange="action-account-record-uncheck-tax-required"/>
+          <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"/>
+          <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
+        </panel>
+        <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
+          <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch" onChange="action-account-record-uncheck-analytic-distribution-required"/>
+          <field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+          <field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" onChange="action-on-change-distribution-template-account" domain="self.company = :company"/>
+        </panel>
+			</panel>
+      <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">
+        <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
+      </panel>
+      <panel name="showMoveLinesPanel" colSpan="12" showIf="id">
+				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>
+      </panel>
+		</panel>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+		</panel-mail>
+	</form>
 
     <form name="customer-account-form" model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-group-new-customer-account" title="New customer account">
         <panel-include view="account-form"/>
@@ -125,6 +134,7 @@
     <action-record name="action-account-record-new" model="com.axelor.apps.account.db.Account">
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
         <field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+        <field name="serviceType" expr="eval:__config__.app.getApp('account').defaultServiceTypeTypology"/>
     </action-record>
 
     <action-validate name="action-account-validate">
@@ -176,4 +186,8 @@
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     </search-filters>
     
+    <action-method name="action-on-change-distribution-template-account">
+    	<call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
+    </action-method>
+
 </object-views>

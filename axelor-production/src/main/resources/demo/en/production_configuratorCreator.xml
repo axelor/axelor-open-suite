@@ -20,6 +20,9 @@
 		<unitId>1</unitId>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<configuratorProdProcess>
 			<importId>1</importId>
 			<statusSelect>2</statusSelect>
@@ -37,6 +40,9 @@
 			<workshopStockLocation>1</workshopStockLocation>
 			<workshopStockLocationFormula></workshopStockLocationFormula>
 			<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
+			<isConsProOnOperation>false</isConsProOnOperation>
+			<isConsProOnOperationFormula></isConsProOnOperationFormula>
+			<defIsConsProOnOperationAsFormula>false</defIsConsProOnOperationAsFormula>
 			<configuratorProdProcessLineList>
 				<configuratorProdProcessLine>
 					<name>Emballage</name>
@@ -44,6 +50,7 @@
 					<priority>0</priority>
 					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>6</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<defStockLocationAsFormula>false</defStockLocationAsFormula>
@@ -58,6 +65,10 @@
 					<durationPerCycle>1800</durationPerCycle>
 					<durationPerCycleFormula></durationPerCycleFormula>
 					<defDurationFormula>false</defDurationFormula>
+					<timingOfImplementation></timingOfImplementation>
+					<timingOfImplementationFormula></timingOfImplementationFormula>
+					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 		
 				<configuratorProdProcessLine>
@@ -66,6 +77,7 @@
 					<priority>0</priority>
 					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>4</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<defStockLocationAsFormula>false</defStockLocationAsFormula>
@@ -80,6 +92,10 @@
 					<durationPerCycle>1800</durationPerCycle>
 					<durationPerCycleFormula></durationPerCycleFormula>
 					<defDurationFormula>false</defDurationFormula>
+					<timingOfImplementation></timingOfImplementation>
+					<timingOfImplementationFormula></timingOfImplementationFormula>
+					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 		
 				<configuratorProdProcessLine>
@@ -88,6 +104,7 @@
 					<priority>0</priority>
 					<defPriorityAsFormula>false</defPriorityAsFormula>
 					<workCenter>3</workCenter>
+					<defWorkCenterAsFormula>false</defWorkCenterAsFormula>
 					<outsourcing>false</outsourcing>
 					<stockLocation>1</stockLocation>
 					<defStockLocationAsFormula>false</defStockLocationAsFormula>
@@ -102,6 +119,10 @@
 					<durationPerCycle>3600</durationPerCycle>
 					<durationPerCycleFormula></durationPerCycleFormula>
 					<defDurationFormula>false</defDurationFormula>
+					<timingOfImplementation></timingOfImplementation>
+					<timingOfImplementationFormula></timingOfImplementationFormula>
+					<defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
+					<configuratorProdProductList></configuratorProdProductList>
 				</configuratorProdProcessLine>
 			</configuratorProdProcessLineList>
 		</configuratorProdProcess>
@@ -128,6 +149,9 @@
 		<unitId>1</unitId>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<prodProcessFormula></prodProcessFormula>
 		<defProdProcessAsFormula>false</defProdProcessAsFormula>
 		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
@@ -151,6 +175,9 @@
 		<unitId>1</unitId>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<prodProcessFormula></prodProcessFormula>
 		<defProdProcessAsFormula>false</defProdProcessAsFormula>
 		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
@@ -174,6 +201,9 @@
 		<unitId>1</unitId>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<prodProcessFormula></prodProcessFormula>
 		<defProdProcessAsFormula>false</defProdProcessAsFormula>
 		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
@@ -197,6 +227,9 @@
 		<unitId>1</unitId>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<prodProcessFormula></prodProcessFormula>
 		<defProdProcessAsFormula>false</defProdProcessAsFormula>
 		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
@@ -220,6 +253,9 @@
 		<unitId>1</unitId>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<prodProcessFormula></prodProcessFormula>
 		<defProdProcessAsFormula>false</defProdProcessAsFormula>
 		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
@@ -243,6 +279,9 @@
 		<unitId>1</unitId>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<prodProcessFormula></prodProcessFormula>
 		<defProdProcessAsFormula>false</defProdProcessAsFormula>
 		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
@@ -265,6 +304,9 @@
 		<defQtyAsFormula>false</defQtyAsFormula>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<prodProcessFormula></prodProcessFormula>
 		<defProdProcessAsFormula>false</defProdProcessAsFormula>
 		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
@@ -287,6 +329,9 @@
 		<defQtyAsFormula>false</defQtyAsFormula>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
+		<workshopStockLocation></workshopStockLocation>
+		<workshopStockLocationFormula></workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 		<prodProcessFormula></prodProcessFormula>
 		<defProdProcessAsFormula>false</defProdProcessAsFormula>
 		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>

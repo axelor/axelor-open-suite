@@ -47,6 +47,8 @@ public interface MoveLineService {
 
   public void generateAnalyticMoveLines(MoveLine moveLine);
 
+  public MoveLine balanceCreditDebit(MoveLine moveLine, Move move);
+
   public MoveLine createMoveLine(
       Move move,
       Partner partner,
@@ -142,9 +144,18 @@ public interface MoveLineService {
   public MoveLine reverseTaxPaymentMoveLines(MoveLine customerMoveLine, Reconcile reconcile)
       throws AxelorException;
 
+  public MoveLine analyzeMoveLine(MoveLine moveLine) throws AxelorException;
+
+  public List<Long> setAxisDomains(MoveLine moveline, int position) throws AxelorException;
+
+  public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine)
+      throws AxelorException;
+
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 
   public MoveLine setCurrencyAmount(MoveLine moveLine);
 
   public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
 }

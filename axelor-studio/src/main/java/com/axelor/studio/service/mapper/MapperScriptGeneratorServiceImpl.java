@@ -18,9 +18,8 @@
 package com.axelor.studio.service.mapper;
 
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
-import com.axelor.rpc.ObjectMapperProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class MapperScriptGeneratorServiceImpl implements MapperScriptGeneratorService {
 
@@ -42,7 +41,11 @@ public class MapperScriptGeneratorServiceImpl implements MapperScriptGeneratorSe
   @Override
   public MapperRecord getMapperRecord(String mapperJson) {
 
-    ObjectMapper mapper = Beans.get(ObjectMapperProvider.class).get();
+    ObjectMapper mapper = new ObjectMapper();
+    SimpleModule module = new SimpleModule();
+    registerDeserializer(module);
+    mapper.registerModule(module);
+
     try {
       MapperRecord mapperRecord = mapper.readValue(mapperJson.getBytes(), MapperRecord.class);
       return mapperRecord;
@@ -53,4 +56,7 @@ public class MapperScriptGeneratorServiceImpl implements MapperScriptGeneratorSe
 
     return null;
   }
+
+  @Override
+  public void registerDeserializer(SimpleModule module) {}
 }

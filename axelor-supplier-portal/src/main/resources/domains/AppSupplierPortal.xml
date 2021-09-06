@@ -4,7 +4,9 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppSupplierPortal" cacheable="true" extends="App">
+	<entity name="AppSupplierPortal" cacheable="true" >
+	
+		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
 		<boolean name="managePurchaseOrders" title="Manage purchase orders" default="true"/>
 		<boolean name="manageInvoices" title="Manage invoices" default="true"/>

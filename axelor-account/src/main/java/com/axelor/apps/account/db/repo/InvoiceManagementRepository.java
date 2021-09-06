@@ -62,7 +62,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 
       return invoice;
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 

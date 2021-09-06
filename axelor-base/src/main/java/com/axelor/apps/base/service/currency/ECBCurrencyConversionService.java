@@ -163,7 +163,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
     if (currencyFrom != null && currencyTo != null) {
       Pair<LocalDate, Float> pair =
           this.validateAndGetRateWithDate(1, currencyFrom, currencyTo, todayDate);
-      rate = BigDecimal.valueOf(pair.getRight()).setScale(8, RoundingMode.HALF_EVEN);
+      rate = BigDecimal.valueOf(pair.getRight()).setScale(8, RoundingMode.HALF_UP);
       LOG.trace("Currerncy conversion rate: {}", new Object[] {rate});
       return Pair.of(pair.getLeft(), rate);
     } else LOG.trace("Currency from and to must be filled to get rate");

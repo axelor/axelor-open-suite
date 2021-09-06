@@ -41,4 +41,9 @@
     </panel>
   </form>
 
+  <action-attrs name="action-configurator-formula-attr-display-meta-json-field">
+  	<attribute name="hidden" for="metaJsonField" expr="eval:__this__?.metaField.json == false" if="eval:__this__?.metaField != null"/>
+  	<attribute name="value" for="metaJsonField" expr="eval:null" if="eval:__this__?.metaField == null || __this__?.metaField.json == false"/>
+  </action-attrs>
+  
 </object-views>

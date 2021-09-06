@@ -7,7 +7,8 @@
       <button name="validateMoveBtn" title="Validate" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves" />
       <button name="deleteMovesBtn" title="Delete" icon="fa-trash" onClick="action-move-method-delete-multiple-moves" />
       <button name="moveLinesBtn" title="See Move Lines" onClick="action-move-method-show-move-lines" />
-    </toolbar>
+    <button name="simulateBtn" title="Simulate" showIf="_isActivateSimulatedMoves" onClick="action-move-method-simulate-multiple-moves" />
+		</toolbar>
     <hilite color="info" if="statusSelect == 1" />
     <hilite color="danger" if="statusSelect == 4" />
     <field name="reference" width="200" />
@@ -44,7 +45,7 @@
       <panel name="moveDetailsPanel" colSpan="9">
         <field name="reference" colSpan="12" />
         <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3" colSpan="12">
-          <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form"
+          <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title,action-attrs-hide-axis-analytic-account-move-line" form-view="company-form"
             grid-view="company-grid" />
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false" />
           <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false" />
@@ -97,8 +98,9 @@
         </field>
         <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch" />
         <field name="validationDate" readonly="true" showIf="statusSelect == 3" />
-
+                <field name="journal.authorizeSimulatedMove" hidden="true"/>
         <button name="validateBtn" title="Validate" onClick="action-account-move-group-validate-click" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" />
+				<button name="simulateBtn" title="Simulate" onClick="action-move-record-set-status-simulate,action-move-attrs-validate-button-title,save" colSpan="12" showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-group-generate-tax-lines" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 5" />
         <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-group-generate-counterpart" colSpan="12" />
@@ -108,10 +110,10 @@
     <panel>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6"
         showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid"
-        form-view="move-line-move-form" onChange="action-account-move-method-compute-totals" />
+        form-view="move-line-move-form" onChange="save,action-account-move-method-compute-totals,action-attrs-hide-axis-analytic-account-move-line" />
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" height="6"
         showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid"
-        form-view="move-line-move-form" onChange="action-account-move-method-compute-totals" />
+        form-view="move-line-move-form" onChange="action-account-move-method-compute-totals,action-attrs-hide-axis-analytic-account-move-line" />
       <field name="$reconcileTags" colSpan="12" hidden="true" readonly="true" showTitle="false">
         <viewer depends="moveLineList">
                         <![CDATA[
@@ -127,13 +129,13 @@
 						<h3>{{$fmt('$totalLines')}}</h3>
 					]]>
 				</viewer>
-      </field>      
+      </field>
       <field name="$totalCurrency" title="Total Currency" type="integer" colSpan="3" readonly="true" showIf="currency.id != companyCurrency.id">
         <viewer>
           <![CDATA[
             <h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
           ]]>
-        </viewer>       
+        </viewer>
       </field>
       <field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true">
         <viewer>
@@ -225,7 +227,8 @@
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method" />
     <action name="action-attrs-move-hide-trading-name" />
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status" />
-  </action-group>
+  <action name="action-attrs-hide-axis-analytic-account-move-line"/>
+	</action-group>
 
   <action-group name="action-account-move-group-onload">
     <action name="action-move-attrs-adjusting-move" />
@@ -234,17 +237,17 @@
     <action name="action-account-move-method-compute-totals" />
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method" />
     <action name="action-attrs-move-hide-trading-name" />
-    <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status" />
+    <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status" /><action name="action-attrs-hide-axis-analytic-account-move-line"/>
     <action name="action-attrs-on-load-currencies"/>
   </action-group>
-  
+
   <action-group name="action-account-move-group-generate-counterpart">
   <action name="save"/>
   <action name="action-account-move-method-automatic-taxline-generation"/>
   <action name="action-account-move-method-generate-counterpart"/>
   <action name="action-account-move-method-compute-totals"/>
   </action-group>
-  
+
   <action-group name="action-account-move-group-generate-tax-lines">
   <action name="save"/>
   <action name="action-account-move-method-automatic-taxline-generation"/>
@@ -279,8 +282,7 @@
 
   <!-- ACTION RECORD -->
   <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
-    <field name="statusSelect" expr="eval: 5" if="_isSimulatedMove" />
-    <field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany != null" />
+    <field  name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany != null" />
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1" />
     <field name="getInfoFromFirstMoveLineOk" expr="eval: true" />
     <field name="date" expr="eval:__config__.app.getTodayDate(null)" if="date == null" />
@@ -308,7 +310,11 @@
     <field name="currency" expr="eval: partner?.currency" />
   </action-record>
 
-  <!-- ACTION ATTRS -->
+	<action-record name="action-move-record-set-status-simulate" model="com.axelor.apps.account.db.Move">
+		<field name="statusSelect" if="statusSelect == 1" expr="eval: statusSelect = 5"/>
+	</action-record>
+
+	<!-- ACTION ATTRS -->
   <action-attrs name="action-move-attrs-set-domain-payment-mode">
     <attribute name="domain" for="paymentMode" expr="eval: &quot; self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company = :company)  &quot;" />
   </action-attrs>
@@ -325,7 +331,7 @@
 
   <action-attrs name="action-move-attrs-validate-button-title">
     <attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Validate')"
-      if="eval: !company?.accountConfig?.accountingDaybook || (statusSelect == MoveRepository.STATUS_ACCOUNTED &amp;&amp; statusSelect == MoveRepository.STATUS_SIMULATED)" />
+      if="eval: !company?.accountConfig?.accountingDaybook || (statusSelect == MoveRepository.STATUS_ACCOUNTED || statusSelect == MoveRepository.STATUS_SIMULATED)" />
     <attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
       if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect != MoveRepository.STATUS_ACCOUNTED &amp;&amp; statusSelect != MoveRepository.STATUS_SIMULATED)" />
   </action-attrs>
@@ -412,7 +418,11 @@
     <call class="com.axelor.apps.account.web.MoveController" method="setOriginAndDescriptionOnLines" />
   </action-method>
 
-  <!-- ACTION VIEW -->
+	<action-method name="action-move-method-simulate-multiple-moves">
+		<call class="com.axelor.apps.account.web.MoveController" method="simulateMultipleMoves"/>
+	</action-method>
+
+	<!-- ACTION VIEW -->
   <action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
     <view type="form" name="move-wizard-generate-reverse-form" />
     <view-param name="popup" value="reload" />
@@ -470,6 +480,23 @@
     <filter title="Canceled Moves">
       <domain>self.statusSelect = 4</domain>
     </filter>
-  </search-filters>
+  <filter title="Simulated Moves">
+			<domain>self.statusSelect = 5</domain>
+		</filter>
+	</search-filters>
+<action-attrs name="action-attrs-hide-axis-analytic-account-move-line">
+		<attribute name="hidden" for="moveLineList.axis1AnalyticAccount" expr="eval: !(1 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
+		<attribute name="hidden" for="moveLineList.axis2AnalyticAccount" expr="eval: !(2 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
+		<attribute name="hidden" for="moveLineList.axis3AnalyticAccount" expr="eval: !(3 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
+		<attribute name="hidden" for="moveLineList.axis4AnalyticAccount" expr="eval: !(4 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
+		<attribute name="hidden" for="moveLineList.axis5AnalyticAccount" expr="eval: !(5 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
 
+		<attribute name="title" for="moveLineList.axis1AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis?.name" if="(1 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="title" for="moveLineList.axis2AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 2 }?.analyticAxis?.name" if="(2 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="title" for="moveLineList.axis3AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 3 }?.analyticAxis?.name" if="(3 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="title" for="moveLineList.axis4AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 4 }?.analyticAxis?.name" if="(4 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+		<attribute name="title" for="moveLineList.axis5AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 5 }?.analyticAxis?.name" if="(5 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
+
+		</action-attrs>
+   
 </object-views>

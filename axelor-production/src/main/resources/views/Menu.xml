@@ -422,6 +422,16 @@
 		<view type="grid" name="configurator-prod-process-line-grid" />
 		<view type="form" name="configurator-prod-process-line-form" />
 	</action-view>
+	
+	<menuitem name="manufacturing-conf-configurators-prod-product"
+		parent="manufacturing-conf-configurators" order="60" title="Configurator prod product"
+		action="manufacturing.conf.configurator.prod.product" />
+
+	<action-view name="manufacturing.conf.configurator.prod.product"
+		title="Configurator prod product" model="com.axelor.apps.production.db.ConfiguratorProdProduct">
+		<view type="grid" name="configurator-prod-product-grid" />
+		<view type="form" name="configurator-prod-product-form" />
+	</action-view>
 
 	<menuitem title="Product approvals" name="manufacturing-conf-product-approvals"
 		parent="manufacturing-conf" action="manufacturing.conf.product.approvals" />

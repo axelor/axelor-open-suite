@@ -189,7 +189,7 @@ public class SaleOrderController {
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.isSelected()) {
+            if (saleOrderLine.isSelected() && saleOrderLine.getProduct() != null) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
               }
@@ -637,9 +637,11 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
-      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
-    }
+    response.setAttr(
+        "operationSelect",
+        "value",
+        operationSelectValues.stream().min(Integer::compareTo).orElse(null));
+
     response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 

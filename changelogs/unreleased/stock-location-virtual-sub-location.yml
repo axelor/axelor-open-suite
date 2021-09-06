@@ -1,4 +1,2 @@
-title: "STOCK LOCATION : virtual sub location"
+title: "STOCK LOCATION: Add a boolean field to display or not virtual stock location lines in 'Location Lines' and 'Stock location details'."
 type: change
-description: |
-  Added a boolean field to display or not virtual stock location lines in 'Location Lines' and 'Stock location details'.

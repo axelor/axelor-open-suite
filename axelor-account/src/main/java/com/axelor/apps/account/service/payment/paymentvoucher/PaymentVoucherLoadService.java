@@ -144,7 +144,7 @@ public class PaymentVoucherLoadService {
                 move.getCurrency(),
                 moveLine.getAmountPaid(),
                 moveLine.getDate())
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
 
     payVoucherDueElement.setPaidAmount(paidAmountInElementCurrency);
 
@@ -234,7 +234,7 @@ public class PaymentVoucherLoadService {
                 payVoucherElementToPay.getCurrency(),
                 amountRemaining,
                 paymentDate)
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
 
     BigDecimal amountImputedInElementCurrency =
         amountRemainingInElementCurrency.min(payVoucherElementToPay.getRemainingAmount());
@@ -246,7 +246,7 @@ public class PaymentVoucherLoadService {
                 paymentVoucher.getCurrency(),
                 amountImputedInElementCurrency,
                 paymentDate)
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
 
     payVoucherElementToPay.setAmountToPay(amountImputedInElementCurrency);
     payVoucherElementToPay.setAmountToPayCurrency(amountImputedInPayVouchCurrency);

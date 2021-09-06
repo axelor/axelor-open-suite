@@ -1,4 +1,4 @@
-"importId";"code";"parent_code";"name";"accountType.technicalTypeSelect";"reconcileOk";"company.importId";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"commonPosition";"serviceType_code";"defaultTax.code"
+"importId";"code";"parent_code";"name";"accountType.technicalTypeSelect";"reconcileOk";"company.importId";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"commonPosition";"serviceType.code";"defaultTax.code"
 1;0;;"Racine PCG";"view";;1;;;;;0;"NDAS";
 2;"CL1_5";0;"Comptes de bilan";"view";;1;;;;;0;"NDAS";
 3;"CL6_7";0;"Comptes de gestion";"view";;1;;;;;0;"NDAS";

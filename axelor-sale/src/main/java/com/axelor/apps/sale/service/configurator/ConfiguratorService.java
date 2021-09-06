@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
@@ -104,4 +105,12 @@ public interface ConfiguratorService {
    * Else return false.
    */
   boolean areCompatible(String targetClassName, String fromClassName);
+
+  /**
+   * Fix relational fields of a product or a sale order line generated from a configurator. This
+   * method may become useless on a future ADK update.
+   *
+   * @param model
+   */
+  void fixRelationalFields(Model model) throws AxelorException;
 }

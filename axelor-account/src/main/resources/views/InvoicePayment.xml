@@ -18,11 +18,10 @@
     
     <form name="invoice-payment-form" title="Payment"
         model="com.axelor.apps.account.db.InvoicePayment"
-        onNew="action-invoice-payment-group-new"
-        onLoad="action-attrs-invoice-payment-hide-trading-name">
+        onNew="action-invoice-payment-group-new">
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
 			<field name="typeSelect" showIf="id" colSpan="12" />
-            <field name="amount"/>
+            <field name="amount" onChange="action-invoice-payment-method-change-amount"/>
             <field name="currency" canEdit="false"
                 form-view="currency-form" grid-view="currency-grid"/>
             <field name="paymentMode" canEdit="false"
@@ -40,8 +39,15 @@
             <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
             <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
-            <field name="invoice.tradingName"/>
-            <field name="invoice" hidden="true" />
+            <field name="invoice.tradingName" if="__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+            <field name="invoice" hidden="true"/>
+		</panel>
+		<panel name="discountPanel" title="Financial Discount" if="__config__.app.getApp('account').getManageFinancialDiscount()">
+			<field name="applyFinancialDiscount" readonlyIf="!financialDiscount" onChange="action-invoice-payment-method-change-amount,action-attrs-on-change-invoice-payment-financial-discount"/>
+			<field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
+			<field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount" readonly="true"/>
+			<field name="financialDiscountAmount" showIf="applyFinancialDiscount" readonly="true"/>
+			<field name="financialDiscountTaxAmount" showIf="applyFinancialDiscount &amp;&amp; financialDiscountTaxAmount &gt; 0" readonly="true"/>
 		</panel>
 		<panel name="otherDetailsPanel" showIf="id">
 			<field name="move" form-view="move-form" grid-view="move-grid"/>
@@ -50,6 +56,7 @@
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancelBtn" title="Cancel"  readonlyIf="statusSelect == 2 || move.statusSelect == 3" hideIf="move.statusSelect == 3" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
 			<field name="move.statusSelect" hidden="true" readonly="true"/>
+			
 		</panel>
 		<panel name="newInvoicePaymentPanel"  hideIf="id">
 			<button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"  onClick="action-invoice-payment-method-check-and-save,save,close"/>
@@ -82,26 +89,22 @@
 	</form>
 
 
+
 	<action-group name="action-invoice-payment-group-new">
 		<action name="action-invoice-payment-record-new"/>
 		<action name="action-invoice-payment-attrs-new"/>
 		<action name="action-invoice-payment-method-new"/>
-		<action name="action-attrs-invoice-payment-hide-trading-name"/>
+		<action name="action-invoice-payment-method-new-discount"/>
 	</action-group>
-	
-	<action-attrs name="action-attrs-invoice-payment-hide-trading-name" model="com.axelor.apps.account.db.InvoicePayment">
-		<attribute name="hidden" for="invoice.tradingName" expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
-	</action-attrs>
 	
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
     	<field name="currency" expr="eval: _invoice?.currency"/>
     	<field name="paymentDate" expr="eval: __config__.app.getTodayDate(__repo__(Company).find(_invoice.company.id))"/>
-  		<field name="amount" expr="eval: _invoice?.amountRemaining"/>
 		<field name="paymentMode" expr="eval: __repo__(PaymentMode).find(_invoice?.paymentMode.id)" if="_invoice?.paymentMode != null"/>
 		<field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
     	<field name="invoice" expr="eval: _invoice"/>
     	<field name="typeSelect" expr="2"/>
-    </action-record>
+     </action-record>
     
 	<action-record name="action-invoice-payment-record-mass-payment-new" model="com.axelor.apps.account.db.InvoicePayment">
 	  <field name="currency" expr="eval: __repo__(Invoice).find(_invoices[0])?.currency"/>
@@ -125,6 +128,14 @@
 	<action-method name="action-invoice-payment-method-new">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="filterPaymentMode"/>
 	</action-method>
+	
+	<action-method name="action-invoice-payment-method-new-discount">
+        <call class="com.axelor.apps.account.web.InvoicePaymentController" method="computeDatasForFinancialDiscount"/>
+	</action-method>
+	
+	<action-method name="action-invoice-payment-method-change-amount">
+        <call class="com.axelor.apps.account.web.InvoicePaymentController" method="changeAmount"/>
+	</action-method>
 
     <action-method name="action-invoice-payment-method-cancel">
         <call class="com.axelor.apps.account.web.InvoicePaymentController" method="cancelInvoicePayment"/>
@@ -145,6 +156,15 @@
 	<action-method name="action-invoice-payment-method-check-and-save">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
 	</action-method>
+
+	<action-record name="action-record-on-change-invoice-payment-financial-discount" model="com.axelor.apps.account.db.InvoicePayment">
+		<field name="amount" expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount,amount)" if="invoice"/>	
+	</action-record>
 	
+	<action-attrs name="action-attrs-on-change-invoice-payment-financial-discount">
+		<attribute name="title" for="amount" expr="call:com.axelor.apps.account.service.invoice.InvoiceService:setAmountTitle(applyFinancialDiscount)"/>
+	</action-attrs>
+
+
 </object-views>
 	

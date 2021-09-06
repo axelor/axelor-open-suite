@@ -77,7 +77,7 @@ public class SelectionBuilderService {
 
   public void build(SelectionBuilder selectionBuilder) {
 
-    String xmlId = SELECTION_PREFIX + selectionBuilder.getId();
+    String xmlId = SELECTION_PREFIX + selectionBuilder.getName().replace(" ", "-");
 
     updateMetaSelectFromText(
         selectionBuilder.getSelectionText(),

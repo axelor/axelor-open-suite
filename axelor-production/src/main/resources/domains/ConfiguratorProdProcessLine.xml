@@ -16,6 +16,9 @@
         <boolean name="defPriorityAsFormula" title="Define with a script" default="false"/>
         
         <many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+        <string name="workCenterFormula" title="Work center" large="true"/>
+        <boolean name="defWorkCenterAsFormula" title="Define with a script" default="false"/>
+        
         <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
    		<many-to-one name="workCenterGroup" ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"/>
    	
@@ -41,7 +44,14 @@
         <string name="durationPerCycleFormula" title="Duration / cycle (hh:mm:ss)" large="true"/>
         <boolean name="defDurationFormula" title="Define with a script"/>
         
+        <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"/>
+        <string name="timingOfImplementationFormula" title="Timing of implementation (hh:mm:ss)" large="true"/>
+        <boolean name="defTimingOfImplementationFormula" title="Define with a script"/>
+        
         <string name="useCondition" title="Condition" large="true"/>
+        
+        <one-to-many name="configuratorProdProductList" title="Products to consume" mappedBy="configuratorProdProcessLine"
+					 ref="com.axelor.apps.production.db.ConfiguratorProdProduct"/>
     </entity>
 
 </domain-models>

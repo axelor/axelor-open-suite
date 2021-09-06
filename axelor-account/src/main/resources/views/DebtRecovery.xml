@@ -5,6 +5,9 @@
 
     <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery" canNew="false" 
 		orderBy="-debtRecoveryDate,company,accountingSituation.partner">
+		<toolbar>
+			<button onClick="action-method-block-customer-with-late-payments" name="blockCustomersWithLatePayments" title="Block customer with late payments"/>
+		</toolbar>
 		<hilite if="waitDebtRecoveryMethodLine" color="warning"/>
 		<hilite if="!waitDebtRecoveryMethodLine" color="success"/>
     	<field name="company"/>
@@ -46,6 +49,7 @@
             <field name="setToIrrecoverableOk" widget="boolean-switch" colSpan="3" />
             <field name="deceasedPartnerOk" widget="boolean-switch" colSpan="3" />
             <field name="unknownAddressOk" widget="boolean-switch" colSpan="3" />
+            <field name="respiteDateBeforeAccountBlocking" colSpan="3" />
         </panel>
         <panel-tabs>
             <panel-related name="debtRecoveryHistoryListPanel" field="debtRecoveryHistoryList" grid-view="debt-recovery-history-grid"
@@ -88,6 +92,11 @@
         <attribute for="waitDebtRecoveryMethodLine" name="domain"
                    expr="eval: &quot;self.debtRecoveryMethod.id = ${debtRecoveryMethod.id}&quot;"/>
     </action-attrs>
+    
+    <action-method name="action-method-block-customer-with-late-payments">
+    	<call class="com.axelor.apps.account.web.DebtRecoveryController"
+              method="blockCustomersWithLatePayments"/>
+    </action-method>
 
     <action-method name="action-debt-recovery-method-validate-debtRecovery">
         <call class="com.axelor.apps.account.web.DebtRecoveryController"

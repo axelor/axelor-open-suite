@@ -683,7 +683,7 @@ public class IrrecoverableService {
               invoiceLine
                   .getExTaxTotal()
                   .multiply(prorataRate)
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN),
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
               seq));
       seq++;
     }
@@ -695,7 +695,7 @@ public class IrrecoverableService {
               invoiceLineTax
                   .getTaxTotal()
                   .multiply(prorataRate)
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN),
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
               seq));
       seq++;
     }
@@ -735,8 +735,8 @@ public class IrrecoverableService {
     // Montant hors-Taxe
     BigDecimal irrecoverableAmount =
         amount
-            .divide(divid, 6, RoundingMode.HALF_EVEN)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .divide(divid, 6, RoundingMode.HALF_UP)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     // Montant Tax
     BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
@@ -804,12 +804,12 @@ public class IrrecoverableService {
     if (isInvoiceReject) {
       prorataRate =
           (invoice.getRejectMoveLine().getAmountRemaining())
-              .divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_EVEN);
+              .divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_UP);
     } else {
       prorataRate =
           invoice
               .getCompanyInTaxTotalRemaining()
-              .divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_EVEN);
+              .divide(invoice.getInTaxTotal(), 6, RoundingMode.HALF_UP);
     }
 
     log.debug("Taux d'impayé pour la facture {} : {}", invoice.getInvoiceId(), prorataRate);
@@ -865,7 +865,11 @@ public class IrrecoverableService {
     // Debits MoveLines Tva
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
       amount =
-          (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_EVEN);
+          (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
+      // do not generate move line with amount equal to zero
+      if (amount.signum() == 0) {
+        continue;
+      }
       debitMoveLine =
           moveLineService.createMoveLine(
               move,
@@ -996,8 +1000,8 @@ public class IrrecoverableService {
     BigDecimal divid = taxRate.add(BigDecimal.ONE);
     BigDecimal irrecoverableAmount =
         amount
-            .divide(divid, 6, RoundingMode.HALF_EVEN)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .divide(divid, 6, RoundingMode.HALF_UP)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     MoveLine creditMoveLine1 =
         moveLineService.createMoveLine(
             move,

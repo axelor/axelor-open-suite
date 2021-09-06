@@ -74,6 +74,12 @@
 	
 	<date name="originDate" title="Origin date" initParam="true"/>
 	
+	<!-- DAS2 -->
+	<many-to-one name="serviceType" ref="ServiceType" title="Service type" readonly="true"/>
+    <string name="serviceTypeCode" title="Service type code" readonly="true"/>
+    <many-to-one name="das2Activity" ref="com.axelor.apps.account.db.Das2Activity" title="DAS2 activity" readonly="true"/>
+    <string name="das2ActivityName" title="DAS2 activity name" readonly="true"/>
+	
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
     	if (move != null && move.getReference() != null){
@@ -94,6 +100,12 @@
 		else return BigDecimal.ZERO;
 	    ]]>
     </decimal>
+    
+    <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1" ref="com.axelor.apps.account.db.AnalyticAccount"/>
+	<many-to-one name="axis2AnalyticAccount" title="Cpte Ana. AXIS2" ref="com.axelor.apps.account.db.AnalyticAccount"/>
+	<many-to-one name="axis3AnalyticAccount" title="Cpte Ana. AXIS3" ref="com.axelor.apps.account.db.AnalyticAccount"/>
+	<many-to-one name="axis4AnalyticAccount" title="Cpte Ana. AXIS4" ref="com.axelor.apps.account.db.AnalyticAccount"/>
+	<many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5" ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
 

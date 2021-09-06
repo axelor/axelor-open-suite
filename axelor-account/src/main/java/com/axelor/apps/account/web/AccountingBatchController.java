@@ -194,6 +194,16 @@ public class AccountingBatchController {
     response.setReload(true);
   }
 
+  public void blockCustomersWithLatePayments(ActionRequest request, ActionResponse response) {
+
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
+    Batch batch =
+        Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
+
   // WS
 
   /**

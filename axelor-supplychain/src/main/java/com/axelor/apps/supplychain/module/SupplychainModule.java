@@ -40,6 +40,7 @@ import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
@@ -94,6 +95,8 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.OpportunitySaleOrderSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkServiceImpl;
+import com.axelor.apps.supplychain.service.PartnerSupplychainService;
+import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
@@ -249,5 +252,7 @@ public class SupplychainModule extends AxelorModule {
     bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
     bind(OpportunitySaleOrderServiceImpl.class)
         .to(OpportunitySaleOrderSupplychainServiceImpl.class);
+    bind(PartnerSaleServiceImpl.class).to(PartnerSupplychainServiceImpl.class);
+    bind(PartnerSupplychainService.class).to(PartnerSupplychainServiceImpl.class);
   }
 }

@@ -17,17 +17,22 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.AppAccount;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,14 +46,20 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   protected AppAccountService appAccountService;
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
+  protected AccountConfigService accountConfigService;
+  protected AccountRepository accountRepository;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
       AppAccountService appAccountService,
-      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl) {
+      AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
+      AccountConfigService accountConfigService,
+      AccountRepository accountRepository) {
 
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
+    this.accountConfigService = accountConfigService;
+    this.accountRepository = accountRepository;
   }
 
   @Override
@@ -81,16 +92,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company) {
+      Partner partner, Product product, Company company) throws AxelorException {
 
-    AppAccount appAccount = appAccountService.getAppAccount();
-
-    if (appAccount.getAnalyticDistributionTypeSelect()
-            == AppAccountRepository.DISTRIBUTION_TYPE_PARTNER
-        && partner != null) {
+    if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
+        && partner != null
+        && company != null) {
       return partner.getAnalyticDistributionTemplate();
-    } else if (appAccount.getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
+    } else if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
+        && company != null) {
       return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(product, company);
     }
     return null;
@@ -175,5 +186,44 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       }
     }
     return true;
+  }
+
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      MoveLine moveLine, AnalyticAccount analyticAccount) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
+    if (moveLine.getMove() != null
+        && accountConfigService
+                .getAccountConfig(moveLine.getMove().getCompany())
+                .getAnalyticJournal()
+            != null) {
+
+      analyticMoveLine.setAnalyticJournal(
+          accountConfigService
+              .getAccountConfig(analyticAccount.getAnalyticAxis().getCompany())
+              .getAnalyticJournal());
+    }
+
+    analyticMoveLine.setDate(moveLine.getDate());
+    analyticMoveLine.setPercentage(new BigDecimal(100));
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+    if (moveLine.getAccount() != null) {
+      analyticMoveLine.setAccount(moveLine.getAccount());
+      if (moveLine.getAccount().getAccountType() != null) {
+        analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
+      }
+    } else {
+      analyticMoveLine.setAccount(accountRepository.find((long) 1));
+    }
+
+    if (analyticAccount != null) {
+      analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
+      analyticMoveLine.setAnalyticAccount(analyticAccount);
+    }
+    if (moveLine.getCredit().signum() > 0) {
+      analyticMoveLine.setAmount(moveLine.getCredit());
+    } else if (moveLine.getDebit().signum() > 0) {
+      analyticMoveLine.setAmount(moveLine.getDebit());
+    }
+    return analyticMoveLine;
   }
 }

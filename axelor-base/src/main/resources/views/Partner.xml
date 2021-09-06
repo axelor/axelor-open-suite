@@ -101,6 +101,7 @@
 		<field name="mainAddress" />
 		<field name="companyStr"
 			if="__config__.app.getApp('base').getEnableMultiCompany()" />
+		<field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
 			onClick="action-partner-view-schedule-event" if-module="axelor-crm"
 			if="__config__.app.isApp('crm')" />
@@ -350,7 +351,7 @@
 				<field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true" />
 				<field name="saleTurnover" hideIf="partnerTypeSelect== 2" />
 				<field name="nbrEmployees" hideIf="partnerTypeSelect== 2" />
-				<field name="mainActivityCode" hideIf="partnerTypeSelect== 2" />
+				<field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true" form-view="main-activity-form"/>
 				<field name="taxNbr" hideIf="partnerTypeSelect== 2" />
 				<field name="paymentDelay" if-module="axelor-cash-management"
 					if="__config__.app.isApp('cash-management')" />
@@ -540,6 +541,10 @@
 					form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid"
 					if-module="axelor-sale"
 					if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()" />
+				<panel name="accountblockedPanel">
+					<field name="hasBlockedAccount" onChange="action-attrs-update-manually-blocked-account"/>
+					<field name="hasManuallyBlockedAccount" hidden="true"/>
+				</panel>
 				<panel name="saleOrderCommentsPanel" title="Comment to display on sale order"
 					colSpan="12">
 					<field name="saleOrderComments" widget="html" colSpan="12"
@@ -1506,6 +1511,8 @@
 		</filter>
 	</search-filters>
 
-
+	<action-attrs name="action-attrs-update-manually-blocked-account">
+		<attribute name="value" for="hasManuallyBlockedAccount" expr="eval: hasBlockedAccount"/>
+	</action-attrs>
 
 </object-views>

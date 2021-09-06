@@ -95,8 +95,12 @@ public class ExternalReportSettings extends ReportSettings {
   }
 
   private String computeParam(String param) throws UnsupportedEncodingException {
-
-    return "&" + param + "=" + URLEncoder.encode(params.get(param).toString(), "UTF-8");
+    Object paramValue = params.get(param);
+    if (paramValue != null) {
+      return "&" + param + "=" + URLEncoder.encode(paramValue.toString(), "UTF-8");
+    } else {
+      return "";
+    }
   }
 
   private ReportSettings addAxelorReportPath(String rptdesign) {

@@ -227,6 +227,9 @@
 				<panel name="moCommentFromSaleOrderPanel" title="MO's comment from sale order" colSpan="12">
         			<field name="moCommentFromSaleOrder" showTitle="false" colSpan="12" widget="Html"/>
       			</panel>
+      			<panel name="moCommentFromSaleOrderLinePanel" title="MO's comment from sale order line" colSpan="12">
+        			<field name="moCommentFromSaleOrderLine" showTitle="false" colSpan="12" widget="Html"/>
+      			</panel>
 			</panel> 
 			<panel name="residualProductsPanel" title="Residual products" showIf="billOfMaterial != null &amp;&amp; billOfMaterial.prodResidualProductList.length > 0" if="__config__.app.getApp('production').getManageResidualProductOnBom()">
 				<field name="billOfMaterial.prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
@@ -263,6 +266,19 @@
 		</panel>
     </form>
 
+	<form name="multi-level-planing-wizard-form" title="Multi-level planning"
+				model="com.axelor.apps.production.db.ManufOrder"
+				onLoad="com.axelor.apps.production.web.ManufOrderController:multiLevelManufOrderOnLoad">
+		<panel name="mainPanel" colSpan="12">
+			<field name="$components" title="Products" type="one-to-many" canView="false" readonly="true"
+						 target="com.axelor.apps.production.db.ProdProduct"
+						 grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
+			<button name="generateMO" title="Generate MO"
+							onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
+							colSpan="4" colOffset="8"/>
+		</panel>
+	</form>
+	
 	<action-view name="action-manuf-order-update-planned-qty-popup-form-view" title="Update planned quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="popup-manuf-order-form-update-planned-qty"/>
 		<view-param name="popup" value="reload"/>
@@ -282,19 +298,6 @@
 		<context name="_showRecord" expr="eval: id"/>
 		<context name="_showOnlyMissingQty" expr="eval: _xPlanOnlyMissingQuantities"/>
 	</action-view>
-
-	<form name="multi-level-planing-wizard-form" title="Multi-level planning"
-				model="com.axelor.apps.production.db.ManufOrder"
-				onLoad="com.axelor.apps.production.web.ManufOrderController:multiLevelManufOrderOnLoad">
-		<panel name="mainPanel" colSpan="12">
-			<field name="$components" title="Products" type="one-to-many" canView="false" readonly="true"
-						 target="com.axelor.apps.production.db.ProdProduct"
-						 grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
-			<button name="generateMO" title="Generate MO"
-							onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
-							colSpan="4" colOffset="8"/>
-		</panel>
-	</form>
 
 	<action-view name="action-manuf-order-update-real-qty-popup-form-view" title="Update real quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="popup-manuf-order-form-update-real-qty"/>

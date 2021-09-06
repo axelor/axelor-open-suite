@@ -224,7 +224,7 @@ public class InventoryService {
 
       if (inventoryLineMap.containsKey(key)) {
         InventoryLine inventoryLine = inventoryLineMap.get(key);
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
+        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
 
         if (inventoryLine.getTrackingNumber() != null) {
@@ -267,8 +267,8 @@ public class InventoryService {
         inventoryLine.setProduct(product);
         inventoryLine.setInventory(inventory);
         inventoryLine.setRack(rack);
-        inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
-        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
+        inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_UP));
+        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
         inventoryLine.setTrackingNumber(
             this.getTrackingNumber(trackingNumberSeq, product, realQty));

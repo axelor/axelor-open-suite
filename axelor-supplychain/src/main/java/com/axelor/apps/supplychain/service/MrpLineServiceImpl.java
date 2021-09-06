@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -60,6 +61,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -78,6 +80,7 @@ public class MrpLineServiceImpl implements MrpLineService {
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected MrpForecastRepository mrpForecastRepo;
+  protected MrpLineRepository mrpLineRepo;
 
   @Inject
   public MrpLineServiceImpl(
@@ -89,7 +92,8 @@ public class MrpLineServiceImpl implements MrpLineService {
       StockRulesService stockRulesService,
       SaleOrderLineRepository saleOrderLineRepo,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
-      MrpForecastRepository mrpForecastRepo) {
+      MrpForecastRepository mrpForecastRepo,
+      MrpLineRepository mrpLineRepo) {
 
     this.appBaseService = appBaseService;
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
@@ -100,6 +104,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.mrpForecastRepo = mrpForecastRepo;
+    this.mrpLineRepo = mrpLineRepo;
   }
 
   @Override
@@ -363,6 +368,16 @@ public class MrpLineServiceImpl implements MrpLineService {
     return copyMrpLineOrigin;
   }
 
+  @Override
+  public void updateProposalToProcess(List<Integer> mrpLineIds, boolean proposalToProcess) {
+    MrpLine mrpLine;
+    for (Integer mrpId : mrpLineIds) {
+      mrpLine = mrpLineRepo.find(Long.valueOf(mrpId));
+
+      updateProposalToProcess(mrpLine, proposalToProcess);
+    }
+  }
+
   protected String computeRelatedName(Model model) {
 
     if (model instanceof SaleOrderLine) {
@@ -403,5 +418,18 @@ public class MrpLineServiceImpl implements MrpLineService {
       return ((MrpForecast) model).getPartner();
     }
     return null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateProposalToProcess(MrpLine mrpLine, boolean proposalToProcess) {
+    if (!mrpLine.getProposalGenerated()
+        && (mrpLine.getMrpLineType().getElementSelect()
+                == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+            || mrpLine.getMrpLineType().getElementSelect()
+                == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)) {
+      mrpLine.setProposalToProcess(proposalToProcess);
+      mrpLineRepo.save(mrpLine);
+    }
   }
 }
