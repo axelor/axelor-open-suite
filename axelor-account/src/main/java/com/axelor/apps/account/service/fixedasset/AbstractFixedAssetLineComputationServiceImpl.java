@@ -127,24 +127,29 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected BigDecimal computeInitialDepreciation(FixedAsset fixedAsset, BigDecimal baseValue) {
-
+    // Theses cases is for when user want to depreciate in one year.
+    // This case is if list is not empty when calling this method
+    if (getFixedAssetLineList(fixedAsset) != null
+        && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
+      // AlreadyDepreciatedAmount is used when on failOver, in others cases it should be equal to 0.
+      return baseValue.subtract(getAlreadyDepreciatedAmount(fixedAsset));
+    }
+    if (getFixedAssetLineList(fixedAsset) == null
+        && getNumberOfDepreciation(fixedAsset) - numberOfDepreciationDone(fixedAsset) == 1) {
+      return baseValue.subtract(getAlreadyDepreciatedAmount(fixedAsset));
+    }
     if (getComputationMethodSelect(fixedAsset) != null
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      // Theses cases is for when user want to depreciate in one year.
-      // This case is if list is not empty when calling this method
-      if (getFixedAssetLineList(fixedAsset) != null
-          && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
-        return baseValue;
-      }
-      if (getFixedAssetLineList(fixedAsset) == null && getNumberOfDepreciation(fixedAsset) == 1) {
-        return baseValue;
-      }
-      // In case of economic type, boolean argument is always false, since there is copy before.
+
       return computeInitialDegressiveDepreciation(fixedAsset, baseValue);
     } else {
       return computeInitialLinearDepreciation(fixedAsset, baseValue);
     }
+  }
+
+  protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
+    return fixedAsset.getAlreadyDepreciatedAmount();
   }
 
   protected BigDecimal computeInitialLinearDepreciation(
@@ -301,6 +306,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
+    if (getFixedAssetLineList(fixedAsset) == null) {
+      return 0;
+    }
     return getFixedAssetLineList(fixedAsset).size();
   }
 
@@ -333,29 +341,15 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected BigDecimal computeDepreciation(
       FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
     BigDecimal depreciation;
-    // case of economic type
-    if (getComputationMethodSelect(fixedAsset)
+    if (getFixedAssetLineList(fixedAsset) != null
+        && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
+      depreciation = previousFixedAssetLine.getAccountingValue();
+    } else if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      if (getFixedAssetLineList(fixedAsset) != null
-          && numberOfDepreciationDone(fixedAsset) == getNumberOfDepreciation(fixedAsset) - 1) {
-        depreciation = previousFixedAssetLine.getAccountingValue();
-      } else {
-        depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine);
-      }
+      depreciation = computeOnGoingDegressiveDepreciation(fixedAsset, previousFixedAssetLine);
 
     } else {
-      // In case of linear, we must filter line that have a correctedAccountingValue and line that
-      // are realized and not count them to know if we are computing the last line.
-      // Because when recomputing, number of depreciation is overwrite as follow (nbDepreciation -
-      // list.size())
-      if (getFixedAssetLineList(fixedAsset) != null
-          && countNotCorrectedPlannedLines(getFixedAssetLineList(fixedAsset))
-              == getNumberOfDepreciation(fixedAsset) - 1) {
-        // So we must depreciate the remaining accounting value.
-        depreciation = previousFixedAssetLine.getAccountingValue();
-      } else {
-        depreciation = computeLinearDepreciation(fixedAsset, baseValue);
-      }
+      depreciation = computeLinearDepreciation(fixedAsset, baseValue);
     }
     if (BigDecimal.ZERO.compareTo(
             previousFixedAssetLine.getAccountingValue().subtract(depreciation))

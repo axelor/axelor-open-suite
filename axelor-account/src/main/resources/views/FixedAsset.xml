@@ -32,7 +32,7 @@
 	      <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
 	      <field name="company" readonlyIf="statusSelect > 1" colSpan="3" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 	      <field name="company.currency" title="Currency" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
-	      <field name="fixedAssetCategory" readonlyIf="statusSelect > 1" canEdit="false" onChange="action-group-account-record-on-change-asset-category, action-method-account-fixed-asset-compute-first-depreciation-date" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"/>
+	      <field name="fixedAssetCategory" domain="self.company = :company" readonlyIf="statusSelect > 1" canEdit="false" onChange="action-group-account-record-on-change-asset-category, action-method-account-fixed-asset-compute-first-depreciation-date" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"/>
 	      <field name="depreciationPlanSelect" readonlyIf="statusSelect > 1" showIf="fixedAssetCategory != null" onChange="action-attrs-account-fixed-asset-depreciation-plan-override-if-none, action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"/>
 	      <field name="qty" required="true" min="0.01" title="Quantity" readonlyIf="statusSelect > 1" showIf="trackingNumber == null"/>
 	      <field if-module="axelor-supplychain" name="trackingNumber.counter" title="Quantity" showIf="trackingNumber != null"/>
@@ -323,6 +323,7 @@
     	<action name="action-account-attrs-fill-fiscal-panel" if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-account-attrs-fill-ifrs-panel" if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal" if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
+    	<action name="action-attrs-fixed-asset-ifrs-depreciation-equal" if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-fixed-asset-record-onchange-set-values" if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
     </action-group>
     
@@ -417,6 +418,7 @@
     <action-attrs name="action-attrs-account-fixed-asset-failover-override">
     	<attribute name="value" for="depreciationPlanSelect" expr="eval:&quot;1,2&quot;"/>
     	<attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:true"/>
+    	<attribute name="value" for="fiscalComputationMethodSelect" expr="eval:'linear'"/>
     	<attribute name="value" for="computationMethodSelect" expr="eval:'linear'"/>
     </action-attrs>
 

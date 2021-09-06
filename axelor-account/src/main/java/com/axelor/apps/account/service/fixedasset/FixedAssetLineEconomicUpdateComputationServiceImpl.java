@@ -3,7 +3,6 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
@@ -107,11 +106,6 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
 
   @Override
   protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    if (fixedAsset
-        .getComputationMethodSelect()
-        .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
-      return fixedAsset.getNumberOfDepreciation() - this.listSizeAfterClear;
-    }
     return fixedAsset.getNumberOfDepreciation() - this.listSizeAfterClear;
   }
 
@@ -153,7 +147,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
 
   @Override
   protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
-    return getFixedAssetLineList(fixedAsset).size() - listSizeAfterClear;
+    return getFixedAssetLineList(fixedAsset).size()
+        - listSizeAfterClear
+        + fixedAsset.getNbrOfPastDepreciations();
   }
 
   @Override
@@ -238,5 +234,10 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
               .add(firstPlannedFixedAssetLine.getDepreciation())
               .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
     }
+  }
+
+  @Override
+  protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
+    return BigDecimal.ZERO;
   }
 }

@@ -684,6 +684,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
     newFixedAsset.addAssociatedFixedAssetsSetItem(fixedAsset);
     fixedAsset.addAssociatedFixedAssetsSetItem(newFixedAsset);
+    newFixedAsset.setCorrectedAccountingValue(fixedAsset.getCorrectedAccountingValue());
     return newFixedAsset;
   }
 
