@@ -158,7 +158,6 @@
 	<menuitem name="account-root" title="Accounting" order="-90"
 		if="__config__.app.isApp('account')" icon="fa-calculator"
 		icon-background="#2fa042" />
-
 	<menuitem name="account-root-move" parent="account-root"
 		title="Moves" order="0" />
 
@@ -186,7 +185,7 @@
 		<view-param name="search-filters" value="move-line-filters"/>
 		<domain>self.move.statusSelect != 5</domain>
 	</action-view>
-	
+
 	<!-- <menuitem name="account-root-move-moves-simulated" parent="account-root-move"
 		title="Moves Simulated" action="account.root.move.moves.simulated" order="15" if="__repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne()).fetchOne()?.isActivateSimulatedMove"/>
 >>>>>>> e6745d1735b21109f9e92b32bebca22c61b941c7
@@ -204,7 +203,6 @@
 	</action-view>
 <<<<<<< HEAD
 =======
-
 	<menuitem name="account-root-move-move-line-simulated" parent="account-root-move"
 		title="Move Lines Simulated" action="account.root.move.move.line.simulated" order="20" if="__repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne()).fetchOne()?.isActivateSimulatedMove"/>
 >>>>>>> e6745d1735b21109f9e92b32bebca22c61b941c7
@@ -714,8 +712,7 @@
 		<view type="form" name="tax-form" />
 		<view-param name="search-filters" value="tax-filters" />
 	</action-view>
-	
-	<menuitem name="account-conf-financial-service-types" parent="account-conf-financial"
+<menuitem name="account-conf-financial-service-types" parent="account-conf-financial"
 						title="Service types" action="account.conf.financial.service.types"/>
 
 	<action-view name="account.conf.financial.service.types"
@@ -731,14 +728,13 @@
 		<view type="grid" name="tax-number-grid" />
 		<view type="form" name="tax-number-form" />
 	</action-view>
-	
+
 	<menuitem name="account-conf-financial-financial-discount" title="Financial Discount" parent="account-conf-financial" action="financial.discount" />
 
 	<action-view name="financial.discount" title="Financial Discount" model="com.axelor.apps.account.db.FinancialDiscount">
 		<view type="grid" name="financial-discount-grid"/>
 		<view type="form" name="financial-discount-form"/>
 	</action-view>
-
 	<menuitem name="account-conf-analytic" parent="account-conf"
 		title="Analytic" />
 
@@ -988,13 +984,11 @@
 		title="Accounting Details">
 		<view type="dashboard" name="accounting.dashboard.sample" />
 	</action-view>
-
 	<!-- Move template -->
 
 	<menuitem name="move-template-wizard"
 		title="Move From Template" parent="account-root-move"
 		action="move.template.wizard" top="true" order="10" />
-
 	<action-view name="move.template.wizard"
 		title="Move From Template" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="move-template-wizard-form" />
@@ -1022,7 +1016,6 @@
 	<menuitem name="move-template-type"
 		title="Move Template Types" parent="move-template-root"
 		action="move.template.type" top="true" />
-
 	<action-view name="move.template.type"
 		title="Move Template Types"
 		model="com.axelor.apps.account.db.MoveTemplateType">

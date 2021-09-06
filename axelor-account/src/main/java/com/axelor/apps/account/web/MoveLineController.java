@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -30,6 +32,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
@@ -238,8 +241,11 @@ public class MoveLineController {
         Currency currency = move.getCurrency();
         Currency companyCurrency = move.getCompanyCurrency();
         if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-          currencyRate =
-              Beans.get(CurrencyService.class).getCurrencyConversionRate(currency, companyCurrency);
+          if (move.getMoveLineList().size() == 0)
+            currencyRate =
+                Beans.get(CurrencyService.class)
+                    .getCurrencyConversionRate(currency, companyCurrency);
+          else currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
         }
       }
       response.setValue("currencyRate", currencyRate);
@@ -261,6 +267,68 @@ public class MoveLineController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void loadAccountInformation(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    if (parentContext != null) {
+      Move move = parentContext.asType(Move.class);
+      Partner partner = move.getPartner();
+
+      if (ObjectUtils.isEmpty(partner)) {
+        response.setError(I18n.get("Please select a partner"));
+      } else {
+        Account accountingAccount =
+            Beans.get(MoveService.class).getAccountingAccountFromAccountConfig(move);
+
+        if (accountingAccount != null) {
+          response.setValue("account", accountingAccount);
+          if (!accountingAccount.getUseForPartnerBalance()) {
+            response.setValue("partner", null);
+          }
+        }
+
+        TaxLine taxLine =
+            Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
+        if (taxLine != null) response.setValue("taxLine", taxLine);
+        else response.setValue("taxLine", null);
+      }
+    }
+  }
+
+  public void refreshAccountInformation(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    if (parentContext != null) {
+      Move move = parentContext.asType(Move.class);
+      Account accountingAccount = moveLine.getAccount();
+      if (accountingAccount != null) {
+        if (!accountingAccount.getUseForPartnerBalance()) {
+          response.setValue("partner", null);
+        }
+      }
+
+      TaxLine taxLine = Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
+      if (taxLine != null) response.setValue("taxLine", taxLine);
+      else response.setValue("taxLine", null);
+    }
+  }
+
+  public void setIsOtherCurrency(ActionRequest request, ActionResponse response) {
+    Context parent = request.getContext().getParent();
+    Move move = parent.asType(Move.class);
+    response.setValue("isOtherCurrency", !move.getCurrency().equals(move.getCompanyCurrency()));
+  }
+
+  public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
+    boolean readonly = false;
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) readonly = true;
+    if (moveLine.getAccount() != null) {
+      if (moveLine.getAccount().getUseForPartnerBalance()) readonly = true;
+    }
+    response.setAttr("partner", "readonly", readonly);
   }
 
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response)

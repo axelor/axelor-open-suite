@@ -86,7 +86,9 @@ public class MoveCreateService {
       Partner partner,
       PaymentMode paymentMode,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException {
     return this.createMove(
         journal,
@@ -96,7 +98,9 @@ public class MoveCreateService {
         appAccountService.getTodayDate(company),
         paymentMode,
         technicalOriginSelect,
-        functionalOriginSelect);
+        functionalOriginSelect,
+        origin,
+        description);
   }
 
   /**
@@ -120,7 +124,9 @@ public class MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException {
     return this.createMove(
         journal,
@@ -133,7 +139,9 @@ public class MoveCreateService {
         functionalOriginSelect,
         false,
         false,
-        false);
+        false,
+        origin,
+        description);
   }
 
   /**
@@ -162,7 +170,9 @@ public class MoveCreateService {
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
       boolean ignoreInAccountingOk,
-      boolean autoYearClosureMove)
+      boolean autoYearClosureMove,
+      String origin,
+      String description)
       throws AxelorException {
     log.debug(
         "Creating a new generic accounting move (journal : {}, company : {}",
@@ -207,7 +217,8 @@ public class MoveCreateService {
       move.setCurrency(currency);
       move.setCurrencyCode(currency.getCode());
     }
-
+    move.setOrigin(origin);
+    move.setDescription(description);
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
     move.setTechnicalOriginSelect(technicalOriginSelect);
@@ -239,7 +250,9 @@ public class MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException {
     Move move =
         this.createMove(
@@ -250,7 +263,9 @@ public class MoveCreateService {
             date,
             paymentMode,
             technicalOriginSelect,
-            functionalOriginSelect);
+            functionalOriginSelect,
+            origin,
+            description);
     move.setPaymentVoucher(paymentVoucher);
     return move;
   }

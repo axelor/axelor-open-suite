@@ -253,6 +253,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
         isRefund = true;
       }
 
+      String origin = subrogationRelease.getSequenceNumber();
+      String description = invoice.getInvoiceId();
       LocalDate date = subrogationRelease.getAccountingDate();
       Move move =
           moveService
@@ -265,7 +267,9 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   date,
                   null,
                   MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                  origin,
+                  description);
       MoveLine creditMoveLine, debitMoveLine;
 
       debitMoveLine =
@@ -280,8 +284,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   date,
                   null,
                   1,
-                  subrogationRelease.getSequenceNumber(),
-                  invoice.getInvoiceId());
+                  origin,
+                  description);
 
       creditMoveLine =
           moveService
@@ -295,8 +299,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   date,
                   null,
                   2,
-                  subrogationRelease.getSequenceNumber(),
-                  invoice.getInvoiceId());
+                  origin,
+                  description);
 
       move.addMoveLineListItem(debitMoveLine);
       move.addMoveLineListItem(creditMoveLine);

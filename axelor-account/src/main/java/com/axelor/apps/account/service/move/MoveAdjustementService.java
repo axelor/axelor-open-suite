@@ -86,7 +86,9 @@ public class MoveAdjustementService {
             partner,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            debitMove.getFunctionalOriginSelect());
+            debitMove.getFunctionalOriginSelect(),
+            null,
+            null);
 
     // Création de la ligne au crédit
     MoveLine creditAdjustmentMoveLine =
@@ -147,7 +149,9 @@ public class MoveAdjustementService {
             partner,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            debitMove.getFunctionalOriginSelect());
+            debitMove.getFunctionalOriginSelect(),
+            null,
+            null);
 
     // Création de la ligne au crédit
     MoveLine creditAdjustmentMoveLine =
@@ -215,7 +219,9 @@ public class MoveAdjustementService {
             partnerDebit,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            debitMoveLineToReconcile.getMove().getFunctionalOriginSelect());
+            debitMoveLineToReconcile.getMove().getFunctionalOriginSelect(),
+            null,
+            null);
 
     MoveLine debitMoveLine =
         moveLineService.createMoveLine(

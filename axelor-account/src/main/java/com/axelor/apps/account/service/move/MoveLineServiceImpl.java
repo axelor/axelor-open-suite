@@ -41,6 +41,8 @@ import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -58,6 +60,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.common.ObjectUtils;
@@ -71,6 +74,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -99,6 +103,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected CompanyConfigService companyConfigService;
   protected MoveLineRepository moveLineRepository;
   protected TaxPaymentMoveLineService taxPaymentMoveLineService;
+  protected TaxLineRepository taxLineRepository;
+  protected TaxService taxService;
   protected AnalyticJournalRepository analyticJournalRepository;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AnalyticAccountRepository analyticAccountRepository;
@@ -119,6 +125,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       CompanyConfigService companyConfigService,
       MoveLineRepository moveLineRepository,
       TaxPaymentMoveLineService taxPaymentMoveLineService,
+      TaxLineRepository taxLineRepository,
+      TaxService taxService,
       AnalyticJournalRepository analyticJournalRepository,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       AnalyticAccountRepository analyticAccountRepository,
@@ -136,6 +144,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.companyConfigService = companyConfigService;
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
+    this.taxLineRepository = taxLineRepository;
+    this.taxService = taxService;
     this.analyticJournalRepository = analyticJournalRepository;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.analyticAccountRepository = analyticAccountRepository;
@@ -1141,6 +1151,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
+  @Transactional
   public void autoTaxLineGenerate(Move move) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
@@ -1172,8 +1183,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
         String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
 
-        moveLine.setCredit(BigDecimal.ZERO);
-        moveLine.setDebit(BigDecimal.ZERO);
+        //        moveLine.setCredit(BigDecimal.ZERO);
+        //        moveLine.setDebit(BigDecimal.ZERO);
         map.put(sourceTaxLineKey, moveLine);
         moveLineItr.remove();
         continue;
@@ -1190,6 +1201,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
           BigDecimal debit = moveLine.getDebit();
           BigDecimal credit = moveLine.getCredit();
+          BigDecimal currencyRate = moveLine.getCurrencyRate();
+          BigDecimal currencyAmount;
           LocalDate date = moveLine.getDate();
           Company company = move.getCompany();
 
@@ -1208,7 +1221,6 @@ public class MoveLineServiceImpl implements MoveLineService {
           }
 
           Account newAccount = newOrUpdatedMoveLine.getAccount();
-
           if (newAccount == null) {
             throw new AxelorException(
                 move,
@@ -1216,6 +1228,11 @@ public class MoveLineServiceImpl implements MoveLineService {
                 I18n.get(IExceptionMessage.MOVE_LINE_6),
                 taxLine.getName(),
                 company.getName());
+          }
+          if (move.getPartner().getFiscalPosition() != null) {
+            newAccount =
+                fiscalPositionAccountService.getAccount(
+                    move.getPartner().getFiscalPosition(), newAccount);
           }
 
           String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
@@ -1233,18 +1250,21 @@ public class MoveLineServiceImpl implements MoveLineService {
                 && map.containsKey(newSourceTaxLineKey)) {
               newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
             }
-            newOrUpdatedMoveLine.setDebit(
-                newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
-            newOrUpdatedMoveLine.setCredit(
-                newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
+            newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
+            newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
           }
-
+          newOrUpdatedMoveLine.setMove(move);
+          newOrUpdatedMoveLine = setCurrencyAmount(newOrUpdatedMoveLine);
+          newOrUpdatedMoveLine.setOrigin(move.getOrigin());
+          newOrUpdatedMoveLine.setDescription(move.getDescription());
+          newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
           newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
         }
       }
     }
 
     moveLineList.addAll(newMap.values());
+    Beans.get(MoveRepository.class).save(move);
   }
 
   @Override
@@ -1343,6 +1363,39 @@ public class MoveLineServiceImpl implements MoveLineService {
       }
     }
     return moveLine;
+  }
+
+  @Override
+  public MoveLine setCurrencyAmount(MoveLine moveLine) {
+    Move move = moveLine.getMove();
+    if (move.getMoveLineList().size() == 0)
+      try {
+        moveLine.setCurrencyRate(
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompany().getCurrency()));
+      } catch (AxelorException e1) {
+        e1.printStackTrace();
+      }
+    else moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
+    if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
+      BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
+      moveLine.setCurrencyAmount(
+          unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
+    }
+    return moveLine;
+  }
+
+  @Override
+  public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException {
+    TaxLine taxLine = null;
+    LocalDate date = moveLine.getDate();
+    if (date == null) date = moveLine.getDueDate();
+    if (moveLine.getAccount() != null) {
+      if (moveLine.getAccount().getDefaultTax() != null) {
+        taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
+      }
+    }
+    return taxLine;
   }
 
   @Override
