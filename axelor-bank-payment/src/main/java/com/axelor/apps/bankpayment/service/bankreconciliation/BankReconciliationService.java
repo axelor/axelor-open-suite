@@ -41,6 +41,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.BankStatementRule;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
@@ -95,6 +96,7 @@ public class BankReconciliationService {
   protected PeriodService periodService;
   protected BankReconciliationLineService bankReconciliationLineService;
   protected MoveLineService moveLineService;
+  protected BankReconciliationLineRepository bankReconciliationLineRepository;
 
   @Inject
   public BankReconciliationService(
@@ -110,7 +112,8 @@ public class BankReconciliationService {
       PeriodService periodService,
       MoveService moveService,
       BankReconciliationLineService bankReconciliationLineService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      BankReconciliationLineRepository bankReconciliationLineRepository) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -125,6 +128,7 @@ public class BankReconciliationService {
     this.periodService = periodService;
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.moveLineService = moveLineService;
+    this.bankReconciliationLineRepository = bankReconciliationLineRepository;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) {
@@ -792,5 +796,14 @@ public class BankReconciliationService {
             .generate()
             .getFileLink();
     return fileLink;
+  }
+
+  @Transactional
+  public BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext) {
+    BankReconciliationLine bankReconciliationLine =
+        bankReconciliationLineRepository.find(bankReconciliationLineContext.getId());
+    bankReconciliationLine.setIsSelectedBankReconciliation(
+        !bankReconciliationLineContext.getIsSelectedBankReconciliation());
+    return bankReconciliationLineRepository.save(bankReconciliationLine);
   }
 }

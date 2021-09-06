@@ -27,7 +27,7 @@
    	    <field name="moveLine" width="135" canEdit="false" onChange="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected" onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
   	    <field name="isPosted" readonly="true"/>
         <field name="isSelectedBankReconciliation" hidden="true"/>
-        <button onClick="action-bank-reconciliation-line-record-set-selected,save" name="select" title="Select / Unselect" icon="fa-check-circle" />
+        <button onClick="action-bank-reconciliation-line-method-set-selected" name="select" title="Select / Unselect" icon="fa-check-circle" />
     </grid>
   
      <form name="bank-reconciliation-line-form" title="Bank reconciliation Line" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large">
@@ -84,6 +84,10 @@
    <action-record name="action-bank-reconciliation-line-record-set-selected" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
       <field name="isSelectedBankReconciliation" expr="eval: !isSelectedBankReconciliation"/>
    </action-record>
+   
+   <action-method name="action-bank-reconciliation-line-method-set-selected">
+      <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController" method="setSelected"/>
+   </action-method>
    
    <action-method name="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController" method="unreconcileUnselectedReconcileSelected"/>

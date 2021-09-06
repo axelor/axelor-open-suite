@@ -47,4 +47,13 @@ public class BankReconciliationLineController {
 
     response.setReload(true);
   }
+
+  public void setSelected(ActionRequest request, ActionResponse response) {
+    BankReconciliationLine bankReconciliationLineContext =
+        request.getContext().asType(BankReconciliationLine.class);
+
+    bankReconciliationLineContext =
+        bankReconciliationService.setSelected(bankReconciliationLineContext);
+    response.setReload(true);
+  }
 }
