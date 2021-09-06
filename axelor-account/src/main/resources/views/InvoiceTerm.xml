@@ -40,9 +40,9 @@
       <separator colSpan="12"/>
       <field name="amount" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-method-compute-customized-percentage"/>
       <field name="amountRemaining" readonly="true"/>
-      <field name="dueDate" readonlyIf="((invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3) ||
+      <field name="dueDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="((invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3) ||
        ((invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid)"/>
-      <field name="estimatedPaymentDate" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+      <field name="estimatedPaymentDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
       <field name="percentage" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
       <field name="isHoldBack" readonly="true"/>
       <field name="paymentMode"/>
@@ -84,7 +84,11 @@
     </panel>
   </form>
   
-  <action-record name="action-invoice-term-record-update-customized" model="com.axelor.apps.account.db.InvoiceTerm">
+  <action-record name="action-invoice-term-record-update-customized-true" model="com.axelor.apps.account.db.InvoiceTerm">
+     <field name="isCustomized" expr="true"/>
+  </action-record>
+  
+   <action-record name="action-invoice-term-record-update-customized" model="com.axelor.apps.account.db.InvoiceTerm">
      <field name="isCustomized" expr="true" if="percentage != paymentConditionLine.paymentPercentage"/>
      <field name="isCustomized" expr="false" if="percentage == paymentConditionLine.paymentPercentage"/>
   </action-record>
