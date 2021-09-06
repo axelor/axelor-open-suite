@@ -203,9 +203,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-accounting</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -8559,6 +8557,505 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                 <cell id="5625"/>
                                 <cell id="5626"/>
                             </row>
+                            <row id="5917">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["operation_type_select"] != 3</expression>
+                                    </structure>
+                                </list-property>
+                                <cell id="5918">
+                                    <property name="colSpan">8</property>
+                                    <property name="rowSpan">1</property>
+                                    <grid id="5899">
+                                        <property name="marginTop">0pt</property>
+                                        <property name="pageBreakBefore">auto</property>
+                                        <property name="dataSet">InvoiceTermDS</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">InvoiceTermName</property>
+                                                <text-property name="displayName">InvoiceTermName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["InvoiceTermName"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">InvoiceTermCount</property>
+                                                <text-property name="displayName">InvoiceTermCount</text-property>
+                                                <property name="dataType">integer</property>
+                                                <property name="aggregateFunction">COUNT</property>
+                                                <list-property name="arguments">
+                                                    <structure>
+                                                        <property name="name">Expression</property>
+                                                        <expression name="value" type="javascript">row["InvoiceTermName"]</expression>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <column id="5900"/>
+                                        <row id="5901">
+                                            <cell id="5902">
+                                                <text id="5890">
+                                                    <property name="fontSize">13pt</property>
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="color">#606062</property>
+                                                    <property name="textUnderline">none</property>
+                                                    <property name="borderLeftStyle">none</property>
+                                                    <property name="borderRightStyle">none</property>
+                                                    <property name="borderTopStyle">none</property>
+                                                    <property name="textAlign">center</property>
+                                                    <property name="pageBreakBefore">auto</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Invoice.invoiceTerms'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">key</property>
+                                                            <text-property name="displayName">key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                        </row>
+                                        <row id="5903">
+                                            <cell id="5904">
+                                                <table id="5837">
+                                                    <property name="fontSize">8pt</property>
+                                                    <property name="borderBottomStyle">solid</property>
+                                                    <property name="borderBottomWidth">thin</property>
+                                                    <property name="borderLeftStyle">solid</property>
+                                                    <property name="borderLeftWidth">thin</property>
+                                                    <property name="borderRightStyle">solid</property>
+                                                    <property name="borderRightWidth">thin</property>
+                                                    <property name="borderTopStyle">solid</property>
+                                                    <property name="borderTopWidth">thin</property>
+                                                    <property name="pageBreakBefore">auto</property>
+                                                    <property name="dataSet">InvoiceTermDS</property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">InvoiceTermName</property>
+                                                            <text-property name="displayName">InvoiceTermName</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermName"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">InvoiceTermAmount</property>
+                                                            <text-property name="displayName">InvoiceTermAmount</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermAmount"]</expression>
+                                                            <property name="dataType">decimal</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">InvoiceTermAmountRemaining</property>
+                                                            <text-property name="displayName">InvoiceTermAmountRemaining</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermAmountRemaining"]</expression>
+                                                            <property name="dataType">decimal</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">InvoiceTermDueDate</property>
+                                                            <text-property name="displayName">InvoiceTermDueDate</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermDueDate"]</expression>
+                                                            <property name="dataType">date</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">InvoiceTermEstimatedPaymentDate</property>
+                                                            <text-property name="displayName">InvoiceTermEstimatedPaymentDate</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermEstimatedPaymentDate"]</expression>
+                                                            <property name="dataType">date</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">InvoiceTermPercentage</property>
+                                                            <text-property name="displayName">InvoiceTermPercentage</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermPercentage"]</expression>
+                                                            <property name="dataType">decimal</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">InvoiceTermIsHoldBack</property>
+                                                            <text-property name="displayName">InvoiceTermIsHoldBack</text-property>
+                                                            <expression name="expression" type="javascript">if(dataSetRow["InvoiceTermIsHoldBack"]== 1) { String.fromCharCode(10003); }
+else { String.fromCharCode(10065); }</expression>
+                                                            <property name="dataType">string</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">InvoiceTermIsPaid</property>
+                                                            <text-property name="displayName">InvoiceTermIsPaid</text-property>
+                                                            <expression name="expression" type="javascript">if(dataSetRow["InvoiceTermIsPaid"]== 1 ) { String.fromCharCode(10003); }
+else { String.fromCharCode(10065); }</expression>
+                                                            <property name="dataType">string</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <column id="5881">
+                                                        <property name="width">30%</property>
+                                                    </column>
+                                                    <column id="5882">
+                                                        <property name="width">15%</property>
+                                                    </column>
+                                                    <column id="5883">
+                                                        <property name="width">15%</property>
+                                                    </column>
+                                                    <column id="5884">
+                                                        <property name="width">20%</property>
+                                                    </column>
+                                                    <column id="5886">
+                                                        <property name="width">20%</property>
+                                                    </column>
+                                                    <header>
+                                                        <row id="5838">
+                                                            <property name="fontWeight">bold</property>
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <cell id="5839">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <text id="5891">
+                                                                    <property name="fontSize">9pt</property>
+                                                                    <property name="dataSet">TranslateDS</property>
+                                                                    <list-property name="visibility">
+                                                                        <structure>
+                                                                            <property name="format">all</property>
+                                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="paramBindings">
+                                                                        <structure>
+                                                                            <property name="paramName">param_1</property>
+                                                                            <simple-property-list name="expression">
+                                                                                <value type="javascript">'Invoice.invoiceTermName'</value>
+                                                                            </simple-property-list>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="boundDataColumns">
+                                                                        <structure>
+                                                                            <property name="name">key</property>
+                                                                            <text-property name="displayName">key</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                        <structure>
+                                                                            <property name="name">translation</property>
+                                                                            <text-property name="displayName">translation</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <property name="contentType">html</property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                                                </text>
+                                                            </cell>
+                                                            <cell id="5841">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <text id="5892">
+                                                                    <property name="fontSize">9pt</property>
+                                                                    <property name="dataSet">TranslateDS</property>
+                                                                    <list-property name="visibility">
+                                                                        <structure>
+                                                                            <property name="format">all</property>
+                                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="paramBindings">
+                                                                        <structure>
+                                                                            <property name="paramName">param_1</property>
+                                                                            <simple-property-list name="expression">
+                                                                                <value type="javascript">'Invoice.invoiceTermAmount'</value>
+                                                                            </simple-property-list>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="boundDataColumns">
+                                                                        <structure>
+                                                                            <property name="name">key</property>
+                                                                            <text-property name="displayName">key</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                        <structure>
+                                                                            <property name="name">translation</property>
+                                                                            <text-property name="displayName">translation</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <property name="contentType">html</property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                                                </text>
+                                                            </cell>
+                                                            <cell id="5843">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <text id="5893">
+                                                                    <property name="fontSize">9pt</property>
+                                                                    <property name="dataSet">TranslateDS</property>
+                                                                    <list-property name="visibility">
+                                                                        <structure>
+                                                                            <property name="format">all</property>
+                                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="paramBindings">
+                                                                        <structure>
+                                                                            <property name="paramName">param_1</property>
+                                                                            <simple-property-list name="expression">
+                                                                                <value type="javascript">'Invoice.invoiceTermAmountRemaining'</value>
+                                                                            </simple-property-list>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="boundDataColumns">
+                                                                        <structure>
+                                                                            <property name="name">key</property>
+                                                                            <text-property name="displayName">key</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                        <structure>
+                                                                            <property name="name">translation</property>
+                                                                            <text-property name="displayName">translation</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <property name="contentType">html</property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                                                </text>
+                                                            </cell>
+                                                            <cell id="5845">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <text id="5894">
+                                                                    <property name="fontSize">9pt</property>
+                                                                    <property name="dataSet">TranslateDS</property>
+                                                                    <list-property name="visibility">
+                                                                        <structure>
+                                                                            <property name="format">all</property>
+                                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="paramBindings">
+                                                                        <structure>
+                                                                            <property name="paramName">param_1</property>
+                                                                            <simple-property-list name="expression">
+                                                                                <value type="javascript">'Invoice.invoiceTermDueDate'</value>
+                                                                            </simple-property-list>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="boundDataColumns">
+                                                                        <structure>
+                                                                            <property name="name">key</property>
+                                                                            <text-property name="displayName">key</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                        <structure>
+                                                                            <property name="name">translation</property>
+                                                                            <text-property name="displayName">translation</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <property name="contentType">html</property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                                                </text>
+                                                            </cell>
+                                                            <cell id="5849">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <text id="5896">
+                                                                    <property name="fontSize">9pt</property>
+                                                                    <property name="dataSet">TranslateDS</property>
+                                                                    <list-property name="visibility">
+                                                                        <structure>
+                                                                            <property name="format">all</property>
+                                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="paramBindings">
+                                                                        <structure>
+                                                                            <property name="paramName">param_1</property>
+                                                                            <simple-property-list name="expression">
+                                                                                <value type="javascript">'Invoice.invoiceTermPercentage'</value>
+                                                                            </simple-property-list>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <list-property name="boundDataColumns">
+                                                                        <structure>
+                                                                            <property name="name">key</property>
+                                                                            <text-property name="displayName">key</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                        <structure>
+                                                                            <property name="name">translation</property>
+                                                                            <text-property name="displayName">translation</text-property>
+                                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                            <property name="dataType">string</property>
+                                                                        </structure>
+                                                                    </list-property>
+                                                                    <property name="contentType">html</property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                                                </text>
+                                                            </cell>
+                                                        </row>
+                                                    </header>
+                                                    <detail>
+                                                        <row id="5855">
+                                                            <property name="borderBottomStyle">solid</property>
+                                                            <property name="borderBottomWidth">thin</property>
+                                                            <property name="borderLeftStyle">solid</property>
+                                                            <property name="borderLeftWidth">thin</property>
+                                                            <property name="borderRightStyle">solid</property>
+                                                            <property name="borderRightWidth">thin</property>
+                                                            <property name="borderTopStyle">solid</property>
+                                                            <property name="borderTopWidth">thin</property>
+                                                            <property name="textAlign">right</property>
+                                                            <cell id="5856">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <data id="5857">
+                                                                    <property name="textAlign">left</property>
+                                                                    <property name="resultSetColumn">InvoiceTermName</property>
+                                                                </data>
+                                                            </cell>
+                                                            <cell id="5858">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <text id="5940">
+                                                                    <property name="contentType">html</property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["InvoiceTermAmount"]</VALUE-OF>]]></text-property>
+                                                                </text>
+                                                            </cell>
+                                                            <cell id="5860">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <text id="5941">
+                                                                    <property name="contentType">html</property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["InvoiceTermAmountRemaining"]</VALUE-OF>]]></text-property>
+                                                                </text>
+                                                            </cell>
+                                                            <cell id="5862">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <data id="5863">
+                                                                    <property name="resultSetColumn">InvoiceTermDueDate</property>
+                                                                </data>
+                                                            </cell>
+                                                            <cell id="5866">
+                                                                <property name="borderBottomStyle">solid</property>
+                                                                <property name="borderBottomWidth">thin</property>
+                                                                <property name="borderLeftStyle">solid</property>
+                                                                <property name="borderLeftWidth">thin</property>
+                                                                <property name="borderRightStyle">solid</property>
+                                                                <property name="borderRightWidth">thin</property>
+                                                                <property name="borderTopStyle">solid</property>
+                                                                <property name="borderTopWidth">thin</property>
+                                                                <text id="5942">
+                                                                    <property name="contentType">html</property>
+                                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["InvoiceTermPercentage"]</VALUE-OF> %]]></text-property>
+                                                                </text>
+                                                            </cell>
+                                                        </row>
+                                                    </detail>
+                                                </table>
+                                            </cell>
+                                        </row>
+                                    </grid>
+                                </cell>
+                                <cell id="5926"/>
+                            </row>
+                            <row id="5927">
+                                <property name="height">0.609cm</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["operation_type_select"] != 3</expression>
+                                    </structure>
+                                </list-property>
+                                <cell id="5928"/>
+                                <cell id="5929"/>
+                                <cell id="5930"/>
+                                <cell id="5931"/>
+                                <cell id="5932"/>
+                                <cell id="5933"/>
+                                <cell id="5934"/>
+                                <cell id="5935"/>
+                                <cell id="5936"/>
+                            </row>
                             <row id="5084">
                                 <list-property name="visibility">
                                     <structure>
@@ -9191,486 +9688,6 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["termsAndConditions"]</VALUE-OF>]]></text-property>
                     </text>
-                </cell>
-            </row>
-            <row id="5782">
-                <cell id="5783">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <grid id="5899">
-                        <property name="pageBreakBefore">always</property>
-                        <property name="dataSet">InvoiceTermDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">if (row["InvoiceTermCount"] &lt;= 0) { return true; } else { return false;}</expression>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">InvoiceTermName</property>
-                                <text-property name="displayName">InvoiceTermName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["InvoiceTermName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">InvoiceTermCount</property>
-                                <text-property name="displayName">InvoiceTermCount</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["InvoiceTermName"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                        </list-property>
-                        <column id="5900"/>
-                        <row id="5901">
-                            <cell id="5902">
-                                <text id="5890">
-                                    <property name="fontSize">13pt</property>
-                                    <property name="fontWeight">bold</property>
-                                    <property name="color">#606062</property>
-                                    <property name="textUnderline">none</property>
-                                    <property name="borderLeftStyle">none</property>
-                                    <property name="borderRightStyle">none</property>
-                                    <property name="borderTopStyle">none</property>
-                                    <property name="textAlign">center</property>
-                                    <property name="pageBreakBefore">auto</property>
-                                    <property name="dataSet">TranslateDS</property>
-                                    <list-property name="paramBindings">
-                                        <structure>
-                                            <property name="paramName">param_1</property>
-                                            <simple-property-list name="expression">
-                                                <value type="javascript">'Invoice.invoiceTerms'</value>
-                                            </simple-property-list>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="boundDataColumns">
-                                        <structure>
-                                            <property name="name">key</property>
-                                            <text-property name="displayName">key</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">translation</property>
-                                            <text-property name="displayName">translation</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                </text>
-                            </cell>
-                        </row>
-                        <row id="5903">
-                            <cell id="5904">
-                                <table id="5837">
-                                    <property name="pageBreakBefore">auto</property>
-                                    <property name="dataSet">InvoiceTermDS</property>
-                                    <list-property name="boundDataColumns">
-                                        <structure>
-                                            <property name="name">InvoiceTermName</property>
-                                            <text-property name="displayName">InvoiceTermName</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermName"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">InvoiceTermAmount</property>
-                                            <text-property name="displayName">InvoiceTermAmount</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermAmount"]</expression>
-                                            <property name="dataType">decimal</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">InvoiceTermAmountRemaining</property>
-                                            <text-property name="displayName">InvoiceTermAmountRemaining</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermAmountRemaining"]</expression>
-                                            <property name="dataType">decimal</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">InvoiceTermDueDate</property>
-                                            <text-property name="displayName">InvoiceTermDueDate</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermDueDate"]</expression>
-                                            <property name="dataType">date</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">InvoiceTermEstimatedPaymentDate</property>
-                                            <text-property name="displayName">InvoiceTermEstimatedPaymentDate</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermEstimatedPaymentDate"]</expression>
-                                            <property name="dataType">date</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">InvoiceTermPercentage</property>
-                                            <text-property name="displayName">InvoiceTermPercentage</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermPercentage"]</expression>
-                                            <property name="dataType">decimal</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">InvoiceTermIsHoldBack</property>
-                                            <text-property name="displayName">InvoiceTermIsHoldBack</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermIsHoldBack"]</expression>
-                                            <property name="dataType">integer</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">InvoiceTermIsPaid</property>
-                                            <text-property name="displayName">InvoiceTermIsPaid</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["InvoiceTermIsPaid"]</expression>
-                                            <property name="dataType">integer</property>
-                                        </structure>
-                                    </list-property>
-                                    <column id="5881"/>
-                                    <column id="5882"/>
-                                    <column id="5883"/>
-                                    <column id="5884"/>
-                                    <column id="5885"/>
-                                    <column id="5886"/>
-                                    <column id="5887"/>
-                                    <column id="5888"/>
-                                    <header>
-                                        <row id="5838">
-                                            <cell id="5839">
-                                                <text id="5891">
-                                                    <property name="fontSize">9pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.invoiceTermName'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="5841">
-                                                <text id="5892">
-                                                    <property name="fontSize">9pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.invoiceTermAmount'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="5843">
-                                                <text id="5893">
-                                                    <property name="fontSize">9pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.invoiceTermAmountRemaining'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="5845">
-                                                <text id="5894">
-                                                    <property name="fontSize">9pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.invoiceTermDueDate'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="5847">
-                                                <text id="5895">
-                                                    <property name="fontSize">9pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.invoiceTermEstimatedPaymentDate'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="5849">
-                                                <text id="5896">
-                                                    <property name="fontSize">9pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.invoiceTermPercentage'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="5851">
-                                                <text id="5897">
-                                                    <property name="fontSize">9pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.invoiceTermHoldBack'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                                </text>
-                                            </cell>
-                                            <cell id="5853">
-                                                <text id="5898">
-                                                    <property name="fontSize">9pt</property>
-                                                    <property name="dataSet">TranslateDS</property>
-                                                    <list-property name="visibility">
-                                                        <structure>
-                                                            <property name="format">all</property>
-                                                            <expression name="valueExpr" type="javascript">row._outer["bank_address"] == null</expression>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="paramBindings">
-                                                        <structure>
-                                                            <property name="paramName">param_1</property>
-                                                            <simple-property-list name="expression">
-                                                                <value type="javascript">'Invoice.invoiceTermPaid'</value>
-                                                            </simple-property-list>
-                                                        </structure>
-                                                    </list-property>
-                                                    <list-property name="boundDataColumns">
-                                                        <structure>
-                                                            <property name="name">key</property>
-                                                            <text-property name="displayName">key</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                        <structure>
-                                                            <property name="name">translation</property>
-                                                            <text-property name="displayName">translation</text-property>
-                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                        </structure>
-                                                    </list-property>
-                                                    <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                                </text>
-                                            </cell>
-                                        </row>
-                                    </header>
-                                    <detail>
-                                        <row id="5855">
-                                            <cell id="5856">
-                                                <data id="5857">
-                                                    <property name="resultSetColumn">InvoiceTermName</property>
-                                                </data>
-                                            </cell>
-                                            <cell id="5858">
-                                                <data id="5859">
-                                                    <property name="resultSetColumn">InvoiceTermAmount</property>
-                                                </data>
-                                            </cell>
-                                            <cell id="5860">
-                                                <data id="5861">
-                                                    <property name="resultSetColumn">InvoiceTermAmountRemaining</property>
-                                                </data>
-                                            </cell>
-                                            <cell id="5862">
-                                                <data id="5863">
-                                                    <property name="resultSetColumn">InvoiceTermDueDate</property>
-                                                </data>
-                                            </cell>
-                                            <cell id="5864">
-                                                <data id="5865">
-                                                    <property name="resultSetColumn">InvoiceTermEstimatedPaymentDate</property>
-                                                </data>
-                                            </cell>
-                                            <cell id="5866">
-                                                <data id="5867">
-                                                    <property name="resultSetColumn">InvoiceTermPercentage</property>
-                                                </data>
-                                            </cell>
-                                            <cell id="5868">
-                                                <data id="5869">
-                                                    <property name="resultSetColumn">InvoiceTermIsHoldBack</property>
-                                                </data>
-                                            </cell>
-                                            <cell id="5870">
-                                                <data id="5871">
-                                                    <property name="resultSetColumn">InvoiceTermIsPaid</property>
-                                                </data>
-                                            </cell>
-                                        </row>
-                                    </detail>
-                                </table>
-                            </cell>
-                        </row>
-                    </grid>
                 </cell>
             </row>
         </grid>
