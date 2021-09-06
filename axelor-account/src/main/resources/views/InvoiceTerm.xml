@@ -40,7 +40,7 @@
       <separator colSpan="12"/>
       <field name="amount" readonly="true"/>
       <field name="amountRemaining" readonly="true"/>
-      <field name="dueDate" readonlyIf="(invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3 ||
+      <field name="dueDate" readonlyIf="((invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3) ||
        ((invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid)"/>
       <field name="estimatedPaymentDate" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
       <field name="percentage" readonly="true"/>

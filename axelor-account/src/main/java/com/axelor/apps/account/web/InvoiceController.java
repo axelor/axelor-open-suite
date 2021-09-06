@@ -46,6 +46,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -64,7 +65,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -235,8 +235,7 @@ public class InvoiceController {
   public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0
-          || invoice.getPaymentCondition() == null) {
+      if (invoice.getPaymentCondition() == null) {
         return;
       }
       invoice = Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
@@ -253,17 +252,29 @@ public class InvoiceController {
       if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
         return;
       }
-      if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (InvoiceToolService.isPurchase(invoice)) {
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+          if (invoice.getOriginDate() != null)
+            invoice = invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
+        } else if (invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+          invoice =
+              invoiceTermService.setDueDates(
+                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
+        } else return;
 
-        invoice = Beans.get(InvoiceTermService.class).setDueDates(invoice, invoice.getOriginDate());
-
-      } else if (!InvoiceToolService.isPurchase(invoice) && invoice.getInvoiceDate() != null) {
-
-        invoice =
-            Beans.get(InvoiceTermService.class).setDueDates(invoice, invoice.getInvoiceDate());
       } else {
-        return;
+
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+          if (invoice.getInvoiceDate() != null)
+            invoice = invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+        } else if (invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+          invoice =
+              invoiceTermService.setDueDates(
+                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
+        } else return;
       }
+
       response.setValues(invoice);
 
     } catch (Exception e) {
