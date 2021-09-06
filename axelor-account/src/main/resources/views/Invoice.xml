@@ -403,6 +403,9 @@
 				<panel-dashlet name="showSubrogationReleasePanel" action="action-invoice-view-show-subrogation-release" colSpan="12" showIf="partner.factorizedCustomer"/>
 				<field name="partner.factorizedCustomer" hidden="true"/>
 			</panel>
+			<panel name="analyticAccountingPanel" title="Analytic Accounting" showTitle="false">
+				<panel-dashlet action="action-invoice-analytic-lines" colSpan="12"/>
+			</panel>
 			<panel name="advancePaymentPanel" title="Advance payments" showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
 InvoiceSet.length > 0))"
 				   if="__config__.app.getApp('account').getManageAdvancePaymentInvoice()">
@@ -1657,13 +1660,19 @@ InvoiceSet.length > 0))"
 			<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
 		</filter>
 	</search-filters>
-	
+
+	<action-view name="action-invoice-analytic-lines" model="com.axelor.apps.account.db.AnalyticMoveLine" title="Related Analytic Movelines">
+		<view type="grid" name="analytic-move-line-invoice-grid"/>
+		<view type="form" name="analytic-move-line-move-line-form"/>
+		<domain>self.invoiceLine.id IN :invoiceLineListId</domain>
+		<context name="invoiceLineListId" expr="call:com.axelor.apps.account.service.invoice.InvoiceService:getInvoiceLineIds(__self__)"/>
+	</action-view>
+
 	<action-record name="action-record-invoice-set-discount-values" model="com.axelor.apps.account.db.Invoice">
 		<field name="financialDiscount" expr="eval: partner.financialDiscount" if="partner &amp;&amp; partner.financialDiscount"/>
 		<field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate" if="partner &amp;&amp; partner.financialDiscount"/>
 		<field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice" if="partner &amp;&amp; partner.financialDiscount"/>
-		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate"/>
-		
+		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate"/>	
 	</action-record>
 	
 	<action-record name="action-record-invoice-set-financial-discount-informations" model="com.axelor.apps.account.db.Invoice">
