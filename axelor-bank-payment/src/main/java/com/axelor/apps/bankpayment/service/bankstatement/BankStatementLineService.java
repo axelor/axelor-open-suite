@@ -28,13 +28,12 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.report.engine.ReportSettings;
-import java.sql.Date;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class BankStatementLineService {
 
@@ -102,19 +101,19 @@ public class BankStatementLineService {
       fromDate = initalBankStatementLine.getOperationDate();
       toDate = finalBankStatementLine.getOperationDate();
       fileLink =
-              ReportFactory.createReport(
-                      IReport.BANK_STATEMENT_LINES,
-                      "Bank statement lines - " + fromDate + " to " + toDate)
-                  .addParam("InitialLineId", initalBankStatementLine.getId())
-                  .addParam("FinalLineId", finalBankStatementLine.getId())
-                  .addParam("FromDate", Date.valueOf(fromDate))
-                  .addParam("ToDate", Date.valueOf(toDate))
-                  .addParam("BankDetails", bankDetails)
-                  .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                  .addFormat(ReportSettings.FORMAT_PDF)
-                  .generate()
-                  .getFileLink();
-        }
-      return fileLink;
+          ReportFactory.createReport(
+                  IReport.BANK_STATEMENT_LINES,
+                  "Bank statement lines - " + fromDate + " to " + toDate)
+              .addParam("InitialLineId", initalBankStatementLine.getId())
+              .addParam("FinalLineId", finalBankStatementLine.getId())
+              .addParam("FromDate", Date.valueOf(fromDate))
+              .addParam("ToDate", Date.valueOf(toDate))
+              .addParam("BankDetails", bankDetails)
+              .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addFormat(ReportSettings.FORMAT_PDF)
+              .generate()
+              .getFileLink();
+    }
+    return fileLink;
   }
 }

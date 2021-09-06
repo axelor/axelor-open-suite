@@ -678,6 +678,7 @@ public class BankReconciliationService {
   public void unreconcileLine(BankReconciliationLine bankReconciliationLine) {
     bankReconciliationLine.setBankStatementQuery(null);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
+    bankReconciliationLine.getBankStatementLine().setMoveLine(null);
     String query = "self.postedNbr LIKE '%%s%'";
     query = query.replace("%s", bankReconciliationLine.getPostedNbr());
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
