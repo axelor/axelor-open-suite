@@ -68,8 +68,8 @@
         editable="true" onChange="action-group-bankreconciliation-compute-click" x-can-copy="true" orderBy="effectDate"/>
       <button name="autoReconcileBtn" title="Auto reconcile" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3" onClick="action-bank-reconciliation-method-automatic-reconciliation" />
       <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3" onClick="save,action-bank-reconciliation-view-multiple-reconcile-wizard" />
-      <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3" onClick="action-bank-reconciliation-method-unreconcile" />
-      <button name="reconcileBtn" title="Reconcile selected" colSpan="3" onClick="action-bank-reconciliation-method-reconcile-selected" />
+      <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3" onClick="save,action-bank-reconciliation-method-unreconcile" />
+      <button name="reconcileBtn" title="Reconcile selected" colSpan="3" onClick="save,action-bank-reconciliation-method-reconcile-selected" />
       <panel-dashlet name="showUnreconciledMoveLinesPanel" colSpan="12" canSearch="true" action="action-bank-reconciliation-method-show-unreconciled-move-lines" />
     </panel>
     <panel name="mainBalancePanel" colSpan="12" showIf="bankReconciliationLineList.length > 0">

@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -332,23 +333,10 @@ public class BankReconciliationController {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     try {
       String fileLink =
-          ReportFactory.createReport(
-                  IReport.BANK_RECONCILIATION2, "Bank Reconciliation" + "-${date}")
-              .addParam("BankReconciliationId", bankReconciliation.getId())
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam("FooterHeight", 0.00)
-              .addParam("HeaderHeight", 0.00)
-              .addParam(
-                  "Timezone",
-                  bankReconciliation.getCompany() != null
-                      ? bankReconciliation.getCompany().getTimezone()
-                      : null)
-              .addFormat("pdf")
-              .toAttach(bankReconciliation)
-              .generate()
-              .getFileLink();
-
-      response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+          Beans.get(BankReconciliationService.class).printNewBankReconciliation(bankReconciliation);
+      if (StringUtils.notEmpty(fileLink)) {
+        response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

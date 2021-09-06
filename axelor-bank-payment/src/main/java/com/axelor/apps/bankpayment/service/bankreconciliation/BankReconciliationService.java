@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -45,12 +47,15 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
+import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -58,6 +63,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Strings;
@@ -751,5 +757,40 @@ public class BankReconciliationService {
     }
     bankReconciliation.setEndingBalance(endingBalance);
     return bankReconciliation;
+  }
+
+  public String printNewBankReconciliation(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    PrintingSettings printingSettings = bankReconciliation.getCompany().getPrintingSettings();
+    String watermark = null;
+    String fileLink = null;
+    if (Beans.get(AccountConfigRepository.class)
+            .findByCompany(bankReconciliation.getCompany())
+            .getInvoiceWatermark()
+        != null) {
+      watermark =
+          MetaFiles.getPath(
+                  Beans.get(AccountConfigRepository.class)
+                      .findByCompany(bankReconciliation.getCompany())
+                      .getInvoiceWatermark())
+              .toString();
+    }
+    fileLink =
+        ReportFactory.createReport(IReport.BANK_RECONCILIATION2, "Bank Reconciliation" + "-${date}")
+            .addParam("BankReconciliationId", bankReconciliation.getId())
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                bankReconciliation.getCompany() != null
+                    ? bankReconciliation.getCompany().getTimezone()
+                    : null)
+            .addParam("HeaderHeight", printingSettings.getPdfHeaderHeight())
+            .addParam("Watermark", watermark)
+            .addParam("FooterHeight", printingSettings.getPdfFooterHeight())
+            .addFormat("pdf")
+            .toAttach(bankReconciliation)
+            .generate()
+            .getFileLink();
+    return fileLink;
   }
 }
