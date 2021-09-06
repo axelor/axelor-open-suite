@@ -601,7 +601,7 @@ public class BankReconciliationService {
             .getBnkStmtAutoReconcileAmountMargin()
             .divide(BigDecimal.valueOf(100));
     BigDecimal amountMarginLow = BigDecimal.ONE.subtract(amountMargin);
-    BigDecimal amountMarginHigh = BigDecimal.ONE.add(amountMargin);
+    BigDecimal amountMarginHigh = BigDecimal.ONE;
     bankReconciliationLines =
         bankReconciliationLines.stream()
             .filter(line -> line.getMoveLine() == null)
@@ -738,16 +738,15 @@ public class BankReconciliationService {
     BigDecimal endingBalance = BigDecimal.ZERO;
     BigDecimal amount = BigDecimal.ZERO;
     endingBalance = endingBalance.add(bankReconciliation.getStartingBalance());
-    BankStatementLine bankStatementLine;
     for (BankReconciliationLine bankReconciliationLine :
         bankReconciliation.getBankReconciliationLineList()) {
       amount = BigDecimal.ZERO;
-      bankStatementLine = bankReconciliationLine.getBankStatementLine();
-      amount =
-          bankStatementLine
-              .getMoveLine()
-              .getCredit()
-              .subtract(bankStatementLine.getMoveLine().getDebit());
+      if (bankReconciliationLine.getMoveLine() != null)
+        amount =
+            bankReconciliationLine
+                .getMoveLine()
+                .getDebit()
+                .subtract(bankReconciliationLine.getMoveLine().getCredit());
       endingBalance = endingBalance.add(amount);
     }
     bankReconciliation.setEndingBalance(endingBalance);
