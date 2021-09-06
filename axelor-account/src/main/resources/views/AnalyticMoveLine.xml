@@ -33,11 +33,36 @@
         <field name="typeSelect"/>
     </grid>
     
+    <grid name="analytic-move-line-move-line-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
+        <field name="analyticAxis"/>
+        <field name="analyticAccount"/>
+        <field name="percentage"/>
+        <field name="amount"/>
+        <field name="analyticJournal"/>
+    </grid>
+    
+    <grid name="analytic-move-line-invoice-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis,analyticAccount">
+    	<field name="analyticAxis" hidden="true"/>
+        <field name="analyticAccount"/>
+        <field name="percentage"/>
+        <field name="amount" aggregate="sum"/>
+        <field name="analyticJournal"/>
+    </grid>
+    
+    <form name="analytic-move-line-move-line-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onLoad="action-analytic-move-line-attrs-hide-fields" onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
+        <panel name="mainPanel" >
+   	        <field name="analyticJournal"/>
+	        <field name="analyticAxis"/>
+	        <field name="analyticAccount"/>
+	        <field name="percentage"/>
+        </panel>      
+    </form>
+    
     <form name="analytic-move-line-form" title="Analytic Move Line" model="com.axelor.apps.account.db.AnalyticMoveLine"  onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
     	onLoad="action-analytic-move-line-attrs-title-project" width="large">
        <panel name="mainPanel" >
-       		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
-       		<field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+       		<field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid" onChange="action-attrs-domain-journal-move-line-change"/>
+       		<field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-attrs-domain-axis-move-line-change"/>
 	        <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
 	        <field name="date"/>
 	        <field name="percentage" min="0" max="100"/>
@@ -60,8 +85,8 @@
     
     <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onLoad="action-analytic-move-line-attrs-hide-fields" onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
         <panel name="mainPanel" >
-   	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
-	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+   	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form" onChange="action-attrs-domain-journal-move-line-change"/>
+	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-attrs-domain-axis-move-line-change"/>
 	        <field name="analyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"/>
 	        <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
 	        <field name="percentage" colSpan="4" min="0" max="100" onChange="action-analytic-move-line-method-compute-amount"/>
@@ -135,5 +160,18 @@
 	<search-filters name="analytic-move-line-filters" model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move line filters">
     	<field name="project" hidden="true" if="!__config__.app.isApp('business-project')"/>
     </search-filters>
+    
+    <action-attrs name="action-attrs-domain-journal-move-line-change">
+    	<attribute name="domain" for="analyticAxis" expr="eval: &quot;self.company.id = ${analyticJournal.company.id} &quot;" if="analyticJournal &amp;&amp; analyticJournal?.company"/>
+    	<attribute name="domain" for="analyticAxis" expr="eval: null" if="!(analyticJournal &amp;&amp; analyticJournal?.company)"/>
+    </action-attrs>
+    
+    <action-attrs name="action-attrs-domain-axis-move-line-change">
+    	<attribute name="domain" for="analyticJournal" expr="eval: &quot;self.company.id = ${analyticAxis.company.id} &quot;" if="analyticAxis &amp;&amp; analyticAxis?.company"/>
+    	<attribute name="domain" for="analyticJournal" expr="eval: null" if="!(analyticAxis &amp;&amp; analyticAxis?.company)"/>
+    	<attribute name="domain" for="analyticAccount" expr="eval: &quot;self.analyticAxis.id = ${analyticAxis.id} &quot;" if="analyticAxis"/>
+    	<attribute name="readonly" for="analyticAccount" expr="eval: !analyticAxis" if="eval: !analyticAxis"/>
+    	<attribute name="value" for="analyticAccount" expr="eval: null" if="!analyticAxis"/>
+    </action-attrs>
 
 </object-views>

@@ -290,7 +290,7 @@
 	<selection name='account.general.analytic.distribution.type.select'>
 		<option value='1'>Free</option>
 		<option value='2'>Per partner</option>
-		<option value='3'>Per product/family</option>
+		<option value='3'>Per product/family/account</option>
 	</selection>
 	
 	<selection name="invoice.payment.type.select">
@@ -501,7 +501,37 @@
         <option value="2">Cash</option>
         <option value="3">Bill of Exchange</option>
     </selection>
+
+    <selection name="account.config.analytic.axis.order.select">
+    	<option value="1">1</option>
+    	<option value="2">2</option>
+    	<option value="3">3</option>
+    	<option value="4">4</option>
+    	<option value="5">5</option>
+    </selection>
     
+    <selection name="account.general.analytic.axis.type.select">
+    	<option value="1">1</option>
+    	<option value="2">2</option>
+    	<option value="3">3</option>
+    	<option value="4">4</option>
+    	<option value="5">5</option>
+    </selection>
+    
+    <selection name="account.general.analytic.grouping.value.grouping">
+    	<option value="0">0</option>
+    	<option value="1">1</option>
+    	<option value="2">2</option>
+    	<option value="3">3</option>
+    	<option value="4">4</option>
+    	<option value="5">5</option>
+    	<option value="6">6</option>
+    	<option value="7">7</option>
+    	<option value="8">8</option>
+    	<option value="9">9</option>
+    	<option value="10">10</option>
+    </selection>
+
     <selection name="account.financial.discount.discount.base.select">
 	   <option value="0">Tax excluded</option>
 	   <option value="1">Tax included</option>
