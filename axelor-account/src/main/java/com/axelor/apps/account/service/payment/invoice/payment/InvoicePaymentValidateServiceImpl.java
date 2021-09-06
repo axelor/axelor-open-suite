@@ -185,7 +185,9 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                 paymentDate,
                 paymentMode,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                getOriginFromInvoicePayment(invoicePayment),
+                invoicePayment.getDescription());
 
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
@@ -369,8 +371,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             null,
             1,
-            origin,
-            invoicePayment.getDescription()));
+            move.getOrigin(),
+            move.getDescription()));
 
     move.addMoveLineListItem(
         moveLineService.createMoveLine(
@@ -395,8 +397,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             null,
             3,
-            origin,
-            invoicePayment.getDescription()));
+            move.getOrigin(),
+            move.getDescription()));
 
     if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
             == FinancialDiscountRepository.DISCOUNT_BASE_VAT

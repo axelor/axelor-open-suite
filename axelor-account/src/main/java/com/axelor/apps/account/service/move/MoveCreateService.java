@@ -48,7 +48,9 @@ public interface MoveCreateService {
       Partner partner,
       PaymentMode paymentMode,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException;
 
   /**
@@ -72,7 +74,9 @@ public interface MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException;
 
   /**
@@ -101,7 +105,9 @@ public interface MoveCreateService {
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
       boolean ignoreInAccountingOk,
-      boolean autoYearClosureMove)
+      boolean autoYearClosureMove,
+      String origin,
+      String description)
       throws AxelorException;
 
   /**
@@ -125,6 +131,8 @@ public interface MoveCreateService {
       LocalDate date,
       PaymentMode paymentMode,
       int technicalOriginSelect,
-      int functionalOriginSelect)
+      int functionalOriginSelect,
+      String origin,
+      String description)
       throws AxelorException;
 }

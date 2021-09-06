@@ -147,7 +147,6 @@
 	<menuitem name="account-root" title="Accounting" order="-90"
 		if="__config__.app.isApp('account')" icon="fa-calculator"
 		icon-background="#2fa042" />
-
 	<menuitem name="account-root-move" parent="account-root"
 		title="Moves" order="0" />
 
@@ -191,7 +190,6 @@
 		<domain>self.statusSelect = 5</domain>
 		<context name="_isSimulatedMove" expr="true" />
 	</action-view>
-
 	<menuitem name="account-root-move-move-line-simulated" parent="account-root-move"
 		title="Move Lines Simulated" action="account.root.move.move.line.simulated" order="20" if="__repo__(AccountConfig).all().filter('self.company = ?', __user__.activeCompany ? __user__.activeCompany : __repo__(Company).all().fetchOne()).fetchOne()?.isActivateSimulatedMove"/>
 >>>>>>> e6745d1735b21109f9e92b32bebca22c61b941c7
@@ -714,7 +712,7 @@
 		<view type="grid" name="tax-number-grid" />
 		<view type="form" name="tax-number-form" />
 	</action-view>
-	<menuitem name="account-conf-financial-tax" parent="account-conf-financial"
+<menuitem name="account-conf-financial-tax" parent="account-conf-financial"
 		title="Taxes" action="account.conf.financial.tax" />
 	<menuitem name="account-conf-financial-financial-discount" title="Financial Discount" parent="account-conf-financial" action="financial.discount" />
 
@@ -722,7 +720,6 @@
 		<view type="grid" name="financial-discount-grid"/>
 		<view type="form" name="financial-discount-form"/>
 	</action-view>
-
 	<menuitem name="account-conf-analytic" parent="account-conf"
 		title="Analytic" />
 
@@ -976,13 +973,11 @@
 		title="Accounting Details">
 		<view type="dashboard" name="accounting.dashboard.sample" />
 	</action-view>
-
 	<!-- Move template -->
 
 	<menuitem name="move-template-wizard"
 		title="Move From Template" parent="account-root-move"
 		action="move.template.wizard" top="true" order="10" />
-
 	<action-view name="move.template.wizard"
 		title="Move From Template" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="move-template-wizard-form" />
@@ -1010,7 +1005,6 @@
 	<menuitem name="move-template-type"
 		title="Move Template Types" parent="move-template-root"
 		action="move.template.type" top="true" />
-
 	<action-view name="move.template.type"
 		title="Move Template Types"
 		model="com.axelor.apps.account.db.MoveTemplateType">
