@@ -913,6 +913,12 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <text-property name="heading">value_date</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">bank_statement_line_description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">bank_statement_line_description</text-property>
+                    <text-property name="heading">bank_statement_line_description</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">amount</property>
                     <property name="alias">amount</property>
                     <property name="analysis">measure</property>
@@ -1003,11 +1009,16 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">13</property>
+                        <property name="name">bank_statement_line_description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">account_balance</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1020,98 +1031,90 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">code</property>
                     <property name="nativeName">code</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">to_date</property>
                     <property name="nativeName">to_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">reference</property>
                     <property name="nativeName">reference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">type</property>
                     <property name="nativeName">type</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">is_posted</property>
                     <property name="nativeName">is_posted</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">posted_nbr</property>
                     <property name="nativeName">posted_nbr</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">operation_date</property>
                     <property name="nativeName">operation_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">value_date</property>
                     <property name="nativeName">value_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">amount</property>
-                    <property name="nativeName">amount</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                    <property name="name">bank_statement_line_description</property>
+                    <property name="nativeName">bank_statement_line_description</property>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
+                    <property name="name">amount</property>
+                    <property name="nativeName">amount</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">account_balance</property>
                     <property name="nativeName">account_balance</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
@@ -1127,6 +1130,7 @@ bankReconciliationLine.is_posted AS is_posted ,
 bankReconciliationLine.posted_nbr AS posted_nbr ,
 bankStatementLine.operation_date AS operation_date ,
 bankStatementLine.value_date AS value_date , 
+bankStatementLine.description AS bank_statement_line_description , 
 (bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount , 
 (SUM(bankStatementLine.credit) - SUM(bankStatementLine.debit)) AS account_balance
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
@@ -1144,6 +1148,7 @@ bankReconciliationLine.debit ,
 bankReconciliationLine.credit ,
 bankStatementLine.operation_date ,
 bankStatementLine.value_date,
+bankStatementLine.description,
 bankReconciliationLine.is_posted,
 bankReconciliationLine.posted_nbr
 ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), bankReconciliationLine.posted_nbr, bankStatementLine.operation_date ;]]></xml-property>
@@ -1436,7 +1441,7 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
 bankReconciliation.account_balance AS account_balance , 
-moveLine.name AS code ,
+moveLine.description AS code ,
 moveLine.origin_date AS origin_date ,
 moveLine.date_val AS move_date ,
 moveLine.posted_nbr AS posted_nbr ,
@@ -1451,7 +1456,7 @@ moveLine.credit AS credit ,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
-LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON move.journal=bankReconciliation.journal AND moveLine.account=bankReconciliation.cash_account
+LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON moveLine.account=bankReconciliation.cash_account
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
 WHERE bankReconciliation.id = ? AND (moveLine.posted_nbr is null OR moveLine.posted_nbr='' OR bankReconciliationLine.posted_nbr = ANY (regexp_split_to_array(moveLine.posted_nbr, ',')))
 ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
@@ -1820,7 +1825,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF>row._outer["bank_reconciliation_id"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF>row._outer["bank_reconciliation_id"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                     </row>
@@ -2004,7 +2009,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF>row._outer["bank_reconciliation_id"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF>row._outer["bank_reconciliation_id"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                     </row>
@@ -3735,6 +3740,12 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">bank_statement_line_description</property>
+                                            <text-property name="displayName">bank_statement_line_description</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["bank_statement_line_description"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7356">
                                         <property name="width">18%</property>
@@ -3888,11 +3899,9 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
-                                                <data id="7331">
+                                                <data id="7694">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="whiteSpace">nowrap</property>
-                                                    <property name="display">block</property>
-                                                    <property name="resultSetColumn">name</property>
+                                                    <property name="resultSetColumn">bank_statement_line_description</property>
                                                 </data>
                                             </cell>
                                             <cell id="7332">
@@ -6768,6 +6777,12 @@ else {0};</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">bank_statement_line_description</property>
+                                            <text-property name="displayName">bank_statement_line_description</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["bank_statement_line_description"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
                                     </list-property>
                                     <column id="6947">
                                         <property name="width">15%</property>
@@ -6876,7 +6891,7 @@ else {0};</expression>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["posted_nbr"]!=null &amp;&amp; row["is_posted"]</expression>
+                                                    <expression name="valueExpr" type="javascript">row["posted_nbr"]!=null || row["is_posted"]</expression>
                                                 </structure>
                                             </list-property>
                                             <cell id="6921">
@@ -6912,9 +6927,9 @@ else {0};</expression>
                                                 <property name="borderLeftStyle">none</property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
-                                                <data id="6926">
+                                                <data id="7695">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="resultSetColumn">name</property>
+                                                    <property name="resultSetColumn">bank_statement_line_description</property>
                                                 </data>
                                             </cell>
                                             <cell id="6927">
