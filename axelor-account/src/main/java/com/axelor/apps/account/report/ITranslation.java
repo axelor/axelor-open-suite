@@ -104,6 +104,8 @@ public interface ITranslation {
       "Invoice.invoiceTermDueDate"; /*)*/
   public static final String INVOICE_INVOICE_TERM_ESTIMATED_PAYMENT_DATE = /*$$(*/
       "Invoice.invoiceTermEstimatedPaymentDate"; /*)*/
+  public static final String INVOICE_INVOICE_TERMS_FINANCIAL_DISCOUNT =
+      "Invoice.invoiceTermsFinancialDiscount";
   public static final String INVOICE_INVOICE_TERM_PERCENTAGE = /*$$(*/
       "Invoice.invoiceTermPercentage"; /*)*/
   public static final String INVOICE_INVOICE_TERM_HOLD_BACK = /*$$(*/

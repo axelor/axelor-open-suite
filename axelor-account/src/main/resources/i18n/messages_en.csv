@@ -1399,6 +1399,7 @@
 "Invoice.invoiceTermAmountRemaining","Amount remaining",,
 "Invoice.invoiceTermDueDate","Due date",,
 "Invoice.invoiceTermEstimatedPaymentDate","Estimated payment date",,
+"Invoice.invoiceTermsFinancialDiscount"","Financial discount",,
 "Invoice.invoiceTermHoldBack","Holdback",,
 "Invoice.invoiceTermName","Name",,
 "Invoice.invoiceTermPaid","Paid",,
