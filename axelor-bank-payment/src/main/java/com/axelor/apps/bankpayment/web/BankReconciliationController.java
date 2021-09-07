@@ -169,6 +169,8 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       bankReconciliationService.reconciliateAccordingToQueries(
           bankReconciliationRepository.find(bankReconciliation.getId()));
+      bankReconciliationService.computeBalances(
+          bankReconciliationRepository.find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -205,6 +207,8 @@ public class BankReconciliationController {
             }
           }
         }
+        bankReconciliationService.computeBalances(
+            bankReconciliationRepository.find(bankReconciliation.getId()));
         response.setReload(true);
       } else {
         response.setAlert(I18n.get("Can't load while another reconciliation is open"));
@@ -399,6 +403,8 @@ public class BankReconciliationController {
   public void autoAccounting(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+    bankReconciliationService.computeBalances(
+        bankReconciliationRepository.find(bankReconciliation.getId()));
     response.setReload(true);
   }
 
