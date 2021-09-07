@@ -403,4 +403,10 @@ public class MoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkPreconditions(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    Beans.get(MoveService.class).getMoveValidateService().checkPreconditions(move);
+  }
 }
