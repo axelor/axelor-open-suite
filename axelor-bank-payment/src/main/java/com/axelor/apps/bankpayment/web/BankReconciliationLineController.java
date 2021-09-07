@@ -7,6 +7,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -55,5 +56,18 @@ public class BankReconciliationLineController {
     bankReconciliationLineContext =
         bankReconciliationService.setSelected(bankReconciliationLineContext);
     response.setReload(true);
+  }
+
+  public void setMoveLineDomain(ActionRequest request, ActionResponse response) {
+    BankReconciliationLine bankReconciliationLineContext =
+        request.getContext().asType(BankReconciliationLine.class);
+    BankReconciliationService bankReconciliationService =
+        Beans.get(BankReconciliationService.class);
+
+    String domain =
+        bankReconciliationService.getJournalDomain(
+            bankReconciliationLineContext.getBankReconciliation());
+
+    response.setAttr("journal", "domain", domain);
   }
 }

@@ -22,9 +22,9 @@
         <field name="credit" aggregate="sum"/>
         <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
         <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
-        <field name="account" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-account-domain" form-view="account-form" grid-view="account-grid"/>
+        <field name="account" canEdit="false" onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form" grid-view="account-grid"/>
         <field name="partner" canEdit="false" onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"  onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form" grid-view="partner-grid"/>
-   	    <field name="moveLine" width="135" canEdit="false" onChange="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected" onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
+   	    <field name="moveLine" width="135" canEdit="false" onChange="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected" onSelect="action-bank-reconciliation-line-method-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
   	    <field name="isPosted" readonly="true"/>
         <field name="isSelectedBankReconciliation" hidden="true"/>
         <button onClick="action-bank-reconciliation-line-method-set-selected" name="select" title="Select / Unselect" icon="fa-check-circle" />
@@ -91,6 +91,10 @@
    
    <action-method name="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController" method="unreconcileUnselectedReconcileSelected"/>
+   </action-method>
+   
+   <action-method name="action-bank-reconciliation-line-method-move-line-domain">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController" method="setMoveLineDomain"/>
    </action-method>
     
 </object-views>
