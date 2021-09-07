@@ -48,6 +48,7 @@ public class BankReconciliationValidateService {
   protected MoveLineService moveLineService;
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
+  protected BankReconciliationService bankReconciliationService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -56,7 +57,8 @@ public class BankReconciliationValidateService {
       MoveLineRepository moveLineRepository,
       MoveLineService moveLineService,
       BankReconciliationRepository bankReconciliationRepository,
-      BankReconciliationLineService bankReconciliationLineService) {
+      BankReconciliationLineService bankReconciliationLineService,
+      BankReconciliationService bankReconciliationService) {
 
     this.moveService = moveService;
     this.moveRepository = moveRepository;
@@ -64,6 +66,7 @@ public class BankReconciliationValidateService {
     this.moveLineService = moveLineService;
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
+    this.bankReconciliationService = bankReconciliationService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -91,7 +94,7 @@ public class BankReconciliationValidateService {
     bankReconciliation.setValidatedByUser(AuthUtils.getUser());
     bankReconciliation.setValidatedDate(
         Beans.get(AppBaseService.class).getTodayDate(bankReconciliation.getCompany()));
-
+    bankReconciliation = bankReconciliationService.computeEndingBalance(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
   }
 
@@ -170,7 +173,7 @@ public class BankReconciliationValidateService {
 
     moveService.getMoveValidateService().validate(move);
 
-    bankReconciliationLine.setMoveLine(cashMoveLine);
+    bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, cashMoveLine);
 
     bankReconciliationLine.setIsPosted(true);
 
@@ -237,6 +240,10 @@ public class BankReconciliationValidateService {
         if (firstLine) {
           bankReconciliationLine.setDebit(debit);
           bankReconciliationLine.setCredit(credit);
+          bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+          moveLine =
+              bankReconciliationLineService.setMoveLinePostedNbr(
+                  moveLine, bankReconciliationLine.getPostedNbr());
           bankReconciliationLine.setMoveLine(moveLine);
           firstLine = false;
         } else {

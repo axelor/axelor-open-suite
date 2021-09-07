@@ -36,6 +36,8 @@
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5" initParam="true"/>
     <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
     
+    <string name="postedNbr" title="Posted number"/>
+    
     <!-- 	Field not displayed, used during the payment voucher input -->
 	<decimal name="maxAmountToReconcile" title="Max Amount to reconcile" />
 	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment Schedule line"/>
@@ -63,6 +65,8 @@
     
     <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
+    
+    <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
       
     <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
     <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine" ref="com.axelor.apps.account.db.TaxPaymentMoveLine"/>
@@ -106,6 +110,8 @@
 	<many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5" ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
+    <finder-method name="findByAccount" all="true" using="account"/>
+    <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
 
   	<extra-code><![CDATA[
 

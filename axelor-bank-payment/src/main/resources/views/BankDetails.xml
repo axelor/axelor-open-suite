@@ -21,7 +21,7 @@
 		<field name="balance" aggregate="sum" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
 		<button name="showBalanceBtn" icon="fa-search" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" onClick="action-bank-details-view-show-bank-statement-lines"/>
     </grid>
-    
+
     <tree name="bank-details-bank-payment-tree" title="Bank details tree">
 		<column name="company" type="string"/>
 		<column name="bankDetails" type="string"/>
@@ -29,6 +29,7 @@
 		<column name="balanceUpdatedDate" type="date"/>
 		<column name="balance" type="decimal"/>
 		<column name="balanceBtn" type="button"/>
+    <column name="finalBalanceBtn" type="button" />
 
 		<node model="com.axelor.apps.base.db.Company" onClick="action-company-form-view">
 			<field name="name" as="company"/>
@@ -40,6 +41,7 @@
 			<field name="balanceUpdatedDate" as="balanceUpdatedDate"/>
 			<field name="balance" as="balance"/>
 			<button name="balanceBtn" icon="fa-search" onClick="action-bank-details-view-show-bank-statement-lines"/>
+            <button name="finalBalanceBtn" icon="fa-indent" onClick="action-bank-details-view-show-bank-statement-lines-final-balance" />
 		</node>
 	</tree>
 

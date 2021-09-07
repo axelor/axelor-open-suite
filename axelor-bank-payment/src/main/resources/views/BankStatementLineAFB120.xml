@@ -4,7 +4,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="bank-statement-line-afb-120-grid" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="-bankStatement.toDate,bankDetails,-sequence" edit-icon="true">
-	  <hilite color="info" if="lineTypeSelect == 1"/>
+      <toolbar>
+        <button name="printBankStatementLinesBtn" title="Print bank statement lines" onClick="action-view-bankpayment-bank-statement-line-print-wizard" />
+      </toolbar>
+      <hilite color="info" if="lineTypeSelect == 1"/>
 	  <hilite color="primary" if="lineTypeSelect == 3"/>
 	  <hilite color="danger" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &gt;= debit &amp;&amp; amountRemainToReconcile &gt;= credit"/>
 	  <hilite color="warning" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &lt; debit &amp;&amp; amountRemainToReconcile &lt; credit"/>
@@ -63,6 +66,6 @@
 			<field name="commissionExemptionIndexSelect"/>
 			<field name="description" colSpan="12"/>
 		</panel>
-	</form>
-
+	</form>  
+  
 </object-views>

@@ -20,7 +20,11 @@ package com.axelor.apps.bankpayment.service.bankstatement;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
@@ -34,14 +38,20 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class BankStatementService {
 
   protected BankStatementRepository bankStatementRepository;
+  protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
 
   @Inject
-  public BankStatementService(BankStatementRepository bankStatementRepository) {
+  public BankStatementService(
+      BankStatementRepository bankStatementRepository,
+      BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
     this.bankStatementRepository = bankStatementRepository;
+    this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
   }
 
   public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported)
@@ -148,5 +158,35 @@ public class BankStatementService {
     return JPA.em().contains(bankStatement)
         ? bankStatement
         : bankStatementRepository.find(bankStatement.getId());
+  }
+
+  @Transactional
+  public void deleteBankStatementLines(BankStatement bankStatement) {
+    List<BankStatementLineAFB120> bankStatementLines;
+    bankStatementLines =
+        bankStatementLineAFB120Repository
+            .all()
+            .filter("self.bankStatement = :bankStatement")
+            .bind("bankStatement", bankStatement)
+            .fetch();
+    for (BankStatementLineAFB120 bsl : bankStatementLines) {
+      bankStatementLineAFB120Repository.remove(bsl);
+    }
+    bankStatement.setStatusSelect(BankStatementRepository.STATUS_RECEIVED);
+  }
+
+  @Transactional
+  public BankStatement setIsFullyReconciled(BankStatement bankStatement) {
+    List<BankStatementLine> bankStatementLines =
+        Beans.get(BankStatementLineRepository.class).findByBankStatement(bankStatement).fetch();
+    BigDecimal amountToReconcile = BigDecimal.ZERO;
+    for (BankStatementLine bankStatementLine : bankStatementLines) {
+      amountToReconcile = amountToReconcile.add(bankStatementLine.getAmountRemainToReconcile());
+    }
+    if (amountToReconcile.compareTo(BigDecimal.ZERO) == 0) {
+      bankStatement.setIsFullyReconciled(true);
+    }
+
+    return bankStatementRepository.save(bankStatement);
   }
 }
