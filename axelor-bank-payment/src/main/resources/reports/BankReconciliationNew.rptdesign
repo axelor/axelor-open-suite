@@ -1458,7 +1458,7 @@ FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
 LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON moveLine.account=bankReconciliation.cash_account
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
-WHERE bankReconciliation.id = ? AND (moveLine.posted_nbr is null OR moveLine.posted_nbr='' OR bankReconciliationLine.posted_nbr = ANY (regexp_split_to_array(moveLine.posted_nbr, ',')))
+WHERE bankReconciliation.id = ? AND (((moveLine.posted_nbr is null OR moveLine.posted_nbr='') AND (moveLine.date_val >= bankReconciliation.from_date AND moveLine.date_val <= bankReconciliation.to_date)) OR bankReconciliationLine.posted_nbr = ANY (regexp_split_to_array(moveLine.posted_nbr, ',')))
 ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -4109,13 +4109,13 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                         </structure>
                                         <structure>
                                             <property name="name">debitMovesReconciledLineBalance</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">creditMovesReconciledLineBalance</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
@@ -4412,10 +4412,10 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <list-property name="arguments">
                                                 <structure>
                                                     <property name="name">Expression</property>
-                                                    <expression name="value" type="javascript">row["debit"]</expression>
+                                                    <expression name="value" type="javascript">dataSetRow["debit"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <expression name="filterExpr" type="javascript">row["is_posted"]</expression>
+                                            <expression name="filterExpr" type="javascript">dataSetRow["posted_nbr"] != null || dataSetRow["is_posted"] == true</expression>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
@@ -4425,10 +4425,10 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <list-property name="arguments">
                                                 <structure>
                                                     <property name="name">Expression</property>
-                                                    <expression name="value" type="javascript">row["credit"]</expression>
+                                                    <expression name="value" type="javascript">dataSetRow["credit"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <expression name="filterExpr" type="javascript">row["is_posted"]</expression>
+                                            <expression name="filterExpr" type="javascript">dataSetRow["posted_nbr"] != null || dataSetRow["is_posted"] == true</expression>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
@@ -4919,13 +4919,13 @@ else {0};</expression>
                                         </structure>
                                         <structure>
                                             <property name="name">debit_move_general</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_debit"] + row["debit_move_balance"]:row["sum_move_debit"] + row["debit_move_balance"]</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_debit"] + row["debit_move_balance"]:row["sum_move_debit"] + row["debit_move_balance"]</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">credit_move_general</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
@@ -7120,13 +7120,13 @@ else {0};</expression>
                                         </structure>
                                         <structure>
                                             <property name="name">debitMovesReconciledLineBalance</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">creditMovesReconciledLineBalance</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
@@ -7402,10 +7402,10 @@ else {0};</expression>
                                             <list-property name="arguments">
                                                 <structure>
                                                     <property name="name">Expression</property>
-                                                    <expression name="value" type="javascript">row["debit"]</expression>
+                                                    <expression name="value" type="javascript">dataSetRow["debit"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <expression name="filterExpr" type="javascript">!row["is_posted"]</expression>
+                                            <expression name="filterExpr" type="javascript">dataSetRow["is_posted"] == false &amp;&amp; dataSetRow["posted_nbr"] == null</expression>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
@@ -7415,9 +7415,10 @@ else {0};</expression>
                                             <list-property name="arguments">
                                                 <structure>
                                                     <property name="name">Expression</property>
-                                                    <expression name="value" type="javascript">row["credit"]</expression>
+                                                    <expression name="value" type="javascript">dataSetRow["credit"]</expression>
                                                 </structure>
                                             </list-property>
+                                            <expression name="filterExpr" type="javascript">dataSetRow["is_posted"] == false &amp;&amp; dataSetRow["posted_nbr"] == null</expression>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
@@ -7889,13 +7890,13 @@ else {0};</expression>
                                         </structure>
                                         <structure>
                                             <property name="name">debit_move_general</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_debit"] + row["debit_move_balance"]:row["sum_move_debit"] + row["debit_move_balance"]</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_debit"] + row["debit_move_balance"]:row["sum_move_debit"] + row["debit_move_balance"]</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">credit_move_general</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>

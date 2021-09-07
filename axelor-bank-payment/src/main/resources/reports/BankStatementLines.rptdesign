@@ -749,7 +749,7 @@ on Account.company = Company.id
 left join base_printing_settings as PrintingSettings 
 on Company.printing_settings = PrintingSettings.id
 where BankStatementLine.id = ? or BankStatementLine.id = ? or (BankStatementLine.operation_date >= ? and BankStatementLine.operation_date <= ? and BankStatementLine.bank_details = ?)
-order by BankStatementLine.sequence, BankStatementLine.line_type_select, BankStatementLine.operation_date]]></xml-property>
+order by BankStatementLine.operation_date, BankStatementLine.sequence]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
             <property name="nullsOrdering">nulls lowest</property>

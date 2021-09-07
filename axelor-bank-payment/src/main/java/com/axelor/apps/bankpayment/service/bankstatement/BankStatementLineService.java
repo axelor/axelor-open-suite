@@ -108,7 +108,7 @@ public class BankStatementLineService {
               .addParam("FinalLineId", finalBankStatementLine.getId())
               .addParam("FromDate", Date.valueOf(fromDate))
               .addParam("ToDate", Date.valueOf(toDate))
-              .addParam("BankDetails", bankDetails)
+              .addParam("BankDetails", bankDetails.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addFormat(ReportSettings.FORMAT_PDF)
               .generate()
