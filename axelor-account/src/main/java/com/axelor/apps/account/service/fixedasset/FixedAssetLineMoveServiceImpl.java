@@ -100,10 +100,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
-        fixedAsset.getReference(),
+        origin,
         company.getName(),
         journal.getCode());
 
@@ -117,12 +118,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<>();
 
-      String origin = fixedAsset.getReference();
       Account debitLineAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account creditLineAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       BigDecimal amount = fixedAssetLine.getDepreciation();
@@ -184,6 +186,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     // Creating move
     Move move =
@@ -195,12 +198,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
-      String origin = fixedAsset.getReference();
       Account chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       Account purchaseAccount = fixedAsset.getPurchaseAccount();

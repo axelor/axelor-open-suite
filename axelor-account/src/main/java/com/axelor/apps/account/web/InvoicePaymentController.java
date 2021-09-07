@@ -19,9 +19,11 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -42,6 +44,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -54,8 +57,11 @@ public class InvoicePaymentController {
 
     invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
     try {
+      Move move = invoicePayment.getMove();
       Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
-      Beans.get(MoveCustAccountService.class).updateCustomerAccount(invoicePayment.getMove());
+      if (ObjectUtils.notEmpty(move)) {
+        Beans.get(MoveCustAccountService.class).updateCustomerAccount(move);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -185,6 +191,50 @@ public class InvoicePaymentController {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
       Beans.get(InvoicePaymentToolService.class).checkConditionBeforeSave(invoicePayment);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void computeDatasForFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      Long invoiceId =
+          Long.valueOf(
+              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+      if (invoiceId > 0) {
+        Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+        InvoiceService invoiceService = Beans.get(InvoiceService.class);
+        Boolean applyDiscount = invoiceService.applyFinancialDiscount(invoice);
+        invoicePayment =
+            invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, applyDiscount);
+
+        invoicePayment.setApplyFinancialDiscount(applyDiscount);
+
+        response.setValues(invoicePayment);
+        response.setAttr("amount", "title", invoiceService.setAmountTitle(applyDiscount));
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void changeAmount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      Long invoiceId =
+          Long.valueOf(
+              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+      if (invoiceId > 0) {
+        Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+        InvoiceService invoiceService = Beans.get(InvoiceService.class);
+
+        invoicePayment = invoiceService.changeAmount(invoicePayment, invoice);
+
+        response.setValues(invoicePayment);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -214,7 +214,9 @@ public class PaymentVoucherConfirmService {
                   paymentDate,
                   paymentMode,
                   MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                  paymentVoucher.getRef(),
+                  null);
 
       move.setPaymentVoucher(paymentVoucher);
       move.setTradingName(paymentVoucher.getTradingName());
@@ -267,7 +269,6 @@ public class PaymentVoucherConfirmService {
                 moveLineNo++,
                 paymentVoucher.getRef(),
                 null);
-
         Reconcile reconcile =
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);

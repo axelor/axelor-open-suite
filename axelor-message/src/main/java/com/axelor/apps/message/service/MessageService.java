@@ -167,4 +167,6 @@ public interface MessageService {
   Message regenerateMessage(Message message) throws Exception;
 
   public String getFullEmailAddress(EmailAddress emailAddress);
+
+  public void addMessageRelatedTo(Message message, String relatedToSelect, Long relatedToSelectId);
 }

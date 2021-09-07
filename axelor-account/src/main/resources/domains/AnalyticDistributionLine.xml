@@ -11,9 +11,9 @@
 	
 	<many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis" title="Axis"/>
 	<many-to-one name="analyticAccount" ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Acc."/>
-    <decimal name="percentage" title="%"/>
+    <decimal name="percentage" title="%" default="100"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal" required="true"/>
-    
+
   </entity>
 
 </domain-models>

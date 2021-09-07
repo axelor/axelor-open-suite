@@ -148,7 +148,9 @@ public class NotificationServiceImpl implements NotificationService {
                 notification.getPaymentDate(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                invoice.getInvoiceId());
     MoveLine creditMoveLine, debitMoveLine;
 
     Account account = getAccount(accountConfig, notificationItem);

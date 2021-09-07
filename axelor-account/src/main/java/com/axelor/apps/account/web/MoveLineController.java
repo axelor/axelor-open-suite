@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -29,6 +32,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
@@ -46,6 +50,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class MoveLineController {
@@ -69,6 +74,18 @@ public class MoveLineController {
         moveLine = moveLineService.computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void balanceCreditDebit(ActionRequest request, ActionResponse response) {
+
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = request.getContext().getParent().asType(Move.class);
+    try {
+      moveLine = Beans.get(MoveLineService.class).balanceCreditDebit(moveLine, move);
+      response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -235,8 +252,11 @@ public class MoveLineController {
         Currency currency = move.getCurrency();
         Currency companyCurrency = move.getCompanyCurrency();
         if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-          currencyRate =
-              Beans.get(CurrencyService.class).getCurrencyConversionRate(currency, companyCurrency);
+          if (move.getMoveLineList().size() == 0)
+            currencyRate =
+                Beans.get(CurrencyService.class)
+                    .getCurrencyConversionRate(currency, companyCurrency);
+          else currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
         }
       }
       response.setValue("currencyRate", currencyRate);
@@ -268,5 +288,154 @@ public class MoveLineController {
     moveLine = moveLineService.setIsSelectedBankReconciliation(moveLine);
     response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
     response.setReload(true);
+}
+  public void loadAccountInformation(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    if (parentContext != null) {
+      Move move = parentContext.asType(Move.class);
+      Partner partner = move.getPartner();
+
+      if (ObjectUtils.isEmpty(partner)) {
+        response.setError(I18n.get("Please select a partner"));
+      } else {
+        Account accountingAccount =
+            Beans.get(MoveService.class).getAccountingAccountFromAccountConfig(move);
+
+        if (accountingAccount != null) {
+          response.setValue("account", accountingAccount);
+          if (!accountingAccount.getUseForPartnerBalance()) {
+            response.setValue("partner", null);
+          }
+        }
+
+        TaxLine taxLine =
+            Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
+        if (taxLine != null) response.setValue("taxLine", taxLine);
+        else response.setValue("taxLine", null);
+      }
+    }
+  }
+
+  public void refreshAccountInformation(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    if (parentContext != null) {
+      Move move = parentContext.asType(Move.class);
+      Account accountingAccount = moveLine.getAccount();
+      if (accountingAccount != null) {
+        if (!accountingAccount.getUseForPartnerBalance()) {
+          response.setValue("partner", null);
+        }
+      }
+
+      TaxLine taxLine = Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
+      if (taxLine != null) response.setValue("taxLine", taxLine);
+      else response.setValue("taxLine", null);
+    }
+  }
+
+  public void setIsOtherCurrency(ActionRequest request, ActionResponse response) {
+    Context parent = request.getContext().getParent();
+    Move move = parent.asType(Move.class);
+    response.setValue("isOtherCurrency", !move.getCurrency().equals(move.getCompanyCurrency()));
+  }
+
+  public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
+    boolean readonly = false;
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) readonly = true;
+    if (moveLine.getAccount() != null) {
+      if (moveLine.getAccount().getUseForPartnerBalance()) readonly = true;
+    }
+    response.setAttr("partner", "readonly", readonly);
+  }
+
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = request.getContext().getParent().asType(Move.class);
+      if (move != null) {
+        moveLine.setMove(request.getContext().getParent().asType(Move.class));
+      }
+      moveLine = Beans.get(MoveLineService.class).analyzeMoveLine(moveLine);
+      response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAxisDomains(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine.setMove(request.getContext().getParent().asType(Move.class));
+
+      List<Long> analyticAccountList = new ArrayList<Long>();
+
+      for (int i = 1; i <= 5; i++) {
+        if (Beans.get(MoveLineService.class).compareNbrOfAnalyticAxisSelect(i, moveLine)) {
+          analyticAccountList = Beans.get(MoveLineService.class).setAxisDomains(moveLine, i);
+          if (ObjectUtils.isEmpty(analyticAccountList)) {
+            response.setAttr("axis" + i + "AnalyticAccount", "domain", "self.id IN (0)");
+          } else {
+            String idList =
+                analyticAccountList.stream()
+                    .map(id -> id.toString())
+                    .collect(Collectors.joining(","));
+            response.setAttr(
+                "axis" + i + "AnalyticAccount", "domain", "self.id IN (" + idList + ")");
+          }
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      if (moveLine != null
+          && moveLine.getAccount() != null
+          && moveLine.getAccount().getCompany() != null) {
+        Integer nbrAxis =
+            Beans.get(AccountConfigRepository.class)
+                .findByCompany(moveLine.getAccount().getCompany())
+                .getNbrOfAnalyticAxisSelect();
+
+        for (int i = 1; i <= 5; i++) {
+          response.setAttr(
+              "axis" + i + "AnalyticAccount",
+              "required",
+              moveLine.getAccount() != null
+                  && moveLine.getAccount().getAnalyticDistributionAuthorized()
+                  && moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines()
+                  && moveLine.getAnalyticDistributionTemplate() == null
+                  && (i <= nbrAxis));
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine = Beans.get(MoveLineService.class).selectDefaultDistributionTemplate(moveLine);
+      response.setValue("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+      response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -104,7 +104,9 @@ public class MoveValidateService {
       }
 
       if (moveLine.getOriginDate() == null) {
-        moveLine.setOriginDate(date);
+        if (ObjectUtils.notEmpty(move.getOriginDate()))
+          moveLine.setOriginDate(move.getOriginDate());
+        else moveLine.setOriginDate(date);
       }
 
       if (partner != null) {
@@ -357,6 +359,9 @@ public class MoveValidateService {
       moveLine.setAccountId(account.getId());
       moveLine.setAccountCode(account.getCode());
       moveLine.setAccountName(account.getName());
+      moveLine.setServiceType(account.getServiceType());
+      moveLine.setServiceTypeCode(
+          account.getServiceType() != null ? account.getServiceType().getCode() : null);
 
       Partner partner = moveLine.getPartner();
 
@@ -364,6 +369,9 @@ public class MoveValidateService {
         moveLine.setPartnerId(partner.getId());
         moveLine.setPartnerFullName(partner.getFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
+        moveLine.setDas2Activity(partner.getDas2Activity());
+        moveLine.setDas2ActivityName(
+            partner.getDas2Activity() != null ? partner.getDas2Activity().getName() : null);
       }
       if (moveLine.getTaxLine() != null) {
         moveLine.setTaxRate(moveLine.getTaxLine().getValue());
@@ -389,6 +397,18 @@ public class MoveValidateService {
       JPA.clear();
     }
     return error;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void simulateMultiple(List<? extends Move> moveList) throws AxelorException {
+    if (moveList == null) {
+      return;
+    }
+
+    for (Move move : moveList) {
+      move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+      moveRepository.save(move);
+    }
   }
 
   public void validateMultiple(Query<Move> moveListQuery) throws AxelorException {

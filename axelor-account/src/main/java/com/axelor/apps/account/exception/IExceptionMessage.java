@@ -38,9 +38,13 @@ public interface IExceptionMessage {
   static final String NO_MOVES_SELECTED = /*$$(*/
       "Please select 'Draft' or 'Simulated' moves" /*)*/;
 
+  static final String NO_NEW_MOVES_SELECTED = /*$$(*/
+      "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
+
   static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
       "Error in move validation, please check the log" /*)*/;
   static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+  static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
   static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
@@ -147,16 +151,74 @@ public interface IExceptionMessage {
 
   static final String ACCOUNTING_REPORT_2 = /*$$(*/
       "%s : Error : You must configure an account export sequence for the company %s" /*)*/;
-  static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/;
+  static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Lines recovered" /*)*/;
   static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/;
   static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/;
   static final String ACCOUNTING_REPORT_7 = /*$$(*/
       "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
+  static final String ACCOUNTING_REPORT_8 = /*$$(*/ "Accounting export" /*)*/;
   static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
   static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/ "No report type selected" /*)*/;
   static final String ACCOUNTING_REPORT_ANALYTIC_REPORT = /*$$(*/
       "%s : Error : You must configure an analytic report sequence for the company %s" /*)*/;
+  static final String ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND = /*$$(*/
+      "Report type not found" /*)*/;
+  static final String ACCOUNTING_REPORT_ANOMALIES = /*$$(*/ "Anomalies generated" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER = /*$$(*/
+      "Company partner is missing" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS = /*$$(*/
+      "Company partner main address is missing" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7 = /*$$(*/
+      "Country is missing in company partner main address" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE = /*$$(*/
+      "Country alpha2code is missing in company partner main address" /*)*/;
+
+  static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY = /*$$(*/
+      "City is missing in company partner main address" /*)*/;
+
+  static final String ACCOUNTING_REPORT_DAS2_ACTIVE_NORM = /*$$(*/
+      "DAS2 active norm is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_MISSING = /*$$(*/
+      "DAS2 contact partner is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING = /*$$(*/
+      "DAS2 contact partner : first name is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING = /*$$(*/
+      "DAS2 contact partner : title is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING = /*$$(*/
+      "DAS2 contact partner : email is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_PHONE_MISSING = /*$$(*/
+      "DAS2 contact partner : phone is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE = /*$$(*/
+      "DAS2 contact partner : title must be of type M. or MS." /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_REGISTRATION_CODE = /*$$(*/
+      "DAS2 declarant company %s : Registration code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF = /*$$(*/
+      "DAS2 declarant company %s : Activity code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS = /*$$(*/
+      "DAS2 declarant company %s : Address is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_MOVE_LINE_PARTNER_MISSING = /*$$(*/
+      "Partner is missing on the move %s" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING = /*$$(*/
+      "DAS2 declared partner %s %s : title is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE = /*$$(*/
+      "DAS2 declared partner %s %s : title must be of type M. or MS." /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE = /*$$(*/
+      "DAS2 declared partner %s %s : Registration code is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS = /*$$(*/
+      "DAS2 declared partner %s %s : address is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY = /*$$(*/
+      "DAS2 declared partner %s %s : address city is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY_ZIP = /*$$(*/
+      "DAS2 declared partner %s %s : address city zip is missing" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE = /*$$(*/
+      "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual" /*)*/;
+  static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING = /*$$(*/
+      "DAS2 declared partner %s %s : first name is missing" /*)*/;
 
   /** Move line service */
   static final String MOVE_LINE_1 = /*$$(*/ "Partner is missing on the invoice %s" /*)*/;

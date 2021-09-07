@@ -31,11 +31,12 @@
             <bind node="menuBackground" to="menuBackground" />
             <bind node="menuOrder" to="menuOrder" />
             <bind node="menuTop" to="menuTop" />
-            <bind node="menuBuilder" to="menuBuilder" search="self.name = :menuBuilderName" update="true" if="isGenerateMenu != null &amp;&amp; isGenerateMenu == 'true'">
+            <bind node="menuBuilder" to="menuBuilder" search="self.xmlId = :xmlId">
             	<bind node="@name" to="name" alias="menuBuilderName"/>
             	<bind node="@title" to="title"/>
+            	<bind node="@xmlId" to="xmlId" />
             </bind>
-            <bind node="menuParent" to="menuParent" search="self.id = :menuParent" create="false"  />
+            <bind node="menuParent" to="menuParent" search="self.xmlId = :menuParent" create="false"  />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"  />
  		</bind>
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel != null &amp;&amp; !jsonModel.empty"
@@ -153,23 +154,6 @@
  			<bind node="name" to="name"/>
  		</bind>
  		
- 		<bind node="selections/selection" type="com.axelor.meta.db.MetaSelect" search="self.name = :name AND self.isCustom = true" update="true">
- 			<bind node="name" to="name"/>
- 			<bind node="module" to="module"/>
- 			<bind node="priority" to="priority"/>
- 			<bind node="items/option" to="items" search="self.title = :title AND self.value = :value">
- 				<bind node="title" to="title"/>
- 				<bind node="value" to="value"/>
- 				<bind node="icon" to="icon"/>
- 				<bind node="data" to="data"/>
- 				<bind node="order" to="order"/>
- 				<bind node="hidden" to="hidden"/>
- 				<bind node="select" to="select" search="self.name = :select" create="false"/>
- 			</bind>
- 			<bind node="isCustom" to="isCustom"/>
- 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false" />
- 		</bind>
- 		
 		<bind node="chartBuilders/chartBuilder" type="com.axelor.studio.db.ChartBuilder" search="self.name = :name" call="com.axelor.studio.service.ImportService:importChartBuilder" update="true">
 			<bind node="name" to="name" />
 			<bind node="title" to="title" />
@@ -192,7 +176,7 @@
 			<bind node="displayField" to="displayField" search="self.name = :displayField and self.metaModel.fullName = :_model"  create="false"/>
 			<bind node="displayFieldJson" to="displayFieldJson" search="self.name = :displayFieldJson and self.jsonModel.name = :_model" create="false" />
 			<bind node="displayType" to="displayType" />
-			<bind node="filters/filter" to="filterList">
+			<bind node="filters/filter" to="filterList" search="self.chartBuilder.name = :name and (self.metaField is not null and self.metaField.name = :metaField OR self.metaJsonField is not null and self.metaJsonField.name = :metaJsonField)">
 				<bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.fullName = :_model" create="false" />
 				<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :_model" create="false" />
 				<bind node="operator" to="operator" />
@@ -241,8 +225,9 @@
 	
 	<input file="bpm.xml" root="bpm" >
 	
-		<bind node="actionBuilders/actionBuilder" type="com.axelor.studio.db.ActionBuilder" search="self.name = :name" call="com.axelor.studio.service.ImportService:importActionBuilder" update="true">
-			<bind node="name" to="name" />
+		<bind node="actionBuilders/actionBuilder" type="com.axelor.studio.db.ActionBuilder" search="self.xmlId = :xmlId" call="com.axelor.studio.service.ImportService:importActionBuilder" update="true">
+			<bind node="name" to="name" alias="_actionBuilder" />
+			<bind node="xmlId" to="xmlId" />
 			<bind node="typeSelect" to="typeSelect" alias="_type" />
 			<bind node="model" to="model" alias="_model"/>
 			<bind node="targetModel" to="targetModel" alias="_targetModel" />
@@ -250,8 +235,8 @@
 			<bind node="transactional" to="transactional" />
 			<bind node="scriptType" to="scriptType" />
 			<bind node="scriptText" to="scriptText" />
-			<bind node="emailTemplate" to="emailTemplate" search="self.name = :name AND (self.metaModel.name = :metaModel OR self.metaJsonModel.name = :metaJsonModel)" update="true" if="_type == '4'">
-				<bind node="name" to="name"/>
+			<bind node="emailTemplate" to="emailTemplate" search="self.name = :_emailTemplate AND (self.metaModel.name = :metaModel OR self.metaJsonModel.name = :metaJsonModel)" update="true" if="_type == '4'">
+				<bind node="name" to="name" alias="_emailTemplate"/>
 				<bind node="mediaTypeSelect" to="mediaTypeSelect"/>
 				<bind node="language" to="language" search="self.code = :language" create="false"/>
 				<bind node="metaModel" to="metaModel" search="self.name = :metaModel" create="false"/>
@@ -261,8 +246,8 @@
 				<bind node="bccRecipients" to="bccRecipients"/>
 				<bind node="subject" to="subject"/>
 				<bind node="content" to="content"/>
-				<bind node="templateContextList/templateContextLine" to="templateContextList">
-					<bind node="name" to="name"/>
+				<bind node="templateContextList/templateContextLine" to="templateContextList" search="self.template.name = :_emailTemplate and self.name = :_templateContext">
+                    <bind node="name" to="name" alias="_templateContext"/>
 					<bind node="value" to="value"/>
 				</bind>
 				<bind node="target" to="target"/>
@@ -274,19 +259,19 @@
 					<bind node="text()" to="name" alias="birtTemplateName"/>
 				</bind>
 			</bind>
-			<bind node="actionBuilderViews/view" to="actionBuilderViews">
+			<bind node="actionBuilderViews/view" to="actionBuilderViews" search="self.viewType = :viewType and self.actionBuilder.xmlId = :xmlId">
 				<bind node="viewType" to="viewType" />
 				<bind node="viewName" to="viewName" />
 				<bind node="sequence" to="sequence" />
 			</bind>
 			<bind node="isJson" to="isJson" alias="_isJson" />
 			<bind node="domainCondition" to="domainCondition" />
-			<bind node="viewParams/line" to="viewParams">
+			<bind node="viewParams/line" to="viewParams" search="self.actionBuilder.xmlId = :xmlId and self.name = :name">
 				<bind node="name" to="name"/>
 				<bind node="value" to="value"/>
 			</bind>
 			<bind node="menuAction" to="menuAction"/>
-			<bind node="lines/line" to="lines">
+			<bind node="lines/line" to="lines" search="self.actionBuilder.xmlId = :xmlId and self.name = :_lineName">
 				<bind node="target" alias="target" />
 				<bind node="source" alias="source" />
 				<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :target" create="false"/>
@@ -298,9 +283,9 @@
 				<bind node="filter" to="filter"/>
 				<bind node="validationTypeSelect" to="validationTypeSelect"/>
 				<bind node="validationMsg" to="validationMsg"/>
-				<bind node="name" to="name"/>
+				<bind node="name" to="name" alias="_lineName"/>
 				<bind node="dummy" to="dummy"/>
-				<bind node="subLines/line" to="subLines">
+				<bind node="subLines/line" to="subLines" search="self.parent.actionBuilder.xmlId = :xmlId and self.parent.name = :_lineName and self.name = :_subLineName">
 					<bind node="target" alias="target" />
 					<bind node="source" alias="source" />
 					<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :target" create="false"/>
@@ -312,9 +297,9 @@
 					<bind node="filter" to="filter"/>
 					<bind node="validationTypeSelect" to="validationTypeSelect"/>
 					<bind node="validationMsg" to="validationMsg"/>
-					<bind node="name" to="name"/>
+					<bind node="name" to="name" alias="_subLineName"/>
 					<bind node="dummy" to="dummy"/>
-					<bind node="subLines/line" to="subLines">
+					<bind node="subLines/line" to="subLines" search="self.parent.parent.actionBuilder.xmlId = :xmlId and self.parent.parent.name = :_lineName and self.parent.name = :_subLineName and self.name = :_subSubLineName">
 						<bind node="target" alias="target" />
 						<bind node="source" alias="source" />
 						<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :target" create="false"/>
@@ -326,7 +311,7 @@
 						<bind node="filter" to="filter"/>
 						<bind node="validationTypeSelect" to="validationTypeSelect"/>
 						<bind node="validationMsg" to="validationMsg"/>
-						<bind node="name" to="name"/>
+						<bind node="name" to="name" alias="_subSubLineName"/>
 						<bind node="dummy" to="dummy"/>
 					</bind>
 				</bind>
@@ -347,8 +332,9 @@
 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
 		</bind>
 
-		<bind node="menuBuilders/menuBuilder" type="com.axelor.studio.db.MenuBuilder" search="self.name = :name" call="com.axelor.studio.service.ImportService:importMenuBuilder"  update="true">
+		<bind node="menuBuilders/menuBuilder" type="com.axelor.studio.db.MenuBuilder" search="self.xmlId = :xmlId" call="com.axelor.studio.service.ImportService:importMenuBuilder"  update="true">
 			<bind node="name" to="name" />
+			<bind node="xmlId" to="xmlId" />
 			<bind node="title" to="title" />
 			<bind node="icon" to="icon" />
 			<bind node="iconBackground" to="iconBackground" />

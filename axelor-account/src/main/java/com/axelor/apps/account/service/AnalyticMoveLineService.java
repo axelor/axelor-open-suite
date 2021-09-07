@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,7 +39,7 @@ public interface AnalyticMoveLineService {
       LocalDate date);
 
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company);
+      Partner partner, Product product, Company company) throws AxelorException;
 
   public void updateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);

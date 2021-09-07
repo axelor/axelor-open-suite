@@ -49,6 +49,7 @@
             <field name="setToIrrecoverableOk" widget="boolean-switch" colSpan="3" />
             <field name="deceasedPartnerOk" widget="boolean-switch" colSpan="3" />
             <field name="unknownAddressOk" widget="boolean-switch" colSpan="3" />
+            <field name="respiteDateBeforeAccountBlocking" colSpan="3" />
         </panel>
         <panel-tabs>
             <panel-related name="debtRecoveryHistoryListPanel" field="debtRecoveryHistoryList" grid-view="debt-recovery-history-grid"

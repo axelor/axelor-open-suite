@@ -49,6 +49,9 @@
         <boolean name="defTimingOfImplementationFormula" title="Define with a script"/>
         
         <string name="useCondition" title="Condition" large="true"/>
+        
+        <one-to-many name="configuratorProdProductList" title="Products to consume" mappedBy="configuratorProdProcessLine"
+					 ref="com.axelor.apps.production.db.ConfiguratorProdProduct"/>
     </entity>
 
 </domain-models>

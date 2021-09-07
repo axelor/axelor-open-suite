@@ -120,6 +120,7 @@
 	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" search="self.importId = :importId"/>
 	
 	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId">
+		<bind to="appBase" column="appBase" search="self.app.code = :appBase" update="true"/>
 	    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" column="fromDate"/>
 		<bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)" column="toDate" />
 	</input>	    
@@ -179,7 +180,7 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.code = :code" update="true" >
+	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.app.code = :code" update="true" >
 		<bind to="defaultPartnerLanguage" search="self.code = :defaultPartnerLanguageCode"/>
 		<bind to="companySpecificProductFieldsSet" column="companySpecificFieldName" search="self.name IN :companySpecificFieldName AND self.metaModel.name = 'Product'" eval="companySpecificFieldName.split('\\|') as List"/>
 	</input>
@@ -228,8 +229,8 @@
 	</input>
 	
 	<input file="base_mailBatch.csv" separator=";" type="com.axelor.apps.base.db.MailBatch" search="self.code = :code"/>
-  
-  
+
+	<input file="base_main_activity.csv" separator=";" type="com.axelor.apps.base.db.MainActivity" search="self.code= :code"/>
 
 </csv-inputs>
 

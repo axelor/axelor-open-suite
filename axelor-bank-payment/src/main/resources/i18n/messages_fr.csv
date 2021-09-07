@@ -471,7 +471,7 @@
 "Error in getting ssl certificate","Erreur lors de la récupération du certificat SSL",,
 "Error with EBICS partner %s: %s","Erreur avec le contrat EBICS %s : %s",,
 "Exempt","Exonéré",,
-"Expense","Dépense",,
+"Expense","Note de frais",,
 "Export","Export",,
 "Export type select",,,
 "F - Receiver label","F - Libellé complémentaire",,

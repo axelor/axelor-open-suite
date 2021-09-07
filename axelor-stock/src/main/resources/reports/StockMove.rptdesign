@@ -2834,11 +2834,11 @@ row["first_name"]
                     </text>
                     <text id="4093">
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if (row["type_select"] == 2) {
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if (row["type_select"] == 2 &amp;&amp; row["invoicingAddress"] != null) {
     row["invoicingAddress"].replace(/\n/g, "<br>")
-} else if (row["type_select"] == 3) {
+} else if (row["type_select"] == 3 &amp;&amp; row["from_address_str"] != null) {
     row["from_address_str"].replace(/\n/g, "<br>")
-} else if (row["type_select"] == 1) {
+} else if (row["type_select"] == 1 &amp;&amp; row["to_stock_location_address"] != null) {
 	row["to_stock_location_address"].replace(/\n/g, "<br>")
 }</VALUE-OF>]]></text-property>
                     </text>

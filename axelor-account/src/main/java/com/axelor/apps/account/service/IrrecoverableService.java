@@ -844,7 +844,9 @@ public class IrrecoverableService {
                 payerPartner,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_SALE);
+                MoveRepository.FUNCTIONAL_ORIGIN_SALE,
+                irrecoverableName,
+                invoice.getInvoiceId());
 
     int seq = 1;
 
@@ -864,6 +866,10 @@ public class IrrecoverableService {
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
       amount =
           (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_UP);
+      // do not generate move line with amount equal to zero
+      if (amount.signum() == 0) {
+        continue;
+      }
       debitMoveLine =
           moveLineService.createMoveLine(
               move,
@@ -961,7 +967,9 @@ public class IrrecoverableService {
                 payerPartner,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                moveLine.getMove().getFunctionalOriginSelect());
+                moveLine.getMove().getFunctionalOriginSelect(),
+                irrecoverableName,
+                moveLine.getDescription());
 
     int seq = 1;
 

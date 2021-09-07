@@ -495,7 +495,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (product != null) {
       purchaseOrderLine.setProduct(product);
       fill(purchaseOrderLine, purchaseOrder);
-      compute(purchaseOrderLine, purchaseOrder);
     }
 
     if (description != null) {
@@ -517,6 +516,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (productName != null) {
       purchaseOrderLine.setProductName(productName);
     }
+
+    compute(purchaseOrderLine, purchaseOrder);
 
     return purchaseOrderLine;
   }
