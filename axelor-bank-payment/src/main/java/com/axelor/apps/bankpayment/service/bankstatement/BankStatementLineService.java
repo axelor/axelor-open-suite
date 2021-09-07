@@ -17,13 +17,23 @@
  */
 package com.axelor.apps.bankpayment.service.bankstatement;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 public class BankStatementLineService {
 
@@ -62,5 +72,46 @@ public class BankStatementLineService {
         bankStatementLine.getDebit().add(bankStatementLine.getCredit()));
 
     return bankStatementLine;
+  }
+
+  public String print(LocalDate fromDate, LocalDate toDate, Long bankDetails, String exportType)
+      throws AxelorException {
+    String fileLink = null;
+    List<BankStatementLineAFB120> bankStatementLineList =
+        Beans.get(BankStatementLineAFB120Repository.class)
+            .all()
+            .filter(
+                "self.operationDate >= ?1 and self.operationDate <= ?2 and (self.lineTypeSelect = ?3 or self.lineTypeSelect = ?4) and self.bankDetails.id = ?5",
+                fromDate,
+                toDate,
+                BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE,
+                BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE,
+                bankDetails)
+            .order("operationDate")
+            .order("sequence")
+            .fetch();
+    if (ObjectUtils.notEmpty(bankStatementLineList) && bankStatementLineList.size() >= 2) {
+      BankStatementLineAFB120 initalBankStatementLine = bankStatementLineList.get(0);
+      BankStatementLineAFB120 finalBankStatementLine =
+          bankStatementLineList.get(bankStatementLineList.size() - 1);
+      if (exportType.equals("pdf")
+          && ObjectUtils.notEmpty(initalBankStatementLine)
+          && ObjectUtils.notEmpty(finalBankStatementLine)) {
+        fileLink =
+            ReportFactory.createReport(
+                    IReport.BANK_STATEMENT_LINES,
+                    "Bank statement lines - " + fromDate + " to " + toDate)
+                .addParam("InitialLineId", initalBankStatementLine.getId())
+                .addParam("FinalLineId", finalBankStatementLine.getId())
+                .addParam("FromDate", Date.valueOf(fromDate))
+                .addParam("ToDate", Date.valueOf(toDate))
+                .addParam("BankDetails", bankDetails)
+                .addParam("Locale", ReportSettings.getPrintingLocale(null))
+                .addFormat(ReportSettings.FORMAT_PDF)
+                .generate()
+                .getFileLink();
+      }
+    }
+    return fileLink;
   }
 }

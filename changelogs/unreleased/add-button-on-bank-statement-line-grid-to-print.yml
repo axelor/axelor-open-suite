@@ -1,0 +1,6 @@
+title: "BANKSTATEMENTLINE : Button to print the bankstatement from BankstatementLine grid"
+type: feature
+description: |
+  Added a button on the statement grid view which will open a pop-up allowing you to choose details 
+  which will print statement in the same PDF format as the current printout of the bank details statement 
+  on BANKSTATEMENT
