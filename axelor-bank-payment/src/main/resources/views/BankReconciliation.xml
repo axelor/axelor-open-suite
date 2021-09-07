@@ -23,29 +23,33 @@
       <button name="printBtn" title="Print the bank reconciliation" onClick="save,action-bank-reconciliation-method-print-bank-reconciliation" />
       <button name="print2Btn" title="Print detailed reconciliation statement" onClick="save,action-bank-reconciliation-method-print-bank-reconciliation-detailed" />
     </toolbar>
-		<panel name="mainPanel" colSpan="12">
-			<panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
-				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
-				<field name="validatedByUser" colSpan="2"/>
-				<field name="validatedDate" colSpan="2"/>
-				<button name="validateBtn" title="Validate reconciliation" readonlyIf="!(bankReconciliationLineList.length > 0)" hideIf="statusSelect == 2" colSpan="2" onClick="action-group-bankreconciliation-validate-click" />
-				<field name="name"/>
-				<field name="bankStatement"  colSpan="4" domain="self.statusSelect = 2 AND (self.isFullyReconciled != true OR self.isFullyReconciled is null)" onChange="action-bank-payment-bank-reconciliation-method-on-change-bank-statement"/>
-				<field name="includeOtherBankStatements" colSpan="2" />
-				<field name="company" colSpan="3" widget="SuggestBox" canEdit="false" onChange="action-bank-reconciliation-set-currency" required="true" form-view="company-form" grid-view="company-grid" />
-				<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" required="true"/>
-				<field name="bankDetails" canEdit="false" onChange="action-bank-reconciliation-method-set-journal,action-bank-reconciliation-method-set-cash-account" donSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4"/>        
-				<field name="journal" colSpan="2" canEdit="false" onChange="action-bank-reconciliation-method-set-cash-account" onSelect="action-bank-reconciliation-method-set-journal-domain" form-view="journal-form" grid-view="journal-grid" />
-				<field name="fromDate" colSpan="3" requiredIf="includeOtherBankStatements" />
-				<field name="toDate" colSpan="3" requiredIf="includeOtherBankStatements" />
-				<field name="cashAccount" colSpan="3" canEdit="false" onSelect="action-bank-reconciliation-method-set-cash-account-domain" form-view="account-form" grid-view="account-grid" />
-			</panel>
-			<panel colSpan="12" name="actionsPanel">
-				<button name="loadBankStatementBtn" title="Load bank statements" readonlyIf="!(bankStatement &amp;&amp; !bankReconciliationLineList.length > 0)" colSpan="3" onClick="save,action-bank-reconciliation-method-load-bank-statement" />
-				<button name="loadOtherBankStatementBtn" title="Load other bank statements" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; includeOtherBankStatements" readonlyIf="statusSelect == 2" colSpan="3" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" />
+    <panel name="mainPanel" colSpan="12">
+      <panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
+        <field name="statusSelect" showTitle="false" colSpan="6" widget="NavSelect" />
+        <field name="validatedByUser" colSpan="2" />
+        <field name="validatedDate" colSpan="2" />
+        <button name="validateBtn" title="Validate reconciliation" readonlyIf="!(bankReconciliationLineList.length > 0)" hideIf="statusSelect == 2" colSpan="2" onClick="action-group-bankreconciliation-validate-click" />
+        <field name="name" />
+        <field name="bankStatement" colSpan="4" domain="self.statusSelect = 2 AND (self.isFullyReconciled != true OR self.isFullyReconciled is null)" onChange="action-bank-payment-bank-reconciliation-method-on-change-bank-statement"/>
+        <field name="includeOtherBankStatements" colSpan="2" />
+        <field name="company" colSpan="3" widget="SuggestBox" canEdit="false" onChange="action-bank-reconciliation-set-currency" required="true" form-view="company-form" grid-view="company-grid" />
+        <field name="currency" colSpan="3" canEdit="false" required="true" form-view="currency-form" grid-view="currency-grid" />
+        <field name="bankDetails" canEdit="false" onChange="action-bank-reconciliation-method-set-journal,action-bank-reconciliation-method-set-cash-account"
+          onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true" form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4"/>        
+          <field name="journal" colSpan="2" canEdit="false" onChange="action-bank-reconciliation-method-set-cash-account" onSelect="action-bank-reconciliation-method-set-journal-domain" form-view="journal-form"
+          grid-view="journal-grid" />
+        <field name="fromDate" colSpan="3" requiredIf="includeOtherBankStatements" />
+        <field name="toDate" colSpan="3" requiredIf="includeOtherBankStatements" />
+        <field name="cashAccount" colSpan="3" canEdit="false" onSelect="action-bank-reconciliation-method-set-cash-account-domain" form-view="account-form" grid-view="account-grid" />
+      </panel>
+      <panel name="actionsPanel" colSpan="12">
+        <button name="loadBankStatementBtn" title="Load bank statements" readonlyIf="!(bankStatement &amp;&amp; !bankReconciliationLineList.length > 0)" colSpan="3"
+          onClick="save,action-bank-reconciliation-method-load-bank-statement" />
+        <button name="loadOtherBankStatementBtn" title="Load other bank statements" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; includeOtherBankStatements"
+          readonlyIf="statusSelect == 2" colSpan="3" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" />
         <button name="autoAccounting" title="Auto accounting" readonlyIf="statusSelect == 2" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3" onClick="action-bank-reconciliation-method-auto-accounting" />
         <button name="showReconciledMoveLineBtn" title="Show reconciled move lines" showIf="statusSelect == 2" colSpan="3" onClick="action-bank-reconciliation-view-show-reconciled-move-lines" />
-			</panel>
+      </panel>
     </panel>
 		<panel name="bankReconciliationPanel" title="Bank reconciliation" readonlyIf="statusSelect == 2" colSpan="12" showIf="bankReconciliationLineList.length > 0">
 			<panel name="balancePanel" title="Balance" colSpan="12">
