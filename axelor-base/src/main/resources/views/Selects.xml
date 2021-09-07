@@ -593,7 +593,7 @@
     	<option value="gray">gray</option>
     	<option value="green">green</option>
     	<option value="light-gray">light-gray</option>
-    	<option value="magneta">magneta</option>
+    	<option value="magenta">magenta</option>
     	<option value="orange">orange</option>
     	<option value="pink">pink</option>
     	<option value="red">red</option>
@@ -629,6 +629,23 @@
 	<selection name="message.address.type.select">
 		<option value="1">From</option>
 		<option value="2">To</option>
+	</selection>
+		
+	<selection name="base.pricing.rule.type.select">
+		<option value="1">Classification</option>
+		<option value="2">Result</option>
+	</selection>
+	
+	<selection name="base.pricing.rule.field.type.select">
+		<option value="-1">Integer</option>
+		<option value="0">String</option>
+		<option value="1">Decimal</option>
+	</selection>
+	
+	<selection name="base.pricing.rule.operator.select">
+		<option value="-1">&lt;</option>
+		<option value="0">=</option>
+		<option value="1">&gt;</option>
 	</selection>
 
 </object-views>

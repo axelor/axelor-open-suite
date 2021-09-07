@@ -92,4 +92,13 @@ public class AccountController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      Beans.get(AccountService.class).checkAnalyticAxis(account);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

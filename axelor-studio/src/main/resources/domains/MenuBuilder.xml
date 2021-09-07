@@ -6,7 +6,7 @@
   <module name="studio" package="com.axelor.studio.db" />
   
   <entity name="MenuBuilder" cacheable="true">
-     <string name="name" title="Name" unique="true"/>
+     <string name="name" title="Name"/>
      <string name="title" title="Title" required="true" />
      <string name="icon" title="Icon" selection="studio.menu.builder.icon.select"/>
      <string name="iconBackground" title="Background" selection="studio.menu.builder.icon.background.select"/>

@@ -402,4 +402,22 @@ public class InvoiceLineController {
     }
     response.setValue("fixedAssetCategory", fixedAssetCategory);
   }
+
+  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+      invoiceLine = invoiceLineService.selectDefaultDistributionTemplate(invoiceLine);
+
+      response.setValue(
+          "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
+      response.setValue(
+          "analyticMoveLineList",
+          invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

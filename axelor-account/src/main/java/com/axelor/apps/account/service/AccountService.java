@@ -18,8 +18,13 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticRules;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -43,10 +48,14 @@ public class AccountService {
   public static final int MAX_LEVEL_OF_ACCOUNT = 20;
 
   protected AccountRepository accountRepository;
+  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
 
   @Inject
-  public AccountService(AccountRepository accountRepository) {
+  public AccountService(
+      AccountRepository accountRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository) {
     this.accountRepository = accountRepository;
+    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
   }
 
   /**
@@ -114,5 +123,52 @@ public class AccountService {
         .fetch(0, 0).stream()
         .map(m -> (Long) m.get("id"))
         .collect(Collectors.toList());
+  }
+
+  public void checkAnalyticAxis(Account account) throws AxelorException {
+    if (account != null) {
+      if (account.getAnalyticDistributionTemplate() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get("Please put AnalyticDistribution Template"));
+
+      } else {
+        if (account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(
+                  "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
+        } else {
+          List<AnalyticRules> analyticRulesList =
+              accountAnalyticRulesRepository.findByAccounts(account);
+          if (analyticRulesList != null && analyticRulesList.isEmpty()) {
+            List<Long> accountAnalyticAccountList = new ArrayList<Long>();
+            List<Long> rulesAnalyticAccountList = new ArrayList<Long>();
+            account
+                .getAnalyticDistributionTemplate()
+                .getAnalyticDistributionLineList()
+                .forEach(
+                    analyticDistributionLine ->
+                        accountAnalyticAccountList.add(
+                            analyticDistributionLine.getAnalyticAccount().getId()));
+            analyticRulesList.forEach(
+                rules ->
+                    rules
+                        .getAnalyticAccountSet()
+                        .forEach(
+                            analyticAccount ->
+                                rulesAnalyticAccountList.add(analyticAccount.getId())));
+            for (Long analyticAccount : accountAnalyticAccountList) {
+              if (!rulesAnalyticAccountList.contains(analyticAccount)) {
+                throw new AxelorException(
+                    TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                    I18n.get(
+                        "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."));
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

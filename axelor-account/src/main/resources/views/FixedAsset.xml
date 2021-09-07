@@ -16,7 +16,7 @@
 		<field name="acquisitionDate"/>
 		<field name="firstDepreciationDate"/>
 		<field name="statusSelect"/>
-	</grid>
+	</grid> 
     
     <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control" onNew="action-fixed-asset-record-default">
     <toolbar>
