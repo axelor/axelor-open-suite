@@ -20,7 +20,8 @@
 	onNew="action-bank-reconciliation-onnew-group" >
         <toolbar>
           <button title="Print the bank reconciliation" name="printBtn" onClick="save,action-bank-reconciliation-method-print-bank-reconciliation"/>
-        </toolbar>
+	  <button name="newPrintBtn" title="New Printout" onClick="save,action-bank-reconciliation-method-new-print-bank-reconciliation" />        
+	</toolbar>
 		<panel name="mainPanel" colSpan="12">
 			<panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
 				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
@@ -142,6 +143,10 @@
    <action-method name="action-bank-reconciliation-method-print-bank-reconciliation">
      <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="printBankReconciliation"/>
    </action-method>
+
+  <action-method name="action-bank-reconciliation-method-new-print-bank-reconciliation">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="printNewBankReconciliation"/>
+  </action-method>
   
    <action-view name="action-bank-reconciliation-view-show-unreconciled-move-lines" title="Unreconciled move lines" model="com.axelor.apps.account.db.MoveLine">
      <view type="grid" name="move-line-bank-reconciliation-grid"/>

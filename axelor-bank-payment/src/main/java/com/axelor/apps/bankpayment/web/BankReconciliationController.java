@@ -28,6 +28,7 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -156,6 +157,19 @@ public class BankReconciliationController {
               .getFileLink();
 
       response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printNewBankReconciliation(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    try {
+      String fileLink =
+          Beans.get(BankReconciliationService.class).printNewBankReconciliation(bankReconciliation);
+      if (StringUtils.notEmpty(fileLink)) {
+        response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
