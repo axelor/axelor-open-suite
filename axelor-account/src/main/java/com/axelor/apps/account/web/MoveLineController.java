@@ -45,6 +45,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -54,13 +55,23 @@ import java.util.stream.Collectors;
 @Singleton
 public class MoveLineController {
 
+  protected MoveLineRepository moveLineRepository;
+  protected MoveLineService moveLineService;
+
+  @Inject
+  public MoveLineController(
+      MoveLineRepository moveLineRepository, MoveLineService moveLineService) {
+    this.moveLineRepository = moveLineRepository;
+    this.moveLineService = moveLineService;
+  }
+
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
 
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
     try {
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-        moveLine = Beans.get(MoveLineService.class).computeAnalyticDistribution(moveLine);
+        moveLine = moveLineService.computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
@@ -86,7 +97,7 @@ public class MoveLineController {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      moveLine = Beans.get(MoveLineService.class).createAnalyticDistributionWithTemplate(moveLine);
+      moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
     } catch (Exception e) {
@@ -100,7 +111,7 @@ public class MoveLineController {
     moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
 
     try {
-      Beans.get(MoveLineService.class).usherProcess(moveLine);
+      moveLineService.usherProcess(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -152,7 +163,7 @@ public class MoveLineController {
       }
 
       if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
+        moveLineService.reconcileMoveLinesWithCacheManagement(moveLineList);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -217,7 +228,7 @@ public class MoveLineController {
 
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine = Beans.get(MoveLineService.class).computeTaxAmount(moveLine);
+      moveLine = moveLineService.computeTaxAmount(moveLine);
       response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -258,15 +269,25 @@ public class MoveLineController {
 
     try {
       Context parentContext = request.getContext().getParent();
-      if (parentContext != null) {
-        Move move = parentContext.asType(Move.class);
-        AccountConfig accountConfig =
-            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-        response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
-      }
+      if (ObjectUtils.notEmpty(parentContext))
+        if (Move.class.equals(parentContext.getClass()))
+          if (parentContext != null) {
+            Move move = parentContext.asType(Move.class);
+            AccountConfig accountConfig =
+                Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+            response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
+          }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setSelectedBankReconciliation(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine =
+        moveLineRepository.find(request.getContext().asType(MoveLine.class).getId());
+    moveLine = moveLineService.setIsSelectedBankReconciliation(moveLine);
+    response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
+    response.setReload(true);
   }
 
   public void loadAccountInformation(ActionRequest request, ActionResponse response) {

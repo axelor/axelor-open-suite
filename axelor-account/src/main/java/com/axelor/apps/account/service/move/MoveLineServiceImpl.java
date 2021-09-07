@@ -78,6 +78,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1366,6 +1367,23 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
+    moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
+    return moveLineRepository.save(moveLine);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
+    String posted = moveLine.getPostedNbr();
+    List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
+    postedNbrs.remove(postedNbr);
+    posted = String.join(",", postedNbrs);
+    moveLine.setPostedNbr(posted);
+    return moveLine;
+  }
+
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
     if (move.getMoveLineList().size() == 0)
