@@ -187,7 +187,7 @@
   <action-method name="action-bank-reconciliation-method-print-bank-reconciliation">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="printBankReconciliation" />
   </action-method>
-  
+
   <action-method name="action-bank-reconciliation-method-print-bank-reconciliation-detailed">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="printBankReconciliationDetailed" />
   </action-method>
