@@ -301,8 +301,8 @@
       <field name="amountRemaining" colSpan="3" />
       <field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4" />
       <field name="origin" colSpan="6"/>
-			<field name="serviceType" form-view="service-type-form" grid-view="service-type-grid" colSpan="3"/>
-			<field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid" colSpan="3" />
+      <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid" colSpan="3"/>
+      <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid" colSpan="3" />
       <field name="description" colSpan="6" requiredIf="$isDescriptionRequired" />
       <field name="$isDescriptionRequired" type="boolean" hidden="true" />
       <field name="taxAmount" hidden="true" />
@@ -313,8 +313,7 @@
       <field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
       <field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
       <field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
-     <field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
-
+      <field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="invoiceTermPanel" title="Invoice term" readonly="true" showIf="account.hasInvoiceTerm" colSpan="12">
@@ -443,6 +442,11 @@
     <action name="action-move-line-method-refresh-account-informations"/>
   </action-group>
 
+	<action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &gt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" />
+		<field name="credit" expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum()" if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
+	</action-record>
+
   <action-group name="account-move-line-group-date-onchange">
     <action name="account-move-line-record-date-onchange" />
     <action name="action-move-line-method-compute-analytic-distribution" />
@@ -460,7 +464,6 @@
   <action-method name="action-method-account-moveline-usher-process">
     <call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess" />
   </action-method>
-
   <action-method name="action-account-move-line-method-calculate-balance">
     <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance" />
   </action-method>

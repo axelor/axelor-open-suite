@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
   
   <entity name="AccountManagement" lang="java">
-	
+
 	<many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account" title="Purchase account"/>
 	<many-to-one name="saleAccount" ref="com.axelor.apps.account.db.Account" title="Sale account"/>
 	<many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account" title="Payment account"/>
@@ -17,11 +17,22 @@
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
    	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
    	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
-   	
+
    	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
-    
+
 	<many-to-one name="fixedAssetCategory" ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
-	
+
+    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Interbank code" />
+    <string name="name">
+          <![CDATA[
+      String name = "";
+        if (company != null) name += (name.isEmpty()?"":"-") +company.getName();
+        if (paymentMode != null) name += (name.isEmpty()?"":"-") + paymentMode.getName(); 
+        if (interbankCodeLine != null) name += (name.isEmpty()?"":"-") + interbankCodeLine.getName(); 
+      return name;
+      ]]>
+    </string>
+    <unique-constraint columns="interbankCodeLine,bankDetails,paymentMode" />
   </entity>
   
 </domain-models>

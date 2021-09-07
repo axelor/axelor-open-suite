@@ -21,13 +21,33 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BankReconciliationLineService {
+
+  public static final int BANK_RECONCILIATION_LINE_COMPLETE = 0;
+  public static final int BANK_RECONCILIATION_LINE_COMPLETABLE = 1;
+  public static final int BANK_RECONCILIATION_LINE_INCOMPLETE = 2;
+
+  protected BankReconciliationLineRepository bankReconciliationLineRepository;
+
+  @Inject
+  public BankReconciliationLineService(
+      BankReconciliationLineRepository bankReconciliationLineRepository) {
+    this.bankReconciliationLineRepository = bankReconciliationLineRepository;
+  }
 
   public BankReconciliationLine createBankReconciliationLine(
       LocalDate effectDate,
@@ -45,18 +65,40 @@ public class BankReconciliationLineService {
     bankReconciliationLine.setName(name);
     bankReconciliationLine.setReference(reference);
     bankReconciliationLine.setBankStatementLine(bankStatementLine);
-    bankReconciliationLine.setMoveLine(moveLine);
     bankReconciliationLine.setIsPosted(false);
-
+    if (ObjectUtils.notEmpty(moveLine)) {
+      if (ObjectUtils.isEmpty(bankReconciliationLine.getId())) {
+        bankReconciliationLine = bankReconciliationLineRepository.save(bankReconciliationLine);
+      }
+      bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+      moveLine = setMoveLinePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+    }
+    if (debit.compareTo(BigDecimal.ZERO) == 0) {
+      bankReconciliationLine.setTypeSelect(BankReconciliationLineRepository.TYPE_SELECT_CUSTOMER);
+    } else {
+      bankReconciliationLine.setTypeSelect(BankReconciliationLineRepository.TYPE_SELECT_SUPPLIER);
+    }
+    if (ObjectUtils.notEmpty(moveLine)) {
+      bankReconciliationLine.setMoveLine(moveLine);
+      bankReconciliationLine.setPartner(moveLine.getPartner());
+      bankReconciliationLine.setAccount(moveLine.getAccount());
+    }
     return bankReconciliationLine;
   }
 
   public BankReconciliationLine createBankReconciliationLine(BankStatementLine bankStatementLine) {
-
+    BigDecimal debit =
+        bankStatementLine.getDebit().compareTo(BigDecimal.ZERO) == 0
+            ? BigDecimal.ZERO
+            : bankStatementLine.getAmountRemainToReconcile();
+    BigDecimal credit =
+        bankStatementLine.getDebit().compareTo(BigDecimal.ZERO) != 0
+            ? BigDecimal.ZERO
+            : bankStatementLine.getAmountRemainToReconcile();
     return this.createBankReconciliationLine(
         bankStatementLine.getValueDate(),
-        bankStatementLine.getDebit(),
-        bankStatementLine.getCredit(),
+        debit,
+        credit,
         bankStatementLine.getDescription(),
         bankStatementLine.getReference(),
         bankStatementLine,
@@ -100,5 +142,40 @@ public class BankReconciliationLineService {
               ? bankReconciliationLine.getReference()
               : "");
     }
+  }
+
+  @Transactional
+  public BankReconciliationLine reconcileBRLAndMoveLine(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine) {
+    bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+    bankReconciliationLine.setConfidenceIndex(
+        BankReconciliationLineRepository.CONFIDENCE_INDEX_GREEN);
+    moveLine = setMoveLinePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+    moveLine.setIsSelectedBankReconciliation(false);
+    bankReconciliationLine.setIsSelectedBankReconciliation(false);
+    bankReconciliationLine.setMoveLine(moveLine);
+    return bankReconciliationLine;
+  }
+
+  protected MoveLine setMoveLinePostedNbr(MoveLine moveLine, String postedNbr) {
+    String posted = moveLine.getPostedNbr();
+    if (StringUtils.notEmpty(posted)) {
+      List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
+      postedNbrs.add(postedNbr);
+      posted = String.join(",", postedNbrs);
+    } else posted = postedNbr;
+    moveLine.setPostedNbr(posted);
+    return moveLine;
+  }
+
+  public int checkIncompleteLine(BankReconciliationLine bankReconciliationLine) {
+    int brlStatus = BANK_RECONCILIATION_LINE_COMPLETE;
+    if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())) {
+      brlStatus = BANK_RECONCILIATION_LINE_COMPLETABLE;
+      if (ObjectUtils.isEmpty(bankReconciliationLine.getAccount())) {
+        brlStatus = BANK_RECONCILIATION_LINE_INCOMPLETE;
+      }
+    }
+    return brlStatus;
   }
 }
