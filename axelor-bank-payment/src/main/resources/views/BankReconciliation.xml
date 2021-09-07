@@ -195,7 +195,7 @@
   <action-method name="action-bank-reconciliation-method-auto-accounting">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="autoAccounting" />
   </action-method>
-  
+
   <action-method name="action-bank-reconciliation-method-set-bank-statement-is-fully-reconciled">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="setBankStatementIsFullyReconciled" />
   </action-method>
@@ -207,7 +207,7 @@
     <context name="fromDate" expr="eval: fromDate"/>
     <context name="toDate" expr="eval: toDate"/>
   </action-view>
-  
+
   <action-method name="action-bank-reconciliation-method-show-unreconciled-move-lines">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="showUnreconciledMoveLines" />
   </action-method>
@@ -304,7 +304,7 @@
   <action-method name="action-bank-reconciliation-method-update-amounts">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="updateAmounts" />
   </action-method>
-  
+
   <action-method name="action-bank-payment-bank-reconciliation-method-on-change-bank-statement">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="onChangeBankStatement" />
   </action-method>
