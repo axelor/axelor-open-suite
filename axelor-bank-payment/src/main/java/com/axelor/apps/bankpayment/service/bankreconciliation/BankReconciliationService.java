@@ -140,8 +140,7 @@ public class BankReconciliationService {
     List<BankStatementRule> bankStatementRules;
 
     for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-    	if(bankReconciliationLine.getMoveLine() != null)
-    		continue;
+      if (bankReconciliationLine.getMoveLine() != null) continue;
       scriptContext =
           new Context(
               Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
