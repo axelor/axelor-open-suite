@@ -77,8 +77,6 @@ import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
-import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticAxisByCompanyService;
 import com.axelor.apps.account.service.AnalyticAxisByCompanyServiceImpl;
 import com.axelor.apps.account.service.AnalyticAxisFetchService;
@@ -87,6 +85,8 @@ import com.axelor.apps.account.service.AnalyticAxisService;
 import com.axelor.apps.account.service.AnalyticAxisServiceImpl;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateServiceImpl;
+import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
@@ -332,9 +332,9 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticAxisByCompanyService.class).to(AnalyticAxisByCompanyServiceImpl.class);
 
     bind(AccountingReportMoveLineService.class).to(AccountingReportMoveLineServiceImpl.class);
- 
+
     bind(PaymentMoveLineDistributionService.class).to(PaymentMoveLineDistributionServiceImpl.class);
-    
+
     bind(AnalyticFixedAssetService.class).to(AnalyticFixedAssetServiceImpl.class);
 
     bind(FixedAssetDerogatoryLineService.class).to(FixedAssetDerogatoryLineServiceImpl.class);
