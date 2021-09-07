@@ -38,24 +38,26 @@
       <field name="isCustomized" readonly="true" colSpan="4"/>
       <field name="isPaid" readonly="true" colSpan="4"/>
       <separator colSpan="12"/>
-      <field name="amount" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-method-compute-customized-percentage"/>
+      <field name="amount" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-method-compute-customized-percentage"/>
       <field name="amountRemaining" readonly="true"/>
       <field name="dueDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="((invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3) ||
        ((invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid)"/>
-      <field name="estimatedPaymentDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-      <field name="percentage" readonlyIf="isPaid || amountRemaining &lt; 0 || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
+      <field name="estimatedPaymentDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !paymentConditionLine.paymentCondition.isFree" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
+      <field name="percentage" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
       <field name="isHoldBack" readonly="true"/>
-      <field name="paymentMode"/>
+      <field name="paymentMode" readonlyIf="isPaid"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
-      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4" hidden="true" showIf="financialDiscount != null" >
+      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4" hidden="true" showIf="financialDiscount != null">
           <field name="financialDiscount" readonly="true"/>
           <field name="financialDiscount.discountRate"/>
-          <field name="financialDiscountAmount"/>
+          <field name="financialDiscountAmount" readonly="true"/>
           <field name="invoice.financialDiscountDeadlineDate"/>
       </panel>
       <field name="invoice.company" hidden="true" />
       <field name="paymentConditionLine.paymentCondition.isFree" hidden="true" />
       <field name="paymentConditionLine.paymentPercentage" hidden="true"/>
+      <field name="invoice.operationTypeSelect" readonly="true" hidden="true"/>
+      <field name="invoice.statusSelect" readonly="true" hidden="true"/>
     </panel>
   </form>
 
@@ -77,9 +79,9 @@
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4" hidden="true" showIf="financialDiscount != null" >
           <field name="financialDiscount" readonly="true"/>
           <field name="financialDiscount.discountRate"/>
-          <field name="financialDiscountAmount"/>
+          <field name="financialDiscountAmount" readonly="true"/>
           <field name="invoice.financialDiscountDeadlineDate"/>
-          <field name="invoice.company" hidden="true" />
+          <field name="invoice.company" hidden="true"/>
       </panel>
     </panel>
   </form>

@@ -250,6 +250,9 @@ public class InvoiceController {
         }
         return;
       }
+      if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+        return;
+      }
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
       response.setValues(invoice);
 

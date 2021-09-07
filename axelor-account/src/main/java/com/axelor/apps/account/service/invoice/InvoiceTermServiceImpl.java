@@ -135,6 +135,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsHoldBack(paymentConditionLine.getIsHoldback());
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setPercentage(paymentConditionLine.getPaymentPercentage());
+    invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
     return invoiceTerm;
   }
@@ -151,7 +152,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       LocalDate dueDate =
           InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
-      invoiceTerm.setDueDate(dueDate);
+      if (!invoiceTerm.getIsCustomized()) {
+        invoiceTerm.setDueDate(dueDate);
+      }
 
       if (nDaysDate == null || dueDate.isBefore(nDaysDate)) {
         nDaysDate = dueDate;
@@ -197,20 +200,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       return;
     }
-
     for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
       BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
+
+      if (invoicePayment.getApplyFinancialDiscount()) {
+        invoiceTerm.setFinancialDiscount(invoicePayment.getFinancialDiscount());
+        invoiceTerm.setFinancialDiscountAmount(invoicePayment.getFinancialDiscountAmount());
+      } else {
+        invoiceTerm.setFinancialDiscount(null);
+      }
+
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
       invoiceTerm.setPaymentMode(invoicePayment.getPaymentMode());
 
       if (amountRemaining.compareTo(BigDecimal.ZERO) <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
-        if (invoicePayment.getApplyFinancialDiscount()) {
-          invoiceTerm.setFinancialDiscount(invoicePayment.getFinancialDiscount());
-          invoiceTerm.setFinancialDiscountAmount(invoicePayment.getFinancialDiscountTotalAmount());
-        }
       }
       invoiceTerm.setAmountRemaining(amountRemaining);
     }

@@ -253,6 +253,10 @@ public class InvoicePaymentController {
                     .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount);
           }
         }
+        response.setAttr(
+            "$totalAmountWithFinancialDiscount",
+            "value",
+            invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
         response.setValues(invoicePayment);
       }
     } catch (Exception e) {
@@ -279,7 +283,8 @@ public class InvoicePaymentController {
           Beans.get(InvoiceTermPaymentService.class);
 
       invoicePayment =
-          invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTerms);
+          invoiceTermPaymentService.initInvoiceTermPayments(
+              invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
       invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
 
       response.setValue("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
@@ -328,6 +333,10 @@ public class InvoicePaymentController {
 
             invoicePayment = invoiceService.changeAmount(invoicePayment, invoice);
           }
+          response.setAttr(
+              "$totalAmountWithFinancialDiscount",
+              "value",
+              invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
           response.setValues(invoicePayment);
         }
       }

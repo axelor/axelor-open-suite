@@ -504,7 +504,7 @@ InvoiceSet.length > 0))"
 					<field name="paymentSchedule" readonly="true" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
 			</panel>
-			<panel name="invoiceTermsPanel" title="Terms" showTitle="true" showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2" readonlyIf="statusSelect == 3">
+			<panel name="invoiceTermsPanel" title="Terms" showTitle="true" showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
 			     <panel-related name="invoiceTermListPanel" field="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form" grid-view="invoice-term-invoice-grid" canNew="false" canRemove="false"/>
 			</panel>
 		</panel-tabs>
@@ -1042,10 +1042,10 @@ InvoiceSet.length > 0))"
         <action name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
         <action name="save"/>
         <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
-        <action name="action-invoice-method-validate"/>
         <action name="action-invoice-method-generate-invoice-terms"/>
         <action name="action-invoice-method-compute-invoice-terms-due-dates" />
         <action name="save"/>
+        <action name="action-invoice-method-validate"/>
     </action-group>
 
     <action-group name="action-invoice-group-payment-condition-onchange">

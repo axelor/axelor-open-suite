@@ -48,7 +48,8 @@ public class InvoiceToolService {
     }
     LocalDate dueDate = null;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsPaid() && (dueDate == null || invoiceDate.isBefore(dueDate))) {
+      if (!invoiceTerm.getIsPaid()
+          && (dueDate == null || invoiceTerm.getDueDate().isBefore(dueDate))) {
         dueDate = invoiceTerm.getDueDate();
       }
     }

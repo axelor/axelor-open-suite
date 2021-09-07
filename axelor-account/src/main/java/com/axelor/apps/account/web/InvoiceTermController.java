@@ -64,13 +64,17 @@ public class InvoiceTermController {
       if (inTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
-      response.setValue(
-          "percentage",
+      BigDecimal percentage =
           invoiceTerm
               .getAmount()
               .multiply(new BigDecimal(100))
-              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      response.setValue("percentage", percentage);
       response.setValue("amountRemaining", invoiceTerm.getAmount());
+      response.setValue(
+          "isCustomized",
+          percentage.compareTo(invoiceTerm.getPaymentConditionLine().getPaymentPercentage()) != 0);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
