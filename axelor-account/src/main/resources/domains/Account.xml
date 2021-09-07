@@ -25,15 +25,16 @@
     	else
     		return code+" - " + name;
 	    ]]>
-    </string>
+         </string>
     <boolean name="analyticDistributionRequiredOnInvoiceLines" title="Analytic distribution required on invoice lines" massUpdate="true" />
     <boolean name="analyticDistributionRequiredOnMoveLines" title="Analytic distribution required on move lines" massUpdate="true" />
     <boolean name="analyticDistributionAuthorized" title="Analytic distribution authorized" massUpdate="true" />
     <boolean name="isTaxAuthorizedOnMoveLine" title="Tax authorized on move line" massUpdate="true" />
     <boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line" massUpdate="true" />
+    <boolean name="hasInvoiceTerm" title="Activate invoice term"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs" />
-<many-to-one name="serviceType" ref="ServiceType" title="Service type" massUpdate="true" help="Field exported in DAS2 declaration. If this field is empty, this account won't appear in DAS2 reports and exports."/>
-   	   	<many-to-one name="analyticDistributionTemplate" ref="AnalyticDistributionTemplate" title="Analytic Distribution Template" massUpdate="true" help="This analytical distribution will be used by default when entering invoice lines or entries as soon as this accounting account is selected."/>
+    <many-to-one name="serviceType" ref="ServiceType" title="Service type" massUpdate="true" help="Field exported in DAS2 declaration. If this field is empty, this account won't appear in DAS2 reports and exports."/>
+    <many-to-one name="analyticDistributionTemplate" ref="AnalyticDistributionTemplate" title="Analytic Distribution Template" massUpdate="true" help="This analytical distribution will be used by default when entering invoice lines or entries as soon as this accounting account is selected."/>
     <unique-constraint columns="code,company" />
 
     <extra-code>
@@ -65,4 +66,5 @@
 
 
   </entity>
+
 </domain-models>
