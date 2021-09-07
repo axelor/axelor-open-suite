@@ -16,6 +16,7 @@
     <field name="statusSelect"/> 
   </grid>
 
+
   <form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" onLoad="action-bank-reconciliation-method-update-amounts"
     onNew="action-bank-reconciliation-onnew-group">
     <toolbar>
