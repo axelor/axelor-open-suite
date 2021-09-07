@@ -288,7 +288,8 @@ public class MoveLineController {
     moveLine = moveLineService.setIsSelectedBankReconciliation(moveLine);
     response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
     response.setReload(true);
-}
+  }
+
   public void loadAccountInformation(ActionRequest request, ActionResponse response) {
     Context parentContext = request.getContext().getParent();
     MoveLine moveLine = request.getContext().asType(MoveLine.class);

@@ -1367,7 +1367,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-<<<<<<< HEAD
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
     moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
@@ -1384,7 +1383,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     moveLine.setPostedNbr(posted);
     return moveLine;
   }
-  
+
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
     if (move.getMoveLineList().size() == 0)
