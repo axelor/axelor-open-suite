@@ -99,8 +99,8 @@
     </panel>
   </form>
 
-  <form name="bank-reconciliation-multiple-reconcile-wizard-form" title="Multiple reconcile" model="com.axelor.apps.bankpayment.db.BankReconciliation"
-    onNew="action-bank-reconciliation-group-multiple-reconcile-wizard-new">
+	<form name="bank-reconciliation-multiple-reconcile-wizard-form" title="Multiple reconcile" model="com.axelor.apps.bankpayment.db.BankReconciliation" 
+	onNew="action-bank-reconciliation-group-multiple-reconcile-wizard-new" >
     <panel name="mainPanel" colSpan="12">
       <panel name="bankStatementDetailPanel" title="Bank statement details" colSpan="12">
         <field name="$bankStatementDate" title="Date" type="date" readonly="true" />
