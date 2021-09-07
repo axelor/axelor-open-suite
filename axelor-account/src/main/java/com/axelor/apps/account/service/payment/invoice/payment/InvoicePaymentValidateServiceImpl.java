@@ -49,6 +49,7 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -153,6 +154,15 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     Partner partner = invoice.getPartner();
     LocalDate paymentDate = invoicePayment.getPaymentDate();
     BankDetails companyBankDetails = invoicePayment.getCompanyBankDetails();
+    String description = invoicePayment.getDescription();
+    if (description == null || description.isEmpty()) {
+      description =
+          String.format(
+              "%s-%s-%s",
+              invoicePayment.getPaymentMode().getName(),
+              invoice.getPartner().getName(),
+              invoice.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+    }
 
     Account customerAccount;
 
@@ -186,7 +196,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                   MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                   MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                   getOriginFromInvoicePayment(invoicePayment),
-                  invoicePayment.getDescription());
+                  description);
 
       MoveLine customerMoveLine = null;
       move.setTradingName(invoice.getTradingName());
@@ -268,7 +278,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             null,
             1,
             origin,
-            invoicePayment.getDescription()));
+            move.getDescription()));
 
     move.addMoveLineListItem(
         moveLineService.createMoveLine(
@@ -281,7 +291,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             null,
             2,
             origin,
-            invoicePayment.getDescription()));
+            move.getDescription()));
 
     return move;
   }
