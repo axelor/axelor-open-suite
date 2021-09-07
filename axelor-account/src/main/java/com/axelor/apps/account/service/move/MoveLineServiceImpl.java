@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -52,6 +53,7 @@ import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
@@ -70,6 +72,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -459,8 +462,6 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
 
-    int moveLineId = 1;
-
     if (partner == null) {
       throw new AxelorException(
           invoice,
@@ -482,23 +483,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    // Creation of partner move line
-    MoveLine moveLine1 =
-        this.createMoveLine(
-            move,
-            partner,
-            partnerAccount,
-            invoice.getInTaxTotal(),
-            invoice.getCompanyInTaxTotal(),
-            null,
-            isDebitCustomer,
-            invoice.getInvoiceDate(),
-            invoice.getDueDate(),
-            invoice.getOriginDate(),
-            moveLineId++,
-            origin,
-            null);
-    moveLines.add(moveLine1);
+    moveLines.addAll(
+        addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+    int moveLineId = moveLines.size() + 1;
 
     AnalyticMoveLineRepository analyticMoveLineRepository =
         Beans.get(AnalyticMoveLineRepository.class);
@@ -674,6 +661,95 @@ public class MoveLineServiceImpl implements MoveLineService {
       this.consolidateMoveLines(moveLines);
     }
 
+    return moveLines;
+  }
+
+  protected List<MoveLine> addInvoiceTermMoveLines(
+      Invoice invoice,
+      Account partnerAccount,
+      Move move,
+      Partner partner,
+      boolean isDebitCustomer,
+      String origin)
+      throws AxelorException {
+    int moveLineId = 1;
+    List<MoveLine> moveLines = new ArrayList<MoveLine>();
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+    MoveLine moveLine = null;
+    MoveLine holdBackMoveLine;
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+
+      Account account = partnerAccount;
+      if (invoiceTerm.getIsHoldBack()) {
+        account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, true);
+        holdBackMoveLine =
+            this.createMoveLine(
+                move,
+                partner,
+                account,
+                invoiceTerm.getAmount(),
+                currencyService
+                    .getAmountCurrencyConvertedAtDate(
+                        invoice.getCurrency(),
+                        companyCurrency,
+                        invoiceTerm.getAmount(),
+                        invoice.getInvoiceDate())
+                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                null,
+                isDebitCustomer,
+                invoice.getInvoiceDate(),
+                invoice.getDueDate(),
+                invoice.getOriginDate(),
+                moveLineId++,
+                origin,
+                null);
+        invoiceTerm.setMoveLine(holdBackMoveLine);
+        moveLines.add(holdBackMoveLine);
+      } else {
+        if (moveLine == null) {
+          moveLine =
+              this.createMoveLine(
+                  move,
+                  partner,
+                  account,
+                  invoiceTerm.getAmount(),
+                  currencyService
+                      .getAmountCurrencyConvertedAtDate(
+                          invoice.getCurrency(),
+                          companyCurrency,
+                          invoiceTerm.getAmount(),
+                          invoice.getInvoiceDate())
+                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                  null,
+                  isDebitCustomer,
+                  invoice.getInvoiceDate(),
+                  invoiceTerm.getDueDate(),
+                  invoice.getOriginDate(),
+                  moveLineId++,
+                  origin,
+                  null);
+        } else {
+          if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+            // Debit
+            moveLine.setDebit(
+                moveLine
+                    .getDebit()
+                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+          } else {
+            // Credit
+            moveLine.setCredit(
+                moveLine
+                    .getCredit()
+                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+          }
+        }
+      }
+    }
+
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      if (!invoiceTerm.getIsHoldBack()) invoiceTerm.setMoveLine(moveLine);
+    }
+    moveLines.add(moveLine);
     return moveLines;
   }
 
@@ -876,6 +952,40 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   /**
+   * Method that returns all credit move lines of an invoice that are not completely lettered
+   *
+   * @param invoice Invoice
+   * @return
+   */
+  @Override
+  public List<MoveLine> getCreditCustomerMoveLines(Invoice invoice) {
+    List<MoveLine> moveLines = new ArrayList<MoveLine>();
+    if (invoice.getMove() != null) {
+      moveLines = getCreditCustomerMoveLines(invoice.getMove());
+    }
+    return moveLines;
+  }
+  /**
+   * Method that returns all credit move lines of a move that are not completely lettered
+   *
+   * @param move Invoice move
+   * @return
+   */
+  @Override
+  public List<MoveLine> getCreditCustomerMoveLines(Move move) {
+
+    List<MoveLine> moveLines = Lists.newArrayList();
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getAccount().getUseForPartnerBalance()
+          && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        moveLines.add(moveLine);
+      }
+    }
+    return moveLines;
+  }
+
+  /**
    * Fonction permettant de récuperer la ligne d'écriture (au credit et non complétement lettrée sur
    * le compte client) de l'écriture de facture
    *
@@ -910,6 +1020,21 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   /**
+   * Method that returns all debit move lines of an invoice that are not completely lettered
+   *
+   * @param invoice Invoice
+   * @return
+   */
+  @Override
+  public List<MoveLine> getDebitCustomerMoveLines(Invoice invoice) {
+    List<MoveLine> moveLines = new ArrayList<MoveLine>();
+    if (invoice.getMove() != null) {
+      moveLines = this.getDebitCustomerMoveLines(invoice.getMove());
+    }
+    return moveLines;
+  }
+
+  /**
    * Fonction permettant de récuperer la ligne d'écriture (au débit et non complétement lettrée sur
    * le compte client) de l'écriture de facture
    *
@@ -926,6 +1051,26 @@ public class MoveLineServiceImpl implements MoveLineService {
       }
     }
     return null;
+  }
+
+  /**
+   * Method that returns all debit move lines of a move that are not completely lettered
+   *
+   * @param move Invoice move
+   * @return
+   */
+  @Override
+  public List<MoveLine> getDebitCustomerMoveLines(Move move) {
+
+    List<MoveLine> moveLines = Lists.newArrayList();
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getAccount().getUseForPartnerBalance()
+          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+        moveLines.add(moveLine);
+      }
+    }
+    return moveLines;
   }
 
   /**
