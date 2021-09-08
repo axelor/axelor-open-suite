@@ -740,7 +740,7 @@ public class MoveServiceImpl implements MoveService {
             .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
 
       for (int i = 0; i < move.getPartner().getAccountingSituationList().size(); i++) {
-        if (move.getPartner().getAccountingSituationList().get(i).equals(move.getCompany())) {
+        if (move.getPartner().getAccountingSituationList().get(i).getCompany().equals(move.getCompany())) {
           if (move.getJournal()
               .getJournalType()
               .getTechnicalTypeSelect()
