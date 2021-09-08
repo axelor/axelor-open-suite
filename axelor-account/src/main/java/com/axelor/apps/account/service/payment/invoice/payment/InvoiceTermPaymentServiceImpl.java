@@ -154,11 +154,17 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     BigDecimal sum = BigDecimal.ZERO;
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPayments) {
-      BigDecimal paidAmount =  invoiceTermPayment.getPaidAmount();
+      BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
       if (invoicePayment.getApplyFinancialDiscount()) {
-    	  BigDecimal base = invoicePayment.getFinancialDiscount().getDiscountRate()
-    			  .divide(new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-    	  paidAmount = paidAmount.divide(base.add(BigDecimal.ONE), RoundingMode.HALF_UP);
+        BigDecimal base =
+            invoicePayment
+                .getFinancialDiscount()
+                .getDiscountRate()
+                .divide(
+                    new BigDecimal(100),
+                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    RoundingMode.HALF_UP);
+        paidAmount = paidAmount.divide(base.add(BigDecimal.ONE), RoundingMode.HALF_UP);
       }
       sum = sum.add(paidAmount);
     }
