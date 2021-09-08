@@ -17,26 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
@@ -94,6 +74,24 @@ import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveLineServiceImpl implements MoveLineService {
 
@@ -123,7 +121,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected PaymentService paymentService;
   protected MoveRepository moveRepository;
   protected AppBaseService appBaseService;
-  
 
   @Inject
   public MoveLineServiceImpl(
@@ -762,7 +759,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       if (!invoiceTerm.getIsHoldBack()) {
-    	  invoiceTerm.setMoveLine(moveLine);
+        invoiceTerm.setMoveLine(moveLine);
       }
     }
     moveLines.add(moveLine);
@@ -1542,16 +1539,15 @@ public class MoveLineServiceImpl implements MoveLineService {
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
     if (move.getMoveLineList().size() == 0) {
-        try {
-            moveLine.setCurrencyRate(
-                currencyService.getCurrencyConversionRate(
-                    move.getCurrency(), move.getCompany().getCurrency()));
-          } catch (AxelorException e1) {
-            TraceBackService.trace(e1);
-          }
-    }
-    else {
-    	moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
+      try {
+        moveLine.setCurrencyRate(
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompany().getCurrency()));
+      } catch (AxelorException e1) {
+        TraceBackService.trace(e1);
+      }
+    } else {
+      moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
     if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
       BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
@@ -1565,11 +1561,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException {
     TaxLine taxLine = null;
     LocalDate date = moveLine.getDate();
-    if (date == null) { 
-    	date = moveLine.getDueDate();
+    if (date == null) {
+      date = moveLine.getDueDate();
     }
     if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
-        taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
+      taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
     }
     return taxLine;
   }

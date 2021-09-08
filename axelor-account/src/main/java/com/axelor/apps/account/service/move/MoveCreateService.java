@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.time.LocalDate;
+
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
@@ -25,7 +28,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import java.time.LocalDate;
 
 public interface MoveCreateService {
 
@@ -134,5 +136,38 @@ public interface MoveCreateService {
       int functionalOriginSelect,
       String origin,
       String description)
+      throws AxelorException;
+
+  /**
+   * Creating a new generic accounting move and set paymentVoucher and invoice
+   *
+   * @param journal
+   * @param company
+   * @param currency
+   * @param partner
+   * @param date
+   * @param paymentMode
+   * @param technicalOriginSelect
+   * @param ignoreInDebtRecoveryOk
+   * @param ignoreInAccountingOk
+   * @return
+   * @throws AxelorException
+   */
+  Move createMove(
+      Journal journal,
+      Company company,
+      Currency currency,
+      Partner partner,
+      LocalDate date,
+      PaymentMode paymentMode,
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      boolean ignoreInDebtRecoveryOk,
+      boolean ignoreInAccountingOk,
+      boolean autoYearClosureMove,
+      String origin,
+      String description,
+      Invoice invoice,
+      PaymentVoucher paymentVoucher)
       throws AxelorException;
 }

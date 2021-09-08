@@ -17,6 +17,14 @@
  */
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -37,11 +45,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MoveCreateServiceImpl implements MoveCreateService {
 
@@ -273,4 +276,38 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     move.setPaymentVoucher(paymentVoucher);
     return move;
   }
+
+@Override
+public Move createMove(Journal journal,
+		Company company,
+		Currency currency,
+		Partner partner,
+		LocalDate date,
+		PaymentMode paymentMode,
+		int technicalOriginSelect,
+		int functionalOriginSelect,
+		boolean ignoreInDebtRecoveryOk,
+		boolean ignoreInAccountingOk,
+		boolean autoYearClosureMove,
+		String origin,
+		String description,
+		Invoice invoice,
+		PaymentVoucher paymentVoucher) throws AxelorException {
+	Move move = this.createMove(journal,
+			company,
+			currency,
+			partner, 
+			date,
+			paymentMode,
+			technicalOriginSelect,
+			functionalOriginSelect,
+			ignoreInDebtRecoveryOk,
+			ignoreInAccountingOk,
+			autoYearClosureMove,
+			origin,
+			description);
+	move.setInvoice(invoice);
+	move.setPaymentVoucher(paymentVoucher);
+	return move;
+}
 }
