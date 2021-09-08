@@ -324,10 +324,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
-        fixedAsset.getReference(),
+        origin,
         company.getName(),
         journal.getCode());
 
@@ -341,11 +342,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<>();
 
-      String origin = fixedAsset.getReference();
       FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
       Account debitLineAccount;
       Account creditLineAccount;
@@ -430,6 +432,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
+    String origin = fixedAsset.getReference();
 
     // Creating move
     Move move =
@@ -441,12 +444,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             disposalDate,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
-      String origin = fixedAsset.getReference();
       Account chargeAccount;
       Account depreciationAccount = fixedAsset.getFixedAssetCategory().getDepreciationAccount();
       Account purchaseAccount = fixedAsset.getPurchaseAccount();

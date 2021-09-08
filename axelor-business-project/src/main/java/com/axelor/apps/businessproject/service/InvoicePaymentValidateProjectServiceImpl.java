@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -58,6 +59,7 @@ public class InvoicePaymentValidateProjectServiceImpl
       BankOrderService bankOrderService,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoicingProjectRepository invoicingProjectRepo,
+      InvoiceTermService invoiceTermService,
       AppAccountService appAccountService) {
     super(
         paymentModeService,
@@ -69,6 +71,7 @@ public class InvoicePaymentValidateProjectServiceImpl
         bankOrderCreateService,
         bankOrderService,
         invoicePaymentToolService,
+        invoiceTermService,
         appAccountService);
     this.invoicingProjectRepo = invoicingProjectRepo;
   }

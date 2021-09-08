@@ -19,16 +19,23 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -38,6 +45,8 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -52,6 +61,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
@@ -72,6 +82,7 @@ public class MoveServiceImpl implements MoveService {
   protected MoveExcessPaymentService moveExcessPaymentService;
   protected AccountConfigService accountConfigService;
   protected MoveRepository moveRepository;
+  protected CurrencyService currencyService;
 
   protected AppAccountService appAccountService;
 
@@ -88,7 +99,8 @@ public class MoveServiceImpl implements MoveService {
       PaymentService paymentService,
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      CurrencyService currencyService) {
 
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
@@ -101,6 +113,7 @@ public class MoveServiceImpl implements MoveService {
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
+    this.currencyService = currencyService;
 
     this.appAccountService = appAccountService;
   }
@@ -147,6 +160,11 @@ public class MoveServiceImpl implements MoveService {
   @Override
   public Move createMove(Invoice invoice) throws AxelorException {
     Move move = null;
+    String origin = invoice.getInvoiceId();
+
+    if (InvoiceToolService.isPurchase(invoice)) {
+      origin = invoice.getSupplierInvoiceNb();
+    }
 
     if (invoice != null && invoice.getInvoiceLineList() != null) {
 
@@ -154,6 +172,10 @@ public class MoveServiceImpl implements MoveService {
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
+      String description = null;
+      if (journal != null) {
+        description = journal.getDescriptionModel();
+      }
 
       log.debug(
           "Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})",
@@ -176,7 +198,9 @@ public class MoveServiceImpl implements MoveService {
               invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-              functionalOrigin);
+              functionalOrigin,
+              origin,
+              description);
 
       if (move != null) {
 
@@ -199,6 +223,8 @@ public class MoveServiceImpl implements MoveService {
                     journal.getIsInvoiceMoveConsolidated(),
                     isPurchase,
                     isDebitCustomer));
+
+        setOriginAndDescriptionOnMoveLineList(move);
 
         moveRepository.save(move);
 
@@ -268,13 +294,15 @@ public class MoveServiceImpl implements MoveService {
     if (!debitMoveLines.isEmpty()) {
       MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 
-      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
+      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on
+      // lettre directement
       if (moveToolService.isSameAccount(debitMoveLines, invoiceCustomerMoveLine.getAccount())) {
         List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
         creditMoveLineList.add(invoiceCustomerMoveLine);
         paymentService.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
       }
-      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les
+      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte
+      // sur les
       // trop-perçus
       else {
         this.createMoveUseDebit(invoice, debitMoveLines, invoiceCustomerMoveLine);
@@ -293,6 +321,7 @@ public class MoveServiceImpl implements MoveService {
   public void createMoveUseExcessPayment(Invoice invoice) throws AxelorException {
 
     Company company = invoice.getCompany();
+    String origin = invoice.getInvoiceId();
 
     // Récupération des acomptes de la facture
     List<MoveLine> creditMoveLineList = moveExcessPaymentService.getAdvancePaymentMoveList(invoice);
@@ -309,13 +338,15 @@ public class MoveServiceImpl implements MoveService {
 
       Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
-      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
+      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on
+      // lettre directement
       if (moveToolService.isSameAccount(creditMoveLineList, account)) {
         List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
         debitMoveLineList.add(invoiceCustomerMoveLine);
         paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
       }
-      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les
+      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte
+      // sur les
       // trop-perçus
       else {
 
@@ -332,7 +363,9 @@ public class MoveServiceImpl implements MoveService {
                 invoice.getInvoiceDate(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                null);
 
         if (move != null) {
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -348,11 +381,12 @@ public class MoveServiceImpl implements MoveService {
                   false,
                   appAccountService.getTodayDate(company),
                   1,
-                  invoice.getInvoiceId(),
+                  origin,
                   null);
           move.getMoveLineList().add(creditMoveLine);
 
-          // Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
+          // Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de
+          // l'eau
           paymentService.useExcessPaymentWithAmountConsolidated(
               creditMoveLineList,
               amount,
@@ -387,6 +421,7 @@ public class MoveServiceImpl implements MoveService {
     Company company = invoice.getCompany();
     Partner partner = invoice.getPartner();
     Account account = invoice.getPartnerAccount();
+    String origin = invoice.getInvoiceId();
 
     Journal journal =
         accountConfigService.getAutoMiscOpeJournal(accountConfigService.getAccountConfig(company));
@@ -408,7 +443,9 @@ public class MoveServiceImpl implements MoveService {
             invoice.getInvoiceDate(),
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null);
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -424,7 +461,7 @@ public class MoveServiceImpl implements MoveService {
               true,
               appAccountService.getTodayDate(company),
               1,
-              invoice.getInvoiceId(),
+              origin,
               null);
       oDmove.getMoveLineList().add(debitMoveLine);
 
@@ -474,10 +511,13 @@ public class MoveServiceImpl implements MoveService {
             move.getFunctionalOriginSelect(),
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
-            move.getAutoYearClosureMove());
+            move.getAutoYearClosureMove(),
+            move.getOrigin(),
+            move.getDescription());
 
     move.setInvoice(move.getInvoice());
     move.setPaymentVoucher(move.getPaymentVoucher());
+    move.setDescription(move.getDescription());
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
@@ -560,6 +600,12 @@ public class MoveServiceImpl implements MoveService {
       return values;
     }
     values.put("$totalLines", move.getMoveLineList().size());
+
+    BigDecimal totalCurrency =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getCurrencyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalCurrency", totalCurrency.divide(BigDecimal.ONE.add(BigDecimal.ONE)));
 
     BigDecimal totalDebit =
         move.getMoveLineList().stream()
@@ -644,5 +690,218 @@ public class MoveServiceImpl implements MoveService {
       }
     }
     return move;
+  }
+
+  @Override
+  public MoveLine createCounterpartMoveLine(Move move) {
+    MoveLine moveLine = new MoveLine();
+    moveLine.setMove(moveRepository.find(move.getId()));
+    moveLine.setDate(move.getDate());
+    moveLine.setOrigin(move.getOrigin());
+    moveLine.setOriginDate(move.getOriginDate());
+    moveLine.setDescription(move.getDescription());
+    moveLine.setPartner(move.getPartner());
+    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
+
+    Account accountingAccount = getAccountingAccountFromJournal(move);
+
+    if (accountingAccount != null) moveLine.setAccount(accountingAccount);
+
+    BigDecimal amount = getCounterpartAmount(move);
+    if (amount.compareTo(BigDecimal.ZERO) == -1) {
+      moveLine.setCredit(amount.abs());
+    } else {
+      moveLine.setDebit(amount.abs());
+    }
+
+    moveLine = moveLineService.setCurrencyAmount(moveLine);
+
+    return moveLine;
+  }
+
+  protected BigDecimal getCounterpartAmount(Move move) {
+    BigDecimal amount = BigDecimal.ZERO;
+    for (MoveLine line : move.getMoveLineList()) {
+      amount = amount.add(line.getCredit());
+      amount = amount.subtract(line.getDebit());
+    }
+    return amount;
+  }
+
+  protected Account getAccountingAccountFromJournal(Move move) {
+    Account accountingAccount = null;
+    if (move.getJournal()
+            .getJournalType()
+            .getTechnicalTypeSelect()
+            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
+        || move.getJournal()
+            .getJournalType()
+            .getTechnicalTypeSelect()
+            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
+
+      for (int i = 0; i < move.getPartner().getAccountingSituationList().size(); i++) {
+        if (move.getPartner().getAccountingSituationList().get(i).equals(move.getCompany())) {
+          if (move.getJournal()
+              .getJournalType()
+              .getTechnicalTypeSelect()
+              .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
+            accountingAccount =
+                move.getPartner().getAccountingSituationList().get(i).getSupplierAccount();
+          else if (move.getJournal()
+              .getJournalType()
+              .getTechnicalTypeSelect()
+              .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
+            accountingAccount =
+                move.getPartner().getAccountingSituationList().get(i).getCustomerAccount();
+        }
+      }
+    } else if (move.getJournal()
+        .getJournalType()
+        .getTechnicalTypeSelect()
+        .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
+      if (move.getPaymentMode() != null)
+        for (int i = 0; i < move.getPaymentMode().getAccountManagementList().size(); i++) {
+          if (move.getPaymentMode()
+              .getAccountManagementList()
+              .get(0)
+              .getCompany()
+              .equals(move.getCompany())) {
+            accountingAccount =
+                move.getPaymentMode().getAccountManagementList().get(0).getCashAccount();
+          }
+        }
+    }
+    if (accountingAccount == null) {
+      if (move.getJournal()
+          .getJournalType()
+          .getTechnicalTypeSelect()
+          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
+        accountingAccount = move.getCompany().getAccountConfig().getSupplierAccount();
+      else if (move.getJournal()
+          .getJournalType()
+          .getTechnicalTypeSelect()
+          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
+        accountingAccount = move.getCompany().getAccountConfig().getCustomerAccount();
+    }
+    return accountingAccount;
+  }
+
+  @Override
+  public void setOriginAndDescriptionOnMoveLineList(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLine.setDescription(move.getDescription());
+      moveLine.setOrigin(move.getOrigin());
+    }
+  }
+
+  @Override
+  public Account getAccountingAccountFromAccountConfig(Move move) {
+    List<AccountingSituation> accountConfigs =
+        move.getPartner().getAccountingSituationList().stream()
+            .filter(
+                accountingSituation -> accountingSituation.getCompany().equals(move.getCompany()))
+            .collect(Collectors.toList());
+    Account accountingAccount = null;
+
+    if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+      if (accountConfigs.size() > 0) {
+        accountingAccount = accountConfigs.get(0).getDefaultExpenseAccount();
+      }
+    } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+      if (accountConfigs.size() > 0)
+        accountingAccount = accountConfigs.get(0).getDefaultIncomeAccount();
+    } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
+      if (move.getPaymentMode() != null) {
+        if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.IN)) {
+          if (accountConfigs.size() > 0) {
+            accountingAccount = accountConfigs.get(0).getCustomerAccount();
+          }
+        } else if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.OUT)) {
+          if (accountConfigs.size() > 0) {
+            accountingAccount = accountConfigs.get(0).getSupplierAccount();
+          }
+        }
+      }
+    }
+
+    if (move.getPartner().getFiscalPosition() != null) {
+      accountingAccount =
+          Beans.get(FiscalPositionAccountService.class)
+              .getAccount(move.getPartner().getFiscalPosition(), accountingAccount);
+    }
+
+    return accountingAccount;
+  }
+
+  protected Account accountAcceptedInJournal(Move move, Account accountingAccount) {
+    Journal journal = move.getJournal();
+    boolean isInJournal = false;
+    for (Account account : journal.getValidAccountSet()) {
+      if (account.getId() == accountingAccount.getId()) {
+        isInJournal = true;
+        break;
+      }
+    }
+
+    for (AccountType accountType : journal.getValidAccountTypeSet()) {
+      if (accountType.getId() == accountingAccount.getAccountType().getId()) {
+        isInJournal = true;
+        break;
+      }
+    }
+    if (!isInJournal) accountingAccount = null;
+    return accountingAccount;
+  }
+
+  @Override
+  public TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount) {
+    List<TaxLine> taxLineList;
+    TaxLine taxLine = null;
+    Partner partner = move.getPartner();
+    if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
+      if (accountingAccount != null)
+        if (accountingAccount.getDefaultTax() != null) {
+          taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
+          if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+            taxLineList =
+                accountingAccount.getDefaultTax().getTaxLineList().stream()
+                    .filter(
+                        tl ->
+                            !moveLine.getDate().isBefore(tl.getEndDate())
+                                && !tl.getStartDate().isAfter(moveLine.getDate()))
+                    .collect(Collectors.toList());
+            if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
+          }
+        }
+    } else {
+      for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
+        if (accountingAccount != null)
+          if (taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
+            taxLine = taxEquiv.getToTax().getActiveTaxLine();
+            if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+              taxLineList =
+                  taxEquiv.getToTax().getTaxLineList().stream()
+                      .filter(
+                          tl ->
+                              !moveLine.getDate().isBefore(tl.getEndDate())
+                                  && !tl.getStartDate().isAfter(moveLine.getDate()))
+                      .collect(Collectors.toList());
+              if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
+            }
+            break;
+          }
+      }
+    }
+    return taxLine;
+  }
+
+  @Override
+  @Transactional
+  public void generateCounterpartMoveLine(Move move) {
+    move.addMoveLineListItem(createCounterpartMoveLine(move));
+    moveRepository.save(move);
   }
 }

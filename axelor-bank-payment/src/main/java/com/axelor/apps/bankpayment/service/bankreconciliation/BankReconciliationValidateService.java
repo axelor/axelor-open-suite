@@ -48,6 +48,7 @@ public class BankReconciliationValidateService {
   protected MoveLineService moveLineService;
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
+  protected BankReconciliationService bankReconciliationService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -56,7 +57,8 @@ public class BankReconciliationValidateService {
       MoveLineRepository moveLineRepository,
       MoveLineService moveLineService,
       BankReconciliationRepository bankReconciliationRepository,
-      BankReconciliationLineService bankReconciliationLineService) {
+      BankReconciliationLineService bankReconciliationLineService,
+      BankReconciliationService bankReconciliationService) {
 
     this.moveService = moveService;
     this.moveRepository = moveRepository;
@@ -64,6 +66,7 @@ public class BankReconciliationValidateService {
     this.moveLineService = moveLineService;
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
+    this.bankReconciliationService = bankReconciliationService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -91,7 +94,7 @@ public class BankReconciliationValidateService {
     bankReconciliation.setValidatedByUser(AuthUtils.getUser());
     bankReconciliation.setValidatedDate(
         Beans.get(AppBaseService.class).getTodayDate(bankReconciliation.getCompany()));
-
+    bankReconciliation = bankReconciliationService.computeEndingBalance(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
   }
 
@@ -112,9 +115,9 @@ public class BankReconciliationValidateService {
     Partner partner = bankReconciliationLine.getPartner();
 
     String reference = bankReconciliationLine.getReference();
-    String name = bankReconciliationLine.getName();
-    if (name != null && name.length() > 255) {
-      name = name.substring(0, 255);
+    String description = bankReconciliationLine.getName();
+    if (description != null && description.length() > 255) {
+      description = description.substring(0, 255);
     }
 
     BigDecimal amount = debit.add(credit);
@@ -134,7 +137,9 @@ public class BankReconciliationValidateService {
                 effectDate,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                description);
 
     MoveLine partnerMoveLine =
         moveLineService.createMoveLine(
@@ -147,7 +152,7 @@ public class BankReconciliationValidateService {
             effectDate,
             1,
             origin,
-            name);
+            description);
     move.addMoveLineListItem(partnerMoveLine);
 
     MoveLine cashMoveLine =
@@ -161,7 +166,7 @@ public class BankReconciliationValidateService {
             effectDate,
             2,
             origin,
-            name);
+            description);
     cashMoveLine.setBankReconciledAmount(amount);
 
     move.addMoveLineListItem(cashMoveLine);
@@ -170,7 +175,7 @@ public class BankReconciliationValidateService {
 
     moveService.getMoveValidateService().validate(move);
 
-    bankReconciliationLine.setMoveLine(cashMoveLine);
+    bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, cashMoveLine);
 
     bankReconciliationLine.setIsPosted(true);
 
@@ -237,6 +242,10 @@ public class BankReconciliationValidateService {
         if (firstLine) {
           bankReconciliationLine.setDebit(debit);
           bankReconciliationLine.setCredit(credit);
+          bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+          moveLine =
+              bankReconciliationLineService.setMoveLinePostedNbr(
+                  moveLine, bankReconciliationLine.getPostedNbr());
           bankReconciliationLine.setMoveLine(moveLine);
           firstLine = false;
         } else {

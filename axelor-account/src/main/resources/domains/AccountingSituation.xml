@@ -14,6 +14,8 @@
 		<many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
 		<many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
 		<many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account" title="Employee account"/>
+		<many-to-one name="defaultExpenseAccount" ref="com.axelor.apps.account.db.Account" title="Default expense account" help="When inputing moves on an expense journal, when the company and the partner are selected on the move, this account will be automaticaly filled in the first move line"/>
+		<many-to-one name="defaultIncomeAccount" ref="com.axelor.apps.account.db.Account" title="Default income account" help="When inputing moves on a sale jounral, when the company and the partner are selected on the move, this account will be automaticaly filled in the first move line"/>
 
 		<!-- PAGE Compte Client -->
 		<decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
@@ -40,6 +42,10 @@
 		<!-- Reported Balance -->
 		<one-to-many name="reportedBalanceLineList" ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation" title="Reported balance lines"/>
 		
+		<!-- Holdback -->
+        <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Holdback Customer account" />
+        <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account" title="Holdback Supplier account" />
+		
 		<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
 		
 		<string name="name">
@@ -61,6 +67,10 @@
 			return name;
 	    ]]>
 		</string>
+    <track>
+      <field name="defaultExpenseAccount"/>
+      <field name="defaultIncomeAccount"/>
+    </track>
 
 	</entity>
 </domain-models>

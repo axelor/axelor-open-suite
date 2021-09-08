@@ -110,7 +110,9 @@ public class MoveValidateService {
       }
 
       if (moveLine.getOriginDate() == null) {
-        moveLine.setOriginDate(date);
+        if (ObjectUtils.notEmpty(move.getOriginDate()))
+          moveLine.setOriginDate(move.getOriginDate());
+        else moveLine.setOriginDate(date);
       }
 
       if (partner != null) {

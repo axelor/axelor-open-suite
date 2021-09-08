@@ -191,7 +191,9 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             functionalOriginSelect,
             false,
             false,
-            !isReverse);
+            !isReverse,
+            origin,
+            moveDescription);
     counter = 0;
 
     this.generateCloseAnnualMoveLine(

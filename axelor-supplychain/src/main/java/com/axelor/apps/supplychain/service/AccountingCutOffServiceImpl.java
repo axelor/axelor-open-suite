@@ -300,7 +300,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             moveDate,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF);
+            MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
+            origin,
+            moveDescription);
 
     counter = 0;
 
