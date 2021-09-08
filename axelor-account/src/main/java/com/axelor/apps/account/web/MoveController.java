@@ -389,7 +389,11 @@ public class MoveController {
 
     Move move =
         Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
-    Beans.get(MoveService.class).generateCounterpartMoveLine(move);
+    try {
+      Beans.get(MoveService.class).generateCounterpartMoveLine(move);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
     response.setReload(true);
   }
 

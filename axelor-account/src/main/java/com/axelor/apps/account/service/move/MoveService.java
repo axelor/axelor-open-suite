@@ -108,5 +108,5 @@ public interface MoveService {
 
   TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount);
 
-  void generateCounterpartMoveLine(Move move);
+  void generateCounterpartMoveLine(Move move) throws AxelorException;
 }

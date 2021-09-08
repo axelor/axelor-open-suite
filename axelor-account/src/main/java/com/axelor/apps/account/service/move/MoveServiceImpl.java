@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -898,8 +899,107 @@ public class MoveServiceImpl implements MoveService {
 
   @Override
   @Transactional
-  public void generateCounterpartMoveLine(Move move) {
-    move.addMoveLineListItem(createCounterpartMoveLine(move));
+  public void generateCounterpartMoveLine(Move move) throws AxelorException {
+    MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
+    move.addMoveLineListItem(counterPartMoveLine);
+    generateCounterpartAnalyticMoveLine(move, counterPartMoveLine);
     moveRepository.save(move);
+  }
+
+  public void generateCounterpartAnalyticMoveLine(Move move, MoveLine counterpartMoveLine)
+      throws AxelorException {
+    List<AnalyticAccount> analyticAccounts = getAnalyticAccountList(move);
+    List<AnalyticMoveLine> analyticMoveLines = getAnalyticMoveLines(move);
+    counterpartMoveLine.clearAnalyticMoveLineList();
+    for (AnalyticAccount analyticAccount : analyticAccounts) {
+      counterpartMoveLine.addAnalyticMoveLineListItem(
+          createAnalyticMoveLine(analyticAccount, analyticMoveLines, counterpartMoveLine));
+    }
+    if(counterpartMoveLine.getAnalyticMoveLineList() != null)
+    counterpartMoveLine =
+        computeCounterpartAnalyticMoveLines(counterpartMoveLine, analyticMoveLines);
+  }
+
+  protected MoveLine computeCounterpartAnalyticMoveLines(
+      MoveLine counterpartMoveLine, List<AnalyticMoveLine> analyticMoveLines) {
+    BigDecimal totalAmount = BigDecimal.ZERO;
+    BigDecimal counterpartAmount =
+        counterpartMoveLine.getDebit().add(counterpartMoveLine.getCredit());
+    BigDecimal analyticMoveLineAmount = BigDecimal.ZERO;
+
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLines) {
+      totalAmount = totalAmount.add(analyticMoveLine.getAmount());
+    }
+    for (AnalyticMoveLine analyticMoveLine : counterpartMoveLine.getAnalyticMoveLineList()) {
+      analyticMoveLineAmount = analyticMoveLine.getAmount();
+      analyticMoveLine.setAmount(
+          counterpartAmount.multiply(analyticMoveLineAmount).divide(totalAmount));
+    }
+    return counterpartMoveLine;
+  }
+
+  protected AnalyticMoveLine createAnalyticMoveLine(
+      AnalyticAccount analyticAccount,
+      List<AnalyticMoveLine> analyticMoveLines,
+      MoveLine counterpartMoveLine)
+      throws AxelorException {
+    List<AnalyticMoveLine> accountAnalyticMoveLines =
+        analyticMoveLines.stream()
+            .filter(aml -> aml.getAnalyticAccount().equals(analyticAccount))
+            .collect(Collectors.toList());
+    AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
+    analyticMoveLine.setAnalyticAccount(analyticAccount);
+    analyticMoveLine.setAccount(counterpartMoveLine.getAccount());
+    analyticMoveLine.setAccountType(counterpartMoveLine.getAccount().getAccountType());
+    analyticMoveLine.setAmount(BigDecimal.ZERO);
+    for (AnalyticMoveLine aml : accountAnalyticMoveLines) {
+      analyticMoveLine.setAmount(analyticMoveLine.getAmount().add(aml.getAmount()));
+    }
+    analyticMoveLine.setDate(counterpartMoveLine.getDate());
+
+    if (counterpartMoveLine.getMove() != null
+        && accountConfigService
+                .getAccountConfig(counterpartMoveLine.getMove().getCompany())
+                .getAnalyticJournal()
+            != null) {
+
+      analyticMoveLine.setAnalyticJournal(
+          accountConfigService
+              .getAccountConfig(analyticAccount.getAnalyticAxis().getCompany())
+              .getAnalyticJournal());
+    }
+    analyticMoveLine.setAnalyticAxis(analyticMoveLines.get(0).getAnalyticAxis());
+
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+
+    analyticMoveLine.setMoveLine(counterpartMoveLine);
+    return analyticMoveLine;
+  }
+
+  protected List<AnalyticMoveLine> getAnalyticMoveLines(Move move) {
+    List<AnalyticMoveLine> analyticMoveLines = new ArrayList<AnalyticMoveLine>();
+    for (MoveLine moveLine : move.getMoveLineList()) {
+    	if(moveLine.getAnalyticMoveLineList() != null)
+    	{
+      for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+        analyticMoveLines.add(analyticMoveLine);
+      }
+    	}
+    }
+    return analyticMoveLines;
+  }
+
+  protected List<AnalyticAccount> getAnalyticAccountList(Move move) {
+    List<AnalyticAccount> analyticAccounts = new ArrayList<AnalyticAccount>();
+    for (MoveLine moveLine : move.getMoveLineList()) {
+    	if(moveLine.getAnalyticMoveLineList() != null)
+    	{
+      for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+        if (!analyticAccounts.contains(analyticMoveLine.getAnalyticAccount())) {
+          analyticAccounts.add(analyticMoveLine.getAnalyticAccount());
+        }}
+      }
+    }
+    return analyticAccounts;
   }
 }
