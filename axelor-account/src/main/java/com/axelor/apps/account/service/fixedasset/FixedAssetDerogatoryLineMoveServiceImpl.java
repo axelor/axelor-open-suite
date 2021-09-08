@@ -163,6 +163,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetDerogatoryLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     log.debug(
         "Creating an fixed asset derogatory line specific accounting entry {} (Company : {}, Journal : {})",
@@ -180,12 +181,12 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<>();
-
-      String origin = fixedAsset.getReference();
 
       if (creditLineAccount == null || debitLineAccount == null) {
         throw new AxelorException(

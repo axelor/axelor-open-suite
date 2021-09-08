@@ -222,6 +222,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+    String origin = fixedAsset.getReference();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -239,7 +240,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
     BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
     BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
     if (move != null
@@ -249,7 +252,6 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         && (impairmentValue.signum() != 0)) {
       List<MoveLine> moveLines = new ArrayList<>();
 
-      String origin = fixedAsset.getReference();
       FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
       Account debitLineAccount;
       Account creditLineAccount;
@@ -563,6 +565,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Journal journal = company.getAccountConfig().getCustomerSalesJournal();
     Partner partner = fixedAsset.getPartner();
+    String origin = fixedAsset.getReference();
+
     // Creating move
     Move move =
         moveCreateService.createMove(
@@ -573,12 +577,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             disposalDate,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET);
+            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+            origin,
+            null);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
-      String origin = fixedAsset.getReference();
       Account creditAccountOne =
           fixedAsset.getFixedAssetCategory().getRealisedAssetsIncomeAccount();
       BigDecimal denominator = BigDecimal.ONE.add(taxLine.getValue());
