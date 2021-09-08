@@ -739,20 +739,19 @@ public class MoveServiceImpl implements MoveService {
             .getTechnicalTypeSelect()
             .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
 
-      for (int i = 0; i < move.getPartner().getAccountingSituationList().size(); i++) {
-        if (move.getPartner().getAccountingSituationList().get(i).getCompany().equals(move.getCompany())) {
+      for (AccountingSituation accountingSituation :
+          move.getPartner().getAccountingSituationList()) {
+        if (accountingSituation.getCompany().equals(move.getCompany())) {
           if (move.getJournal()
               .getJournalType()
               .getTechnicalTypeSelect()
               .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
-            accountingAccount =
-                move.getPartner().getAccountingSituationList().get(i).getSupplierAccount();
+            accountingAccount = accountingSituation.getSupplierAccount();
           else if (move.getJournal()
               .getJournalType()
               .getTechnicalTypeSelect()
               .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
-            accountingAccount =
-                move.getPartner().getAccountingSituationList().get(i).getCustomerAccount();
+            accountingAccount = accountingSituation.getCustomerAccount();
         }
       }
     } else if (move.getJournal()
