@@ -1402,7 +1402,7 @@
 "Invoice.invoiceTermAmountRemaining","Restant à payer",,
 "Invoice.invoiceTermDueDate","Date d'échéance",,
 "Invoice.invoiceTermEstimatedPaymentDate","Date de paiement estimée",,
-"Invoice.invoiceTermsFinancialDiscount"","Escompte",,
+"Invoice.invoiceTermsFinancialDiscount","Escompte",,
 "Invoice.invoiceTermHoldBack","Retenue de garantie",,
 "Invoice.invoiceTermName","Référence",,
 "Invoice.invoiceTermPaid","Payé",,
