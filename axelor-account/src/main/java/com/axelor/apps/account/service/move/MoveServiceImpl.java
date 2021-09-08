@@ -172,6 +172,10 @@ public class MoveServiceImpl implements MoveService {
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
+      String description = null;
+      if (journal != null) {
+        description = journal.getDescriptionModel();
+      }
 
       log.debug(
           "Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})",
@@ -196,7 +200,7 @@ public class MoveServiceImpl implements MoveService {
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               functionalOrigin,
               origin,
-              null);
+              description);
 
       if (move != null) {
 
@@ -207,8 +211,6 @@ public class MoveServiceImpl implements MoveService {
         boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
-
-        move.setDescription(null);
 
         move.getMoveLineList()
             .addAll(

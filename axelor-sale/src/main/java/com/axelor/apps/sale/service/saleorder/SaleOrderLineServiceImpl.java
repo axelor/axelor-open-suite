@@ -73,7 +73,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +81,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1171,103 +1172,182 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     List<Integer[]> fieldTypeAndOpList = getFieldTypeAndOperator(pricing);
 
-    Stream<PricingLine> pricingLineStream =
-        Optional.ofNullable(pricing.getPricingLineList()).orElse(Collections.emptyList()).stream();
-
-    if (ruleValue4 != null) {
-      pricingLineStream =
-          pricingLineStream.filter(
-              pricingLine ->
-                  checkClassificationParam(
-                          fieldTypeAndOpList.get(0)[0],
-                          fieldTypeAndOpList.get(0)[1],
-                          pricingLine.getClassificationIntParam1(),
-                          pricingLine.getClassificationDecParam1(),
-                          pricingLine.getClassificationParam1(),
-                          ruleValue1)
-                      && checkClassificationParam(
-                          fieldTypeAndOpList.get(1)[0],
-                          fieldTypeAndOpList.get(1)[1],
-                          pricingLine.getClassificationIntParam2(),
-                          pricingLine.getClassificationDecParam2(),
-                          pricingLine.getClassificationParam2(),
-                          ruleValue2)
-                      && checkClassificationParam(
-                          fieldTypeAndOpList.get(2)[0],
-                          fieldTypeAndOpList.get(2)[1],
-                          pricingLine.getClassificationIntParam3(),
-                          pricingLine.getClassificationDecParam3(),
-                          pricingLine.getClassificationParam3(),
-                          ruleValue3)
-                      && checkClassificationParam(
-                          fieldTypeAndOpList.get(3)[0],
-                          fieldTypeAndOpList.get(3)[1],
-                          pricingLine.getClassificationIntParam4(),
-                          pricingLine.getClassificationDecParam4(),
-                          pricingLine.getClassificationParam4(),
-                          ruleValue4));
-
-    } else if (ruleValue3 != null) {
-      pricingLineStream =
-          pricingLineStream.filter(
-              pricingLine ->
-                  checkClassificationParam(
-                          fieldTypeAndOpList.get(0)[0],
-                          fieldTypeAndOpList.get(0)[1],
-                          pricingLine.getClassificationIntParam1(),
-                          pricingLine.getClassificationDecParam1(),
-                          pricingLine.getClassificationParam1(),
-                          ruleValue1)
-                      && checkClassificationParam(
-                          fieldTypeAndOpList.get(1)[0],
-                          fieldTypeAndOpList.get(1)[1],
-                          pricingLine.getClassificationIntParam2(),
-                          pricingLine.getClassificationDecParam2(),
-                          pricingLine.getClassificationParam2(),
-                          ruleValue2)
-                      && checkClassificationParam(
-                          fieldTypeAndOpList.get(2)[0],
-                          fieldTypeAndOpList.get(2)[1],
-                          pricingLine.getClassificationIntParam3(),
-                          pricingLine.getClassificationDecParam3(),
-                          pricingLine.getClassificationParam3(),
-                          ruleValue3));
-
-    } else if (ruleValue2 != null) {
-      pricingLineStream =
-          pricingLineStream.filter(
-              pricingLine ->
-                  checkClassificationParam(
-                          fieldTypeAndOpList.get(0)[0],
-                          fieldTypeAndOpList.get(0)[1],
-                          pricingLine.getClassificationIntParam1(),
-                          pricingLine.getClassificationDecParam1(),
-                          pricingLine.getClassificationParam1(),
-                          ruleValue1)
-                      && checkClassificationParam(
-                          fieldTypeAndOpList.get(1)[0],
-                          fieldTypeAndOpList.get(1)[1],
-                          pricingLine.getClassificationIntParam2(),
-                          pricingLine.getClassificationDecParam2(),
-                          pricingLine.getClassificationParam2(),
-                          ruleValue2));
-
-    } else if (ruleValue1 != null) {
-      pricingLineStream =
-          pricingLineStream.filter(
-              pricingLine ->
-                  checkClassificationParam(
-                      fieldTypeAndOpList.get(0)[0],
-                      fieldTypeAndOpList.get(0)[1],
-                      pricingLine.getClassificationIntParam1(),
-                      pricingLine.getClassificationDecParam1(),
-                      pricingLine.getClassificationParam1(),
-                      ruleValue1));
+    List<PricingLine> pricingLines = pricing.getPricingLineList();
+    if (CollectionUtils.isEmpty(pricingLines)) {
+      return null;
     }
 
-    Optional<PricingLine> pricingLineValue = pricingLineStream.findFirst();
+    if (ruleValue4 != null) {
+      pricingLines =
+          checkClassificationRule1(
+              pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
+      pricingLines =
+          checkClassificationRule2(
+              pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
+      pricingLines =
+          checkClassificationRule3(
+              pricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
+      pricingLines =
+          checkClassificationRule4(
+              pricingLines, fieldTypeAndOpList.get(3)[0], fieldTypeAndOpList.get(3)[1], ruleValue4);
 
+    } else if (ruleValue3 != null) {
+      pricingLines =
+          checkClassificationRule1(
+              pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
+      pricingLines =
+          checkClassificationRule2(
+              pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
+      pricingLines =
+          checkClassificationRule3(
+              pricingLines, fieldTypeAndOpList.get(2)[0], fieldTypeAndOpList.get(2)[1], ruleValue3);
+
+    } else if (ruleValue2 != null) {
+      pricingLines =
+          checkClassificationRule1(
+              pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
+      pricingLines =
+          checkClassificationRule2(
+              pricingLines, fieldTypeAndOpList.get(1)[0], fieldTypeAndOpList.get(1)[1], ruleValue2);
+
+    } else if (ruleValue1 != null) {
+      pricingLines =
+          checkClassificationRule1(
+              pricingLines, fieldTypeAndOpList.get(0)[0], fieldTypeAndOpList.get(0)[1], ruleValue1);
+    }
+
+    Optional<PricingLine> pricingLineValue = pricingLines.stream().findFirst();
     return pricingLineValue.isPresent() ? pricingLineValue.get() : null;
+  }
+
+  private List<PricingLine> checkClassificationRule1(
+      List<PricingLine> pricingLines, int fieldTypeSelect, int operatorSelect, Object ruleValue) {
+
+    pricingLines =
+        this.sortPricingLines(
+            pricingLines,
+            fieldTypeSelect,
+            operatorSelect,
+            Comparator.comparing(PricingLine::getClassificationIntParam1),
+            Comparator.comparing(PricingLine::getClassificationDecParam1));
+
+    return pricingLines.stream()
+        .filter(
+            pricingLine ->
+                checkClassificationParam(
+                    fieldTypeSelect,
+                    operatorSelect,
+                    pricingLine.getClassificationIntParam1(),
+                    pricingLine.getClassificationDecParam1(),
+                    pricingLine.getClassificationParam1(),
+                    ruleValue))
+        .collect(Collectors.toList());
+  }
+
+  private List<PricingLine> checkClassificationRule2(
+      List<PricingLine> pricingLines, int fieldTypeSelect, int operatorSelect, Object ruleValue) {
+
+    pricingLines =
+        this.sortPricingLines(
+            pricingLines,
+            fieldTypeSelect,
+            operatorSelect,
+            Comparator.comparing(PricingLine::getClassificationIntParam2),
+            Comparator.comparing(PricingLine::getClassificationDecParam2));
+
+    return pricingLines.stream()
+        .filter(
+            pricingLine ->
+                checkClassificationParam(
+                    fieldTypeSelect,
+                    operatorSelect,
+                    pricingLine.getClassificationIntParam2(),
+                    pricingLine.getClassificationDecParam2(),
+                    pricingLine.getClassificationParam2(),
+                    ruleValue))
+        .collect(Collectors.toList());
+  }
+
+  private List<PricingLine> checkClassificationRule3(
+      List<PricingLine> pricingLines, int fieldTypeSelect, int operatorSelect, Object ruleValue) {
+
+    pricingLines =
+        this.sortPricingLines(
+            pricingLines,
+            fieldTypeSelect,
+            operatorSelect,
+            Comparator.comparing(PricingLine::getClassificationIntParam3),
+            Comparator.comparing(PricingLine::getClassificationDecParam3));
+
+    return pricingLines.stream()
+        .filter(
+            pricingLine ->
+                checkClassificationParam(
+                    fieldTypeSelect,
+                    operatorSelect,
+                    pricingLine.getClassificationIntParam3(),
+                    pricingLine.getClassificationDecParam3(),
+                    pricingLine.getClassificationParam3(),
+                    ruleValue))
+        .collect(Collectors.toList());
+  }
+
+  private List<PricingLine> checkClassificationRule4(
+      List<PricingLine> pricingLines, int fieldTypeSelect, int operatorSelect, Object ruleValue) {
+
+    pricingLines =
+        this.sortPricingLines(
+            pricingLines,
+            fieldTypeSelect,
+            operatorSelect,
+            Comparator.comparing(PricingLine::getClassificationIntParam4),
+            Comparator.comparing(PricingLine::getClassificationDecParam4));
+
+    return pricingLines.stream()
+        .filter(
+            pricingLine ->
+                checkClassificationParam(
+                    fieldTypeSelect,
+                    operatorSelect,
+                    pricingLine.getClassificationIntParam4(),
+                    pricingLine.getClassificationDecParam4(),
+                    pricingLine.getClassificationParam4(),
+                    ruleValue))
+        .collect(Collectors.toList());
+  }
+
+  private List<PricingLine> sortPricingLines(
+      List<PricingLine> pricingLines,
+      int fieldTypeSelect,
+      int operatorSelect,
+      Comparator<? super PricingLine> intComp,
+      Comparator<? super PricingLine> decComp) {
+
+    if (operatorSelect == PricingRuleRepository.OPERATOR_LESS_THAN) {
+      return this.sortPricingLineOnField(
+          pricingLines, fieldTypeSelect, intComp.reversed(), decComp.reversed());
+
+    } else if (operatorSelect == PricingRuleRepository.OPERATOR_GREATER_THAN) {
+      return this.sortPricingLineOnField(pricingLines, fieldTypeSelect, intComp, decComp);
+
+    } else {
+      return pricingLines;
+    }
+  }
+
+  private List<PricingLine> sortPricingLineOnField(
+      List<PricingLine> pricingLines,
+      int fieldTypeSelect,
+      Comparator<? super PricingLine> intComp,
+      Comparator<? super PricingLine> decComp) {
+
+    if (fieldTypeSelect == PricingRuleRepository.FIELD_TYPE_INTEGER) {
+      return pricingLines.stream().sorted(intComp).collect(Collectors.toList());
+
+    } else if (fieldTypeSelect == PricingRuleRepository.FIELD_TYPE_DECIMAL) {
+      return pricingLines.stream().sorted(decComp).collect(Collectors.toList());
+    }
+    return pricingLines;
   }
 
   private boolean checkClassificationParam(
@@ -1295,17 +1375,17 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     switch (classRuleOperator) {
       case PricingRuleRepository.OPERATOR_LESS_THAN:
         return param instanceof Integer
-            ? ((int) param) < ((int) value)
+            ? ((int) param) < (new BigDecimal(value.toString())).intValue()
             : ((BigDecimal) param).compareTo((BigDecimal) value) < 0;
 
       case PricingRuleRepository.OPERATOR_GREATER_THAN:
         return param instanceof Integer
-            ? ((int) param) > ((int) value)
+            ? ((int) param) > (new BigDecimal(value.toString())).intValue()
             : ((BigDecimal) param).compareTo((BigDecimal) value) > 0;
 
       default:
         return param instanceof Integer
-            ? ((int) param) == ((int) value)
+            ? ((int) param) == (new BigDecimal(value.toString())).intValue()
             : ((BigDecimal) param).compareTo((BigDecimal) value) == 0;
     }
   }
