@@ -761,7 +761,9 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsHoldBack()) invoiceTerm.setMoveLine(moveLine);
+      if (!invoiceTerm.getIsHoldBack()) {
+    	  invoiceTerm.setMoveLine(moveLine);
+      }
     }
     moveLines.add(moveLine);
     return moveLines;
@@ -1539,15 +1541,18 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
-    if (move.getMoveLineList().size() == 0)
-      try {
-        moveLine.setCurrencyRate(
-            currencyService.getCurrencyConversionRate(
-                move.getCurrency(), move.getCompany().getCurrency()));
-      } catch (AxelorException e1) {
-        e1.printStackTrace();
-      }
-    else moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
+    if (move.getMoveLineList().size() == 0) {
+        try {
+            moveLine.setCurrencyRate(
+                currencyService.getCurrencyConversionRate(
+                    move.getCurrency(), move.getCompany().getCurrency()));
+          } catch (AxelorException e1) {
+            TraceBackService.trace(e1);
+          }
+    }
+    else {
+    	moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
+    }
     if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
       BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
       moveLine.setCurrencyAmount(
@@ -1560,11 +1565,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException {
     TaxLine taxLine = null;
     LocalDate date = moveLine.getDate();
-    if (date == null) date = moveLine.getDueDate();
-    if (moveLine.getAccount() != null) {
-      if (moveLine.getAccount().getDefaultTax() != null) {
+    if (date == null) { 
+    	date = moveLine.getDueDate();
+    }
+    if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
         taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
-      }
     }
     return taxLine;
   }
