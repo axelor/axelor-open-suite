@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
@@ -68,6 +54,18 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveServiceImpl implements MoveService {
 
@@ -521,7 +519,6 @@ public class MoveServiceImpl implements MoveService {
             move.getInvoice(),
             move.getPaymentVoucher());
 
-
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED;
@@ -807,25 +804,30 @@ public class MoveServiceImpl implements MoveService {
     Account accountingAccount = null;
     JournalType journalType = null;
     if (move.getJournal() != null) {
-    	journalType = move.getJournal().getJournalType();
+      journalType = move.getJournal().getJournalType();
     }
     if (journalType != null && accountConfigs.size() > 0) {
-    	if (journalType.getTechnicalTypeSelect() == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
-	        accountingAccount = accountConfigs.get(0).getDefaultExpenseAccount();
-    	} else if (journalType.getTechnicalTypeSelect() == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
-	        accountingAccount = accountConfigs.get(0).getDefaultIncomeAccount();
-    	} else if (journalType.getTechnicalTypeSelect() == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY && move.getPaymentMode() != null) {
-	        if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.IN)) {
-	            accountingAccount = accountConfigs.get(0).getCustomerAccount();    	          
-	        } else if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.OUT)) {
-	            accountingAccount = accountConfigs.get(0).getSupplierAccount();
-	        }
-    	 }
+      if (journalType.getTechnicalTypeSelect()
+          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+        accountingAccount = accountConfigs.get(0).getDefaultExpenseAccount();
+      } else if (journalType.getTechnicalTypeSelect()
+          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+        accountingAccount = accountConfigs.get(0).getDefaultIncomeAccount();
+      } else if (journalType.getTechnicalTypeSelect()
+              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+          && move.getPaymentMode() != null) {
+        if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.IN)) {
+          accountingAccount = accountConfigs.get(0).getCustomerAccount();
+        } else if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.OUT)) {
+          accountingAccount = accountConfigs.get(0).getSupplierAccount();
+        }
+      }
     }
 
     if (move.getPartner().getFiscalPosition() != null) {
       accountingAccount =
-          fiscalPositionAccountService.getAccount(move.getPartner().getFiscalPosition(), accountingAccount);
+          fiscalPositionAccountService.getAccount(
+              move.getPartner().getFiscalPosition(), accountingAccount);
     }
 
     return accountingAccount;
@@ -857,31 +859,36 @@ public class MoveServiceImpl implements MoveService {
     Partner partner = move.getPartner();
     if (partner.getFiscalPosition() == null) {
       if (accountingAccount != null && accountingAccount.getDefaultTax() != null) {
-          taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
-          if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-            taxLine = findValidTaxLineForMoveLine(accountingAccount.getDefaultTax().getTaxLineList(), moveLine);
-          }
+        taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
+        if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+          taxLine =
+              findValidTaxLineForMoveLine(
+                  accountingAccount.getDefaultTax().getTaxLineList(), moveLine);
         }
+      }
     } else {
       for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
-        if (accountingAccount != null && taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
-            taxLine = taxEquiv.getToTax().getActiveTaxLine();
-            if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-              taxLine = findValidTaxLineForMoveLine(taxEquiv.getToTax().getTaxLineList(), moveLine);
-            }
-            break;
-       }
-     }
+        if (accountingAccount != null
+            && taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
+          taxLine = taxEquiv.getToTax().getActiveTaxLine();
+          if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+            taxLine = findValidTaxLineForMoveLine(taxEquiv.getToTax().getTaxLineList(), moveLine);
+          }
+          break;
+        }
+      }
     }
     return taxLine;
   }
-  
+
   protected TaxLine findValidTaxLineForMoveLine(List<TaxLine> taxLineList, MoveLine moveLine) {
-	  return taxLineList.stream()
-		      .filter(tl -> !moveLine.getDate().isBefore(tl.getEndDate())
-		                      && !tl.getStartDate().isAfter(moveLine.getDate()))
-		      .findFirst()
-		      .orElse(null);
+    return taxLineList.stream()
+        .filter(
+            tl ->
+                !moveLine.getDate().isBefore(tl.getEndDate())
+                    && !tl.getStartDate().isAfter(moveLine.getDate()))
+        .findFirst()
+        .orElse(null);
   }
 
   @Override
