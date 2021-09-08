@@ -660,11 +660,6 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ANALYTIC_TEMPLATE =
       /*$$(*/ "AccountingReportType17.total_by_analytic_template"; /*)*/
 
-  public static final String ACCOUNTING_REPORT_LABEL_PROVISIONAL =
-      /*$$(*/ "AccountingReportType.provisional"; /*)*/
-  public static final String ACCOUNTING_REPORT_LABEL_STATUS_SELECT_TITLE =
-      /*$$(*/ "AccountingReportType.status_select_title"; /*)*/
-
   public static final String ACCOUNTING_REPORT_19_DAS2_ACTIVITY =
       /*$$(*/ "AccountingReportType19.das2ActivityName"; /*)*/
   public static final String ACCOUNTING_REPORT_19_COMPANY =
@@ -718,6 +713,10 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_20_TO = /*$$(*/ "AccountingReportType20.to"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType20.total_report"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_PROVISIONAL =
+      /*$$(*/ "AccountingReportType.provisional"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_STATUS_SELECT_TITLE =
+      /*$$(*/ "AccountingReportType.status_select_title"; /*)*/
 
   public static final String INVOICE_PAYMENT_DATE = /*$$(*/ "InvoicePayment.date"; /*)*/
   public static final String INVOICE_PAYMENT_TYPE = /*$$(*/ "InvoicePayment.type"; /*)*/
