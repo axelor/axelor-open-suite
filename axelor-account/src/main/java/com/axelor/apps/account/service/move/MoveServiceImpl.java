@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -759,14 +760,10 @@ public class MoveServiceImpl implements MoveService {
         .getTechnicalTypeSelect()
         .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
       if (move.getPaymentMode() != null)
-        for (int i = 0; i < move.getPaymentMode().getAccountManagementList().size(); i++) {
-          if (move.getPaymentMode()
-              .getAccountManagementList()
-              .get(0)
-              .getCompany()
-              .equals(move.getCompany())) {
-            accountingAccount =
-                move.getPaymentMode().getAccountManagementList().get(0).getCashAccount();
+        for (AccountManagement accountManagement :
+            move.getPaymentMode().getAccountManagementList()) {
+          if (accountManagement.getCompany().equals(move.getCompany())) {
+            accountingAccount = accountManagement.getCashAccount();
           }
         }
     }
