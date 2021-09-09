@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -46,7 +47,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -83,6 +83,7 @@ public class MoveServiceImpl implements MoveService {
   protected AccountConfigService accountConfigService;
   protected MoveRepository moveRepository;
   protected CurrencyService currencyService;
+  protected FiscalPositionAccountService fiscalPositionAccountService;
 
   protected AppAccountService appAccountService;
 
@@ -100,7 +101,8 @@ public class MoveServiceImpl implements MoveService {
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
       AccountConfigService accountConfigService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      FiscalPositionAccountService fiscalPositionAccountService) {
 
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
@@ -114,8 +116,8 @@ public class MoveServiceImpl implements MoveService {
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
     this.currencyService = currencyService;
-
     this.appAccountService = appAccountService;
+    this.fiscalPositionAccountService = fiscalPositionAccountService;
   }
 
   @Override
@@ -513,11 +515,9 @@ public class MoveServiceImpl implements MoveService {
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove(),
             move.getOrigin(),
-            move.getDescription());
-
-    move.setInvoice(move.getInvoice());
-    move.setPaymentVoucher(move.getPaymentVoucher());
-    move.setDescription(move.getDescription());
+            move.getDescription(),
+            move.getInvoice(),
+            move.getPaymentVoucher());
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
@@ -802,35 +802,32 @@ public class MoveServiceImpl implements MoveService {
                 accountingSituation -> accountingSituation.getCompany().equals(move.getCompany()))
             .collect(Collectors.toList());
     Account accountingAccount = null;
-
-    if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
-      if (accountConfigs.size() > 0) {
+    JournalType journalType = null;
+    if (move.getJournal() != null) {
+      journalType = move.getJournal().getJournalType();
+    }
+    if (journalType != null && accountConfigs.size() > 0) {
+      if (journalType.getTechnicalTypeSelect()
+          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
         accountingAccount = accountConfigs.get(0).getDefaultExpenseAccount();
-      }
-    } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
-      if (accountConfigs.size() > 0)
+      } else if (journalType.getTechnicalTypeSelect()
+          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
         accountingAccount = accountConfigs.get(0).getDefaultIncomeAccount();
-    } else if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
-      if (move.getPaymentMode() != null) {
+      } else if (journalType.getTechnicalTypeSelect()
+              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+          && move.getPaymentMode() != null) {
         if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.IN)) {
-          if (accountConfigs.size() > 0) {
-            accountingAccount = accountConfigs.get(0).getCustomerAccount();
-          }
+          accountingAccount = accountConfigs.get(0).getCustomerAccount();
         } else if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.OUT)) {
-          if (accountConfigs.size() > 0) {
-            accountingAccount = accountConfigs.get(0).getSupplierAccount();
-          }
+          accountingAccount = accountConfigs.get(0).getSupplierAccount();
         }
       }
     }
 
     if (move.getPartner().getFiscalPosition() != null) {
       accountingAccount =
-          Beans.get(FiscalPositionAccountService.class)
-              .getAccount(move.getPartner().getFiscalPosition(), accountingAccount);
+          fiscalPositionAccountService.getAccount(
+              move.getPartner().getFiscalPosition(), accountingAccount);
     }
 
     return accountingAccount;
@@ -858,44 +855,40 @@ public class MoveServiceImpl implements MoveService {
 
   @Override
   public TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount) {
-    List<TaxLine> taxLineList;
     TaxLine taxLine = null;
     Partner partner = move.getPartner();
-    if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
-      if (accountingAccount != null)
-        if (accountingAccount.getDefaultTax() != null) {
-          taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
-          if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-            taxLineList =
-                accountingAccount.getDefaultTax().getTaxLineList().stream()
-                    .filter(
-                        tl ->
-                            !moveLine.getDate().isBefore(tl.getEndDate())
-                                && !tl.getStartDate().isAfter(moveLine.getDate()))
-                    .collect(Collectors.toList());
-            if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
-          }
+    if (partner.getFiscalPosition() == null) {
+      if (accountingAccount != null && accountingAccount.getDefaultTax() != null) {
+        taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
+        if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+          taxLine =
+              findValidTaxLineForMoveLine(
+                  accountingAccount.getDefaultTax().getTaxLineList(), moveLine);
         }
+      }
     } else {
       for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
-        if (accountingAccount != null)
-          if (taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
-            taxLine = taxEquiv.getToTax().getActiveTaxLine();
-            if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-              taxLineList =
-                  taxEquiv.getToTax().getTaxLineList().stream()
-                      .filter(
-                          tl ->
-                              !moveLine.getDate().isBefore(tl.getEndDate())
-                                  && !tl.getStartDate().isAfter(moveLine.getDate()))
-                      .collect(Collectors.toList());
-              if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
-            }
-            break;
+        if (accountingAccount != null
+            && taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
+          taxLine = taxEquiv.getToTax().getActiveTaxLine();
+          if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+            taxLine = findValidTaxLineForMoveLine(taxEquiv.getToTax().getTaxLineList(), moveLine);
           }
+          break;
+        }
       }
     }
     return taxLine;
+  }
+
+  protected TaxLine findValidTaxLineForMoveLine(List<TaxLine> taxLineList, MoveLine moveLine) {
+    return taxLineList.stream()
+        .filter(
+            tl ->
+                !moveLine.getDate().isBefore(tl.getEndDate())
+                    && !tl.getStartDate().isAfter(moveLine.getDate()))
+        .findFirst()
+        .orElse(null);
   }
 
   @Override
