@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -271,44 +270,6 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             functionalOriginSelect,
             origin,
             description);
-    move.setPaymentVoucher(paymentVoucher);
-    return move;
-  }
-
-  @Override
-  public Move createMove(
-      Journal journal,
-      Company company,
-      Currency currency,
-      Partner partner,
-      LocalDate date,
-      PaymentMode paymentMode,
-      int technicalOriginSelect,
-      int functionalOriginSelect,
-      boolean ignoreInDebtRecoveryOk,
-      boolean ignoreInAccountingOk,
-      boolean autoYearClosureMove,
-      String origin,
-      String description,
-      Invoice invoice,
-      PaymentVoucher paymentVoucher)
-      throws AxelorException {
-    Move move =
-        this.createMove(
-            journal,
-            company,
-            currency,
-            partner,
-            date,
-            paymentMode,
-            technicalOriginSelect,
-            functionalOriginSelect,
-            ignoreInDebtRecoveryOk,
-            ignoreInAccountingOk,
-            autoYearClosureMove,
-            origin,
-            description);
-    move.setInvoice(invoice);
     move.setPaymentVoucher(paymentVoucher);
     return move;
   }
