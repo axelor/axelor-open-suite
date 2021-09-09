@@ -1329,8 +1329,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
         String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
 
-        //        moveLine.setCredit(BigDecimal.ZERO);
-        //        moveLine.setDebit(BigDecimal.ZERO);
+        moveLine.setCredit(BigDecimal.ZERO);
+        moveLine.setDebit(BigDecimal.ZERO);
         map.put(sourceTaxLineKey, moveLine);
         moveLineItr.remove();
         continue;
@@ -1396,8 +1396,10 @@ public class MoveLineServiceImpl implements MoveLineService {
                 && map.containsKey(newSourceTaxLineKey)) {
               newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
             }
-            newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
-            newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
+            newOrUpdatedMoveLine.setDebit(
+                newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
+            newOrUpdatedMoveLine.setCredit(
+                newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
           }
           newOrUpdatedMoveLine.setMove(move);
           newOrUpdatedMoveLine = setCurrencyAmount(newOrUpdatedMoveLine);
