@@ -38,7 +38,6 @@
 		<one-to-many name="pricingLineList" ref="com.axelor.apps.base.db.PricingLine"
 			mappedBy="pricing" title="Pricing lines" />
 			
-		<entity-listener class="com.axelor.apps.base.db.repo.PricingListener"/>
 	</entity>
 
 </domain-models>

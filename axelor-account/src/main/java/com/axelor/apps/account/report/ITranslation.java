@@ -713,6 +713,10 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_20_TO = /*$$(*/ "AccountingReportType20.to"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType20.total_report"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_PROVISIONAL =
+      /*$$(*/ "AccountingReportType.provisional"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_STATUS_SELECT_TITLE =
+      /*$$(*/ "AccountingReportType.status_select_title"; /*)*/
 
   public static final String INVOICE_PAYMENT_DATE = /*$$(*/ "InvoicePayment.date"; /*)*/
   public static final String INVOICE_PAYMENT_TYPE = /*$$(*/ "InvoicePayment.type"; /*)*/

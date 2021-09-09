@@ -28,6 +28,7 @@ import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 
 public interface MoveCreateService {
+
   /**
    * Créer une écriture comptable à la date du jour impactant la compta.
    *
@@ -40,7 +41,7 @@ public interface MoveCreateService {
    * @return
    * @throws AxelorException
    */
-  public Move createMove(
+  Move createMove(
       Journal journal,
       Company company,
       Currency currency,
@@ -65,7 +66,7 @@ public interface MoveCreateService {
    * @return
    * @throws AxelorException
    */
-  public Move createMove(
+  Move createMove(
       Journal journal,
       Company company,
       Currency currency,
@@ -93,7 +94,7 @@ public interface MoveCreateService {
    * @return
    * @throws AxelorException
    */
-  public Move createMove(
+  Move createMove(
       Journal journal,
       Company company,
       Currency currency,
@@ -122,7 +123,7 @@ public interface MoveCreateService {
    * @return
    * @throws AxelorException
    */
-  public Move createMoveWithPaymentVoucher(
+  Move createMoveWithPaymentVoucher(
       Journal journal,
       Company company,
       PaymentVoucher paymentVoucher,
