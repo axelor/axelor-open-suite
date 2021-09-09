@@ -144,6 +144,8 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveLineServiceImpl;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.move.MoveServiceImpl;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveToolServiceImpl;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -331,5 +333,7 @@ public class AccountModule extends AxelorModule {
     bind(PaymentMoveLineDistributionService.class).to(PaymentMoveLineDistributionServiceImpl.class);
 
     bind(MoveCreateService.class).to(MoveCreateServiceImpl.class);
+
+    bind(MoveToolService.class).to(MoveToolServiceImpl.class);
   }
 }
