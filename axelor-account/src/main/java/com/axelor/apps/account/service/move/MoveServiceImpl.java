@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -917,9 +918,14 @@ public class MoveServiceImpl implements MoveService {
       counterpartMoveLine.addAnalyticMoveLineListItem(
           createAnalyticMoveLine(analyticAccount, analyticMoveLines, counterpartMoveLine));
     }
-    if(counterpartMoveLine.getAnalyticMoveLineList() != null)
-    counterpartMoveLine =
-        computeCounterpartAnalyticMoveLines(counterpartMoveLine, analyticMoveLines);
+
+    if (appAccountService.getAppAccount().getManageAnalyticAccounting()
+        && move.getCompany().getAccountConfig().getManageAnalyticAccounting()) {
+      if (counterpartMoveLine.getAnalyticMoveLineList() != null) {
+        counterpartMoveLine =
+            computeCounterpartAnalyticMoveLines(counterpartMoveLine, analyticMoveLines);
+      }
+    }
   }
 
   protected MoveLine computeCounterpartAnalyticMoveLines(
@@ -936,6 +942,7 @@ public class MoveServiceImpl implements MoveService {
       analyticMoveLineAmount = analyticMoveLine.getAmount();
       analyticMoveLine.setAmount(
           counterpartAmount.multiply(analyticMoveLineAmount).divide(totalAmount));
+      analyticMoveLine.setPercentage(analyticMoveLineAmount.divide(totalAmount));
     }
     return counterpartMoveLine;
   }
@@ -954,6 +961,7 @@ public class MoveServiceImpl implements MoveService {
     analyticMoveLine.setAccount(counterpartMoveLine.getAccount());
     analyticMoveLine.setAccountType(counterpartMoveLine.getAccount().getAccountType());
     analyticMoveLine.setAmount(BigDecimal.ZERO);
+
     for (AnalyticMoveLine aml : accountAnalyticMoveLines) {
       analyticMoveLine.setAmount(analyticMoveLine.getAmount().add(aml.getAmount()));
     }
@@ -970,6 +978,12 @@ public class MoveServiceImpl implements MoveService {
               .getAccountConfig(analyticAccount.getAnalyticAxis().getCompany())
               .getAnalyticJournal());
     }
+    AnalyticJournal analyticJournal = analyticMoveLine.getAnalyticJournal();
+    Company company = analyticJournal == null ? null : analyticJournal.getCompany();
+    if (company != null) {
+      analyticMoveLine.setCurrency(company.getCurrency());
+    }
+
     analyticMoveLine.setAnalyticAxis(analyticMoveLines.get(0).getAnalyticAxis());
 
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
@@ -981,12 +995,11 @@ public class MoveServiceImpl implements MoveService {
   protected List<AnalyticMoveLine> getAnalyticMoveLines(Move move) {
     List<AnalyticMoveLine> analyticMoveLines = new ArrayList<AnalyticMoveLine>();
     for (MoveLine moveLine : move.getMoveLineList()) {
-    	if(moveLine.getAnalyticMoveLineList() != null)
-    	{
-      for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-        analyticMoveLines.add(analyticMoveLine);
+      if (moveLine.getAnalyticMoveLineList() != null) {
+        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+          analyticMoveLines.add(analyticMoveLine);
+        }
       }
-    	}
     }
     return analyticMoveLines;
   }
@@ -994,12 +1007,12 @@ public class MoveServiceImpl implements MoveService {
   protected List<AnalyticAccount> getAnalyticAccountList(Move move) {
     List<AnalyticAccount> analyticAccounts = new ArrayList<AnalyticAccount>();
     for (MoveLine moveLine : move.getMoveLineList()) {
-    	if(moveLine.getAnalyticMoveLineList() != null)
-    	{
-      for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-        if (!analyticAccounts.contains(analyticMoveLine.getAnalyticAccount())) {
-          analyticAccounts.add(analyticMoveLine.getAnalyticAccount());
-        }}
+      if (moveLine.getAnalyticMoveLineList() != null) {
+        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+          if (!analyticAccounts.contains(analyticMoveLine.getAnalyticAccount())) {
+            analyticAccounts.add(analyticMoveLine.getAnalyticAccount());
+          }
+        }
       }
     }
     return analyticAccounts;
