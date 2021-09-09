@@ -35,17 +35,23 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -91,18 +97,24 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AccountManagementAccountService accountManagementService;
   protected TaxAccountService taxAccountService;
   protected FiscalPositionAccountService fiscalPositionAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected AppAccountService appAccountService;
   protected CurrencyService currencyService;
   protected CompanyConfigService companyConfigService;
   protected MoveLineRepository moveLineRepository;
   protected TaxPaymentMoveLineService taxPaymentMoveLineService;
+  protected TaxLineRepository taxLineRepository;
   protected TaxService taxService;
+  protected AnalyticJournalRepository analyticJournalRepository;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AnalyticAccountRepository analyticAccountRepository;
+  protected AccountRepository accountRepository;
   protected AccountConfigService accountConfigService;
   protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
+  protected AnalyticMoveLineServiceImpl analyticMoveLineServiceImpl;
   protected ListToolService listToolService;
   protected InvoiceService invoiceService;
   protected InvoiceRepository invoiceRepository;
@@ -112,36 +124,48 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Inject
   public MoveLineServiceImpl(
+      AccountManagementAccountService accountManagementService,
       TaxAccountService taxAccountService,
       FiscalPositionAccountService fiscalPositionAccountService,
+      AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       CurrencyService currencyService,
       CompanyConfigService companyConfigService,
       MoveLineRepository moveLineRepository,
       TaxPaymentMoveLineService taxPaymentMoveLineService,
+      TaxLineRepository taxLineRepository,
       TaxService taxService,
+      AnalyticJournalRepository analyticJournalRepository,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       AnalyticAccountRepository analyticAccountRepository,
+      AccountRepository accountRepository,
       AccountConfigService accountConfigService,
       AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      AnalyticMoveLineServiceImpl analyticMoveLineServiceImpl,
       ListToolService listToolService,
       InvoiceService invoiceService,
       InvoiceRepository invoiceRepository,
       PaymentService paymentService,
       MoveRepository moveRepository,
       AppBaseService appBaseService) {
+    this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.appAccountService = appAccountService;
     this.currencyService = currencyService;
     this.companyConfigService = companyConfigService;
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
+    this.taxLineRepository = taxLineRepository;
     this.taxService = taxService;
+    this.analyticJournalRepository = analyticJournalRepository;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.analyticAccountRepository = analyticAccountRepository;
+    this.accountRepository = accountRepository;
     this.accountConfigService = accountConfigService;
     this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
+    this.analyticMoveLineServiceImpl = analyticMoveLineServiceImpl;
     this.listToolService = listToolService;
     this.invoiceService = invoiceService;
     this.invoiceRepository = invoiceRepository;
@@ -1560,31 +1584,31 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       if (moveLine.getAxis1AnalyticAccount() != null) {
         analyticMoveLine =
-            analyticMoveLineService.computeAnalyticMoveLine(
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
                 moveLine, moveLine.getAxis1AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis2AnalyticAccount() != null) {
         analyticMoveLine =
-            analyticMoveLineService.computeAnalyticMoveLine(
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
                 moveLine, moveLine.getAxis2AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis3AnalyticAccount() != null) {
         analyticMoveLine =
-            analyticMoveLineService.computeAnalyticMoveLine(
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
                 moveLine, moveLine.getAxis3AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis4AnalyticAccount() != null) {
         analyticMoveLine =
-            analyticMoveLineService.computeAnalyticMoveLine(
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
                 moveLine, moveLine.getAxis4AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
       if (moveLine.getAxis5AnalyticAccount() != null) {
         analyticMoveLine =
-            analyticMoveLineService.computeAnalyticMoveLine(
+            analyticMoveLineServiceImpl.computeAnalyticMoveLine(
                 moveLine, moveLine.getAxis5AnalyticAccount());
         moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
       }
