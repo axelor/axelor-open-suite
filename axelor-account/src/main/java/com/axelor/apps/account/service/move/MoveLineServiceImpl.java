@@ -71,6 +71,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -116,11 +117,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AnalyticMoveLineServiceImpl analyticMoveLineServiceImpl;
   protected ListToolService listToolService;
-  protected InvoiceService invoiceService;
-  protected InvoiceRepository invoiceRepository;
-  protected PaymentService paymentService;
-  protected MoveRepository moveRepository;
-  protected AppBaseService appBaseService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -142,12 +138,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountConfigService accountConfigService,
       AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineServiceImpl analyticMoveLineServiceImpl,
-      ListToolService listToolService,
-      InvoiceService invoiceService,
-      InvoiceRepository invoiceRepository,
-      PaymentService paymentService,
-      MoveRepository moveRepository,
-      AppBaseService appBaseService) {
+      ListToolService listToolService) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -167,11 +158,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.analyticMoveLineServiceImpl = analyticMoveLineServiceImpl;
     this.listToolService = listToolService;
-    this.invoiceService = invoiceService;
-    this.invoiceRepository = invoiceRepository;
-    this.paymentService = paymentService;
-    this.moveRepository = moveRepository;
-    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -501,6 +487,9 @@ public class MoveLineServiceImpl implements MoveLineService {
         addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
     int moveLineId = moveLines.size() + 1;
 
+    AnalyticMoveLineRepository analyticMoveLineRepository =
+        Beans.get(AnalyticMoveLineRepository.class);
+
     // Creation of product move lines for each invoice line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 
@@ -692,7 +681,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
-        account = invoiceService.getPartnerAccount(invoice, true);
+        account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, true);
         holdBackMoveLine =
             this.createMoveLine(
                 move,
@@ -758,9 +747,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsHoldBack()) {
-        invoiceTerm.setMoveLine(moveLine);
-      }
+      if (!invoiceTerm.getIsHoldBack()) invoiceTerm.setMoveLine(moveLine);
     }
     moveLines.add(moveLine);
     return moveLines;
@@ -1137,7 +1124,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       } else {
         invoice.setUsherPassageOk(false);
       }
-      invoiceRepository.save(invoice);
+      Beans.get(InvoiceRepository.class).save(invoice);
     }
   }
 
@@ -1204,6 +1191,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
+    PaymentService paymentService = Beans.get(PaymentService.class);
+
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
@@ -1243,6 +1232,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     populateDebit(moveLineMap, reconciliableDebitMoveLineList);
 
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
+
+    PaymentService paymentService = Beans.get(PaymentService.class);
 
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
@@ -1338,6 +1329,8 @@ public class MoveLineServiceImpl implements MoveLineService {
 
         String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
 
+        //        moveLine.setCredit(BigDecimal.ZERO);
+        //        moveLine.setDebit(BigDecimal.ZERO);
         map.put(sourceTaxLineKey, moveLine);
         moveLineItr.remove();
         continue;
@@ -1417,7 +1410,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
 
     moveLineList.addAll(newMap.values());
-    moveRepository.save(move);
+    Beans.get(MoveRepository.class).save(move);
   }
 
   @Override
@@ -1475,14 +1468,14 @@ public class MoveLineServiceImpl implements MoveLineService {
               reconcile,
               vatRate,
               detailPaymentAmount,
-              appBaseService.getTodayDate(reconcile.getCompany()));
+              Beans.get(AppBaseService.class).getTodayDate(reconcile.getCompany()));
 
       taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 
       customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
     }
     this.computeTaxAmount(customerMoveLine);
-    return moveLineRepository.save(customerMoveLine);
+    return Beans.get(MoveLineRepository.class).save(customerMoveLine);
   }
 
   @Override
@@ -1503,7 +1496,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       customerMoveLine.addTaxPaymentMoveLineListItem(reverseTaxPaymentMoveLine);
     }
     this.computeTaxAmount(customerMoveLine);
-    return moveLineRepository.save(customerMoveLine);
+    return Beans.get(MoveLineRepository.class).save(customerMoveLine);
   }
 
   @Override
@@ -1538,17 +1531,15 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
-    if (move.getMoveLineList().size() == 0) {
+    if (move.getMoveLineList().size() == 0)
       try {
         moveLine.setCurrencyRate(
             currencyService.getCurrencyConversionRate(
                 move.getCurrency(), move.getCompany().getCurrency()));
       } catch (AxelorException e1) {
-        TraceBackService.trace(e1);
+        e1.printStackTrace();
       }
-    } else {
-      moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
-    }
+    else moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
       BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
       moveLine.setCurrencyAmount(
@@ -1561,11 +1552,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   public TaxLine getTaxLine(MoveLine moveLine) throws AxelorException {
     TaxLine taxLine = null;
     LocalDate date = moveLine.getDate();
-    if (date == null) {
-      date = moveLine.getDueDate();
-    }
-    if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
-      taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
+    if (date == null) date = moveLine.getDueDate();
+    if (moveLine.getAccount() != null) {
+      if (moveLine.getAccount().getDefaultTax() != null) {
+        taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
+      }
     }
     return taxLine;
   }
