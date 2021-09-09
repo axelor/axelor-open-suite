@@ -1347,8 +1347,6 @@ public class MoveLineServiceImpl implements MoveLineService {
 
           BigDecimal debit = moveLine.getDebit();
           BigDecimal credit = moveLine.getCredit();
-          BigDecimal currencyRate = moveLine.getCurrencyRate();
-          BigDecimal currencyAmount;
           LocalDate date = moveLine.getDate();
           Company company = move.getCompany();
 
@@ -1404,7 +1402,10 @@ public class MoveLineServiceImpl implements MoveLineService {
           newOrUpdatedMoveLine.setOrigin(move.getOrigin());
           newOrUpdatedMoveLine.setDescription(move.getDescription());
           newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
-          newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+          if (newOrUpdatedMoveLine.getDebit().signum() != 0
+              || newOrUpdatedMoveLine.getCredit().signum() != 0) {
+            newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+          }
         }
       }
     }
