@@ -314,11 +314,7 @@ public class MoveLineController {
 
         TaxLine taxLine =
             Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
-        if (taxLine != null) {
-          response.setValue("taxLine", taxLine);
-        } else {
-          response.setValue("taxLine", null);
-        }
+        response.setValue("taxLine", taxLine);
       }
     }
   }
@@ -336,8 +332,7 @@ public class MoveLineController {
       }
 
       TaxLine taxLine = Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
-      if (taxLine != null) response.setValue("taxLine", taxLine);
-      else response.setValue("taxLine", null);
+      response.setValue("taxLine", taxLine);
     }
   }
 
