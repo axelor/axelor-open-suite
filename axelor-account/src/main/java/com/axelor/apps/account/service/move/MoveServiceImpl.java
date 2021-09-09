@@ -58,6 +58,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +73,7 @@ import org.slf4j.LoggerFactory;
 public class MoveServiceImpl implements MoveService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected static final int RETURNED_SCALE = 2;
 
   protected MoveLineService moveLineService;
   protected MoveCreateService moveCreateService;
@@ -941,8 +943,11 @@ public class MoveServiceImpl implements MoveService {
     for (AnalyticMoveLine analyticMoveLine : counterpartMoveLine.getAnalyticMoveLineList()) {
       analyticMoveLineAmount = analyticMoveLine.getAmount();
       analyticMoveLine.setAmount(
-          counterpartAmount.multiply(analyticMoveLineAmount).divide(totalAmount));
-      analyticMoveLine.setPercentage(analyticMoveLineAmount.divide(totalAmount));
+          counterpartAmount
+              .multiply(analyticMoveLineAmount)
+              .divide(totalAmount, RETURNED_SCALE, RoundingMode.HALF_UP));
+      analyticMoveLine.setPercentage(
+          analyticMoveLineAmount.divide(totalAmount, RETURNED_SCALE, RoundingMode.HALF_UP));
     }
     return counterpartMoveLine;
   }
@@ -984,7 +989,7 @@ public class MoveServiceImpl implements MoveService {
       analyticMoveLine.setCurrency(company.getCurrency());
     }
 
-    analyticMoveLine.setAnalyticAxis(analyticMoveLines.get(0).getAnalyticAxis());
+    analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
 
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 
