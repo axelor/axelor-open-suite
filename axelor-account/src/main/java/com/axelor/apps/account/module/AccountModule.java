@@ -344,7 +344,7 @@ public class AccountModule extends AxelorModule {
     bind(PaymentMoveLineDistributionService.class).to(PaymentMoveLineDistributionServiceImpl.class);
 
     bind(MoveCreateService.class).to(MoveCreateServiceImpl.class);
-    
+
     bind(AnalyticFixedAssetService.class).to(AnalyticFixedAssetServiceImpl.class);
 
     bind(FixedAssetDerogatoryLineService.class).to(FixedAssetDerogatoryLineServiceImpl.class);
