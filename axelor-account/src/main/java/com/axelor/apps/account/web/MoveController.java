@@ -269,7 +269,7 @@ public class MoveController {
     }
   }
 
-  public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void printMove(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
     try {
@@ -288,7 +288,7 @@ public class MoveController {
 
       response.setView(ActionView.define(moveName).add("html", fileLink).map());
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
