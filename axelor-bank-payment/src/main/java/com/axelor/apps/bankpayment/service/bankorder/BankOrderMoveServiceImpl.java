@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -54,6 +55,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected PaymentModeService paymentModeService;
   protected AccountingSituationService accountingSituationService;
   protected BankPaymentConfigService bankPaymentConfigService;
+  protected MoveLineCreateService moveLineCreateService;
 
   protected PaymentMode paymentMode;
   protected Company senderCompany;
@@ -71,12 +73,14 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
       MoveService moveService,
       PaymentModeService paymentModeService,
       AccountingSituationService accountingSituationService,
-      BankPaymentConfigService bankPaymentConfigService) {
+      BankPaymentConfigService bankPaymentConfigService,
+      MoveLineCreateService moveLineCreateService) {
 
     this.moveService = moveService;
     this.paymentModeService = paymentModeService;
     this.accountingSituationService = accountingSituationService;
     this.bankPaymentConfigService = bankPaymentConfigService;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
@@ -150,33 +154,29 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 bankOrderLine.getReceiverLabel());
 
     MoveLine bankMoveLine =
-        moveService
-            .getMoveLineService()
-            .createMoveLine(
-                senderMove,
-                partner,
-                senderBankAccount,
-                bankOrderLine.getBankOrderAmount(),
-                !isDebit,
-                senderMove.getDate(),
-                1,
-                bankOrderLine.getReceiverReference(),
-                bankOrderLine.getReceiverLabel());
+        moveLineCreateService.createMoveLine(
+            senderMove,
+            partner,
+            senderBankAccount,
+            bankOrderLine.getBankOrderAmount(),
+            !isDebit,
+            senderMove.getDate(),
+            1,
+            bankOrderLine.getReceiverReference(),
+            bankOrderLine.getReceiverLabel());
     senderMove.addMoveLineListItem(bankMoveLine);
 
     MoveLine partnerMoveLine =
-        moveService
-            .getMoveLineService()
-            .createMoveLine(
-                senderMove,
-                partner,
-                getPartnerAccount(partner, senderCompany, senderCompany),
-                bankOrderLine.getBankOrderAmount(),
-                isDebit,
-                senderMove.getDate(),
-                2,
-                bankOrderLine.getReceiverReference(),
-                bankOrderLine.getReceiverLabel());
+        moveLineCreateService.createMoveLine(
+            senderMove,
+            partner,
+            getPartnerAccount(partner, senderCompany, senderCompany),
+            bankOrderLine.getBankOrderAmount(),
+            isDebit,
+            senderMove.getDate(),
+            2,
+            bankOrderLine.getReceiverReference(),
+            bankOrderLine.getReceiverLabel());
     senderMove.addMoveLineListItem(partnerMoveLine);
 
     return senderMove;
@@ -210,33 +210,29 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 bankOrderLine.getReceiverLabel());
 
     MoveLine bankMoveLine =
-        moveService
-            .getMoveLineService()
-            .createMoveLine(
-                receiverMove,
-                partner,
-                receiverBankAccount,
-                bankOrderLine.getBankOrderAmount(),
-                isDebit,
-                receiverMove.getDate(),
-                1,
-                bankOrderLine.getReceiverReference(),
-                bankOrderLine.getReceiverLabel());
+        moveLineCreateService.createMoveLine(
+            receiverMove,
+            partner,
+            receiverBankAccount,
+            bankOrderLine.getBankOrderAmount(),
+            isDebit,
+            receiverMove.getDate(),
+            1,
+            bankOrderLine.getReceiverReference(),
+            bankOrderLine.getReceiverLabel());
     receiverMove.addMoveLineListItem(bankMoveLine);
 
     MoveLine partnerMoveLine =
-        moveService
-            .getMoveLineService()
-            .createMoveLine(
-                receiverMove,
-                partner,
-                getPartnerAccount(partner, receiverCompany, receiverMove.getCompany()),
-                bankOrderLine.getBankOrderAmount(),
-                !isDebit,
-                receiverMove.getDate(),
-                2,
-                bankOrderLine.getReceiverReference(),
-                bankOrderLine.getReceiverLabel());
+        moveLineCreateService.createMoveLine(
+            receiverMove,
+            partner,
+            getPartnerAccount(partner, receiverCompany, receiverMove.getCompany()),
+            bankOrderLine.getBankOrderAmount(),
+            !isDebit,
+            receiverMove.getDate(),
+            2,
+            bankOrderLine.getReceiverReference(),
+            bankOrderLine.getReceiverLabel());
     receiverMove.addMoveLineListItem(partnerMoveLine);
 
     return receiverMove;

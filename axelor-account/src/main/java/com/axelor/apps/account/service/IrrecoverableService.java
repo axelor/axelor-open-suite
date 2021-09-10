@@ -45,8 +45,8 @@ import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -81,7 +81,7 @@ public class IrrecoverableService {
 
   protected SequenceService sequenceService;
   protected MoveService moveService;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected MoveLineRepository moveLineRepo;
   protected ReconcileService reconcileService;
   protected TaxService taxService;
@@ -102,7 +102,7 @@ public class IrrecoverableService {
       AppAccountService appAccountService,
       SequenceService sequenceService,
       MoveService moveService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       MoveLineRepository moveLineRepo,
       ReconcileService reconcileService,
       TaxService taxService,
@@ -118,7 +118,7 @@ public class IrrecoverableService {
 
     this.sequenceService = sequenceService;
     this.moveService = moveService;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.moveLineRepo = moveLineRepo;
     this.reconcileService = reconcileService;
     this.taxService = taxService;
@@ -871,7 +871,7 @@ public class IrrecoverableService {
         continue;
       }
       debitMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               payerPartner,
               taxAccountService.getAccount(
@@ -890,7 +890,7 @@ public class IrrecoverableService {
 
     // Debit MoveLine 654 (irrecoverable account)
     debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             payerPartner,
             accountConfig.getIrrecoverableAccount(),
@@ -919,7 +919,7 @@ public class IrrecoverableService {
 
     // Credit MoveLine Customer account (411, 416, ...)
     MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             payerPartner,
             customerMoveLine.getAccount(),
@@ -975,7 +975,7 @@ public class IrrecoverableService {
 
     // Credit MoveLine Customer account (411, 416, ...)
     MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             payerPartner,
             moveLine.getAccount(),
@@ -1003,7 +1003,7 @@ public class IrrecoverableService {
             .divide(divid, 6, RoundingMode.HALF_UP)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     MoveLine creditMoveLine1 =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             payerPartner,
             accountConfig.getIrrecoverableAccount(),
@@ -1019,7 +1019,7 @@ public class IrrecoverableService {
     Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
     BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
     MoveLine creditMoveLine2 =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             payerPartner,
             taxAccount,

@@ -36,8 +36,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -59,7 +59,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
   protected PaymentModeService paymentModeService;
   protected MoveService moveService;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected AccountConfigService accountConfigService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected ReconcileService reconcileService;
@@ -71,7 +71,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   public InvoicePaymentValidateServiceImpl(
       PaymentModeService paymentModeService,
       MoveService moveService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
@@ -81,7 +81,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     this.paymentModeService = paymentModeService;
     this.moveService = moveService;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.accountConfigService = accountConfigService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.reconcileService = reconcileService;
@@ -275,7 +275,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     String origin = getOriginFromInvoicePayment(invoicePayment);
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
@@ -288,7 +288,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             move.getDescription()));
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             customerAccount,
@@ -379,7 +379,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                     .add(invoicePayment.getFinancialDiscountTaxAmount()));
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
@@ -392,7 +392,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             move.getDescription()));
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             configAccount,
@@ -405,7 +405,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             invoicePayment.getDescription()));
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             customerAccount,
@@ -422,7 +422,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && account != null) {
 
       move.addMoveLineListItem(
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               account,

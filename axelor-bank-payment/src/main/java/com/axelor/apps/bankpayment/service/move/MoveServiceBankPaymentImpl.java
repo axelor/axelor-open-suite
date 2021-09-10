@@ -27,11 +27,12 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveDueService;
 import com.axelor.apps.account.service.move.MoveExcessPaymentService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
@@ -57,7 +58,8 @@ public class MoveServiceBankPaymentImpl extends MoveServiceImpl {
       MoveRepository moveRepository,
       AccountConfigService accountConfigService,
       CurrencyService currencyService,
-      FiscalPositionAccountService fiscalPositionAccountService) {
+      FiscalPositionAccountService fiscalPositionAccountService,
+      MoveLineCreateService moveLineCreateService) {
     super(
         appAccountService,
         moveLineService,
@@ -72,7 +74,8 @@ public class MoveServiceBankPaymentImpl extends MoveServiceImpl {
         moveRepository,
         accountConfigService,
         currencyService,
-        fiscalPositionAccountService);
+        fiscalPositionAccountService,
+        moveLineCreateService);
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})

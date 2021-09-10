@@ -13,6 +13,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -36,19 +37,19 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveLineService moveLineService;
+  protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
   protected AccountCustomerService accountCustomerService;
   protected AccountConfigService accountConfigService;
 
   @Inject
   public MoveToolServiceImpl(
-      MoveLineService moveLineService,
+      MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
       AccountCustomerService accountCustomerService,
       AccountConfigService accountConfigService) {
 
-    this.moveLineService = moveLineService;
+    this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountCustomerService = accountCustomerService;
     this.accountConfigService = accountConfigService;
@@ -118,9 +119,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public MoveLine getInvoiceCustomerMoveLineByLoop(Invoice invoice) throws AxelorException {
     if (this.isDebitCustomer(invoice, true)) {
-      return moveLineService.getDebitCustomerMoveLine(invoice);
+      return moveLineToolService.getDebitCustomerMoveLine(invoice);
     } else {
-      return moveLineService.getCreditCustomerMoveLine(invoice);
+      return moveLineToolService.getCreditCustomerMoveLine(invoice);
     }
   }
 
@@ -155,9 +156,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException {
     if (this.isDebitCustomer(invoice, true)) {
-      return moveLineService.getDebitCustomerMoveLines(invoice);
+      return moveLineToolService.getDebitCustomerMoveLines(invoice);
     } else {
-      return moveLineService.getCreditCustomerMoveLines(invoice);
+      return moveLineToolService.getCreditCustomerMoveLines(invoice);
     }
   }
 

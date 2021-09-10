@@ -42,6 +42,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -84,6 +86,7 @@ public class MoveServiceImpl implements MoveService {
   protected MoveRepository moveRepository;
   protected CurrencyService currencyService;
   protected FiscalPositionAccountService fiscalPositionAccountService;
+  protected MoveLineCreateService moveLineCreateService;
 
   protected AppAccountService appAccountService;
 
@@ -102,7 +105,8 @@ public class MoveServiceImpl implements MoveService {
       MoveRepository moveRepository,
       AccountConfigService accountConfigService,
       CurrencyService currencyService,
-      FiscalPositionAccountService fiscalPositionAccountService) {
+      FiscalPositionAccountService fiscalPositionAccountService,
+      MoveLineCreateService moveLineCreateService) {
 
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
@@ -118,6 +122,7 @@ public class MoveServiceImpl implements MoveService {
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
@@ -216,7 +221,7 @@ public class MoveServiceImpl implements MoveService {
 
         move.getMoveLineList()
             .addAll(
-                moveLineService.createMoveLines(
+                moveLineCreateService.createMoveLines(
                     invoice,
                     move,
                     company,
@@ -375,7 +380,7 @@ public class MoveServiceImpl implements MoveService {
 
           // Création de la ligne au crédit
           MoveLine creditMoveLine =
-              moveLineService.createMoveLine(
+              moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   account,
@@ -455,7 +460,7 @@ public class MoveServiceImpl implements MoveService {
 
       // Création de la ligne au débit
       MoveLine debitMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               oDmove,
               partner,
               account,
@@ -641,7 +646,7 @@ public class MoveServiceImpl implements MoveService {
       Move reverseMove, MoveLine orgineMoveLine, LocalDate dateOfReversion, boolean isDebit)
       throws AxelorException {
     MoveLine reverseMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             reverseMove,
             orgineMoveLine.getPartner(),
             orgineMoveLine.getAccount(),

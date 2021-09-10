@@ -24,8 +24,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
@@ -51,7 +51,7 @@ public class InvoicePaymentValidateProjectServiceImpl
   public InvoicePaymentValidateProjectServiceImpl(
       PaymentModeService paymentModeService,
       MoveService moveService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
@@ -64,7 +64,7 @@ public class InvoicePaymentValidateProjectServiceImpl
     super(
         paymentModeService,
         moveService,
-        moveLineService,
+        moveLineCreateService,
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,

@@ -29,8 +29,8 @@ import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -59,7 +59,7 @@ public class ReimbursementExportService {
 
   protected MoveService moveService;
   protected MoveRepository moveRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected ReconcileService reconcileService;
   protected SequenceService sequenceService;
   protected ReimbursementRepository reimbursementRepo;
@@ -72,7 +72,7 @@ public class ReimbursementExportService {
   public ReimbursementExportService(
       MoveService moveService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       SequenceService sequenceService,
       ReimbursementRepository reimbursementRepo,
@@ -83,7 +83,7 @@ public class ReimbursementExportService {
 
     this.moveService = moveService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.reconcileService = reconcileService;
     this.sequenceService = sequenceService;
     this.reimbursementRepo = reimbursementRepo;
@@ -204,7 +204,7 @@ public class ReimbursementExportService {
           }
           // Création d'une ligne au débit
           MoveLine newDebitMoveLine =
-              moveLineService.createMoveLine(
+              moveLineCreateService.createMoveLine(
                   newMove,
                   partner,
                   moveLine.getAccount(),
@@ -231,7 +231,7 @@ public class ReimbursementExportService {
       }
       // Création de la ligne au crédit
       MoveLine newCreditMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               newMove,
               partner,
               accountConfig.getReimbursementAccount(),

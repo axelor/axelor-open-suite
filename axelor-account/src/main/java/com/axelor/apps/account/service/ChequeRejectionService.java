@@ -27,8 +27,8 @@ import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -44,7 +44,7 @@ import java.time.LocalDate;
 public class ChequeRejectionService {
 
   protected MoveService moveService;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected ChequeRejectionRepository chequeRejectionRepository;
@@ -52,13 +52,13 @@ public class ChequeRejectionService {
   @Inject
   public ChequeRejectionService(
       MoveService moveService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
       ChequeRejectionRepository chequeRejectionRepository) {
 
     this.moveService = moveService;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
     this.chequeRejectionRepository = chequeRejectionRepository;
@@ -138,7 +138,7 @@ public class ChequeRejectionService {
       if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
         // Debit MoveLine
         MoveLine debitMoveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 partner,
                 moveLine.getAccount(),
@@ -155,7 +155,7 @@ public class ChequeRejectionService {
       } else {
         // Credit MoveLine
         MoveLine creditMoveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 partner,
                 moveLine.getAccount(),

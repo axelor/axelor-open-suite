@@ -31,6 +31,8 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
@@ -68,6 +70,8 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
   protected PaymentService paymentService;
   protected MoveLineRepository moveLineRepo;
   protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+  protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public PaymentScheduleLineServiceImpl(
@@ -80,7 +84,9 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
       MoveToolService moveToolService,
       PaymentService paymentService,
       MoveLineRepository moveLineRepo,
-      PaymentScheduleLineRepository paymentScheduleLineRepo) {
+      PaymentScheduleLineRepository paymentScheduleLineRepo,
+      MoveLineCreateService moveLineCreateService,
+      MoveLineToolService moveLineToolService) {
     this.appBaseService = appBaseService;
     this.paymentScheduleService = paymentScheduleService;
     this.moveService = moveService;
@@ -91,6 +97,8 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     this.paymentService = paymentService;
     this.moveLineRepo = moveLineRepo;
     this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+    this.moveLineCreateService = moveLineCreateService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   /**
@@ -206,19 +214,16 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
                 null);
 
     MoveLine creditMoveLine =
-        moveService
-            .getMoveLineService()
-            .createMoveLine(move, partner, account, amount, false, todayDate, 1, origin, null);
+        moveLineCreateService.createMoveLine(
+            move, partner, account, amount, false, todayDate, 1, origin, null);
     move.addMoveLineListItem(creditMoveLine);
     creditMoveLine = moveLineRepo.save(creditMoveLine);
 
     Account paymentModeAccount =
         paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
     MoveLine debitMoveLine =
-        moveService
-            .getMoveLineService()
-            .createMoveLine(
-                move, partner, paymentModeAccount, amount, true, todayDate, 2, origin, null);
+        moveLineCreateService.createMoveLine(
+            move, partner, paymentModeAccount, amount, true, todayDate, 2, origin, null);
     move.addMoveLineListItem(debitMoveLine);
     debitMoveLine = moveLineRepo.save(debitMoveLine);
 
@@ -230,7 +235,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
       List<MoveLine> debitMoveLineList =
           paymentSchedule.getInvoiceSet().stream()
               .sorted(Comparator.comparing(Invoice::getDueDate))
-              .map(invoice -> moveService.getMoveLineService().getDebitCustomerMoveLine(invoice))
+              .map(invoice -> moveLineToolService.getDebitCustomerMoveLine(invoice))
               .collect(Collectors.toList());
 
       if (moveToolService.isSameAccount(debitMoveLineList, account)) {

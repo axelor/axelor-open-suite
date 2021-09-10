@@ -33,6 +33,7 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -67,12 +68,16 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
   protected AppBaseService appBaseService;
   protected InvoiceRepository invoiceRepository;
+  protected MoveLineCreateService moveLineCreateService;
 
   @Inject
   public SubrogationReleaseServiceImpl(
-      AppBaseService appBaseService, InvoiceRepository invoiceRepository) {
+      AppBaseService appBaseService,
+      InvoiceRepository invoiceRepository,
+      MoveLineCreateService moveLineCreateService) {
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
@@ -273,34 +278,30 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       MoveLine creditMoveLine, debitMoveLine;
 
       debitMoveLine =
-          moveService
-              .getMoveLineService()
-              .createMoveLine(
-                  move,
-                  invoice.getPartner(),
-                  factorDebitAccount,
-                  invoice.getCompanyInTaxTotalRemaining(),
-                  !isRefund,
-                  date,
-                  null,
-                  1,
-                  origin,
-                  description);
+          moveLineCreateService.createMoveLine(
+              move,
+              invoice.getPartner(),
+              factorDebitAccount,
+              invoice.getCompanyInTaxTotalRemaining(),
+              !isRefund,
+              date,
+              null,
+              1,
+              origin,
+              description);
 
       creditMoveLine =
-          moveService
-              .getMoveLineService()
-              .createMoveLine(
-                  move,
-                  invoice.getPartner(),
-                  factorCreditAccount,
-                  invoice.getCompanyInTaxTotalRemaining(),
-                  isRefund,
-                  date,
-                  null,
-                  2,
-                  origin,
-                  description);
+          moveLineCreateService.createMoveLine(
+              move,
+              invoice.getPartner(),
+              factorCreditAccount,
+              invoice.getCompanyInTaxTotalRemaining(),
+              isRefund,
+              date,
+              null,
+              2,
+              origin,
+              description);
 
       move.addMoveLineListItem(debitMoveLine);
       move.addMoveLineListItem(creditMoveLine);

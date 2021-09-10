@@ -29,8 +29,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -53,7 +53,7 @@ public class DoubtfulCustomerService {
 
   protected MoveService moveService;
   protected MoveRepository moveRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected MoveLineRepository moveLineRepo;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
@@ -63,7 +63,7 @@ public class DoubtfulCustomerService {
   public DoubtfulCustomerService(
       MoveService moveService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       MoveLineRepository moveLineRepo,
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
@@ -71,7 +71,7 @@ public class DoubtfulCustomerService {
 
     this.moveService = moveService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.moveLineRepo = moveLineRepo;
     this.reconcileService = reconcileService;
     this.accountConfigService = accountConfigService;
@@ -167,7 +167,7 @@ public class DoubtfulCustomerService {
 
       // Debit move line on partner account
       creditMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               newMove,
               partner,
               invoicePartnerMoveLine.getAccount(),
@@ -184,7 +184,7 @@ public class DoubtfulCustomerService {
 
     // Credit move line on partner account
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             newMove,
             partner,
             doubtfulCustomerAccount,
@@ -259,7 +259,7 @@ public class DoubtfulCustomerService {
 
     // Ecriture au crédit sur le 411
     MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             newMove,
             partner,
             moveLine.getAccount(),
@@ -279,7 +279,7 @@ public class DoubtfulCustomerService {
 
     // Ecriture au débit sur le 416 (client douteux)
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             newMove,
             newMove.getPartner(),
             doubtfulCustomerAccount,

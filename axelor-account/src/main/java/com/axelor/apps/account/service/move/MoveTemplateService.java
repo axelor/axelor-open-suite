@@ -29,6 +29,8 @@ import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -53,7 +55,8 @@ public class MoveTemplateService {
   protected MoveService moveService;
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected PartnerRepository partnerRepo;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected TaxService taxService;
@@ -65,17 +68,19 @@ public class MoveTemplateService {
       MoveService moveService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
-      TaxService taxService) {
+      TaxService taxService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.moveService = moveService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.partnerRepo = partnerRepo;
     this.analyticMoveLineService = analyticMoveLineService;
     this.taxService = taxService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
   @Transactional
@@ -173,7 +178,7 @@ public class MoveTemplateService {
                   .divide(hundred, RoundingMode.HALF_UP);
 
           MoveLine moveLine =
-              moveLineService.createMoveLine(
+              moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   moveTemplateLine.getAccount(),
@@ -199,7 +204,7 @@ public class MoveTemplateService {
 
           moveLine.setAnalyticDistributionTemplate(
               moveTemplateLine.getAnalyticDistributionTemplate());
-          moveLineService.generateAnalyticMoveLines(moveLine);
+          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
           counter++;
         }
@@ -247,7 +252,7 @@ public class MoveTemplateService {
           BigDecimal amount = moveTemplateLine.getDebit().add(moveTemplateLine.getCredit());
 
           MoveLine moveLine =
-              moveLineService.createMoveLine(
+              moveLineCreateService.createMoveLine(
                   move,
                   moveTemplateLine.getPartner(),
                   moveTemplateLine.getAccount(),
@@ -273,7 +278,7 @@ public class MoveTemplateService {
 
           moveLine.setAnalyticDistributionTemplate(
               moveTemplateLine.getAnalyticDistributionTemplate());
-          moveLineService.generateAnalyticMoveLines(moveLine);
+          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
           counter++;
         }

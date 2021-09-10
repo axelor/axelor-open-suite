@@ -23,8 +23,9 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -44,7 +45,7 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
   public ExpenseServiceProjectImpl(
       MoveService moveService,
       ExpenseRepository expenseRepository,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       AccountManagementAccountService accountManagementAccountService,
       AppAccountService appAccountService,
       AccountConfigHRService accountConfigService,
@@ -52,12 +53,13 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       AnalyticMoveLineService analyticMoveLineService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      MoveLineConsolidateService moveLineConsolidateService) {
 
     super(
         moveService,
         expenseRepository,
-        moveLineService,
+        moveLineCreateService,
         accountManagementAccountService,
         appAccountService,
         accountConfigService,
@@ -65,7 +67,8 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
         analyticMoveLineService,
         hrConfigService,
         templateMessageService,
-        paymentModeService);
+        paymentModeService,
+        moveLineConsolidateService);
   }
 
   @Override

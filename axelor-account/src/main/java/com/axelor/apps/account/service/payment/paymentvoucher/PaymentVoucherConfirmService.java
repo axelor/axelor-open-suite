@@ -33,8 +33,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
@@ -59,7 +59,7 @@ public class PaymentVoucherConfirmService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected ReconcileService reconcileService;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected MoveService moveService;
   protected PaymentService paymentService;
   protected PaymentModeService paymentModeService;
@@ -72,7 +72,7 @@ public class PaymentVoucherConfirmService {
   @Inject
   public PaymentVoucherConfirmService(
       ReconcileService reconcileService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       MoveService moveService,
       PaymentService paymentService,
       PaymentModeService paymentModeService,
@@ -83,7 +83,7 @@ public class PaymentVoucherConfirmService {
       PaymentVoucherRepository paymentVoucherRepository) {
 
     this.reconcileService = reconcileService;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.moveService = moveService;
     this.paymentService = paymentService;
     this.paymentModeService = paymentModeService;
@@ -259,7 +259,7 @@ public class PaymentVoucherConfirmService {
       // in the else case we create a classical balance on the bank account of the payment mode
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 paymentVoucher.getPartner(),
                 paymentVoucher.getMoveLine().getAccount(),
@@ -278,7 +278,7 @@ public class PaymentVoucherConfirmService {
       } else {
 
         moveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 payerPartner,
                 paymentModeAccount,
@@ -314,7 +314,7 @@ public class PaymentVoucherConfirmService {
                     payerPartner, company, paymentVoucherToolService.isPurchase(paymentVoucher));
 
         moveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 paymentVoucher.getPartner(),
                 partnerAccount,
@@ -432,7 +432,7 @@ public class PaymentVoucherConfirmService {
       invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
     }
     MoveLine moveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             paymentMove,
             payerPartner,
             moveLineToPay.getAccount(),

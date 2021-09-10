@@ -27,8 +27,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppService;
@@ -52,7 +52,7 @@ public class ReimbursementImportService {
 
   protected MoveService moveService;
   protected MoveRepository moveRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected RejectImportService rejectImportService;
   protected AccountConfigService accountConfigService;
   protected ReimbursementRepository reimbursementRepo;
@@ -61,14 +61,14 @@ public class ReimbursementImportService {
   public ReimbursementImportService(
       MoveService moveService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       RejectImportService rejectImportService,
       AccountConfigService accountConfigService,
       ReimbursementRepository reimbursementRepo) {
 
     this.moveService = moveService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.rejectImportService = rejectImportService;
     this.accountConfigService = accountConfigService;
     this.reimbursementRepo = reimbursementRepo;
@@ -106,7 +106,7 @@ public class ReimbursementImportService {
       if (move != null) {
         // Création d'une ligne au débit
         MoveLine debitMoveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 null,
                 company.getAccountConfig().getReimbursementAccount(),
@@ -150,7 +150,7 @@ public class ReimbursementImportService {
 
     // Création de la ligne au crédit
     MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             company.getAccountConfig().getCustomerAccount(),
@@ -209,7 +209,7 @@ public class ReimbursementImportService {
       throws AxelorException {
     // Création d'une ligne au débit
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             null,
             move.getCompany().getAccountConfig().getReimbursementAccount(),

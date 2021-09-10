@@ -1,0 +1,74 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.account.service.moveline;
+
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+public interface MoveLineService {
+
+  public MoveLine balanceCreditDebit(MoveLine moveLine, Move move);
+
+  public void usherProcess(MoveLine moveLine);
+
+  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList);
+
+  public void reconcileMoveLines(List<MoveLine> moveLineList);
+
+  public void autoTaxLineGenerate(Move move) throws AxelorException;
+
+  public MoveLine createNewMoveLine(
+      BigDecimal debit,
+      BigDecimal credit,
+      LocalDate date,
+      String accountType,
+      TaxLine taxLine,
+      MoveLine newOrUpdatedMoveLine);
+
+  public void validateMoveLine(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine generateTaxPaymentMoveLineList(
+      MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException;
+
+  public MoveLine reverseTaxPaymentMoveLines(MoveLine customerMoveLine, Reconcile reconcile)
+      throws AxelorException;
+
+  public MoveLine analyzeMoveLine(MoveLine moveLine) throws AxelorException;
+
+  public List<Long> setAxisDomains(MoveLine moveline, int position) throws AxelorException;
+
+  public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine)
+      throws AxelorException;
+
+  public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine);
+
+  public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
+
+  public MoveLine setCurrencyAmount(MoveLine moveLine);
+
+  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
+}

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.List;
