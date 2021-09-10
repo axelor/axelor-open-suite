@@ -861,29 +861,14 @@ public class MoveServiceImpl implements MoveService {
     List<TaxLine> taxLineList;
     TaxLine taxLine = null;
     Partner partner = move.getPartner();
-    if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
-      if (accountingAccount != null)
-        if (accountingAccount.getDefaultTax() != null) {
-          taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
-          if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-            taxLineList =
-                accountingAccount.getDefaultTax().getTaxLineList().stream()
-                    .filter(
-                        tl ->
-                            !moveLine.getDate().isBefore(tl.getEndDate())
-                                && !tl.getStartDate().isAfter(moveLine.getDate()))
-                    .collect(Collectors.toList());
-            if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
-          }
-        }
-    } else {
-      for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
+    if (partner != null) {
+      if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
         if (accountingAccount != null)
-          if (taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
-            taxLine = taxEquiv.getToTax().getActiveTaxLine();
+          if (accountingAccount.getDefaultTax() != null) {
+            taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
             if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
               taxLineList =
-                  taxEquiv.getToTax().getTaxLineList().stream()
+                  accountingAccount.getDefaultTax().getTaxLineList().stream()
                       .filter(
                           tl ->
                               !moveLine.getDate().isBefore(tl.getEndDate())
@@ -891,8 +876,25 @@ public class MoveServiceImpl implements MoveService {
                       .collect(Collectors.toList());
               if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
             }
-            break;
           }
+      } else {
+        for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
+          if (accountingAccount != null)
+            if (taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
+              taxLine = taxEquiv.getToTax().getActiveTaxLine();
+              if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+                taxLineList =
+                    taxEquiv.getToTax().getTaxLineList().stream()
+                        .filter(
+                            tl ->
+                                !moveLine.getDate().isBefore(tl.getEndDate())
+                                    && !tl.getStartDate().isAfter(moveLine.getDate()))
+                        .collect(Collectors.toList());
+                if (taxLineList.size() > 0) taxLine = taxLineList.get(0);
+              }
+              break;
+            }
+        }
       }
     }
     return taxLine;
