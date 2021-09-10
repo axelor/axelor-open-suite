@@ -30,7 +30,8 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
+import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
@@ -238,7 +239,7 @@ public class MoveLineController {
   public void filterPartner(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().getParent().asType(Move.class);
     if (move != null) {
-      String domain = Beans.get(MoveService.class).filterPartner(move);
+      String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
       response.setAttr("partner", "domain", domain);
     }
   }
@@ -300,8 +301,10 @@ public class MoveLineController {
       if (ObjectUtils.isEmpty(partner)) {
         response.setError(I18n.get("Please select a partner"));
       } else {
+        MoveLoadDefaultConfigService moveLoadDefaultConfigService =
+            Beans.get(MoveLoadDefaultConfigService.class);
         Account accountingAccount =
-            Beans.get(MoveService.class).getAccountingAccountFromAccountConfig(move);
+            moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
 
         if (accountingAccount != null) {
           response.setValue("account", accountingAccount);
@@ -311,7 +314,7 @@ public class MoveLineController {
         }
 
         TaxLine taxLine =
-            Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
+            moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
         if (taxLine != null) response.setValue("taxLine", taxLine);
         else response.setValue("taxLine", null);
       }
@@ -330,7 +333,9 @@ public class MoveLineController {
         }
       }
 
-      TaxLine taxLine = Beans.get(MoveService.class).getTaxLine(move, moveLine, accountingAccount);
+      TaxLine taxLine =
+          Beans.get(MoveLoadDefaultConfigService.class)
+              .getTaxLine(move, moveLine, accountingAccount);
       if (taxLine != null) response.setValue("taxLine", taxLine);
       else response.setValue("taxLine", null);
     }
