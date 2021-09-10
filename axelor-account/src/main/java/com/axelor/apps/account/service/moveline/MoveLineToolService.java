@@ -33,4 +33,6 @@ public interface MoveLineToolService {
   List<MoveLine> getReconciliableDebitMoveLines(List<MoveLine> moveLineList);
 
   TaxLine getTaxLine(MoveLine moveLine) throws AxelorException;
+
+  MoveLine setCurrencyAmount(MoveLine moveLine);
 }

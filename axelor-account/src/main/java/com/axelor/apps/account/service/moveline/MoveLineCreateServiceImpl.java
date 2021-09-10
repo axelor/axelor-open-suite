@@ -11,6 +11,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -36,6 +37,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -578,5 +580,86 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
     moveLines.add(moveLine);
     return moveLines;
+  }
+
+  @Override
+  public MoveLine createMoveLineForAutoTax(
+      Move move,
+      Map<String, MoveLine> map,
+      Map<String, MoveLine> newMap,
+      MoveLine moveLine,
+      TaxLine taxLine,
+      String accountType)
+      throws AxelorException {
+    BigDecimal debit = moveLine.getDebit();
+    BigDecimal credit = moveLine.getCredit();
+    LocalDate date = moveLine.getDate();
+    Company company = move.getCompany();
+    Account newAccount = null;
+
+    if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
+        || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
+      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, false);
+    } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
+      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, false, false);
+    } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
+      newAccount = taxAccountService.getAccount(taxLine.getTax(), company, true, true);
+    }
+
+    if (newAccount == null) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_LINE_6),
+          taxLine.getName(),
+          company.getName());
+    }
+    if (move.getPartner().getFiscalPosition() != null) {
+      newAccount =
+          fiscalPositionAccountService.getAccount(
+              move.getPartner().getFiscalPosition(), newAccount);
+    }
+    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
+    MoveLine newOrUpdatedMoveLine = new MoveLine();
+
+    newOrUpdatedMoveLine.setAccount(newAccount);
+    if (!map.containsKey(newSourceTaxLineKey) && !newMap.containsKey(newSourceTaxLineKey)) {
+
+      newOrUpdatedMoveLine =
+          this.createNewMoveLine(debit, credit, date, accountType, taxLine, newOrUpdatedMoveLine);
+    } else {
+
+      if (newMap.containsKey(newSourceTaxLineKey)) {
+        newOrUpdatedMoveLine = newMap.get(newSourceTaxLineKey);
+      } else if (!newMap.containsKey(newSourceTaxLineKey) && map.containsKey(newSourceTaxLineKey)) {
+        newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
+      }
+      newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
+      newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
+    }
+    newOrUpdatedMoveLine.setMove(move);
+    newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
+    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
+    newOrUpdatedMoveLine.setDescription(move.getDescription());
+    newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
+    newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+    return newOrUpdatedMoveLine;
+  }
+
+  protected MoveLine createNewMoveLine(
+      BigDecimal debit,
+      BigDecimal credit,
+      LocalDate date,
+      String accountType,
+      TaxLine taxLine,
+      MoveLine newOrUpdatedMoveLine) {
+
+    newOrUpdatedMoveLine.setSourceTaxLine(taxLine);
+    newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
+    newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
+    newOrUpdatedMoveLine.setDescription(taxLine.getTax().getName());
+    newOrUpdatedMoveLine.setDate(date);
+
+    return newOrUpdatedMoveLine;
   }
 }

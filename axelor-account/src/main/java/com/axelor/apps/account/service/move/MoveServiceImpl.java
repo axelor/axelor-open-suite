@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -87,6 +88,7 @@ public class MoveServiceImpl implements MoveService {
   protected CurrencyService currencyService;
   protected FiscalPositionAccountService fiscalPositionAccountService;
   protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineToolService moveLineToolService;
 
   protected AppAccountService appAccountService;
 
@@ -106,7 +108,8 @@ public class MoveServiceImpl implements MoveService {
       AccountConfigService accountConfigService,
       CurrencyService currencyService,
       FiscalPositionAccountService fiscalPositionAccountService,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      MoveLineToolService moveLineToolService) {
 
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
@@ -123,6 +126,7 @@ public class MoveServiceImpl implements MoveService {
     this.appAccountService = appAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
     this.moveLineCreateService = moveLineCreateService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -719,7 +723,7 @@ public class MoveServiceImpl implements MoveService {
       moveLine.setDebit(amount.abs());
     }
 
-    moveLine = moveLineService.setCurrencyAmount(moveLine);
+    moveLine = moveLineToolService.setCurrencyAmount(moveLine);
 
     return moveLine;
   }

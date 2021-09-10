@@ -17,14 +17,9 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 public interface MoveLineService {
@@ -37,38 +32,9 @@ public interface MoveLineService {
 
   public void reconcileMoveLines(List<MoveLine> moveLineList);
 
-  public void autoTaxLineGenerate(Move move) throws AxelorException;
-
-  public MoveLine createNewMoveLine(
-      BigDecimal debit,
-      BigDecimal credit,
-      LocalDate date,
-      String accountType,
-      TaxLine taxLine,
-      MoveLine newOrUpdatedMoveLine);
-
   public void validateMoveLine(MoveLine moveLine) throws AxelorException;
-
-  public MoveLine generateTaxPaymentMoveLineList(
-      MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException;
-
-  public MoveLine reverseTaxPaymentMoveLines(MoveLine customerMoveLine, Reconcile reconcile)
-      throws AxelorException;
-
-  public MoveLine analyzeMoveLine(MoveLine moveLine) throws AxelorException;
-
-  public List<Long> setAxisDomains(MoveLine moveline, int position) throws AxelorException;
-
-  public boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine)
-      throws AxelorException;
-
-  public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine);
 
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
-
-  public MoveLine setCurrencyAmount(MoveLine moveLine);
-
-  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
 }

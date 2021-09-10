@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
@@ -232,7 +233,7 @@ public class MoveLineController {
 
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine = moveLineService.computeTaxAmount(moveLine);
+      moveLine = Beans.get(MoveLineTaxService.class).computeTaxAmount(moveLine);
       response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -367,7 +368,7 @@ public class MoveLineController {
       if (move != null) {
         moveLine.setMove(request.getContext().getParent().asType(Move.class));
       }
-      moveLine = Beans.get(MoveLineService.class).analyzeMoveLine(moveLine);
+      moveLine = Beans.get(MoveLineComputeAnalyticService.class).analyzeMoveLine(moveLine);
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
     } catch (Exception e) {
@@ -385,8 +386,10 @@ public class MoveLineController {
       List<Long> analyticAccountList = new ArrayList<Long>();
 
       for (int i = 1; i <= 5; i++) {
-        if (Beans.get(MoveLineService.class).compareNbrOfAnalyticAxisSelect(i, moveLine)) {
-          analyticAccountList = Beans.get(MoveLineService.class).setAxisDomains(moveLine, i);
+        if (Beans.get(MoveLineComputeAnalyticService.class)
+            .compareNbrOfAnalyticAxisSelect(i, moveLine)) {
+          analyticAccountList =
+              Beans.get(MoveLineComputeAnalyticService.class).setAxisDomains(moveLine, i);
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr("axis" + i + "AnalyticAccount", "domain", "self.id IN (0)");
           } else {
@@ -437,7 +440,9 @@ public class MoveLineController {
       throws AxelorException {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine = Beans.get(MoveLineService.class).selectDefaultDistributionTemplate(moveLine);
+      moveLine =
+          Beans.get(MoveLineComputeAnalyticService.class)
+              .selectDefaultDistributionTemplate(moveLine);
       response.setValue("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 

@@ -5,11 +5,14 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +20,12 @@ import java.util.List;
 public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   protected TaxService taxService;
+  protected CurrencyService currencyService;
 
   @Inject
-  public MoveLineToolServiceImpl(TaxService taxService) {
+  public MoveLineToolServiceImpl(TaxService taxService, CurrencyService currencyService) {
     this.taxService = taxService;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -249,5 +254,27 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
     }
     return taxLine;
+  }
+
+  @Override
+  public MoveLine setCurrencyAmount(MoveLine moveLine) {
+    Move move = moveLine.getMove();
+    if (move.getMoveLineList().size() == 0) {
+      try {
+        moveLine.setCurrencyRate(
+            currencyService.getCurrencyConversionRate(
+                move.getCurrency(), move.getCompany().getCurrency()));
+      } catch (AxelorException e1) {
+        TraceBackService.trace(e1);
+      }
+    } else {
+      moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
+    }
+    if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
+      BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
+      moveLine.setCurrencyAmount(
+          unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
+    }
+    return moveLine;
   }
 }

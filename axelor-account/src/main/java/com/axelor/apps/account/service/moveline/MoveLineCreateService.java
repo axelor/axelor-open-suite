@@ -4,13 +4,16 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
+/** Interface of service to create {@link MoveLine} */
 public interface MoveLineCreateService {
 
   MoveLine createMoveLine(
@@ -63,5 +66,14 @@ public interface MoveLineCreateService {
       boolean consolidate,
       boolean isPurchase,
       boolean isDebitCustomer)
+      throws AxelorException;
+
+  MoveLine createMoveLineForAutoTax(
+      Move move,
+      Map<String, MoveLine> map,
+      Map<String, MoveLine> newMap,
+      MoveLine moveLine,
+      TaxLine taxLine,
+      String accountType)
       throws AxelorException;
 }
