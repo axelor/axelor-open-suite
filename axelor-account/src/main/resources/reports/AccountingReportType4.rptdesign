@@ -169,6 +169,7 @@ row["MoveLineDate"]
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">MoveLineID</property>
+                    <property name="alias">MoveLineID</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineID</text-property>
                     <property name="onColumnLayout">false</property>
@@ -176,6 +177,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">partner_name</property>
+                    <property name="alias">partner_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -183,6 +185,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">partner_seq</property>
+                    <property name="alias">partner_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_seq</text-property>
                     <property name="onColumnLayout">false</property>
@@ -190,6 +193,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
+                    <property name="alias">ref</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ref</text-property>
                     <property name="onColumnLayout">false</property>
@@ -197,6 +201,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
+                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <property name="onColumnLayout">false</property>
@@ -204,6 +209,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
+                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
                     <property name="onColumnLayout">false</property>
@@ -211,6 +217,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">invoice_name</property>
+                    <property name="alias">invoice_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -218,6 +225,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">invoice_reconciled_name</property>
+                    <property name="alias">invoice_reconciled_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_reconciled_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -225,6 +233,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">invoice_reconciled_date</property>
+                    <property name="alias">invoice_reconciled_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_reconciled_date</text-property>
                     <property name="onColumnLayout">false</property>
@@ -232,6 +241,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">ReportedBalanceAmount</property>
+                    <property name="alias">ReportedBalanceAmount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ReportedBalanceAmount</text-property>
                     <property name="onColumnLayout">false</property>
@@ -239,6 +249,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">reported_balance_date</property>
+                    <property name="alias">reported_balance_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">reported_balance_date</text-property>
                     <property name="onColumnLayout">false</property>
@@ -246,6 +257,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">report_date</property>
+                    <property name="alias">report_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date</text-property>
                     <property name="onColumnLayout">false</property>
@@ -253,6 +265,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">amountreconciled</property>
+                    <property name="alias">amountreconciled</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amountreconciled</text-property>
                     <property name="onColumnLayout">false</property>
@@ -260,6 +273,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">amount_remaining</property>
+                    <property name="alias">amount_remaining</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount_remaining</text-property>
                     <property name="onColumnLayout">false</property>
@@ -267,6 +281,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">countmoveline</property>
+                    <property name="alias">countmoveline</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">countmoveline</text-property>
                     <property name="onColumnLayout">false</property>
@@ -274,6 +289,7 @@ row["MoveLineDate"]
                 </structure>
                 <structure>
                     <property name="columnName">MoveLineDate</property>
+                    <property name="alias">MoveLineDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineDate</text-property>
                     <property name="onColumnLayout">false</property>
@@ -377,27 +393,36 @@ row["MoveLineDate"]
                     </structure>
                     <structure>
                         <property name="position">17</property>
+                        <property name="name">showProvisionTitle</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
                         <property name="name">Invoice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
                         <property name="name">credit_to_use</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">20</property>
                         <property name="name">excess_payment</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">21</property>
                         <property name="name">date</property>
                         <property name="dataType">date</property>
                     </structure>
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
+            <method name="onFetch"><![CDATA[if(dataSetRow["showProvisionTitle"])
+{
+	vars["showProvisionTitle"] = dataSetRow["showProvisionTitle"];
+}]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -405,112 +430,102 @@ row["MoveLineDate"]
                     <property name="name">MoveLineID</property>
                     <property name="nativeName">MoveLineID</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">invoice_name</property>
                     <property name="nativeName">invoice_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">invoice_reconciled_name</property>
                     <property name="nativeName">invoice_reconciled_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">invoice_reconciled_date</property>
                     <property name="nativeName">invoice_reconciled_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">ReportedBalanceAmount</property>
                     <property name="nativeName">ReportedBalanceAmount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">reported_balance_date</property>
                     <property name="nativeName">reported_balance_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">amountreconciled</property>
                     <property name="nativeName">amountreconciled</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">amount_remaining</property>
                     <property name="nativeName">amount_remaining</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">countmoveline</property>
                     <property name="nativeName">countmoveline</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">MoveLineDate</property>
                     <property name="nativeName">MoveLineDate</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">showProvisionTitle</property>
+                    <property name="nativeName">showProvisionTitle</property>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineID", MoveLine.partner_full_name as partner_name, MoveLine.partner_seq,
@@ -518,7 +533,8 @@ AccountingReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name", InvoiceReconciled.invoice_date as "invoice_reconciled_date", 
 ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
 AccountingReport.date_to as "report_date", Reconcile.amount as amountReconciled, MoveLine.amount_remaining, count(Reconcile.id) as countMoveLine,    
-MoveLine.date_val as "MoveLineDate"  
+MoveLine.date_val as "MoveLineDate",
+CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"  
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -1090,6 +1106,29 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
         </simple-master-page>
     </page-setup>
     <body>
+        <table id="6275">
+            <property name="dataSet">MoveLineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">true</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">showProvisionTitle</property>
+                    <text-property name="displayName">showProvisionTitle</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["showProvisionTitle"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+            <column id="6282"/>
+            <detail>
+                <row id="6278">
+                    <cell id="6279"/>
+                </row>
+            </detail>
+        </table>
         <grid id="490">
             <property name="canShrink">true</property>
             <property name="width">11.166666666666666in</property>
@@ -1506,7 +1545,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row._outer["display_simulated_move"]</expression>
+                                <expression name="valueExpr" type="javascript">!vars["showProvisionTitle"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -1592,7 +1631,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row._outer["display_simulated_move"]</expression>
+                                <expression name="valueExpr" type="javascript">!vars["showProvisionTitle"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -5447,4 +5486,10 @@ row["amount_remaining"]
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="showProvisionTitle">
+            <expression name="value" type="javascript">false</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>
