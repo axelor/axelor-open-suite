@@ -916,18 +916,43 @@ public class MoveServiceImpl implements MoveService {
     List<AnalyticAccount> analyticAccounts = getAnalyticAccountList(move);
     List<AnalyticMoveLine> analyticMoveLines = getAnalyticMoveLines(move);
     counterpartMoveLine.clearAnalyticMoveLineList();
-    for (AnalyticAccount analyticAccount : analyticAccounts) {
-      counterpartMoveLine.addAnalyticMoveLineListItem(
-          createAnalyticMoveLine(analyticAccount, analyticMoveLines, counterpartMoveLine));
-    }
-
     if (appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && move.getCompany().getAccountConfig().getManageAnalyticAccounting()) {
+        && move.getCompany().getAccountConfig().getManageAnalyticAccounting()
+        && hasToCreateCounterpartAnalytics(move)) {
+      for (AnalyticAccount analyticAccount : analyticAccounts) {
+        counterpartMoveLine.addAnalyticMoveLineListItem(
+            createAnalyticMoveLine(analyticAccount, analyticMoveLines, counterpartMoveLine));
+      }
+
       if (counterpartMoveLine.getAnalyticMoveLineList() != null) {
         counterpartMoveLine =
             computeCounterpartAnalyticMoveLines(counterpartMoveLine, analyticMoveLines);
       }
     }
+  }
+
+  protected boolean hasToCreateCounterpartAnalytics(Move move) {
+    boolean result = true;
+    int analyticMoveLineAmount = 0;
+    if (!(move.getJournal()
+            .getJournalType()
+            .getCode()
+            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
+        || move.getJournal()
+            .getJournalType()
+            .getCode()
+            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))) {
+      result = false;
+    }
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getAnalyticMoveLineList() != null) {
+        analyticMoveLineAmount += moveLine.getAnalyticMoveLineList().size();
+      }
+    }
+    if (analyticMoveLineAmount == 0) {
+      result = false;
+    }
+    return result;
   }
 
   protected MoveLine computeCounterpartAnalyticMoveLines(
@@ -963,8 +988,10 @@ public class MoveServiceImpl implements MoveService {
             .collect(Collectors.toList());
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
     analyticMoveLine.setAnalyticAccount(analyticAccount);
-    analyticMoveLine.setAccount(counterpartMoveLine.getAccount());
-    analyticMoveLine.setAccountType(counterpartMoveLine.getAccount().getAccountType());
+    if (counterpartMoveLine.getAccount() != null) {
+      analyticMoveLine.setAccount(counterpartMoveLine.getAccount());
+      analyticMoveLine.setAccountType(counterpartMoveLine.getAccount().getAccountType());
+    }
     analyticMoveLine.setAmount(BigDecimal.ZERO);
 
     for (AnalyticMoveLine aml : accountAnalyticMoveLines) {
