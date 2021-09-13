@@ -46,7 +46,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -56,23 +55,13 @@ import java.util.stream.Collectors;
 @Singleton
 public class MoveLineController {
 
-  protected MoveLineRepository moveLineRepository;
-  protected MoveLineService moveLineService;
-
-  @Inject
-  public MoveLineController(
-      MoveLineRepository moveLineRepository, MoveLineService moveLineService) {
-    this.moveLineRepository = moveLineRepository;
-    this.moveLineService = moveLineService;
-  }
-
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
 
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
     try {
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-        moveLine = moveLineService.computeAnalyticDistribution(moveLine);
+        moveLine = Beans.get(MoveLineService.class).computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
@@ -98,7 +87,7 @@ public class MoveLineController {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
+      moveLine = Beans.get(MoveLineService.class).createAnalyticDistributionWithTemplate(moveLine);
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
     } catch (Exception e) {
@@ -112,7 +101,7 @@ public class MoveLineController {
     moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
 
     try {
-      moveLineService.usherProcess(moveLine);
+      Beans.get(MoveLineService.class).usherProcess(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -164,7 +153,7 @@ public class MoveLineController {
       }
 
       if (!moveLineList.isEmpty()) {
-        moveLineService.reconcileMoveLinesWithCacheManagement(moveLineList);
+        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -229,7 +218,7 @@ public class MoveLineController {
 
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine = moveLineService.computeTaxAmount(moveLine);
+      moveLine = Beans.get(MoveLineService.class).computeTaxAmount(moveLine);
       response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -238,9 +227,13 @@ public class MoveLineController {
 
   public void filterPartner(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().getParent().asType(Move.class);
-    if (move != null) {
-      String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
-      response.setAttr("partner", "domain", domain);
+    try {
+      if (move != null) {
+        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        response.setAttr("partner", "domain", domain);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -253,11 +246,13 @@ public class MoveLineController {
         Currency currency = move.getCurrency();
         Currency companyCurrency = move.getCompanyCurrency();
         if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-          if (move.getMoveLineList().size() == 0)
+          if (move.getMoveLineList().size() == 0) {
             currencyRate =
                 Beans.get(CurrencyService.class)
                     .getCurrencyConversionRate(currency, companyCurrency);
-          else currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
+          } else {
+            currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
+          }
         }
       }
       response.setValue("currencyRate", currencyRate);
@@ -270,14 +265,14 @@ public class MoveLineController {
 
     try {
       Context parentContext = request.getContext().getParent();
-      if (ObjectUtils.notEmpty(parentContext))
-        if (Move.class.equals(parentContext.getClass()))
-          if (parentContext != null) {
-            Move move = parentContext.asType(Move.class);
-            AccountConfig accountConfig =
-                Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-            response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
-          }
+      if (ObjectUtils.notEmpty(parentContext)
+          && Move.class.equals(parentContext.getClass())
+          && parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+        response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
@@ -285,76 +280,102 @@ public class MoveLineController {
 
   public void setSelectedBankReconciliation(ActionRequest request, ActionResponse response) {
     MoveLine moveLine =
-        moveLineRepository.find(request.getContext().asType(MoveLine.class).getId());
-    moveLine = moveLineService.setIsSelectedBankReconciliation(moveLine);
-    response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
-    response.setReload(true);
+        Beans.get(MoveLineRepository.class)
+            .find(request.getContext().asType(MoveLine.class).getId());
+    try {
+      moveLine = Beans.get(MoveLineService.class).setIsSelectedBankReconciliation(moveLine);
+      response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void loadAccountInformation(ActionRequest request, ActionResponse response) {
     Context parentContext = request.getContext().getParent();
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    if (parentContext != null) {
-      Move move = parentContext.asType(Move.class);
-      Partner partner = move.getPartner();
+    try {
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        Partner partner = move.getPartner();
 
-      if (ObjectUtils.isEmpty(partner)) {
-        response.setError(I18n.get("Please select a partner"));
-      } else {
-        MoveLoadDefaultConfigService moveLoadDefaultConfigService =
-            Beans.get(MoveLoadDefaultConfigService.class);
-        Account accountingAccount =
-            moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
+        if (ObjectUtils.isEmpty(partner)) {
+          response.setError(I18n.get("Please select a partner"));
+        } else {
+          MoveLoadDefaultConfigService moveLoadDefaultConfigService =
+              Beans.get(MoveLoadDefaultConfigService.class);
+          Account accountingAccount =
+              moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
 
-        if (accountingAccount != null) {
-          response.setValue("account", accountingAccount);
-          if (!accountingAccount.getUseForPartnerBalance()) {
-            response.setValue("partner", null);
+          if (accountingAccount != null) {
+            response.setValue("account", accountingAccount);
+            if (!accountingAccount.getUseForPartnerBalance()) {
+              response.setValue("partner", null);
+            }
+          }
+
+          TaxLine taxLine =
+              moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
+          if (taxLine != null) {
+            response.setValue("taxLine", taxLine);
+          } else {
+            response.setValue("taxLine", null);
           }
         }
-
-        TaxLine taxLine =
-            moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
-        if (taxLine != null) response.setValue("taxLine", taxLine);
-        else response.setValue("taxLine", null);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void refreshAccountInformation(ActionRequest request, ActionResponse response) {
     Context parentContext = request.getContext().getParent();
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    if (parentContext != null) {
-      Move move = parentContext.asType(Move.class);
-      Account accountingAccount = moveLine.getAccount();
-      if (accountingAccount != null) {
-        if (!accountingAccount.getUseForPartnerBalance()) {
-          response.setValue("partner", null);
+    try {
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        Account accountingAccount = moveLine.getAccount();
+        if (accountingAccount != null && !accountingAccount.getUseForPartnerBalance()) {
+            response.setValue("partner", null);
         }
-      }
 
-      TaxLine taxLine =
-          Beans.get(MoveLoadDefaultConfigService.class)
-              .getTaxLine(move, moveLine, accountingAccount);
-      if (taxLine != null) response.setValue("taxLine", taxLine);
-      else response.setValue("taxLine", null);
+        TaxLine taxLine =
+            Beans.get(MoveLoadDefaultConfigService.class)
+                .getTaxLine(move, moveLine, accountingAccount);
+        if (taxLine != null) {response.setValue("taxLine", taxLine);}
+        else {response.setValue("taxLine", null);}
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void setIsOtherCurrency(ActionRequest request, ActionResponse response) {
     Context parent = request.getContext().getParent();
     Move move = parent.asType(Move.class);
-    response.setValue("isOtherCurrency", !move.getCurrency().equals(move.getCompanyCurrency()));
+    try {
+      response.setValue("isOtherCurrency", !move.getCurrency().equals(move.getCompanyCurrency()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
     boolean readonly = false;
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) readonly = true;
-    if (moveLine.getAccount() != null) {
-      if (moveLine.getAccount().getUseForPartnerBalance()) readonly = true;
+    try {
+      if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
+        readonly = true;
+      }
+      if (moveLine.getAccount() != null) {
+        if (moveLine.getAccount().getUseForPartnerBalance()) {
+          readonly = true;
+        }
+      }
+      response.setAttr("partner", "readonly", readonly);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("partner", "readonly", readonly);
   }
 
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response)
