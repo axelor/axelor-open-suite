@@ -389,12 +389,13 @@ public class MoveLineController {
       moveLine.setMove(request.getContext().getParent().asType(Move.class));
 
       List<Long> analyticAccountList = new ArrayList<Long>();
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService =
+          Beans.get(MoveLineComputeAnalyticService.class);
 
       for (int i = 1; i <= 5; i++) {
-        if (Beans.get(MoveLineComputeAnalyticService.class)
-            .compareNbrOfAnalyticAxisSelect(i, moveLine)) {
-          analyticAccountList =
-              Beans.get(MoveLineComputeAnalyticService.class).setAxisDomains(moveLine, i);
+
+        if (moveLineComputeAnalyticService.compareNbrOfAnalyticAxisSelect(i, moveLine)) {
+          analyticAccountList = moveLineComputeAnalyticService.setAxisDomains(moveLine, i);
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr("axis" + i + "AnalyticAccount", "domain", "self.id IN (0)");
           } else {

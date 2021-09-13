@@ -113,7 +113,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     return moveLine;
   }
 
-  // TODO : Refactoriser de facon a ne pas avoir de moveRepository.save(move)
   @Override
   @Transactional
   public void autoTaxLineGenerate(Move move) throws AxelorException {
