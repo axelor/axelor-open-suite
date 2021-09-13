@@ -58,6 +58,8 @@
     
     <many-to-many name="projectTaskTagSet" ref="com.axelor.apps.project.db.ProjectTaskTag" title="Tags"/>
     <many-to-one name="projectTaskSection" ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
+    
+    <string name="ticketNumber" title="Ticker number" readonly="true"/>
    
     <extra-code>
       
@@ -75,7 +77,6 @@
      <field name="projectTaskCategory"/>
      <field name="progressSelect"/>
      <field name="assignedTo"/>
-     <message if="true" on="UPDATE">Task updated</message>
     </track>
     
   </entity>
