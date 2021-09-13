@@ -28,8 +28,10 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
@@ -56,28 +58,30 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
       PaymentModeService paymentModeService,
-      MoveService moveService,
-      MoveLineService moveLineService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveToolService moveToolService,
+      MoveLineCreateService moveLineCreateService,
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
-      BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoiceTermService invoiceTermService,
-      AppAccountService appAccountService) {
-
+      AppAccountService appAccountService,
+      BankOrderCreateService bankOrderCreateService,
+      BankOrderService bankOrderService) {
     super(
         paymentModeService,
-        moveService,
-        moveLineService,
+        moveCreateService,
+        moveValidateService,
+        moveToolService,
+        moveLineCreateService,
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
         invoicePaymentToolService,
         invoiceTermService,
         appAccountService);
-
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
   }
