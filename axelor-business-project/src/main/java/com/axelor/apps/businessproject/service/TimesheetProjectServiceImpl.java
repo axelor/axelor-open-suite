@@ -36,6 +36,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
@@ -62,10 +63,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      ProjectTaskRepository projectTaskRepository,
+      ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepo,
-      TimesheetRepository timeSheetRepository) {
+      TimesheetLineRepository timesheetlineRepo,
+      TimesheetRepository timeSheetRepository,
+      ProjectService projectService) {
     super(
         priceListService,
         appHumanResourceService,
@@ -76,10 +78,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         userHrService,
         timesheetLineService,
         projectPlanningTimeRepository,
-        projectTaskRepository,
+        projectTaskRepo,
         productCompanyService,
-        timesheetLineRepo,
-        timeSheetRepository);
+        timesheetlineRepo,
+        timeSheetRepository,
+        projectService);
   }
 
   @Override
