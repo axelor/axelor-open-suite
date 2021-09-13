@@ -26,8 +26,8 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -57,7 +57,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected PaymentModeService paymentModeService;
   protected AccountingSituationService accountingSituationService;
   protected BankPaymentConfigService bankPaymentConfigService;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
 
   protected PaymentMode paymentMode;
   protected Company senderCompany;
@@ -76,15 +76,14 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
       MoveValidateService moveValidateService,
       PaymentModeService paymentModeService,
       AccountingSituationService accountingSituationService,
-      BankPaymentConfigService bankPaymentConfigService,
-      MoveLineService moveLineService) {
+      MoveLineCreateService moveLineCreateService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.paymentModeService = paymentModeService;
     this.accountingSituationService = accountingSituationService;
     this.bankPaymentConfigService = bankPaymentConfigService;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
@@ -156,7 +155,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverLabel());
 
     MoveLine bankMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             senderMove,
             partner,
             senderBankAccount,
@@ -169,7 +168,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     senderMove.addMoveLineListItem(bankMoveLine);
 
     MoveLine partnerMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             senderMove,
             partner,
             getPartnerAccount(partner, senderCompany, senderCompany),
@@ -210,7 +209,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverLabel());
 
     MoveLine bankMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             receiverMove,
             partner,
             receiverBankAccount,
@@ -223,7 +222,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     receiverMove.addMoveLineListItem(bankMoveLine);
 
     MoveLine partnerMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             receiverMove,
             partner,
             getPartnerAccount(partner, receiverCompany, receiverMove.getCompany()),

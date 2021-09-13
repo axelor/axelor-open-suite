@@ -28,8 +28,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -61,8 +61,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
   @Inject protected MoveCreateService moveCreateService;
 
   @Inject protected MoveValidateService moveValidateService;
-
-  @Inject protected MoveLineService moveLineService;
+  @Inject protected MoveLineCreateService moveLineCreateService;
 
   @Inject protected CurrencyService currencyService;
 
@@ -180,7 +179,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             advancePaymentDate);
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             clientPartner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails),
@@ -193,7 +192,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             null));
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             clientPartner,
             accountConfigService.getAdvancePaymentAccount(accountConfig),

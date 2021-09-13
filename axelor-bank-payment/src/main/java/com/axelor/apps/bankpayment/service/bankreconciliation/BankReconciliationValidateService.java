@@ -22,8 +22,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
@@ -47,7 +47,7 @@ public class BankReconciliationValidateService {
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
   protected MoveLineRepository moveLineRepository;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
   protected BankReconciliationService bankReconciliationService;
@@ -58,7 +58,7 @@ public class BankReconciliationValidateService {
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
       MoveLineRepository moveLineRepository,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       BankReconciliationRepository bankReconciliationRepository,
       BankReconciliationLineService bankReconciliationLineService,
       BankReconciliationService bankReconciliationService) {
@@ -67,7 +67,7 @@ public class BankReconciliationValidateService {
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.moveLineRepository = moveLineRepository;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.bankReconciliationService = bankReconciliationService;
@@ -144,7 +144,7 @@ public class BankReconciliationValidateService {
             description);
 
     MoveLine partnerMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             bankReconciliationLine.getAccount(),
@@ -158,7 +158,7 @@ public class BankReconciliationValidateService {
     move.addMoveLineListItem(partnerMoveLine);
 
     MoveLine cashMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             bankReconciliation.getCashAccount(),

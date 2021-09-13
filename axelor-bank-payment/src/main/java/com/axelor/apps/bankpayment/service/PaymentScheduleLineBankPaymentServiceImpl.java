@@ -35,10 +35,12 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -71,6 +73,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
   protected ReconcileRepository reconcileRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected MoveReverseService moveReverseService;
+  protected MoveLineService moveLineService;
 
   @Inject
   public PaymentScheduleLineBankPaymentServiceImpl(
@@ -90,20 +93,24 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
       InterbankCodeLineRepository interbankCodeLineRepo,
       ReconcileRepository reconcileRepo,
       InvoicePaymentRepository invoicePaymentRepo,
-      MoveReverseService moveReverseService) {
+      MoveReverseService moveReverseService,
+      MoveLineCreateService moveLineCreateService,
+      MoveLineToolService moveLineToolService) {
     super(
         appBaseService,
         paymentScheduleService,
         moveCreateService,
         moveValidateService,
-        moveLineService,
         paymentModeService,
         sequenceService,
         accountingSituationService,
         moveToolService,
         paymentService,
         moveLineRepo,
-        paymentScheduleLineRepo);
+        paymentScheduleLineRepo,
+        moveLineCreateService,
+        moveLineToolService);
+    this.moveLineService = moveLineService;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.interbankCodeLineRepo = interbankCodeLineRepo;
     this.reconcileRepo = reconcileRepo;
@@ -196,7 +203,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
         MoreObjects.firstNonNull(paymentSchedule.getInvoiceSet(), Collections.emptySet());
 
     for (Invoice invoice : invoiceSet) {
-      MoveLine debitMoveLine = moveLineService.getDebitCustomerMoveLine(invoice);
+      MoveLine debitMoveLine = moveLineToolService.getDebitCustomerMoveLine(invoice);
       Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
 
       if (reconcile == null) {
