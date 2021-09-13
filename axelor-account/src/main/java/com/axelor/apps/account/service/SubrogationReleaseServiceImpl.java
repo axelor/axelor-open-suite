@@ -32,7 +32,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
@@ -67,16 +68,27 @@ import java.util.stream.Collectors;
 public class SubrogationReleaseServiceImpl implements SubrogationReleaseService {
 
   protected AppBaseService appBaseService;
+  protected AccountConfigService accountConfigService;
   protected InvoiceRepository invoiceRepository;
-  protected MoveLineCreateService moveLineCreateService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
+  protected MoveRepository moveRepository;
 
   @Inject
   public SubrogationReleaseServiceImpl(
       AppBaseService appBaseService,
+      AccountConfigService accountConfigService,
       InvoiceRepository invoiceRepository,
-      MoveLineCreateService moveLineCreateService) {
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveLineCreateService moveLineCreateService,
+      MoveRepository moveRepository) {
     this.appBaseService = appBaseService;
+    this.accountConfigService = accountConfigService;
     this.invoiceRepository = invoiceRepository;
+    this.moveValidateService = moveValidateService;
+    this.moveCreateService = moveCreateService;
+    this.moveRepository = moveRepository;
     this.moveLineCreateService = moveLineCreateService;
   }
 
@@ -234,10 +246,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Transactional(rollbackOn = {Exception.class})
   public void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease)
       throws AxelorException {
-    MoveService moveService = Beans.get(MoveService.class);
-    MoveRepository moveRepository = Beans.get(MoveRepository.class);
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
-    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     Company company = subrogationRelease.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
@@ -262,19 +270,17 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       String description = invoice.getInvoiceId();
       LocalDate date = subrogationRelease.getAccountingDate();
       Move move =
-          moveService
-              .getMoveCreateService()
-              .createMove(
-                  journal,
-                  company,
-                  company.getCurrency(),
-                  invoice.getPartner(),
-                  date,
-                  null,
-                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                  origin,
-                  description);
+          moveCreateService.createMove(
+              journal,
+              company,
+              company.getCurrency(),
+              invoice.getPartner(),
+              date,
+              null,
+              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+              MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+              origin,
+              description);
       MoveLine creditMoveLine, debitMoveLine;
 
       debitMoveLine =
@@ -307,7 +313,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       move.addMoveLineListItem(creditMoveLine);
 
       move = moveRepository.save(move);
-      moveService.getMoveValidateService().validate(move);
+      moveValidateService.validate(move);
 
       invoice.setSubrogationRelease(subrogationRelease);
       invoice.setSubrogationReleaseMove(move);

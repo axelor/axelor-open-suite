@@ -29,7 +29,8 @@ import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -57,7 +58,8 @@ public class ReimbursementExportService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepo;
   protected MoveLineCreateService moveLineCreateService;
   protected ReconcileService reconcileService;
@@ -70,7 +72,8 @@ public class ReimbursementExportService {
 
   @Inject
   public ReimbursementExportService(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveRepository moveRepo,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
@@ -81,7 +84,8 @@ public class ReimbursementExportService {
       AppAccountService appAccountService,
       PartnerRepository partnerRepository) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
     this.moveLineCreateService = moveLineCreateService;
     this.reconcileService = reconcileService;
@@ -188,18 +192,16 @@ public class ReimbursementExportService {
 
           if (first) {
             newMove =
-                moveService
-                    .getMoveCreateService()
-                    .createMove(
-                        accountConfig.getReimbursementJournal(),
-                        company,
-                        null,
-                        partner,
-                        null,
-                        MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                        MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                        reimbursement.getRef(),
-                        reimbursement.getDescription());
+                moveCreateService.createMove(
+                    accountConfig.getReimbursementJournal(),
+                    company,
+                    null,
+                    partner,
+                    null,
+                    MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                    MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                    reimbursement.getRef(),
+                    reimbursement.getDescription());
             first = false;
           }
           // Création d'une ligne au débit
@@ -246,7 +248,7 @@ public class ReimbursementExportService {
       if (reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty()) {
         newCreditMoveLine.setDescription(reimbursement.getDescription());
       }
-      moveService.getMoveValidateService().validate(newMove);
+      moveValidateService.validate(newMove);
       moveRepo.save(newMove);
     }
   }

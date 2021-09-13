@@ -30,7 +30,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
@@ -48,7 +49,9 @@ import javax.persistence.TypedQuery;
 
 public class NotificationServiceImpl implements NotificationService {
 
-  protected MoveService moveService;
+  protected MoveValidateService moveValidateService;
+  protected MoveCreateService moveCreateService;
+  protected MoveLineService moveLineService;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
   protected SubrogationReleaseService subrogationReleaseService;
@@ -57,13 +60,16 @@ public class NotificationServiceImpl implements NotificationService {
 
   @Inject
   public NotificationServiceImpl(
-      MoveService moveService,
+      MoveValidateService moveValidateService,
+      MoveCreateService moveCreateService,
+      MoveLineService moveLineService,
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
       SubrogationReleaseService subrogationReleaseService,
       MoveRepository moveRepository,
       MoveLineCreateService moveLineCreateService) {
-    this.moveService = moveService;
+    this.moveValidateService = moveValidateService;
+    this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
     this.accountConfigService = accountConfigService;
     this.subrogationReleaseService = subrogationReleaseService;
@@ -142,19 +148,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     Move paymentMove =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                company.getCurrency(),
-                invoice.getPartner(),
-                notification.getPaymentDate(),
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                origin,
-                invoice.getInvoiceId());
+        moveCreateService.createMove(
+            journal,
+            company,
+            company.getCurrency(),
+            invoice.getPartner(),
+            notification.getPaymentDate(),
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            invoice.getInvoiceId());
     MoveLine creditMoveLine, debitMoveLine;
 
     Account account = getAccount(accountConfig, notificationItem);
@@ -189,7 +193,7 @@ public class NotificationServiceImpl implements NotificationService {
     paymentMove.addMoveLineListItem(creditMoveLine);
     paymentMove = moveRepository.save(paymentMove);
 
-    moveService.getMoveValidateService().validate(paymentMove);
+    moveValidateService.validate(paymentMove);
 
     MoveLine invoiceMoveLine = findInvoiceAccountMoveLine(invoice);
     MoveLine subrogationReleaseMoveLine = findSubrogationReleaseAccountMoveLine(invoice);

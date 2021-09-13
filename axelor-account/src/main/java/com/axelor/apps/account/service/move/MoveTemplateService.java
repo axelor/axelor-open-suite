@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 public class MoveTemplateService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepo;
   protected MoveLineCreateService moveLineCreateService;
@@ -65,15 +65,14 @@ public class MoveTemplateService {
 
   @Inject
   public MoveTemplateService(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepo,
       MoveLineCreateService moveLineCreateService,
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
-      TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
     this.moveLineCreateService = moveLineCreateService;
@@ -140,19 +139,17 @@ public class MoveTemplateService {
       }
       if (moveTemplate.getJournal().getCompany() != null) {
         Move move =
-            moveService
-                .getMoveCreateService()
-                .createMove(
-                    moveTemplate.getJournal(),
-                    moveTemplate.getJournal().getCompany(),
-                    null,
-                    partner,
-                    moveDate,
-                    null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                    0,
-                    origin,
-                    null);
+            moveCreateService.createMove(
+                moveTemplate.getJournal(),
+                moveTemplate.getJournal().getCompany(),
+                null,
+                partner,
+                moveDate,
+                null,
+                MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                0,
+                origin,
+                null);
 
         int counter = 1;
 
@@ -232,19 +229,17 @@ public class MoveTemplateService {
 
       if (moveTemplate.getJournal().getCompany() != null) {
         Move move =
-            moveService
-                .getMoveCreateService()
-                .createMove(
-                    moveTemplate.getJournal(),
-                    moveTemplate.getJournal().getCompany(),
-                    null,
-                    null,
-                    moveDate,
-                    null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                    0,
-                    moveTemplate.getFullName(),
-                    null);
+            moveCreateService.createMove(
+                moveTemplate.getJournal(),
+                moveTemplate.getJournal().getCompany(),
+                null,
+                null,
+                moveDate,
+                null,
+                MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                0,
+                moveTemplate.getFullName(),
+                null);
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {

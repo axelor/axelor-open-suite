@@ -29,8 +29,9 @@ import com.axelor.apps.account.db.repo.AccountClearanceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -58,7 +59,8 @@ public class AccountClearanceService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveLineRepository moveLineRepo;
   protected SequenceService sequenceService;
   protected ReconcileService reconcileService;
@@ -73,7 +75,8 @@ public class AccountClearanceService {
   public AccountClearanceService(
       UserService userService,
       AppBaseService appBaseService,
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveLineRepository moveLineRepo,
       SequenceService sequenceService,
       ReconcileService reconcileService,
@@ -84,7 +87,8 @@ public class AccountClearanceService {
 
     this.appBaseService = appBaseService;
     this.user = userService.getUser();
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveLineRepo = moveLineRepo;
     this.sequenceService = sequenceService;
     this.reconcileService = reconcileService;
@@ -151,7 +155,7 @@ public class AccountClearanceService {
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-      moveService.getMoveValidateService().validate(move);
+      moveValidateService.validate(move);
     }
 
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
@@ -174,18 +178,16 @@ public class AccountClearanceService {
 
     // Move
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                null,
-                partner,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                moveLine.getMove().getFunctionalOriginSelect(),
-                null,
-                null);
+        moveCreateService.createMove(
+            journal,
+            company,
+            null,
+            partner,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            moveLine.getMove().getFunctionalOriginSelect(),
+            null,
+            null);
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();

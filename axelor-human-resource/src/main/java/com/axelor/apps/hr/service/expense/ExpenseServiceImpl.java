@@ -39,7 +39,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveCancelService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -101,7 +102,8 @@ import wslite.json.JSONException;
 @Singleton
 public class ExpenseServiceImpl implements ExpenseService {
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected ExpenseRepository expenseRepository;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineConsolidateService moveLineConsolidateService;
@@ -116,7 +118,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Inject
   public ExpenseServiceImpl(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       ExpenseRepository expenseRepository,
       MoveLineCreateService moveLineCreateService,
       AccountManagementAccountService accountManagementService,
@@ -129,7 +132,8 @@ public class ExpenseServiceImpl implements ExpenseService {
       PaymentModeService paymentModeService,
       MoveLineConsolidateService moveLineConsolidateService) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.expenseRepository = expenseRepository;
     this.moveLineCreateService = moveLineCreateService;
     this.accountManagementService = accountManagementService;
@@ -399,19 +403,17 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                accountConfigService.getExpenseJournal(accountConfig),
-                company,
-                null,
-                partner,
-                moveDate,
-                partner.getInPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
-                origin,
-                description);
+        moveCreateService.createMove(
+            accountConfigService.getExpenseJournal(accountConfig),
+            company,
+            null,
+            partner,
+            moveDate,
+            partner.getInPaymentMode(),
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
+            origin,
+            description);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -502,7 +504,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.getMoveLineList().addAll(moveLines);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
 
     expense.setMove(move);
     return move;
@@ -619,19 +621,17 @@ public class ExpenseServiceImpl implements ExpenseService {
     employeeAccount = expenseMoveLine.getAccount();
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                expense.getMove().getCurrency(),
-                partner,
-                paymentDate,
-                paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                origin,
-                null);
+        moveCreateService.createMove(
+            journal,
+            company,
+            expense.getMove().getCurrency(),
+            partner,
+            paymentDate,
+            paymentMode,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -662,7 +662,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.addMoveLineListItem(employeeMoveLine);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
     expense.setPaymentMove(move);
 
     Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);

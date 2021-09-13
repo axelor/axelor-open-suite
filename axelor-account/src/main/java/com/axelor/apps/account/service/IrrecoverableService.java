@@ -45,7 +45,9 @@ import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -80,7 +82,9 @@ public class IrrecoverableService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected SequenceService sequenceService;
-  protected MoveService moveService;
+  protected MoveToolService moveToolService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineRepository moveLineRepo;
   protected ReconcileService reconcileService;
@@ -101,7 +105,9 @@ public class IrrecoverableService {
   public IrrecoverableService(
       AppAccountService appAccountService,
       SequenceService sequenceService,
-      MoveService moveService,
+      MoveToolService moveToolService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
       MoveLineRepository moveLineRepo,
       ReconcileService reconcileService,
@@ -117,7 +123,9 @@ public class IrrecoverableService {
       IrrecoverableRepository irrecoverableRepo) {
 
     this.sequenceService = sequenceService;
-    this.moveService = moveService;
+    this.moveToolService = moveToolService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineRepo = moveLineRepo;
     this.reconcileService = reconcileService;
@@ -511,7 +519,7 @@ public class IrrecoverableService {
           I18n.get(IExceptionMessage.IRRECOVERABLE_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
     irrecoverable.getMoveSet().add(move);
   }
 
@@ -532,7 +540,7 @@ public class IrrecoverableService {
           I18n.get(IExceptionMessage.IRRECOVERABLE_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
     irrecoverable.getMoveSet().add(move);
 
     invoice.setIrrecoverableStatusSelect(
@@ -835,18 +843,16 @@ public class IrrecoverableService {
     AccountConfig accountConfig = company.getAccountConfig();
     // Move
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                accountConfig.getIrrecoverableJournal(),
-                company,
-                null,
-                payerPartner,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_SALE,
-                irrecoverableName,
-                invoice.getInvoiceId());
+        moveCreateService.createMove(
+            accountConfig.getIrrecoverableJournal(),
+            company,
+            null,
+            payerPartner,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_SALE,
+            irrecoverableName,
+            invoice.getInvoiceId());
 
     int seq = 1;
 
@@ -905,8 +911,7 @@ public class IrrecoverableService {
     seq++;
 
     // Getting customer MoveLine from Facture
-    MoveLine customerMoveLine =
-        moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
+    MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
     if (customerMoveLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -958,18 +963,16 @@ public class IrrecoverableService {
 
     // Move
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                accountConfig.getIrrecoverableJournal(),
-                company,
-                null,
-                payerPartner,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                moveLine.getMove().getFunctionalOriginSelect(),
-                irrecoverableName,
-                moveLine.getDescription());
+        moveCreateService.createMove(
+            accountConfig.getIrrecoverableJournal(),
+            company,
+            null,
+            payerPartner,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            moveLine.getMove().getFunctionalOriginSelect(),
+            irrecoverableName,
+            moveLine.getDescription());
 
     int seq = 1;
 
@@ -1107,7 +1110,7 @@ public class IrrecoverableService {
                   accountConfigService.getAccountConfig(company)));
       invoice.setManagementObject(managementObject);
 
-      MoveLine moveLine = moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
+      MoveLine moveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
       if (moveLine == null) {
         throw new AxelorException(
@@ -1135,7 +1138,7 @@ public class IrrecoverableService {
       throws AxelorException {
     this.passInIrrecoverable(invoice, false);
     invoice.setManagementObject(managementObject);
-    MoveLine moveLine = moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
+    MoveLine moveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
     if (moveLine == null) {
       throw new AxelorException(
@@ -1160,7 +1163,7 @@ public class IrrecoverableService {
   public void notPassInIrrecoverable(Invoice invoice) throws AxelorException {
     invoice.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 
-    MoveLine moveLine = moveService.getMoveToolService().getCustomerMoveLineByQuery(invoice);
+    MoveLine moveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
     if (moveLine != null) {
       this.notPassInIrrecoverable(moveLine, false);

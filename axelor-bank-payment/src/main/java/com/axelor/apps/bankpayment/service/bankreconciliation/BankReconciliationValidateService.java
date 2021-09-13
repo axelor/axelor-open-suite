@@ -21,7 +21,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
@@ -42,7 +43,8 @@ import java.util.List;
 
 public class BankReconciliationValidateService {
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
   protected MoveLineRepository moveLineRepository;
   protected MoveLineCreateService moveLineCreateService;
@@ -52,7 +54,8 @@ public class BankReconciliationValidateService {
 
   @Inject
   public BankReconciliationValidateService(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveRepository moveRepository,
       MoveLineRepository moveLineRepository,
       MoveLineCreateService moveLineCreateService,
@@ -60,7 +63,8 @@ public class BankReconciliationValidateService {
       BankReconciliationLineService bankReconciliationLineService,
       BankReconciliationService bankReconciliationService) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.moveLineRepository = moveLineRepository;
     this.moveLineCreateService = moveLineCreateService;
@@ -127,19 +131,17 @@ public class BankReconciliationValidateService {
     boolean isDebit = debit.compareTo(BigDecimal.ZERO) > 0;
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                bankReconciliation.getJournal(),
-                company,
-                null,
-                partner,
-                effectDate,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                origin,
-                description);
+        moveCreateService.createMove(
+            bankReconciliation.getJournal(),
+            company,
+            null,
+            partner,
+            effectDate,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            description);
 
     MoveLine partnerMoveLine =
         moveLineCreateService.createMoveLine(
@@ -173,7 +175,7 @@ public class BankReconciliationValidateService {
 
     moveRepository.save(move);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
 
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, cashMoveLine);
 

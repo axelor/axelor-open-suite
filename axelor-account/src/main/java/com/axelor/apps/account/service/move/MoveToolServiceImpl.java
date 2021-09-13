@@ -1,5 +1,16 @@
 package com.axelor.apps.account.service.move;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -23,15 +34,6 @@ import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MoveToolServiceImpl implements MoveToolService {
 
@@ -451,5 +453,27 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
 
     return moveLineList;
+  }
+  
+  @Override
+  public MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException {
+	    return move.getMoveLineList().stream()
+	        .filter(moveLine -> moveLine.getAccount().equals(account))
+	        .findFirst()
+	        .orElseThrow(
+	            () ->
+	                new AxelorException(
+	                    move,
+	                    TraceBackRepository.CATEGORY_NO_VALUE,
+	                    I18n.get("%s account not found in move %s"),
+	                    account.getName(),
+	                    move.getReference()));
+	  }
+  @Override
+  public void setOriginAndDescriptionOnMoveLineList(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLine.setDescription(move.getDescription());
+      moveLine.setOrigin(move.getOrigin());
+    }
   }
 }

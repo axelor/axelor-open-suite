@@ -25,7 +25,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -51,7 +52,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected PaymentModeService paymentModeService;
   protected AccountingSituationService accountingSituationService;
   protected BankPaymentConfigService bankPaymentConfigService;
@@ -70,13 +72,14 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
   @Inject
   public BankOrderMoveServiceImpl(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       PaymentModeService paymentModeService,
       AccountingSituationService accountingSituationService,
-      BankPaymentConfigService bankPaymentConfigService,
       MoveLineCreateService moveLineCreateService) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.paymentModeService = paymentModeService;
     this.accountingSituationService = accountingSituationService;
     this.bankPaymentConfigService = bankPaymentConfigService;
@@ -139,19 +142,17 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     Partner partner = bankOrderLine.getPartner();
 
     Move senderMove =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                senderCompany,
-                this.getCurrency(bankOrderLine),
-                partner,
-                this.getDate(bankOrderLine),
-                paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                bankOrderLine.getReceiverReference(),
-                bankOrderLine.getReceiverLabel());
+        moveCreateService.createMove(
+            journal,
+            senderCompany,
+            this.getCurrency(bankOrderLine),
+            partner,
+            this.getDate(bankOrderLine),
+            paymentMode,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            bankOrderLine.getReceiverReference(),
+            bankOrderLine.getReceiverLabel());
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
@@ -195,19 +196,17 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         paymentModeService.getPaymentModeAccount(paymentMode, receiverCompany, receiverBankDetails);
 
     Move receiverMove =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                receiverJournal,
-                receiverCompany,
-                this.getCurrency(bankOrderLine),
-                partner,
-                this.getDate(bankOrderLine),
-                paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                bankOrderLine.getReceiverReference(),
-                bankOrderLine.getReceiverLabel());
+        moveCreateService.createMove(
+            receiverJournal,
+            receiverCompany,
+            this.getCurrency(bankOrderLine),
+            partner,
+            this.getDate(bankOrderLine),
+            paymentMode,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            bankOrderLine.getReceiverReference(),
+            bankOrderLine.getReceiverLabel());
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(

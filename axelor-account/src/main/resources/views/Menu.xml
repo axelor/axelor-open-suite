@@ -722,9 +722,6 @@
 		<view type="form" name="tax-number-form" />
 	</action-view>
 
-	<menuitem name="account-conf-financial-tax" parent="account-conf-financial"
-		title="Taxes" action="account.conf.financial.tax" />
-
 	<menuitem name="account-conf-financial-financial-discount" title="Financial Discount" parent="account-conf-financial" action="financial.discount" />
 
 	<action-view name="financial.discount" title="Financial Discount" model="com.axelor.apps.account.db.FinancialDiscount">

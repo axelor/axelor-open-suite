@@ -27,7 +27,8 @@ import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -43,7 +44,8 @@ import java.time.LocalDate;
 
 public class ChequeRejectionService {
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveLineCreateService moveLineCreateService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
@@ -51,13 +53,15 @@ public class ChequeRejectionService {
 
   @Inject
   public ChequeRejectionService(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
       ChequeRejectionRepository chequeRejectionRepository) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveLineCreateService = moveLineCreateService;
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
@@ -117,19 +121,17 @@ public class ChequeRejectionService {
 
     // Move
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                null,
-                partner,
-                rejectionDate,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                chequeRejection.getName(),
-                description);
+        moveCreateService.createMove(
+            journal,
+            company,
+            null,
+            partner,
+            rejectionDate,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            chequeRejection.getName(),
+            description);
 
     int ref = 1;
 
@@ -175,7 +177,7 @@ public class ChequeRejectionService {
 
     move.setRejectOk(true);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
 
     return move;
   }
