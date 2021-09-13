@@ -32,8 +32,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
@@ -73,6 +73,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
+  protected MoveLineCreateService moveLineCreateService;
 
   @Inject
   public SubrogationReleaseServiceImpl(

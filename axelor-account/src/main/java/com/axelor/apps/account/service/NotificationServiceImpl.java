@@ -51,7 +51,6 @@ public class NotificationServiceImpl implements NotificationService {
 
   protected MoveValidateService moveValidateService;
   protected MoveCreateService moveCreateService;
-  protected MoveLineService moveLineService;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
   protected SubrogationReleaseService subrogationReleaseService;
@@ -62,7 +61,6 @@ public class NotificationServiceImpl implements NotificationService {
   public NotificationServiceImpl(
       MoveValidateService moveValidateService,
       MoveCreateService moveCreateService,
-      MoveLineService moveLineService,
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
       SubrogationReleaseService subrogationReleaseService,

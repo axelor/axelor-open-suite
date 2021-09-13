@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -66,7 +65,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
   protected PaymentScheduleService paymentScheduleService;
   protected MoveValidateService moveValidateService;
   protected MoveCreateService moveCreateService;
-  protected MoveLineService moveLineService;
   protected PaymentModeService paymentModeService;
   protected SequenceService sequenceService;
   protected AccountingSituationService accountingSituationService;
@@ -83,7 +81,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
       PaymentScheduleService paymentScheduleService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveLineService moveLineService,
       PaymentModeService paymentModeService,
       SequenceService sequenceService,
       AccountingSituationService accountingSituationService,
@@ -97,7 +94,6 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     this.paymentScheduleService = paymentScheduleService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
-    this.moveLineService = moveLineService;
     this.paymentModeService = paymentModeService;
     this.sequenceService = sequenceService;
     this.accountingSituationService = accountingSituationService;

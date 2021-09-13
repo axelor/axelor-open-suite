@@ -34,8 +34,8 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
-import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -73,6 +73,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
   protected ReconcileRepository reconcileRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected MoveReverseService moveReverseService;
+  protected MoveLineService moveLineService;
 
   @Inject
   public PaymentScheduleLineBankPaymentServiceImpl(
@@ -100,7 +101,6 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
         paymentScheduleService,
         moveCreateService,
         moveValidateService,
-        moveLineService,
         paymentModeService,
         sequenceService,
         accountingSituationService,
@@ -110,6 +110,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
         paymentScheduleLineRepo,
         moveLineCreateService,
         moveLineToolService);
+    this.moveLineService = moveLineService;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.interbankCodeLineRepo = interbankCodeLineRepo;
     this.reconcileRepo = reconcileRepo;

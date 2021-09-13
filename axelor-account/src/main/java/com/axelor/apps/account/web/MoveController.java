@@ -24,14 +24,14 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
-import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -138,18 +138,18 @@ public class MoveController {
     try {
       if (moveIds != null && !moveIds.isEmpty()) {
 
-      List<? extends Move> moveList =
-          Beans.get(MoveRepository.class)
-              .all()
-              .filter(
-                  "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
-                  moveIds,
-                  MoveRepository.STATUS_VALIDATED,
-                  MoveRepository.STATUS_CANCELED)
-              .order("date")
-              .fetch();
-      if (!moveList.isEmpty()) {
-        boolean error = Beans.get(MoveValidateService.class).validateMultiple(moveList);
+        List<? extends Move> moveList =
+            Beans.get(MoveRepository.class)
+                .all()
+                .filter(
+                    "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
+                    moveIds,
+                    MoveRepository.STATUS_VALIDATED,
+                    MoveRepository.STATUS_CANCELED)
+                .order("date")
+                .fetch();
+        if (!moveList.isEmpty()) {
+          boolean error = Beans.get(MoveValidateService.class).validateMultiple(moveList);
           if (error) {
             response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
           } else {
@@ -183,10 +183,10 @@ public class MoveController {
                 .order("date")
                 .fetch();
 
-      if (!moveList.isEmpty()) {
-        Beans.get(MoveValidateService.class).simulateMultiple(moveList);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
-        response.setReload(true);
+        if (!moveList.isEmpty()) {
+          Beans.get(MoveValidateService.class).simulateMultiple(moveList);
+          response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
+          response.setReload(true);
         } else {
           response.setFlash(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
         }
@@ -365,7 +365,7 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     if (move != null) {
       try {
-      String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
         response.setAttr("partner", "domain", domain);
       } catch (Exception e) {
         TraceBackService.trace(response, e);

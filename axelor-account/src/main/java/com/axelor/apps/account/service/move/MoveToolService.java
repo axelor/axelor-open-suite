@@ -170,8 +170,8 @@ public interface MoveToolService {
   boolean isDebitMoveLine(MoveLine moveLine);
 
   List<MoveLine> getToReconcileCreditMoveLines(Move move);
-  
-  MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException ;
-  
+
+  MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
+
   void setOriginAndDescriptionOnMoveLineList(Move move);
 }
