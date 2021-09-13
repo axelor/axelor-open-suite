@@ -30,6 +30,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
@@ -93,7 +94,7 @@ public class BankReconciliationController {
             .filter(line -> line.getIsSelectedBankReconciliation())
             .collect(Collectors.toList());
     if (bankReconciliationLines.isEmpty()) {
-      response.setFlash(I18n.get("Please select a reconciliation line"));
+      response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
     } else {
       bankReconciliationService.unreconcileLines(bankReconciliationLines);
       response.setReload(true);

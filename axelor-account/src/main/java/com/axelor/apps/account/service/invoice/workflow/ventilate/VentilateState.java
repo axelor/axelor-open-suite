@@ -31,7 +31,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
@@ -57,7 +57,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected SequenceService sequenceService;
 
-  protected MoveService moveService;
+  protected MoveCreateFromInvoiceService moveCreateFromInvoiceService;
 
   protected AccountConfigService accountConfigService;
 
@@ -76,7 +76,7 @@ public class VentilateState extends WorkflowInvoice {
   @Inject
   public VentilateState(
       SequenceService sequenceService,
-      MoveService moveService,
+      MoveCreateFromInvoiceService moveCreateFromInvoiceService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       InvoiceRepository invoiceRepo,
@@ -85,7 +85,7 @@ public class VentilateState extends WorkflowInvoice {
       FixedAssetGenerationService fixedAssetGenerationService,
       InvoiceTermService invoiceTermService) {
     this.sequenceService = sequenceService;
-    this.moveService = moveService;
+    this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.invoiceRepo = invoiceRepo;
@@ -262,10 +262,10 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("In Set Move");
     // Création de l'écriture comptable
-    Move move = moveService.createMove(invoice);
+    Move move = moveCreateFromInvoiceService.createMove(invoice);
     if (move != null) {
 
-      moveService.createMoveUseExcessPaymentOrDue(invoice);
+      moveCreateFromInvoiceService.createMoveUseExcessPaymentOrDue(invoice);
     }
   }
 

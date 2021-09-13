@@ -150,12 +150,22 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveComputeServiceImpl;
+import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveCounterPartServiceImpl;
+import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
+import com.axelor.apps.account.service.move.MoveCreateFromInvoiceServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveLineServiceImpl;
-import com.axelor.apps.account.service.move.MoveService;
-import com.axelor.apps.account.service.move.MoveServiceImpl;
+import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
+import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
+import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
+import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.move.MoveViewHelperServiceImpl;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -314,8 +324,6 @@ public class AccountModule extends AxelorModule {
 
     bind(PeriodServiceAccount.class).to(PeriodServiceAccountImpl.class);
 
-    bind(MoveService.class).to(MoveServiceImpl.class);
-
     bind(TaxPaymentMoveLineService.class).to(TaxPaymentMoveLineServiceImpl.class);
 
     bind(PaymentService.class).to(PaymentServiceImpl.class);
@@ -357,5 +365,17 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetFailOverControlService.class).to(FixedAssetFailOverControlServiceImpl.class);
 
     bind(FixedAssetGenerationService.class).to(FixedAssetGenerationServiceImpl.class);
+
+    bind(MoveComputeService.class).to(MoveComputeServiceImpl.class);
+
+    bind(MoveCounterPartService.class).to(MoveCounterPartServiceImpl.class);
+
+    bind(MoveCreateFromInvoiceService.class).to(MoveCreateFromInvoiceServiceImpl.class);
+
+    bind(MoveLoadDefaultConfigService.class).to(MoveLoadDefaultConfigServiceImpl.class);
+
+    bind(MoveReverseService.class).to(MoveReverseServiceImpl.class);
+
+    bind(MoveViewHelperService.class).to(MoveViewHelperServiceImpl.class);
   }
 }

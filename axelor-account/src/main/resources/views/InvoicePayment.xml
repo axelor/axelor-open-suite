@@ -52,7 +52,7 @@
 		</panel>
 		<panel name="discountPanel" title="Financial Discount" if="__config__.app.getApp('account').getManageFinancialDiscount()">
 			<field name="applyFinancialDiscount" readonlyIf="!financialDiscount" onChange="action-invoice-payment-method-change-amount,action-attrs-on-change-invoice-payment-financial-discount"/>
-			<field name="$totalAmountWithFinancialDiscount" type="decimal" title="Total amount with Fin. Discount" showIf="applyFinancialDiscount" readonly="true"/>
+			<field name="$totalAmountWithFinancialDiscount" type="decimal" title="Total amount with Fin. Discount" showIf="applyFinancialDiscount &amp;&amp; $totalAmountWithFinancialDiscount != null" readonly="true"/>
 			<field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
 			<field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount" readonly="true"/>
 			<field name="financialDiscountAmount" showIf="applyFinancialDiscount" readonly="true"/>

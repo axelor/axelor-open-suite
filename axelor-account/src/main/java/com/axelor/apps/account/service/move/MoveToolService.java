@@ -463,4 +463,25 @@ public class MoveToolService {
 
     return moveLineList;
   }
+
+  public MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException {
+    return move.getMoveLineList().stream()
+        .filter(moveLine -> moveLine.getAccount().equals(account))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new AxelorException(
+                    move,
+                    TraceBackRepository.CATEGORY_NO_VALUE,
+                    I18n.get("%s account not found in move %s"),
+                    account.getName(),
+                    move.getReference()));
+  }
+
+  public void setOriginAndDescriptionOnMoveLineList(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLine.setDescription(move.getDescription());
+      moveLine.setOrigin(move.getOrigin());
+    }
+  }
 }

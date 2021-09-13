@@ -33,8 +33,9 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
@@ -60,7 +61,8 @@ public class PaymentVoucherConfirmService {
 
   protected ReconcileService reconcileService;
   protected MoveLineService moveLineService;
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected PaymentService paymentService;
   protected PaymentModeService paymentModeService;
   protected PaymentVoucherSequenceService paymentVoucherSequenceService;
@@ -73,7 +75,8 @@ public class PaymentVoucherConfirmService {
   public PaymentVoucherConfirmService(
       ReconcileService reconcileService,
       MoveLineService moveLineService,
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       PaymentService paymentService,
       PaymentModeService paymentModeService,
       PaymentVoucherSequenceService paymentVoucherSequenceService,
@@ -84,7 +87,8 @@ public class PaymentVoucherConfirmService {
 
     this.reconcileService = reconcileService;
     this.moveLineService = moveLineService;
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.paymentService = paymentService;
     this.paymentModeService = paymentModeService;
     this.paymentVoucherSequenceService = paymentVoucherSequenceService;
@@ -204,19 +208,17 @@ public class PaymentVoucherConfirmService {
       // Manage all the cases in the same way. As if a move line (Excess payment) is selected, we
       // cancel it first
       Move move =
-          moveService
-              .getMoveCreateService()
-              .createMoveWithPaymentVoucher(
-                  journal,
-                  company,
-                  paymentVoucher,
-                  payerPartner,
-                  paymentDate,
-                  paymentMode,
-                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                  paymentVoucher.getRef(),
-                  null);
+          moveCreateService.createMoveWithPaymentVoucher(
+              journal,
+              company,
+              paymentVoucher,
+              payerPartner,
+              paymentDate,
+              paymentMode,
+              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+              MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+              paymentVoucher.getRef(),
+              null);
 
       move.setPaymentVoucher(paymentVoucher);
       move.setTradingName(paymentVoucher.getTradingName());
@@ -330,7 +332,7 @@ public class PaymentVoucherConfirmService {
           reconcileService.balanceCredit(moveLine);
         }
       }
-      moveService.getMoveValidateService().validate(move);
+      moveValidateService.validate(move);
       paymentVoucher.setGeneratedMove(move);
     }
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);

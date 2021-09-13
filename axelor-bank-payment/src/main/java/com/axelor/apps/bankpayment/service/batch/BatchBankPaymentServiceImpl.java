@@ -30,7 +30,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PaymentScheduleService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -66,7 +66,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected AppBaseService appBaseService;
-  protected MoveService moveService;
+  protected MoveLineService moveLineService;
   protected InvoicePaymentValidateService invoicePaymentValidateService;
   protected PaymentScheduleService paymentScheduleService;
 
@@ -83,7 +83,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   @Inject
   public BatchBankPaymentServiceImpl(
       AppBaseService appBaseService,
-      MoveService moveService,
+      MoveLineService moveLineService,
       InvoicePaymentValidateService invoicePaymentValidateService,
       PaymentScheduleService paymentScheduleService,
       BankOrderCreateService bankOrderCreateService,
@@ -96,7 +96,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       BatchRepository batchRepo) {
 
     this.appBaseService = appBaseService;
-    this.moveService = moveService;
+    this.moveLineService = moveLineService;
     this.invoicePaymentValidateService = invoicePaymentValidateService;
     this.paymentScheduleService = paymentScheduleService;
 
@@ -190,7 +190,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
 
       for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-        MoveLine debitMoveLine = moveService.getMoveLineService().getDebitCustomerMoveLine(invoice);
+        MoveLine debitMoveLine = moveLineService.getDebitCustomerMoveLine(invoice);
         Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
 
         if (reconcile == null) {

@@ -23,8 +23,9 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -42,10 +43,11 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
 
   @Inject
   public ExpenseServiceProjectImpl(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       ExpenseRepository expenseRepository,
       MoveLineService moveLineService,
-      AccountManagementAccountService accountManagementAccountService,
+      AccountManagementAccountService accountManagementService,
       AppAccountService appAccountService,
       AccountConfigHRService accountConfigService,
       AccountingSituationService accountingSituationService,
@@ -53,12 +55,12 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService) {
-
     super(
-        moveService,
+        moveCreateService,
+        moveValidateService,
         expenseRepository,
         moveLineService,
-        accountManagementAccountService,
+        accountManagementService,
         appAccountService,
         accountConfigService,
         accountingSituationService,
