@@ -33,8 +33,8 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -72,8 +72,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   protected InvoiceRepository invoiceRepository;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
-  protected MoveLineService moveLineService;
   protected MoveRepository moveRepository;
+  protected MoveLineCreateService moveLineCreateService;
 
   @Inject
   public SubrogationReleaseServiceImpl(
@@ -82,15 +82,15 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       InvoiceRepository invoiceRepository,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       MoveRepository moveRepository) {
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.invoiceRepository = invoiceRepository;
-    this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
-    this.moveLineService = moveLineService;
+    this.moveCreateService = moveCreateService;
     this.moveRepository = moveRepository;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
@@ -285,7 +285,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       MoveLine creditMoveLine, debitMoveLine;
 
       debitMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               invoice.getPartner(),
               factorDebitAccount,
@@ -298,7 +298,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
               description);
 
       creditMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               invoice.getPartner(),
               factorCreditAccount,

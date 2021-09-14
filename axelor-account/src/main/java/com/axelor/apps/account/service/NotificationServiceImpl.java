@@ -31,8 +31,8 @@ import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -51,28 +51,28 @@ public class NotificationServiceImpl implements NotificationService {
 
   protected MoveValidateService moveValidateService;
   protected MoveCreateService moveCreateService;
-  protected MoveLineService moveLineService;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
   protected SubrogationReleaseService subrogationReleaseService;
   protected MoveRepository moveRepository;
+  protected MoveLineCreateService moveLineCreateService;
 
   @Inject
   public NotificationServiceImpl(
       MoveValidateService moveValidateService,
       MoveCreateService moveCreateService,
-      MoveLineService moveLineService,
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
       SubrogationReleaseService subrogationReleaseService,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      MoveLineCreateService moveLineCreateService) {
     this.moveValidateService = moveValidateService;
     this.moveCreateService = moveCreateService;
-    this.moveLineService = moveLineService;
     this.reconcileService = reconcileService;
     this.accountConfigService = accountConfigService;
     this.subrogationReleaseService = subrogationReleaseService;
     this.moveRepository = moveRepository;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
@@ -162,7 +162,7 @@ public class NotificationServiceImpl implements NotificationService {
     Account account = getAccount(accountConfig, notificationItem);
 
     debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             paymentMove,
             invoice.getPartner(),
             account,
@@ -175,7 +175,7 @@ public class NotificationServiceImpl implements NotificationService {
             invoice.getInvoiceId());
 
     creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             paymentMove,
             invoice.getPartner(),
             invoice.getPartnerAccount(),

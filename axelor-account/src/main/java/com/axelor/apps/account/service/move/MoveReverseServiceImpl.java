@@ -9,6 +9,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -29,7 +30,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected ReconcileService reconcileService;
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -37,12 +38,12 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       ReconcileService reconcileService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
-      MoveLineService moveLineService) {
+      MoveLineCreateService moveLineCreateService) {
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -69,11 +70,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove(),
             move.getOrigin(),
-            move.getDescription());
-
-    move.setInvoice(move.getInvoice());
-    move.setPaymentVoucher(move.getPaymentVoucher());
-    move.setDescription(move.getDescription());
+            move.getDescription(),
+            move.getInvoice(),
+            move.getPaymentVoucher());
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
@@ -149,7 +148,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       Move reverseMove, MoveLine orgineMoveLine, LocalDate dateOfReversion, boolean isDebit)
       throws AxelorException {
     MoveLine reverseMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             reverseMove,
             orgineMoveLine.getPartner(),
             orgineMoveLine.getAccount(),

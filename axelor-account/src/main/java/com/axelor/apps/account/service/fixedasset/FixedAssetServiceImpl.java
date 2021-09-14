@@ -27,9 +27,10 @@ import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -57,7 +58,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
 
-  protected MoveLineService moveLineService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected FixedAssetLineComputationService fixedAssetLineComputationService;
 
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
 
@@ -79,20 +81,23 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetRepository fixedAssetRepo,
       FixedAssetLineMoveService fixedAssetLineMoveService,
       FixedAssetLineComputationService fixedAssetLineComputationService,
-      MoveLineService moveLineService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       AnalyticFixedAssetService analyticFixedAssetService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
-      FixedAssetGenerationService fixedAssetGenerationService) {
+      FixedAssetGenerationService fixedAssetGenerationService,
+      AccountConfigService accountConfigService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
-    this.moveLineService = moveLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.analyticFixedAssetService = analyticFixedAssetService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
+    this.fixedAssetLineComputationService = fixedAssetLineComputationService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -195,7 +200,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (analyticDistributionTemplate != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-      moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
+      moveLine = moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
     }
   }
 

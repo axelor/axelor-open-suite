@@ -22,9 +22,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -39,9 +39,13 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       ReconcileService reconcileService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
-      MoveLineService moveLineService) {
+      MoveLineCreateService moveLineCreateService) {
     super(
-        moveCreateService, reconcileService, moveValidateService, moveRepository, moveLineService);
+        moveCreateService,
+        reconcileService,
+        moveValidateService,
+        moveRepository,
+        moveLineCreateService);
   }
 
   @Override
