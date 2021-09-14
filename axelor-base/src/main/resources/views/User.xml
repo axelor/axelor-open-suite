@@ -151,7 +151,8 @@
         if="__config__.app.isApp('employee')"/>
     </panel>
     <panel name="testingPanel" title="Testing" sidebar="true" hidden="true"
-      showIf="stepStatusSelect == 5">
+      showIf="stepStatusSelect == 5"
+      if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
       <field name="today"/>
     </panel>
     <panel name="mainUserPanel" showIf="stepStatusSelect == 5" colSpan="12">
