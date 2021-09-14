@@ -25,21 +25,22 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.stubbing.Answer;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.stubbing.Answer;
 
 public class TestFixedAssetGenerationService {
 
@@ -47,7 +48,6 @@ public class TestFixedAssetGenerationService {
   protected FixedAssetRepository fixedAssetRepo;
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
-  protected MoveLineService moveLineService;
   protected AccountConfigService accountConfigService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected AnalyticFixedAssetService analyticFixedAssetService;
@@ -67,7 +67,6 @@ public class TestFixedAssetGenerationService {
     fixedAssetRepo = mock(FixedAssetRepository.class);
     fixedAssetLineRepo = mock(FixedAssetLineRepository.class);
     fixedAssetLineMoveService = mock(FixedAssetLineMoveService.class);
-    moveLineService = mock(MoveLineService.class);
     accountConfigService = mock(AccountConfigService.class);
     fixedAssetDerogatoryLineService = mock(FixedAssetDerogatoryLineService.class);
     analyticFixedAssetService = mock(AnalyticFixedAssetService.class);

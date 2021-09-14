@@ -27,10 +27,9 @@ import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -70,6 +69,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetGenerationService fixedAssetGenerationService;
 
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final int CALCULATION_SCALE = 20;
@@ -86,8 +86,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       AnalyticFixedAssetService analyticFixedAssetService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
-      FixedAssetGenerationService fixedAssetGenerationService,
-      AccountConfigService accountConfigService) {
+      FixedAssetGenerationService fixedAssetGenerationService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -97,7 +96,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
-    this.accountConfigService = accountConfigService;
   }
 
   @Override
