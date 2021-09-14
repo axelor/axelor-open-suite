@@ -49,7 +49,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
@@ -59,35 +58,12 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class BankReconciliationController {
-  protected BankReconciliationRepository bankReconciliationRepository;
-  protected BankReconciliationService bankReconciliationService;
-  protected MoveLineRepository moveLineRepository;
-  protected BankReconciliationLineService bankReconciliationLineService;
-
-  @Inject
-  public BankReconciliationController(
-      BankReconciliationRepository bankReconciliationRepository,
-      BankReconciliationService bankReconciliationService,
-      MoveLineRepository moveLineRepository,
-      BankReconciliationLineService bankReconciliationLineService) {
-    this.bankReconciliationRepository = bankReconciliationRepository;
-    this.bankReconciliationService = bankReconciliationService;
-    this.moveLineRepository = moveLineRepository;
-    this.bankReconciliationLineService = bankReconciliationLineService;
-  }
-
-  public void updateAmounts(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    BankReconciliation br =
-        bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
-
-    // if (bankReconciliationService.updateAmounts(br)) response.setReload(true);
-  }
 
   public void unreconcile(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     BankReconciliation br =
-        bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
+        Beans.get(BankReconciliationRepository.class)
+            .find(context.asType(BankReconciliation.class).getId());
     List<BankReconciliationLine> bankReconciliationLines =
         br.getBankReconciliationLineList().stream()
             .filter(line -> line.getIsSelectedBankReconciliation())
@@ -95,7 +71,7 @@ public class BankReconciliationController {
     if (bankReconciliationLines.isEmpty()) {
       response.setFlash(I18n.get("Please select a reconciliation line"));
     } else {
-      bankReconciliationService.unreconcileLines(bankReconciliationLines);
+      Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
       response.setReload(true);
     }
   }
@@ -105,10 +81,16 @@ public class BankReconciliationController {
     BankReconciliation br = context.asType(BankReconciliation.class);
     BankReconciliationLine bankReconciliationLine;
     List<MoveLine> moveLines =
-        moveLineRepository
+        Beans.get(MoveLineRepository.class)
             .all()
             .filter(
-                "(self.date >= :fromDate OR self.dueDate >= :fromDate) AND (self.date <= :toDate OR self.dueDate <= :toDate) AND self.isSelectedBankReconciliation = true AND self.move.statusSelect < :statusSelect AND self.account = :cashAccount AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
+                "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
+                    + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
+                    + " AND self.isSelectedBankReconciliation = true"
+                    + " AND self.move.statusSelect < :statusSelect"
+                    + " AND self.account = :cashAccount AND"
+                    + " ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
+                    + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
             .bind("cashAccount", br.getCashAccount())
             .bind("statusSelect", MoveRepository.STATUS_CANCELED)
             .bind("fromDate", br.getFromDate())
@@ -128,8 +110,11 @@ public class BankReconciliationController {
       else if (br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
               .count()
-          == 0) response.setError(I18n.get("Please select one bank reconciliation line"));
-      else if (moveLines.size() == 0) response.setError(I18n.get("Please select one move line"));
+          == 0) {
+        response.setError(I18n.get("Please select one bank reconciliation line"));
+      } else if (moveLines.size() == 0) {
+        response.setError(I18n.get("Please select one move line"));
+      }
     } else if (br.getBankReconciliationLineList().stream()
                 .filter(line -> line.getIsSelectedBankReconciliation())
                 .count()
@@ -156,9 +141,9 @@ public class BankReconciliationController {
               .get(0);
       bankReconciliationLine.setMoveLine(moveLines.get(0));
       bankReconciliationLine =
-          bankReconciliationLineService.reconcileBRLAndMoveLine(
-              bankReconciliationLine, moveLines.get(0));
-      br = bankReconciliationRepository.find(br.getId());
+          Beans.get(BankReconciliationLineService.class)
+              .reconcileBRLAndMoveLine(bankReconciliationLine, moveLines.get(0));
+      br = Beans.get(BankReconciliationRepository.class).find(br.getId());
       response.setValue("bankReconciliationLineList", br.getBankReconciliationLineList());
       response.setReload(true);
     }
@@ -166,6 +151,10 @@ public class BankReconciliationController {
 
   public void automaticReconciliation(ActionRequest request, ActionResponse response) {
     try {
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+      BankReconciliationRepository bankReconciliationRepository =
+          Beans.get(BankReconciliationRepository.class);
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       bankReconciliationService.reconciliateAccordingToQueries(
           bankReconciliationRepository.find(bankReconciliation.getId()));
@@ -180,6 +169,10 @@ public class BankReconciliationController {
   public void loadBankStatement(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+      BankReconciliationRepository bankReconciliationRepository =
+          Beans.get(BankReconciliationRepository.class);
       BankReconciliation bankReconciliation =
           bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
       Company company = bankReconciliation.getCompany();
@@ -189,24 +182,25 @@ public class BankReconciliationController {
       if (bankReconciliation != null) {
         bankReconciliationService.loadBankStatement(
             bankReconciliationRepository.find(bankReconciliation.getId()));
-        if (company != null) {
-          if (company.getBankPaymentConfig() != null) {
-            if (bankReconciliation
-                .getCompany()
-                .getBankPaymentConfig()
-                .getHasAutoMoveFromStatementRule()) {
-              bankReconciliationService.generateMovesAutoAccounting(
-                  bankReconciliationRepository.find(bankReconciliation.getId()));
-            }
-            if (bankReconciliation
-                .getCompany()
-                .getBankPaymentConfig()
-                .getHasAutomaticReconciliation()) {
-              bankReconciliationService.reconciliateAccordingToQueries(
-                  bankReconciliationRepository.find(bankReconciliation.getId()));
-            }
+
+        if (company != null && company.getBankPaymentConfig() != null) {
+          if (bankReconciliation
+              .getCompany()
+              .getBankPaymentConfig()
+              .getHasAutoMoveFromStatementRule()) {
+            bankReconciliationService.generateMovesAutoAccounting(
+                bankReconciliationRepository.find(bankReconciliation.getId()));
+          }
+          if (company != null
+              && bankReconciliation
+                  .getCompany()
+                  .getBankPaymentConfig()
+                  .getHasAutomaticReconciliation()) {
+            bankReconciliationService.reconciliateAccordingToQueries(
+                bankReconciliationRepository.find(bankReconciliation.getId()));
           }
         }
+
         bankReconciliationService.computeBalances(
             bankReconciliationRepository.find(bankReconciliation.getId()));
         response.setReload(true);
@@ -222,9 +216,10 @@ public class BankReconciliationController {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
+      bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId());
       bankReconciliation.setIncludeOtherBankStatements(true);
-      bankReconciliationService.loadBankStatement(bankReconciliation, false);
+      Beans.get(BankReconciliationService.class).loadBankStatement(bankReconciliation, false);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -236,8 +231,8 @@ public class BankReconciliationController {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliationService.compute(
-          bankReconciliationRepository.find(bankReconciliation.getId()));
+      Beans.get(BankReconciliationService.class)
+          .compute(Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -248,8 +243,9 @@ public class BankReconciliationController {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliationService.computeBalances(
-          bankReconciliationRepository.find(bankReconciliation.getId()));
+      Beans.get(BankReconciliationService.class)
+          .computeBalances(
+              Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -261,7 +257,7 @@ public class BankReconciliationController {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       Beans.get(BankReconciliationValidateService.class)
-          .validate(bankReconciliationRepository.find(bankReconciliation.getId()));
+          .validate(Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -277,8 +273,8 @@ public class BankReconciliationController {
           (Map<String, Object>) context.get("_bankReconciliation");
 
       BankReconciliation bankReconciliation =
-          bankReconciliationRepository.find(
-              ((Integer) bankReconciliationContext.get("id")).longValue());
+          Beans.get(BankReconciliationRepository.class)
+              .find(((Integer) bankReconciliationContext.get("id")).longValue());
 
       List<HashMap<String, Object>> moveLinesToReconcileContext =
           (List<HashMap<String, Object>>) context.get("toReconcileMoveLineSet");
@@ -300,7 +296,8 @@ public class BankReconciliationController {
 
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    String domain = bankReconciliationService.createDomainForBankDetails(bankReconciliation);
+    String domain =
+        Beans.get(BankReconciliationService.class).createDomainForBankDetails(bankReconciliation);
     // if nothing was found for the domain, we set it at a default value.
     if (domain.equals("")) {
       response.setAttr("bankDetails", "domain", "self.id IN (0)");
@@ -352,7 +349,7 @@ public class BankReconciliationController {
     String journalIds = null;
 
     if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
-      journalIds = bankReconciliationService.getJournalDomain(bankReconciliation);
+      journalIds = Beans.get(BankReconciliationService.class).getJournalDomain(bankReconciliation);
     }
 
     if (Strings.isNullOrEmpty(journalIds)) {
@@ -368,7 +365,7 @@ public class BankReconciliationController {
     Journal journal = null;
 
     if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
-      journal = bankReconciliationService.getJournal(bankReconciliation);
+      journal = Beans.get(BankReconciliationService.class).getJournal(bankReconciliation);
     }
     response.setValue("journal", journal);
   }
@@ -379,7 +376,8 @@ public class BankReconciliationController {
     String cashAccountIds = null;
 
     if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
-      cashAccountIds = bankReconciliationService.getCashAccountDomain(bankReconciliation);
+      cashAccountIds =
+          Beans.get(BankReconciliationService.class).getCashAccountDomain(bankReconciliation);
     }
 
     if (Strings.isNullOrEmpty(cashAccountIds)) {
@@ -395,16 +393,18 @@ public class BankReconciliationController {
     Account cashAccount = null;
 
     if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
-      cashAccount = bankReconciliationService.getCashAccount(bankReconciliation);
+      cashAccount = Beans.get(BankReconciliationService.class).getCashAccount(bankReconciliation);
     }
     response.setValue("cashAccount", cashAccount);
   }
 
   public void autoAccounting(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    BankReconciliationService bankReconciliationService =
+        Beans.get(BankReconciliationService.class);
     bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
     bankReconciliationService.computeBalances(
-        bankReconciliationRepository.find(bankReconciliation.getId()));
+        Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
     response.setReload(true);
   }
 
@@ -414,7 +414,9 @@ public class BankReconciliationController {
     List<BankReconciliationLine> bankReconciliationLines =
         bankReconciliation.getBankReconciliationLineList();
     for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      int status = bankReconciliationLineService.checkIncompleteLine(bankReconciliationLine);
+      int status =
+          Beans.get(BankReconciliationLineService.class)
+              .checkIncompleteLine(bankReconciliationLine);
 
       if (status == BankReconciliationLineService.BANK_RECONCILIATION_LINE_INCOMPLETE) {
         response.setError(
@@ -462,8 +464,8 @@ public class BankReconciliationController {
 
   public void setBankStatementIsFullyReconciled(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation =
-        bankReconciliationRepository.find(
-            request.getContext().asType(BankReconciliation.class).getId());
+        Beans.get(BankReconciliationRepository.class)
+            .find(request.getContext().asType(BankReconciliation.class).getId());
     Beans.get(BankStatementService.class)
         .setIsFullyReconciled(bankReconciliation.getBankStatement());
     response.setReload(true);

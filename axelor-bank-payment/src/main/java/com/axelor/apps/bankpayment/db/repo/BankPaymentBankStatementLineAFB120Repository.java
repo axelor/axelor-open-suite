@@ -1,7 +1,10 @@
 package com.axelor.apps.bankpayment.db.repo;
 
+import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.db.Query;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,7 +17,9 @@ public class BankPaymentBankStatementLineAFB120Repository
       boolean soonest,
       BankDetails bankDetails) {
     String order = "operationDate";
-    if (!soonest) order = "-" + order;
+    if (!soonest) {
+      order = "-" + order;
+    }
     return all()
         .filter(
             "operationDate >= :fromDate and operationDate <= :toDate and lineTypeSelect = :lineType and bankDetails = :bankDetails")
@@ -38,4 +43,14 @@ public class BankPaymentBankStatementLineAFB120Repository
         .order("operationDate")
         .fetch();
   }
+  
+
+  public Query<BankStatementLineAFB120> findByBankStatementAndLineType(BankStatement bankStatement, int lineType){
+  return all()
+  .filter(
+      "self.bankStatement = :bankStatement"
+          + " AND self.lineTypeSelect = :lineTypeSelect")
+  .bind("bankStatement", bankStatement)
+  .bind("lineTypeSelect", lineType);
+}
 }

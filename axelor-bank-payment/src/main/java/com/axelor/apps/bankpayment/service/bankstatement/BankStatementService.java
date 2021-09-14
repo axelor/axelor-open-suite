@@ -29,7 +29,9 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -45,13 +47,16 @@ public class BankStatementService {
 
   protected BankStatementRepository bankStatementRepository;
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
+  protected BankStatementLineRepository bankStatementLineRepository;
 
   @Inject
   public BankStatementService(
       BankStatementRepository bankStatementRepository,
-      BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
+      BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
+      BankStatementLineRepository bankStatementLineRepository) {
     this.bankStatementRepository = bankStatementRepository;
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
+    this.bankStatementLineRepository = bankStatementLineRepository;
   }
 
   public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported)
@@ -178,7 +183,7 @@ public class BankStatementService {
   @Transactional
   public BankStatement setIsFullyReconciled(BankStatement bankStatement) {
     List<BankStatementLine> bankStatementLines =
-        Beans.get(BankStatementLineRepository.class).findByBankStatement(bankStatement).fetch();
+        bankStatementLineRepository.findByBankStatement(bankStatement).fetch();
     BigDecimal amountToReconcile = BigDecimal.ZERO;
     for (BankStatementLine bankStatementLine : bankStatementLines) {
       amountToReconcile = amountToReconcile.add(bankStatementLine.getAmountRemainToReconcile());
@@ -188,5 +193,37 @@ public class BankStatementService {
     }
 
     return bankStatementRepository.save(bankStatement);
+  }
+
+  public boolean bankStatementLineAlreadyExists(List<BankStatementLineAFB120> initialLines) {
+    boolean alreadyImported = false;
+    BankStatementLineAFB120 tempBankStatementLineAFB120;
+    for (BankStatementLineAFB120 bslAFB120 : initialLines) {
+      tempBankStatementLineAFB120 =
+          bankStatementLineAFB120Repository
+              .all()
+              .filter(
+                  "self.operationDate = :operationDate AND self.lineTypeSelect = :lineTypeSelect AND self.bankStatement != :bankStatement AND self.bankDetails = :bankDetails")
+              .bind("operationDate", bslAFB120.getOperationDate())
+              .bind("lineTypeSelect", bslAFB120.getLineTypeSelect())
+              .bind("bankStatement", bslAFB120.getBankStatement())
+              .bind("bankDetails", bslAFB120.getBankDetails())
+              .fetchOne();
+      if (ObjectUtils.notEmpty(tempBankStatementLineAFB120)) {
+        alreadyImported = true;
+        break;
+      }
+    }
+    return alreadyImported;
+  }
+
+  public BankDetails getBankDetails(BankStatement bankStatement) {
+    return bankStatementLineAFB120Repository
+        .all()
+        .filter("self.bankStatement = :bankStatement")
+        .bind("bankStatement", bankStatement)
+        .order("-id")
+        .fetchOne()
+        .getBankDetails();
   }
 }

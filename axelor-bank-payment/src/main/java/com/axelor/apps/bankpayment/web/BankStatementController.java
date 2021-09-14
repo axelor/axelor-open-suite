@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.web;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
@@ -63,101 +64,44 @@ public class BankStatementController {
       List<BankStatementLineAFB120> finalLines;
       BankStatementLineAFB120 finalBankStatementLineAFB120;
       BankStatementLineAFB120 initialBankStatementLineAFB120;
-      BankStatementLineAFB120 tempBankStatementLineAFB120;
+      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository = Beans.get(BankPaymentBankStatementLineAFB120Repository.class);
       BankDetails bankDetails;
       bankStatement = bankStatementRepo.find(bankStatement.getId());
       bankStatementService.runImport(bankStatement, true);
 
       // Load lines
       initialLines =
-          bankStatementLineAFB120Repo
-              .all()
-              .filter(
-                  "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect")
-              .bind("bankStatement", bankStatement)
-              .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
-              .fetch();
+    		  bankPaymentBankStatementLineAFB120Repository
+    		  .findByBankStatementAndLineType(bankStatement, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE).fetch();
+
       finalLines =
-          bankStatementLineAFB120Repo
-              .all()
-              .filter(
-                  "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect")
-              .bind("bankStatement", bankStatement)
-              .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-              .fetch();
+    		  bankPaymentBankStatementLineAFB120Repository
+    		  .findByBankStatementAndLineType(bankStatement, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE).fetch();
 
       // Check doublons
-      for (BankStatementLineAFB120 bslAFB120 : initialLines) {
-        tempBankStatementLineAFB120 =
-            bankStatementLineAFB120Repo
-                .all()
-                .filter(
-                    "self.operationDate = :operationDate AND self.lineTypeSelect = :lineTypeSelect AND self.bankStatement != :bankStatement AND self.bankDetails = :bankDetails")
-                .bind("operationDate", bslAFB120.getOperationDate())
-                .bind("lineTypeSelect", bslAFB120.getLineTypeSelect())
-                .bind("bankStatement", bslAFB120.getBankStatement())
-                .bind("bankDetails", bslAFB120.getBankDetails())
-                .fetchOne();
-        if (ObjectUtils.notEmpty(tempBankStatementLineAFB120)) {
-          alreadyImported = true;
-          break;
-        }
-      }
-
-      for (BankStatementLineAFB120 bslAFB120 : finalLines) {
-        tempBankStatementLineAFB120 =
-            bankStatementLineAFB120Repo
-                .all()
-                .filter(
-                    "self.operationDate = :operationDate AND self.lineTypeSelect = :lineTypeSelect AND self.bankStatement != :bankStatement AND self.bankDetails = :bankDetails")
-                .bind("operationDate", bslAFB120.getOperationDate())
-                .bind("lineTypeSelect", bslAFB120.getLineTypeSelect())
-                .bind("bankStatement", bslAFB120.getBankStatement())
-                .bind("bankDetails", bslAFB120.getBankDetails())
-                .fetchOne();
-        if (ObjectUtils.notEmpty(tempBankStatementLineAFB120)) {
-          alreadyImported = true;
-          break;
-        }
-      }
+      alreadyImported =
+    		  bankStatementService.bankStatementLineAlreadyExists(initialLines) || bankStatementService.bankStatementLineAlreadyExists(finalLines) || alreadyImported;
 
       if (!alreadyImported) {
         // Check is following
-        bankDetails =
-            bankStatementLineAFB120Repo
-                .all()
-                .filter("self.bankStatement = :bankStatement")
-                .bind("bankStatement", bankStatement)
-                .order("-id")
-                .fetchOne()
-                .getBankDetails();
+        bankDetails = bankStatementService.getBankDetails(bankStatement);
 
         initialBankStatementLineAFB120 =
-            bankStatementLineAFB120Repo
-                .all()
-                .filter(
-                    "self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect")
-                .bind("bankStatement", bankStatement)
-                .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+        		bankPaymentBankStatementLineAFB120Repository
+      		  .findByBankStatementAndLineType(bankStatement, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
                 .order("sequence")
                 .fetchOne();
         finalBankStatementLineAFB120 =
-            bankStatementLineAFB120Repo
-                .all()
-                .filter(
-                    "self.bankStatement != :bankStatement AND self.bankDetails = :bankDetails AND self.lineTypeSelect = :lineTypeSelect")
-                .bind("bankStatement", bankStatement)
-                .bind("bankDetails", bankDetails)
-                .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-                .order("-id")
+        		bankPaymentBankStatementLineAFB120Repository
+      		  .findByBankStatementAndLineType(bankStatement, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+                .order("-sequence")
                 .fetchOne();
-        if (ObjectUtils.notEmpty(finalBankStatementLineAFB120))
-          if (!(initialBankStatementLineAFB120
-                  .getCredit()
-                  .equals(finalBankStatementLineAFB120.getCredit())
-              && initialBankStatementLineAFB120
-                  .getDebit()
-                  .equals(finalBankStatementLineAFB120.getDebit()))) {
+        if (ObjectUtils.notEmpty(finalBankStatementLineAFB120) && !(initialBankStatementLineAFB120
+                .getCredit()
+                .equals(finalBankStatementLineAFB120.getCredit())
+            && initialBankStatementLineAFB120
+                .getDebit()
+                .equals(finalBankStatementLineAFB120.getDebit()))) {
             // delete imported
             response.setError(
                 I18n.get(
