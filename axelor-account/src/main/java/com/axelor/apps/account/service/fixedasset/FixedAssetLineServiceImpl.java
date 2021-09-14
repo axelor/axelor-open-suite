@@ -37,11 +37,12 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
   @Override
   public FixedAssetLine generateProrataDepreciationLine(
-      FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine) {
+      FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine)
+      throws AxelorException {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
     fixedAssetLine.setDepreciationDate(disposalDate);
     computeDepreciationWithProrata(fixedAsset, fixedAssetLine, previousRealizedLine, disposalDate);
-    fixedAssetLine.setFixedAsset(fixedAsset);
+    this.setFixedAsset(fixedAsset, fixedAssetLine);
     fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
     return fixedAssetLine;
   }
@@ -112,7 +113,6 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             .forEach(
                 line -> {
                   FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
-                  copy.setFixedAsset(newFixedAsset);
                   newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
                 });
       }
@@ -124,7 +124,6 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             .forEach(
                 line -> {
                   FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
-                  copy.setFixedAsset(newFixedAsset);
                   newFixedAsset.addFiscalFixedAssetLineListItem(
                       fixedAssetLineRepository.save(copy));
                 });
@@ -137,7 +136,6 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             .forEach(
                 line -> {
                   FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
-                  copy.setFixedAsset(newFixedAsset);
                   newFixedAsset.addIfrsFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
                 });
       }
@@ -224,11 +222,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   @Transactional
   public void remove(FixedAssetLine line) {
     Objects.requireNonNull(line);
-    line.setFixedAsset(null);
-    line.setStatusSelect(-1);
-    fixedAssetLineRepository.save(line);
-    // Should delete but there is NPE at GlobalAuditIntercept and can't figure out why
-    // fixedAssetLineRepository.remove(line);
+    fixedAssetLineRepository.remove(line);
   }
 
   @Override
@@ -324,5 +318,49 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
           .orElse(null);
     }
     return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws AxelorException
+   * @throws NullPointerException if fixedAssetLine is null.
+   */
+  @Override
+  public FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException {
+    Objects.requireNonNull(fixedAssetLine);
+    switch (fixedAssetLine.getTypeSelect()) {
+      case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
+        return fixedAssetLine.getFixedAsset();
+      case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
+        return fixedAssetLine.getFiscalFixedAsset();
+      case FixedAssetLineRepository.TYPE_SELECT_IFRS:
+        return fixedAssetLine.getIfrsFixedAsset();
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            "Fixed asset line type is not recognized to get fixed asset");
+    }
+  }
+
+  @Override
+  public void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine)
+      throws AxelorException {
+    Objects.requireNonNull(fixedAssetLine);
+    switch (fixedAssetLine.getTypeSelect()) {
+      case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
+        fixedAssetLine.setFixedAsset(fixedAsset);
+        break;
+      case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
+        fixedAssetLine.setFiscalFixedAsset(fixedAsset);
+        break;
+      case FixedAssetLineRepository.TYPE_SELECT_IFRS:
+        fixedAssetLine.setIfrsFixedAsset(fixedAsset);
+        break;
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            "Fixed asset line type is not recognized to set fixed asset");
+    }
   }
 }

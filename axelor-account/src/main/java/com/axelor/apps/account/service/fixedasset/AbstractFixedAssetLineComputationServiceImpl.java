@@ -259,7 +259,6 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       BigDecimal depreciationBase,
       int typeSelect) {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
-    fixedAssetLine.setFixedAsset(fixedAsset);
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
     fixedAssetLine.setDepreciationDate(depreciationDate);
     fixedAssetLine.setDepreciation(depreciation);

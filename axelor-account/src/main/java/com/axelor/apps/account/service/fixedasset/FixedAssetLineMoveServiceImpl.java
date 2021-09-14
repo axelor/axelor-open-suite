@@ -65,6 +65,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
 
+  protected FixedAssetLineService fixedAssetLineService;
+
   @Inject
   public FixedAssetLineMoveServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepo,
@@ -72,12 +74,14 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       MoveRepository moveRepo,
       FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
       FixedAssetRepository fixedAssetRepo,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      FixedAssetLineService fixedAssetLineService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
+    this.fixedAssetLineService = fixedAssetLineService;
   }
 
   @Override
@@ -89,10 +93,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         || fixedAssetLine.getStatusSelect() != FixedAssetLineRepository.STATUS_PLANNED) {
       return;
     }
-    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
     if (fixedAsset == null) {
       return;
     }
+
     if (!isBatch && !isPreviousLineRealized(fixedAssetLine, fixedAsset)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -215,7 +220,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   @Transactional
   private void generateImpairementAccountMove(FixedAssetLine fixedAssetLine)
       throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -319,7 +324,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   @Transactional(rollbackOn = {Exception.class})
   private void generateMove(FixedAssetLine fixedAssetLine) throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();

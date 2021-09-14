@@ -21,7 +21,8 @@ public interface FixedAssetLineService {
    * @return generated {@link FixedAssetLine}
    */
   FixedAssetLine generateProrataDepreciationLine(
-      FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine);
+      FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine)
+      throws AxelorException;
 
   /**
    * Compute depreciation on fixedAssetLine.
@@ -123,4 +124,19 @@ public interface FixedAssetLineService {
    */
   FixedAssetLine getExistingLineWithSameYear(
       FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus);
+
+  /**
+   * Get Fixed asset of fixedAssetLine.
+   *
+   * @param line
+   * @return fixedAsset : {@link FixedAsset}
+   */
+  FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  /**
+   * Set Fixed asset of fixedAssetLine.
+   *
+   * @param line
+   */
+  void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
 }

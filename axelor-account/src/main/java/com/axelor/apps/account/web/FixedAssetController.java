@@ -50,6 +50,7 @@ public class FixedAssetController {
   public void computeDepreciation(ActionRequest request, ActionResponse response) {
 
     FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+    fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAsset.getId());
     // There is nothing to do if depreciation plan is None.
     if (fixedAsset.getDepreciationPlanSelect() == null
         || fixedAsset
@@ -64,10 +65,8 @@ public class FixedAssetController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-    response.setValue("fixedAssetLineList", fixedAsset.getFixedAssetLineList());
-    response.setValue("fiscalFixedAssetLineList", fixedAsset.getFiscalFixedAssetLineList());
-    response.setValue("fixedAssetDerogatoryLineList", fixedAsset.getFixedAssetDerogatoryLineList());
-    response.setValue("ifrsFixedAssetLineList", fixedAsset.getIfrsFixedAssetLineList());
+
+    response.setReload(true);
   }
 
   @SuppressWarnings("unchecked")

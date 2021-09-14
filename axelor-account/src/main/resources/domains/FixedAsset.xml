@@ -37,7 +37,7 @@
 	
 	<decimal name="disposalValue" title="Disposal value"/>
 	
-	<one-to-many name="fixedAssetLineList" ref="com.axelor.apps.account.db.FixedAssetLine" title="Depreciation board"/>
+	<one-to-many name="fixedAssetLineList" ref="com.axelor.apps.account.db.FixedAssetLine" title="Depreciation board" mappedBy="fixedAsset"/>
 	<many-to-one name="disposalMove" ref="com.axelor.apps.account.db.Move" title="Fixed asset Disposal Move"/>
 	
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
@@ -66,7 +66,7 @@
 	<integer name="fiscalPeriodicityTypeSelect" title="Fiscal Periodicity Type" selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
 	<integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month" default="12"/>
 	<integer name="fiscalDurationInMonth" title="Fiscal Duration In Month"/>
-	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"/>
+	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List" mappedBy="fiscalFixedAsset"/>
 	
 	<boolean name="isIfrsEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
 	<string name="ifrsComputationMethodSelect" title="IFRS Computation Method Select" selection="account.fixed.type.category.fiscal.computation.method.select"/>
@@ -75,7 +75,7 @@
 	<integer name="ifrsPeriodicityTypeSelect" title="IFRS Periodicity Type" selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
 	<integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month" default="12"/>
 	<integer name="ifrsDurationInMonth" title="IFRS Duration In Month"/>
-	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List"/>
+	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List" mappedBy="ifrsFixedAsset"/>
 	
 	<many-to-many ref="com.axelor.apps.account.db.FixedAsset" name="associatedFixedAssetsSet" title="Associated Fixed Assets Set"/>
 	<string name="comments" large="true" multiline="true" title="Comments"/>
