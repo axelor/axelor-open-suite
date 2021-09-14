@@ -305,8 +305,6 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   @Transactional
   public void remove(FixedAssetDerogatoryLine line) {
     Objects.requireNonNull(line);
-    line.setFixedAsset(null);
-    line.setStatusSelect(-1);
     fixedAssetDerogatoryLineRepository.remove(line);
   }
 

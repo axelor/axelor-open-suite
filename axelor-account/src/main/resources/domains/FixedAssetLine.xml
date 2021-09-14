@@ -8,6 +8,8 @@
   <entity name="FixedAssetLine" lang="java" cacheable="true">
   
   	<many-to-one name="fixedAsset" ref="com.axelor.apps.account.db.FixedAsset" title="Fixed asset"/>
+  	<many-to-one name="fiscalFixedAsset" ref="com.axelor.apps.account.db.FixedAsset" title="Fixed asset"/>
+  	<many-to-one name="ifrsFixedAsset" ref="com.axelor.apps.account.db.FixedAsset" title="Fixed asset"/>
   	<date name="depreciationDate" title="Depreciation date"/>
   	<decimal name="depreciation" title="Depreciation"/>
   	<decimal name="cumulativeDepreciation" title="Cumulative depreciation"/>

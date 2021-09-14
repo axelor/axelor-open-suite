@@ -13,7 +13,10 @@
     	<field name="impairmentValue"/>
     	<field name="statusSelect"/>
     	<field name="fixedAsset.statusSelect" hidden="true"/>
-    	<button name="realizeBtn" title="Realize" icon="fa-check-circle" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
+    	<field name="fiscalFixedAsset.statusSelect" hidden="true"/>
+    	<field name="ifrsFixedAsset.statusSelect" hidden="true"/>
+    	<button name="realizeBtn" title="Realize" icon="fa-check-circle" 
+    	  readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
     </grid>
     
     <grid name="fiscal-fixed-asset-line-grid" title="Fixed asset lines" model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
@@ -24,7 +27,10 @@
     	<field name="accountingValue"/>
     	<field name="statusSelect"/>
     	<field name="fixedAsset.statusSelect" hidden="true"/>
-    	<button name="realizeBtn" title="Realize" icon="fa-check-circle" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
+    	<field name="fiscalFixedAsset.statusSelect" hidden="true"/>
+    	<field name="ifrsFixedAsset.statusSelect" hidden="true"/>
+    	<button name="realizeBtn" title="Realize" icon="fa-check-circle"
+    	 readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
     </grid>
     
 <form name="fixed-asset-line-form" title="Fixed asset line" model="com.axelor.apps.account.db.FixedAssetLine" onLoad="action-fixed-asset-line-attrs-onnew-onload" onNew="action-fixed-asset-line-record-default,action-fixed-asset-line-attrs-onnew-onload">
@@ -32,7 +38,8 @@
     <panel name="statusSelectPanel" colSpan="12">
       <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
       <panel name="actionsPanel" hideIf="statusSelect == 2" colSpan="6">
-        <button name="realizeBtn" title="Realize" onClick="save,action-fixed-asset-line-method-realize"/>
+        <button name="realizeBtn" title="Realize" 
+          readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
       </panel>
       <field name="typeSelect"/>
     </panel>

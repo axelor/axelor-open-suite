@@ -60,6 +60,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   }
 
   @Override
+  @Transactional
   public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException {
 
     if (fixedAsset.getGrossValue().signum() > 0) {
@@ -93,7 +94,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       }
     }
 
-    return fixedAsset;
+    return fixedAssetRepo.save(fixedAsset);
   }
 
   /**
@@ -225,8 +226,8 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     while (c < MAX_ITERATION && fixedAssetLine.getAccountingValue().signum() != 0) {
       fixedAssetLine =
           fixedAssetLineComputationService.computePlannedFixedAssetLine(fixedAsset, fixedAssetLine);
-      fixedAssetLine.setFixedAsset(fixedAsset);
       fixedAssetLineList.add(fixedAssetLine);
+      fixedAssetLineService.setFixedAsset(fixedAsset, fixedAssetLine);
       c++;
     }
 
