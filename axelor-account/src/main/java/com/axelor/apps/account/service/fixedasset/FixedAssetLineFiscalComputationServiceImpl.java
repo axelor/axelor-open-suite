@@ -3,7 +3,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -21,19 +21,6 @@ public class FixedAssetLineFiscalComputationServiceImpl
   }
 
   @Override
-  public FixedAssetLine computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
-      throws AxelorException {
-    FixedAssetLine line = super.computeInitialPlannedFixedAssetLine(fixedAsset);
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
-      line.setCumulativeDepreciation(
-          line.getCumulativeDepreciation().add(getAlreadyDepreciatedAmount(fixedAsset)));
-      line.setAccountingValue(
-          line.getAccountingValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)));
-    }
-    return line;
-  }
-
-  @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       return fixedAsset.getFailoverDate();
@@ -43,6 +30,13 @@ public class FixedAssetLineFiscalComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
+
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && getComputationMethodSelect(fixedAsset)
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+      return fixedAsset.getGrossValue().subtract(fixedAsset.getAlreadyDepreciatedAmount());
+    }
+
     return fixedAsset.getGrossValue();
   }
 
@@ -105,5 +99,16 @@ public class FixedAssetLineFiscalComputationServiceImpl
       return 0;
     }
     return fixedAssetLineList.size();
+  }
+
+  @Override
+  protected BigDecimal computeInitialDegressiveDepreciation(
+      FixedAsset fixedAsset, BigDecimal baseValue) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      FixedAssetLine dummyPreviousLine = new FixedAssetLine();
+      dummyPreviousLine.setAccountingValue(baseValue);
+      return super.computeOnGoingDegressiveDepreciation(fixedAsset, dummyPreviousLine);
+    }
+    return super.computeInitialDegressiveDepreciation(fixedAsset, baseValue);
   }
 }
