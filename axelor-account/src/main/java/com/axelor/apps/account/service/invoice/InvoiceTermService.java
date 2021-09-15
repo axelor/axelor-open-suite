@@ -123,4 +123,12 @@ public interface InvoiceTermService {
    * @return
    */
   public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
+
+  /**
+   * Init invoiceTerms sequences based on due date the method sorts the invoice term list based on
+   * due date
+   *
+   * @param invoice
+   */
+  public void initInvoiceTermsSequence(Invoice invoice);
 }
