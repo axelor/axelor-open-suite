@@ -324,10 +324,17 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
-    if (getFixedAssetLineList(fixedAsset) == null) {
+    List<FixedAssetLine> fixedAssetLineList = getFixedAssetLineList(fixedAsset);
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      if (fixedAssetLineList == null) {
+        return fixedAsset.getNbrOfPastDepreciations();
+      }
+      return fixedAssetLineList.size() + fixedAsset.getNbrOfPastDepreciations();
+    }
+    if (fixedAssetLineList == null) {
       return 0;
     }
-    return getFixedAssetLineList(fixedAsset).size();
+    return fixedAssetLineList.size();
   }
 
   protected BigDecimal computeDegressiveDepreciation(BigDecimal baseValue, FixedAsset fixedAsset) {
