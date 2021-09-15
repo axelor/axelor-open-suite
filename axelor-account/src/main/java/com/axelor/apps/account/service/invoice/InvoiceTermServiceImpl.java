@@ -163,8 +163,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
 
-    invoice.getInvoiceTermList().sort(Comparator.comparing(InvoiceTerm::getDueDate));
+    initInvoiceTermsSequence(invoice);
     return invoice;
+  }
+
+  @Override
+  public void initInvoiceTermsSequence(Invoice invoice) {
+
+    invoice.getInvoiceTermList().sort(Comparator.comparing(InvoiceTerm::getDueDate));
+    int sequence = 1;
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      invoiceTerm.setSequence(sequence);
+      sequence++;
+    }
   }
 
   @Override
