@@ -73,6 +73,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoice.setAmountPaid(computeAmountPaid(invoice));
     invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
     updateHasPendingPayments(invoice);
+    updatePaymentProgress(invoice);
     invoiceRepo.save(invoice);
     log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
   }
@@ -204,5 +205,15 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
           invoicePayment.getInvoice().getInvoiceId());
     }
+  }
+
+  public void updatePaymentProgress(Invoice invoice) {
+
+    invoice.setPaymentProgress(
+        invoice
+            .getAmountPaid()
+            .divide(invoice.getInTaxTotal())
+            .multiply(new BigDecimal(100))
+            .intValue());
   }
 }
