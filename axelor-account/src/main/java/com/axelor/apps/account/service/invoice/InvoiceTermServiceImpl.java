@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -25,6 +26,7 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -236,5 +238,18 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTermRepo.save(invoiceTerm);
       }
     }
+  }
+
+  @Override
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
+    FinancialDiscount financialDiscount = invoice.getFinancialDiscount();
+    List<InvoiceTerm> invoiceTerms = Lists.newArrayList();
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      if (invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getAmount()) == 0) {
+        invoiceTerm.setFinancialDiscount(financialDiscount);
+      }
+      invoiceTerms.add(invoiceTerm);
+    }
+    return invoiceTerms;
   }
 }

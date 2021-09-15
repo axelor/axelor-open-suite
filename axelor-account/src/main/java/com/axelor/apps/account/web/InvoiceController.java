@@ -270,28 +270,38 @@ public class InvoiceController {
         return;
       }
       if (InvoiceToolService.isPurchase(invoice)) {
-        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-          if (invoice.getOriginDate() != null)
-            invoice = invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
-        } else if (invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+        if (invoice.getOriginDate() != null) {
+          invoice = invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
+        } else {
           invoice =
               invoiceTermService.setDueDates(
                   invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
-        } else return;
-
+        }
       } else {
-
-        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-          if (invoice.getInvoiceDate() != null)
-            invoice = invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
-        } else if (invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+        if (invoice.getInvoiceDate() != null) {
+          invoice = invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+        } else {
           invoice =
               invoiceTermService.setDueDates(
                   invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
-        } else return;
+        }
       }
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
-      response.setValues(invoice);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateInvoiceTermsFinancialDiscount(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        return;
+      }
+      response.setValue("invoiceTermList", invoiceTermService.updateFinancialDiscount(invoice));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

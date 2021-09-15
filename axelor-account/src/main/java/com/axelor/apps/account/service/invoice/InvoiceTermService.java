@@ -115,4 +115,12 @@ public interface InvoiceTermService {
    * @throws AxelorException
    */
   public boolean checkInvoiceTermsPercentageSum(Invoice invoice) throws AxelorException;
+
+  /**
+   * Update invoice terms financial fiscount if not paid with invoice financial discount
+   *
+   * @param invoice
+   * @return
+   */
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 }
