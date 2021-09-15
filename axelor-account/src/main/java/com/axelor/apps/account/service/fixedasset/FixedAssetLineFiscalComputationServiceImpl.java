@@ -87,21 +87,6 @@ public class FixedAssetLineFiscalComputationServiceImpl
   }
 
   @Override
-  protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
-    List<FixedAssetLine> fixedAssetLineList = getFixedAssetLineList(fixedAsset);
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
-      if (fixedAssetLineList == null) {
-        return fixedAsset.getNbrOfPastDepreciations();
-      }
-      return fixedAssetLineList.size() + fixedAsset.getNbrOfPastDepreciations();
-    }
-    if (fixedAssetLineList == null) {
-      return 0;
-    }
-    return fixedAssetLineList.size();
-  }
-
-  @Override
   protected BigDecimal computeInitialDegressiveDepreciation(
       FixedAsset fixedAsset, BigDecimal baseValue) {
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
