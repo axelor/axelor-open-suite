@@ -5,7 +5,7 @@
     "runtime-main.js": "./static/js/runtime-main.js",
     "static/js/2.chunk.js": "./static/js/2.chunk.js",
     "index.html": "./index.html",
-    "precache-manifest.bfc54bb80717c6d92cfe570bb88d7ea7.js": "./precache-manifest.bfc54bb80717c6d92cfe570bb88d7ea7.js",
+    "precache-manifest.42bfafd4110ba6b67bd90625da1f29ea.js": "./precache-manifest.42bfafd4110ba6b67bd90625da1f29ea.js",
     "service-worker.js": "./service-worker.js",
     "static/js/2.chunk.js.LICENSE.txt": "./static/js/2.chunk.js.LICENSE.txt"
   },

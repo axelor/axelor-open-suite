@@ -22,6 +22,8 @@ import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -32,23 +34,36 @@ import java.util.stream.Collectors;
 public class ProjectMenuServiceImpl implements ProjectMenuService {
 
   protected ProjectStatusRepository projectStatusRepo;
+  protected ProjectService projectService;
+  protected ProjectTaskRepository projectTaskRepo;
 
   @Inject
-  public ProjectMenuServiceImpl(ProjectStatusRepository projectStatusRepo) {
+  public ProjectMenuServiceImpl(
+      ProjectStatusRepository projectStatusRepo,
+      ProjectService projectService,
+      ProjectTaskRepository projectTaskRepo) {
     this.projectStatusRepo = projectStatusRepo;
+    this.projectService = projectService;
+    this.projectTaskRepo = projectTaskRepo;
   }
 
   @Override
   public Map<String, Object> getAllOpenProjectTasks() {
+    User currentUser = AuthUtils.getUser();
+    Project contextProject = currentUser.getContextProject();
+
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Project Tasks"))
             .model(ProjectTask.class.getName())
-            .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
+            .add("kanban", "project-task-kanban")
             .domain(
-                "self.project.projectStatus.isCompleted = false and self.typeSelect = :_typeSelect")
+                "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+            .context("_project", contextProject)
+            .context("_projectIds", projectService.getContextProjectIds())
+            .param("details-view", "true")
             .param("search-filters", "project-task-filters")
             .param(
                 "kanban-hide-columns",
@@ -59,6 +74,9 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
 
   @Override
   public Map<String, Object> getAllOpenProjectTickets() {
+    User currentUser = AuthUtils.getUser();
+    Project contextProject = currentUser.getContextProject();
+
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Ticket"))
             .model(ProjectTask.class.getName())
@@ -66,8 +84,10 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
             .domain(
-                "self.project.projectStatus.isCompleted = false and self.typeSelect = :_typeSelect")
+                "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TICKET)
+            .context("_project", contextProject)
+            .context("_projectIds", projectService.getContextProjectIds())
             .param("search-filters", "project-task-filters")
             .param("forceTitle", "true")
             .param(
