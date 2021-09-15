@@ -75,10 +75,7 @@ public class TestFixedAssetGenerationService {
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            analyticFixedAssetService,
-            fixedAssetDerogatoryLineService,
-            fixedAssetDerogatoryLineMoveService,
-            fixedAssetFailOverControlService);
+            analyticFixedAssetService, fixedAssetFailOverControlService);
     when(fixedAssetLineServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);

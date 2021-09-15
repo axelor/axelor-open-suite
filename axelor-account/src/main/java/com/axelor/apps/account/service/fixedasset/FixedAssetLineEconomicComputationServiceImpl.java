@@ -34,19 +34,13 @@ public class FixedAssetLineEconomicComputationServiceImpl
     extends AbstractFixedAssetLineComputationServiceImpl {
 
   protected AnalyticFixedAssetService analyticFixedAssetService;
-  protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
-  protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
 
   @Inject
   public FixedAssetLineEconomicComputationServiceImpl(
       AnalyticFixedAssetService analyticFixedAssetService,
-      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
-      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
       FixedAssetFailOverControlService fixedAssetFailOverControlService) {
     super(fixedAssetFailOverControlService);
     this.analyticFixedAssetService = analyticFixedAssetService;
-    this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
-    this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
   }
 
   @Override
