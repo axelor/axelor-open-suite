@@ -26,6 +26,7 @@
     <field name="isPaid"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
+    <field name="financialDiscount" hidden="true"/>
     <field name="financialDiscount.discountRate"/>
     <field name="financialDiscountAmount"/>
     <field name="invoice.financialDiscountDeadlineDate"/>
@@ -40,8 +41,7 @@
       <separator colSpan="12"/>
       <field name="amount" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-method-compute-customized-percentage"/>
       <field name="amountRemaining" readonly="true"/>
-      <field name="dueDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="((invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; invoice.statusSelect == 3) ||
-       ((invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid)"/>
+      <field name="dueDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="(invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; isPaid"/>
       <field name="estimatedPaymentDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !paymentConditionLine.paymentCondition.isFree" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
       <field name="percentage" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
       <field name="isHoldBack" readonly="true"/>

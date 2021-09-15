@@ -357,6 +357,9 @@
 			<panel name="invoiceTaxPanel" title="Tax" showTitle="false">
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
+			<panel name="invoiceTermsPanel" title="Terms" showTitle="true" showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
+			     <panel-related name="invoiceTermListPanel" field="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form" grid-view="invoice-term-invoice-grid" canNew="false" canRemove="false"/>
+			</panel>
 			<panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 " if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
             <panel name="deliveryAddressPanel" colSpan="12" hidden="true" showIf="operationTypeSelect == 3">
                <field name="deliveryAddress" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-delivery-address"
@@ -478,7 +481,7 @@ InvoiceSet.length > 0))"
 					</field>
 				</panel>
 				<panel name="financialDiscountPanel" colSpan="12" if="__config__.app.getApp('account').getManageFinancialDiscount()">
-					<field name="financialDiscount" colSpan="6" onChange="action-record-invoice-set-financial-discount-informations" showIf="statusSelect &gt;=3"/>
+					<field name="financialDiscount" colSpan="6" onChange="action-record-invoice-set-financial-discount-informations,action-method-invoice-financial-discount-update-invoice-terms" showIf="statusSelect &gt;=3"/>
 					<field name="financialDiscountRate" colSpan="6" showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
 					<field name="financialDiscountDeadlineDate" colSpan="6" showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
 				</panel>
@@ -503,9 +506,6 @@ InvoiceSet.length > 0))"
 					<field name="schedulePaymentOk" readonly="true"/>
 					<field name="paymentSchedule" readonly="true" domain="self.company = :company AND self.partner = :partner" form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
 				</panel>
-			</panel>
-			<panel name="invoiceTermsPanel" title="Terms" showTitle="true" showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
-			     <panel-related name="invoiceTermListPanel" field="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form" grid-view="invoice-term-invoice-grid" canNew="false" canRemove="false"/>
 			</panel>
 		</panel-tabs>
 
@@ -1391,9 +1391,9 @@ InvoiceSet.length > 0))"
 		<call class="com.axelor.apps.businessproject.web.InvoiceController" method="mergeInvoice"/>
 	</action-method>
 
-        <action-method name="action-invoice-method-estimated-payment-dates"  if-module="axelor-cash-management">
-                <call class="com.axelor.apps.cash.management.web.InvoiceController" method="computeEstimatedPaymentDates"/>
-        </action-method>
+    <action-method name="action-invoice-method-estimated-payment-dates"  if-module="axelor-cash-management">
+        <call class="com.axelor.apps.cash.management.web.InvoiceController" method="computeEstimatedPaymentDates"/>
+    </action-method>
 
 	<action-method name="action-invoice-method-create-advance-payment-domain">
 		<call class="com.axelor.apps.account.web.InvoiceController"
@@ -1473,6 +1473,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-compute-invoice-terms-due-dates">
     <call class="com.axelor.apps.account.web.InvoiceController" method="computeInvoiceTermsDueDates"/>
   </action-method>
+  
+  <action-method name="action-method-invoice-financial-discount-update-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="updateInvoiceTermsFinancialDiscount"/>
+  </action-method>
+  
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">
     	<view type="form" name="invoice-payment-form"/>
