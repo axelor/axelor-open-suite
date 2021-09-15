@@ -48,7 +48,6 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
   @Transactional
   public void loadBankStatement(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
-    BankStatement bankStatement = bankReconciliation.getBankStatement();
     BankStatementLine initialBalanceBankStatementLine =
         getInitialBalanceBankStatementLine(bankReconciliation, includeBankStatement);
     BankStatementLine finalBalanceBankStatementLine =

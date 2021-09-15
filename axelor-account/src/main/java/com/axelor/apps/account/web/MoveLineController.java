@@ -336,14 +336,17 @@ public class MoveLineController {
         Move move = parentContext.asType(Move.class);
         Account accountingAccount = moveLine.getAccount();
         if (accountingAccount != null && !accountingAccount.getUseForPartnerBalance()) {
-            response.setValue("partner", null);
+          response.setValue("partner", null);
         }
 
         TaxLine taxLine =
             Beans.get(MoveLoadDefaultConfigService.class)
                 .getTaxLine(move, moveLine, accountingAccount);
-        if (taxLine != null) {response.setValue("taxLine", taxLine);}
-        else {response.setValue("taxLine", null);}
+        if (taxLine != null) {
+          response.setValue("taxLine", taxLine);
+        } else {
+          response.setValue("taxLine", null);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

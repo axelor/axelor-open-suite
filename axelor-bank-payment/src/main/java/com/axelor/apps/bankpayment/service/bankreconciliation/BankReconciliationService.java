@@ -48,6 +48,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
@@ -62,7 +63,8 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -148,53 +150,60 @@ public class BankReconciliationService {
     this.accountRepository = accountRepository;
   }
 
-  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) {
+  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
+      throws AxelorException {
     Context scriptContext;
     Move move;
+    int limit = 10;
+    int offset = 0;
     List<BankReconciliationLine> bankReconciliationLines =
-        bankReconciliation.getBankReconciliationLineList();
+        bankReconciliationLineRepository
+            .findByBankReconciliation(bankReconciliation)
+            .fetch(limit, offset);
 
     List<BankStatementRule> bankStatementRules;
+    while (bankReconciliationLines.size() > 0) {
+      for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+        if (bankReconciliationLine.getMoveLine() != null) {
+          continue;
+        }
+        scriptContext =
+            new Context(
+                Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
+                BankStatementLineAFB120.class);
+        bankStatementRules =
+            bankStatementRuleRepository
+                .all()
+                .filter(
+                    "self.ruleType = :ruleType AND self.accountManagement.interbankCodeLine = :interbankCodeLine")
+                .bind("ruleType", BankStatementRuleRepository.RULE_TYPE_ACCOUNTING_AUTO)
+                .bind(
+                    "interbankCodeLine",
+                    bankReconciliationLine.getBankStatementLine().getOperationInterbankCodeLine())
+                .fetch();
+        for (BankStatementRule bankStatementRule : bankStatementRules) {
 
-    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      if (bankReconciliationLine.getMoveLine() != null) {
-        continue;
-      }
-      scriptContext =
-          new Context(
-              Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
-              BankStatementLineAFB120.class);
-      bankStatementRules =
-          bankStatementRuleRepository
-              .all()
-              .filter(
-                  "self.ruleType = :ruleType AND self.accountManagement.interbankCodeLine = :interbankCodeLine")
-              .bind("ruleType", BankStatementRuleRepository.RULE_TYPE_ACCOUNTING_AUTO)
-              .bind(
-                  "interbankCodeLine",
-                  bankReconciliationLine.getBankStatementLine().getOperationInterbankCodeLine())
-              .fetch();
-      for (BankStatementRule bankStatementRule : bankStatementRules) {
-
-        if (Boolean.TRUE.equals(
-            new GroovyScriptHelper(scriptContext)
-                .eval(
-                    bankStatementRule
-                        .getBankStatementQuery()
-                        .getQuery()
-                        .replaceAll("%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
-          if (bankStatementRule.getAccountManagement().getJournal() == null) {
-            continue;
-          }
-          move = generateMove(bankReconciliationLine, bankStatementRule);
-          try {
+          if (Boolean.TRUE.equals(
+              new GroovyScriptHelper(scriptContext)
+                  .eval(
+                      bankStatementRule
+                          .getBankStatementQuery()
+                          .getQuery()
+                          .replaceAll("%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
+            if (bankStatementRule.getAccountManagement().getJournal() == null) {
+              continue;
+            }
+            move = generateMove(bankReconciliationLine, bankStatementRule);
             moveValidateService.validate(move);
-          } catch (AxelorException e) {
-            TraceBackService.trace(e);
+            break;
           }
-          break;
         }
       }
+      offset += limit;
+      bankReconciliationLines =
+          bankReconciliationLineRepository
+              .findByBankReconciliation(bankReconciliation)
+              .fetch(limit, offset);
     }
   }
 
@@ -850,5 +859,85 @@ public class BankReconciliationService {
     bankReconciliationLine.setIsSelectedBankReconciliation(
         !bankReconciliationLineContext.getIsSelectedBankReconciliation());
     return bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
+
+  public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation) {
+    boolean uniqueBankDetails = true;
+    BankDetails bankDetails = null;
+    bankReconciliation.setToDate(bankReconciliation.getBankStatement().getToDate());
+    bankReconciliation.setFromDate(bankReconciliation.getBankStatement().getFromDate());
+    List<BankStatementLine> bankStatementLines =
+        Beans.get(BankStatementLineRepository.class)
+            .findByBankStatement(bankReconciliation.getBankStatement())
+            .fetch();
+    for (BankStatementLine bankStatementLine : bankStatementLines) {
+      if (bankDetails == null) {
+        bankDetails = bankStatementLine.getBankDetails();
+      }
+      if (!bankDetails.equals(bankStatementLine.getBankDetails())) {
+        uniqueBankDetails = false;
+      }
+    }
+    if (uniqueBankDetails) {
+      bankReconciliation.setBankDetails(bankDetails);
+      bankReconciliation.setCashAccount(bankDetails.getBankAccount());
+      bankReconciliation.setJournal(bankDetails.getJournal());
+    } else {
+      bankReconciliation.setBankDetails(null);
+    }
+    return bankReconciliation;
+  }
+
+  public void checkReconciliation(List<MoveLine> moveLines, BankReconciliation br)
+      throws Exception {
+
+    if (br.getBankReconciliationLineList().stream()
+                .filter(line -> line.getIsSelectedBankReconciliation())
+                .count()
+            == 0
+        || moveLines.size() == 0) {
+      if (br.getBankReconciliationLineList().stream()
+                  .filter(line -> line.getIsSelectedBankReconciliation())
+                  .count()
+              == 0
+          && moveLines.size() == 0) {
+        throw new Exception(
+            I18n.get(
+                IExceptionMessage
+                    .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE));
+      } else if (br.getBankReconciliationLineList().stream()
+              .filter(line -> line.getIsSelectedBankReconciliation())
+              .count()
+          == 0) {
+        throw new Exception(
+            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
+      } else if (moveLines.size() == 0) {
+        throw new Exception(I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
+      }
+    } else if (br.getBankReconciliationLineList().stream()
+                .filter(line -> line.getIsSelectedBankReconciliation())
+                .count()
+            > 1
+        || moveLines.size() > 1) {
+      if (br.getBankReconciliationLineList().stream()
+                  .filter(line -> line.getIsSelectedBankReconciliation())
+                  .count()
+              > 1
+          && moveLines.size() > 1) {
+        throw new Exception(
+            I18n.get(
+                I18n.get(
+                    IExceptionMessage
+                        .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE)));
+      } else if (br.getBankReconciliationLineList().stream()
+              .filter(line -> line.getIsSelectedBankReconciliation())
+              .count()
+          > 1) {
+        throw new Exception(
+            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
+      } else if (moveLines.size() > 1) {
+        throw new Exception(I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
+      }
+    }
   }
 }

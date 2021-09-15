@@ -22,6 +22,7 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
@@ -46,16 +47,18 @@ import java.util.List;
 public class BankStatementService {
 
   protected BankStatementRepository bankStatementRepository;
-  protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
+  protected BankPaymentBankStatementLineAFB120Repository
+      bankPaymentBankStatementLineAFB120Repository;
   protected BankStatementLineRepository bankStatementLineRepository;
 
   @Inject
   public BankStatementService(
       BankStatementRepository bankStatementRepository,
-      BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
+      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
       BankStatementLineRepository bankStatementLineRepository) {
     this.bankStatementRepository = bankStatementRepository;
-    this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
+    this.bankPaymentBankStatementLineAFB120Repository =
+        bankPaymentBankStatementLineAFB120Repository;
     this.bankStatementLineRepository = bankStatementLineRepository;
   }
 
@@ -169,13 +172,13 @@ public class BankStatementService {
   public void deleteBankStatementLines(BankStatement bankStatement) {
     List<BankStatementLineAFB120> bankStatementLines;
     bankStatementLines =
-        bankStatementLineAFB120Repository
+        bankPaymentBankStatementLineAFB120Repository
             .all()
             .filter("self.bankStatement = :bankStatement")
             .bind("bankStatement", bankStatement)
             .fetch();
     for (BankStatementLineAFB120 bsl : bankStatementLines) {
-      bankStatementLineAFB120Repository.remove(bsl);
+      bankPaymentBankStatementLineAFB120Repository.remove(bsl);
     }
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_RECEIVED);
   }
@@ -200,7 +203,7 @@ public class BankStatementService {
     BankStatementLineAFB120 tempBankStatementLineAFB120;
     for (BankStatementLineAFB120 bslAFB120 : initialLines) {
       tempBankStatementLineAFB120 =
-          bankStatementLineAFB120Repository
+          bankPaymentBankStatementLineAFB120Repository
               .all()
               .filter(
                   "self.operationDate = :operationDate AND self.lineTypeSelect = :lineTypeSelect AND self.bankStatement != :bankStatement AND self.bankDetails = :bankDetails")
@@ -218,12 +221,72 @@ public class BankStatementService {
   }
 
   public BankDetails getBankDetails(BankStatement bankStatement) {
-    return bankStatementLineAFB120Repository
+    return bankPaymentBankStatementLineAFB120Repository
         .all()
         .filter("self.bankStatement = :bankStatement")
         .bind("bankStatement", bankStatement)
         .order("-id")
         .fetchOne()
         .getBankDetails();
+  }
+
+  public void checkAmountFollowing(BankStatement bankStatement) throws Exception {
+    BankDetails bankDetails = getBankDetails(bankStatement);
+    BankStatementLineAFB120 initialBankStatementLineAFB120 =
+        bankPaymentBankStatementLineAFB120Repository
+            .findByBankStatementAndLineType(
+                bankStatement, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+            .order("sequence")
+            .fetchOne();
+    BankStatementLineAFB120 finalBankStatementLineAFB120 =
+        bankPaymentBankStatementLineAFB120Repository
+            .findByBankDetailsLineTypeExcludeBankStatement(
+                bankStatement,
+                bankDetails,
+                BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+            .order("-sequence")
+            .fetchOne();
+    if (ObjectUtils.notEmpty(finalBankStatementLineAFB120)
+        && !(initialBankStatementLineAFB120
+                .getCredit()
+                .equals(finalBankStatementLineAFB120.getCredit())
+            && initialBankStatementLineAFB120
+                .getDebit()
+                .equals(finalBankStatementLineAFB120.getDebit()))) {
+      // delete imported
+      deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
+      throw new Exception(I18n.get(IExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
+    }
+  }
+
+  public void checkImport(BankStatement bankStatement) throws Exception {
+    boolean alreadyImported = false;
+    List<BankStatementLineAFB120> initialLines;
+    List<BankStatementLineAFB120> finalLines;
+    // Load lines
+    initialLines =
+        bankPaymentBankStatementLineAFB120Repository
+            .findByBankStatementAndLineType(
+                bankStatement, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+            .fetch();
+
+    finalLines =
+        bankPaymentBankStatementLineAFB120Repository
+            .findByBankStatementAndLineType(
+                bankStatement, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+            .fetch();
+
+    alreadyImported =
+        bankStatementLineAlreadyExists(initialLines)
+            || bankStatementLineAlreadyExists(finalLines)
+            || alreadyImported;
+
+    if (!alreadyImported) {
+      checkAmountFollowing(bankStatement);
+
+    } else {
+      deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
+      throw new Exception(I18n.get(IExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
+    }
   }
 }

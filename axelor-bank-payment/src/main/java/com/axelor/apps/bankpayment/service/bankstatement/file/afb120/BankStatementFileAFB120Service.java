@@ -189,8 +189,9 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
           bankStatement.setToDate(operationDate);
         }
       } else {
-        if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+        if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
           bankStatement.setToDate(operationDate);
+        }
       }
     }
 

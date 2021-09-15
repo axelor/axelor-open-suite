@@ -25,19 +25,16 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
-import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.service.TraceBackService;
@@ -60,80 +57,49 @@ import java.util.stream.Collectors;
 public class BankReconciliationController {
 
   public void unreconcile(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    BankReconciliation br =
-        Beans.get(BankReconciliationRepository.class)
-            .find(context.asType(BankReconciliation.class).getId());
-    List<BankReconciliationLine> bankReconciliationLines =
-        br.getBankReconciliationLineList().stream()
-            .filter(line -> line.getIsSelectedBankReconciliation())
-            .collect(Collectors.toList());
-    if (bankReconciliationLines.isEmpty()) {
-      response.setFlash(I18n.get("Please select a reconciliation line"));
-    } else {
-      Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
-      response.setReload(true);
+    try {
+      Context context = request.getContext();
+      BankReconciliation br =
+          Beans.get(BankReconciliationRepository.class)
+              .find(context.asType(BankReconciliation.class).getId());
+      List<BankReconciliationLine> bankReconciliationLines =
+          br.getBankReconciliationLineList().stream()
+              .filter(line -> line.getIsSelectedBankReconciliation())
+              .collect(Collectors.toList());
+      if (bankReconciliationLines.isEmpty()) {
+        response.setFlash(
+            I18n.get(I18n.get(IExceptionMessage.BANK_RECONCILIATION_UNRECONCILE_NO_SELECT)));
+      } else {
+        Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void reconcileSelected(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    BankReconciliation br = context.asType(BankReconciliation.class);
-    BankReconciliationLine bankReconciliationLine;
-    List<MoveLine> moveLines =
-        Beans.get(MoveLineRepository.class)
-            .all()
-            .filter(
-                "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
-                    + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
-                    + " AND self.isSelectedBankReconciliation = true"
-                    + " AND self.move.statusSelect < :statusSelect"
-                    + " AND self.account = :cashAccount AND"
-                    + " ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
-                    + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
-            .bind("cashAccount", br.getCashAccount())
-            .bind("statusSelect", MoveRepository.STATUS_CANCELED)
-            .bind("fromDate", br.getFromDate())
-            .bind("toDate", br.getToDate())
-            .fetch();
-    if (br.getBankReconciliationLineList().stream()
-                .filter(line -> line.getIsSelectedBankReconciliation())
-                .count()
-            == 0
-        || moveLines.size() == 0) {
-      if (br.getBankReconciliationLineList().stream()
-                  .filter(line -> line.getIsSelectedBankReconciliation())
-                  .count()
-              == 0
-          && moveLines.size() == 0)
-        response.setError(I18n.get("Please select one bank reconciliation line and one move line"));
-      else if (br.getBankReconciliationLineList().stream()
-              .filter(line -> line.getIsSelectedBankReconciliation())
-              .count()
-          == 0) {
-        response.setError(I18n.get("Please select one bank reconciliation line"));
-      } else if (moveLines.size() == 0) {
-        response.setError(I18n.get("Please select one move line"));
-      }
-    } else if (br.getBankReconciliationLineList().stream()
-                .filter(line -> line.getIsSelectedBankReconciliation())
-                .count()
-            > 1
-        || moveLines.size() > 1) {
-      if (br.getBankReconciliationLineList().stream()
-                  .filter(line -> line.getIsSelectedBankReconciliation())
-                  .count()
-              > 1
-          && moveLines.size() > 1)
-        response.setError(
-            I18n.get("Please select only one bank reconciliation line and only one move line"));
-      else if (br.getBankReconciliationLineList().stream()
-              .filter(line -> line.getIsSelectedBankReconciliation())
-              .count()
-          > 1) response.setError(I18n.get("Please select only one bank reconciliation line"));
-      else if (moveLines.size() > 1)
-        response.setError(I18n.get("Please select only one move line"));
-    } else {
+    try {
+      Context context = request.getContext();
+      BankReconciliation br = context.asType(BankReconciliation.class);
+      BankReconciliationLine bankReconciliationLine;
+      List<MoveLine> moveLines =
+          Beans.get(MoveLineRepository.class)
+              .all()
+              .filter(
+                  "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
+                      + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
+                      + " AND self.isSelectedBankReconciliation = true"
+                      + " AND self.move.statusSelect < :statusSelect"
+                      + " AND self.account = :cashAccount AND"
+                      + " ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
+                      + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
+              .bind("cashAccount", br.getCashAccount())
+              .bind("statusSelect", MoveRepository.STATUS_CANCELED)
+              .bind("fromDate", br.getFromDate())
+              .bind("toDate", br.getToDate())
+              .fetch();
+      Beans.get(BankReconciliationService.class).checkReconciliation(moveLines, br);
       bankReconciliationLine =
           br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
@@ -146,6 +112,10 @@ public class BankReconciliationController {
       br = Beans.get(BankReconciliationRepository.class).find(br.getId());
       response.setValue("bankReconciliationLineList", br.getBankReconciliationLineList());
       response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setError(e.getMessage());
     }
   }
 
@@ -205,7 +175,7 @@ public class BankReconciliationController {
             bankReconciliationRepository.find(bankReconciliation.getId()));
         response.setReload(true);
       } else {
-        response.setAlert(I18n.get("Can't load while another reconciliation is open"));
+        response.setAlert(I18n.get(IExceptionMessage.BANK_RECONCILIATION_ALREADY_OPEN));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -295,14 +265,18 @@ public class BankReconciliationController {
   }
 
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    String domain =
-        Beans.get(BankReconciliationService.class).createDomainForBankDetails(bankReconciliation);
-    // if nothing was found for the domain, we set it at a default value.
-    if (domain.equals("")) {
-      response.setAttr("bankDetails", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("bankDetails", "domain", domain);
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      String domain =
+          Beans.get(BankReconciliationService.class).createDomainForBankDetails(bankReconciliation);
+      // if nothing was found for the domain, we set it at a default value.
+      if (domain.equals("")) {
+        response.setAttr("bankDetails", "domain", "self.id IN (0)");
+      } else {
+        response.setAttr("bankDetails", "domain", domain);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -344,148 +318,154 @@ public class BankReconciliationController {
   }
 
   public void setJournalDomain(ActionRequest request, ActionResponse response) {
+    try {
 
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    String journalIds = null;
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      String journalIds = null;
 
-    if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
-      journalIds = Beans.get(BankReconciliationService.class).getJournalDomain(bankReconciliation);
-    }
+      if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
+        journalIds =
+            Beans.get(BankReconciliationService.class).getJournalDomain(bankReconciliation);
+      }
 
-    if (Strings.isNullOrEmpty(journalIds)) {
-      response.setAttr("journal", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("journal", "domain", "self.id IN(" + journalIds + ")");
+      if (Strings.isNullOrEmpty(journalIds)) {
+        response.setAttr("journal", "domain", "self.id IN (0)");
+      } else {
+        response.setAttr("journal", "domain", "self.id IN(" + journalIds + ")");
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void setJournal(ActionRequest request, ActionResponse response) {
+    try {
 
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    Journal journal = null;
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      Journal journal = null;
 
-    if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
-      journal = Beans.get(BankReconciliationService.class).getJournal(bankReconciliation);
+      if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
+        journal = Beans.get(BankReconciliationService.class).getJournal(bankReconciliation);
+      }
+      response.setValue("journal", journal);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValue("journal", journal);
   }
 
   public void setCashAccountDomain(ActionRequest request, ActionResponse response) {
+    try {
 
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    String cashAccountIds = null;
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      String cashAccountIds = null;
 
-    if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
-      cashAccountIds =
-          Beans.get(BankReconciliationService.class).getCashAccountDomain(bankReconciliation);
-    }
+      if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
+        cashAccountIds =
+            Beans.get(BankReconciliationService.class).getCashAccountDomain(bankReconciliation);
+      }
 
-    if (Strings.isNullOrEmpty(cashAccountIds)) {
-      response.setAttr("cashAccount", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("cashAccount", "domain", "self.id IN(" + cashAccountIds + ")");
+      if (Strings.isNullOrEmpty(cashAccountIds)) {
+        response.setAttr("cashAccount", "domain", "self.id IN (0)");
+      } else {
+        response.setAttr("cashAccount", "domain", "self.id IN(" + cashAccountIds + ")");
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void setCashAccount(ActionRequest request, ActionResponse response) {
 
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    Account cashAccount = null;
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      Account cashAccount = null;
 
-    if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
-      cashAccount = Beans.get(BankReconciliationService.class).getCashAccount(bankReconciliation);
+      if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
+        cashAccount = Beans.get(BankReconciliationService.class).getCashAccount(bankReconciliation);
+      }
+      response.setValue("cashAccount", cashAccount);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValue("cashAccount", cashAccount);
   }
 
   public void autoAccounting(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    BankReconciliationService bankReconciliationService =
-        Beans.get(BankReconciliationService.class);
-    bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
-    bankReconciliationService.computeBalances(
-        Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
-    response.setReload(true);
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+      bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+      bankReconciliationService.computeBalances(
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void checkIncompleteBankReconciliationLine(
       ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    List<BankReconciliationLine> bankReconciliationLines =
-        bankReconciliation.getBankReconciliationLineList();
-    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      int status =
-          Beans.get(BankReconciliationLineService.class)
-              .checkIncompleteLine(bankReconciliationLine);
-
-      if (status == BankReconciliationLineService.BANK_RECONCILIATION_LINE_INCOMPLETE) {
-        response.setError(
-            I18n.get(
-                "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Accounting account, Third party). This in order to generate automatically a move line on the accounting account and journal associated with the reconciliation session"));
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      List<BankReconciliationLine> bankReconciliationLines =
+          bankReconciliation.getBankReconciliationLineList();
+      for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+        Beans.get(BankReconciliationLineService.class).checkIncompleteLine(bankReconciliationLine);
       }
-      if (status == BankReconciliationLineService.BANK_RECONCILIATION_LINE_COMPLETABLE) {
-        if (ObjectUtils.isEmpty(bankReconciliation.getJournal()))
-          response.setError(
-              I18n.get(
-                  "The journal is required. Some entries from the reconciliation have an empty moveLine and an account filled"));
-      }
+    } catch (Exception e) {
+      response.setError(e.getMessage());
+      TraceBackService.trace(response, e);
     }
   }
 
   public void onChangeBankStatement(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    boolean uniqueBankDetails = true;
-    BankDetails bankDetails = null;
-    if (bankReconciliation.getBankStatement() != null) {
-      bankReconciliation.setToDate(bankReconciliation.getBankStatement().getToDate());
-      bankReconciliation.setFromDate(bankReconciliation.getBankStatement().getFromDate());
-      List<BankStatementLine> bankStatementLines =
-          Beans.get(BankStatementLineRepository.class)
-              .findByBankStatement(bankReconciliation.getBankStatement())
-              .fetch();
-      for (BankStatementLine bankStatementLine : bankStatementLines) {
-        if (bankDetails == null) {
-          bankDetails = bankStatementLine.getBankDetails();
-        }
-        if (!bankDetails.equals(bankStatementLine.getBankDetails())) {
-          uniqueBankDetails = false;
-        }
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      if (bankReconciliation.getBankStatement() != null) {
+        bankReconciliation =
+            Beans.get(BankReconciliationService.class).onChangeBankStatement(bankReconciliation);
+        response.setValues(bankReconciliation);
       }
-      if (uniqueBankDetails) {
-        bankReconciliation.setBankDetails(bankDetails);
-        bankReconciliation.setCashAccount(bankDetails.getBankAccount());
-        bankReconciliation.setJournal(bankDetails.getJournal());
-      } else {
-        bankReconciliation.setBankDetails(null);
-      }
-      response.setValues(bankReconciliation);
+    } catch (Exception e) {
+      response.setError(e.getMessage());
+      TraceBackService.trace(response, e);
     }
   }
 
   public void setBankStatementIsFullyReconciled(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation =
-        Beans.get(BankReconciliationRepository.class)
-            .find(request.getContext().asType(BankReconciliation.class).getId());
-    Beans.get(BankStatementService.class)
-        .setIsFullyReconciled(bankReconciliation.getBankStatement());
-    response.setReload(true);
+    try {
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class)
+              .find(request.getContext().asType(BankReconciliation.class).getId());
+      Beans.get(BankStatementService.class)
+          .setIsFullyReconciled(bankReconciliation.getBankStatement());
+      response.setReload(true);
+    } catch (Exception e) {
+      response.setError(e.getMessage());
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    BankReconciliationService bankReconciliationService =
-        Beans.get(BankReconciliationService.class);
-    ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
-    actionViewBuilder.model(MoveLine.class.getName());
-    actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
-    actionViewBuilder.add("form", "move-line-form");
-    actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
-    Map<String, Object> params =
-        bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
-    Set<String> keys = params.keySet();
-    for (String key : keys) {
-      actionViewBuilder.context(key, params.get(key));
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
+      actionViewBuilder.model(MoveLine.class.getName());
+      actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
+      actionViewBuilder.add("form", "move-line-form");
+      actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
+      Map<String, Object> params =
+          bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
+      Set<String> keys = params.keySet();
+      for (String key : keys) {
+        actionViewBuilder.context(key, params.get(key));
+      }
+      response.setView(actionViewBuilder.map());
+    } catch (Exception e) {
+      response.setError(e.getMessage());
+      TraceBackService.trace(response, e);
     }
-    response.setView(actionViewBuilder.map());
   }
 }
