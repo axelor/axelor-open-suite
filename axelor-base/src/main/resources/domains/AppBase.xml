@@ -16,7 +16,7 @@
 		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
 
 		<!-- Mapping API -->
-		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
+		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="2" />
 		
 		<!-- Routing service API for Open Street Map> -->
 		<integer name="osmRoutingServiceApiSelect" title="Routing service provider for Open Street Map" selection="base.app.base.osm.routing.api.select" default="1" />
