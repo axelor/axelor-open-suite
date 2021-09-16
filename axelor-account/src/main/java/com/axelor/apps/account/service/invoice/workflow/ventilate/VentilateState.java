@@ -249,9 +249,10 @@ public class VentilateState extends WorkflowInvoice {
     if (InvoiceToolService.isPurchase(invoice)) {
 
       invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
-    }
+    } else {
 
-    invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+      invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+    }
   }
 
   protected void setMove() throws AxelorException {
