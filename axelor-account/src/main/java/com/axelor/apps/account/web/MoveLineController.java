@@ -305,7 +305,7 @@ public class MoveLineController {
         Partner partner = move.getPartner();
 
         if (ObjectUtils.isEmpty(partner)) {
-          response.setError(I18n.get("Please select a partner"));
+          response.setError(I18n.get(IExceptionMessage.MOVE_LINE_RECONCILE_SELECT_A_PARTNER));
         } else {
           MoveLoadDefaultConfigService moveLoadDefaultConfigService =
               Beans.get(MoveLoadDefaultConfigService.class);
