@@ -58,19 +58,20 @@ import java.util.stream.Collectors;
 public class BankReconciliationController {
 
   public void unreconcile(ActionRequest request, ActionResponse response) {
-    try {    
-    	Context context = request.getContext();
-    BankReconciliation br =
-            Beans.get(BankReconciliationRepository.class).find(context.asType(BankReconciliation.class).getId());
-        List<BankReconciliationLine> bankReconciliationLines =
-            br.getBankReconciliationLineList().stream()
-                .filter(line -> line.getIsSelectedBankReconciliation())
-                .collect(Collectors.toList());
-        if (bankReconciliationLines.isEmpty()) {
-          response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
-        } else {
-        	Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
-          response.setReload(true);
+    try {
+      Context context = request.getContext();
+      BankReconciliation br =
+          Beans.get(BankReconciliationRepository.class)
+              .find(context.asType(BankReconciliation.class).getId());
+      List<BankReconciliationLine> bankReconciliationLines =
+          br.getBankReconciliationLineList().stream()
+              .filter(line -> line.getIsSelectedBankReconciliation())
+              .collect(Collectors.toList());
+      if (bankReconciliationLines.isEmpty()) {
+        response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
+      } else {
+        Beans.get(BankReconciliationService.class).unreconcileLines(bankReconciliationLines);
+        response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

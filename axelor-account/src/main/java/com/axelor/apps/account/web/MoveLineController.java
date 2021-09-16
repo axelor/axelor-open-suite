@@ -320,11 +320,9 @@ public class MoveLineController {
           }
 
           TaxLine taxLine =
-                  moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
-              response.setValue("taxLine", taxLine);
+              moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
+          response.setValue("taxLine", taxLine);
         }
-        
-
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -340,15 +338,14 @@ public class MoveLineController {
         Account accountingAccount = moveLine.getAccount();
         if (accountingAccount != null && !accountingAccount.getUseForPartnerBalance()) {
           response.setValue("partner", null);
-        }      
+        }
         TaxLine taxLine =
-                Beans.get(MoveLoadDefaultConfigService.class)
+            Beans.get(MoveLoadDefaultConfigService.class)
                 .getTaxLine(move, moveLine, accountingAccount);
         response.setValue("taxLine", taxLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-
     }
   }
 
@@ -365,8 +362,8 @@ public class MoveLineController {
   public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
     boolean readonly = false;
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    try {    
-    	if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
+    try {
+      if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
         readonly = true;
       }
       if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
