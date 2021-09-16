@@ -4925,7 +4925,7 @@ else {0};</expression>
                                         </structure>
                                         <structure>
                                             <property name="name">credit_move_general</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
@@ -7896,7 +7896,7 @@ else {0};</expression>
                                         </structure>
                                         <structure>
                                             <property name="name">credit_move_general</property>
-                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]>0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
+                                            <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]) + row["sum_move_credit"] + row["credit_move_balance"]:row["sum_move_credit"] + row["credit_move_balance"]</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>

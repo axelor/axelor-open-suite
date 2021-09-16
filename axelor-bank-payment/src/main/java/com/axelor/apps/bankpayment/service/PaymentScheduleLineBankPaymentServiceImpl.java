@@ -34,10 +34,13 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -69,38 +72,50 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
   protected InterbankCodeLineRepository interbankCodeLineRepo;
   protected ReconcileRepository reconcileRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
+  protected MoveReverseService moveReverseService;
+  protected MoveLineService moveLineService;
 
   @Inject
   public PaymentScheduleLineBankPaymentServiceImpl(
       AppBaseService appBaseService,
       PaymentScheduleService paymentScheduleService,
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveLineService moveLineService,
       PaymentModeService paymentModeService,
       SequenceService sequenceService,
       AccountingSituationService accountingSituationService,
       MoveToolService moveToolService,
       PaymentService paymentService,
-      InvoicePaymentCancelService invoicePaymentCancelService,
-      InterbankCodeLineRepository interbankCodeLineRepo,
       MoveLineRepository moveLineRepo,
       PaymentScheduleLineRepository paymentScheduleLineRepo,
+      InvoicePaymentCancelService invoicePaymentCancelService,
+      InterbankCodeLineRepository interbankCodeLineRepo,
       ReconcileRepository reconcileRepo,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      MoveReverseService moveReverseService,
+      MoveLineCreateService moveLineCreateService,
+      MoveLineToolService moveLineToolService) {
     super(
         appBaseService,
         paymentScheduleService,
-        moveService,
+        moveCreateService,
+        moveValidateService,
         paymentModeService,
         sequenceService,
         accountingSituationService,
         moveToolService,
         paymentService,
         moveLineRepo,
-        paymentScheduleLineRepo);
+        paymentScheduleLineRepo,
+        moveLineCreateService,
+        moveLineToolService);
+    this.moveLineService = moveLineService;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.interbankCodeLineRepo = interbankCodeLineRepo;
     this.reconcileRepo = reconcileRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
+    this.moveReverseService = moveReverseService;
   }
 
   @Override
@@ -136,7 +151,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     }
 
     MoveLine rejectionMoveLine =
-        moveService.findMoveLineByAccount(
+        moveToolService.findMoveLineByAccount(
             rejectionMove, paymentScheduleLine.getAdvanceMoveLine().getAccount());
 
     paymentScheduleLine.setInterbankCodeLine(rejectionReason);
@@ -164,12 +179,9 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
   @Transactional(rollbackOn = {Exception.class})
   protected Move createRejectionMove(PaymentScheduleLine paymentScheduleLine)
       throws AxelorException {
-    MoveValidateService moveValidateService = moveService.getMoveValidateService();
-    MoveLineService moveLineService = moveService.getMoveLineService();
-
     Move advanceOrPaymentMove = paymentScheduleLine.getAdvanceOrPaymentMove();
     Move rejectionMove =
-        moveService.generateReverse(
+        moveReverseService.generateReverse(
             advanceOrPaymentMove, true, true, false, advanceOrPaymentMove.getDate());
     rejectionMove.setRejectOk(true);
     moveValidateService.validate(rejectionMove);
@@ -185,14 +197,13 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
   @Transactional(rollbackOn = {Exception.class})
   protected void cancelInvoicePayments(PaymentScheduleLine paymentScheduleLine)
       throws AxelorException {
-    MoveLineService moveLineService = moveService.getMoveLineService();
     PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
     MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
     Set<Invoice> invoiceSet =
         MoreObjects.firstNonNull(paymentSchedule.getInvoiceSet(), Collections.emptySet());
 
     for (Invoice invoice : invoiceSet) {
-      MoveLine debitMoveLine = moveLineService.getDebitCustomerMoveLine(invoice);
+      MoveLine debitMoveLine = moveLineToolService.getDebitCustomerMoveLine(invoice);
       Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
 
       if (reconcile == null) {
