@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -41,6 +42,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -212,7 +214,10 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoice.setPaymentProgress(
         invoice
             .getAmountPaid()
-            .divide(invoice.getInTaxTotal())
+            .divide(
+                invoice.getInTaxTotal(),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP)
             .multiply(new BigDecimal(100))
             .intValue());
   }

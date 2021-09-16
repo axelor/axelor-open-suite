@@ -77,8 +77,8 @@ public interface InvoiceTermService {
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice);
 
   /**
-   * Return the latest invoice terms due date by ignoring holdback invoice terms
-   * Return invoice due date if no invoice terms found
+   * Return the latest invoice terms due date by ignoring holdback invoice terms Return invoice due
+   * date if no invoice terms found
    *
    * @param invoice
    * @return
