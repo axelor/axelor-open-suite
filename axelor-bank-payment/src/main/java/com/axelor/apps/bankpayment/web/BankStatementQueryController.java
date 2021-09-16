@@ -17,12 +17,14 @@ public class BankStatementQueryController {
   public void checkSequenceUnicity(ActionRequest request, ActionResponse response) {
     BankStatementQuery bankStatementQuery = request.getContext().asType(BankStatementQuery.class);
     int sequence = bankStatementQuery.getSequence();
-    if (ObjectUtils.notEmpty(
+
+    BankStatementQuery bsq =
         Beans.get(BankPaymentBankStatementQueryRepository.class)
             .findBySequenceAndRuleTypeExcludeId(
                 sequence,
                 BankStatementRuleRepository.RULE_TYPE_RECONCILIATION_AUTO,
-                bankStatementQuery.getId()))) {
+                bankStatementQuery.getId());
+    if (ObjectUtils.notEmpty(bsq)) {
       response.setError(I18n.get(IExceptionMessage.BANK_STATEMENT_QUERY_SEQUENCE_USED));
     }
   }
