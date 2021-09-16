@@ -235,6 +235,10 @@
         <panel hidden="true" colSpan="12" name="transientPasswordPanel">
           <field name="transientPassword"/>
         </panel>
+        <panel name="testingPanel" title="Testing" sidebar="true" if="com.axelor.app.AppSettings.get().get('application.mode') == 'dev'">
+			<field name="today"/>
+		</panel>
+        
 	</form>
 
 	<form name="generate-random-passwords-wizard" title="Generate random passwords" model="com.axelor.apps.base.db.Wizard">

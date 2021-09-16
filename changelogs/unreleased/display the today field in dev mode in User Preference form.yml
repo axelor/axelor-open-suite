@@ -1,0 +1,4 @@
+title: Display the today field in dev mode in User Preference form
+type: change
+description: |
+      Added a new panel in user preference form which is only visible in dev mode
