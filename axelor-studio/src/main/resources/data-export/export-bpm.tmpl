@@ -8,8 +8,6 @@
 	
 	allSelectionBuilders = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.SelectionBuilderRepository' as Class).all()
 
-	allSelections = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaSelectRepository' as Class).all()
-	
 	allCharts = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.ChartBuilderRepository' as Class).all()
 	
 	allDashboards = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.DashboardBuilderRepository' as Class).all()
@@ -35,8 +33,6 @@
 		
 		allSelectionBuilders = allSelectionBuilders.filter('self.appBuilder.id in ?1 OR self.appBuilder is null',__ids__)
 		
-		allSelections = allSelections.filter('(self.appBuilder.id in ?1 OR self.appBuilder is null) AND self.isCustom = true',__ids__)
-		
 		allCharts = allCharts.filter('self.appBuilder.id in ?1',__ids__)
 				
 		allDashboards = allDashboards.filter('self.appBuilder.id in ?1',__ids__)
@@ -53,7 +49,6 @@
 
 		allWkfs = allWkfs.filter('self.appBuilder.id in ?1)',__ids__)
 	} else {
-		allSelections = allSelections.filter('self.isCustom = true')
 		
 		allMenus = allMenus.filter('self.parentMenu is null')
 		
@@ -88,13 +83,13 @@
 				\n\t\t\t<onSave>${model.onSave}</onSave>
 				\n\t\t\t<formWidth>${model.formWidth}</formWidth>
 				\n\t\t\t<isGenerateMenu>${model.isGenerateMenu}</isGenerateMenu>
-				\n\t\t\t<menuBuilder name='${model.menuBuilder?.name}' title='${model.menuBuilder?.title}'/>
+				\n\t\t\t<menuBuilder name='${model.menuBuilder?.name}' title='${model.menuBuilder?.title}' xmlId='${model.menuBuilder?.xmlId}' />
                 \n\t\t\t<menuTitle>${model.menuTitle}</menuTitle>
                 \n\t\t\t<menuIcon>${model.menuIcon}</menuIcon>
                 \n\t\t\t<menuBackground>${model.menuBackground}</menuBackground>
                 \n\t\t\t<menuOrder>${model.menuOrder}</menuOrder>
                 \n\t\t\t<menuTop>${model.menuTop}</menuTop>
-                \n\t\t\t<menuParent>${model.menuParent?.id}</menuParent>
+                \n\t\t\t<menuParent>${model.menuParent?.xmlId}</menuParent>
 				\n\t\t\t<appBuilder>${model.appBuilder?.code}</appBuilder>
 				\n\t\t</model>"""
 	})
@@ -108,7 +103,7 @@
                 }
                 valueExpr = ""
 				if (field.valueExpr != null) {
-                	valueExpr += field.valueExpr
+                	valueExpr += groovy.xml.XmlUtil.escapeXml(field.valueExpr)
                 }
 				fields += """\n\t\t<field>
 				\n\t\t\t<name>${field.name}</name>
@@ -164,33 +159,6 @@
 				\n\t\t\t<selectionText>${selectionBuilder.selectionText}</selectionText>
 				\n\t\t\t<appBuilder>${selectionBuilder.appBuilder?.code}</appBuilder>
 				\n\t\t</selectionBuilder>"""
-	})
-	
-	selections = ""
-	allSelections.fetch().each({
-		selection -> 
-				options = ""
-				selection.items.each{
-					option -> options += """\n\t\t\t\t<option>
-					\n\t\t\t\t\t<title>${option.title}</title>
-					\n\t\t\t\t\t<value>${option.value}</value>
-					\n\t\t\t\t\t<icon>${option.icon}</icon>
-					\n\t\t\t\t\t<data>${option.data}</data>
-					\n\t\t\t\t\t<order>${option.order}</order>
-					\n\t\t\t\t\t<hidden>${option.hidden}</hidden>
-					\n\t\t\t\t\t<select>${option.select?.name}</select>
-					\n\t\t\t\t</option>"""
-				}
-				
-				selections += """\n\t\t<selection>
-				\n\t\t\t<name>${selection.name}</name>
-				\n\t\t\t<module>${selection.module}</module>
-				\n\t\t\t<priority>${selection.priority}</priority>
-				\n\t\t\t<items>$options
-				\n\t\t\t</items>
-				\n\t\t\t<isCustom>${selection.isCustom}</isCustom>
-				\n\t\t\t<appBuilder>${selection.appBuilder?.code}</appBuilder>
-				\n\t\t</selection>"""
 	})
 	
 	charts = ""
@@ -325,6 +293,7 @@
 				}
 				actions += """\n\t\t<actionBuilder>
 				\n\t\t\t<name>${action.name}</name>
+				\n\t\t\t<xmlId>${action.xmlId}</xmlId>
 				\n\t\t\t<typeSelect>${action.typeSelect}</typeSelect>
 				\n\t\t\t<model>${action.model}</model>
 				\n\t\t\t<targetModel>${action.targetModel}</targetModel>
@@ -381,6 +350,7 @@
 				
 				menus += """\n\t\t<menuBuilder>
 				\n\t\t\t<name>${menu.name}</name>
+				\n\t\t\t<xmlId>${menu.xmlId}</xmlId>
 				\n\t\t\t<title>${menu.title}</title>
 				\n\t\t\t<icon>${menu.icon}</icon>
 				\n\t\t\t<iconBackground>${menu.iconBackground}</iconBackground>
@@ -422,6 +392,7 @@
 				
 				menus += """\n\t\t<menuBuilder>
 				\n\t\t\t<name>${menu.name}</name>
+				\n\t\t\t<xmlId>${menu.xmlId}</xmlId>
 				\n\t\t\t<title>${menu.title}</title>
 				\n\t\t\t<icon>${menu.icon}</icon>
 				\n\t\t\t<iconBackground>${menu.iconBackground}</iconBackground>
@@ -572,10 +543,6 @@
 	<selectionBuilders>
 		$selectionBuilders
 	</selectionBuilders>
-	
-	<selections>
-		$selections
-	</selections>
 	
 	<chartBuilders>
 		$charts

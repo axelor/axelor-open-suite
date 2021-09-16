@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+	
+	<grid name="analytic-grouping-grid" title="Analytic Grouping" model="com.axelor.apps.account.db.AnalyticGrouping">
+		<field name="code"/>
+		<field name="name"/>
+	</grid>
+    
+    <form name="analytic-grouping-form" title="Analytic Grouping" model="com.axelor.apps.account.db.AnalyticGrouping">
+        <panel name="mainPanel">
+	        <field name="code"/>
+			<field name="name"/>
+			<field name="analyticAxis" required="true"/>
+			<field name="analyticGroupingValueList" grid-view="analytic-grouping-value-grouping-grid" form-view="analytic-grouping-value-grouping-form" colSpan="12" canNew="true" canSelect="true"/>
+        </panel>      
+    </form>
+
+</object-views>

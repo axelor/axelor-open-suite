@@ -7,6 +7,7 @@
     <hilite if="$get('status.isCompleted') &amp;&amp; $get('status.isDefaultCompleted')" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
+    <field name="ticketNumber"/>
     <field name="name"/>
     <field name="project"/>
     <field name="taskDate"/>
@@ -56,7 +57,7 @@
 		   </viewer>
 	     </field>
        </panel>
-			<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-project-task-view-time-spent" colSpan="2" showIf="project.isShowTimeSpent"/>
+			<button name="timeSpentBtn" title="Log time" onClick="save,action-project-task-view-time-spent" colSpan="2" showIf="project.isShowTimeSpent"/>
 			<field name="project.isShowTimeSpent" hidden="true"/>
 			<field name="$provider" hidden="true" type="string"/>
 			<panel name="projectDetailsPanel" colSpan="12">
@@ -73,6 +74,7 @@
 							<field name="name" title="Subject" colSpan="12" css="label-bold bold large" required="true"/>
 						</editor>
 					</field>
+					<field name="ticketNumber" if="__config__.app.getApp('project').isEnablePerProjectTaskSequence"/>
 					<field name="project" colSpan="6" onChange="action-project-task-group-project-onchange" domain="self.projectStatus.isCompleted = false" required="true"/>
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-project-task-attrs-project-parent-task-configurations"/>
 					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>

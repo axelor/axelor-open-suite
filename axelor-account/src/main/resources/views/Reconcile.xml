@@ -45,6 +45,7 @@
 			<field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
 			<field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
 		</panel>
+		<panel-related field="paymentMoveLineDistributionList" grid-view="payment-move-line-distribution-grid" form-view="payment-move-line-distribution-form" readonly="true"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
     		<button name="reconcileBtn" title="Btn.Reconcile" showIf="statusSelect == 1" onClick="save,action-reconcile-method-reconcile"/>
 			<button name="unreconcileBtn" title="Unreconcile" showIf="statusSelect == 2"   onClick="save,action-reconcile-method-unreconcile"/>
@@ -53,6 +54,7 @@
 			<field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 			<field name="statusSelect"/>
 			<field name="reconciliationDate"/>
+			<field name="reconciliationCancelDate" hidden="true" showIf="statusSelect == 3"/>
 			<field name="reconcileSeq" colSpan="12" readonly="true"/>
 		</panel>
 	</form>

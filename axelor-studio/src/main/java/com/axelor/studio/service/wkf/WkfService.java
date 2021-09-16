@@ -555,7 +555,7 @@ public class WkfService {
 
     String xml = XMLViews.toXml(actionGroup, true);
 
-    metaService.updateMetaAction(name, "action-group", xml, null);
+    metaService.updateMetaAction(name, "action-group", xml, null, name);
 
     return actionGroup;
   }
@@ -942,7 +942,11 @@ public class WkfService {
 
     String xml = XMLViews.toXml(actionAttrs, true);
     metaService.updateMetaAction(
-        "action-wkf-attrs-set-status-field-value", "action-attrs", xml, null);
+        "action-wkf-attrs-set-status-field-value",
+        "action-attrs",
+        xml,
+        null,
+        "action-wkf-attrs-set-status-field-value");
   }
 
   public void clearNodes(Collection<WkfNode> nodes) {
@@ -962,7 +966,8 @@ public class WkfService {
       }
     }
 
-    metaService.removeMetaActions(Joiner.on(",").join(actions));
+    String actionIds = Joiner.on(",").join(actions);
+    metaService.removeMetaActions(actionIds);
   }
 
   public void createTrackFlowButton() {
@@ -1002,7 +1007,7 @@ public class WkfService {
     actionMethod.setCall(call);
     String xml = XMLViews.toXml(actionMethod, true);
 
-    metaService.updateMetaAction(trackingAction, "action-method", xml, null);
+    metaService.updateMetaAction(trackingAction, "action-method", xml, null, trackingAction);
   }
 
   @Transactional
@@ -1016,7 +1021,8 @@ public class WkfService {
     actionMethod.setCall(call);
     String xml = XMLViews.toXml(actionMethod, true);
 
-    metaService.updateMetaAction(trackingActionPreview, "action-method", xml, null);
+    metaService.updateMetaAction(
+        trackingActionPreview, "action-method", xml, null, trackingActionPreview);
   }
 
   @Transactional

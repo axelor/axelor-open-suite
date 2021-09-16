@@ -3,6 +3,8 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   
   <json-model name="ProductCategory" title="Catégorie de produit" appBuilder="PRD">
+  	<isGenerateMenu>true</isGenerateMenu>
+  	<menuBuilder name='menu-json-model-ProductCategory' title='Catégorie de produit' xmlId='menu-json-model-ProductCategory' />
   	<fields>
   		<field name="main" type="panel" sequence="0" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
 		<field name="name" title="Nom" required="true" type="string" sequence="1" visibleInGrid="true"/>
@@ -11,6 +13,8 @@
   </json-model> 
   
   <json-model name="Product" title="Produit" appBuilder="PRD">
+  	<isGenerateMenu>true</isGenerateMenu>
+    <menuBuilder name='menu-json-model-Product' title='Produit' xmlId='menu-json-model-Product' />
   	<fields>
   		<field name="main" type="panel" sequence="0" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
 		<field name="name" title="Nom" required="true" type="string" sequence="1" visibleInGrid="true"/>
@@ -23,6 +27,8 @@
   </json-model>
   
   <json-model name="ProductOrderLine" title="Ligne de commande produit" appBuilder="PRD">
+  	<isGenerateMenu>true</isGenerateMenu>
+    <menuBuilder name='menu-json-model-ProductOrderLine' title='Ligne de commande produit' xmlId='menu-json-model-ProductOrderLine' />
   	<fields>
   		<field name="main" type="panel" sequence="0" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
   		<field name="product" title="Produit" type="json-many-to-one" target-json-model="Product"  sequence="1" onChange="action-product-order-line-get-product-details,action-product-order-line-update-total" visibleInGrid="true"/>
@@ -33,6 +39,8 @@
   </json-model> 
   
   <json-model name="ProductOrder" title="Commande produit" appBuilder="PRD">
+    <isGenerateMenu>true</isGenerateMenu>
+  	<menuBuilder name='menu-json-model-ProductOrder' title='Commande produit' xmlId='menu-json-model-ProductOrder' />
   	<fields>
   		<field name="main" type="panel" sequence="0" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
 		<field name="reference" title="Réf" type="string" sequence="1" visibleInGrid="true"/>

@@ -1,8 +1,8 @@
 ---
-title: HR - Employment contract management - configurations
+title: "HR: Employment contract management."
 type: feature
 description: |
-  Manage following configurations related to employeement contract management.
+  "Manage following configurations related to employeement contract management:
   Collective agreement, Qualification, Qualification level, Paygrid, Employments, SMIC value, 
   Contract types, Amendment types, Probation periods,
-  Health mutual rejection reason.
+  Health mutual rejection reason."

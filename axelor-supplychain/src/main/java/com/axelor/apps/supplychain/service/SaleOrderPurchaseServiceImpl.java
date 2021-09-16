@@ -154,9 +154,11 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      purchaseOrder.addPurchaseOrderLineListItem(
-          purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
-              purchaseOrder, saleOrderLine));
+      if (saleOrderLine.getProduct() != null) {
+        purchaseOrder.addPurchaseOrderLineListItem(
+            purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
+                purchaseOrder, saleOrderLine));
+      }
     }
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
