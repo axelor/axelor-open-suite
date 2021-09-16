@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -12,13 +13,13 @@ import java.math.BigDecimal;
 public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected MoveRepository moveRepository;
-  protected MoveLineService moveLineService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public MoveCounterPartServiceImpl(
-      MoveRepository moveRepository, MoveLineService moveLineService) {
+      MoveRepository moveRepository, MoveLineToolService moveLineToolService) {
     this.moveRepository = moveRepository;
-    this.moveLineService = moveLineService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -50,7 +51,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       moveLine.setDebit(amount.abs());
     }
 
-    moveLine = moveLineService.setCurrencyAmount(moveLine);
+    moveLine = moveLineToolService.setCurrencyAmount(moveLine);
 
     return moveLine;
   }

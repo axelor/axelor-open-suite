@@ -13,6 +13,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -34,7 +35,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
   protected AppAccountService appAccountService;
   protected MoveCreateService moveCreateService;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected MoveToolService moveToolService;
   protected MoveRepository moveRepository;
   protected MoveValidateService moveValidateService;
@@ -49,7 +50,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   public MoveCreateFromInvoiceServiceImpl(
       AppAccountService appAccountService,
       MoveCreateService moveCreateService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       MoveToolService moveToolService,
       MoveRepository moveRepository,
       MoveValidateService moveValidateService,
@@ -60,7 +61,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       AccountConfigService accountConfigService) {
     this.appAccountService = appAccountService;
     this.moveCreateService = moveCreateService;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.moveToolService = moveToolService;
     this.moveRepository = moveRepository;
     this.moveValidateService = moveValidateService;
@@ -137,7 +138,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
         move.getMoveLineList()
             .addAll(
-                moveLineService.createMoveLines(
+                moveLineCreateService.createMoveLines(
                     invoice,
                     move,
                     company,
@@ -296,7 +297,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
           // Création de la ligne au crédit
           MoveLine creditMoveLine =
-              moveLineService.createMoveLine(
+              moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   account,
@@ -376,7 +377,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
       // Création de la ligne au débit
       MoveLine debitMoveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               oDmove,
               partner,
               account,
