@@ -47,7 +47,7 @@
     <action-view name="action-studio-view-app-builder-custom-field" title="Custom fields" model="com.axelor.meta.db.MetaJsonField">
     	<view type="grid" name="json-field-grid"/>
     	<view type="form" name="json-field-form" />
-    	<domain>self.appBuilder.id = :appBuilderId OR self.jsonModel.appBuilder.id = :appBuilderId</domain>
+    	<domain>self.appBuilder.id = :appBuilderId AND self.jsonModel IS NULL</domain>
     	<context name="appBuilderId" expr="eval: id"/>
     </action-view>
 
