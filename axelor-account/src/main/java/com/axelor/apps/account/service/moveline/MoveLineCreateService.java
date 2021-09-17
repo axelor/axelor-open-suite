@@ -77,6 +77,11 @@ public interface MoveLineCreateService {
       String accountType)
       throws AxelorException;
 
-MoveLine createNewMoveLine(BigDecimal debit, BigDecimal credit, LocalDate date, String accountType, TaxLine taxLine,
-		MoveLine newOrUpdatedMoveLine);
+  MoveLine createNewMoveLine(
+      BigDecimal debit,
+      BigDecimal credit,
+      LocalDate date,
+      String accountType,
+      TaxLine taxLine,
+      MoveLine newOrUpdatedMoveLine);
 }
