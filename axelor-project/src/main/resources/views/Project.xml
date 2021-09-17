@@ -712,7 +712,7 @@
 	</action-view>
 
 	<action-attrs name="action-business-support-attrs-project-default">
-		<attribute name="hidden" for="project" expr="eval:true" if="__parent__ &amp;&amp; (__parent__?._model == 'com.axelor.apps.project.db.Project' || __parent__?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
+		<attribute name="hidden" for="project" expr="eval:true" if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
 	</action-attrs>
 
 	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
@@ -748,12 +748,6 @@
 	<action-attrs name="action-project-gantt-user-wizard-user-domain">
 	   <attribute name="domain" expr="eval:&quot;self.id in (${([0]+__repo__(Project).all().fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" for="userSet"/>
 	</action-attrs>
-	
-	<action-view name="action-project-dashlet-activity" title="Activity" model="com.axelor.apps.project.db.ProjectActivity">
-	    <view type="grid" name="project-activity-grid"/>
-	    <view type="form" name="project-activity-form"/>
-	    <domain>self.project.id = :id</domain>
-	</action-view>
 
     <action-view name="project.wiki.all" title="Wikis (${name})" model="com.axelor.apps.project.db.Wiki">
      <view type="grid" name="wiki-grid"/>

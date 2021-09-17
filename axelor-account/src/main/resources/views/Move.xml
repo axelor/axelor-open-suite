@@ -239,7 +239,8 @@
     <action name="action-account-move-method-compute-totals" />
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method" />
     <action name="action-attrs-move-hide-trading-name" />
-    <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status" /><action name="action-attrs-hide-axis-analytic-account-move-line"/>
+    <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status" />
+    <action name="action-attrs-hide-axis-analytic-account-move-line"/>
     <action name="action-attrs-on-load-currencies"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
   </action-group>

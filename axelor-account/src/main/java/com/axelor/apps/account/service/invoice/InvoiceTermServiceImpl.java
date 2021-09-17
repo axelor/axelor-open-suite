@@ -206,7 +206,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       if (invoicePayment.getApplyFinancialDiscount()) {
         invoiceTerm.setFinancialDiscount(invoicePayment.getFinancialDiscount());
-        invoiceTerm.setFinancialDiscountAmount(invoicePayment.getFinancialDiscountAmount());
+        invoiceTerm.setFinancialDiscountAmount(invoicePayment.getFinancialDiscountTotalAmount());
       } else {
         invoiceTerm.setFinancialDiscount(null);
       }
