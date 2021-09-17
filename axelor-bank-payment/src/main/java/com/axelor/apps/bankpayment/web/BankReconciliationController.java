@@ -38,6 +38,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -74,7 +76,7 @@ public class BankReconciliationController {
         response.setReload(true);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -114,8 +116,7 @@ public class BankReconciliationController {
       response.setReload(true);
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setError(e.getMessage());
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -132,7 +133,7 @@ public class BankReconciliationController {
           bankReconciliationRepository.find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -178,7 +179,7 @@ public class BankReconciliationController {
         response.setAlert(I18n.get(IExceptionMessage.BANK_RECONCILIATION_ALREADY_OPEN));
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -193,7 +194,7 @@ public class BankReconciliationController {
 
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -205,7 +206,7 @@ public class BankReconciliationController {
           .compute(Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -218,7 +219,7 @@ public class BankReconciliationController {
               Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -230,7 +231,7 @@ public class BankReconciliationController {
           .validate(Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -260,7 +261,7 @@ public class BankReconciliationController {
               bankReconciliation, bankReconciliationLine, moveLinesToReconcileContext);
       response.setCanClose(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -276,7 +277,7 @@ public class BankReconciliationController {
         response.setAttr("bankDetails", "domain", domain);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -300,7 +301,7 @@ public class BankReconciliationController {
 
       response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -313,7 +314,7 @@ public class BankReconciliationController {
         response.setView(ActionView.define("Bank Reconciliation").add("html", fileLink).map());
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -334,7 +335,7 @@ public class BankReconciliationController {
         response.setAttr("journal", "domain", "self.id IN(" + journalIds + ")");
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -349,7 +350,7 @@ public class BankReconciliationController {
       }
       response.setValue("journal", journal);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -370,7 +371,7 @@ public class BankReconciliationController {
         response.setAttr("cashAccount", "domain", "self.id IN(" + cashAccountIds + ")");
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -385,7 +386,7 @@ public class BankReconciliationController {
       }
       response.setValue("cashAccount", cashAccount);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -399,7 +400,7 @@ public class BankReconciliationController {
           Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -412,9 +413,8 @@ public class BankReconciliationController {
       for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
         Beans.get(BankReconciliationLineService.class).checkIncompleteLine(bankReconciliationLine);
       }
-    } catch (Exception e) {
-      response.setError(e.getMessage());
-      TraceBackService.trace(response, e);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -427,8 +427,7 @@ public class BankReconciliationController {
         response.setValues(bankReconciliation);
       }
     } catch (Exception e) {
-      response.setError(e.getMessage());
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -441,8 +440,7 @@ public class BankReconciliationController {
           .setIsFullyReconciled(bankReconciliation.getBankStatement());
       response.setReload(true);
     } catch (Exception e) {
-      response.setError(e.getMessage());
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -464,8 +462,7 @@ public class BankReconciliationController {
       }
       response.setView(actionViewBuilder.map());
     } catch (Exception e) {
-      response.setError(e.getMessage());
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -168,15 +168,20 @@ public class BankReconciliationLineService {
     return moveLine;
   }
 
-  public void checkIncompleteLine(BankReconciliationLine bankReconciliationLine) throws Exception {
+  public void checkIncompleteLine(BankReconciliationLine bankReconciliationLine)
+      throws AxelorException {
     if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())) {
       if (ObjectUtils.isEmpty(bankReconciliationLine.getAccount())) {
-        throw new Exception(
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(
                 com.axelor.apps.bankpayment.exception.IExceptionMessage
                     .BANK_RECONCILIATION_INCOMPLETE_LINE));
       } else if (bankReconciliationLine.getBankReconciliation().getJournal() == null) {
-        throw new Exception(
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(
                 com.axelor.apps.bankpayment.exception.IExceptionMessage
                     .BANK_RECONCILIATION_MISSING_JOURNAL));

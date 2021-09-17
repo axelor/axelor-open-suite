@@ -63,8 +63,8 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -867,7 +867,7 @@ public class BankReconciliationService {
     bankReconciliation.setToDate(bankReconciliation.getBankStatement().getToDate());
     bankReconciliation.setFromDate(bankReconciliation.getBankStatement().getFromDate());
     List<BankStatementLine> bankStatementLines =
-        Beans.get(BankStatementLineRepository.class)
+        bankStatementLineRepository
             .findByBankStatement(bankReconciliation.getBankStatement())
             .fetch();
     for (BankStatementLine bankStatementLine : bankStatementLines) {
@@ -901,7 +901,9 @@ public class BankReconciliationService {
                   .count()
               == 0
           && moveLines.size() == 0) {
-        throw new Exception(
+        throw new AxelorException(
+            br,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
                 IExceptionMessage
                     .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE));
@@ -909,10 +911,15 @@ public class BankReconciliationService {
               .filter(line -> line.getIsSelectedBankReconciliation())
               .count()
           == 0) {
-        throw new Exception(
+        throw new AxelorException(
+            br,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
       } else if (moveLines.size() == 0) {
-        throw new Exception(I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
+        throw new AxelorException(
+            br,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
       }
     } else if (br.getBankReconciliationLineList().stream()
                 .filter(line -> line.getIsSelectedBankReconciliation())
@@ -924,19 +931,25 @@ public class BankReconciliationService {
                   .count()
               > 1
           && moveLines.size() > 1) {
-        throw new Exception(
+        throw new AxelorException(
+            br,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
-                I18n.get(
-                    IExceptionMessage
-                        .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE)));
+                IExceptionMessage
+                    .BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE));
       } else if (br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
               .count()
           > 1) {
-        throw new Exception(
+        throw new AxelorException(
+            br,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE));
       } else if (moveLines.size() > 1) {
-        throw new Exception(I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
+        throw new AxelorException(
+            br,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
       }
     }
   }

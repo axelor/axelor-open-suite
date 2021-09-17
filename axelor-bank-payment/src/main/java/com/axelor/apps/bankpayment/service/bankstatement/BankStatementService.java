@@ -206,7 +206,10 @@ public class BankStatementService {
           bankPaymentBankStatementLineAFB120Repository
               .all()
               .filter(
-                  "self.operationDate = :operationDate AND self.lineTypeSelect = :lineTypeSelect AND self.bankStatement != :bankStatement AND self.bankDetails = :bankDetails")
+                  "self.operationDate = :operationDate"
+                      + " AND self.lineTypeSelect = :lineTypeSelect"
+                      + " AND self.bankStatement != :bankStatement"
+                      + " AND self.bankDetails = :bankDetails")
               .bind("operationDate", bslAFB120.getOperationDate())
               .bind("lineTypeSelect", bslAFB120.getLineTypeSelect())
               .bind("bankStatement", bslAFB120.getBankStatement())
@@ -255,7 +258,10 @@ public class BankStatementService {
                 .equals(finalBankStatementLineAFB120.getDebit()))) {
       // delete imported
       deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
-      throw new Exception(I18n.get(IExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
+      throw new AxelorException(
+          bankStatement,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
     }
   }
 
