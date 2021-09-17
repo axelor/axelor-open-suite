@@ -180,14 +180,15 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   protected boolean hasToCreateCounterpartAnalytics(Move move) {
     boolean result = true;
     int analyticMoveLineAmount = 0;
-    if (!(move.getJournal()
+    if (move.getJournal() == null || move.getJournal() != null && 
+    		(move.getJournal().getJournalType() == null || move.getJournal().getJournalType() != null && (!(move.getJournal()
             .getJournalType()
             .getCode()
             .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
         || move.getJournal()
             .getJournalType()
             .getCode()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))) {
+            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))))) {
       result = false;
     }
     for (MoveLine moveLine : move.getMoveLineList()) {
