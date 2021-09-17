@@ -21,57 +21,34 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveDueService;
-import com.axelor.apps.account.service.move.MoveExcessPaymentService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveRemoveService;
-import com.axelor.apps.account.service.move.MoveServiceImpl;
-import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.payment.PaymentService;
-import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class MoveServiceBankPaymentImpl extends MoveServiceImpl {
+public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
 
   @Inject
-  public MoveServiceBankPaymentImpl(
-      AppAccountService appAccountService,
-      MoveLineService moveLineService,
+  public MoveReverseServiceBankPaymentImpl(
       MoveCreateService moveCreateService,
-      MoveValidateService moveValidateService,
-      MoveToolService moveToolService,
-      MoveRemoveService moveRemoveService,
       ReconcileService reconcileService,
-      MoveDueService moveDueService,
-      PaymentService paymentService,
-      MoveExcessPaymentService moveExcessPaymentService,
+      MoveValidateService moveValidateService,
       MoveRepository moveRepository,
-      AccountConfigService accountConfigService,
-      CurrencyService currencyService) {
+      MoveLineCreateService moveLineCreateService) {
     super(
-        appAccountService,
-        moveLineService,
         moveCreateService,
-        moveValidateService,
-        moveToolService,
-        moveRemoveService,
         reconcileService,
-        moveDueService,
-        paymentService,
-        moveExcessPaymentService,
+        moveValidateService,
         moveRepository,
-        accountConfigService,
-        currencyService);
+        moveLineCreateService);
   }
 
+  @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
     Move newMove = super.generateReverse(move, assistantMap);
@@ -84,6 +61,7 @@ public class MoveServiceBankPaymentImpl extends MoveServiceImpl {
     return newMove;
   }
 
+  @Override
   protected MoveLine generateReverseMoveLine(
       Move reverseMove, MoveLine orgineMoveLine, LocalDate dateOfReversion, boolean isDebit)
       throws AxelorException {

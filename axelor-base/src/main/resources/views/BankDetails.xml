@@ -200,16 +200,36 @@
 		<field name="$balanceBtn" expr="eval: balance"/>
 	</action-record>
 
-	<action-view name="action-bank-details-view-show-bank-statement-lines" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
-		<view type="grid" name="bank-statement-line-afb-120-grid"/>
-		<view type="form" name="bank-statement-line-afb-120-form"/>
-		<domain>self.bankDetails.id = :bankDetailsId AND self.lineTypeSelect = 2</domain>
-		<context name="bankDetailsId" expr="eval: id"/>
-	</action-view>
+  <action-view name="action-bank-details-view-show-bank-statement-lines" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
+    <view type="grid" name="bank-statement-line-afb-120-grid" />
+    <view type="form" name="bank-statement-line-afb-120-form" />
+    <view-param name="search-filters" value="bank-statement-line-afb-120-filters"/>
+    <view-param name="default-search-filters" value="movement-bank-statement-line-afb-120"/>
+    <domain>self.bankDetails.id = :bankDetailsId</domain>
+    <context name="bankDetailsId" expr="eval: id" />
+  </action-view>
 
-	<search-filters name="bank-detail-filters" model="com.axelor.apps.base.db.BankDetails" title="Bank detail filters">
-		<field name="balance" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
-		<field name="balanceUpdatedDate" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
-	</search-filters>
+  <action-view name="action-bank-details-view-show-bank-statement-lines-final-balance" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
+    <view type="grid" name="bank-statement-line-afb-120-grid" />
+    <view type="form" name="bank-statement-line-afb-120-form" />
+    <view-param name="search-filters" value="bank-statement-line-afb-120-filters"/>
+    <view-param name="default-search-filters" value="initial-final-balance-bank-statement-line-afb-120"/>
+    <domain>self.bankDetails.id = :bankDetailsId </domain>
+    <context name="bankDetailsId" expr="eval: id" />
+  </action-view>
+
+  <search-filters name="bank-detail-filters" model="com.axelor.apps.base.db.BankDetails" title="Bank detail filters">
+    <field name="balance" hidden="true" if="!__config__.app.isApp('bank-payment')" />
+    <field name="balanceUpdatedDate" hidden="true" if="!__config__.app.isApp('bank-payment')" />
+  </search-filters>
+
+  <search-filters name="bank-statement-line-afb-120-filters" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" title="Bank statement line AFK120 filters" >
+    <filter title="Balance" name="initial-final-balance-bank-statement-line-afb-120" >
+      <domain>self.lineTypeSelect = 1 OR self.lineTypeSelect = 3</domain>
+    </filter>    
+    <filter title="Movement" name="movement-bank-statement-line-afb-120" >
+      <domain>self.lineTypeSelect = 2</domain>
+    </filter>
+  </search-filters>
 
 </object-views>
