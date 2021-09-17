@@ -52,7 +52,7 @@
 	 	
         <boolean name="isShowPhasesElements" title="Show phases elements" default="true" />
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="BUSINESS_PROJECT"/>
-      	<one-to-many name="projectActivity" title="Project Activity" ref="com.axelor.apps.project.db.ProjectActivity" mappedBy="project"/>
+      	<integer name="nextProjectTaskSequence" title="Next project sequence" hidden="true" default="1"/>
       	
       	<!-- Configuration fields -->
 		<boolean name="isShowStatus" title="Status?" default="true"/>

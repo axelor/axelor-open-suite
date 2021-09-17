@@ -39,8 +39,10 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveCancelService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -100,9 +102,11 @@ import wslite.json.JSONException;
 @Singleton
 public class ExpenseServiceImpl implements ExpenseService {
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected ExpenseRepository expenseRepository;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineConsolidateService moveLineConsolidateService;
   protected AccountManagementAccountService accountManagementService;
   protected AppAccountService appAccountService;
   protected AccountConfigHRService accountConfigService;
@@ -114,9 +118,10 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Inject
   public ExpenseServiceImpl(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       ExpenseRepository expenseRepository,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       AccountManagementAccountService accountManagementService,
       AppAccountService appAccountService,
       AccountConfigHRService accountConfigService,
@@ -124,11 +129,13 @@ public class ExpenseServiceImpl implements ExpenseService {
       AnalyticMoveLineService analyticMoveLineService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      MoveLineConsolidateService moveLineConsolidateService) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.expenseRepository = expenseRepository;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.accountManagementService = accountManagementService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
@@ -137,6 +144,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.paymentModeService = paymentModeService;
+    this.moveLineConsolidateService = moveLineConsolidateService;
   }
 
   @Override
@@ -395,19 +403,17 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                accountConfigService.getExpenseJournal(accountConfig),
-                company,
-                null,
-                partner,
-                moveDate,
-                partner.getInPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
-                origin,
-                description);
+        moveCreateService.createMove(
+            accountConfigService.getExpenseJournal(accountConfig),
+            company,
+            null,
+            partner,
+            moveDate,
+            partner.getInPaymentMode(),
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
+            origin,
+            description);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -418,7 +424,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     int expenseLineId = 1;
     Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
     moveLines.add(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             employeeAccount,
@@ -449,7 +455,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
       exTaxTotal = expenseLine.getUntaxedAmount();
       MoveLine moveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               account,
@@ -472,7 +478,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       expenseLineId++;
     }
 
-    moveLineService.consolidateMoveLines(moveLines);
+    moveLineConsolidateService.consolidateMoveLines(moveLines);
     account = accountConfigService.getExpenseTaxAccount(accountConfig);
     BigDecimal taxTotal = BigDecimal.ZERO;
     for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
@@ -482,7 +488,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     if (taxTotal.signum() != 0) {
       MoveLine moveLine =
-          moveLineService.createMoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               account,
@@ -498,7 +504,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.getMoveLineList().addAll(moveLines);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
 
     expense.setMove(move);
     return move;
@@ -615,22 +621,20 @@ public class ExpenseServiceImpl implements ExpenseService {
     employeeAccount = expenseMoveLine.getAccount();
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                expense.getMove().getCurrency(),
-                partner,
-                paymentDate,
-                paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                origin,
-                null);
+        moveCreateService.createMove(
+            journal,
+            company,
+            expense.getMove().getCurrency(),
+            partner,
+            paymentDate,
+            paymentMode,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null);
 
     move.addMoveLineListItem(
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
@@ -643,7 +647,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             null));
 
     MoveLine employeeMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             employeeAccount,
@@ -658,7 +662,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     move.addMoveLineListItem(employeeMoveLine);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.validate(move);
     expense.setPaymentMove(move);
 
     Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);

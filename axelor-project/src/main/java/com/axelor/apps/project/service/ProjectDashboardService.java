@@ -17,12 +17,21 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.project.db.Project;
+import com.axelor.meta.CallMethod;
+import com.axelor.rpc.ActionResponse;
 import java.util.Map;
 
-public interface ProjectActivityService {
-  public void createTaskProjectActivity(Map<String, Object> dataMap);
+public interface ProjectDashboardService {
 
-  public void createWikiProjectActivity(Map<String, Object> dataMap);
+  Map<String, Object> getData(Project project);
 
-  public void createTopicProjectActivity(Map<String, Object> dataMap);
+  @CallMethod
+  ActionResponse getTasksPerCategoryView(Long id);
+
+  @CallMethod
+  ActionResponse getTasksOpenedPerCategoryView(Long id);
+
+  @CallMethod
+  ActionResponse getTasksClosedPerCategoryView(Long id);
 }
