@@ -448,7 +448,7 @@
 								pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
 						</editor>
 					</field>
-					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
+					<field name="webSite" placeholder="http://www.url.com" widget="url"/>
 				</panel>
 
 				<panel name="employeePanel" hidden="true">
@@ -684,8 +684,7 @@
 						onChange="action-partner-method-normalize-fixedPhone" />
 					<field name="mobilePhone" placeholder="+33100000000" widget="phone" 
 						pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone" />
-					<field name="webSite" placeholder="http://www.url.com"
-						pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" />
+					<field name="webSite" placeholder="http://www.url.com" widget="url" />
 
 				</panel>
 			</panel>
@@ -865,8 +864,7 @@
 				onChange="action-partner-method-normalize-fixedPhone" />
 			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" widget="phone" 
 				onChange="action-partner-method-normalize-mobilePhone" />
-			<field name="webSite" placeholder="http://www.url.com"
-				pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" />
+			<field name="webSite" placeholder="http://www.url.com" widget="url" />
 
 		</panel>
 	</form>

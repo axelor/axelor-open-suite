@@ -50,7 +50,7 @@
             <field name="name" title="Name" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5"/>
 
             <field name="emailAddress" canNew="true" form-view="email-address-simple-form" canSelect="false"/>
-            <field name="webSite" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" placeholder="http://www.url.com"/>
+            <field name="webSite" placeholder="http://www.url.com" widget="url"/>
 
             <field name="fixedPhone" widget="phone" onChange="action-partner-method-normalize-fixedPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
             <field name="mobilePhone" widget="phone" onChange="action-partner-method-normalize-mobilePhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
@@ -189,7 +189,7 @@
 	            <field name="name" title="Name" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5" showIf="!$readonly()"/>
 
 	            <field name="emailAddress" canNew="true" form-view="email-address-simple-form" canSelect="false"/>
-	            <field name="webSite" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" placeholder="http://www.url.com"/>
+	            <field name="webSite" placeholder="http://www.url.com" widget="url"/>
 
 	            <field name="fixedPhone" widget="phone" onChange="action-partner-method-normalize-fixedPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
 	            <field name="mobilePhone" widget="phone" onChange="action-partner-method-normalize-mobilePhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>

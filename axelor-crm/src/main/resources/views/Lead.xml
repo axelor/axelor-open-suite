@@ -135,8 +135,8 @@
 							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
-					<field name="fixedPhone" widget="phone" colSpan="4" placeholder="+33100000000" onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
-					<field name="webSite" colSpan="6" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+					<field name="fixedPhone" colSpan="4" placeholder="+33100000000" onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
+					<field name="webSite" colSpan="6" placeholder="http://www.url.com" widget="url"/>
 				</panel>
 								
 				<panel name="addressPanel" title="Primary address" showIf="$readonly()" colSpan="12">

@@ -44,7 +44,7 @@
 						<field name="fixedPhone" widget="phone" colSpan="4" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 						<field name="fax" widget="phone" colSpan="4" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 						<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" colSpan="4"/>
-						<field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})" colSpan="4"/>
+						<field name="webSite" placeholder="www.url.com" colSpan="4" widget="url"/>
 					</panel>
 	      			
 	      			<panel name="addressPanel" title="Primary address" colSpan="12">
