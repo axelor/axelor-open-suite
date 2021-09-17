@@ -12,4 +12,6 @@ public interface MoveLineControlService {
    * @throws AxelorException if line is not valid.
    */
   void controlAccountingAccount(MoveLine line) throws AxelorException;
+
+  void validateMoveLine(MoveLine moveLine) throws AxelorException;
 }

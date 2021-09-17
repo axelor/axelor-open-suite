@@ -136,8 +136,6 @@ public interface MoveLineService {
       TaxLine taxLine,
       MoveLine newOrUpdatedMoveLine);
 
-  public void validateMoveLine(MoveLine moveLine) throws AxelorException;
-
   public MoveLine generateTaxPaymentMoveLineList(
       MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException;
 

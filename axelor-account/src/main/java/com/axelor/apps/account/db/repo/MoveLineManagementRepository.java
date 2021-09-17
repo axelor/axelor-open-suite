@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -59,8 +58,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       }
     }
     try {
-      Beans.get(MoveLineService.class).validateMoveLine(entity);
-      Beans.get(MoveLineControlService.class).controlAccountingAccount(entity);
+      Beans.get(MoveLineControlService.class).validateMoveLine(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
