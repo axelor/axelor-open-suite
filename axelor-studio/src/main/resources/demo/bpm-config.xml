@@ -112,41 +112,10 @@
 		</bind>
 	</input>
 	
-	<input file="bpm_menuBuilder.xml" root="menu-builders">
-		<bind node="menu-builder" type="com.axelor.studio.db.MenuBuilder" call="com.axelor.studio.service.ImportService:importMenuBuilder" search="self.xmlId = :xmlId" update="true">
-			<bind node="@name" to="name" />
-			<bind node="@xmlId" to="xmlId" />
-			<bind node="@title" to="title" />
-			<bind node="@icon" to="icon" />
-			<bind node="@background" to="iconBackground" />
-			<bind node="@parentMenu" to="parentMenu" search="self.name = :parentMenu" />
-			<bind node="@show-action" to="showAction" />
-			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
-			<bind node="action" to="actionBuilder" if="actionName != null" search="self.xmlId = :xmlId">
-				<bind node="@name" to="name" alias="actionName"  />
-				<bind node="@xmlId" to="xmlId" />
-				<bind node="@model" to="model" />
-				<bind node="@isJson" to="isJson" />
-				<bind node="@title" to="title" />
-				<bind to="typeSelect" eval="3"/>
-				<bind node="views/view" to="actionBuilderViews">
-					<bind node="@type" to="viewType" />
-					<bind node="@name" to="viewName" />
-					<bind node="@sequence" to="sequence" />
-				</bind>
-				<bind node="@domain" to="domainCondition" />
-				<bind node="context/ctx" to="lines">
-					<bind node="@value" to="value" />
-					<bind node="@name" to="name" />
-				</bind>
-			</bind>
-		</bind>
-	</input>
-	
 	<input file="bpm_actionBuilder.xml" root="action-builders">
-		<bind node="action-builder" type="com.axelor.studio.db.ActionBuilder" call="com.axelor.studio.service.ImportService:importActionBuilder">
+		<bind node="action-builder" type="com.axelor.studio.db.ActionBuilder" search="self.xmlId = :_xmlId" call="com.axelor.studio.service.ImportService:importActionBuilder">
 			<bind node="@name" to="name" />
-			<bind node="@xmlId" to="xmlId" />
+			<bind node="@xmlId" to="xmlId" alias="_xmlId"/>
 			<bind node="@isJson" to="isJson" />
 			<bind node="@typeSelect" to="typeSelect" />
 			<bind node="@model" to="model" />
@@ -188,6 +157,38 @@
 			</bind>
 		</bind>
 	</input>
+	
+	<input file="bpm_menuBuilder.xml" root="menu-builders">
+		<bind node="menu-builder" type="com.axelor.studio.db.MenuBuilder" call="com.axelor.studio.service.ImportService:importMenuBuilder" search="self.xmlId = :xmlId" update="true">
+			<bind node="@name" to="name" />
+			<bind node="@xmlId" to="xmlId" />
+			<bind node="@title" to="title" />
+			<bind node="@icon" to="icon" />
+			<bind node="@background" to="iconBackground" />
+			<bind node="@parentMenu" to="parentMenu" search="self.name = :parentMenu" />
+			<bind node="@show-action" to="showAction" />
+			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
+			<bind node="action" to="actionBuilder" if="actionName != null" search="self.xmlId = :_xmlId">
+				<bind node="@name" to="name" alias="actionName"  />
+				<bind node="@xmlId" to="xmlId" alias="_xmlId" />
+				<bind node="@model" to="model" />
+				<bind node="@isJson" to="isJson" />
+				<bind node="@title" to="title" />
+				<bind to="typeSelect" eval="3"/>
+				<bind node="views/view" to="actionBuilderViews" search="self.viewType = :viewType and self.viewName = :viewName and self.actionBuilder.xmlId = :xmlId">
+					<bind node="@type" to="viewType" alias="viewType" />
+					<bind node="@name" to="viewName" alias="viewName" />
+					<bind node="@sequence" to="sequence" />
+				</bind>
+				<bind node="@domain" to="domainCondition" />
+				<bind node="context/ctx" to="lines" search="self.name = :_ctxName and self.actionBuilder.xmlId = :_xmlId">
+					<bind node="@value" to="value" />
+					<bind node="@name" to="name" alias="_ctxName"/>
+				</bind>
+			</bind>
+		</bind>
+	</input>
+	
 	
 	<input file="bpm_workflow.xml" root="wkfs" >
 		<bind node="wkf" type="com.axelor.studio.db.Wkf">
