@@ -153,8 +153,8 @@ public interface InvoiceTermService {
   public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 
   /**
-   * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list based on
-   * due date
+   * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
+   * based on due date
    *
    * @param invoice
    */
