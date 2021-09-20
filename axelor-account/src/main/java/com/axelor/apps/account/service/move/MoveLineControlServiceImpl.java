@@ -31,13 +31,17 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         throw new AxelorException(
             line,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL));
+            I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
+            account.getName(),
+            line.getName());
       }
       if (!ObjectUtils.isEmpty(validAccountTypes) && !validAccountTypes.contains(accountType)) {
         throw new AxelorException(
             line,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL));
+            I18n.get(IExceptionMessage.MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL),
+            account.getName(),
+            line.getName());
       }
     }
   }
