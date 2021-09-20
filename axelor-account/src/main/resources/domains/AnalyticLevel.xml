@@ -8,6 +8,8 @@
   <entity name="AnalyticLevel" lang="java">
   	<string name="name" title="Name" namecolumn="true"/>
   	<integer name="nbr" title="Number" required="true"/>
+  	
+  	<unique-constraint columns="name,nbr"/>
   </entity>
   
 </domain-models>
