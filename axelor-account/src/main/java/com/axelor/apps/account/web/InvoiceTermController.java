@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -73,7 +76,24 @@ public class InvoiceTermController {
       response.setValue("amountRemaining", invoiceTerm.getAmount());
       response.setValue(
           "isCustomized",
-          percentage.compareTo(invoiceTerm.getPaymentConditionLine().getPaymentPercentage()) != 0);
+          invoiceTerm.getPaymentConditionLine() == null
+              || percentage.compareTo(invoiceTerm.getPaymentConditionLine().getPaymentPercentage())
+                  != 0);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void initInvoiceTermFromInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+      if (invoice != null) {
+        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+        invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
+        response.setValues(invoiceTerm);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

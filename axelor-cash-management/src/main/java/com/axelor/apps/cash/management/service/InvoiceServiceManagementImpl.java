@@ -103,67 +103,69 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
 
         LocalDate estimatedPaymentDate = invoiceTerm.getDueDate();
 
-        if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
-            == PaymentConditionLineRepository.TYPE_NET) {
-          if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-              == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
+        if (invoiceTerm.getPaymentConditionLine() != null) {
+          if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
+              == PaymentConditionLineRepository.TYPE_NET) {
+            if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
+                == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
+              estimatedPaymentDate =
+                  estimatedPaymentDate.plusDays(
+                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
+            } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
+                == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
+              estimatedPaymentDate =
+                  estimatedPaymentDate.plusMonths(
+                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
+            }
+          } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
+              == PaymentConditionLineRepository.TYPE_END_OF_MONTH_N_DAYS) {
             estimatedPaymentDate =
-                estimatedPaymentDate.plusDays(
-                    invoiceTerm.getPaymentConditionLine().getPaymentTime());
-          } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-              == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
+                estimatedPaymentDate.withDayOfMonth(estimatedPaymentDate.lengthOfMonth());
+            if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
+                == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
+              estimatedPaymentDate =
+                  estimatedPaymentDate.plusDays(
+                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
+            } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
+                == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
+              estimatedPaymentDate =
+                  estimatedPaymentDate.plusMonths(
+                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
+            }
+          } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
+              == PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH) {
+            if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
+                == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
+              estimatedPaymentDate =
+                  estimatedPaymentDate.plusDays(
+                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
+            } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
+                == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
+              estimatedPaymentDate =
+                  estimatedPaymentDate.plusMonths(
+                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
+            }
             estimatedPaymentDate =
-                estimatedPaymentDate.plusMonths(
-                    invoiceTerm.getPaymentConditionLine().getPaymentTime());
+                estimatedPaymentDate.withDayOfMonth(estimatedPaymentDate.lengthOfMonth());
+          } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
+              == PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH_AT) {
+            if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
+                == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
+              estimatedPaymentDate =
+                  estimatedPaymentDate.plusDays(
+                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
+            } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
+                == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
+              estimatedPaymentDate =
+                  estimatedPaymentDate.plusMonths(
+                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
+            }
+            estimatedPaymentDate =
+                estimatedPaymentDate.withDayOfMonth(
+                    invoiceTerm.getPaymentConditionLine().getDaySelect() == 0
+                        ? estimatedPaymentDate.lengthOfMonth()
+                        : invoiceTerm.getPaymentConditionLine().getDaySelect());
           }
-        } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
-            == PaymentConditionLineRepository.TYPE_END_OF_MONTH_N_DAYS) {
-          estimatedPaymentDate =
-              estimatedPaymentDate.withDayOfMonth(estimatedPaymentDate.lengthOfMonth());
-          if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-              == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
-            estimatedPaymentDate =
-                estimatedPaymentDate.plusDays(
-                    invoiceTerm.getPaymentConditionLine().getPaymentTime());
-          } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-              == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
-            estimatedPaymentDate =
-                estimatedPaymentDate.plusMonths(
-                    invoiceTerm.getPaymentConditionLine().getPaymentTime());
-          }
-        } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
-            == PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH) {
-          if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-              == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
-            estimatedPaymentDate =
-                estimatedPaymentDate.plusDays(
-                    invoiceTerm.getPaymentConditionLine().getPaymentTime());
-          } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-              == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
-            estimatedPaymentDate =
-                estimatedPaymentDate.plusMonths(
-                    invoiceTerm.getPaymentConditionLine().getPaymentTime());
-          }
-          estimatedPaymentDate =
-              estimatedPaymentDate.withDayOfMonth(estimatedPaymentDate.lengthOfMonth());
-        } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
-            == PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH_AT) {
-          if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-              == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
-            estimatedPaymentDate =
-                estimatedPaymentDate.plusDays(
-                    invoiceTerm.getPaymentConditionLine().getPaymentTime());
-          } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-              == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
-            estimatedPaymentDate =
-                estimatedPaymentDate.plusMonths(
-                    invoiceTerm.getPaymentConditionLine().getPaymentTime());
-          }
-          estimatedPaymentDate =
-              estimatedPaymentDate.withDayOfMonth(
-                  invoiceTerm.getPaymentConditionLine().getDaySelect() == 0
-                      ? estimatedPaymentDate.lengthOfMonth()
-                      : invoiceTerm.getPaymentConditionLine().getDaySelect());
         }
 
         invoiceTerm.setEstimatedPaymentDate(estimatedPaymentDate);
