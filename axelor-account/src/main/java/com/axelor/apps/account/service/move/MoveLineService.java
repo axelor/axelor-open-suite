@@ -126,7 +126,7 @@ public interface MoveLineService {
 
   public void reconcileMoveLines(List<MoveLine> moveLineList);
 
-  public void autoTaxLineGenerate(Move move) throws AxelorException;
+  public Move autoTaxLineGenerate(Move move) throws AxelorException;
 
   public MoveLine createNewMoveLine(
       BigDecimal debit,

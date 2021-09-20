@@ -41,6 +41,7 @@ import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -107,6 +108,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AnalyticMoveLineServiceImpl analyticMoveLineServiceImpl;
   protected ListToolService listToolService;
+  protected MoveRepository moveRepository;
 
   @Inject
   public MoveLineServiceImpl(
@@ -126,7 +128,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountConfigService accountConfigService,
       AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineServiceImpl analyticMoveLineServiceImpl,
-      ListToolService listToolService) {
+      ListToolService listToolService,
+      MoveRepository moveRepository) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -144,6 +147,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.analyticMoveLineServiceImpl = analyticMoveLineServiceImpl;
     this.listToolService = listToolService;
+    this.moveRepository = moveRepository;
   }
 
   @Override
@@ -1141,7 +1145,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  public void autoTaxLineGenerate(Move move) throws AxelorException {
+  @Transactional
+  public Move autoTaxLineGenerate(Move move) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -1245,6 +1250,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
 
     moveLineList.addAll(newMap.values());
+    return moveRepository.save(move);
   }
 
   @Override

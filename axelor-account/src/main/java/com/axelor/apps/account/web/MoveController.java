@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -310,7 +311,8 @@ public class MoveController {
   }
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
-    Move move = request.getContext().asType(Move.class);
+    Move move =
+        Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
 
     try {
       Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
@@ -322,13 +324,19 @@ public class MoveController {
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Move move = request.getContext().asType(Move.class);
-    if (move.getMoveLineList() != null
-        && !move.getMoveLineList().isEmpty()
-        && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
-            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-      Beans.get(MoveService.class).getMoveLineService().autoTaxLineGenerate(move);
-      response.setValue("moveLineList", move.getMoveLineList());
+    Move move =
+        Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+    try {
+      if (move.getMoveLineList() != null
+          && !move.getMoveLineList().isEmpty()
+          && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+              || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
+        move = Beans.get(MoveLineService.class).autoTaxLineGenerate(move);
+
+        response.setValues(move);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

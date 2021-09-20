@@ -95,7 +95,7 @@
                 <field name="journal.authorizeSimulatedMove" hidden="true"/>
                 <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
 				<button name="simulateBtn" title="Simulate" onClick="action-move-record-set-status-simulate,action-move-attrs-validate-button-title,save" colSpan="12" showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
-				<button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
+				<button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-group-generate-tax-lines" colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
             </panel>
 		</panel>
 		
@@ -443,4 +443,9 @@
 		
 		</action-attrs>
    
+  <action-group name="action-account-move-group-generate-tax-lines">
+    <action name="save"/>
+    <action name="action-account-move-method-automatic-taxline-generation"/>
+    <action name="action-account-move-method-compute-totals"/>
+  </action-group>
 </object-views>
