@@ -23,7 +23,7 @@
 <!--     <date name="finDiscountDeadlineDate" title="Financial discount deadline date"/> -->
     <decimal name="percentage" title="Percentage"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move line" readonly="true"/>
-  	<many-to-one name="paymentConditionLine" ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line" required="true"/>
+  	<many-to-one name="paymentConditionLine" ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line"/>
   	<boolean name="isCustomized" title="Is customized" default="false"/>
 
   	<string name="name" namecolumn="true" search="invoice,dueDate,amount" title="Name">

@@ -802,6 +802,14 @@ public interface IExceptionMessage {
   static final String INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH = /*$$(*/
       "The sum of invoice payment term lines must be equal to 100%" /*)*/;
 
+  static final String INVOICE_INVOICE_TERM_CREATION_PROHIBITED = /*$$(*/
+      "The invoice had already been paid, therefore invoice term creation is not possible." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_DELETION_PROHIBITED = /*$$(*/
+      "The invoice had already been paid partially or totally, therefore invoice term deletion is not possible." /*)*/;
+
+  static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
+      "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
   /** Invoice payment controller */
   static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;

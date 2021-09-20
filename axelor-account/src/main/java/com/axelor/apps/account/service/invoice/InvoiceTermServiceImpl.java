@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -42,10 +44,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   protected InvoiceTermRepository invoiceTermRepo;
+  protected InvoiceRepository invoiceRepo;
 
   @Inject
-  public InvoiceTermServiceImpl(InvoiceTermRepository invoiceTermRepo) {
+  public InvoiceTermServiceImpl(
+      InvoiceTermRepository invoiceTermRepo, InvoiceRepository invoiceRepo) {
     this.invoiceTermRepo = invoiceTermRepo;
+    this.invoiceRepo = invoiceRepo;
   }
 
   @Override
@@ -64,14 +69,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean checkInvoiceTermsPercentageSum(Invoice invoice) throws AxelorException {
 
+    return new BigDecimal(100).compareTo(computePercentageSum(invoice)) == 0;
+  }
+
+  @Override
+  public BigDecimal computePercentageSum(Invoice invoice) {
+
     BigDecimal sum = BigDecimal.ZERO;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       sum = sum.add(invoiceTerm.getPercentage());
     }
-    if (new BigDecimal(100).compareTo(sum) != 0) {
-      return false;
-    }
-    return true;
+    return sum;
   }
 
   @Override
@@ -143,6 +151,56 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
+
+    invoiceTerm.setInvoice(invoice);
+    invoiceTerm.setIsCustomized(true);
+    invoiceTerm.setIsPaid(false);
+    invoiceTerm.setIsHoldBack(false);
+    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    invoiceTerm.setFinancialDiscount(invoice.getFinancialDiscount());
+
+    BigDecimal invoiceTermPercentage = BigDecimal.ZERO;
+    BigDecimal percentageSum = computePercentageSum(invoice);
+    if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
+      invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
+    }
+    invoiceTerm.setPercentage(invoiceTermPercentage);
+    BigDecimal amount =
+        invoice
+            .getInTaxTotal()
+            .multiply(invoiceTermPercentage)
+            .divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
+    invoiceTerm.setAmount(amount);
+    invoiceTerm.setAmountRemaining(amount);
+
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+
+      invoiceTerm.setMoveLine(getExistingInvoiceTermMoveLine(invoice));
+    }
+
+    return invoiceTerm;
+  }
+
+  @Override
+  public MoveLine getExistingInvoiceTermMoveLine(Invoice invoice) {
+
+    InvoiceTerm invoiceTerm =
+        invoiceTermRepo
+            .all()
+            .filter("self.invoice.id = ?1 AND self.isHoldBack is not true", invoice.getId())
+            .fetchOne();
+    if (invoiceTerm == null) {
+      return null;
+    } else {
+      return invoiceTerm.getMoveLine();
+    }
+  }
+
+  @Override
   public Invoice setDueDates(Invoice invoice, LocalDate invoiceDate) {
 
     if (invoice.getPaymentCondition() == null
@@ -151,9 +209,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      LocalDate dueDate =
-          InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
       if (!invoiceTerm.getIsCustomized()) {
+        LocalDate dueDate =
+            InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
         invoiceTerm.setDueDate(dueDate);
       }
     }
@@ -274,5 +332,77 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerms.add(invoiceTerm);
     }
     return invoiceTerms;
+  }
+
+  @Override
+  public boolean checkInvoiceTermCreationConditions(Invoice invoice) {
+
+    if (invoice.getId() == null
+        || invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return false;
+    }
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      if (invoiceTerm.getId() == null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean checkIfThereIsDeletedHoldbackInvoiceTerms(Invoice invoice) {
+
+    if (invoice.getId() == null) {
+
+      return false;
+    }
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+
+      List<InvoiceTerm> invoiceTermWithHoldback =
+          invoiceTermRepo
+              .all()
+              .filter("self.invoice.id = ?1 AND self.isHoldBack is true", invoice.getId())
+              .fetch();
+
+      if (CollectionUtils.isEmpty(invoiceTermWithHoldback)) {
+        return false;
+      }
+      List<InvoiceTerm> invoiceTerms = invoice.getInvoiceTermList();
+
+      for (InvoiceTerm persistedInvoiceTermWithHoldback : invoiceTermWithHoldback) {
+        if (!invoiceTerms.contains(persistedInvoiceTermWithHoldback)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean checkInvoiceTermDeletionConditions(Invoice invoice) {
+
+    if (invoice.getId() == null || invoice.getAmountPaid().compareTo(BigDecimal.ZERO) == 0) {
+      return false;
+    }
+
+    Invoice persistedInvoice = invoiceRepo.find(invoice.getId());
+
+    if (CollectionUtils.isEmpty(persistedInvoice.getInvoiceTermList())) {
+      return false;
+
+    } else {
+
+      List<InvoiceTerm> invoiceTerms = invoice.getInvoiceTermList();
+      if (CollectionUtils.isEmpty(invoiceTerms)) {
+        return true;
+      }
+      for (InvoiceTerm persistedInvoiceTerm : persistedInvoice.getInvoiceTermList()) {
+        if (!invoiceTerms.contains(persistedInvoiceTerm)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

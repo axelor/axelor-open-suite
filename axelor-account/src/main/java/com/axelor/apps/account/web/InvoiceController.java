@@ -232,13 +232,24 @@ public class InvoiceController {
     response.setReload(true);
   }
 
-  public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
+  public void validateInvoiceTermsBeforeSave(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getPaymentCondition() == null) {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+
+      if (invoiceTermService.checkInvoiceTermCreationConditions(invoice)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_CREATION_PROHIBITED));
         return;
       }
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (invoiceTermService.checkIfThereIsDeletedHoldbackInvoiceTerms(invoice)) {
+        response.setError(
+            I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED));
+        return;
+      }
+      if (invoiceTermService.checkInvoiceTermDeletionConditions(invoice)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_DELETION_PROHIBITED));
+        return;
+      }
       if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
         if (!invoiceTermService.checkInvoiceTermsSum(invoice)) {
           response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_AMOUNT_MISMATCH));
@@ -248,9 +259,21 @@ public class InvoiceController {
           response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH));
           return;
         }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice.getPaymentCondition() == null) {
         return;
       }
-      if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
