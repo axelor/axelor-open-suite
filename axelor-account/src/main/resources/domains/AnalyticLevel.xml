@@ -6,10 +6,15 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AnalyticLevel" lang="java">
-  	<string name="name" title="Name" namecolumn="true"/>
-  	<integer name="nbr" title="Number" required="true"/>
-  	
-  	<unique-constraint columns="name,nbr"/>
+  	<string name="name" title="Name" namecolumn="true" unique="true">
+	   	<![CDATA[
+	   	if (nbr == null){
+	   		return null;
+	    }
+	    return nbr.toString();
+	      ]]>  	
+  	</string>
+  	<integer name="nbr" title="Number" required="true" unique="true"/>
   </entity>
   
 </domain-models>
