@@ -19,7 +19,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-method,action-user-check-company,action-attrs-select-in-step-status-select" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select">
+    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-method,action-user-check-company,action-attrs-select-in-step-status-select,action-user-attrs-set-pfp-validator-panel-show" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select,action-user-attrs-set-pfp-validator-panel-show">
     	<panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1" >
 	    	<panel name="stepStatusPanel" colSpan="12">
 	    		<field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12" readonly="true"/>
@@ -159,7 +159,7 @@
         			</editor>
       			</field>
     		 </panel>
-        	 <panel-related name="companySetPanel" title="Internal companies" field="companySet" showTitle="false" canNew="false" showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
+        	 <panel-related name="companySetPanel" title="Internal companies" field="companySet" showTitle="false" canNew="false" showIf="[2,5].indexOf(stepStatusSelect) > -1" onChange="action-user-attrs-set-pfp-validator-panel-show"/>
         	 <panel name="teamsPanel" title="Teams" if="__config__.app.getApp('base').getTeamManagement()"  showIf="[2,5].indexOf(stepStatusSelect) > -1">
 				<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid" onSelect="action-user-attrs-domain-active-team"/>
         		<field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid" colSpan="12"/>
@@ -176,14 +176,12 @@
 				</panel>
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid" showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
 		    <panel-related name="projectSetPanel" field="projectSet" canEdit="false" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
-        	<panel name="substitutePfpValidatorTabPanel" title="PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()" showIf="activeCompany.accountConfig.isManagePassedForPayment">
+        	<panel name="substitutePfpValidatorTabPanel" title="PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
 				<field name="isPfpValidator" widget="boolean-switch" colSpan="4"/>
         		<field name="isSuperPfpUser" widget="boolean-switch" colSpan="4"/>
 				<button name="pfpSupplierListBtn" title="Supplier list" onClick="action-view-user-pfp-supplier-list" colSpan="4"/>
 				<button name="delegateRightsOfPfpValidatorBtn" title="Delegate Rights of Pfp Validator" onClick="action-user-view-delegate-rights-pfp-validator" colSpan="6"/>
         		<panel-related field="substitutePfpValidatorList" name="substitutePfpValidatorListPanel" title="Substitute PFP Validator" showIf="isPfpValidator" colSpan="12"/>
-        		<field name="activeCompany.accountConfig" hidden="true"/>
-			<field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true"/>
         	</panel>
         	<panel name="emailSignaturePanel" colSpan="12" title="Email signature">
         		<field name="emailSignature" widget="Html" x-lite="true" height="9" colSpan="12"/>
@@ -367,6 +365,10 @@
    		<domain>self IN (SELECT p FROM User u join u.permissions p WHERE u.id = :userId) OR self IN (SELECT p FROM User u join u.group g join g.permissions p WHERE u.id = :userId) OR self IN(SELECT p FROM User u join u.roles r join r.permissions p WHERE u.id = :userId) OR self IN(SELECT p FROM User u join u.group g join g.roles r join r.permissions p WHERE u.id = :userId)</domain>
    		<context name="userId" expr="eval: id"/>
     </action-view>
+    
+    <action-attrs name="action-user-attrs-set-pfp-validator-panel-show">
+      <attribute name="hidden" expr="eval: !companySet?.any{it->it.accountConfig.isManagePassedForPayment}" for="substitutePfpValidatorTabPanel"/>
+    </action-attrs>
 
     <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
     	<field name="workshopStockLocation" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
@@ -376,8 +378,6 @@
     	<field name="isPfpValidator" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
         <field name="isSuperPfpUser" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
         <field name="substitutePfpValidatorList" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
-        <field name="activeCompany.accountConfig" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
-        <field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
         <field name="employee" hidden="true" if="!__config__.app.isApp('employee')"/>
         <field name="appPermissions" hidden="true" if="!__config__.app.isApp('mobile')"/>
         <field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>
