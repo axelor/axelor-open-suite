@@ -189,6 +189,7 @@ public class ReimbursementImportService {
             null,
             null,
             date,
+            date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_IMPORT,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,

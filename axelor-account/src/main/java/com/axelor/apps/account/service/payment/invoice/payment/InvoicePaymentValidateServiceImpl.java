@@ -206,6 +206,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             invoicePayment.getCurrency(),
             partner,
             paymentDate,
+            paymentDate,
             paymentMode,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
