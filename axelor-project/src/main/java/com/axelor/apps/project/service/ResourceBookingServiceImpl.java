@@ -19,10 +19,15 @@ package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.repo.ResourceBookingRepository;
-import com.google.inject.Inject;
+import com.axelor.apps.project.module.ProjectModule;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class ResourceBookingServiceImpl implements ResourceBookingService {
 
   @Inject ResourceBookingRepository resourceBookingRepo;

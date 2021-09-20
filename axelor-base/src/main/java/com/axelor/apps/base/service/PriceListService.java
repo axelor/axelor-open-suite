@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -28,21 +29,20 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class PriceListService {
 
-  @Inject private PriceListLineRepository priceListLineRepo;
+  @Inject protected PriceListLineRepository priceListLineRepo;
 
   @Inject private PriceListRepository priceListRepo;
 
@@ -52,34 +52,10 @@ public class PriceListService {
       Product product, BigDecimal qty, PriceList priceList, BigDecimal price) {
 
     PriceListLine priceListLine = null;
-    List<PriceListLine> priceListLineList = null;
+    List<PriceListLine> priceListLineList = getPriceListLineList(product, qty, priceList);
 
     BigDecimal tempDiscountPrevious = null;
-    BigDecimal tempDiscountCurrent = null;
-
-    if (product != null && priceList != null) {
-      priceListLineList =
-          Beans.get(PriceListLineRepository.class)
-              .all()
-              .filter(
-                  "self.product = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",
-                  product,
-                  qty,
-                  priceList.getId())
-              .fetch();
-      if ((priceListLineList == null || priceListLineList.isEmpty())
-          && product.getProductCategory() != null) {
-        priceListLineList =
-            priceListLineRepo
-                .all()
-                .filter(
-                    "self.productCategory = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",
-                    product.getProductCategory(),
-                    qty,
-                    priceList.getId())
-                .fetch();
-      }
-    }
+    BigDecimal tempDiscountCurrent;
 
     if (priceListLineList != null && !priceListLineList.isEmpty()) {
       if (priceListLineList.size() > 1) {
@@ -87,7 +63,7 @@ public class PriceListService {
           tempDiscountCurrent = this.getUnitPriceDiscounted(tempPriceListLine, price);
 
           if (tempDiscountPrevious == null
-              || tempDiscountPrevious.compareTo(tempDiscountCurrent) == 1) {
+              || tempDiscountPrevious.compareTo(tempDiscountCurrent) > 0) {
             tempDiscountPrevious = tempDiscountCurrent;
             priceListLine = tempPriceListLine;
           }
@@ -97,6 +73,76 @@ public class PriceListService {
       }
     }
     return priceListLine;
+  }
+
+  protected List<PriceListLine> getPriceListLineList(
+      Product product, BigDecimal qty, PriceList priceList) {
+    List<PriceListLine> priceListLineList = null;
+
+    if (product != null && priceList != null) {
+      priceListLineList = getPriceListLineListFromProduct(product, qty, priceList);
+
+      if ((priceListLineList == null || priceListLineList.isEmpty())
+          && product.getProductCategory() != null) {
+        priceListLineList =
+            getPriceListLineListFromCategory(product.getProductCategory(), qty, priceList);
+      }
+    }
+
+    return priceListLineList;
+  }
+
+  protected List<PriceListLine> getPriceListLineListFromProduct(
+      Product product, BigDecimal qty, PriceList priceList) {
+    return priceListLineRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",
+            product,
+            qty,
+            priceList.getId())
+        .fetch();
+  }
+
+  protected List<PriceListLine> getPriceListLineListFromCategory(
+      ProductCategory productCategory, BigDecimal qty, PriceList priceList) {
+    return priceListLineRepo
+        .all()
+        .filter(
+            "self.productCategory = ?1 AND self.minQty <= ?2 AND self.priceList.id = ?3 ORDER BY self.minQty DESC",
+            productCategory,
+            qty,
+            priceList.getId())
+        .fetch();
+  }
+
+  @Transactional
+  public void setPriceListLineAnomaly(Product product) {
+    if (!product.getSellable()) {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE);
+                priceListLineRepo.persist(line);
+              });
+    } else if (product.getIsUnrenewed()) {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(PriceListLineRepository.ANOMALY_NOT_RENEWED);
+                priceListLineRepo.persist(line);
+              });
+    } else {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(null);
+                priceListLineRepo.persist(line);
+              });
+    }
   }
 
   public int getDiscountTypeSelect(PriceListLine priceListLine) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -97,7 +97,7 @@ class WkfTransitionService {
 
     if (!fields.isEmpty()) {
       String xml = getActionXML(action, model, fields);
-      metaService.updateMetaAction(action, "action-record", xml, model);
+      metaService.updateMetaAction(action, "action-record", xml, model, action);
       actions.add(new String[] {action});
     } else {
       metaService.removeMetaActions(action);
@@ -322,7 +322,7 @@ class WkfTransitionService {
       }
       String alertAction = actionName + "-alert";
       xml = getActionValidateXML(alertAction, type, alertMsg, transition.getConditions());
-      metaService.updateMetaAction(alertAction, "action-validate", xml, null);
+      metaService.updateMetaAction(alertAction, "action-validate", xml, null, alertAction);
       actions.add(alertAction);
     }
 
@@ -344,7 +344,7 @@ class WkfTransitionService {
     recordFields.add(recordField);
     actions.add(actionName);
     xml = getActionXML(actionName, model, recordFields);
-    metaService.updateMetaAction(actionName, "action-record", xml, model);
+    metaService.updateMetaAction(actionName, "action-record", xml, model, actionName);
     //    actions.add("save");
     //    actions.add(wkfService.trackingAction);
 
@@ -352,7 +352,7 @@ class WkfTransitionService {
     if (successMsg != null) {
       String sucessAction = actionName + "-success";
       xml = getActionValidateXML(sucessAction, "notify", successMsg, null);
-      metaService.updateMetaAction(sucessAction, "action-validate", xml, null);
+      metaService.updateMetaAction(sucessAction, "action-validate", xml, null, sucessAction);
       actions.add(sucessAction);
     }
     actions.add("save");

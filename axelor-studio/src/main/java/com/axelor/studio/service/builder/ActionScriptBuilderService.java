@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,12 +37,12 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class ActionScriptBuilderService {
 
   private static final String INDENT = "\t";
@@ -86,8 +86,8 @@ public class ActionScriptBuilderService {
         "<action-script name=\""
             + name
             + "\" "
-            + "id=\"studio-"
-            + name
+            + "id=\""
+            + builder.getXmlId()
             + "\" model=\""
             + MetaJsonRecord.class.getName()
             + "\">\n\t"
@@ -99,7 +99,8 @@ public class ActionScriptBuilderService {
             + code
             + "\n\t]]>\n\t</script>\n</action-script>";
 
-    return metaService.updateMetaAction(builder.getName(), "action-script", xml, null);
+    return metaService.updateMetaAction(
+        builder.getName(), "action-script", xml, null, builder.getXmlId());
   }
 
   private String generateScriptCode(ActionBuilder builder) {
@@ -444,6 +445,8 @@ public class ActionScriptBuilderService {
         stb.append(format("var map = com.axelor.db.mapper.Mapper.toMap($$);", 2));
       }
       stb.append(format("val = " + getQuery(tModel, line.getFilter(), false, false), 2));
+    } else if (srcModel == null) {
+      stb.append(format("val = " + "$", 2));
     }
 
     List<ActionBuilderLine> lines = line.getSubLines();

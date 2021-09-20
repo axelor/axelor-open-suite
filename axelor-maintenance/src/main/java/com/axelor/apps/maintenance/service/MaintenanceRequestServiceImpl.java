@@ -20,9 +20,14 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
+import com.axelor.apps.maintenance.module.MaintenanceModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(MaintenanceModule.PRIORITY)
 public class MaintenanceRequestServiceImpl implements MaintenanceRequestService {
 
   @Inject private MaintenanceRequestRepository maintenanceRequestRepo;

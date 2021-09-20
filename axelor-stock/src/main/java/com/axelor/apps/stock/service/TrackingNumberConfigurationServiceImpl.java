@@ -7,10 +7,15 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class TrackingNumberConfigurationServiceImpl implements TrackingNumberConfigurationService {
 
   protected SequenceService sequenceService;

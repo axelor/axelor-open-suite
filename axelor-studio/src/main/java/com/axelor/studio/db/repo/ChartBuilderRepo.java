@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,8 +45,8 @@ public class ChartBuilderRepo extends ChartBuilderRepository {
     try {
       chartBuilderService.build(chartBuilder);
     } catch (AxelorException | JAXBException e) {
-      refresh(chartBuilder);
-      throw new ValidationException(e.getMessage());
+      // refresh(chartBuilder);
+      throw new ValidationException(e);
     }
 
     return super.save(chartBuilder);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.base.module;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
+import com.axelor.apps.base.tracking.ExportObserver;
+import com.axelor.apps.base.tracking.GlobalAuditInterceptor;
 import com.axelor.events.StartupEvent;
+import com.axelor.inject.Beans;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.interceptor.Interceptor;
@@ -30,7 +34,15 @@ public class BaseModule {
 
   public static final int PRIORITY = Interceptor.Priority.APPLICATION + 500;
 
+  ExportObserver exportObserver;
+
   void onStartup(@Observes StartupEvent event) {
     PartnerAddressRepository.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
+
+    if (AppSettings.get()
+        .get("hibernate.session_factory.interceptor", "")
+        .equals(GlobalAuditInterceptor.class.getName())) {
+      exportObserver = Beans.get(ExportObserver.class);
+    }
   }
 }

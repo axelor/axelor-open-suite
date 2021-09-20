@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,20 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppBuilder;
+import com.axelor.studio.db.repo.AppBuilderRepository;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,12 +38,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 
-@RequestScoped
+@ApplicationScoped
 public class AppBuilderController {
 
   @Transactional
@@ -48,7 +53,7 @@ public class AppBuilderController {
 
     try {
       InputStream inputStream = this.getClass().getResourceAsStream(config);
-      File configFile = File.createTempFile("config", ".xml");
+      File configFile = MetaFiles.createTempFile("config", ".xml").toFile();
       FileOutputStream fout = new FileOutputStream(configFile);
       IOUtil.copyCompletely(inputStream, fout);
 
@@ -105,5 +110,27 @@ public class AppBuilderController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    AppBuilder appBuilder = request.getContext().asType(AppBuilder.class);
+    appBuilder = Beans.get(AppBuilderRepository.class).find(appBuilder.getId());
+
+    App app = appBuilder.getGeneratedApp();
+    Beans.get(AppService.class).installApp(app, null);
+
+    response.setSignal("refresh-app", true);
+  }
+
+  public void uninstallApp(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    AppBuilder appBuilder = request.getContext().asType(AppBuilder.class);
+    appBuilder = Beans.get(AppBuilderRepository.class).find(appBuilder.getId());
+
+    App app = appBuilder.getGeneratedApp();
+    Beans.get(AppService.class).unInstallApp(app);
+
+    response.setSignal("refresh-app", true);
   }
 }

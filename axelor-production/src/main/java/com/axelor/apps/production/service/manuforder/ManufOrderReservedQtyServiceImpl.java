@@ -2,11 +2,11 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ManufOrderReservedQtyServiceImpl implements ManufOrderReservedQtyService {
 
   protected ReservedQtyService reservedQtyService;

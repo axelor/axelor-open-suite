@@ -26,11 +26,10 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.AppLoader;
 import com.axelor.studio.db.repo.AppLoaderRepository;
+import com.axelor.studio.module.StudioModule;
 import com.axelor.text.GroovyTemplates;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -44,9 +43,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class AppLoaderServiceImpl implements AppLoaderService {
 
   @Inject protected MetaFiles metaFiles;

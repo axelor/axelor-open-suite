@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,11 +38,11 @@ import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   @Inject private StockConfigService stockConfigService;

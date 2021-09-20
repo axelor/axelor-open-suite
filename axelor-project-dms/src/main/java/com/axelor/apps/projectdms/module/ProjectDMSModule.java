@@ -17,14 +17,8 @@
  */
 package com.axelor.apps.projectdms.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.projectdms.service.DMSFileService;
-import com.axelor.apps.projectdms.service.DMSFileServiceImpl;
+import javax.interceptor.Interceptor;
 
-public class ProjectDMSModule extends AxelorModule {
-
-  @Override
-  protected void configure() {
-    bind(DMSFileService.class).to(DMSFileServiceImpl.class);
-  }
+public class ProjectDMSModule {
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 2500;
 }

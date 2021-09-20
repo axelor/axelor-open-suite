@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,9 +22,9 @@ import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
-import com.axelor.apps.base.service.readers.DataReaderFactory;
-import com.axelor.apps.base.service.readers.DataReaderService;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.apps.tool.reader.DataReaderFactory;
+import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
@@ -71,14 +71,14 @@ import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class DataImportServiceImpl implements DataImportService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

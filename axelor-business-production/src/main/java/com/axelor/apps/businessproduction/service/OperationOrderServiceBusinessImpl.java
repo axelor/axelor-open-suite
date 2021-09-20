@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,9 +26,12 @@ import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import javax.annotation.Priority;
@@ -51,6 +54,16 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
     if (!appProductionService.isApp("production")
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
       return super.createOperationOrder(manufOrder, prodProcessLine);
+    }
+
+    if (prodProcessLine.getWorkCenter() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
     }
 
     OperationOrder operationOrder =

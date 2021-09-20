@@ -3,6 +3,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
@@ -10,10 +11,14 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas2CheckService {
 
   protected AccountConfigService accountConfigService;

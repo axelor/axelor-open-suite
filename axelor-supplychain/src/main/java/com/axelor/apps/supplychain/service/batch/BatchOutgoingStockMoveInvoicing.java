@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,14 +33,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 
-@RequestScoped
+@ApplicationScoped
 public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
 
-  private StockMoveInvoiceService stockMoveInvoiceService;
+  protected StockMoveInvoiceService stockMoveInvoiceService;
 
   @Inject
   public BatchOutgoingStockMoveInvoicing(StockMoveInvoiceService stockMoveInvoiceService) {
@@ -59,6 +59,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
                 "SELECT self FROM StockMove self "
                     + "WHERE self.statusSelect = :statusSelect "
                     + "AND self.originTypeSelect LIKE :typeSaleOrder "
+                    + "AND self.invoicingStatusSelect !=  :invoicingStatusSelect "
                     + "AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != :invoiceStatusCanceled AND invoice MEMBER OF self.invoiceSet) = 0"
                     + "AND self.id NOT IN (:anomalyList) "
                     + "AND self.partner.id NOT IN ("
@@ -72,6 +73,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
             .setParameter("statusSelect", StockMoveRepository.STATUS_REALIZED)
             .setParameter("typeSaleOrder", StockMoveRepository.ORIGIN_SALE_ORDER)
             .setParameter("invoiceStatusCanceled", InvoiceRepository.STATUS_CANCELED)
+            .setParameter("invoicingStatusSelect", StockMoveRepository.STATUS_DELAYED_INVOICE)
             .setParameter("anomalyList", anomalyList)
             .setParameter("batch", batch)
             .setMaxResults(FETCH_LIMIT);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,13 +40,13 @@ import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.lang3.StringUtils;
 
-@RequestScoped
+@ApplicationScoped
 public class MenuBuilderService {
 
   @Inject private ActionBuilderService actionBuilderService;
@@ -60,8 +60,9 @@ public class MenuBuilderService {
     ActionBuilder actionBuilder = builder.getActionBuilder();
     if (actionBuilder != null) {
       if (actionBuilder.getName() == null) {
-        actionBuilder.setName(menu.getName().replace("-", "."));
+        actionBuilder.setName(menu.getName());
       }
+      actionBuilder.setXmlId(builder.getXmlId());
       actionBuilder.setTitle(menu.getTitle());
       actionBuilder.setAppBuilder(builder.getAppBuilder());
       menu.setAction(actionBuilderService.build(actionBuilder));

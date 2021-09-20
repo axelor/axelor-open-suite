@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,14 +39,15 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateService {
 
   protected InvoicePaymentRepository invoicePaymentRepository;
@@ -186,8 +187,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
         BigDecimal convertedImputedAmount =
             currentImputedAmount
-                .divide(totalAmountInAdvanceInvoice, 2, BigDecimal.ROUND_HALF_EVEN)
-                .multiply(advancePayment.getAmount());
+                .multiply(advancePayment.getAmount())
+                .divide(totalAmountInAdvanceInvoice, 2, RoundingMode.HALF_UP);
 
         invoicePayment.setAmount(convertedImputedAmount);
       }

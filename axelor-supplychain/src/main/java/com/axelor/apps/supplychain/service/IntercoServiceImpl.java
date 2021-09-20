@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,10 +67,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class IntercoServiceImpl implements IntercoService {
 
   protected static int DEFAULT_INVOICE_COPY = 1;
@@ -93,7 +93,6 @@ public class IntercoServiceImpl implements IntercoService {
             purchaseOrder.getDeliveryDate(),
             null,
             null,
-            purchaseOrder.getOrderDate(),
             purchaseOrder.getPriceList(),
             purchaseOrder.getCompany().getPartner(),
             null);
@@ -267,9 +266,10 @@ public class IntercoServiceImpl implements IntercoService {
    * @param purchaseOrderLine the purchase order line needed to create the sale order line
    * @param saleOrder the sale order line belongs to this purchase order
    * @return the created purchase order line
+   * @throws AxelorException
    */
   protected SaleOrderLine createIntercoSaleLineFromPurchaseLine(
-      PurchaseOrderLine purchaseOrderLine, SaleOrder saleOrder) {
+      PurchaseOrderLine purchaseOrderLine, SaleOrder saleOrder) throws AxelorException {
     SaleOrderLine saleOrderLine = new SaleOrderLine();
 
     saleOrderLine.setSaleOrder(saleOrder);

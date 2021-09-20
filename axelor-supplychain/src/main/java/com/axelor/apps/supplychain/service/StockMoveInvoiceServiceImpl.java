@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,6 +39,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -59,11 +60,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   private SaleOrderInvoiceService saleOrderInvoiceService;
@@ -75,6 +76,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   private StockMoveLineRepository stockMoveLineRepository;
   private InvoiceLineRepository invoiceLineRepository;
   private SupplyChainConfigService supplyChainConfigService;
+  private AppSupplychainService appSupplychainService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -86,7 +88,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       PurchaseOrderRepository purchaseOrderRepo,
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
-      SupplyChainConfigService supplyChainConfigService) {
+      SupplyChainConfigService supplyChainConfigService,
+      AppSupplychainService appSupplychainService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -96,6 +99,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -166,7 +170,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     invoiceGenerator.populate(
         invoice,
-        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+        this.createInvoiceLines(
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
       // do not create empty invoices
@@ -254,7 +259,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     invoiceGenerator.populate(
         invoice,
-        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+        this.createInvoiceLines(
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
 
@@ -305,6 +311,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         return null;
       }
     }
+    // do not use invoiced partner if the option is disabled
+    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+      stockMove.setInvoicedPartner(null);
+    }
 
     InvoiceGenerator invoiceGenerator =
         new InvoiceGeneratorSupplyChain(stockMove, invoiceOperationType) {
@@ -320,7 +330,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     invoiceGenerator.populate(
         invoice,
-        this.createInvoiceLines(invoice, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+        this.createInvoiceLines(
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
 
     if (invoice != null) {
 
@@ -359,11 +370,13 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   @Override
   public List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<StockMoveLine> stockMoveLineList, Map<Long, BigDecimal> qtyToInvoiceMap)
+      Invoice invoice,
+      StockMove stockMove,
+      List<StockMoveLine> stockMoveLineList,
+      Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    StockMove stockMove = stockMoveLineList.get(0).getStockMove();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
     if ((StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())

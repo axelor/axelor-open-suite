@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,18 +22,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Locale;
-import javax.enterprise.context.RequestScoped;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.stringtemplate.v4.AttributeRenderer;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 
-@RequestScoped
 public class STSampleTest {
 
-  public String template = "Hi $contact.name;format=\"upper\"$ $contact.lastName$";
+  private String template = "Hi $contact.name;format=\"upper\"$ $contact.lastName$";
 
   private static List<Contact> data = Lists.newArrayList();
 
@@ -43,7 +41,7 @@ public class STSampleTest {
 
   private STGroup stGroup;
 
-  @Before
+  @BeforeEach
   public void before() {
     for (int i = 0; i < MAX_ITER; i++) {
       data.add(new Contact("Name" + i, "LastName" + i));
@@ -60,7 +58,7 @@ public class STSampleTest {
       String result = run(contact);
 
       String expected = "Hi " + contact.getName().toUpperCase() + " " + contact.getLastName();
-      Assert.assertEquals(expected, result);
+      Assertions.assertEquals(expected, result);
     }
   }
 

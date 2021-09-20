@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.quality.service.print;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.exception.IExceptionMessage;
 import com.axelor.apps.quality.report.IReport;
@@ -27,10 +28,18 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.io.File;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-@RequestScoped
+@ApplicationScoped
 public class QualityControlPrintServiceImpl {
+
+  protected ProjectService projectService;
+
+  @Inject
+  public QualityControlPrintServiceImpl(ProjectService projectService) {
+    this.projectService = projectService;
+  }
 
   public String getFileName(QualityControl qualityControl) {
 
@@ -78,9 +87,6 @@ public class QualityControlPrintServiceImpl {
   }
 
   private String getTimezone(QualityControl qualityControl) {
-    if (qualityControl.getProject() == null || qualityControl.getProject().getCompany() == null) {
-      return null;
-    }
-    return qualityControl.getProject().getCompany().getTimezone();
+    return projectService.getTimeZone(qualityControl.getProject());
   }
 }

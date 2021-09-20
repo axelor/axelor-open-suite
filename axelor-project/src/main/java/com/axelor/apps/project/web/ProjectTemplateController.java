@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,13 @@
  */
 package com.axelor.apps.project.web;
 
-import com.axelor.apps.base.db.AppProject;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
-import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.ProjectTemplateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -35,48 +33,20 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ProjectTemplateController {
 
   public void createProjectFromTemplate(ActionRequest request, ActionResponse response) {
-
-    ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
-    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
-
-    if (appProject.getGenerateProjectSequence() && !projectTemplate.getIsBusinessProject()) {
-
-      Project project;
-      try {
-        project =
-            Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
-        response.setView(
-            ActionView.define(I18n.get("Project"))
-                .model(Project.class.getName())
-                .add("form", "project-form")
-                .add("grid", "project-grid")
-                .param("search-filters", "project-filters")
-                .context("_showRecord", project.getId())
-                .map());
-
-      } catch (AxelorException e) {
-        TraceBackService.trace(response, e);
-      }
-
-    } else {
-      response.setView(
-          ActionView.define(I18n.get("Create project from this template"))
-              .model(Wizard.class.getName())
-              .add("form", "project-template-wizard-form")
-              .param("popup", "reload")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("width", "large")
-              .param("popup-save", "false")
-              .context("_projectTemplate", projectTemplate)
-              .context("_businessProject", projectTemplate.getIsBusinessProject())
-              .map());
+    try {
+      ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
+      Map<String, Object> projectTemplateView =
+          Beans.get(ProjectService.class).createProjectFromTemplateView(projectTemplate);
+      response.setView(projectTemplateView);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -119,5 +89,12 @@ public class ProjectTemplateController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void addParentTaskTemplate(ActionRequest request, ActionResponse response) {
+    ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
+    projectTemplate =
+        Beans.get(ProjectTemplateService.class).addParentTaskTemplate(projectTemplate);
+    response.setValue("taskTemplateSet", projectTemplate.getTaskTemplateSet());
   }
 }

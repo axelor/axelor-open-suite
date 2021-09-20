@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -75,8 +76,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected AppBaseService appBaseService;
-
   protected ManufOrderRepository manufOrderRepository;
 
   protected ProductCompanyService productCompanyService;
@@ -84,7 +83,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   @Inject
   public MrpServiceProductionImpl(
       AppBaseService appBaseService,
-      AppProductionService appProductionService,
+      AppPurchaseService appPurchaseService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
       ProductRepository productRepository,
@@ -96,12 +95,12 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
-      ManufOrderRepository manufOrderRepository,
       StockLocationService stockLocationService,
+      ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService) {
-
     super(
-        appProductionService,
+        appBaseService,
+        appPurchaseService,
         mrpRepository,
         stockLocationRepository,
         productRepository,
@@ -114,8 +113,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineService,
         mrpForecastRepository,
         stockLocationService);
-
-    this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
   }
@@ -421,7 +418,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               manufProposalNeedMrpLineType,
               reorderQty
                   .multiply(billOfMaterial.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN),
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
               stockLocation,
               maturityDate,
               mrpLineOriginList,
@@ -457,8 +454,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
 
-      if (((String) productCompanyService.get(product, "procurementMethodSelect", company))
-          .equals(ProductRepository.PROCUREMENT_METHOD_BUY)) {
+      if (ProductRepository.PROCUREMENT_METHOD_BUY.equals(
+          ((String) productCompanyService.get(product, "procurementMethodSelect", company)))) {
         return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
       } else {
         return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);

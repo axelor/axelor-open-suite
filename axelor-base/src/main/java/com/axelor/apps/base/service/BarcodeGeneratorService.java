@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,10 +19,22 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 import java.io.InputStream;
 
 public interface BarcodeGeneratorService {
 
+  MetaFile createBarCode(
+      Long originId,
+      String fileNameFormat,
+      String serialno,
+      BarcodeTypeConfig barcodeTypeConfig,
+      boolean isPadding);
+
   InputStream createBarCode(String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
+      throws AxelorException;
+
+  boolean checkSerialNumberConsistency(
+      String serialno, BarcodeTypeConfig barcodeTypeConfig, boolean isPadding)
       throws AxelorException;
 }

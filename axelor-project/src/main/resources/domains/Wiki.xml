@@ -6,8 +6,8 @@
 	<module name="project" package="com.axelor.apps.project.db"/>
 	
 	<entity name="Wiki">
-  		<string name="title"/>
-  		<string name="content" large="true"/>
+  		<string name="title" title="Title"/>
+  		<string name="content" title="Content" large="true"/>
   		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
   		<many-to-one name="projectTemplate" ref="com.axelor.apps.project.db.ProjectTemplate" title="Project template"/>
 	</entity>

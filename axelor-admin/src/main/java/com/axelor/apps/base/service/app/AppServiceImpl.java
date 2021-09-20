@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,11 +24,16 @@ import com.axelor.apps.base.exceptions.IExceptionMessages;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
 import com.axelor.data.Importer;
+import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
+import com.axelor.db.mapper.PropertyType;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -40,17 +45,17 @@ import com.google.common.io.Files;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.Query;
@@ -62,7 +67,7 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class AppServiceImpl implements AppService {
 
-  private final Logger log = LoggerFactory.getLogger(AppService.class);
+  private final Logger log = LoggerFactory.getLogger(AppServiceImpl.class);
 
   private static final String DIR_DEMO = "demo";
 
@@ -106,20 +111,24 @@ public class AppServiceImpl implements AppService {
 
     importData(app, DIR_DEMO, true);
 
-    app = appRepo.find(app.getId());
-
-    app.setDemoDataLoaded(true);
-
-    return saveApp(app);
-  }
-
-  public App saveApp(App app) {
+    final Long id = app.getId();
     final var result =
         new Object() {
-          private App app;
+          App app;
         };
-    JPA.runInTransaction(() -> result.app = appRepo.save(app));
+    JPA.runInTransaction(
+        () -> {
+          final App found = appRepo.find(id);
+          found.setDemoDataLoaded(true);
+          result.app = saveApp(found);
+        });
+
     return result.app;
+  }
+
+  @Transactional(value = TxType.MANDATORY)
+  public App saveApp(App app) {
+    return appRepo.save(app);
   }
 
   private void importData(App app, String dataDir, boolean useLang) {
@@ -148,11 +157,7 @@ public class AppServiceImpl implements AppService {
     try {
       File[] configs =
           dataDir.listFiles(
-              new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                  return name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN);
-                }
-              });
+              (dir, name) -> name.startsWith(appCode + "-") && name.endsWith(CONFIG_PATTERN));
 
       if (configs.length == 0) {
         log.debug("No config file found for the app: {}", appCode);
@@ -229,7 +234,6 @@ public class AppServiceImpl implements AppService {
           break;
         }
       }
-      scanner.close();
 
       if (importer != null) {
         importer.run();
@@ -242,7 +246,7 @@ public class AppServiceImpl implements AppService {
 
   private File extract(String module, String dirName, String lang, String code) {
     String dirNamePattern = dirName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
-    List<URL> files = new ArrayList<URL>();
+    List<URL> files = new ArrayList<>();
     files.addAll(MetaScanner.findAll(module, dirNamePattern, code + "(-+.*)?" + CONFIG_PATTERN));
     if (files.isEmpty()) {
       return null;
@@ -306,13 +310,21 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
-  public App getApp(String code) {
-    return appRepo.findByCode(code);
+  public Model getApp(String code) {
+
+    App app = appRepo.findByCode(code);
+    if (app != null) {
+      return (Model) Mapper.toMap(app).get("app" + Inflector.getInstance().camelize(code));
+    }
+
+    return null;
   }
 
   @Override
   public boolean isApp(String code) {
-    App app = getApp(code);
+
+    App app = appRepo.findByCode(code);
+
     if (app == null) {
       return false;
     }
@@ -322,7 +334,7 @@ public class AppServiceImpl implements AppService {
 
   private List<App> getDepends(App app, Boolean active) {
 
-    List<App> apps = new ArrayList<App>();
+    List<App> apps = new ArrayList<>();
     app = appRepo.find(app.getId());
 
     for (App depend : app.getDependsOnSet()) {
@@ -336,7 +348,7 @@ public class AppServiceImpl implements AppService {
 
   private List<String> getNames(List<App> apps) {
 
-    List<String> names = new ArrayList<String>();
+    List<String> names = new ArrayList<>();
 
     for (App app : apps) {
       names.add(app.getName());
@@ -362,6 +374,7 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
+  @Transactional(value = TxType.NOT_SUPPORTED)
   public App installApp(App app, String language) throws AxelorException {
 
     app = appRepo.find(app.getId());
@@ -387,42 +400,47 @@ public class AppServiceImpl implements AppService {
       app = importDataInit(app);
     }
 
-    app = appRepo.find(app.getId());
+    final Long id = app.getId();
+    final var result =
+        new Object() {
+          App app;
+        };
+    JPA.runInTransaction(
+        () -> {
+          final App found = appRepo.find(id);
+          found.setActive(true);
+          result.app = saveApp(found);
+        });
 
-    app.setActive(true);
-
-    return saveApp(app);
+    return result.app;
   }
 
   private List<App> sortApps(Collection<App> apps) {
 
-    List<App> appsList = new ArrayList<App>();
+    List<App> appsList = new ArrayList<>();
 
     appsList.addAll(apps);
 
-    appsList.sort(
-        new Comparator<App>() {
-
-          @Override
-          public int compare(App app1, App app2) {
-
-            Integer order1 = app1.getInstallOrder();
-            Integer order2 = app2.getInstallOrder();
-
-            if (order1 < order2) {
-              return -1;
-            }
-            if (order1 > order2) {
-              return 1;
-            }
-
-            return 0;
-          }
-        });
+    appsList.sort(this::compare);
 
     log.debug("Apps sorted: {}", getNames(appsList));
 
     return appsList;
+  }
+
+  private int compare(App app1, App app2) {
+    Integer order1 = app1.getInstallOrder();
+    Integer order2 = app2.getInstallOrder();
+
+    if (order1 < order2) {
+      return -1;
+    }
+
+    if (order1 > order2) {
+      return 1;
+    }
+
+    return 0;
   }
 
   @Override
@@ -433,7 +451,7 @@ public class AppServiceImpl implements AppService {
     imgDir.mkdir();
 
     CSVConfig csvConfig = new CSVConfig();
-    csvConfig.setInputs(new ArrayList<CSVInput>());
+    csvConfig.setInputs(new ArrayList<>());
 
     List<MetaModel> metaModels =
         metaModelRepo
@@ -443,16 +461,24 @@ public class AppServiceImpl implements AppService {
                 App.class.getPackage().getName())
             .fetch();
 
+    final List<String> appFieldTargetList =
+        Stream.of(JPA.fields(App.class))
+            .filter(p -> p.getType() == PropertyType.ONE_TO_ONE)
+            .filter(p -> p.getName().startsWith("app"))
+            .map(Property::getTarget)
+            .map(Class::getName)
+            .collect(Collectors.toList());
+
     log.debug("Total app models: {}", metaModels.size());
     for (MetaModel metaModel : metaModels) {
+      if (!appFieldTargetList.contains(metaModel.getFullName())) {
+        log.debug("Not a App class : {}", metaModel.getName());
+        continue;
+      }
       Class<?> klass;
       try {
         klass = Class.forName(metaModel.getFullName());
       } catch (ClassNotFoundException e) {
-        continue;
-      }
-      if (!App.class.isAssignableFrom(klass)) {
-        log.debug("Not a App class : {}", metaModel.getName());
         continue;
       }
       Object obj = null;
@@ -467,13 +493,29 @@ public class AppServiceImpl implements AppService {
       log.debug("App without app record: {}", metaModel.getName());
       String csvName = "base_" + inflector.camelize(klass.getSimpleName(), true) + ".csv";
       String pngName = inflector.dasherize(klass.getSimpleName()) + ".png";
+
       CSVInput input = new CSVInput();
       input.setFileName(csvName);
-      input.setTypeName(klass.getName());
+      input.setTypeName(App.class.getName());
       input.setCallable("com.axelor.csv.script.ImportApp:importApp");
       input.setSearch("self.code =:code");
       input.setSeparator(';');
       csvConfig.getInputs().add(input);
+
+      CSVInput appInput = new CSVInput();
+      appInput.setFileName(csvName);
+      appInput.setTypeName(klass.getName());
+      appInput.setSearch("self.app.code =:code");
+      appInput.setSeparator(';');
+
+      CSVBind appBind = new CSVBind();
+      appBind.setColumn("code");
+      appBind.setField("app");
+      appBind.setSearch("self.code = :code");
+      appInput.getBindings().add(appBind);
+
+      csvConfig.getInputs().add(appInput);
+
       InputStream stream = klass.getResourceAsStream("/data-init/input/" + csvName);
       copyStream(stream, new File(dataDir, csvName));
       stream = klass.getResourceAsStream("/data-init/input/img/" + pngName);
@@ -482,26 +524,20 @@ public class AppServiceImpl implements AppService {
 
     if (!csvConfig.getInputs().isEmpty()) {
       CSVImporter importer = new CSVImporter(csvConfig, dataDir.getAbsolutePath());
-      if (importer != null) {
-        importer.run();
-      }
+      importer.run();
     }
   }
 
   private void copyStream(InputStream stream, File file) throws IOException {
-
     if (stream != null) {
-      FileOutputStream out = new FileOutputStream(file);
-      try {
+      try (FileOutputStream out = new FileOutputStream(file)) {
         ByteStreams.copy(stream, out);
-        out.close();
-      } finally {
-        out.close();
       }
     }
   }
 
   @Override
+  @Transactional
   public App unInstallApp(App app) throws AxelorException {
 
     List<App> children = getChildren(app, true);
@@ -517,6 +553,7 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
+  @Transactional(value = TxType.NOT_SUPPORTED)
   public void bulkInstall(Collection<App> apps, Boolean importDemo, String language)
       throws AxelorException {
 
@@ -531,6 +568,7 @@ public class AppServiceImpl implements AppService {
   }
 
   @Override
+  @Transactional(value = TxType.NOT_SUPPORTED)
   public App importRoles(App app) throws AxelorException {
 
     if (app.getIsRolesImported()) {
@@ -541,11 +579,19 @@ public class AppServiceImpl implements AppService {
 
     importData(app, DIR_ROLES, false);
 
-    app = appRepo.find(app.getId());
+    final Long id = app.getId();
+    final var result =
+        new Object() {
+          App app;
+        };
+    JPA.runInTransaction(
+        () -> {
+          final App found = appRepo.find(id);
+          found.setIsRolesImported(true);
+          result.app = saveApp(found);
+        });
 
-    app.setIsRolesImported(true);
-
-    return saveApp(app);
+    return result.app;
   }
 
   private void importParentRoles(App app) throws AxelorException {
@@ -578,19 +624,6 @@ public class AppServiceImpl implements AppService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessages.DATA_EXPORT_DIR_ERROR));
-    }
-    return !appSettingsPath.endsWith(File.separator)
-        ? appSettingsPath + File.separator
-        : appSettingsPath;
-  }
-
-  @Override
-  public String getFileUploadDir() throws AxelorException {
-    String appSettingsPath = AppSettings.get().get("file.upload.dir");
-    if (appSettingsPath == null || appSettingsPath.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.FILE_UPLOAD_DIR_ERROR));
     }
     return !appSettingsPath.endsWith(File.separator)
         ? appSettingsPath + File.separator

@@ -20,12 +20,17 @@ package com.axelor.apps.hr.service.employee;
 import com.axelor.apps.hr.db.EmploymentAmendmentType;
 import com.axelor.apps.hr.db.EmploymentContractSubType;
 import com.axelor.apps.hr.db.EmploymentContractType;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import org.apache.commons.collections.CollectionUtils;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class EmploymentAmendmentTypeServiceImpl implements EmploymentAmendmentTypeService {
 
   @Override

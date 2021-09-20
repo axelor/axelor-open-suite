@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,17 @@ package com.axelor.apps.hr.service.app;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class AppTimesheetServiceImpl implements AppTimesheetService {
   protected TimesheetRepository timesheetRepo;
 

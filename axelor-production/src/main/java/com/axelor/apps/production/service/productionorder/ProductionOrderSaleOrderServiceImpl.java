@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,12 +37,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import java.util.stream.Collectors;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -82,7 +83,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
         productionOrder = this.createProductionOrder(saleOrder);
       }
 
-      productionOrder = this.generateManufOrder(productionOrder, saleOrderLine);
+      productionOrder = this.generateManufOrders(productionOrder, saleOrderLine);
 
       if (productionOrder != null && !productionOrderIdList.contains(productionOrder.getId())) {
         productionOrderIdList.add(productionOrder.getId());
@@ -98,7 +99,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   }
 
   @Override
-  public ProductionOrder generateManufOrder(
+  public ProductionOrder generateManufOrders(
       ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 
     Product product = saleOrderLine.getProduct();
@@ -138,17 +139,72 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
       }
 
-      return productionOrderService.addManufOrder(
+      return generateManufOrders(
           productionOrder,
-          product,
           billOfMaterial,
           qty,
           LocalDateTime.now(),
-          null,
           saleOrderLine.getSaleOrder(),
-          ManufOrderService.ORIGIN_TYPE_SALE_ORDER);
+          saleOrderLine);
     }
 
     return null;
+  }
+
+  /**
+   * Loop through bill of materials components to generate manufacturing order for given sale order
+   * line and all of its sub manuf order needed to get components for parent manufacturing order.
+   *
+   * @param productionOrder Initialized production order with no manufacturing order.
+   * @param billOfMaterial the bill of material of the parent manufacturing order
+   * @param qtyRequested the quantity requested of the parent manufacturing order.
+   * @param startDate startDate of creation
+   * @param saleOrder a sale order
+   * @return the updated production order with all generated manufacturing orders.
+   * @throws AxelorException
+   */
+  protected ProductionOrder generateManufOrders(
+      ProductionOrder productionOrder,
+      BillOfMaterial billOfMaterial,
+      BigDecimal qtyRequested,
+      LocalDateTime startDate,
+      SaleOrder saleOrder,
+      SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    List<BillOfMaterial> childBomList = new ArrayList<>();
+    childBomList.add(billOfMaterial);
+    // prevent infinite loop
+    int depth = 0;
+    while (!childBomList.isEmpty()) {
+      if (depth >= 100) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
+      }
+      List<BillOfMaterial> tempChildBomList = new ArrayList<>();
+      for (BillOfMaterial childBom : childBomList) {
+        productionOrder =
+            productionOrderService.addManufOrder(
+                productionOrder,
+                childBom.getProduct(),
+                childBom,
+                qtyRequested.multiply(childBom.getQty()),
+                startDate,
+                null,
+                saleOrder,
+                saleOrderLine,
+                ManufOrderService.ORIGIN_TYPE_SALE_ORDER);
+        tempChildBomList.addAll(
+            childBom.getBillOfMaterialSet().stream()
+                .filter(BillOfMaterial::getDefineSubBillOfMaterial)
+                .collect(Collectors.toList()));
+      }
+      childBomList.clear();
+      childBomList.addAll(tempChildBomList);
+      tempChildBomList.clear();
+      depth++;
+    }
+    return productionOrder;
   }
 }

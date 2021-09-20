@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,12 +42,12 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -146,7 +146,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 partner,
                 this.getDate(bankOrderLine),
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     MoveLine bankMoveLine =
         moveService
@@ -203,7 +204,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 partner,
                 this.getDate(bankOrderLine),
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     MoveLine bankMoveLine =
         moveService

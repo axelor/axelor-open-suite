@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.invoke.MethodHandles;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import org.slf4j.Logger;
@@ -53,7 +54,14 @@ public final class URLService {
 
     try {
       URL fileURL = new URL(url);
-      fileURL.openConnection().connect();
+      URLConnection conn = fileURL.openConnection();
+      if (conn instanceof HttpURLConnection) {
+        int responseCode = ((HttpURLConnection) conn).getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+          throw new java.io.IOException(String.format("Response code: %d", responseCode));
+        }
+      }
+      conn.connect();
       return null;
     } catch (java.net.MalformedURLException ex) {
       ex.printStackTrace();

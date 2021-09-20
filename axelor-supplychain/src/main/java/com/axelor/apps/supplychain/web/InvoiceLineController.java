@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,9 +31,9 @@ import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 
-@RequestScoped
+@ApplicationScoped
 public class InvoiceLineController {
 
   public List<InvoiceLine> updateQty(
@@ -57,9 +57,9 @@ public class InvoiceLineController {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (InvoiceLine line : invoiceLines) {
           qty =
-              (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_EVEN))
+              (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP))
                   .multiply(newKitQty)
-                  .setScale(scale, RoundingMode.HALF_EVEN);
+                  .setScale(scale, RoundingMode.HALF_UP);
           priceDiscounted = invoiceLineService.computeDiscount(line, invoice.getInAti());
 
           if (line.getTaxLine() != null) {

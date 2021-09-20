@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,8 +38,12 @@ import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.module.SupplychainModule;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -71,6 +75,8 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
   @Inject protected AdvancePaymentRepository advancePaymentRepository;
 
   @Inject protected MoveCancelService moveCancelService;
+
+  @Inject protected AppSupplychainService appSupplychainService;
 
   @Transactional(rollbackOn = {Exception.class})
   public void validate(AdvancePayment advancePayment) throws AxelorException {
@@ -143,6 +149,16 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
+    if (bankDetails == null && appSupplychainService.getAppBase().getManageMultiBanks()) {
+      throw new AxelorException(
+          paymentMode,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          company.getName(),
+          paymentMode.getName(),
+          saleOrder.getSaleOrderSeq());
+    }
     Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails);
 
     Move move =
@@ -155,7 +171,8 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
                 clientPartner,
                 advancePaymentDate,
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     BigDecimal amountConverted =
         currencyService.getAmountCurrencyConvertedAtDate(

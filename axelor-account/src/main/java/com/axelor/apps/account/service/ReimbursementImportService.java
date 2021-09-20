@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,13 +41,13 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class ReimbursementImportService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -58,7 +58,6 @@ public class ReimbursementImportService {
   protected RejectImportService rejectImportService;
   protected AccountConfigService accountConfigService;
   protected ReimbursementRepository reimbursementRepo;
-  protected AppService appService;
 
   @Inject
   public ReimbursementImportService(
@@ -67,8 +66,7 @@ public class ReimbursementImportService {
       MoveLineService moveLineService,
       RejectImportService rejectImportService,
       AccountConfigService accountConfigService,
-      ReimbursementRepository reimbursementRepo,
-      AppService appService) {
+      ReimbursementRepository reimbursementRepo) {
 
     this.moveService = moveService;
     this.moveRepo = moveRepo;
@@ -76,13 +74,12 @@ public class ReimbursementImportService {
     this.rejectImportService = rejectImportService;
     this.accountConfigService = accountConfigService;
     this.reimbursementRepo = reimbursementRepo;
-    this.appService = appService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void runReimbursementImport(Company company) throws AxelorException, IOException {
 
-    String dataUploadDir = appService.getFileUploadDir();
+    String dataUploadDir = AppService.getFileUploadDir();
 
     this.testCompanyField(company);
 
@@ -193,7 +190,8 @@ public class ReimbursementImportService {
                 null,
                 date,
                 null,
-                MoveRepository.TECHNICAL_ORIGIN_IMPORT));
+                MoveRepository.TECHNICAL_ORIGIN_IMPORT,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT));
   }
 
   public BigDecimal getTotalAmount(Move move) {

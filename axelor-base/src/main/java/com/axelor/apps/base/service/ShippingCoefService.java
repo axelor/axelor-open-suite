@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,10 +24,10 @@ import com.axelor.apps.base.db.ShippingCoef;
 import com.axelor.apps.base.db.repo.ShippingCoefRepository;
 import java.math.BigDecimal;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-@RequestScoped
+@ApplicationScoped
 public class ShippingCoefService {
 
   protected ShippingCoefRepository shippingCoefRepo;

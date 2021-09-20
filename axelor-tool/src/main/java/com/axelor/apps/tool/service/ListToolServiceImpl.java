@@ -1,8 +1,13 @@
 package com.axelor.apps.tool.service;
 
+import com.axelor.apps.tool.module.ToolModule;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ToolModule.PRIORITY)
 public class ListToolServiceImpl implements ListToolService {
 
   @Override

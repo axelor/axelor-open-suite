@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.util.InvoiceLineComparator;
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -39,6 +40,7 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -53,6 +55,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -74,11 +77,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class InvoicingProjectService {
 
   @Inject protected TimesheetService timesheetService;
@@ -90,6 +93,10 @@ public class InvoicingProjectService {
   @Inject protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject protected InvoicingProjectRepository invoicingProjectRepo;
+
+  @Inject protected AppBusinessProjectService appBusinessProjectService;
+
+  @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -106,7 +113,6 @@ public class InvoicingProjectService {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectSet().isEmpty()
         && invoicingProject.getProjectTaskSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
@@ -147,6 +153,7 @@ public class InvoicingProjectService {
             customer.getCurrency(),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(customer, PriceListRepository.TYPE_SALE),
+            null,
             null,
             null,
             null,
@@ -311,6 +318,11 @@ public class InvoicingProjectService {
   }
 
   public void setLines(InvoicingProject invoicingProject, Project project, int counter) {
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    if (appBusinessProject.getAutomaticInvoicing()) {
+      projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
+      timesheetLineBusinessService.timsheetLineInvoicing(project);
+    }
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
       return;
@@ -348,15 +360,32 @@ public class InvoicingProjectService {
 
     StringBuilder polQueryBuilder = new StringBuilder(commonQuery);
     polQueryBuilder.append(
-        " AND (self.purchaseOrder.statusSelect = 3 OR self.purchaseOrder.statusSelect = 4)");
+        " AND (self.purchaseOrder.statusSelect = :statusValidated OR self.purchaseOrder.statusSelect = :statusFinished)");
 
     Map<String, Object> polQueryMap = new HashMap<>();
     polQueryMap.put("project", project);
+    polQueryMap.put("statusValidated", PurchaseOrderRepository.STATUS_VALIDATED);
+    polQueryMap.put("statusFinished", PurchaseOrderRepository.STATUS_FINISHED);
 
-    StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
+    if (project.getIsShowTimeSpent()) {
+      StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
+      Map<String, Object> logTimesQueryMap = new HashMap<>();
+      logTimesQueryMap.put("project", project);
 
-    Map<String, Object> logTimesQueryMap = new HashMap<>();
-    logTimesQueryMap.put("project", project);
+      if (invoicingProject.getDeadlineDate() != null) {
+        logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");
+        logTimesQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
+      }
+
+      invoicingProject
+          .getLogTimesSet()
+          .addAll(
+              Beans.get(TimesheetLineRepository.class)
+                  .all()
+                  .filter(logTimesQueryBuilder.toString())
+                  .bind(logTimesQueryMap)
+                  .fetch());
+    }
 
     StringBuilder expenseLineQueryBuilder = new StringBuilder(commonQuery);
     expenseLineQueryBuilder.append(
@@ -381,9 +410,6 @@ public class InvoicingProjectService {
       polQueryBuilder.append(" AND self.purchaseOrder.orderDate <= :deadlineDate");
       polQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");
-      logTimesQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
-
       expenseLineQueryBuilder.append(" AND self.expenseDate <= :deadlineDate");
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
@@ -404,15 +430,6 @@ public class InvoicingProjectService {
                 .all()
                 .filter(polQueryBuilder.toString())
                 .bind(polQueryMap)
-                .fetch());
-
-    invoicingProject
-        .getLogTimesSet()
-        .addAll(
-            Beans.get(TimesheetLineRepository.class)
-                .all()
-                .filter(logTimesQueryBuilder.toString())
-                .bind(logTimesQueryMap)
                 .fetch());
 
     invoicingProject
@@ -440,7 +457,6 @@ public class InvoicingProjectService {
     invoicingProject.setPurchaseOrderLineSet(new HashSet<PurchaseOrderLine>());
     invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
-    invoicingProject.setProjectSet(new HashSet<Project>());
     invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
   }
 
@@ -496,9 +512,11 @@ public class InvoicingProjectService {
       List<File> fileList = new ArrayList<>();
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
+      Invoice invoice = invoicingProject.getInvoice();
+
       fileList.add(
           Beans.get(InvoicePrintServiceImpl.class)
-              .print(invoicingProject.getInvoice(), null, ReportSettings.FORMAT_PDF, null));
+              .print(invoice, null, ReportSettings.FORMAT_PDF, null));
       fileList.add(reportSettings.generate().getFile());
 
       MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));
@@ -544,7 +562,6 @@ public class InvoicingProjectService {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectSet().isEmpty()
         && invoicingProject.getProjectTaskSet().isEmpty()) {
 
       return invoicingProject;

@@ -17,10 +17,15 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.project.module.ProjectModule;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.db.MetaJsonField;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectService {
 
   @Override

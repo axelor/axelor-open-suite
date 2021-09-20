@@ -31,9 +31,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
 public class TestFixedAssetService {
@@ -48,7 +48,7 @@ public class TestFixedAssetService {
   /*
    * Prepare dependencies by mocking them
    */
-  @Before
+  @BeforeEach
   public void prepare() {
 
     fixedAssetRepo = mock(FixedAssetRepository.class);
@@ -96,7 +96,7 @@ public class TestFixedAssetService {
   @Test
   public void testGenerateAndComputeLinesSimpleLinearFixedAsset() {
     FixedAsset fixedAsset = generateAndComputeLineSimpleLinearFixedAsset();
-    Assert.assertTrue(
+    Assertions.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
             && fixedAsset.getFixedAssetLineList().size() == 5);
   }
@@ -184,7 +184,7 @@ public class TestFixedAssetService {
   @Test
   public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeeded() {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
-    Assert.assertTrue(
+    Assertions.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
             && fixedAsset.getFixedAssetLineList().size() == 5);
   }
@@ -272,7 +272,7 @@ public class TestFixedAssetService {
   @Test
   public void testGenerateAndComputeLinesProrataLinearFixedAsset() {
     FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAsset();
-    Assert.assertTrue(
+    Assertions.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
             && fixedAsset.getFixedAssetLineList().size() == 6);
   }
@@ -372,7 +372,7 @@ public class TestFixedAssetService {
   @Test
   public void testGenerateAndComputeLinesUsProrataLinearFixedAsset() {
     FixedAsset fixedAsset = generateAndComputeLineUsProrataLinearFixedAsset();
-    Assert.assertTrue(
+    Assertions.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
             && fixedAsset.getFixedAssetLineList().size() == 8);
   }
@@ -497,7 +497,7 @@ public class TestFixedAssetService {
   @Test
   public void testGenerateAndComputeLinesProrataDegressiveFixedAsset() {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
-    Assert.assertTrue(
+    Assertions.assertTrue(
         fixedAsset.getFixedAssetLineList() != null
             && fixedAsset.getFixedAssetLineList().size() == 7);
   }
@@ -599,7 +599,7 @@ public class TestFixedAssetService {
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
             new BigDecimal("102638.35"));
     fixedAssetService.generateAndComputeLines(fixedAsset);
-    Assert.assertEquals(
+    Assertions.assertEquals(
         LocalDate.of(2027, 12, 31),
         fixedAsset.getFixedAssetLineList().get(6).getDepreciationDate());
   }

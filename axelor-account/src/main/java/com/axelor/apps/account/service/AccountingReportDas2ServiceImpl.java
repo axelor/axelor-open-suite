@@ -2,20 +2,25 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.tool.StringHTMLListBuilder;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Service {
 
   protected AccountingReportRepository accountingReportRepo;

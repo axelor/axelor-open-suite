@@ -5,15 +5,20 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.JsonContext;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProductService {
 
   protected ProdProductService prodProductService;

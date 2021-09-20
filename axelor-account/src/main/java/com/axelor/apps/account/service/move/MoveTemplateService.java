@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,13 +42,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class MoveTemplateService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -91,7 +91,6 @@ public class MoveTemplateService {
     moveTemplateRepo.save(moveTemplate);
   }
 
-  @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(
       MoveTemplateType moveTemplateType,
@@ -112,7 +111,7 @@ public class MoveTemplateService {
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(MoveTemplate moveTemplate, List<HashMap<String, Object>> dataList)
       throws AxelorException {
-    List<Long> moveList = new ArrayList<Long>();
+    List<Long> moveList = new ArrayList<>();
     BigDecimal hundred = new BigDecimal(100);
     for (HashMap<String, Object> data : dataList) {
       LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
@@ -146,7 +145,8 @@ public class MoveTemplateService {
                     partner,
                     moveDate,
                     null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
+                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                    0);
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
@@ -168,7 +168,7 @@ public class MoveTemplateService {
           BigDecimal amount =
               moveBalance
                   .multiply(moveTemplateLine.getPercentage())
-                  .divide(hundred, RoundingMode.HALF_EVEN);
+                  .divide(hundred, RoundingMode.HALF_UP);
 
           MoveLine moveLine =
               moveLineService.createMoveLine(
@@ -216,7 +216,7 @@ public class MoveTemplateService {
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(LocalDate moveDate, List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
-    List<Long> moveList = new ArrayList<Long>();
+    List<Long> moveList = new ArrayList<>();
 
     for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
 
@@ -234,7 +234,8 @@ public class MoveTemplateService {
                     null,
                     moveDate,
                     null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
+                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                    0);
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
@@ -247,7 +248,7 @@ public class MoveTemplateService {
                   moveTemplateLine.getPartner(),
                   moveTemplateLine.getAccount(),
                   amount,
-                  moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) == 1,
+                  moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
                   moveDate,
                   moveDate,
                   counter,
@@ -313,7 +314,7 @@ public class MoveTemplateService {
       }
     }
 
-    LOG.debug("Debit percent: {}, Credit percent: {}", new Object[] {debitPercent, creditPercent});
+    LOG.debug("Debit percent: {}, Credit percent: {}", debitPercent, creditPercent);
     if (debitPercent.compareTo(BigDecimal.ZERO) != 0
         && creditPercent.compareTo(BigDecimal.ZERO) != 0
         && debitPercent.compareTo(creditPercent) == 0) {
@@ -332,7 +333,7 @@ public class MoveTemplateService {
       credit = credit.add(line.getCredit());
     }
 
-    LOG.debug("Debit : {}, Credit : {}", new Object[] {debit, credit});
+    LOG.debug("Debit : {}, Credit : {}", debit, credit);
     if (debit.compareTo(BigDecimal.ZERO) != 0
         && credit.compareTo(BigDecimal.ZERO) != 0
         && debit.compareTo(credit) == 0) {

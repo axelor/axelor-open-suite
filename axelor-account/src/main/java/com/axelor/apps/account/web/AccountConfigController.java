@@ -22,9 +22,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class AccountConfigController {
 
   public void deactivateSimulatedMoves(ActionRequest request, ActionResponse response) {

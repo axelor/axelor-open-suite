@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,9 +35,12 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
@@ -186,7 +189,7 @@ public class SaleOrderController {
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.isSelected()) {
+            if (saleOrderLine.isSelected() && saleOrderLine.getProduct() != null) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
               }
@@ -275,7 +278,7 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   Partner.class,
-                  new Long(
+                  Long.valueOf(
                       (Integer)
                           ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
       values.put("supplierPartner", supplierPartner);
@@ -283,7 +286,7 @@ public class SaleOrderController {
           (String) request.getContext().get("saleOrderLineIdSelected");
 
       for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-        saleOrderLineIdSelected.add(new Long(saleOrderId));
+        saleOrderLineIdSelected.add(Long.valueOf(saleOrderId));
       }
       values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
       values.put("isDirectOrderLocation", isDirectOrderLocation);
@@ -394,13 +397,13 @@ public class SaleOrderController {
         // No confirmation popup, sale orders are content in a parameter list
         List<Map> saleOrderMap = (List<Map>) request.getContext().get(lineToMerge);
         for (Map map : saleOrderMap) {
-          saleOrderIdList.add(new Long((Integer) map.get("id")));
+          saleOrderIdList.add(Long.valueOf((Integer) map.get("id")));
         }
       } else {
         // After confirmation popup, sale order's id are in a string separated by ","
         String saleOrderIdListStr = (String) request.getContext().get(lineToMerge);
         for (String saleOrderId : saleOrderIdListStr.split(",")) {
-          saleOrderIdList.add(new Long(saleOrderId));
+          saleOrderIdList.add(Long.valueOf(saleOrderId));
         }
         fromPopup = true;
       }
@@ -506,28 +509,30 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("priceList")).get("id")));
     }
     if (request.getContext().get("contactPartner") != null) {
       commonContactPartner =
           JPA.em()
               .find(
                   Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
     }
     if (request.getContext().get("team") != null) {
       commonTeam =
           JPA.em()
               .find(
                   Team.class,
-                  new Long((Integer) ((Map) request.getContext().get("team")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("team")).get("id")));
     }
     if (request.getContext().get("stockLocation") != null) {
       commonLocation =
           JPA.em()
               .find(
                   StockLocation.class,
-                  new Long((Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
     }
 
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {
@@ -634,9 +639,11 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
-      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
-    }
+    response.setAttr(
+        "operationSelect",
+        "value",
+        operationSelectValues.stream().min(Integer::compareTo).orElse(null));
+
     response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 
@@ -906,6 +913,96 @@ public class SaleOrderController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String message =
+          Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
+      if (message != null) {
+        response.setFlash(message);
+      }
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+  /**
+   * Called from sale order form view, on invoiced partner select. Call {@link
+   * PartnerSupplychainLinkService#computePartnerFilter}
+   *
+   * @param request
+   * @param response
+   */
+  public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  saleOrder.getClientPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+
+      response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view, on delivered partner select. Call {@link
+   * PartnerSupplychainLinkService#computePartnerFilter}
+   *
+   * @param request
+   * @param response
+   */
+  public void setDeliveredPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  saleOrder.getClientPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+
+      response.setAttr("deliveredPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order view, on delivery date change. <br>
+   * Update stock reservation date for each sale order line by calling {@link
+   * SaleOrderLineServiceSupplyChain#updateStockMoveReservationDateTime(SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateStockReservationDate(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .updateStockMoveReservationDateTime(saleOrderLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(
+      ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderSupplychainService.class)
+          .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
+      response.setValues(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

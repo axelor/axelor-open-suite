@@ -1112,7 +1112,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                                     <structure>
                                                                         <property name="paramName">param_1</property>
                                                                         <simple-property-list name="expression">
-                                                                            <value type="javascript">data["unitName"]</value>
+                                                                            <value type="javascript">'value:'+data["unitName"]</value>
                                                                         </simple-property-list>
                                                                     </structure>
                                                                 </list-property>
@@ -1131,7 +1131,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                                     </structure>
                                                                 </list-property>
                                                                 <property name="contentType">html</property>
-                                                                <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"]!= null) {row["translation"]} else {data._outer["unitName"]}</VALUE-OF>]]></text-property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{dimension["Rows"]["unitName"]}</VALUE-OF>]]></text-property>
                                                             </text>
                                                         </property>
                                                         <property name="borderTopStyle">solid</property>

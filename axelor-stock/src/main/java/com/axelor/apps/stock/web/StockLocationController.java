@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,7 +67,9 @@ public class StockLocationController {
     StockLocationRepository stockLocationRepository = Beans.get(StockLocationRepository.class);
 
     StockLocation stockLocation =
-        stockLocationId != null ? stockLocationRepository.find(new Long(stockLocationId)) : null;
+        stockLocationId != null
+            ? stockLocationRepository.find(Long.valueOf(stockLocationId))
+            : null;
     String locationIds = "";
 
     String printType = (String) context.get("printingType");
@@ -79,7 +81,7 @@ public class StockLocationController {
       for (Integer it : lstSelectedLocations) {
         Set<Long> idSet =
             stockLocationService.getContentStockLocationIds(
-                stockLocationRepository.find(new Long(it)));
+                stockLocationRepository.find(Long.valueOf(it)));
         if (!idSet.isEmpty()) {
           locationIds += Joiner.on(",").join(idSet) + ",";
         }
@@ -88,7 +90,7 @@ public class StockLocationController {
 
     if (!locationIds.equals("")) {
       locationIds = locationIds.substring(0, locationIds.length() - 1);
-      stockLocation = stockLocationRepository.find(new Long(lstSelectedLocations.get(0)));
+      stockLocation = stockLocationRepository.find(Long.valueOf(lstSelectedLocations.get(0)));
     } else if (stockLocation != null && stockLocation.getId() != null) {
       Set<Long> idSet =
           stockLocationService.getContentStockLocationIds(
@@ -136,7 +138,7 @@ public class StockLocationController {
   public void setStocklocationValue(ActionRequest request, ActionResponse response) {
 
     StockLocation stockLocation = request.getContext().asType(StockLocation.class);
-    if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+    if (stockLocation.getIsValued()) {
       response.setValue(
           "stockLocationValue",
           Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));

@@ -3,10 +3,15 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.module.AccountModule;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AnalyticDistributionTemplateServiceImpl
     implements AnalyticDistributionTemplateService {
 

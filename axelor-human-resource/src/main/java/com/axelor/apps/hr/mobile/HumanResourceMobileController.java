@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -76,10 +76,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class HumanResourceMobileController {
 
   /**
@@ -112,7 +112,7 @@ public class HumanResourceMobileController {
       expenseLine.setFromCity(request.getData().get("locationFrom").toString());
       expenseLine.setToCity(request.getData().get("locationTo").toString());
       expenseLine.setKilometricTypeSelect(
-          new Integer(request.getData().get("allowanceTypeSelect").toString()));
+          Integer.valueOf(request.getData().get("allowanceTypeSelect").toString()));
       expenseLine.setComments(request.getData().get("comments").toString());
       expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
       expenseLine.setProject(
@@ -125,7 +125,7 @@ public class HumanResourceMobileController {
       expenseLine.setExpenseProduct(expenseProduct);
 
       Employee employee = user.getEmployee();
-      if (employee != null && !EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (employee != null && !EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         KilometricAllowParamRepository kilometricAllowParamRepo =
             Beans.get(KilometricAllowParamRepository.class);
 
@@ -263,7 +263,7 @@ public class HumanResourceMobileController {
         expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
         expenseLine.setUntaxedAmount(
             expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
-        expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
+        expenseLine.setToInvoice(Boolean.valueOf(requestData.get("toInvoice").toString()));
         String justification = (String) requestData.get("justification");
 
         if (!Strings.isNullOrEmpty(justification)) {
@@ -335,7 +335,7 @@ public class HumanResourceMobileController {
       List<Product> productList =
           Beans.get(ProductRepository.class)
               .all()
-              .filter("self.isActivity = true AND dtype = 'Product'")
+              .filter("self.isActivity = true AND self.dtype = 'Product'")
               .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();
@@ -381,10 +381,10 @@ public class HumanResourceMobileController {
       User user = AuthUtils.getUser();
       Project project =
           Beans.get(ProjectRepository.class)
-              .find(new Long(request.getData().get("project").toString()));
+              .find(Long.valueOf(request.getData().get("project").toString()));
       Product product =
           Beans.get(ProductRepository.class)
-              .find(new Long(request.getData().get("activity").toString()));
+              .find(Long.valueOf(request.getData().get("activity").toString()));
       LocalDate date =
           LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
       TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
@@ -510,13 +510,13 @@ public class HumanResourceMobileController {
             LocalDateTime.parse(
                 requestData.get("fromDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
-      leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
+      leave.setStartOnSelect(Integer.valueOf(requestData.get("startOn").toString()));
       if (requestData.get("toDateT") != null) {
         leave.setToDateT(
             LocalDateTime.parse(
                 requestData.get("toDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
-      leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
+      leave.setEndOnSelect(Integer.valueOf(requestData.get("endOn").toString()));
       leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
       leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
       if (requestData.get("comments") != null) {
@@ -618,7 +618,7 @@ public class HumanResourceMobileController {
           Beans.get(ProductRepository.class)
               .all()
               .filter(
-                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND dtype = 'Product'")
+                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND self.dtype = 'Product'")
               .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();

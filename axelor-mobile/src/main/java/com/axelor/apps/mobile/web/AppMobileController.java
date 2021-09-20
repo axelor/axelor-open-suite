@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 
-@RequestScoped
+@ApplicationScoped
 public class AppMobileController {
 
   public void getAppMobile(ActionRequest request, ActionResponse response) {
@@ -39,7 +39,7 @@ public class AppMobileController {
 
     AppMobile appMobile = (AppMobile) appService.getApp("mobile");
 
-    data.put("isAppMobileEnable", appMobile.getActive());
+    data.put("isAppMobileEnable", appMobile.getApp().getActive());
     data.put("isSaleAppEnable", appService.isApp("sale") ? appMobile.getIsSaleAppEnable() : false);
     data.put("isCrmAppEnable", appService.isApp("crm") ? appMobile.getIsCrmAppEnable() : false);
     data.put(
@@ -55,6 +55,16 @@ public class AppMobileController {
     data.put(
         "isQualityAppEnable",
         appService.isApp("quality") ? appMobile.getIsQualityAppEnable() : false);
+    data.put(
+        "isStockAppEnable", appService.isApp("stock") ? appMobile.getIsStockAppEnable() : false);
+    boolean isProductionAppEnable =
+        appService.isApp("production") ? appMobile.getIsProductionAppEnable() : false;
+    data.put("isProductionAppEnable", isProductionAppEnable);
+
+    if (isProductionAppEnable) {
+      data.put(
+          "mOFilterOnStockDetailStatusSelect", appMobile.getmOFilterOnStockDetailStatusSelect());
+    }
 
     data.put("offlineRecordLimit", appMobile.getOfflineRecordLimit());
 

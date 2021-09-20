@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.db.repo.FileTabRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.readers.DataReaderFactory;
-import com.axelor.apps.base.service.readers.DataReaderService;
+import com.axelor.apps.tool.reader.DataReaderFactory;
+import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -57,13 +57,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-@RequestScoped
+@ApplicationScoped
 public class ValidatorService {
 
   public static final String STRING = "String";

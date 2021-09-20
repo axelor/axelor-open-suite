@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,9 +31,7 @@ public interface ClientViewService {
   /* Project */
   public List<Filter> getTotalProjectsOfUser(User user);
 
-  public List<Filter> getNewTasksOfUser(User user);
-
-  public List<Filter> getTasksInProgressOfUser(User user);
+  public List<Filter> getTasksInCompletedOfUser(User user);
 
   public List<Filter> getTasksDueOfUser(User user);
 

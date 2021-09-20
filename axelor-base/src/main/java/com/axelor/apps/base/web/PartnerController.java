@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -411,11 +411,15 @@ public class PartnerController {
     }
   }
 
-  public void setTaxNbr(ActionRequest request, ActionResponse response) {
+  public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       String taxNbr = Beans.get(PartnerService.class).getTaxNbrFromRegistrationCode(partner);
+      String nic = Beans.get(PartnerService.class).getNicFromRegistrationCode(partner);
+      String siren = Beans.get(PartnerService.class).getSirenFromRegistrationCode(partner);
       response.setValue("taxNbr", taxNbr);
+      response.setValue("nic", nic);
+      response.setValue("siren", siren);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

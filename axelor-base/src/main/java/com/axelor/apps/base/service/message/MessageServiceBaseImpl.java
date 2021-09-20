@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.ModelEmailLink;
 import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.db.repo.ModelEmailLinkRepository;
 import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -30,6 +33,8 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -43,12 +48,15 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
@@ -56,10 +64,11 @@ import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 @Alternative
 @Priority(BaseModule.PRIORITY)
-public class MessageServiceBaseImpl extends MessageServiceImpl {
+public class MessageServiceBaseImpl extends MessageServiceImpl implements MessageBaseService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -115,8 +124,75 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
     message.setSenderUser(AuthUtils.getUser());
     message.setCompany(userService.getUserActiveCompany());
+    this.manageRelatedTo(message);
 
     return messageRepository.save(message);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void manageRelatedTo(Message message) {
+
+    AppBase appBase = appBaseService.getAppBase();
+    if (ObjectUtils.isEmpty(appBase.getEmailLinkList())) {
+      return;
+    }
+
+    EmailAddress fromEmailAddress = message.getFromEmailAddress();
+    Set<EmailAddress> toEmailAddressList = message.getToEmailAddressSet();
+    List<String> emailAddresses = null;
+    if (ObjectUtils.notEmpty(toEmailAddressList)) {
+      emailAddresses =
+          toEmailAddressList.stream().map(EmailAddress::getAddress).collect(Collectors.toList());
+    }
+
+    if (appBase.getManageCcBccRelatedTo()) {
+      Set<EmailAddress> ccEmailAddressList = message.getCcEmailAddressSet();
+      Set<EmailAddress> bccEmailAddressList = message.getBccEmailAddressSet();
+      if (ObjectUtils.notEmpty(ccEmailAddressList)) {
+        emailAddresses.addAll(
+            ccEmailAddressList.stream().map(EmailAddress::getAddress).collect(Collectors.toList()));
+      }
+      if (ObjectUtils.notEmpty(bccEmailAddressList)) {
+        emailAddresses.addAll(
+            bccEmailAddressList.stream()
+                .map(EmailAddress::getAddress)
+                .collect(Collectors.toList()));
+      }
+    }
+
+    for (ModelEmailLink modelEmailLink : appBase.getEmailLinkList()) {
+      try {
+        String className = modelEmailLink.getMetaModel().getFullName();
+        Class<Model> klass = (Class<Model>) Class.forName(className);
+        List<Model> relatedRecords = new ArrayList<>();
+
+        if (modelEmailLink.getAddressTypeSelect() == ModelEmailLinkRepository.ADDRESS_TYPE_FROM
+            && fromEmailAddress != null
+            && StringUtils.notBlank(fromEmailAddress.getAddress())) {
+          relatedRecords.addAll(
+              JPA.all(klass)
+                  .filter(String.format("self.%s = :email", modelEmailLink.getEmailField()))
+                  .bind("email", fromEmailAddress.getAddress())
+                  .fetch());
+        }
+
+        if (modelEmailLink.getAddressTypeSelect() == ModelEmailLinkRepository.ADDRESS_TYPE_TO
+            && ObjectUtils.notEmpty(emailAddresses)) {
+          relatedRecords.addAll(
+              JPA.all(klass)
+                  .filter(String.format("self.%s IN :emails", modelEmailLink.getEmailField()))
+                  .bind("emails", emailAddresses)
+                  .fetch());
+        }
+
+        for (Model relatedRecord : relatedRecords) {
+          addMessageRelatedTo(message, className, relatedRecord.getId());
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -172,6 +248,21 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
       return super.sendByEmail(message);
     }
     return message;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendSMS(Message message) throws AxelorException, IOException, JSONException {
+
+    if (Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+      return super.sendSMS(message);
+    }
+    return message;
+  }
+
+  @Override
+  protected String getSender(Message message) {
+    return message.getCompany().getCode();
   }
 
   public List<String> getEmailAddressNames(Set<EmailAddress> emailAddressSet) {

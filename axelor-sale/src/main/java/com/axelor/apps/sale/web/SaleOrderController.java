@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,6 +52,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -72,6 +73,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import org.eclipse.birt.core.exception.BirtException;
@@ -137,7 +141,7 @@ public class SaleOrderController {
   public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLS);
+    this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
   public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
@@ -172,9 +176,11 @@ public class SaleOrderController {
 
       } else if (context.get("id") != null) {
 
-        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+        SaleOrder saleOrder =
+            Beans.get(SaleOrderRepository.class).find(Long.parseLong(context.get("id").toString()));
         title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
         fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        response.setCanClose(true);
 
         logger.debug("Printing " + title);
       } else {
@@ -238,7 +244,7 @@ public class SaleOrderController {
 
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -359,13 +365,13 @@ public class SaleOrderController {
         // No confirmation popup, sale orders are content in a parameter list
         List<Map> saleOrderMap = (List<Map>) request.getContext().get(lineToMerge);
         for (Map map : saleOrderMap) {
-          saleOrderIdList.add(new Long((Integer) map.get("id")));
+          saleOrderIdList.add(Long.valueOf((Integer) map.get("id")));
         }
       } else {
         // After confirmation popup, sale order's id are in a string separated by ","
         String saleOrderIdListStr = (String) request.getContext().get(lineToMerge);
         for (String saleOrderId : saleOrderIdListStr.split(",")) {
-          saleOrderIdList.add(new Long(saleOrderId));
+          saleOrderIdList.add(Long.valueOf(saleOrderId));
         }
         fromPopup = true;
       }
@@ -453,21 +459,22 @@ public class SaleOrderController {
           JPA.em()
               .find(
                   PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("priceList")).get("id")));
     }
     if (request.getContext().get("contactPartner") != null) {
       commonContactPartner =
           JPA.em()
               .find(
                   Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
     }
     if (request.getContext().get("team") != null) {
       commonTeam =
           JPA.em()
               .find(
                   Team.class,
-                  new Long((Integer) ((Map) request.getContext().get("team")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("team")).get("id")));
     }
 
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {
@@ -695,33 +702,37 @@ public class SaleOrderController {
     response.setAttr("priceList", "domain", domain);
   }
 
-  public void updateSaleOrderLineTax(ActionRequest request, ActionResponse response)
+  public void updateSaleOrderLineList(ActionRequest request, ActionResponse response)
       throws AxelorException {
+
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
     Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-
     response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 
   public void addPack(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
+    try {
 
-    String saleOrderId = context.get("_id").toString();
-    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(Long.parseLong(saleOrderId));
+      Context context = request.getContext();
 
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> packMap =
-        (LinkedHashMap<String, Object>) request.getContext().get("pack");
-    String packId = packMap.get("id").toString();
-    Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
+      String saleOrderId = context.get("_id").toString();
+      SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(Long.parseLong(saleOrderId));
 
-    String qty = context.get("qty").toString();
-    BigDecimal packQty = new BigDecimal(qty);
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> packMap =
+          (LinkedHashMap<String, Object>) request.getContext().get("pack");
+      String packId = packMap.get("id").toString();
+      Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
 
-    saleOrder = Beans.get(SaleOrderService.class).addPack(saleOrder, pack, packQty);
+      String qty = context.get("qty").toString();
+      BigDecimal packQty = new BigDecimal(qty);
 
-    response.setCanClose(true);
+      saleOrder = Beans.get(SaleOrderService.class).addPack(saleOrder, pack, packQty);
+
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void getSaleOrderPartnerDomain(ActionRequest request, ActionResponse response) {
@@ -745,6 +756,18 @@ public class SaleOrderController {
     response.setAttr("clientPartner", "domain", domain);
   }
 
+  public void handleComplementaryProducts(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    try {
+      saleOrder.setSaleOrderLineList(
+          Beans.get(SaleOrderService.class).handleComplementaryProducts(saleOrder));
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     if (Boolean.FALSE.equals(Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())
@@ -758,5 +781,35 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  public void seperateInNewQuotation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
+    Optional<Entry<String, Object>> SOLinesEntry =
+        contextEntry.stream()
+            .filter(entry -> entry.getKey().equals("saleOrderLineList"))
+            .findFirst();
+    if (!SOLinesEntry.isPresent()) {
+      return;
+    }
+
+    Entry<String, Object> entry = SOLinesEntry.get();
+    @SuppressWarnings("unchecked")
+    ArrayList<LinkedHashMap<String, Object>> SOLines =
+        (ArrayList<LinkedHashMap<String, Object>>) entry.getValue();
+
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder copiedSO =
+        Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
+    response.setView(
+        ActionView.define("Sale order")
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .add("grid", "sale-order-grid")
+            .param("forceEdit", "true")
+            .context("_showRecord", copiedSO.getId())
+            .map());
   }
 }

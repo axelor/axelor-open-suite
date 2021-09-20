@@ -19,13 +19,18 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorRepository {
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -95,13 +95,8 @@ public class InvoiceLineController {
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
-    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
 
     Invoice invoice = this.getInvoice(context);
 
@@ -112,6 +107,7 @@ public class InvoiceLineController {
       return;
     }
 
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     BigDecimal exTaxTotal;
     BigDecimal companyExTaxTotal;
     BigDecimal inTaxTotal;
@@ -155,9 +151,6 @@ public class InvoiceLineController {
       throws AxelorException {
     Context context = request.getContext();
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
     Map<String, Object> productInformation = new HashMap<>();
@@ -185,10 +178,6 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
 
     Invoice invoice = this.getInvoice(context);
 
@@ -277,10 +266,6 @@ public class InvoiceLineController {
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
-
     Invoice invoice = this.getInvoice(context);
 
     if (invoice == null
@@ -321,13 +306,16 @@ public class InvoiceLineController {
 
     Context parentContext = context.getParent();
 
-    Invoice invoice = parentContext.asType(Invoice.class);
+    Invoice invoice;
 
-    if (!parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
+    if (parentContext == null
+        || !parentContext.getContextClass().toString().equals(Invoice.class.toString())) {
 
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
       invoice = invoiceLine.getInvoice();
+    } else {
+      invoice = parentContext.asType(Invoice.class);
     }
 
     return invoice;
@@ -390,9 +378,6 @@ public class InvoiceLineController {
     Context context = request.getContext();
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
 
-    if (context.getParent().getContextClass() == InvoiceLine.class) {
-      context = request.getContext().getParent();
-    }
     Invoice invoice = this.getInvoice(context);
     Product product = invoiceLine.getProduct();
 
@@ -407,7 +392,7 @@ public class InvoiceLineController {
 
       Optional<AccountManagement> optionalFixedAssetCategory =
           product.getAccountManagementList().stream()
-              .filter(am -> am.getCompany() == invoice.getCompany())
+              .filter(am -> invoice.getCompany().equals(am.getCompany()))
               .findFirst();
 
       fixedAssetCategory =
@@ -416,5 +401,23 @@ public class InvoiceLineController {
               : null;
     }
     response.setValue("fixedAssetCategory", fixedAssetCategory);
+  }
+
+  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+      invoiceLine = invoiceLineService.selectDefaultDistributionTemplate(invoiceLine);
+
+      response.setValue(
+          "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
+      response.setValue(
+          "analyticMoveLineList",
+          invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

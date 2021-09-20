@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,12 +41,12 @@ import com.axelor.inject.Beans;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class BatchTimesheetValidationReminder extends AbstractBatch {
 
   protected TemplateMessageService templateMessageService;
@@ -112,7 +112,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     for (Timesheet timesheet : timesheetList) {
       try {
         Employee employee = timesheet.getUser().getEmployee();
-        if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
           continue;
         }
         Message message =
@@ -143,7 +143,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     for (Timesheet timesheet : timesheetList) {
       try {
         Employee employee = timesheet.getUser().getEmployee();
-        if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
           continue;
         }
         generateAndSendMessage(employee);
@@ -165,7 +165,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 
     for (Employee employee : employeeList) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       try {
@@ -185,7 +185,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 
     for (Employee employee : employeeList) {
-      if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }
       try {

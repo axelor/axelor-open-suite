@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+  id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -26,4 +28,7 @@ dependencies {
 	implementation libs.iban4j
 
     implementation libs.commons_io
+	implementation libs.wslite
+
+	testImplementation libs.mockito
 }

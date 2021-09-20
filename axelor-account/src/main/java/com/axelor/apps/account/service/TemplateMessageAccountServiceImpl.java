@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,14 +21,16 @@ import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import java.io.IOException;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class TemplateMessageAccountServiceImpl implements TemplateMessageAccountService {
 
   protected TemplateMessageService templateMessageService;
@@ -44,9 +46,18 @@ public class TemplateMessageAccountServiceImpl implements TemplateMessageAccount
       throws ClassNotFoundException, IOException, InstantiationException, AxelorException,
           IllegalAccessException {
     Message message = this.templateMessageService.generateMessage(debtRecoveryHistory, template);
-    message.setRelatedTo2Select(Partner.class.getCanonicalName());
-    message.setRelatedTo2SelectId(
-        debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId());
+    Long id =
+        debtRecoveryHistory.getDebtRecovery().getTradingName() == null
+            ? debtRecoveryHistory.getDebtRecovery().getAccountingSituation().getPartner().getId()
+            : debtRecoveryHistory
+                .getDebtRecovery()
+                .getTradingNameAccountingSituation()
+                .getPartner()
+                .getId();
+
+    Beans.get(MessageService.class)
+        .addMessageRelatedTo(message, Partner.class.getCanonicalName(), id);
+
     return message;
   }
 }

@@ -5,6 +5,7 @@ import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -14,8 +15,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import org.apache.commons.collections.CollectionUtils;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class WorkCenterServiceImpl implements WorkCenterService {
 
   @Override

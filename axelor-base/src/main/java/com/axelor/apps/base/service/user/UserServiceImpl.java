@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,8 +62,9 @@ import org.apache.commons.math3.exception.TooManyIterationsException;
 import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
-/** UserService is a class that implement all methods for user information */
+/** UserService is a class that implements all methods for user information */
 @Alternative
 @Priority(BaseModule.PRIORITY)
 public class UserServiceImpl implements UserService {
@@ -335,7 +336,7 @@ public class UserServiceImpl implements UserService {
   @Transactional(rollbackOn = {Exception.class})
   public void processChangedPassword(User user)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException {
+          MessagingException, IOException, AxelorException, JSONException {
     Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
 
     try {
@@ -427,5 +428,15 @@ public class UserServiceImpl implements UserService {
       Session session = AuthUtils.getSubject().getSession();
       session.setAttribute("loginDate", todayDateTime);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Partner setUserPartner(Partner partner, User user) {
+    partner.setUser(user);
+    partner.setTeam(user.getActiveTeam());
+    user.setPartner(partner);
+    userRepo.save(user);
+    return partner;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.tool;
 
-import javax.enterprise.context.RequestScoped;
-import org.junit.Assert;
-import org.junit.Test;
+import javax.enterprise.context.ApplicationScoped;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-@RequestScoped
+@ApplicationScoped
 public class TestStringTool {
 
   @Test
@@ -30,7 +30,7 @@ public class TestStringTool {
     String actual = "Test";
     String result = "test";
 
-    Assert.assertEquals(StringTool.toFirstLower(actual), result);
+    Assertions.assertEquals(StringTool.toFirstLower(actual), result);
   }
 
   @Test
@@ -39,7 +39,7 @@ public class TestStringTool {
     String actual = "test";
     String result = "Test";
 
-    Assert.assertEquals(StringTool.toFirstUpper(actual), result);
+    Assertions.assertEquals(StringTool.toFirstUpper(actual), result);
   }
 
   @Test
@@ -49,12 +49,12 @@ public class TestStringTool {
     String resultRight = "test    ";
     String resultLeft = "    test";
 
-    Assert.assertEquals(StringTool.fillStringRight(actual, ' ', 8), resultRight);
-    Assert.assertEquals(StringTool.fillStringRight(actual, ' ', 2), "te");
+    Assertions.assertEquals(StringTool.fillStringRight(actual, ' ', 8), resultRight);
+    Assertions.assertEquals(StringTool.fillStringRight(actual, ' ', 2), "te");
 
-    Assert.assertEquals(StringTool.fillStringLeft(actual, ' ', 8), resultLeft);
-    Assert.assertEquals(StringTool.fillStringLeft(actual, ' ', 2), "st");
+    Assertions.assertEquals(StringTool.fillStringLeft(actual, ' ', 8), resultLeft);
+    Assertions.assertEquals(StringTool.fillStringLeft(actual, ' ', 2), "st");
 
-    Assert.assertEquals(StringTool.fillStringLeft(resultRight, ' ', 4), "    ");
+    Assertions.assertEquals(StringTool.fillStringLeft(resultRight, ' ', 4), "    ");
   }
 }

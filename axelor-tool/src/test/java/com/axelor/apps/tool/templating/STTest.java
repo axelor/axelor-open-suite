@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.tool.templating;
 
 import com.axelor.apps.tool.db.Contact;
 import com.axelor.apps.tool.db.Title;
+import com.axelor.test.Cdi;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.collect.Maps;
 import java.math.BigDecimal;
@@ -26,13 +27,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Map;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Cdi
+@TestMethodOrder(MethodName.class)
 public class STTest {
 
   public Contact contact;
@@ -46,7 +48,7 @@ public class STTest {
           + "<p><strong>Title: $contact.title$</p>"
           + "<p><strong>First Name:</strong> $contact.firstName$</p>"
           + "<p><strong>Last Name:</strong> $contact.lastName;format=\"upper\"$</p>"
-          + "<p><strong>DateOfBirth:</strong> $contact.dateOfBirth;format=\"dd/MM/YYYY\"$</p>"
+          + "<p><strong>DateOfBirth:</strong> $contact.dateOfBirth;format=\"dd/MM/yyyy\"$</p>"
           + "<p>&nbsp;</p>"
           + "<p><em>Contact me:</em>&nbsp;<a href='mailto:$contact.email$' target='_blank'>$contact.fullName$</a></p>"
           + "<hr />$__time__;format=\"HH\"$"
@@ -62,7 +64,7 @@ public class STTest {
           + "private String testKey3 = $testKey3$<br />"
           + "}</pre>";
 
-  @Before
+  @BeforeEach
   public void prepareTest() {
     contact = new Contact("Doe", "John");
     contact.setEmail("john.doe@axelor.com");
@@ -130,8 +132,8 @@ public class STTest {
     maker.setTemplate(content);
     maker.setContext(contact, map, "contact");
     String result = maker.make();
-    Assert.assertNotNull(result);
-    Assert.assertEquals(contentFinal, result);
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(contentFinal, result);
   }
 
   @Test
@@ -145,12 +147,12 @@ public class STTest {
       maker.setContext(contact, map, "contact");
       String result = maker.make();
 
-      Assert.assertNotNull(result);
-      Assert.assertEquals(contentFinal, result);
+      Assertions.assertNotNull(result);
+      Assertions.assertEquals(contentFinal, result);
     }
 
     // Assert test total time < 15s
-    Assert.assertTrue(((System.currentTimeMillis() - start) / 1000) < 15);
+    Assertions.assertTrue(((System.currentTimeMillis() - start) / 1000) < 15);
   }
 
   @Test
@@ -173,12 +175,12 @@ public class STTest {
         maker.setContext(contact, map, "contact");
         String result = maker.make();
 
-        Assert.assertNotNull(result);
-        Assert.assertEquals(contentFinal, result);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(contentFinal, result);
       }
 
       // Assert test total time < 15s
-      Assert.assertTrue(((System.currentTimeMillis() - start) / 1000) < 15);
+      Assertions.assertTrue(((System.currentTimeMillis() - start) / 1000) < 15);
     }
   }
 }

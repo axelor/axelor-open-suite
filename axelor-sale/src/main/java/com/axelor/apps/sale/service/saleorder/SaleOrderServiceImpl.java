@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,14 +19,18 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
+import com.axelor.apps.sale.db.ComplementaryProduct;
+import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -35,29 +39,30 @@ import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
+import com.axelor.db.JpaSequence;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
-@RequestScoped
+@ApplicationScoped
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  private SaleOrderLineService saleOrderLineService;
+  protected SaleOrderLineService saleOrderLineService;
   protected AppBaseService appBaseService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderRepository saleOrderRepo;
@@ -160,7 +165,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
-    // Nothing to do if we don't have supplychain.
+    checkUnauthorizedDiscounts(saleOrder);
   }
 
   @Override
@@ -172,7 +177,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
   @Override
   @Transactional
-  public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) {
+  public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
+      throws AxelorException {
 
     List<PackLine> packLineList = pack.getComponents();
     if (ObjectUtils.isEmpty(packLineList)) {
@@ -191,7 +197,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         && !pack.getCurrency().getCode().equals(saleOrder.getCurrency().getCode())) {
       try {
         conversionRate =
-            Beans.get(CurrencyConversionService.class)
+            Beans.get(CurrencyConversionFactory.class)
+                .getCurrencyConversionService()
                 .convert(pack.getCurrency(), saleOrder.getCurrency());
       } catch (MalformedURLException | JSONException | AxelorException e) {
         TraceBackService.trace(e);
@@ -239,6 +246,110 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
+  public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList == null) {
+      saleOrderLineList = new ArrayList<>();
+    }
+
+    SaleOrderLine originSoLine = null;
+    for (SaleOrderLine soLine : saleOrderLineList) {
+      if (soLine.getIsComplementaryProductsUnhandledYet()) {
+        originSoLine = soLine;
+        if (originSoLine.getManualId() == null || originSoLine.getManualId().equals("")) {
+          this.setNewManualId(originSoLine);
+        }
+        break;
+      }
+    }
+
+    if (originSoLine != null
+        && originSoLine.getProduct() != null
+        && originSoLine.getSelectedComplementaryProductList() != null) {
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      AppBaseService appBaseService = Beans.get(AppBaseService.class);
+      for (ComplementaryProductSelected compProductSelected :
+          originSoLine.getSelectedComplementaryProductList()) {
+        // Search if there is already a line for this product to modify or remove
+        SaleOrderLine newSoLine = null;
+        for (SaleOrderLine soLine : saleOrderLineList) {
+          if (originSoLine.getManualId().equals(soLine.getParentId())
+              && soLine.getProduct() != null
+              && soLine.getProduct().equals(compProductSelected.getProduct())) {
+            // Edit line if it already exists instead of recreating, otherwise remove if already
+            // exists and is no longer selected
+            if (compProductSelected.getIsSelected()) {
+              newSoLine = soLine;
+            } else {
+              saleOrderLineList.remove(soLine);
+            }
+            break;
+          }
+        }
+
+        if (newSoLine == null) {
+          if (compProductSelected.getIsSelected()) {
+            newSoLine = new SaleOrderLine();
+            newSoLine.setProduct(compProductSelected.getProduct());
+            newSoLine.setSaleOrder(saleOrder);
+            newSoLine.setQty(
+                originSoLine
+                    .getQty()
+                    .multiply(compProductSelected.getQty())
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+
+            saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
+            saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+
+            newSoLine.setParentId(originSoLine.getManualId());
+
+            saleOrderLineList.add(newSoLine);
+          }
+        } else {
+          newSoLine.setQty(
+              originSoLine
+                  .getQty()
+                  .multiply(compProductSelected.getQty())
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+
+          saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
+          saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
+        }
+      }
+      originSoLine.setIsComplementaryProductsUnhandledYet(false);
+    }
+
+    return saleOrderLineList;
+  }
+
+  @Override
+  public void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        BigDecimal maxDiscountAuthorized =
+            saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
+        if (saleOrderLine.getDiscountDerogation() != null && maxDiscountAuthorized != null) {
+          maxDiscountAuthorized = saleOrderLine.getDiscountDerogation().max(maxDiscountAuthorized);
+        }
+        if (maxDiscountAuthorized != null
+            && saleOrderLineService.isSaleOrderLineDiscountGreaterThanMaxDiscount(
+                saleOrderLine, maxDiscountAuthorized)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
+        }
+      }
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void setNewManualId(SaleOrderLine saleOrderLine) {
+    saleOrderLine.setManualId(JpaSequence.nextValue("sale.order.line.idSeq"));
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
@@ -265,5 +376,81 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
     }
     return saleOrder;
+  }
+
+  @Transactional
+  public SaleOrder seperateInNewQuotation(
+      SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
+      throws AxelorException {
+
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+
+    SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
+    copySaleOrder.clearSaleOrderLineList();
+    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+
+    for (LinkedHashMap<String, Object> soLine : saleOrderLines) {
+      if (!soLine.containsKey("selected") || !(boolean) soLine.get("selected")) {
+        continue;
+      }
+
+      SaleOrderLine saleOrderLine =
+          Beans.get(SaleOrderLineRepository.class)
+              .find(Long.parseLong(soLine.get("id").toString()));
+      copySaleOrder.addSaleOrderLineListItem(saleOrderLine);
+      saleOrder.removeSaleOrderLineListItem(saleOrderLine);
+    }
+
+    copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
+    saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+    Beans.get(SaleOrderRepository.class).save(saleOrder);
+    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+
+    return copySaleOrder;
+  }
+
+  @Override
+  public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException {
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    List<ComplementaryProduct> complementaryProducts =
+        saleOrder.getClientPartner().getComplementaryProductList();
+
+    if (CollectionUtils.isEmpty(saleOrderLineList)
+        || CollectionUtils.isEmpty(complementaryProducts)) {
+      return;
+    }
+
+    List<SaleOrderLine> newComplementarySOLines = new ArrayList<>();
+    for (ComplementaryProduct complementaryProduct : complementaryProducts) {
+      Product product = complementaryProduct.getProduct();
+      if (product == null) {
+        continue;
+      }
+
+      if (complementaryProduct.getGenerationTypeSelect()
+          == ComplementaryProductRepository.GENERATION_TYPE_SALE_ORDER) {
+        SaleOrderLine saleOrderLine =
+            Collections.max(saleOrderLineList, Comparator.comparing(SaleOrderLine::getSequence));
+        if (saleOrderLineList.stream()
+            .anyMatch(
+                line ->
+                    product.equals(line.getProduct())
+                        && line.getIsComplementaryPartnerProductsHandled())) {
+          continue;
+        }
+        newComplementarySOLines.addAll(
+            saleOrderLineService.manageComplementaryProductSaleOrderLine(
+                complementaryProduct, saleOrder, saleOrderLine));
+      } else {
+        for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+          newComplementarySOLines.addAll(
+              saleOrderLineService.manageComplementaryProductSaleOrderLine(
+                  complementaryProduct, saleOrder, saleOrderLine));
+        }
+      }
+    }
+    newComplementarySOLines.forEach(saleOrder::addSaleOrderLineListItem);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
   }
 }

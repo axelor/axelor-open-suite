@@ -22,10 +22,15 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.PricingRepository;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class PricingServiceImpl implements PricingService {
 
   @Inject private PricingRepository pricingRepo;

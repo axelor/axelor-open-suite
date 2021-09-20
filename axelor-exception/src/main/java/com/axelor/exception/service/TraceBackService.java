@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.exception.service;
 
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -118,6 +119,29 @@ public class TraceBackService {
 
     String message = e.getMessage() != null ? e.getMessage() : e.toString();
     responseMessageType.setMessage(response, message);
+  }
+
+  /**
+   * Trace an exception when the exception occurs inside a JPA repository save method. We have to
+   * rollback the transaction before we can save the traceback.
+   *
+   * @param e any traceable exception
+   */
+  public static void traceExceptionFromSaveMethod(Throwable e) {
+    traceExceptionFromSaveMethod(e, null);
+  }
+
+  /**
+   * Trace an exception when the exception occurs inside a JPA repository save method. We have to
+   * rollback the transaction before we can save the traceback.
+   *
+   * @param e any traceable exception
+   * @param origin origin of the exception
+   */
+  public static void traceExceptionFromSaveMethod(Throwable e, final String origin) {
+    JPA.em().getTransaction().rollback();
+    trace(e, origin);
+    JPA.em().getTransaction().begin();
   }
 
   /**

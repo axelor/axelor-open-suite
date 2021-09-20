@@ -26,6 +26,7 @@ import com.axelor.apps.project.db.repo.ProjectActivityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskSectionRepository;
+import com.axelor.apps.project.module.ProjectModule;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.Inflector;
 import com.axelor.common.ObjectUtils;
@@ -41,17 +42,21 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ContextHandlerFactory;
 import com.axelor.rpc.Resource;
 import com.google.common.collect.ImmutableList;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class ProjectActivityServiceImpl implements ProjectActivityService {
 
   protected ProjectActivityRepository projectActivityRepo;
@@ -60,7 +65,8 @@ public class ProjectActivityServiceImpl implements ProjectActivityService {
   protected ProjectTaskSectionRepository projectTaskSectionRepo;
 
   protected final List<PropertyType> allowedTypes =
-      ImmutableList.of(PropertyType.ONE_TO_ONE, PropertyType.MANY_TO_ONE);;
+      ImmutableList.of(PropertyType.ONE_TO_ONE, PropertyType.MANY_TO_ONE);
+  ;
   protected final List<PropertyType> ignoreTypes =
       ImmutableList.of(PropertyType.ONE_TO_MANY, PropertyType.MANY_TO_MANY);
 

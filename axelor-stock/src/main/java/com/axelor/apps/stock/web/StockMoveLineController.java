@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -124,7 +125,7 @@ public class StockMoveLineController {
           (LinkedHashMap<String, Object>) context.get("_stockMoveLine");
       Integer stockMoveLineId = (Integer) stockMoveLineMap.get("id");
       StockMoveLine stockMoveLine =
-          Beans.get(StockMoveLineRepository.class).find(new Long(stockMoveLineId));
+          Beans.get(StockMoveLineRepository.class).find(Long.valueOf(stockMoveLineId));
 
       @SuppressWarnings("unchecked")
       ArrayList<LinkedHashMap<String, Object>> trackingNumbers =
@@ -148,10 +149,15 @@ public class StockMoveLineController {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMoveLine.getStockMove().getId());
     }
 
-    boolean _hasWarranty = false, _isPerishable = false;
+    boolean _hasWarranty = false, _isPerishable = false, _isSeqUsedForSerialNumber = false;
     if (stockMoveLine.getProduct() != null) {
-      _hasWarranty = stockMoveLine.getProduct().getHasWarranty();
-      _isPerishable = stockMoveLine.getProduct().getIsPerishable();
+      Product product = stockMoveLine.getProduct();
+      _hasWarranty = product.getHasWarranty();
+      _isPerishable = product.getIsPerishable();
+      if (product.getTrackingNumberConfiguration() != null) {
+        _isSeqUsedForSerialNumber =
+            product.getTrackingNumberConfiguration().getUseTrackingNumberSeqAsSerialNbr();
+      }
     }
     response.setView(
         ActionView.define(I18n.get(IExceptionMessage.TRACK_NUMBER_WIZARD_TITLE))
@@ -166,6 +172,7 @@ public class StockMoveLineController {
             .context("_stockMoveLine", stockMoveLine)
             .context("_hasWarranty", _hasWarranty)
             .context("_isPerishable", _isPerishable)
+            .context("_isSeqUsedForSerialNumber", _isSeqUsedForSerialNumber)
             .map());
   }
 
@@ -238,8 +245,8 @@ public class StockMoveLineController {
     Integer stockMoveLineId = (Integer) stockMoveLineMap.get("id");
     Integer stockMoveId = (Integer) stockMoveMap.get("id");
     StockMoveLine stockMoveLine =
-        Beans.get(StockMoveLineRepository.class).find(new Long(stockMoveLineId));
-    StockMove stockMove = Beans.get(StockMoveRepository.class).find(new Long(stockMoveId));
+        Beans.get(StockMoveLineRepository.class).find(Long.valueOf(stockMoveLineId));
+    StockMove stockMove = Beans.get(StockMoveRepository.class).find(Long.valueOf(stockMoveId));
 
     if (stockMoveLine == null
         || stockMoveLine.getProduct() == null
@@ -274,6 +281,9 @@ public class StockMoveLineController {
       map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
       map.put("$availableQty", availableQty);
       map.put("$moveTypeSelect", stockMove.getTypeSelect());
+      map.put("origin", trackingNumber.getOrigin());
+      map.put("note", trackingNumber.getNote());
+
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);

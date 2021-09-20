@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.purchase.service.print;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -40,17 +41,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-@RequestScoped
+@ApplicationScoped
 public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService {
 
   protected AppPurchaseService appPurchaseService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public PurchaseOrderPrintServiceImpl(AppPurchaseService appPurchaseService) {
+  public PurchaseOrderPrintServiceImpl(
+      AppPurchaseService appPurchaseService, AppBaseService appBaseService) {
     this.appPurchaseService = appPurchaseService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -96,72 +100,27 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     }
     String locale = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
     String title = getFileName(purchaseOrder);
+    AppBase appBase = appBaseService.getAppBase();
     ReportSettings reportSetting =
         ReportFactory.createReport(IReport.PURCHASE_ORDER, title + " - ${date}");
 
     return reportSetting
         .addParam("PurchaseOrderId", purchaseOrder.getId())
         .addParam(
-            "PurchaseOrderLineQuery", this.getPurchaseOrderLineDataSetQuery(purchaseOrder.getId()))
-        .addParam(
             "Timezone",
             purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
+        .addParam(
+            "GroupProducts",
+            appBase.getIsRegroupProductsOnPrintings()
+                && purchaseOrder.getGroupProductsOnPrintings())
+        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
+        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
+        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
+        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(formatPdf);
-  }
-
-  @Override // returns sql query for PurchaseOrderLineDataSet in PurchaseOrder.rptdesign
-  public String getPurchaseOrderLineDataSetQuery(Long purchaseOrderId) {
-
-    String selectClause = this.getPurchaseOrderLineQuerySelectClause();
-    String fromClause = this.getPurchaseOrderLineQueryFromClause();
-    String whereClause =
-        "PurchaseOrder.id = " + purchaseOrderId.toString() + "order by PurchaseOrderLine.sequence ";
-
-    if (!selectClause.contains("product_standard")) {
-      selectClause = selectClause.concat(", CAST(null as varchar) as product_standard");
-    }
-
-    return String.format("select %s from %s where %s", selectClause, fromClause, whereClause);
-  }
-
-  protected String getPurchaseOrderLineQuerySelectClause() {
-    return "	Product.code as product_code, "
-        + "	Product.name as product_name, "
-        + " PurchaseOrder.id as purchase_id, "
-        + " PurchaseOrderLine.id as purchase_line_id, "
-        + "	PurchaseOrderLine.product_code as supplier_product_code, "
-        + "	PurchaseOrderLine.product_name as supplier_product_name, "
-        + "	PurchaseOrderLine.description, "
-        + "	PurchaseOrderLine.qty, "
-        + "	PurchaseOrderLine.desired_deliv_date,"
-        + "	PurchaseOrderLine.sequence, "
-        + "	Unit.label_to_printing as \"UnitCode\", "
-        + "	(CASE WHEN PurchaseOrder.in_ati "
-        + "		THEN PurchaseOrderLine.in_tax_price"
-        + "		ELSE PurchaseOrderLine.price END)"
-        + "		as \"UnitPrice\", "
-        + "	(PurchaseOrderLine.price_discounted "
-        + "		- (CASE WHEN PurchaseOrder.in_ati "
-        + "			THEN PurchaseOrderLine.in_tax_price"
-        + "			ELSE PurchaseOrderLine.price END))"
-        + "		* PurchaseOrderLine.qty "
-        + "		as \"totalDiscountAmount\","
-        + "	PurchaseOrderLine.ex_tax_total,"
-        + "	PurchaseOrderLine.in_tax_total,"
-        + "	PurchaseOrder.in_ati, "
-        + "	PurchaseOrderLine.is_title_line as \"isTitleLine\","
-        + "	TaxLine.value as \"TaxValue\" ";
-  }
-
-  protected String getPurchaseOrderLineQueryFromClause() {
-    return "purchase_purchase_order_line as PurchaseOrderLine "
-        + "inner join purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id) "
-        + "left outer join base_product as Product on (PurchaseOrderLine.product = Product.id) "
-        + "left outer join base_unit as Unit on (PurchaseOrderLine.unit = Unit.id) "
-        + "left outer join account_tax_line as TaxLine on (PurchaseOrderLine.tax_line = TaxLine.id) ";
   }
 
   protected String getPurchaseOrderFilesName(Integer status) {

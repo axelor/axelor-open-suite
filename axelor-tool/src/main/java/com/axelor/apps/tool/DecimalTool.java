@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,8 +77,8 @@ public final class DecimalTool {
       return prorataValue;
     } else {
       prorataValue =
-          (days.multiply(value).divide(totalDays, scale, BigDecimal.ROUND_HALF_EVEN))
-              .setScale(scale, RoundingMode.HALF_EVEN);
+          (days.multiply(value).divide(totalDays, scale, BigDecimal.ROUND_HALF_UP))
+              .setScale(scale, RoundingMode.HALF_UP);
     }
 
     LOG.debug(
@@ -109,6 +109,6 @@ public final class DecimalTool {
    */
   public static BigDecimal percent(BigDecimal value, BigDecimal percent, int scale) {
 
-    return value.multiply(percent).divide(new BigDecimal("100"), scale, RoundingMode.HALF_EVEN);
+    return value.multiply(percent).divide(new BigDecimal("100"), scale, RoundingMode.HALF_UP);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,11 +22,14 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.JpaSecurity;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -35,9 +38,12 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Criteria;
 import com.google.common.base.Joiner;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +66,33 @@ public class ProductController {
     }
   }
 
+  public void checkPriceList(ActionRequest request, ActionResponse response) {
+    try {
+
+      Product newProduct = request.getContext().asType(Product.class);
+
+      if ((!newProduct.getSellable() || newProduct.getIsUnrenewed())
+          && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
+        response.setAlert(I18n.get("Warning, this product is present in at least one price list"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPriceListLineAnomaly(ActionRequest request, ActionResponse response) {
+    try {
+
+      Product newProduct = request.getContext().asType(Product.class);
+      // Set anomaly when a product exists in list Price
+      if (newProduct.getId() != null) {
+        Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void updateProductsPrices(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Product product = request.getContext().asType(Product.class);
@@ -75,7 +108,6 @@ public class ProductController {
   @SuppressWarnings("unchecked")
   public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
-
     User user = Beans.get(UserService.class).getUser();
 
     int currentYear = Beans.get(AppBaseService.class).getTodayDateTime().getYear();
@@ -85,6 +117,11 @@ public class ProductController {
 
     if (lstSelectedProduct != null) {
       productIds = Joiner.on(",").join(lstSelectedProduct);
+    } else {
+      List<Long> displayedProductIdList = getDisplayedProductIdList(request);
+      if (ObjectUtils.notEmpty(displayedProductIdList)) {
+        productIds = Joiner.on(",").join(displayedProductIdList);
+      }
     }
 
     String name = I18n.get("Product Catalog");
@@ -137,5 +174,24 @@ public class ProductController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<Long> getDisplayedProductIdList(ActionRequest request) {
+    JpaSecurity security = Beans.get(JpaSecurity.class);
+    List<Long> displayedProductIdList = new ArrayList<>();
+    Criteria criteria = Criteria.parse(request);
+    List<?> products =
+        criteria
+            .createQuery(Product.class, security.getFilter(JpaSecurity.CAN_READ, Product.class))
+            .select("id")
+            .fetch(-1, -1);
+    for (Object product : products) {
+      if (product instanceof Map) {
+        Long id = (Long) ((Map<String, Object>) product).get("id");
+        displayedProductIdList.add(id);
+      }
+    }
+    return displayedProductIdList;
   }
 }

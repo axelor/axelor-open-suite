@@ -57,6 +57,8 @@
 	    	<panel name="informationsPanel" title="Information">
 	      		<field name="notes" colSpan="12"/>
 	    		<field name="companyDepartmentList" grid-view="company-department-company-grid" form-view="company-department-company-form" canSelect="true" domain="self.company IS NULL" colSpan="12"/>
+    			<field name="partnerList" form-view="partner-form" grid-view="partner-grid" colSpan="12" canNew="false" canSelect="true" domain="self.isInternal is true"/>
+          <field name="workshopList" colSpan="12" if-module="axelor-production" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()" canNew="false" canSelect="true" domain="self.isWorkshop is true"/>
 	    	</panel>
 	    	<panel name="configurationsPanel" title="Configurations">
 	  			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
@@ -70,7 +72,9 @@
 				<field name="weeklyPlanning" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
 				<field name="publicHolidayEventsPlanning" form-view="events-planning-form" grid-view="events-planning-grid" canNew="true" />
 				<field name="language" colSpan="6" canEdit="false"/>
-					<field name="timezone" colSpan="6"/>
+				<field name="timezone" colSpan="6"/>
+				<field name="taxNumberList" colSpan="12" canSelect="true" canNew="false" canEdit="false"
+					   domain="self.company.id = :id" if="__config__.app.isApp('account')"/>
 	  		</panel>
 	    	<panel name="bankDetailsPanel" title="Bank details">
                 <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>

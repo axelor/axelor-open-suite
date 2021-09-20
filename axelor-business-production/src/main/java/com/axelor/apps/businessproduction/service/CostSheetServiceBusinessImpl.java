@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,13 +79,13 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()
         && employee != null
-        && !EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        && !EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       BigDecimal durationHours =
           new BigDecimal(prodHumanResource.getDuration())
               .divide(
                   BigDecimal.valueOf(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN);
+                  BigDecimal.ROUND_HALF_UP);
 
       costSheet.addCostSheetLineListItem(
           costSheetLineService.createWorkCenterHRCostSheetLine(

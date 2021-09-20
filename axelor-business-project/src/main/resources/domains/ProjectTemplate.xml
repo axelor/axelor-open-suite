@@ -8,8 +8,8 @@
 	<entity name="ProjectTemplate">
 		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
 		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
-		<integer name="invoicingTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type"/>
 		<string name="invoicingComment" title="Invoicing comment" large="true"/>
+		<many-to-many name="projectFolderSet" ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
 	</entity>
   
 </domain-models>

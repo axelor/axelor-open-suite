@@ -21,7 +21,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Topic;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.service.ProjectActivityService;
-import com.axelor.event.Observes;
 import com.axelor.events.PreRequest;
 import com.axelor.events.RequestEvent;
 import com.axelor.events.qualifiers.EntityType;
@@ -29,6 +28,7 @@ import com.axelor.inject.Beans;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.event.Observes;
 import javax.inject.Named;
 
 public class ProjectActivityObserver {

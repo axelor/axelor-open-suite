@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -92,8 +92,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
             + " WHERE part.id = "
             + partner.getId()
             + " AND so.clientPartner = part.id AND email.mediaTypeSelect = 2 AND "
-            + "((email.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo1SelectId = so.id) "
-            + "OR (email.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo2SelectId = so.id))";
+            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)";
     return JPA.em().createQuery(query).getResultList();
   }
 
@@ -104,8 +103,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
             + " WHERE part.id = "
             + partner.getId()
             + " AND so.contactPartner = part.id AND email.mediaTypeSelect = 2 AND "
-            + "((email.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo1SelectId = so.id) "
-            + "OR (email.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo2SelectId = so.id))";
+            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)";
     return JPA.em().createQuery(query).getResultList();
   }
 

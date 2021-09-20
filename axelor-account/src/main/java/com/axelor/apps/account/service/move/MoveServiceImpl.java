@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,10 +32,12 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -48,13 +50,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class MoveServiceImpl implements MoveService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -157,6 +161,14 @@ public class MoveServiceImpl implements MoveService {
           "Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})",
           new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
 
+      int functionalOrigin = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
+      if (functionalOrigin == PriceListRepository.TYPE_PURCHASE) {
+        functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
+      } else if (functionalOrigin == PriceListRepository.TYPE_SALE) {
+        functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
+      } else {
+        functionalOrigin = 0;
+      }
       move =
           moveCreateService.createMove(
               journal,
@@ -165,11 +177,14 @@ public class MoveServiceImpl implements MoveService {
               partner,
               invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
-              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+              functionalOrigin);
 
       if (move != null) {
 
         move.setInvoice(invoice);
+
+        move.setTradingName(invoice.getTradingName());
 
         boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
@@ -318,7 +333,8 @@ public class MoveServiceImpl implements MoveService {
                 partner,
                 invoice.getInvoiceDate(),
                 null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
         if (move != null) {
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -393,7 +409,8 @@ public class MoveServiceImpl implements MoveService {
             partner,
             invoice.getInvoiceDate(),
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -456,6 +473,7 @@ public class MoveServiceImpl implements MoveService {
             dateOfReversion,
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
+            move.getFunctionalOriginSelect(),
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove());
@@ -482,8 +500,11 @@ public class MoveServiceImpl implements MoveService {
                     newMoveLine.getAnalyticDistributionTemplate(),
                     newMoveLine.getDebit().add(newMoveLine.getCredit()),
                     AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
-                    move.getDate());
-        newMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
+                    dateOfReversion);
+        if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
+          analyticMoveLineList.forEach(
+              analyticMoveLine -> newMoveLine.addAnalyticMoveLineListItem(analyticMoveLine));
+        }
       }
 
       newMove.addMoveLineListItem(newMoveLine);
@@ -611,5 +632,19 @@ public class MoveServiceImpl implements MoveService {
       domain += ")";
     }
     return domain;
+  }
+
+  @Override
+  public Move updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(Move move)
+      throws AxelorException {
+    if (move.getPeriod() != null && move.getDate() != null) {
+      for (MoveLine moveLine : ListUtils.emptyIfNull(move.getMoveLineList())) {
+        if ((move.getPeriod().getFromDate().isAfter(moveLine.getDate())
+            || move.getPeriod().getToDate().isBefore(moveLine.getDate()))) {
+          moveLine.setDate(move.getDate());
+        }
+      }
+    }
+    return move;
   }
 }

@@ -4,8 +4,10 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBase" lang="java" extends="App" >
-
+	<entity name="AppBase" lang="java">
+		
+		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+		
 		<datetime name="today" title="Today date" tz="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
@@ -24,7 +26,10 @@
 		<string name="googleMapsApiKey" title="Google Maps API key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
-		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"/>
+		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"
+		 default="com.axelor.apps.base.service.currency.ECBCurrencyConversionService"/>
+		 <string name="fixerApiKey" title="Fixer Api key"/>
+		<boolean name="isFixerAPIPaid" title="Paid fixer API"/>
 
 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
 		
@@ -35,6 +40,13 @@
 		<integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0" max="10" default="2"/>
 		<integer name="globalTrackingLogPersistence" title="Tracking logs persistence (in months)" min="0" default="1"/>
 		
+        <!-- Enable grouped product when printing documents-->
+        <boolean name="isRegroupProductsOnPrintings" title="Regroup products on printings" default="false" />
+        <string name="regroupProductsTypeSelect" title="Product types to group" selection="base.app.base.regroup.products.type.select"/>
+        <string name="regroupProductsLevelSelect" title="Level of grouping" selection="base.app.base.regroup.products.level.select"/>
+        <string name="regroupProductsLabelServices" title="Label for grouped services" />
+        <string name="regroupProductsLabelProducts" title="Label for grouped products" />
+
 		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 
 		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="days"/>
@@ -75,13 +87,27 @@
     
 		<boolean name="isSharedAddress" title="Shared address" default="false"/>
 
+	   	<string name="productSequenceTypeSelect" selection="product.sequence.type.select" title="Sequence product type" default="Per product"/>
+
+    	<many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence" title="Product sequence"/>
+
 		<many-to-many name="companySpecificProductFieldsSet" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
 
-	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
+	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase"/>
 
 	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template for notifications" ref="com.axelor.apps.message.db.Template"/>
 
 	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
+
+	   	<one-to-many name="emailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink" title="Email links"/>
+
+	   	<string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
+	   	<string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
+
+		<boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners" default="false"/>
+		<boolean name="manageCcBccRelatedTo" title="Manage related CC &amp; BCC emails"/>
+
+	   	<string name="customAppStyle" title="Custom style" large="true" help="Custom css to personnalize web user interface."/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -93,6 +119,9 @@
 	   			
 	   			public static final int ROUTING_API_YOURS = 1;
 	   			public static final int ROUTING_API_OSRM = 2;
+
+	   			public static final String SEQUENCE_PER_PRODUCT = "Per product";
+	   			public static final String SEQUENCE_PER_PRODUCT_CATEGORY = "Per product category";
 
 	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
 	   		]]>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.base.tracking;
 
 import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -28,9 +29,13 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
 
   protected GlobalTrackingLogRepository globalTrackingLogRepo;

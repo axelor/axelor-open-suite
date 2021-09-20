@@ -2,8 +2,13 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.google.inject.Inject;
+import com.axelor.apps.account.module.AccountModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AccountingReportToolServiceImpl implements AccountingReportToolService {
 
   protected AccountingReportRepository accountingReportRepository;

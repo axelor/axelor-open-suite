@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import wslite.json.JSONException;
 
 public interface TimesheetService {
 
@@ -44,11 +45,11 @@ public interface TimesheetService {
 
   public Message sendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   /**
    * Checks that there is a line for each working day of the timesheet.
@@ -63,22 +64,22 @@ public interface TimesheetService {
 
   public Message sendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void refuse(Timesheet timesheet) throws AxelorException;
 
   public Message sendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public void cancel(Timesheet timesheet) throws AxelorException;
 
@@ -91,11 +92,11 @@ public interface TimesheetService {
 
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   public Timesheet generateLines(
       Timesheet timesheet,

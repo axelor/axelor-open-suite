@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -67,7 +68,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      InvoiceLineRepository invoiceLineRepo) {
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -78,7 +80,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         invoiceLineService,
         accountConfigService,
         moveToolService,
-        invoiceLineRepo);
+        invoiceLineRepo,
+        appBaseService);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)

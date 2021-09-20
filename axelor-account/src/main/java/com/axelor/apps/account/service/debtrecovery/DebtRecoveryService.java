@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,11 +37,15 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.TradingNameRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -55,14 +59,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
-@RequestScoped
+@ApplicationScoped
 public class DebtRecoveryService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -74,6 +79,8 @@ public class DebtRecoveryService {
   protected PaymentScheduleLineRepository paymentScheduleLineRepo;
   protected AccountConfigService accountConfigService;
   protected DebtRecoveryRepository debtRecoveryRepo;
+  protected CompanyRepository companyRepo;
+  protected TradingNameRepository tradingNameRepo;
 
   protected AppAccountService appAccountService;
   protected MessageRepository messageRepo;
@@ -87,6 +94,8 @@ public class DebtRecoveryService {
       PaymentScheduleLineRepository paymentScheduleLineRepo,
       AccountConfigService accountConfigService,
       DebtRecoveryRepository debtRecoveryRepo,
+      CompanyRepository companyRepo,
+      TradingNameRepository tradingNameRepo,
       AppAccountService appAccountService,
       MessageRepository messageRepo) {
 
@@ -97,6 +106,8 @@ public class DebtRecoveryService {
     this.paymentScheduleLineRepo = paymentScheduleLineRepo;
     this.accountConfigService = accountConfigService;
     this.debtRecoveryRepo = debtRecoveryRepo;
+    this.companyRepo = companyRepo;
+    this.tradingNameRepo = tradingNameRepo;
     this.appAccountService = appAccountService;
     this.messageRepo = messageRepo;
   }
@@ -209,10 +220,12 @@ public class DebtRecoveryService {
    * @return La date de référence
    */
   public LocalDate getReferenceDate(DebtRecovery debtRecovery) {
-    AccountingSituation accountingSituation = debtRecovery.getAccountingSituation();
+    AccountingSituation accountingSituation = this.getAccountingSituation(debtRecovery);
     List<MoveLine> moveLineList =
         this.getMoveLineDebtRecovery(
-            accountingSituation.getPartner(), accountingSituation.getCompany());
+            accountingSituation.getPartner(),
+            accountingSituation.getCompany(),
+            debtRecovery.getTradingName());
 
     // Date la plus ancienne des lignes d'écriture
     LocalDate minMoveLineDate = getOldDateMoveLine(moveLineList);
@@ -230,17 +243,19 @@ public class DebtRecoveryService {
   }
 
   /**
-   * Fonction permettant de récuperer une liste de ligne d'écriture exigible relançable d'un tiers
+   * Returns a list of recoverable move lines of a partner in the scope of the activity of a company
    *
-   * @param partner Un tiers
-   * @param company Une société
-   * @return La liste de ligne d'écriture
+   * @param partner The partner to be concerned by the move lines
+   * @param company The company to be concerned by the move lines
+   * @param tradingName (Optional) The trading name to be concerned by the move lines
+   * @return A list of recoverable move lines
    */
   @SuppressWarnings("unchecked")
-  public List<MoveLine> getMoveLineDebtRecovery(Partner partner, Company company) {
+  public List<MoveLine> getMoveLineDebtRecovery(
+      Partner partner, Company company, TradingName tradingName) {
     List<MoveLine> moveLineList = new ArrayList<MoveLine>();
 
-    List<MoveLine> moveLineQuery = (List<MoveLine>) this.getMoveLine(partner, company);
+    List<MoveLine> moveLineQuery = (List<MoveLine>) this.getMoveLine(partner, company, tradingName);
 
     int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 
@@ -315,18 +330,34 @@ public class DebtRecoveryService {
   }
 
   /**
-   * Méthode permettant de récupérer l'ensemble des lignes d'écriture d'un tiers
+   * Recovers all move lines for a specific partner, in the scope of the activities of a company,
+   * and optionally, for a specific trading name.
    *
-   * @param partner Un tiers
-   * @param company Une société
-   * @return
+   * @param partner A partner to be concerned by the move lines
+   * @param company A company to be concerned by the move lines
+   * @param tradingName (Optional) A trading name to be concerned by the move lines
+   * @return all corresponding move lines as a List
    */
-  public List<? extends MoveLine> getMoveLine(Partner partner, Company company) {
+  public List<? extends MoveLine> getMoveLine(
+      Partner partner, Company company, TradingName tradingName) {
 
-    return moveLineRepo
-        .all()
-        .filter("self.partner = ?1 and self.move.company = ?2", partner, company)
-        .fetch();
+    Query<MoveLine> query;
+    if (tradingName == null) {
+      query =
+          moveLineRepo
+              .all()
+              .filter("self.partner = ?1 and self.move.company = ?2", partner, company);
+    } else {
+      query =
+          moveLineRepo
+              .all()
+              .filter(
+                  "self.partner = ?1 and self.move.company = ?2 and self.move.tradingName = ?3",
+                  partner,
+                  company,
+                  tradingName);
+    }
+    return query.fetch();
   }
 
   /**
@@ -382,20 +413,85 @@ public class DebtRecoveryService {
     return accountingSituation.getDebtRecovery();
   }
 
+  /**
+   * Find an existing debtRecovery object for a corresponding partner, company and optionally,
+   * trading name.
+   *
+   * @param partner A partner
+   * @param company A company
+   * @param tradingName (Optional) A trading name
+   * @return The corresponding DebtRecovery object, storing information regarding the current debt
+   *     recovery situation of the partner for this company & trading name
+   * @throws AxelorException
+   */
+  public DebtRecovery getDebtRecovery(Partner partner, Company company, TradingName tradingName)
+      throws AxelorException {
+
+    AccountingSituationRepository accSituationRepo = Beans.get(AccountingSituationRepository.class);
+    AccountingSituation accountingSituation =
+        accSituationRepo
+            .all()
+            .filter("self.partner = ?1 and self.company = ?2", partner, company)
+            .fetchOne();
+
+    if (accountingSituation == null) {
+      throw new AxelorException(
+          accountingSituation,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          "%s :\n"
+              + I18n.get("Partner")
+              + " %s, "
+              + I18n.get("Company")
+              + " %s : "
+              + I18n.get(IExceptionMessage.DEBT_RECOVERY_1),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          partner.getName(),
+          company.getName());
+    }
+    if (tradingName == null) {
+      return accountingSituation.getDebtRecovery();
+    } else {
+      if (accountingSituation.getTradingNameDebtRecoveryList() != null
+          && !accountingSituation.getTradingNameDebtRecoveryList().isEmpty()) {
+        for (DebtRecovery debtRecovery : accountingSituation.getTradingNameDebtRecoveryList()) {
+          if (tradingName.equals(debtRecovery.getTradingName())) {
+            return debtRecovery;
+          }
+        }
+      }
+    }
+
+    return null; // if no debtRecovery has been found for the specified tradingName
+  }
+
   @Transactional(rollbackOn = {Exception.class})
-  public DebtRecovery createDebtRecovery(AccountingSituation accountingSituation) {
+  public DebtRecovery createDebtRecovery(
+      AccountingSituation accountingSituation, TradingName tradingName) {
     DebtRecovery debtRecovery = new DebtRecovery();
-    debtRecovery.setAccountingSituation(accountingSituation);
-    accountingSituation.setDebtRecovery(debtRecovery);
+    if (tradingName != null) {
+      debtRecovery.setTradingNameAccountingSituation(accountingSituation);
+      if (accountingSituation.getTradingNameDebtRecoveryList() != null) {
+        accountingSituation.getTradingNameDebtRecoveryList().add(debtRecovery);
+      } else {
+        List<DebtRecovery> tradingNameDebtRecoveryList = new ArrayList<DebtRecovery>();
+        tradingNameDebtRecoveryList.add(debtRecovery);
+        accountingSituation.setTradingNameDebtRecoveryList(tradingNameDebtRecoveryList);
+      }
+    } else {
+      debtRecovery.setAccountingSituation(accountingSituation);
+      accountingSituation.setDebtRecovery(debtRecovery);
+    }
     debtRecoveryRepo.save(debtRecovery);
     return debtRecovery;
   }
 
   /**
-   * Méthode de relance en masse
+   * Handle the debt recovery process for a partner and company. Can optionally specify a trading
+   * name.
    *
-   * @param partner Un tiers
-   * @param company Une société
+   * @param partner The partner that has debts to be recovered
+   * @param company The company for which to recover the debts
+   * @param tradingName (optional) A trading name of the company for which to recover the debts
    * @throws AxelorException
    * @throws IllegalAccessException
    * @throws InstantiationException
@@ -403,21 +499,23 @@ public class DebtRecoveryService {
    * @throws IOException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public boolean debtRecoveryGenerate(Partner partner, Company company)
+  public boolean debtRecoveryGenerate(Partner partner, Company company, TradingName tradingName)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+          IllegalAccessException, IOException, JSONException {
     boolean remindedOk = false;
 
-    DebtRecovery debtRecovery = this.getDebtRecovery(partner, company); // getDebtRecovery si existe
+    DebtRecovery debtRecovery =
+        this.getDebtRecovery(
+            partner, company, tradingName); // getDebtRecovery if one already exists
 
-    BigDecimal balanceDue = accountCustomerService.getBalanceDue(partner, company);
+    BigDecimal balanceDue = accountCustomerService.getBalanceDue(partner, company, tradingName);
 
     if (balanceDue.compareTo(BigDecimal.ZERO) > 0) {
 
       log.debug("balanceDue : {} ", balanceDue);
 
       BigDecimal balanceDueDebtRecovery =
-          accountCustomerService.getBalanceDueDebtRecovery(partner, company);
+          accountCustomerService.getBalanceDueDebtRecovery(partner, company, tradingName);
 
       if (balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0) {
         log.debug("balanceDueDebtRecovery : {} ", balanceDueDebtRecovery);
@@ -432,14 +530,16 @@ public class DebtRecoveryService {
                   .all()
                   .filter("self.partner = ?1 and self.company = ?2", partner, company)
                   .fetchOne();
-          debtRecovery = this.createDebtRecovery(accountingSituation);
+          debtRecovery = this.createDebtRecovery(accountingSituation, tradingName);
         }
 
-        debtRecovery.setCompany(Beans.get(CompanyRepository.class).find(company.getId()));
+        debtRecovery.setCompany(companyRepo.find(company.getId()));
+        if (tradingName != null)
+          debtRecovery.setTradingName(tradingNameRepo.find(tradingName.getId()));
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 
-        List<MoveLine> moveLineList = this.getMoveLineDebtRecovery(partner, company);
+        List<MoveLine> moveLineList = this.getMoveLineDebtRecovery(partner, company, tradingName);
 
         this.updateInvoiceDebtRecovery(debtRecovery, this.getInvoiceList(moveLineList));
         this.updatePaymentScheduleLineDebtRecovery(
@@ -447,10 +547,9 @@ public class DebtRecoveryService {
 
         debtRecovery.setBalanceDueDebtRecovery(balanceDueDebtRecovery);
 
-        Integer levelDebtRecovery = 0;
+        Integer levelDebtRecovery = -1;
         if (debtRecovery.getDebtRecoveryMethodLine() != null) {
-          levelDebtRecovery =
-              debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName();
+          levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
         }
 
         LocalDate referenceDate = this.getReferenceDate(debtRecovery);
@@ -463,11 +562,14 @@ public class DebtRecoveryService {
               debtRecovery,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               "%s :\n"
-                  + I18n.get("Partner")
-                  + " %s, "
-                  + I18n.get("Company")
-                  + " %s : "
-                  + I18n.get(IExceptionMessage.DEBT_RECOVERY_2),
+                          + I18n.get("Partner")
+                          + " %s, "
+                          + I18n.get("Company")
+                          + " %s : "
+                          + tradingName
+                      != null
+                  ? I18n.get("Trading name") + " %s : "
+                  : "" + I18n.get(IExceptionMessage.DEBT_RECOVERY_2),
               I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
               partner.getName(),
               company.getName());
@@ -483,11 +585,14 @@ public class DebtRecoveryService {
                 debtRecovery,
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 "%s :\n"
-                    + I18n.get("Partner")
-                    + " %s, "
-                    + I18n.get("Company")
-                    + " %s : "
-                    + I18n.get(IExceptionMessage.DEBT_RECOVERY_3),
+                            + I18n.get("Partner")
+                            + " %s, "
+                            + I18n.get("Company")
+                            + " %s : "
+                            + tradingName
+                        != null
+                    ? I18n.get("Trading name") + " %s : "
+                    : "" + I18n.get(IExceptionMessage.DEBT_RECOVERY_3),
                 I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
                 partner.getName(),
                 company.getName());
@@ -498,19 +603,19 @@ public class DebtRecoveryService {
         if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
           // Si le niveau de relance a évolué
           if (debtRecovery.getDebtRecoveryMethodLine() != null
-              && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel() != null
-              && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName()
-                  > levelDebtRecovery) {
+              && debtRecovery.getDebtRecoveryMethodLine().getSequence() > levelDebtRecovery) {
             debtRecoveryActionService.runAction(debtRecovery);
 
             DebtRecoveryHistory debtRecoveryHistory =
                 debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
 
             if (CollectionUtils.isEmpty(
-                messageRepo
-                    .findByRelatedTo(
-                        Math.toIntExact(debtRecoveryHistory.getId()),
-                        DebtRecoveryHistory.class.getCanonicalName())
+                Beans.get(MultiRelatedRepository.class)
+                    .all()
+                    .filter(
+                        "self.relatedToSelect = :relatedToSelect AND self.relatedToSelectId = :relatedToSelectId AND self.message IS NOT NULL")
+                    .bind("relatedToSelectId", Math.toIntExact(debtRecoveryHistory.getId()))
+                    .bind("relatedToSelect", DebtRecoveryHistory.class.getCanonicalName())
                     .fetch())) {
               debtRecoveryActionService.runMessage(debtRecovery);
             }
@@ -553,5 +658,13 @@ public class DebtRecoveryService {
       DebtRecovery debtRecovery, List<PaymentScheduleLine> paymentSchedueLineList) {
     debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
     debtRecovery.getPaymentScheduleLineDebtRecoverySet().addAll(paymentSchedueLineList);
+  }
+
+  public AccountingSituation getAccountingSituation(DebtRecovery debtRecovery) {
+    if (debtRecovery.getTradingName() == null) {
+      return debtRecovery.getAccountingSituation();
+    } else {
+      return debtRecovery.getTradingNameAccountingSituation();
+    }
   }
 }

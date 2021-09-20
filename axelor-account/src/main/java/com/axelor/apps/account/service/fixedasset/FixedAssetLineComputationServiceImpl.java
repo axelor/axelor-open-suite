@@ -24,13 +24,18 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.tool.date.DateTool;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class FixedAssetLineComputationServiceImpl implements FixedAssetLineComputationService {
 
   @Override

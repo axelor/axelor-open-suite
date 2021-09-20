@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.PrintTemplate;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.service.TemplateContextService;
@@ -51,12 +52,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class PrintTemplateServiceImpl implements PrintTemplateService {
 
   private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -248,6 +253,8 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           printLine.setTitle(title);
           printLine.setContent(content);
           printLine.setIsEditable(printTemplateLine.getIsEditable());
+          printLine.setIsSignature(printTemplateLine.getIsSignature());
+          printLine.setNbColumns(printTemplateLine.getNbColumns());
           printLine.setParent(parent);
           printLine.setIsWithPageBreakAfter(printTemplateLine.getIsWithPageBreakAfter());
 

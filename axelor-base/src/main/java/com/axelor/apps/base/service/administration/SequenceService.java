@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
-import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.events.ShutdownEvent;
 import com.axelor.exception.AxelorException;
@@ -50,6 +49,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,30 +194,24 @@ public class SequenceService {
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
 
     try {
-      Future<String> newSeq =
-          executor.submit(
-              () -> {
-                final var result =
-                    new Object() {
-                      String nextSeq;
-                    };
-                JPA.runInTransaction(
-                    () -> {
-                      Sequence seq = sequenceRepo.find(sequence.getId());
-                      SequenceVersion sequenceVersion = getVersion(seq, refDate);
-                      result.nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
-                      sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
-                      if (sequenceVersion.getId() == null) {
-                        sequenceVersionRepository.save(sequenceVersion);
-                      }
-                    });
-                return result.nextSeq;
-              });
+      Future<String> newSeq = executor.submit(() -> getSequenceNumberInExecutor(sequence, refDate));
       return newSeq.get();
     } catch (Exception e) {
       TraceBackService.trace(e);
       throw new RuntimeException(e);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected String getSequenceNumberInExecutor(Sequence sequence, LocalDate refDate) {
+    Sequence seq = sequenceRepo.find(sequence.getId());
+    SequenceVersion sequenceVersion = getVersion(seq, refDate);
+    String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
+    sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
+    if (sequenceVersion.getId() == null) {
+      sequenceVersionRepository.save(sequenceVersion);
+    }
+    return nextSeq;
   }
 
   private String computeNextSeq(
@@ -247,6 +241,19 @@ public class SequenceService {
     log.debug("nextSeq : : : : {}", nextSeq);
 
     return nextSeq;
+  }
+
+  /**
+   * Compute a test sequence by computing the next seq without any save Use for checking validity
+   * purpose
+   *
+   * @param sequence
+   * @param refDate
+   * @return the test sequence
+   */
+  public String computeTestSeq(Sequence sequence, LocalDate refDate) {
+    SequenceVersion sequenceVersion = getVersion(sequence, refDate);
+    return computeNextSeq(sequenceVersion, sequence, refDate);
   }
 
   private String findNextLetterSequence(SequenceVersion sequenceVersion) {

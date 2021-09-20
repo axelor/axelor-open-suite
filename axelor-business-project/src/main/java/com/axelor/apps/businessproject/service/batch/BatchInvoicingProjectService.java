@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,10 +31,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-@RequestScoped
+@ApplicationScoped
 public class BatchInvoicingProjectService extends AbstractBatch {
 
   protected ProjectRepository projectRepo;
@@ -64,13 +64,9 @@ public class BatchInvoicingProjectService extends AbstractBatch {
         projectRepo
             .all()
             .filter(
-                "self.isBusinessProject = :isBusinessProject "
-                    + "AND self.toInvoice = :toInvoice AND "
-                    + "(self.statusSelect != :statusCanceled AND self.statusSelect != :statusFinished)")
-            .bind("isBusinessProject", true)
-            .bind("toInvoice", true)
-            .bind("statusCanceled", ProjectRepository.STATE_CANCELED)
-            .bind("statusFinished", ProjectRepository.STATE_FINISHED)
+                "self.isBusinessProject = true "
+                    + "AND self.toInvoice = true AND "
+                    + "self.projectStatus.isCompleted = false")
             .fetch();
 
     for (Project project : projectList) {

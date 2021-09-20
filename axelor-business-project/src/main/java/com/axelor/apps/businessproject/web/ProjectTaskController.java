@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -89,7 +89,7 @@ public class ProjectTaskController {
     try {
       task = businessProjectService.resetProjectTaskValues(task);
       if (projectTaskCategory != null) {
-        task = businessProjectService.computeDefaultInformation(task);
+        task = businessProjectService.updateTaskFinancialInfo(task);
       }
 
       if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {

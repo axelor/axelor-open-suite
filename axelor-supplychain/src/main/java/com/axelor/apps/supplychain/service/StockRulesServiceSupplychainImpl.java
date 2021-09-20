@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,6 +55,7 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import wslite.json.JSONException;
 
 @Alternative
 @Priority(SupplychainModule.PRIORITY)
@@ -197,7 +198,8 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
           | InstantiationException
           | IllegalAccessException
           | MessagingException
-          | IOException e) {
+          | IOException
+          | JSONException e) {
         throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
     }

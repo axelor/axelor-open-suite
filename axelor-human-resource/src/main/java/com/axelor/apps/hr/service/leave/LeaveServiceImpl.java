@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,12 +53,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import wslite.json.JSONException;
 
-@RequestScoped
+@ApplicationScoped
 public class LeaveServiceImpl implements LeaveService {
 
   protected LeaveLineRepository leaveLineRepo;
@@ -276,8 +277,8 @@ public class LeaveServiceImpl implements LeaveService {
   /**
    * Computes the duration in hours of a leave, according to the weekly and the holiday plannings.
    *
-   * @param weeklyPlanning
-   * @param holidayPlanning
+   * @param leave
+   * @param employee
    * @param fromDateT
    * @param toDateT
    * @return
@@ -714,7 +715,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -743,7 +744,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -759,6 +760,9 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
+    if (leaveRequest.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+      isOverlapped(leaveRequest);
+    }
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageValidateLeaves(leaveRequest);
     }
@@ -784,7 +788,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   public Message sendValidationEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -813,7 +817,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -925,5 +929,48 @@ public class LeaveServiceImpl implements LeaveService {
       }
     }
     return leavesList;
+  }
+
+  protected void isOverlapped(LeaveRequest leaveRequest) throws AxelorException {
+    List<LeaveRequest> leaveRequestList =
+        leaveRequestRepo
+            .all()
+            .filter(
+                "self.user = ?1 AND self.statusSelect = ?2",
+                leaveRequest.getUser(),
+                LeaveRequestRepository.STATUS_VALIDATED)
+            .fetch();
+    for (LeaveRequest leaveRequest2 : leaveRequestList) {
+      if (isOverlapped(leaveRequest, leaveRequest2)) {
+        throw new AxelorException(
+            leaveRequest,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
+      }
+    }
+  }
+
+  protected boolean isOverlapped(LeaveRequest request1, LeaveRequest request2) {
+
+    if (isDatesNonOverlapped(request1, request2)
+        || isSelectsNonOverlapped(request1, request2)
+        || isSelectsNonOverlapped(request2, request1)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  protected boolean isDatesNonOverlapped(LeaveRequest request1, LeaveRequest request2) {
+    return request2.getToDateT().isBefore(request1.getFromDateT())
+        || request1.getToDateT().isBefore(request2.getFromDateT())
+        || request1.getToDateT().isBefore(request1.getFromDateT())
+        || request2.getToDateT().isBefore(request2.getFromDateT());
+  }
+
+  protected boolean isSelectsNonOverlapped(LeaveRequest request1, LeaveRequest request2) {
+    return request1.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING
+        && request2.getStartOnSelect() == LeaveRequestRepository.SELECT_AFTERNOON
+        && request1.getToDateT().isEqual(request2.getFromDateT());
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.projectdms.exception.IExceptionMessage;
+import com.axelor.apps.projectdms.module.ProjectDMSModule;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.dms.db.DMSFile;
@@ -34,9 +35,13 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+@Alternative
+@Priority(ProjectDMSModule.PRIORITY)
 public class DMSFileServiceImpl implements DMSFileService {
 
   private static final String SUBJECT = "Request for unlock document";

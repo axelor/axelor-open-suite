@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,10 +30,10 @@ import com.axelor.rpc.ActionResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.mail.MessagingException;
 
-@RequestScoped
+@ApplicationScoped
 public class ICalendarEventController {
 
   @SuppressWarnings("unchecked")
@@ -46,7 +46,7 @@ public class ICalendarEventController {
       if (guestEmail != null) {
         EmailAddress emailAddress =
             Beans.get(EmailAddressRepository.class)
-                .find(new Long((guestEmail.get("id").toString())));
+                .find(Long.valueOf((guestEmail.get("id").toString())));
         if (emailAddress != null) {
           response.setValue(
               "attendees",

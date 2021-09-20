@@ -3,16 +3,21 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
   protected ProductCategoryRepository productCategoryRepository;

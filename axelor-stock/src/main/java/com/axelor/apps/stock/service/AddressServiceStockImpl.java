@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,12 +23,12 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.module.StockModule;
 import com.axelor.db.JPA;
 import javax.annotation.Priority;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 
 @Alternative
 @Priority(StockModule.PRIORITY)
-@RequestScoped
+@ApplicationScoped
 public class AddressServiceStockImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceStockImpl::checkAddressUsedStock);

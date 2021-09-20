@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -73,7 +73,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
@@ -90,7 +90,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author axelor
  */
-@RequestScoped
+@ApplicationScoped
 public class WkfService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -601,7 +601,7 @@ public class WkfService {
 
     String xml = XMLViews.toXml(actionGroup, true);
 
-    metaService.updateMetaAction(name, "action-group", xml, null);
+    metaService.updateMetaAction(name, "action-group", xml, null, name);
 
     return actionGroup;
   }
@@ -988,7 +988,11 @@ public class WkfService {
 
     String xml = XMLViews.toXml(actionAttrs, true);
     metaService.updateMetaAction(
-        "action-wkf-attrs-set-status-field-value", "action-attrs", xml, null);
+        "action-wkf-attrs-set-status-field-value",
+        "action-attrs",
+        xml,
+        null,
+        "action-wkf-attrs-set-status-field-value");
   }
 
   public void clearNodes(Collection<WkfNode> nodes) {
@@ -1008,7 +1012,8 @@ public class WkfService {
       }
     }
 
-    metaService.removeMetaActions(Joiner.on(",").join(actions));
+    String actionIds = Joiner.on(",").join(actions);
+    metaService.removeMetaActions(actionIds);
   }
 
   public void createTrackFlowButton() {
@@ -1048,7 +1053,7 @@ public class WkfService {
     actionMethod.setCall(call);
     String xml = XMLViews.toXml(actionMethod, true);
 
-    metaService.updateMetaAction(trackingAction, "action-method", xml, null);
+    metaService.updateMetaAction(trackingAction, "action-method", xml, null, trackingAction);
   }
 
   @Transactional
@@ -1062,7 +1067,8 @@ public class WkfService {
     actionMethod.setCall(call);
     String xml = XMLViews.toXml(actionMethod, true);
 
-    metaService.updateMetaAction(trackingActionPreview, "action-method", xml, null);
+    metaService.updateMetaAction(
+        trackingActionPreview, "action-method", xml, null, trackingActionPreview);
   }
 
   @Transactional

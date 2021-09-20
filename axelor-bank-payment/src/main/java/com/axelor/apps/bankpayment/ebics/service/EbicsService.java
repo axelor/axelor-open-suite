@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -54,13 +54,13 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Date;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
 
-@RequestScoped
+@ApplicationScoped
 public class EbicsService {
 
   @Inject private EbicsUserRepository userRepo;
@@ -316,8 +316,8 @@ public class EbicsService {
     }
 
     throw new AxelorException(
-        I18n.get(IExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(IExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
         ebicsPartner.getPartnerId(),
         format.getName());
   }
@@ -471,7 +471,7 @@ public class EbicsService {
     return file;
   }
 
-  private boolean isTest(EbicsUser user) throws AxelorException {
+  private boolean isTest(EbicsUser user) {
 
     EbicsPartner partner = user.getEbicsPartner();
 

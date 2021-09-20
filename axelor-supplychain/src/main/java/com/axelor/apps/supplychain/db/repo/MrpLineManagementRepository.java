@@ -20,9 +20,14 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.MrpLine;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class MrpLineManagementRepository extends MrpLineRepository {
 
   /** set alert if purchase delivery date is to far from proposal */

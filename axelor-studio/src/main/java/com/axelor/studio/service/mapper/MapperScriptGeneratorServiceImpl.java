@@ -18,9 +18,14 @@
 package com.axelor.studio.service.mapper;
 
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.studio.module.StudioModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class MapperScriptGeneratorServiceImpl implements MapperScriptGeneratorService {
 
   @Override

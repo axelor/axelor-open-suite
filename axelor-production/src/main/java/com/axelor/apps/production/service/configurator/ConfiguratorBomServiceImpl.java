@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,15 +20,14 @@ package com.axelor.apps.production.service.configurator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
-import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -36,11 +35,11 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
 import java.math.BigDecimal;
 import java.util.Optional;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
   private static final int MAX_LEVEL = 10;
@@ -78,6 +77,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     BigDecimal qty;
     Unit unit;
     ProdProcess prodProcess;
+    StockLocation workshopStockLocation;
 
     if (!checkConditions(configuratorBOM, attributes)) {
       return Optional.empty();
@@ -105,7 +105,6 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_FORMULA_PRODUCT_NULL));
       }
-      product = Beans.get(ProductRepository.class).find(product.getId());
     } else {
       if (configuratorBOM.getProduct() == null) {
         throw new AxelorException(
@@ -126,9 +125,6 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     if (configuratorBOM.getDefUnitAsFormula()) {
       unit =
           (Unit) configuratorService.computeFormula(configuratorBOM.getUnitFormula(), attributes);
-      if (unit != null) {
-        unit = Beans.get(UnitRepository.class).find(unit.getId());
-      }
     } else {
       unit = configuratorBOM.getUnit();
     }
@@ -137,15 +133,23 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
           (ProdProcess)
               configuratorService.computeFormula(
                   configuratorBOM.getProdProcessFormula(), attributes);
-      if (prodProcess != null) {
-        prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
-      }
     } else if (configuratorBOM.getDefProdProcessAsConfigurator()) {
+      // In this particular case, product need to be managed before service calling
+      // because there is a save inside
+      product = Beans.get(ProductRepository.class).find(product.getId());
       prodProcess =
           confProdProcessService.generateProdProcessService(
               configuratorBOM.getConfiguratorProdProcess(), attributes, product);
     } else {
       prodProcess = configuratorBOM.getProdProcess();
+    }
+    if (configuratorBOM.getDefWorkshopStockLocationAsFormula()) {
+      workshopStockLocation =
+          (StockLocation)
+              configuratorService.computeFormula(
+                  configuratorBOM.getWorkshopStockLocationFormula(), attributes);
+    } else {
+      workshopStockLocation = configuratorBOM.getWorkshopStockLocation();
     }
 
     BillOfMaterial billOfMaterial = new BillOfMaterial();
@@ -157,6 +161,9 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     billOfMaterial.setProdProcess(prodProcess);
     billOfMaterial.setStatusSelect(configuratorBOM.getStatusSelect());
     billOfMaterial.setDefineSubBillOfMaterial(configuratorBOM.getDefineSubBillOfMaterial());
+    billOfMaterial.setWorkshopStockLocation(workshopStockLocation);
+
+    configuratorService.fixRelationalFields(billOfMaterial);
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
@@ -175,9 +182,21 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
       throws AxelorException {
     String condition = configuratorBOM.getUseCondition();
     // no condition = we always generate the bill of materials
-    if (condition == null) {
+    if (condition == null || condition.trim().isEmpty()) {
       return true;
     }
-    return (boolean) configuratorService.computeFormula(condition, jsonAttributes);
+
+    Object computedConditions = configuratorService.computeFormula(condition, jsonAttributes);
+    if (computedConditions == null) {
+      throw new AxelorException(
+          configuratorBOM,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              String.format(
+                  IExceptionMessage.CONFIGURATOR_BOM_INCONSISTENT_CONDITION,
+                  configuratorBOM.getId())));
+    }
+
+    return (boolean) computedConditions;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -398,13 +398,11 @@ public class InvoiceController {
                     reportType,
                     locale);
         title = I18n.get("Invoice");
-        response.setCanClose(true);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
-      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -515,13 +513,13 @@ public class InvoiceController {
         // No confirmation popup, invoices are content in a parameter list
         List<Map> invoiceMap = (List<Map>) request.getContext().get("invoiceToMerge");
         for (Map map : invoiceMap) {
-          invoiceIdList.add(new Long((Integer) map.get("id")));
+          invoiceIdList.add(Long.valueOf((Integer) map.get("id")));
         }
       } else {
         // After confirmation popup, invoice's id are in a string separated by ","
         String invoiceIdListStr = (String) request.getContext().get("invoiceToMerge");
         for (String invoiceId : invoiceIdListStr.split(",")) {
-          invoiceIdList.add(new Long(invoiceId));
+          invoiceIdList.add(Long.valueOf(invoiceId));
         }
         fromPopup = true;
       }
@@ -618,28 +616,30 @@ public class InvoiceController {
           JPA.em()
               .find(
                   Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
     }
     if (request.getContext().get("priceList") != null) {
       commonPriceList =
           JPA.em()
               .find(
                   PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("priceList")).get("id")));
     }
     if (request.getContext().get("paymentMode") != null) {
       commonPaymentMode =
           JPA.em()
               .find(
                   PaymentMode.class,
-                  new Long((Integer) ((Map) request.getContext().get("paymentMode")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("paymentMode")).get("id")));
     }
     if (request.getContext().get("paymentCondition") != null) {
       commonPaymentCondition =
           JPA.em()
               .find(
                   PaymentCondition.class,
-                  new Long(
+                  Long.valueOf(
                       (Integer) ((Map) request.getContext().get("paymentCondition")).get("id")));
     }
 

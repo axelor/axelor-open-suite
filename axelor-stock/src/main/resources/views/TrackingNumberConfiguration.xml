@@ -19,15 +19,21 @@
     </grid>
     
     <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.stock.db.TrackingNumberConfiguration"
-          onNew="action-tracking-number-config-record-default,action-tracking-number-config-attrs-set-scale" onLoad="action-tracking-number-config-attrs-set-scale" onSave="action-tracking-number-validate-qty" width="large">
+          onNew="action-tracking-number-config-record-default,action-tracking-number-config-attrs-set-scale" onLoad="action-tracking-number-config-attrs-set-scale"
+          onSave="action-tracking-number-validate-qty,action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency" width="large">
         <panel name="namePanel">
             <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
+        </panel>
+        <panel name="barCodePanel" title="Barcode" if="__config__.app.getApp('stock').getActivateTrackingNumberBarCodeGeneration()">
+        	<field name="useTrackingNumberSeqAsSerialNbr" onChange="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"/>
+        	<field name="barcodeTypeConfig" onChange="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"
+        		   if="__config__.app.getApp('stock').getEditTrackingNumberBarcodeType()"/>
         </panel>
         <panel name="purchaseTrackingPanel">
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel name="purchaseTrackingManagementPanel" title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
 		        <field name="generatePurchaseAutoTrackingNbr"/>
-				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="isPurchaseTrackingManaged" showIf="isPurchaseTrackingManaged || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
+				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname,action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency" requiredIf="generatePurchaseAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="purchaseQtyByTracking" colSpan="12"/>
 		    </panel>
 	   </panel>
@@ -35,7 +41,7 @@
 		    <field name="isProductionTrackingManaged" onChange="action-tracking-number-set-default-production-qty" />
 		    <panel name="productionTrackingManagementPanel" title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
 		        <field name="generateProductionAutoTrackingNbr"/>
-				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generateProductionAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
+				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname,action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency" requiredIf="generateProductionAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="hasProductAutoSelectTrackingNbr" showIf="isProductionTrackingManaged" colSpan="12"/>
 				<field name="productAutoTrackingNbrOrderSelect" showIf="hasProductAutoSelectTrackingNbr" colSpan="12"/>
 		        <field name="productionQtyByTracking" colSpan="12"/>
@@ -45,7 +51,7 @@
 		    <field name="isSaleTrackingManaged" onChange="action-tracking-number-set-default-sale-qty"/>
 		    <panel name="saleTrackingManagementPanel" title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
 		        <field name="generateSaleAutoTrackingNbr"  readonlyIf="isProductionTrackingManaged || isPurchaseTrackingManaged"/>
-				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generateSaleAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
+				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname,action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency" requiredIf="generateSaleAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" colSpan="12"/>
 		        <field name="saleAutoTrackingNbrOrderSelect" showIf="hasSaleAutoSelectTrackingNbr" colSpan="12"/>
 		        <field name="saleQtyByTracking" colSpan="12" readonlyIf="hasSaleAutoSelectTrackingNbr"/>
@@ -58,6 +64,7 @@
     	<field name="saleQtyByTracking" expr="0"/>
     	<field name="purchaseQtyByTracking" expr="0"/>
     	<field name="productionQtyByTracking" expr="0"/>
+    	<field name="barcodeTypeConfig" expr="eval:__config__.app.getApp('stock')?.getTrackingNumberBarcodeTypeConfig()" if="eval:__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()"/>
     </action-record>
     
     
@@ -87,5 +94,9 @@
     <action-validate name="action-tracking-number-validate-qty">
         <error message="The quantity by lot must be greater than 0" if="purchaseQtyByTracking+productionQtyByTracking+saleQtyByTracking &lt;= 0" />
     </action-validate>
+    
+    <action-method name="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency">
+    	<call class="com.axelor.apps.stock.web.TrackingNumberConfigurationController" method="checkSequenceAndBarcodeTypeConfigConsistency"/>
+    </action-method>
     
 </object-views>

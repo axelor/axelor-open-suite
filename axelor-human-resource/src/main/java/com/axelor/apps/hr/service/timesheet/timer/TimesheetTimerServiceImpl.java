@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,12 +38,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -110,7 +110,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     logger.debug("Duration in seconds : {}", durationInSeconds);
 
     BigDecimal durationHours =
-        new BigDecimal(durationInSeconds).divide(new BigDecimal(3600), 4, RoundingMode.HALF_EVEN);
+        new BigDecimal(durationInSeconds).divide(new BigDecimal(3600), 4, RoundingMode.HALF_UP);
     logger.debug("Duration in hours : {}", durationHours);
 
     return durationHours;

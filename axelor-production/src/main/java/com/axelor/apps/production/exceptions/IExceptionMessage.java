@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -81,6 +81,21 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_1 = /*$$(*/
       "Please select the Manufacturing order(s) to print." /*)*/;
 
+  static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
+      "Please select more than one manufacturing order." /*)*/;
+
+  static final String MANUF_ORDER_MERGE_VALIDATION = /*$$(*/
+      "Are you sure you want to merge those manufacturing orders?" /*)*/;
+
+  static final String MANUF_ORDER_NO_ONE_SELECTED = /*$$(*/
+      "Please select something to merge" /*)*/;
+
+  static final String MANUF_ORDER_MERGE_ERROR = /*$$(*/
+      "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and same workshop stock location and with all bill of materials compatibles." /*)*/;
+
+  static final String MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE = /*$$(*/
+      "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles." /*)*/;
+
   /** Operation Order Controller */
   static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;
@@ -100,6 +115,9 @@ public interface IExceptionMessage {
       "Not enough quantity in products to consume for: %s" /*)*/;
 
   static final String CHARGE_MACHINE_DAYS = /*$$(*/ "Too many days" /*)*/;
+
+  String PROD_PROCESS_LINE_MISSING_WORK_CENTER = /*$$(*/
+      "Work center is missing from prod process line %s-%s." /*)*/;
 
   /** Bill of materials service */
   static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/
@@ -126,6 +144,9 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL = /*$$(*/
       "Error while generating bill of material: the product of the bill of material is supposed to be filled in the configurator BOM but it was empty." /*)*/;
 
+  String CONFIGURATOR_BOM_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
@@ -138,6 +159,9 @@ public interface IExceptionMessage {
 
   /** Operation Order Workflow Service */
   String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
+
+  String NO_WORK_CENTER_GROUP = /*$$(*/
+      "Please fill the work center group with at least one work center." /*)*/;
 
   /** Raw Material RequirementService */
   String RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE = /*$$(*/
@@ -168,16 +192,64 @@ public interface IExceptionMessage {
 
   static final String MO_CREATED = /*$$(*/ "%d MO created." /*)*/;
 
-  static final String CHILD_BOM_TOO_MANY_ITERATION = /*$$(*/
-      "Too many iterations when searching for children bills of materials. Please check for bill of materials being in its own component list." /*)*/;
-
   // CostSheetLine service
   static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
       "Purchase currency is missing for product %s, please configure it." /*)*/;
 
+  // Production Order Sale Order Service
+  static final String CHILD_BOM_TOO_MANY_ITERATION = /*$$(*/
+      "Too many iterations when searching for children bills of materials. Please check for bill of materials being in its own component list." /*)*/;
   //  Mrp service
   String MRP_BOM_LEVEL_TOO_HIGH = /*$$(*/
       "Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
   String MRP_BOM_LEVEL_TOO_HIGH_PRODUCT = /*$$(*/
       "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
+
+  // Configurator Prod Process Service
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NAME_FORMULA = /*$$(*/
+      "The formula script to fill the name returns null value. Please correct on prod process configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_NULL_NAME = /*$$(*/
+      "Name cannot be null for prod process to generate. Please correct on prod process configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_INCONSISTENT_IS_CONS_PRO_ON_OPERATION_FORMULA = /*$$(*/
+      "The formula script to fill the checkbox manage consumed products on phases returns null value or is not consistent. Please correct on prod process configurator id : %s." /*)*/;
+
+  // Configurator Prod Process Line Service
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NAME_FORMULA = /*$$(*/
+      "The formula script to fill the name returns null value. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_NAME = /*$$(*/
+      "Name cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the prod process line returns null value or is not consistent. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_WORK_CENTER_FORMULA = /*$$(*/
+      "The formula script to fill the work center returns null value. Please correct on prod process line configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PROCESS_LINE_INCONSISTENT_NULL_WORK_CENTER = /*$$(*/
+      "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s." /*)*/;
+
+  // Configurator Prod Product Service
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_PRODUCT_FORMULA = /*$$(*/
+      "The formula script to fill the product returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_PRODUCT = /*$$(*/
+      "Product cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_QTY_FORMULA = /*$$(*/
+      "The formula script to fill the qty returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_QTY = /*$$(*/
+      "Qty cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_UNIT_FORMULA = /*$$(*/
+      "The formula script to fill the unit returns null value. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_NULL_UNIT = /*$$(*/
+      "Unit cannot be null for prod product to generate. Please correct on prod product configurator id : %s." /*)*/;
+
+  String CONFIGURATOR_PROD_PRODUCT_INCONSISTENT_CONDITION = /*$$(*/
+      "The condition formula to generate the prod product returns null value or is not consistent. Please correct on prod product configurator id : %s." /*)*/;
 }

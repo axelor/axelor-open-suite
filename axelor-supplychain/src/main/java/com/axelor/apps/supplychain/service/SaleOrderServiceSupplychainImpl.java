@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,10 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -32,11 +35,15 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
+import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -47,6 +54,7 @@ import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +63,7 @@ import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +94,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderRepo,
         saleOrderComputeService,
         saleOrderMarginService);
+    this.appSupplychain = appSupplychainService.getAppSupplychain();
+    this.saleOrderStockService = saleOrderStockService;
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.saleOrderStockService = saleOrderStockService;
   }
@@ -143,7 +154,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         stockMoves.size() != allStockMoves.size() ? true : checkAvailabiltyRequest;
     if (!stockMoves.isEmpty()) {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-      StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
       CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
       if (cancelReason == null) {
         throw new AxelorException(
@@ -152,14 +162,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
       }
       for (StockMove stockMove : stockMoves) {
-        if (stockMove.getStatusSelect().equals(StockMoveRepository.STATUS_DRAFT)) {
-          stockMoveService.cancel(stockMove, cancelReason);
-          stockMoveRepository.remove(stockMove);
-        } else {
-          stockMoveService.cancel(stockMove, cancelReason);
-          for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
-            stockMoveline.setSaleOrderLine(null);
-          }
+        stockMoveService.cancel(stockMove, cancelReason);
+        stockMove.setArchived(true);
+        for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
+          stockMoveline.setSaleOrderLine(null);
+          stockMoveline.setArchived(true);
         }
       }
     }
@@ -238,5 +245,193 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   public void updateToConfirmedStatus(SaleOrder saleOrder) {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
+  }
+
+  @Override
+  public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    Partner client = saleOrder.getClientPartner();
+    ShipmentMode shipmentMode = saleOrder.getShipmentMode();
+
+    if (shipmentMode == null) {
+      return null;
+    }
+    Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
+    if (shippingCostProduct == null) {
+      return null;
+    }
+    BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
+    if (client != null) {
+      List<CustomerShippingCarriagePaid> carriagePaids =
+          client.getCustomerShippingCarriagePaidList();
+      for (CustomerShippingCarriagePaid customerShippingCarriagePaid : carriagePaids) {
+        if (shipmentMode.getId() == customerShippingCarriagePaid.getShipmentMode().getId()) {
+          if (customerShippingCarriagePaid.getShippingCostsProduct() != null) {
+            shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
+          }
+          carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
+          break;
+        }
+      }
+    }
+    if (carriagePaidThreshold != null && shipmentMode.getHasCarriagePaidPossibility()) {
+      if (computeExTaxTotalWithoutShippingLines(saleOrder).compareTo(carriagePaidThreshold) >= 0) {
+        String message = removeShipmentCostLine(saleOrder);
+        saleOrderComputeService.computeSaleOrder(saleOrder);
+        saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+        return message;
+      }
+    }
+    if (alreadyHasShippingCostLine(saleOrder, shippingCostProduct)) {
+      return null;
+    }
+    SaleOrderLine shippingCostLine = createShippingCostLine(saleOrder, shippingCostProduct);
+    saleOrderLines.add(shippingCostLine);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+    return null;
+  }
+
+  @Override
+  public boolean alreadyHasShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct) {
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    if (saleOrderLines == null) {
+      return false;
+    }
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (shippingCostProduct.equals(saleOrderLine.getProduct())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
+      throws AxelorException {
+    SaleOrderLine shippingCostLine = new SaleOrderLine();
+    shippingCostLine.setSaleOrder(saleOrder);
+    shippingCostLine.setProduct(shippingCostProduct);
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    saleOrderLineService.computeProductInformation(shippingCostLine, saleOrder);
+    saleOrderLineService.computeValues(saleOrder, shippingCostLine);
+    return shippingCostLine;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public String removeShipmentCostLine(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    if (saleOrderLines == null) {
+      return null;
+    }
+    List<SaleOrderLine> linesToRemove = new ArrayList<SaleOrderLine>();
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (saleOrderLine.getProduct().getIsShippingCostsProduct()) {
+        linesToRemove.add(saleOrderLine);
+      }
+    }
+    if (linesToRemove.size() == 0) {
+      return null;
+    }
+    for (SaleOrderLine lineToRemove : linesToRemove) {
+      saleOrderLines.remove(lineToRemove);
+      if (lineToRemove.getId() != null) {
+        saleOrderLineRepo.remove(lineToRemove);
+      }
+    }
+    saleOrder.setSaleOrderLineList(saleOrderLines);
+    return I18n.get("Carriage paid threshold is exceeded, all shipment cost lines are removed");
+  }
+
+  @Override
+  public BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    if (saleOrderLines == null) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal exTaxTotal = BigDecimal.ZERO;
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (!saleOrderLine.getProduct().getIsShippingCostsProduct()) {
+        exTaxTotal = exTaxTotal.add(saleOrderLine.getExTaxTotal());
+      }
+    }
+    return exTaxTotal;
+  }
+
+  public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder) {
+    if (saleOrder != null
+        && saleOrder.getClientPartner() != null
+        && saleOrder.getClientPartner().getId() != null) {
+      Partner clientPartner =
+          Beans.get(PartnerRepository.class).find(saleOrder.getClientPartner().getId());
+      if (clientPartner != null) {
+        setDefaultInvoicedAndDeliveredPartners(saleOrder, clientPartner);
+        setInvoicedAndDeliveredAddresses(saleOrder);
+      }
+    }
+  }
+
+  protected void setInvoicedAndDeliveredAddresses(SaleOrder saleOrder) {
+    if (saleOrder.getInvoicedPartner() != null) {
+      saleOrder.setMainInvoicingAddress(
+          Beans.get(PartnerService.class).getInvoicingAddress(saleOrder.getInvoicedPartner()));
+      saleOrder.setMainInvoicingAddressStr(
+          Beans.get(AddressService.class).computeAddressStr(saleOrder.getMainInvoicingAddress()));
+    }
+    if (saleOrder.getDeliveredPartner() != null) {
+      saleOrder.setDeliveryAddress(
+          Beans.get(PartnerService.class).getDeliveryAddress(saleOrder.getDeliveredPartner()));
+      saleOrder.setDeliveryAddressStr(
+          Beans.get(AddressService.class).computeAddressStr(saleOrder.getDeliveryAddress()));
+    }
+  }
+
+  protected void setDefaultInvoicedAndDeliveredPartners(
+      SaleOrder saleOrder, Partner clientPartner) {
+    if (!CollectionUtils.isEmpty(clientPartner.getPartner1SupplychainLinkList())) {
+      List<PartnerSupplychainLink> partnerSupplychainLinkList =
+          clientPartner.getPartner1SupplychainLinkList();
+      // Retrieve all Invoiced by Type
+      List<PartnerSupplychainLink> partnerSupplychainLinkInvoicedByList =
+          partnerSupplychainLinkList.stream()
+              .filter(
+                  partnerSupplychainLink ->
+                      PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
+                          partnerSupplychainLink.getPartnerSupplychainLinkType().getTypeSelect()))
+              .collect(Collectors.toList());
+      // Retrieve all Delivered by Type
+      List<PartnerSupplychainLink> partnerSupplychainLinkDeliveredByList =
+          partnerSupplychainLinkList.stream()
+              .filter(
+                  partnerSupplychainLink ->
+                      PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY.equals(
+                          partnerSupplychainLink.getPartnerSupplychainLinkType().getTypeSelect()))
+              .collect(Collectors.toList());
+
+      // If there is only one, then it is the default one
+      if (partnerSupplychainLinkInvoicedByList.size() == 1) {
+        PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
+            partnerSupplychainLinkInvoicedByList.get(0);
+        saleOrder.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
+      } else if (partnerSupplychainLinkInvoicedByList.size() == 0) {
+        saleOrder.setInvoicedPartner(clientPartner);
+      } else {
+        saleOrder.setInvoicedPartner(null);
+      }
+      if (partnerSupplychainLinkDeliveredByList.size() == 1) {
+        PartnerSupplychainLink partnerSupplychainLinkDeliveredBy =
+            partnerSupplychainLinkDeliveredByList.get(0);
+        saleOrder.setDeliveredPartner(partnerSupplychainLinkDeliveredBy.getPartner2());
+      } else if (partnerSupplychainLinkDeliveredByList.size() == 0) {
+        saleOrder.setDeliveredPartner(clientPartner);
+      } else {
+        saleOrder.setDeliveredPartner(null);
+      }
+
+    } else {
+      saleOrder.setInvoicedPartner(clientPartner);
+      saleOrder.setDeliveredPartner(clientPartner);
+    }
   }
 }

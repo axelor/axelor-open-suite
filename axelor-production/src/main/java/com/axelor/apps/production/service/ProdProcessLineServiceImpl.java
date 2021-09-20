@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,63 +17,58 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
-import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.apache.commons.collections.CollectionUtils;
+import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
   protected ProdProcessLineRepository prodProcessLineRepo;
+  protected WorkCenterService workCenterService;
 
   @Inject
-  public ProdProcessLineServiceImpl(ProdProcessLineRepository prodProcessLineRepo) {
+  public ProdProcessLineServiceImpl(
+      ProdProcessLineRepository prodProcessLineRepo, WorkCenterService workCenterService) {
     this.prodProcessLineRepo = prodProcessLineRepo;
+    this.workCenterService = workCenterService;
   }
 
-  public Long getProdProcessLineDurationFromWorkCenter(WorkCenter workCenter) {
-    List<Long> durations = new ArrayList<Long>();
-
-    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      durations.add(workCenter.getDurationPerCycle());
-    }
-
-    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
-        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      if (workCenter.getProdHumanResourceList() != null) {
-        for (ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList()) {
-          durations.add(prodHumanResource.getDuration());
-        }
-      }
-    }
-
-    return !CollectionUtils.isEmpty(durations) ? Collections.max(durations) : new Long(0);
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
+      throws AxelorException {
+    prodProcessLine = copyWorkCenterGroup(prodProcessLine, workCenterGroup);
+    WorkCenter workCenter =
+        workCenterService.getMainWorkCenterFromGroup(prodProcessLine.getWorkCenterGroup());
+    prodProcessLine.setWorkCenter(workCenter);
+    prodProcessLine.setDurationPerCycle(workCenterService.getDurationFromWorkCenter(workCenter));
+    prodProcessLine.setMinCapacityPerCycle(
+        workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
+    prodProcessLine.setMaxCapacityPerCycle(
+        workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
+    prodProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
   }
 
-  public BigDecimal getProdProcessLineMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter) {
-    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      return workCenter.getMinCapacityPerCycle();
-    } else {
-      return new BigDecimal(1);
-    }
-  }
+  /**
+   * Create a work center group from a template. Since a template is also a work center group, we
+   * copy and set template field to false.
+   */
+  protected ProdProcessLine copyWorkCenterGroup(
+      ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup) {
+    WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
+    workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
+    workCenterGroupCopy.setTemplate(false);
+    workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
 
-  public BigDecimal getProdProcessLineMaxCapacityPerCycleFromWorkCenter(WorkCenter workCenter) {
-    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      return workCenter.getMaxCapacityPerCycle();
-    } else {
-      return new BigDecimal(1);
-    }
+    prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
+    return Beans.get(ProdProcessLineRepository.class).save(prodProcessLine);
   }
 }

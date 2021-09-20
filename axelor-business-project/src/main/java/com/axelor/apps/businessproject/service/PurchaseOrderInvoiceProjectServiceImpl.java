@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PriceList;
@@ -33,6 +34,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
@@ -46,6 +48,7 @@ import java.util.Map;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 @Alternative
 @Priority(BusinessProjectModule.PRIORITY)
@@ -224,5 +227,17 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
           };
       return invoiceLineGenerator.creates();
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
+
+    Invoice invoice = super.generateInvoice(purchaseOrder);
+    if (purchaseOrder.getProject() != null) {
+      invoice.setProject(purchaseOrder.getProject());
+    }
+    invoice = Beans.get(InvoiceRepository.class).save(invoice);
+    return invoice;
   }
 }

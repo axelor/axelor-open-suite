@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,13 @@
 package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.exception.AxelorException;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class BankOrderFileAFB160ICTService extends BankOrderFileAFB160Service {
 
   public BankOrderFileAFB160ICTService(BankOrder bankOrder) throws AxelorException {

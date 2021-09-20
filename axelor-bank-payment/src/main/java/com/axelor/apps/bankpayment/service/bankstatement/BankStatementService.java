@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,11 +32,11 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.io.IOException;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class BankStatementService {
 
   protected BankStatementRepository bankStatementRepository;
@@ -53,14 +53,14 @@ public class BankStatementService {
 
     if (bankStatement.getBankStatementFile() == null) {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE),
-          TraceBackRepository.CATEGORY_MISSING_FIELD);
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE));
     }
 
     if (bankStatement.getBankStatementFileFormat() == null) {
       throw new AxelorException(
-          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT),
-          TraceBackRepository.CATEGORY_MISSING_FIELD);
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT));
     }
 
     BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
@@ -75,8 +75,8 @@ public class BankStatementService {
       default:
         if (alertIfFormatNotSupported) {
           throw new AxelorException(
-              I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-              TraceBackRepository.CATEGORY_INCONSISTENCY);
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
         }
     }
   }
@@ -105,8 +105,8 @@ public class BankStatementService {
         break;
       default:
         throw new AxelorException(
-            I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT),
-            TraceBackRepository.CATEGORY_INCONSISTENCY);
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
     }
 
     return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,11 +37,11 @@ import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 
   protected LunchVoucherMgtRepository lunchVoucherMgtRepository;
@@ -94,9 +94,11 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
             .all()
             .filter("self.mainEmploymentContract.payCompany = ?1", company)
             .fetch();
-
     for (Employee employee : employeeList) {
       if (employee != null) {
+        if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+          continue;
+        }
         LunchVoucherMgtLine lunchVoucherMgtLine = obtainLineFromEmployee(employee, lunchVoucherMgt);
         // the employee doesn't have a line, create it
         if (lunchVoucherMgtLine == null) {

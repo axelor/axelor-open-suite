@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,13 +41,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -142,6 +142,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
             saleOrder.getTradingName());
 
     purchaseOrder.setGeneratedSaleOrderId(saleOrder.getId());
+    purchaseOrder.setGroupProductsOnPrintings(supplierPartner.getGroupProductsOnPrintings());
 
     Integer atiChoice =
         Beans.get(PurchaseConfigService.class)
@@ -155,9 +156,11 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      purchaseOrder.addPurchaseOrderLineListItem(
-          purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
-              purchaseOrder, saleOrderLine));
+      if (saleOrderLine.getProduct() != null) {
+        purchaseOrder.addPurchaseOrderLineListItem(
+            purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
+                purchaseOrder, saleOrderLine));
+      }
     }
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

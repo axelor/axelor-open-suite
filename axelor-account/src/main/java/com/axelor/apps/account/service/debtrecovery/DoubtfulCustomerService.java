@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,14 +41,14 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class DoubtfulCustomerService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -143,7 +143,8 @@ public class DoubtfulCustomerService {
                 invoice.getCurrency(),
                 partner,
                 move.getPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                move.getFunctionalOriginSelect());
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
 
@@ -158,20 +159,28 @@ public class DoubtfulCustomerService {
       }
     }
 
-    BigDecimal amountRemaining = invoicePartnerMoveLine.getAmountRemaining();
-    // Debit move line on partner account
-    MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
-            newMove,
-            partner,
-            invoicePartnerMoveLine.getAccount(),
-            amountRemaining,
-            false,
-            todayDate,
-            1,
-            move.getInvoice().getInvoiceId(),
-            debtPassReason);
-    newMove.getMoveLineList().add(creditMoveLine);
+    String origin = "";
+    BigDecimal amountRemaining = BigDecimal.ZERO;
+    MoveLine creditMoveLine = null;
+    if (invoicePartnerMoveLine != null) {
+      amountRemaining = invoicePartnerMoveLine.getAmountRemaining();
+
+      // Debit move line on partner account
+      creditMoveLine =
+          moveLineService.createMoveLine(
+              newMove,
+              partner,
+              invoicePartnerMoveLine.getAccount(),
+              amountRemaining,
+              false,
+              todayDate,
+              1,
+              move.getInvoice().getInvoiceId(),
+              debtPassReason);
+      newMove.getMoveLineList().add(creditMoveLine);
+
+      origin = creditMoveLine.getOrigin();
+    }
 
     // Credit move line on partner account
     MoveLine debitMoveLine =
@@ -183,7 +192,7 @@ public class DoubtfulCustomerService {
             true,
             todayDate,
             2,
-            creditMoveLine.getOrigin(),
+            origin,
             debtPassReason);
     newMove.getMoveLineList().add(debitMoveLine);
     debitMoveLine.setPassageReason(debtPassReason);
@@ -191,11 +200,13 @@ public class DoubtfulCustomerService {
     moveService.getMoveValidateService().validate(newMove);
     moveRepo.save(newMove);
 
-    Reconcile reconcile =
-        reconcileService.createReconcile(
-            invoicePartnerMoveLine, creditMoveLine, amountRemaining, false);
-    if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+    if (creditMoveLine != null) {
+      Reconcile reconcile =
+          reconcileService.createReconcile(
+              invoicePartnerMoveLine, creditMoveLine, amountRemaining, false);
+      if (reconcile != null) {
+        reconcileService.confirmReconcile(reconcile, true);
+      }
     }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
@@ -239,7 +250,8 @@ public class DoubtfulCustomerService {
                 null,
                 partner,
                 moveLine.getMove().getPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                moveLine.getMove().getFunctionalOriginSelect());
 
     BigDecimal amountRemaining = moveLine.getAmountRemaining();
 
@@ -359,7 +371,6 @@ public class DoubtfulCustomerService {
     Invoice invoice = moveLine.getInvoiceReject();
 
     invoice.setRejectMoveLine(moveLine);
-    //			invoice.setPartnerAccount(doubtfulCustomerAccount);
     invoice.setDoubtfulCustomerOk(true);
 
     return invoice;

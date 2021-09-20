@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,19 +26,22 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.db.AppInvoice;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -59,8 +62,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class InvoiceLineServiceImpl implements InvoiceLineService {
 
   protected AccountManagementAccountService accountManagementAccountService;
@@ -71,6 +78,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected ProductCompanyService productCompanyService;
   protected InvoiceLineRepository invoiceLineRepo;
   protected AppBaseService appBaseService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -81,7 +89,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       AccountManagementAccountService accountManagementAccountService,
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AccountConfigService accountConfigService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -91,13 +100,16 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.productCompanyService = productCompanyService;
     this.invoiceLineRepo = invoiceLineRepo;
     this.appBaseService = appBaseService;
+    this.accountConfigService = accountConfigService;
   }
 
+  @Override
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
-      InvoiceLine invoiceLine, Invoice invoice) {
-
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+      InvoiceLine invoiceLine, Invoice invoice) throws AxelorException {
+    if (accountConfigService
+            .getAccountConfig(invoice.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return MoreObjects.firstNonNull(invoiceLine.getAnalyticMoveLineList(), new ArrayList<>());
     }
 
@@ -387,17 +399,23 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
+
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    if ((isPurchase
-            && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
-        || (!isPurchase
-            && appAccountService
-                .getAppInvoice()
-                .getIsEnabledProductDescriptionCopyForSuppliers())) {
+    AppInvoice appInvoice = appAccountService.getAppInvoice();
+
+    Boolean isEnabledProductDescriptionCopy =
+        isPurchase
+            ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
+            : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
+
+    if (isEnabledProductDescriptionCopy) {
       productInformation.put("description", null);
     }
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_PRODUCT) {
+
+    if (accountConfigService
+            .getAccountConfig(invoice.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
       productInformation.put("analyticMoveLineList", null);
     }
     return productInformation;
@@ -408,18 +426,21 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
-    productInformation.put("productName", invoiceLine.getProduct().getName());
-    productInformation.put("productCode", invoiceLine.getProduct().getCode());
-    productInformation.put("unit", this.getUnit(invoiceLine.getProduct(), isPurchase));
+    Product product = invoiceLine.getProduct();
 
-    if ((isPurchase
-            && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
-        || (!isPurchase
-            && appAccountService
-                .getAppInvoice()
-                .getIsEnabledProductDescriptionCopyForSuppliers())) {
-      productInformation.put("description", invoiceLine.getProduct().getDescription());
+    Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    productInformation.put("productName", product.getName());
+    productInformation.put("productCode", product.getCode());
+    productInformation.put("unit", this.getUnit(product, isPurchase));
+
+    AppInvoice appInvoice = appAccountService.getAppInvoice();
+    Boolean isEnabledProductDescriptionCopy =
+        isPurchase
+            ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
+            : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
+
+    if (isEnabledProductDescriptionCopy) {
+      productInformation.put("description", product.getDescription());
     }
 
     return productInformation;
@@ -548,6 +569,28 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
       }
     }
+    return invoiceLine;
+  }
+
+  @Override
+  public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
+      throws AxelorException {
+
+    if (invoiceLine != null && invoiceLine.getAccount() != null) {
+      if (invoiceLine.getAccount().getAnalyticDistributionAuthorized()
+          && invoiceLine.getAccount().getAnalyticDistributionTemplate() != null
+          && accountConfigService
+                  .getAccountConfig(invoiceLine.getAccount().getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+
+        invoiceLine.setAnalyticDistributionTemplate(
+            invoiceLine.getAccount().getAnalyticDistributionTemplate());
+      }
+    } else {
+      invoiceLine.setAnalyticDistributionTemplate(null);
+    }
+
     return invoiceLine;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.configurator;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
+import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.module.ProductionModule;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 
 @Alternative
 @Priority(ProductionModule.PRIORITY)
@@ -133,6 +135,13 @@ public class ConfiguratorCreatorImportServiceProductionImpl
     }
     for (ConfiguratorProdProcessLine configuratorProdProcessLine : configuratorProdProcessLines) {
       updateAllFormulaFields(configuratorProdProcessLine, oldName, newName);
+      List<ConfiguratorProdProduct> confProdProductList =
+          configuratorProdProcessLine.getConfiguratorProdProductList();
+      if (CollectionUtils.isNotEmpty(confProdProductList)) {
+        for (ConfiguratorProdProduct confProdProduct : confProdProductList) {
+          updateAllFormulaFields(confProdProduct, oldName, newName);
+        }
+      }
     }
   }
 

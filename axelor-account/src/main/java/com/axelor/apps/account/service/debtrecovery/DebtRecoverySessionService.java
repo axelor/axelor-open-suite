@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,13 +37,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class DebtRecoverySessionService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -69,7 +69,10 @@ public class DebtRecoverySessionService {
    */
   public DebtRecoveryMethod getDebtRecoveryMethod(DebtRecovery debtRecovery) {
 
-    AccountingSituation accountingSituation = debtRecovery.getAccountingSituation();
+    AccountingSituation accountingSituation =
+        debtRecovery.getTradingName() == null
+            ? debtRecovery.getAccountingSituation()
+            : debtRecovery.getTradingNameAccountingSituation();
     Company company = accountingSituation.getCompany();
     Partner partner = accountingSituation.getPartner();
     List<DebtRecoveryConfigLine> debtRecoveryConfigLines =
@@ -101,10 +104,9 @@ public class DebtRecoverySessionService {
     LocalDate referenceDate = debtRecovery.getReferenceDate();
     BigDecimal balanceDueDebtRecovery = debtRecovery.getBalanceDueDebtRecovery();
 
-    int debtRecoveryLevel = 0;
-    if (debtRecovery.getDebtRecoveryMethodLine() != null
-        && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName() != null) {
-      debtRecoveryLevel = debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName();
+    int debtRecoveryLevel = -1;
+    if (debtRecovery.getDebtRecoveryMethodLine() != null) {
+      debtRecoveryLevel = debtRecovery.getDebtRecoveryMethodLine().getSequence();
     }
 
     int theoricalDebtRecoveryLevel;
@@ -160,12 +162,12 @@ public class DebtRecoverySessionService {
 
     DebtRecoveryMethod debtRecoveryMethod = debtRecovery.getDebtRecoveryMethod();
 
-    int levelMax = 0;
+    int levelMax = -1;
 
     if (debtRecoveryMethod != null && debtRecoveryMethod.getDebtRecoveryMethodLineList() != null) {
       for (DebtRecoveryMethodLine debtRecoveryMethodLine :
           debtRecoveryMethod.getDebtRecoveryMethodLineList()) {
-        int currentLevel = debtRecoveryMethodLine.getDebtRecoveryLevel().getName();
+        int currentLevel = debtRecoveryMethodLine.getSequence();
         if (currentLevel > levelMax) {
           levelMax = currentLevel;
         }
@@ -232,11 +234,15 @@ public class DebtRecoverySessionService {
               + " %s: +"
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          debtRecovery.getAccountingSituation().getPartner().getName());
+          (debtRecovery.getTradingName() == null
+                  ? debtRecovery.getAccountingSituation()
+                  : debtRecovery.getTradingNameAccountingSituation())
+              .getPartner()
+              .getName());
     }
     for (DebtRecoveryMethodLine debtRecoveryMethodLine :
         debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList()) {
-      if (debtRecoveryMethodLine.getDebtRecoveryLevel().getName().equals(debtRecoveryLevel)) {
+      if (debtRecoveryMethodLine.getSequence() == debtRecoveryLevel) {
         return debtRecoveryMethodLine;
       }
     }

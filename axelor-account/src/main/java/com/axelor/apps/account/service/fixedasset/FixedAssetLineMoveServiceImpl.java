@@ -43,12 +43,8 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-<<<<<<< HEAD:axelor-account/src/main/java/com/axelor/apps/account/service/FixedAssetLineServiceImpl.java
 @RequestScoped
-public class FixedAssetLineServiceImpl implements FixedAssetLineService {
-=======
 public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService {
->>>>>>> f39c74c:axelor-account/src/main/java/com/axelor/apps/account/service/fixedasset/FixedAssetLineMoveServiceImpl.java
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

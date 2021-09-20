@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,11 +19,11 @@ package com.axelor.apps.bankpayment.test;
 
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
-import javax.enterprise.context.RequestScoped;
-import org.junit.Assert;
-import org.junit.Test;
+import javax.enterprise.context.ApplicationScoped;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-@RequestScoped
+@ApplicationScoped
 public class TestEbicsOrderNumber {
 
   @Test
@@ -49,7 +49,7 @@ public class TestEbicsOrderNumber {
     } catch (AxelorException e) {
       System.out.println(e.getMessage());
       System.out.println("Maximum possible order numbers: " + i);
-      Assert.assertTrue(i == (36 * 36 * 36));
+      Assertions.assertTrue(i == (36 * 36 * 36));
     }
   }
 }

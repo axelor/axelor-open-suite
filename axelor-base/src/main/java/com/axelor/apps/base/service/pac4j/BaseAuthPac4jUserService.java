@@ -17,10 +17,15 @@
  */
 package com.axelor.apps.base.service.pac4j;
 
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.auth.db.User;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import org.pac4j.core.profile.CommonProfile;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class BaseAuthPac4jUserService extends AuthPac4jUserService {
 
   @Override

@@ -33,9 +33,9 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class MetaJsonFieldProjectController {
 
   public void onNew(ActionRequest request, ActionResponse response) {

@@ -3,17 +3,22 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AccountingReportPrintServiceImpl implements AccountingReportPrintService {
 
   protected AppBaseService appBaseService;

@@ -18,9 +18,14 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.DebtRecovery;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.exception.service.TraceBackService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class DebtRecoveryAccountRepository extends DebtRecoveryRepository {
 
   @Override

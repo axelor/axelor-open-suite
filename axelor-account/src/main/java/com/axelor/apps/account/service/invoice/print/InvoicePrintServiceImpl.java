@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,12 +55,16 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   protected InvoiceRepository invoiceRepo;
   protected AccountConfigRepository accountConfigRepo;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InvoicePrintServiceImpl(
-      InvoiceRepository invoiceRepo, AccountConfigRepository accountConfigRepo) {
+      InvoiceRepository invoiceRepo,
+      AccountConfigRepository accountConfigRepo,
+      AppBaseService appBaseService) {
     this.invoiceRepo = invoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -141,6 +145,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     try {
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
       metaFile = metaFiles.upload(file);
+      metaFile.setFileName(String.format("%s.%s", reportSettings.getOutputName(), format));
       invoice.setPrintedPDF(metaFile);
       return MetaFiles.getPath(metaFile).toFile();
     } catch (IOException e) {

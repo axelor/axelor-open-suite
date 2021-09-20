@@ -12,11 +12,11 @@
 		<field name="toDate"/>
 	</grid>
 
-	<form name="resource-booking-form" title="Resource booking" model="com.axelor.apps.project.db.ResourceBooking" width="large" onNew="action-resource-booking-defaults">
+	<form name="resource-booking-form" title="Resource booking" model="com.axelor.apps.project.db.ResourceBooking" width="large" onNew="action-resource-booking-defaults"
+		onSave="action-resource-booking-method-check-resource-availibility">
 		<panel name="mainPanel">
 			<panel name="namePanel" colSpan="12">
-				<field name="name" colSpan="12" css="label-bold bold large"/>
-				<static name="nameLabel" hideIf="id" colSpan="12"><![CDATA[<span class='label label-info'>Computed automatically if left empty</span>]]></static>
+				<field name="name" colSpan="12" css="label-bold bold large" required="true"/>
 			</panel>
 			<field name="resource" canEdit="false"/>
 			<field name="user" canEdit="false"/>
@@ -55,5 +55,9 @@
 		<attribute name="value" expr="#{updateTaskFromPeriod ? projectTask.taskEndDate.atStartOfDay() : null}" for="toDate"/>
 		<attribute name="readonly" expr="#{updateTaskFromPeriod}" for="toDate"/>
 	</action-attrs>
+	
+	<action-method name="action-resource-booking-method-check-resource-availibility">
+		<call class="com.axelor.apps.project.web.ResourceBookingController" method="checkIfResourceBooked"/>	
+	</action-method>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,8 @@ package com.axelor.apps.tool.crypto;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /** From: http://stackoverflow.com/questions/587357/rijndael-support-in-java */
 public class AESTest2 {
@@ -87,6 +87,6 @@ public class AESTest2 {
     byte[] roundTriptext = cipher2.doFinal(ciphertext);
     String roundTrip = new String(roundTriptext, "UTF8");
 
-    Assert.assertEquals(message, roundTrip);
+    Assertions.assertEquals(message, roundTrip);
   }
 }

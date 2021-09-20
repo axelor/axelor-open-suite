@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -190,6 +190,16 @@ public class AccountingBatchController {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch = Beans.get(AccountingBatchService.class).closeAnnualAccounts(accountingBatch);
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
+
+  public void blockCustomersWithLatePayments(ActionRequest request, ActionResponse response) {
+
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
+    Batch batch =
+        Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
     if (batch != null) response.setFlash(batch.getComments());
     response.setReload(true);
   }

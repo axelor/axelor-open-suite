@@ -18,6 +18,7 @@
 	<boolean name="blockedOnCustCreditExceed" title="Blocked"/>
 	<boolean name="manualUnblock" title="Manual Unblock"/>
 	<string name="title" title="Title"/>
+	<boolean name="oneoffSale" title="One-off sale"/>
 	
 <!--   	Onglet Coordonnées client -->
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" massUpdate="true"/>
@@ -103,6 +104,7 @@
 
 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
 	<many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+    <boolean name="groupProductsOnPrintings" title="Group products on printings" default="false" />
 	
 	<!-- Subscription fields -->
 	<integer name="periodicityTypeSelect" selection="sale.subscription.periodicity.type.select" title="Periodicity type" default="2"/>
@@ -124,6 +126,9 @@
 	<string name="pickingOrderComments" title="Comment to display on picking order" large="true"/>
 	
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
+	
+	<date name="lastReminderDate" title="Last reminder"/>
+	<string name="lastReminderComments" title="Comment" large="true"/>
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
  	

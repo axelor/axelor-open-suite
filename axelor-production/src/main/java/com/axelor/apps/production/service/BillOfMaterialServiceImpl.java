@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,13 +46,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -230,15 +231,19 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  public TempBomTree generateTree(BillOfMaterial billOfMaterial) {
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom) {
 
     processedBom = new ArrayList<>();
 
-    return getBomTree(billOfMaterial, null, null);
+    return getBomTree(billOfMaterial, null, null, useProductDefaultBom);
   }
 
   @Transactional
-  public TempBomTree getBomTree(BillOfMaterial bom, BillOfMaterial parentBom, TempBomTree parent) {
+  public TempBomTree getBomTree(
+      BillOfMaterial bom,
+      BillOfMaterial parentBom,
+      TempBomTree parent,
+      boolean useProductDefaultBom) {
 
     TempBomTree bomTree;
     if (parentBom == null) {
@@ -266,7 +271,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     processedBom.add(bom.getId());
 
-    List<Long> validBomIds = processChildBom(bom, bomTree);
+    List<Long> validBomIds = processChildBom(bom, bomTree, useProductDefaultBom);
 
     validBomIds.add(0L);
 
@@ -275,13 +280,22 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     return bomTree;
   }
 
-  private List<Long> processChildBom(BillOfMaterial bom, TempBomTree bomTree) {
+  private List<Long> processChildBom(
+      BillOfMaterial bom, TempBomTree bomTree, boolean useProductDefaultBom) {
 
     List<Long> validBomIds = new ArrayList<Long>();
 
     for (BillOfMaterial childBom : bom.getBillOfMaterialSet()) {
+
+      if (useProductDefaultBom
+          && CollectionUtils.isEmpty(childBom.getBillOfMaterialSet())
+          && childBom.getProduct() != null
+          && childBom.getProduct().getDefaultBillOfMaterial() != null) {
+        childBom = childBom.getProduct().getDefaultBillOfMaterial();
+      }
+
       if (!processedBom.contains(childBom.getId())) {
-        getBomTree(childBom, bom, bomTree);
+        getBomTree(childBom, bom, bomTree, useProductDefaultBom);
       } else {
         log.debug("Already processed: {}", childBom.getId());
       }
@@ -329,7 +343,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         Beans.get(AppProductionService.class).getAppProduction().getNbDecimalDigitForBomQty();
     return bom.getProduct().getName()
         + " - "
-        + bom.getQty().setScale(nbDecimalDigitForBomQty, RoundingMode.HALF_EVEN)
+        + bom.getQty().setScale(nbDecimalDigitForBomQty, RoundingMode.HALF_UP)
         + " "
         + bom.getUnit().getName()
         + " - "

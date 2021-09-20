@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,13 +39,13 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -95,7 +95,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       LocalDate deliveryDate,
       String internalReference,
       String externalReference,
-      LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
       Team team,
@@ -115,7 +114,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
     saleOrder.setDeliveryDate(deliveryDate);
-    saleOrder.setOrderDate(orderDate);
 
     saleOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
@@ -193,7 +191,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             null,
             numSeq,
             externalRef,
-            appSaleService.getTodayDate(company),
             priceList,
             clientPartner,
             team);

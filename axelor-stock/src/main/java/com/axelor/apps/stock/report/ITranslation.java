@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,8 @@ public interface ITranslation {
   public static final String STOCK_LOCATION_LOCATION = /*$$(*/ "StockLocation.location"; /*)*/
   public static final String STOCK_LOCATION_TOTAL_SALE_VALUE = /*$$(*/
       "StockLocation.totalSaleValue"; /*)*/
+  public static final String STOCK_LOCATION_TOTAL_PURCHASE_VALUE = /*$$(*/
+      "StockLocation.totalPurchaseValue"; /*)*/
   public static final String STOCK_LOCATION_TOTAL_ACCOUNTING_VALUE = /*$$(*/
       "StockLocation.totalAccountingValue"; /*)*/
   public static final String STOCK_LOCATION_TOTAL_WAP_VALUE = /*$$(*/
@@ -39,6 +41,8 @@ public interface ITranslation {
   public static final String STOCK_LOCATION_CODE = /*$$(*/ "StockLocation.code"; /*)*/
   public static final String STOCK_LOCATION_QTY_UNIT = /*$$(*/ "StockLocation.qtyUnit"; /*)*/
   public static final String STOCK_LOCATION_SALE_VALUE = /*$$(*/ "StockLocation.saleValue"; /*)*/
+  public static final String STOCK_LOCATION_PURCHASE_VALUE = /*$$(*/
+      "StockLocation.purchaseValue"; /*)*/
   public static final String STOCK_LOCATION_ACCOUNTING_VALUE = /*$$(*/
       "StockLocation.accountingValue"; /*)*/
   public static final String STOCK_LOCATION_WAP_VALUE = /*$$(*/ "StockLocation.wapValue"; /*)*/

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,7 +51,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
@@ -96,6 +95,7 @@ import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
+import wslite.json.JSONException;
 
 @ApplicationScoped
 public class ExpenseServiceImpl implements ExpenseService {
@@ -140,10 +140,13 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense) {
+  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
+      throws AxelorException {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigService
+            .getAccountConfig(expense.getCompany())
+            .getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return expenseLine;
     }
 
@@ -253,7 +256,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Message sendConfirmationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -314,7 +317,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Message sendValidationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -340,7 +343,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -399,7 +402,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                 partner,
                 moveDate,
                 partner.getInPaymentMode(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -525,7 +529,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public Message sendCancellationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -615,7 +619,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                 partner,
                 paymentDate,
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     move.addMoveLineListItem(
         moveLineService.createMoveLine(

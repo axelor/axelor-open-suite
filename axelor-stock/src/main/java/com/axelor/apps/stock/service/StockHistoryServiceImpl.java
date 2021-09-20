@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,10 +33,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-@RequestScoped
+@ApplicationScoped
 public class StockHistoryServiceImpl implements StockHistoryService {
 
   protected StockMoveLineRepository stockMoveLineRepository;
@@ -272,12 +272,12 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLine.setSumIncQtyPeriod(
         totalStockHistoryLine
             .getSumIncQtyPeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_UP));
 
     stockHistoryLine.setPriceIncStockMovePeriod(
         totalStockHistoryLine
             .getPriceIncStockMovePeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_UP));
 
     stockHistoryLine.setCountOutMvtStockPeriod(
         totalStockHistoryLine.getCountOutMvtStockPeriod() / sizeOfList);
@@ -285,12 +285,12 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLine.setSumOutQtyPeriod(
         totalStockHistoryLine
             .getSumOutQtyPeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_UP));
 
     stockHistoryLine.setPriceOutStockMovePeriod(
         totalStockHistoryLine
             .getPriceOutStockMovePeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_UP));
 
     return stockHistoryLine;
   }

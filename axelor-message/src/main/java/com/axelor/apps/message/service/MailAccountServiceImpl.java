@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.module.MessageModule;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.service.CipherService;
 import com.axelor.exception.AxelorException;
@@ -46,6 +47,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import javax.activation.DataSource;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.FetchProfile;
@@ -63,6 +66,8 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(MessageModule.PRIORITY)
 public class MailAccountServiceImpl implements MailAccountService {
 
   private final Logger log = LoggerFactory.getLogger(MailAccountServiceImpl.class);

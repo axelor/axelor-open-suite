@@ -19,11 +19,16 @@ package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.module.ProjectModule;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class TaskTemplateManagementRepository extends TaskTemplateRepository {
 
   @Override

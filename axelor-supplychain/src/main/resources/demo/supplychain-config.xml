@@ -22,7 +22,7 @@
 	
 	<input file="supplychain_supplyChainConfig.csv" separator=";" type="com.axelor.apps.supplychain.db.SupplyChainConfig"/>
 
-	<input file="base_appSupplychain.csv" separator=";" type="com.axelor.apps.base.db.AppSupplychain" search="self.code = :code"  call="com.axelor.csv.script.ImportSupplyChain:importSupplyChain"/>
+	<input file="base_appSupplychain.csv" separator=";" type="com.axelor.apps.base.db.AppSupplychain" search="self.app.code = :code"  call="com.axelor.csv.script.ImportSupplyChain:importSupplyChain"/>
 
 	<input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.sale.db.SaleOrder">
 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
@@ -62,6 +62,8 @@
 	</input>
 	
 	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>
+	
+	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory" search="self.importId = :importId" call="com.axelor.csv.script.ImportSupplyChain:importInventory"/>
 	
 </csv-inputs>
 

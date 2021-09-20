@@ -12,6 +12,12 @@
 	<date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
 	<string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr." required="true"/>
 	<decimal name="counter" title="Counter" precision="20" scale="10"/>
+	<string name="origin" title="Origin"/>
+	<string name="note" title="Note" large="true"/>
+	
+	<many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
+	<string name="serialNumber" title="Serial Nbr"/>
+	<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 	
 	<unique-constraint columns="product,trackingNumberSeq"/>
 

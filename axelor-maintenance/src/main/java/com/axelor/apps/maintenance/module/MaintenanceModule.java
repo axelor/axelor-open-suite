@@ -23,5 +23,5 @@ public class MaintenanceModule {
 
   public MaintenanceModule() {}
 
-  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 2700;
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 2800;
 }

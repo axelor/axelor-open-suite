@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,12 +65,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -203,7 +203,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             company,
             supplierPartner,
             startLocation,
-            company.getStockConfig().getQualityControlDefaultStockLocation(),
+            appBaseService.getAppBase().getEnableTradingNamesManagement()
+                ? purchaseOrder.getTradingName().getQualityControlDefaultStockLocation()
+                : company.getStockConfig().getQualityControlDefaultStockLocation(),
             null,
             estimatedDeliveryDate,
             purchaseOrder.getNotes(),
@@ -218,11 +220,13 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
     stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     stockMove.setTradingName(purchaseOrder.getTradingName());
+    stockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
     qualityStockMove.setOriginId(purchaseOrder.getId());
     qualityStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
+    qualityStockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
     SupplyChainConfig supplychainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(purchaseOrder.getCompany());
@@ -378,7 +382,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .divide(
                   purchaseOrderLine.getQty(),
                   appBaseService.getNbDecimalDigitForUnitPrice(),
-                  RoundingMode.HALF_EVEN);
+                  RoundingMode.HALF_UP);
     }
 
     if (unit != null && !unit.equals(purchaseOrderLine.getUnit())) {

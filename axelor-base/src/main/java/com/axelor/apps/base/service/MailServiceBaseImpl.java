@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -93,6 +94,12 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   private ExecutorService executor = Executors.newCachedThreadPool();
 
   private String userName = null;
+
+  protected Template messageTemplate = null;
+  protected boolean isDefaultTemplate = false;
+  protected Map<String, Object> templatesContext;
+  protected Templates templates;
+  protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
   @Inject AppBaseService appBaseService;
 
@@ -300,7 +307,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
     for (String recipient : recipients) {
       MailBuilder builder = sender.compose().subject(getSubject(message, related));
-      builder.to(recipient);
+      this.setRecipients(builder, recipient, related);
 
       Model obj = Beans.get(MailService.class).resolve(recipient);
       userName = null;
@@ -353,52 +360,26 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   @Override
   protected String template(MailMessage message, Model entity) throws IOException {
-    Template template = getTemplateByModel(entity);
-    boolean isDefaultTemplate = false;
-    if (template == null) {
-      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
-      isDefaultTemplate = true;
-    }
-    if (template == null) {
+    if (messageTemplate == null) {
       return super.template(message, entity);
     }
 
     final String text = message.getBody().trim();
-    Map<String, Object> data = new HashMap<>();
-    Map<String, Object> templatesContext = Maps.newHashMap();
-    Class<?> klass = EntityHelper.getEntityClass(entity);
-    data.put("username", userName);
+    templatesContext.put("username", userName);
 
     if (MESSAGE_TYPE_NOTIFICATION.equals(message.getType())) {
       final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
       final Map<String, Object> details = messages.details(message);
       final String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
       final ObjectMapper mapper = Beans.get(ObjectMapper.class);
-      data = mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+      Map<String, Object> data =
+          mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+      templatesContext.putAll(data);
     } else {
-      data.put("comment", text);
+      templatesContext.put("comment", text);
     }
 
-    if (isDefaultTemplate) {
-      data.put("entity", entity);
-    } else {
-      data.put(klass.getSimpleName(), entity);
-    }
-
-    try {
-      Beans.get(TemplateMessageService.class)
-          .computeTemplateContexts(
-              template.getTemplateContextList(),
-              entity.getId(),
-              klass.getCanonicalName(),
-              template.getIsJson(),
-              templatesContext);
-    } catch (ClassNotFoundException e) {
-      TraceBackService.trace(e);
-    }
-    data.putAll(templatesContext);
-    Templates templates = createTemplates(template);
-    return templates.fromText(template.getContent()).make(data).render();
+    return templates.fromText(messageTemplate.getContent()).make(templatesContext).render();
   }
 
   @Override
@@ -406,29 +387,40 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (message == null) {
       return null;
     }
-    Template template = getTemplateByModel(entity);
-    boolean isDefaultTemplate = false;
-    if (template == null) {
-      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+    messageTemplate = this.getTemplateByModel(entity);
+    if (messageTemplate == null) {
+      messageTemplate =
+          Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
     }
-    if (template != null) {
-      Map<String, Object> data = Maps.newHashMap();
-      if (isDefaultTemplate) {
-        data.put("entity", entity);
-      } else {
-        Class<?> klass = EntityHelper.getEntityClass(entity);
-        data.put(klass.getSimpleName(), entity);
-      }
-      Templates templates = createTemplates(template);
-      return templates.fromText(template.getSubject()).make(data).render();
-    } else {
+    if (messageTemplate == null) {
       return super.getSubject(message, entity);
     }
+    templatesContext = Maps.newHashMap();
+    Class<?> klass = EntityHelper.getEntityClass(entity);
+
+    if (isDefaultTemplate) {
+      templatesContext.put("entity", entity);
+    } else {
+      templatesContext.put(klass.getSimpleName(), entity);
+    }
+
+    try {
+      Beans.get(TemplateMessageService.class)
+          .computeTemplateContexts(
+              messageTemplate.getTemplateContextList(),
+              entity.getId(),
+              klass.getCanonicalName(),
+              messageTemplate.getIsJson(),
+              templatesContext);
+    } catch (ClassNotFoundException e) {
+      TraceBackService.trace(e);
+    }
+    templates = createTemplates(messageTemplate);
+    return templates.fromText(messageTemplate.getSubject()).make(templatesContext).render();
   }
 
   protected Templates createTemplates(Template template) {
-    Templates templates;
     if (template.getTemplateEngineSelect() == TemplateRepository.TEMPLATE_ENGINE_GROOVY_TEMPLATE) {
       templates = Beans.get(GroovyTemplates.class);
     } else {
@@ -449,5 +441,28 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
     }
     return null;
+  }
+
+  protected void setRecipients(MailBuilder builder, String recipient, Model entity) {
+    builder.to(recipient);
+
+    if (messageTemplate == null) {
+      return;
+    }
+
+    builder.cc(getRecipients(messageTemplate.getCcRecipients()));
+    builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
+    builder.to(getRecipients(messageTemplate.getToRecipients()));
+  }
+
+  protected String[] getRecipients(String recipients) {
+    if (StringUtils.notBlank(recipients)) {
+      return templates
+          .fromText(recipients)
+          .make(templatesContext)
+          .render()
+          .split(RECIPIENTS_SPLIT_REGEX);
+    }
+    return new String[0];
   }
 }

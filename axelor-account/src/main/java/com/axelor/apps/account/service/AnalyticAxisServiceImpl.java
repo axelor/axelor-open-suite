@@ -1,9 +1,14 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AnalyticAxisServiceImpl implements AnalyticAxisService {
 
   protected AnalyticAxisFetchService analyticAxisFetchService;

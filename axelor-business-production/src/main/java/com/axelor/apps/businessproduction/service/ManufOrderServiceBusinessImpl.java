@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -35,6 +36,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -64,7 +66,9 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
       OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      BarcodeGeneratorService barcodeGeneratorService,
+      MetaFiles metaFiles) {
     super(
         sequenceService,
         operationOrderService,
@@ -74,7 +78,9 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         appProductionService,
         manufOrderRepo,
         prodProductRepo,
-        productCompanyService);
+        productCompanyService,
+        barcodeGeneratorService,
+        metaFiles);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 

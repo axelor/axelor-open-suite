@@ -4,12 +4,17 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AnalyticAxisByCompanyServiceImpl implements AnalyticAxisByCompanyService {
 
   protected AnalyticAxisRepository analyticAxisRepository;

@@ -23,10 +23,15 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
+import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class PackLineServiceImpl implements PackLineService {
 
   protected ProductRepository productRepository;

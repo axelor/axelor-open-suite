@@ -4,8 +4,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.module.PurchaseModule;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(PurchaseModule.PRIORITY)
 public class PurchaseOrderLinePurchaseRepository extends PurchaseOrderLineRepository {
 
   @Override

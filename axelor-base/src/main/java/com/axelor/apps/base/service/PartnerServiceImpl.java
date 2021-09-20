@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -366,14 +366,12 @@ public class PartnerServiceImpl implements PartnerService {
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner) {
+
     String query =
-        "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "
-            + "(email.relatedTo1Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo1SelectId = "
-            + partner.getId()
-            + ") "
-            + "OR (email.relatedTo2Select = 'com.axelor.apps.base.db.Partner' AND email.relatedTo2SelectId = "
-            + partner.getId()
-            + ")";
+        String.format(
+            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
+                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
+            partner.getId());
 
     if (partner.getEmailAddress() != null) {
       query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
@@ -767,5 +765,37 @@ public class PartnerServiceImpl implements PartnerService {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();
+  }
+
+  @Override
+  public String getNicFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String nic = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        nic = regCode.substring(9, 14);
+      }
+    }
+
+    return nic;
+  }
+
+  @Override
+  public String getSirenFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String siren = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        siren = regCode.substring(0, 9);
+      }
+    }
+
+    return siren;
   }
 }

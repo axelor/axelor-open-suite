@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -44,9 +45,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class PaymentVoucherLoadService {
 
   protected CurrencyService currencyService;
@@ -79,8 +84,6 @@ public class PaymentVoucherLoadService {
 
     MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 
-    List<MoveLine> moveLines = null;
-
     String query =
         "self.partner = ?1 "
             + "and self.account.useForPartnerBalance = 't' "
@@ -88,7 +91,8 @@ public class PaymentVoucherLoadService {
             + "and (self.move.statusSelect = ?3 OR self.move.statusSelect = ?4)"
             + "and self.move.ignoreInDebtRecoveryOk = 'f' "
             + "and self.move.company = ?2 "
-            + "and self.move.invoice.pfpValidateStatusSelect != ?5";
+            + "and self.move.invoice.pfpValidateStatusSelect != ?5 "
+            + "and (?6 IS NULL OR self.move.tradingName = ?6)";
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
       query += " and self.debit > 0 ";
@@ -96,19 +100,17 @@ public class PaymentVoucherLoadService {
       query += " and self.credit > 0 ";
     }
 
-    moveLines =
-        moveLineRepo
-            .all()
-            .filter(
-                query,
-                paymentVoucher.getPartner(),
-                paymentVoucher.getCompany(),
-                MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_ACCOUNTED,
-                InvoiceRepository.PFP_STATUS_LITIGATION)
-            .fetch();
-
-    return moveLines;
+    return moveLineRepo
+        .all()
+        .filter(
+            query,
+            paymentVoucher.getPartner(),
+            paymentVoucher.getCompany(),
+            MoveRepository.STATUS_VALIDATED,
+            MoveRepository.STATUS_ACCOUNTED,
+            InvoiceRepository.PFP_STATUS_LITIGATION,
+            paymentVoucher.getTradingName())
+        .fetch();
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -147,7 +149,7 @@ public class PaymentVoucherLoadService {
                 move.getCurrency(),
                 moveLine.getAmountPaid(),
                 moveLine.getDate())
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
 
     payVoucherDueElement.setPaidAmount(paidAmountInElementCurrency);
 
@@ -237,7 +239,7 @@ public class PaymentVoucherLoadService {
                 payVoucherElementToPay.getCurrency(),
                 amountRemaining,
                 paymentDate)
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
 
     BigDecimal amountImputedInElementCurrency =
         amountRemainingInElementCurrency.min(payVoucherElementToPay.getRemainingAmount());
@@ -249,7 +251,7 @@ public class PaymentVoucherLoadService {
                 paymentVoucher.getCurrency(),
                 amountImputedInElementCurrency,
                 paymentDate)
-            .setScale(2, RoundingMode.HALF_EVEN);
+            .setScale(2, RoundingMode.HALF_UP);
 
     payVoucherElementToPay.setAmountToPay(amountImputedInElementCurrency);
     payVoucherElementToPay.setAmountToPayCurrency(amountImputedInPayVouchCurrency);

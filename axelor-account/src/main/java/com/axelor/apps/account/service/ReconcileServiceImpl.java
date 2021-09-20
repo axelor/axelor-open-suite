@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
@@ -45,13 +46,14 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class ReconcileServiceImpl implements ReconcileService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -66,6 +68,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected MoveLineService moveLineService;
   protected AppBaseService appBaseService;
+  protected PaymentMoveLineDistributionService paymentMoveLineDistributionService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -78,7 +81,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       InvoicePaymentCancelService invoicePaymentCancelService,
       InvoicePaymentCreateService invoicePaymentCreateService,
       MoveLineService moveLineService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      PaymentMoveLineDistributionService paymentMoveLineDistributionService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -90,6 +94,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.moveLineService = moveLineService;
     this.appBaseService = appBaseService;
+    this.paymentMoveLineDistributionService = paymentMoveLineDistributionService;
   }
 
   /**
@@ -121,7 +126,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile =
           new Reconcile(
               debitMoveLine.getMove().getCompany(),
-              amount.setScale(2, RoundingMode.HALF_EVEN),
+              amount.setScale(2, RoundingMode.HALF_UP),
               debitMoveLine,
               creditMoveLine,
               ReconcileRepository.STATUS_DRAFT,
@@ -176,6 +181,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.udpatePaymentTax(reconcile);
+    this.updatePaymentMoveLineDistribution(reconcile);
     if (updateInvoicePayments) {
       this.updateInvoicePayments(reconcile);
     }
@@ -212,13 +218,13 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (!debitMoveLineCompany.equals(reconcileCompany)
         && !creditMoveLineCompany.equals(reconcileCompany)) {
       throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
               I18n.get(IExceptionMessage.RECONCILE_7),
               I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
               debitMoveLineCompany,
               creditMoveLineCompany,
-              reconcileCompany),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+              reconcileCompany));
     }
 
     // Check if move lines accounts are the same (debit and credit)
@@ -410,6 +416,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Change the state
     reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
+    reconcile.setReconciliationCancelDate(appBaseService.getTodayDate(reconcile.getCompany()));
     // Add the reconciled amount to the reconciled amount in the move line
     creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
     debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
@@ -421,6 +428,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
+    this.reversePaymentMoveLineDistributionLines(reconcile);
     // Update reconcile group
     Beans.get(ReconcileGroupService.class).remove(reconcile);
   }
@@ -436,6 +444,29 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (creditInvoice == null) {
       moveLineService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
     }
+  }
+
+  /** @param reconcile */
+  protected void updatePaymentMoveLineDistribution(Reconcile reconcile) {
+    // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
+    // type purchase)
+    Move purchaseMove = reconcile.getCreditMoveLine().getMove();
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")) {
+      return;
+    }
+    paymentMoveLineDistributionService.generatePaymentMoveLineDistributionList(
+        purchaseMove, reconcile);
+  }
+
+  protected void reversePaymentMoveLineDistributionLines(Reconcile reconcile) {
+    // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
+    // type purchase)
+    Move purchaseMove = reconcile.getCreditMoveLine().getMove();
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
+        || CollectionUtils.isEmpty(reconcile.getPaymentMoveLineDistributionList())) {
+      return;
+    }
+    paymentMoveLineDistributionService.reversePaymentMoveLineDistributionList(reconcile);
   }
 
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {

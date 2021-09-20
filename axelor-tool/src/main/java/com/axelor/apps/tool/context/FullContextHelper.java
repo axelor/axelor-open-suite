@@ -29,11 +29,11 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaJsonRecordRepository;
-import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.transaction.Transactional;
 
 public class FullContextHelper {
 

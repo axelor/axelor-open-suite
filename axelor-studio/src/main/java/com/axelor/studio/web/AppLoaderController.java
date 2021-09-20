@@ -22,7 +22,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppLoader;
 import com.axelor.studio.db.repo.AppLoaderRepository;
 import com.axelor.studio.service.AppLoaderService;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 public class AppLoaderController {
 

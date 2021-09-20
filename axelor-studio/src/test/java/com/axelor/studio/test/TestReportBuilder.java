@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,11 +22,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import javax.enterprise.context.RequestScoped;
-import org.junit.Test;
+import javax.enterprise.context.ApplicationScoped;
+import org.junit.jupiter.api.Test;
 import org.w3c.tidy.Tidy;
 
-@RequestScoped
+@ApplicationScoped
 public class TestReportBuilder {
 
   @Test

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,19 +17,32 @@
  */
 package com.axelor.apps.supplierportal.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplierportal.module.SupplierPortalModule;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SupplierPortalModule.PRIORITY)
 public class SupplierViewServiceImpl implements SupplierViewService {
   protected static final DateTimeFormatter DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+  protected static final String SUPPLIER_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
 
   @Override
   public User getSupplierUser() {
@@ -38,26 +51,44 @@ public class SupplierViewServiceImpl implements SupplierViewService {
 
   @Override
   public Map<String, Object> updateSupplierViewIndicators() {
+    User user = getSupplierUser();
+
     Map<String, Object> map = new HashMap<>();
+
     /* PurchaseOrder */
-    map.put("$orders", 2);
-    map.put("$quotationInProgress", 4);
-    map.put("$lastOrder", "19/02/2019");
+    map.put("$orders", getCount(PurchaseOrder.class, getPurchaseOrdersOfSupplier(user)));
+    map.put(
+        "$quotationInProgress",
+        getCount(PurchaseOrder.class, getPurchaseQuotationsInProgressOfSupplier(user)));
+    PurchaseOrder lastOrder = getData(PurchaseOrder.class, getLastPurchaseOrderOfSupplier(user));
+    map.put(
+        "$lastOrder",
+        lastOrder != null
+            ? lastOrder.getValidationDate().format(DATE_FORMATTER)
+            : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     /* StockMove */
-    map.put("$lastDelivery", "15/01/2019");
-    map.put("$nextDelivery", "28/02/2019");
-    map.put("$deliveriesToPrepare", 4);
+    StockMove stockMoveLastDelivery = getData(StockMove.class, getLastDeliveryOfSupplier(user));
+    map.put(
+        "$lastDelivery",
+        stockMoveLastDelivery != null
+            ? stockMoveLastDelivery.getRealDate().format(DATE_FORMATTER)
+            : I18n.get(SUPPLIER_PORTAL_NO_DATE));
+
+    StockMove stockMoveNextDelivery = getData(StockMove.class, getNextDeliveryOfSupplier(user));
+    map.put(
+        "$nextDelivery",
+        stockMoveNextDelivery != null
+            ? stockMoveNextDelivery.getEstimatedDate().format(DATE_FORMATTER)
+            : I18n.get(SUPPLIER_PORTAL_NO_DATE));
+
+    map.put(
+        "$deliveriesToPrepare", getCount(StockMove.class, getDeliveriesToPrepareOfSupplier(user)));
 
     /* Invoice */
-    map.put("$overdueInvoices", 1);
-    map.put("$awaitingInvoices", 1);
-    map.put("$totalRemaining", 157);
-
-    /* Helpdesk */
-    map.put("$supplierTickets", 2);
-    map.put("$companyTickets", 105);
-    map.put("$resolvedTickets", 84);
+    map.put("$overdueInvoices", getCount(Invoice.class, getOverdueInvoicesOfSupplier(user)));
+    map.put("$awaitingInvoices", getCount(Invoice.class, getAwaitingInvoicesOfSupplier(user)));
+    map.put("$totalRemaining", getCount(Invoice.class, getTotalRemainingOfSupplier(user)));
 
     return map;
   }
@@ -91,6 +122,7 @@ public class SupplierViewServiceImpl implements SupplierViewService {
         + user.getPartner().getId()
         + " AND self.statusSelect = "
         + PurchaseOrderRepository.STATUS_FINISHED
+        + " GROUP BY self.validationDate,self.id"
         + " ORDER BY self.validationDate DESC";
   }
 
@@ -134,6 +166,11 @@ public class SupplierViewServiceImpl implements SupplierViewService {
 
   /* Invoice Query */
   @Override
+  public String getOverdueInvoicesOfSupplier(User user) {
+    return "self.partner.id = " + user.getPartner().getId() + " AND self.dueDate < current_date()";
+  }
+
+  @Override
   public String getAwaitingInvoicesOfSupplier(User user) {
     return "self.partner.id = "
         + user.getPartner().getId()
@@ -148,5 +185,13 @@ public class SupplierViewServiceImpl implements SupplierViewService {
         + user.getPartner().getId()
         + " AND self.amountRemaining != 0 AND self.statusSelect != "
         + InvoiceRepository.STATUS_CANCELED;
+  }
+
+  protected <T extends Model> long getCount(Class<T> klass, String query) {
+    return JPA.all(klass).filter(query).count();
+  }
+
+  protected <T extends Model> T getData(Class<T> klass, String query) {
+    return JPA.all(klass).filter(query).fetchOne();
   }
 }

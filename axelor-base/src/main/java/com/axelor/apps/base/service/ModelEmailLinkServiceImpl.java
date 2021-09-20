@@ -18,10 +18,15 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ModelEmailLink;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaModel;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class ModelEmailLinkServiceImpl implements ModelEmailLinkService {
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
@@ -26,22 +27,25 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class TrackingNumberService {
 
   @Inject private SequenceService sequenceService;
 
   @Inject private TrackingNumberRepository trackingNumberRepo;
+
+  @Inject private AppStockService appStockService;
 
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
@@ -135,6 +139,19 @@ public class TrackingNumberService {
       }
     }
     trackingNumber.setTrackingNumberSeq(seq);
+
+    // In case of barcode generation, retrieve the one set on tracking number configuration
+    AppStock appStock = appStockService.getAppStock();
+    if (appStock != null && appStock.getActivateTrackingNumberBarCodeGeneration()) {
+      if (appStock.getEditTrackingNumberBarcodeType()) {
+        trackingNumber.setBarcodeTypeConfig(trackingNumberConfiguration.getBarcodeTypeConfig());
+      } else {
+        trackingNumber.setBarcodeTypeConfig(appStock.getTrackingNumberBarcodeTypeConfig());
+      }
+      if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
+        trackingNumber.setSerialNumber(seq);
+      }
+    }
 
     return trackingNumber;
   }

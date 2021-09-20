@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,11 +36,11 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.service.StudioMetaService;
 import java.io.IOException;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 
-@RequestScoped
+@ApplicationScoped
 public class ActionEmailBuilderService {
 
   @Inject private MetaModelRepository metaModelRepo;
@@ -68,8 +68,8 @@ public class ActionEmailBuilderService {
     String xml =
         "<action-method name=\""
             + name
-            + "\" id=\"studio-"
-            + name
+            + "\" id=\""
+            + builder.getXmlId()
             + "\">\n\t"
             + "<call class=\"com.axelor.studio.service.builder.ActionEmailBuilderService\" method=\"sendEmail(id, '"
             + (builder.getIsJson()
@@ -87,7 +87,7 @@ public class ActionEmailBuilderService {
             + "if=\"id != null\"/>\n"
             + "</action-method>";
 
-    return studioMetaService.updateMetaAction(name, "action-method", xml, null);
+    return studioMetaService.updateMetaAction(name, "action-method", xml, null, builder.getXmlId());
   }
 
   @CallMethod

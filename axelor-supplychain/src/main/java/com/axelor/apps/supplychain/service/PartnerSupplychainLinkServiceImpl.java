@@ -2,11 +2,16 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class PartnerSupplychainLinkServiceImpl implements PartnerSupplychainLinkService {
 
   @Override

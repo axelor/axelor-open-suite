@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,13 +46,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class MoveValidateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -359,6 +359,9 @@ public class MoveValidateService {
       moveLine.setAccountId(account.getId());
       moveLine.setAccountCode(account.getCode());
       moveLine.setAccountName(account.getName());
+      moveLine.setServiceType(account.getServiceType());
+      moveLine.setServiceTypeCode(
+          account.getServiceType() != null ? account.getServiceType().getCode() : null);
 
       Partner partner = moveLine.getPartner();
 
@@ -366,6 +369,9 @@ public class MoveValidateService {
         moveLine.setPartnerId(partner.getId());
         moveLine.setPartnerFullName(partner.getFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
+        moveLine.setDas2Activity(partner.getDas2Activity());
+        moveLine.setDas2ActivityName(
+            partner.getDas2Activity() != null ? partner.getDas2Activity().getName() : null);
       }
       if (moveLine.getTaxLine() != null) {
         moveLine.setTaxRate(moveLine.getTaxLine().getValue());
@@ -391,6 +397,18 @@ public class MoveValidateService {
       JPA.clear();
     }
     return error;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void simulateMultiple(List<? extends Move> moveList) throws AxelorException {
+    if (moveList == null) {
+      return;
+    }
+
+    for (Move move : moveList) {
+      move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+      moveRepository.save(move);
+    }
   }
 
   public void validateMultiple(Query<Move> moveListQuery) throws AxelorException {

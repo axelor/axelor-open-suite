@@ -3,10 +3,15 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticRules;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.db.Query;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AccountAnalyticRulesRepository extends AnalyticRulesRepository {
 
   public List<AnalyticRules> findByAccounts(Account account) {

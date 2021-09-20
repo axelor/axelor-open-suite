@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,11 +29,9 @@ import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.net.URLEncoder;
 import java.nio.file.Path;
-import javax.enterprise.context.RequestScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
 public class ExternalReportSettings extends ReportSettings {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -97,8 +95,12 @@ public class ExternalReportSettings extends ReportSettings {
   }
 
   private String computeParam(String param) throws UnsupportedEncodingException {
-
-    return "&" + param + "=" + URLEncoder.encode(params.get(param).toString(), "UTF-8");
+    Object paramValue = params.get(param);
+    if (paramValue != null) {
+      return "&" + param + "=" + URLEncoder.encode(paramValue.toString(), "UTF-8");
+    } else {
+      return "";
+    }
   }
 
   private ReportSettings addAxelorReportPath(String rptdesign) {

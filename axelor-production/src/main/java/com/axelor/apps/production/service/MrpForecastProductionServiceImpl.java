@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
@@ -28,9 +29,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class MrpForecastProductionServiceImpl implements MrpForecastProductionService {
 
   @Inject ProductRepository productRepo;

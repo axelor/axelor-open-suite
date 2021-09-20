@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,14 +25,14 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
 import org.iban4j.InvalidCheckDigitException;
 import org.iban4j.UnsupportedCountryException;
 
-@RequestScoped
+@ApplicationScoped
 public class BankDetailsServiceImpl implements BankDetailsService {
 
   /**

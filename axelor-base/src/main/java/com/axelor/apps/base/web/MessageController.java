@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -81,7 +81,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 
     if (!messageIds.equals("")) {
       messageIds = messageIds.substring(0, messageIds.length() - 1);
-      message = Beans.get(MessageRepository.class).find(new Long(lstSelectedMessages.get(0)));
+      message = Beans.get(MessageRepository.class).find(Long.valueOf(lstSelectedMessages.get(0)));
     } else if (message.getId() != null) {
       messageIds = message.getId().toString();
     }

@@ -22,9 +22,9 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
+@ApplicationScoped
 public class PaymentMoveLineDistributionController {
 
   public void excludeLineFromDas2(ActionRequest request, ActionResponse response) {

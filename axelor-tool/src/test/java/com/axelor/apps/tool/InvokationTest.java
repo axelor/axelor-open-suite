@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,12 +25,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RequestScoped
 public class InvokationTest {
 
   protected static final Member INVALID_MEMBER;
@@ -52,9 +50,9 @@ public class InvokationTest {
   protected static final Map<Class<?>, Map<String, Member>> membersCache =
       new HashMap<Class<?>, Map<String, Member>>();
 
-  public Contact contact;
+  private Contact contact;
 
-  @Before
+  @BeforeEach
   public void prepareTest() {
     contact = new Contact("Durand", "Pierre");
     contact.setEmail("@test.com");
@@ -77,25 +75,25 @@ public class InvokationTest {
     public void run() {
       for (int i = 0; i < 10; i++) {
         Object valueEmail = getProperty(contact, "email");
-        Assert.assertEquals(contact.getEmail(), valueEmail);
+        Assertions.assertEquals(contact.getEmail(), valueEmail);
 
         Object valueFullName = getProperty(contact, "fullName");
-        Assert.assertEquals(contact.getFullName(), valueFullName);
+        Assertions.assertEquals(contact.getFullName(), valueFullName);
 
         Object valueFisrtName = getProperty(contact, "firstName");
-        Assert.assertEquals(contact.getFirstName(), valueFisrtName);
+        Assertions.assertEquals(contact.getFirstName(), valueFisrtName);
 
         Object valueLastName = getProperty(contact, "lastName");
-        Assert.assertEquals(contact.getLastName(), valueLastName);
+        Assertions.assertEquals(contact.getLastName(), valueLastName);
 
         Object valueDateOfBirth = getProperty(contact, "dateOfBirth");
-        Assert.assertEquals(contact.getDateOfBirth(), valueDateOfBirth);
+        Assertions.assertEquals(contact.getDateOfBirth(), valueDateOfBirth);
 
         Object valuePayeurQuality = getProperty(contact, "payeurQuality");
-        Assert.assertEquals(contact.getPayeurQuality(), valuePayeurQuality);
+        Assertions.assertEquals(contact.getPayeurQuality(), valuePayeurQuality);
 
         Object valueLanguage = getProperty(contact, "language");
-        Assert.assertEquals("fr", valueLanguage);
+        Assertions.assertEquals("fr", valueLanguage);
       }
     }
   }

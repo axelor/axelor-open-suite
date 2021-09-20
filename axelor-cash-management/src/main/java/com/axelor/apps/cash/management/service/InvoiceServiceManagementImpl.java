@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.cash.management.module.CashManagementModule;
 import com.axelor.exception.AxelorException;
@@ -53,7 +54,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      InvoiceLineRepository invoiceLineRepo) {
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -64,7 +66,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         invoiceLineService,
         accountConfigService,
         moveToolService,
-        invoiceLineRepo);
+        invoiceLineRepo,
+        appBaseService);
   }
 
   @Override

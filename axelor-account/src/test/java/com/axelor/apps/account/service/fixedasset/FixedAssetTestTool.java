@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.FixedAssetType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 public class FixedAssetTestTool {
 
@@ -102,17 +102,17 @@ public class FixedAssetTestTool {
   public static void assertFixedAssetLineEquals(
       FixedAssetLine expectedLine, FixedAssetLine actualLine) {
     if (expectedLine.getDepreciationDate() != null) {
-      Assert.assertEquals(expectedLine.getDepreciationDate(), actualLine.getDepreciationDate());
+      Assertions.assertEquals(expectedLine.getDepreciationDate(), actualLine.getDepreciationDate());
     }
     if (expectedLine.getDepreciation() != null) {
-      Assert.assertEquals(expectedLine.getDepreciation(), actualLine.getDepreciation());
+      Assertions.assertEquals(expectedLine.getDepreciation(), actualLine.getDepreciation());
     }
     if (expectedLine.getCumulativeDepreciation() != null) {
-      Assert.assertEquals(
+      Assertions.assertEquals(
           expectedLine.getCumulativeDepreciation(), actualLine.getCumulativeDepreciation());
     }
     if (expectedLine.getResidualValue() != null) {
-      Assert.assertEquals(expectedLine.getResidualValue(), actualLine.getResidualValue());
+      Assertions.assertEquals(expectedLine.getResidualValue(), actualLine.getResidualValue());
     }
   }
 }

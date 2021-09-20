@@ -6,12 +6,17 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class OpportunitySaleOrderSupplychainServiceImpl extends OpportunitySaleOrderServiceImpl {
 
   @Inject protected SaleOrderCreateService saleOrderCreateService;

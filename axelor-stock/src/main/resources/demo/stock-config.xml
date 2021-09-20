@@ -45,7 +45,9 @@
 		<bind to="language" search="self.code = :languageCode"/>
 	</input>
   
-    <input file="stock_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId"/>
+    <input file="stock_shipmentMode.csv" separator=";" type="com.axelor.apps.stock.db.ShipmentMode" search="self.importId = :importId">
+    	<bind to="product" column="product_importId" search="self.importId = :product_importId" />
+    </input>
 
     <input file="stock_freightCarrierMode.csv" separator=";" type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>
     
@@ -53,5 +55,7 @@
 		<bind to="language" search="self.code = :languageCode"/>
 		<bind column="birtTemplateSet_importId" to="birtTemplateSet" search="self.importId in :birtTemplateSet_importId" eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
 	</input>
+	
+	<input file="base_appStock.csv" separator=";" type="com.axelor.apps.base.db.AppStock" search="self.app.code = :code"/>
 	
 </csv-inputs>

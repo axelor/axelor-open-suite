@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,8 +21,8 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * From: http://java.sun.com/developer/technicalArticles/Security/AES/AES_v1.html This program
@@ -74,6 +74,6 @@ public class AESTest {
     cipher.init(Cipher.DECRYPT_MODE, skeySpec);
     byte[] original = cipher.doFinal(encrypted);
     String originalString = new String(original);
-    Assert.assertEquals("Hello World", originalString);
+    Assertions.assertEquals("Hello World", originalString);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.tool.NamingTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
@@ -55,14 +56,14 @@ import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   private static final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);
@@ -412,12 +413,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
           @Override
           public int compare(AdvancedExportLine line1, AdvancedExportLine line2) {
-            if (line1.getSequence() == line2.getSequence()) {
-              if (line1.getId() > line2.getId()) {
-                return 1;
-              } else {
-                return -1;
-              }
+            if (line1.getSequence().equals(line2.getSequence())) {
+              return line1.getId().compareTo(line2.getId());
             }
             return line1.getSequence() - line2.getSequence();
           }
@@ -614,5 +611,22 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       }
       return " " + Joiner.on(" ").join(joinItems);
     }
+  }
+
+  @Override
+  public boolean checkAdvancedExportExist(String metaModelName) {
+
+    long total =
+        Beans.get(AdvancedExportRepository.class)
+            .all()
+            .filter("self.metaModel.fullName = :metaModelName")
+            .bind("metaModelName", metaModelName)
+            .count();
+
+    if (total == 0) {
+      return false;
+    }
+
+    return true;
   }
 }

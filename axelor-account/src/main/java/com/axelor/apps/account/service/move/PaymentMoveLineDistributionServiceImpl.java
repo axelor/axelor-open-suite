@@ -25,14 +25,19 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDistributionService {
 
   protected PaymentMoveLineDistributionRepository paymentMvlDistributionRepository;

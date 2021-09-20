@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
@@ -45,13 +46,15 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
       OperationOrderRepository operationOrderRepo,
       OperationOrderDurationRepository operationOrderDurationRepo,
       AppProductionService appProductionService,
-      MachineToolRepository machineToolRepo) {
+      MachineToolRepository machineToolRepo,
+      WeeklyPlanningService weeklyPlanningService) {
     super(
         operationOrderStockMoveService,
         operationOrderRepo,
         operationOrderDurationRepo,
         appProductionService,
-        machineToolRepo);
+        machineToolRepo,
+        weeklyPlanningService);
   }
 
   /**

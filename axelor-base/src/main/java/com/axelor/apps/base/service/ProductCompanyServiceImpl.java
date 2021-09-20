@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -29,8 +30,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaField;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class ProductCompanyServiceImpl implements ProductCompanyService {
 
   @Inject protected AppBaseService appBaseService;
@@ -83,7 +88,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
 
     if (company != null && originalProduct.getProductCompanyList() != null) {
       for (ProductCompany productCompany : originalProduct.getProductCompanyList()) {
-        if (productCompany.getCompany().getId() == company.getId()) {
+        if (company.equals(productCompany.getCompany())) {
           Set<MetaField> companySpecificFields =
               appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
           for (MetaField field : companySpecificFields) {

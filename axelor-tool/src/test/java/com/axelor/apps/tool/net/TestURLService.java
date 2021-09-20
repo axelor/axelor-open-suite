@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,25 +19,25 @@ package com.axelor.apps.tool.net;
 
 import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
-import javax.enterprise.context.RequestScoped;
-import org.junit.Assert;
-import org.junit.Test;
+import javax.enterprise.context.ApplicationScoped;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-@RequestScoped
+@ApplicationScoped
 public class TestURLService {
 
   @Test
   public void testNotExist() {
 
     String url = "http://www.google.com";
-    Assert.assertNull(URLService.notExist(url));
+    Assertions.assertNull(URLService.notExist(url));
 
     url = "www.google.com";
-    Assert.assertEquals(
+    Assertions.assertEquals(
         String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url), URLService.notExist(url));
 
-    url = "http://testnotfound.axelor.com/";
-    Assert.assertEquals(
+    url = "http://testnotfound.axelor.com/testnotfound";
+    Assertions.assertEquals(
         String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url), URLService.notExist(url));
   }
 }

@@ -25,11 +25,13 @@
 	<action-view title="Customer deliveries statistics" name="dashlet.stockMove.deliveries.time.delay.in.nbr">
 	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
+	  <context name="_language" expr="eval:__user__.getLanguage()"/>
 	</action-view>
 	
 	<action-view title="Customer average delivery delay" name="dashlet.stockMove.average.delivery.time.delay">
 	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
+	  <context name="_language" expr="eval:__user__.getLanguage()"/>
 	</action-view>
 
 <!-- 	Stock Dashboard -->
@@ -66,7 +68,7 @@
   	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350"/>
 	</dashboard>
 
-	<action-view name="dashlet.stock.location.line.bad.futur.stock.mini" title="Bad stock location lines"
+	<action-view name="dashlet.stock.location.line.bad.futur.stock.mini" title="Products whose future quantity is less than the minimum quantity allowed"
 				 model="com.axelor.apps.stock.db.StockLocationLine">
 		<view type="grid" name="stock-location-line-bad-line-grid"/>
 		<view type="form" name="stock-location-line-bad-line-form"/>
@@ -91,14 +93,14 @@
 	<action-view title="Upcoming supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.upcoming.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromStockLocation.typeSelect = 2 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
+		  <domain>self.fromStockLocation.typeSelect = 3 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
 		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 
 	<action-view title="Late supplier arrivals" model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.late.suppl.arrivals">
 		  <view type="grid" name="stock-move-grid"/>
 		  <view type="form" name="stock-move-form"/>
-		  <domain>self.fromStockLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
+		  <domain>self.fromStockLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
 		  <context name="active_company" expr="eval:__user__.activeCompany" />
 	</action-view>
 	

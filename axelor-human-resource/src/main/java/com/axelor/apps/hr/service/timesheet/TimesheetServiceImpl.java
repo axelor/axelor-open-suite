@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -92,7 +92,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
@@ -100,9 +100,14 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 import org.apache.commons.collections4.ListUtils;
+import wslite.json.JSONException;
 
-/** @author axelor */
-@RequestScoped
+/**
+ * import javax.enterprise.context.ApplicationScoped;
+ *
+ * @author axelor
+ */
+@ApplicationScoped
 public class TimesheetServiceImpl extends JpaSupport implements TimesheetService {
 
   protected PriceListService priceListService;
@@ -166,7 +171,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message sendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getSentTimesheetTemplate();
@@ -234,7 +239,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
     confirm(timesheet);
     return sendConfirmationEmail(timesheet);
   }
@@ -242,7 +247,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional
   public void validate(Timesheet timesheet) {
-
+    timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
     timesheet.setValidationDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
@@ -252,7 +257,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message sendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getValidatedTimesheetTemplate();
@@ -269,7 +274,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
     validate(timesheet);
     return sendValidationEmail(timesheet);
   }
@@ -287,7 +292,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message sendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getRefusedTimesheetTemplate();
@@ -304,7 +309,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
     refuse(timesheet);
     return sendRefusalEmail(timesheet);
   }
@@ -325,7 +330,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getCanceledTimesheetTemplate();
@@ -342,7 +347,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
     cancel(timesheet);
     return sendCancellationEmail(timesheet);
   }
@@ -959,7 +964,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             .filter(
                 "self.membersUserSet.id = ?1 and "
                     + "self.imputable = true "
-                    + "and self.statusSelect != 3",
+                    + "and self.projectStatus.isCompleted = false "
+                    + "and self.isShowTimeSpent = true",
                 user.getId())
             .fetch();
 
@@ -1091,6 +1097,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
     for (ProjectPlanningTime projectPlanningTime : planningList) {
       TimesheetLine timesheetLine = new TimesheetLine();
+      Project project = projectPlanningTime.getProject();
       timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
       timesheetLine.setDuration(
           timesheetLineService.computeHoursDuration(
@@ -1098,8 +1105,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setTimesheet(timesheet);
       timesheetLine.setUser(user);
       timesheetLine.setProduct(projectPlanningTime.getProduct());
-      timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
-      timesheetLine.setProject(projectPlanningTime.getProject());
+      if (project.getIsShowTimeSpent()) {
+        timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
+        timesheetLine.setProject(project);
+      }
       timesheetLine.setDate(projectPlanningTime.getDate());
       timesheetLine.setProjectPlanningTime(projectPlanningTime);
       timesheet.addTimesheetLineListItem(timesheetLine);

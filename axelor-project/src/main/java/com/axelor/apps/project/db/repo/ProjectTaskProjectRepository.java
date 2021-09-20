@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -64,19 +64,23 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       projectTask.setIsFirst(true);
     }
 
-    Frequency frequency = projectTask.getFrequency();
-    if (frequency != null && projectTask.getIsFirst() && projectTask.getNextProjectTask() == null) {
-      if (projectTask.getTaskDate() != null) {
-        if (frequency.getEndDate().isBefore(projectTask.getTaskDate())) {
-          throw new PersistenceException(
-              I18n.get(
-                  IExceptionMessage.PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE));
+    if (projectTask.getProject().getIsShowFrequency()) {
+      Frequency frequency = projectTask.getFrequency();
+      if (frequency != null
+          && projectTask.getIsFirst()
+          && projectTask.getNextProjectTask() == null) {
+        if (projectTask.getTaskDate() != null) {
+          if (frequency.getEndDate().isBefore(projectTask.getTaskDate())) {
+            throw new PersistenceException(
+                I18n.get(
+                    IExceptionMessage.PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE));
+          }
+        } else {
+          throw new PersistenceException(I18n.get(IExceptionMessage.PROJECT_TASK_FILL_TASK_DATE));
         }
-      } else {
-        throw new PersistenceException(I18n.get(IExceptionMessage.PROJECT_TASK_FILL_TASK_DATE));
-      }
 
-      projectTaskService.generateTasks(projectTask, frequency);
+        projectTaskService.generateTasks(projectTask, frequency);
+      }
     }
 
     if (projectTask.getDoApplyToAllNextTasks()) {
@@ -113,7 +117,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
           json.put("progressSelect", ((int) (plannedProgress.intValue() * 0.10)) * 10);
         }
       } else if (json.get("progressSelect") != null) {
-        Integer progressSelect = new Integer(json.get("progressSelect").toString());
+        Integer progressSelect = Integer.valueOf(json.get("progressSelect").toString());
         logger.debug("Updating plannedProgress: {}", progressSelect);
         json.put("plannedProgress", new BigDecimal(progressSelect));
       }
@@ -123,11 +127,11 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
             && savedTask.getDurationHours().intValue() != durationHours.intValue()) {
           logger.debug(
               "Updating taskDuration: {}",
-              durationHours.divide(new BigDecimal(24), RoundingMode.HALF_EVEN).intValue());
+              durationHours.divide(new BigDecimal(24), RoundingMode.HALF_UP).intValue());
           json.put("taskDuration", durationHours.multiply(new BigDecimal(3600)).intValue());
         }
       } else if (json.get("taskDuration") != null) {
-        Integer taskDuration = new Integer(json.get("taskDuration").toString());
+        Integer taskDuration = Integer.valueOf(json.get("taskDuration").toString());
         logger.debug("Updating durationHours: {}", taskDuration / 3600);
         json.put("durationHours", new BigDecimal(taskDuration / 3600));
       }
@@ -135,11 +139,11 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     } else {
 
       if (json.get("progressSelect") != null) {
-        Integer progressSelect = new Integer(json.get("progressSelect").toString());
+        Integer progressSelect = Integer.valueOf(json.get("progressSelect").toString());
         json.put("plannedProgress", new BigDecimal(progressSelect));
       }
       if (json.get("taskDuration") != null) {
-        Integer taskDuration = new Integer(json.get("taskDuration").toString());
+        Integer taskDuration = Integer.valueOf(json.get("taskDuration").toString());
         json.put("durationHours", new BigDecimal(taskDuration / 3600));
       }
     }

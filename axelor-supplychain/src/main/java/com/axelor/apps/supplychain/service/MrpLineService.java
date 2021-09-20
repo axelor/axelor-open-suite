@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -57,4 +58,8 @@ public interface MrpLineService {
   MrpLineOrigin createMrpLineOrigin(Model model);
 
   MrpLineOrigin copyMrpLineOrigin(MrpLineOrigin mrpLineOrigin);
+
+  void updateProposalToProcess(List<Integer> mrpLineIds, boolean proposalToProcess);
+
+  void updateProposalToProcess(MrpLine mrpLine, boolean proposalToProcess);
 }

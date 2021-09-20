@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+  id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -29,6 +31,7 @@ dependencies {
 	implementation libs.bcpkix_jdk15on
 
     implementation libs.commons_io
+	implementation libs.commons_lang3
 	implementation libs.commons_codec
 	implementation libs.commons_httpclient
 

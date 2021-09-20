@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -80,21 +80,29 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
 
   private final ThreadLocal<GlobalAuditTracker> globalTracker = new ThreadLocal<>();
 
+  private void init() {
+    if (globalTracker.get() == null) {
+      globalTracker.set(new GlobalAuditTracker());
+      globalTracker.get().init();
+    }
+  }
+
   @Override
   public void afterTransactionBegin(Transaction tx) {
-    globalTracker.set(new GlobalAuditTracker());
-    globalTracker.get().init();
+    init();
     super.afterTransactionBegin(tx);
   }
 
   @Override
   public void beforeTransactionCompletion(Transaction tx) {
+    init();
     globalTracker.get().onComplete(tx, AuthUtils.getUser());
     super.beforeTransactionCompletion(tx);
   }
 
   @Override
   public void afterTransactionCompletion(Transaction tx) {
+    init();
     globalTracker.get().clear();
     globalTracker.remove();
     super.afterTransactionCompletion(tx);
@@ -111,6 +119,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       return false;
     }
 
+    init();
     GlobalTrackingLog log =
         globalTracker
             .get()
@@ -171,10 +180,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       return false;
     }
 
-    if (globalTracker.get() == null) {
-      globalTracker.set(new GlobalAuditTracker());
-      globalTracker.get().init();
-    }
+    init();
     GlobalTrackingLog log =
         globalTracker
             .get()
@@ -260,6 +266,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
 
   @Override
   public void onCollectionUpdate(Object collection, Serializable key) {
+    init();
     globalTracker.get().addCollectionModification(collection, (Long) key);
   }
 }

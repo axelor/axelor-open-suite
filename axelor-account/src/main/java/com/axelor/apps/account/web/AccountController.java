@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -88,6 +88,15 @@ public class AccountController {
             account.getCompany().getName());
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      Beans.get(AccountService.class).checkAnalyticAxis(account);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

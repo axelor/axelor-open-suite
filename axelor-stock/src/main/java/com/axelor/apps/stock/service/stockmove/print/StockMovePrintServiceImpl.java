@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
@@ -38,10 +39,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-@RequestScoped
+@ApplicationScoped
 public class StockMovePrintServiceImpl implements StockMovePrintService {
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public StockMovePrintServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public String printStockMoves(List<Long> ids) throws IOException {
@@ -83,6 +92,7 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
 
     String locale = ReportSettings.getPrintingLocale(stockMove.getPartner());
     String title = getFileName(stockMove);
+    AppBase appBase = appBaseService.getAppBase();
 
     ReportSettings reportSetting =
         ReportFactory.createReport(IReport.STOCK_MOVE, title + " - ${date}");
@@ -92,6 +102,13 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
             "Timezone",
             stockMove.getCompany() != null ? stockMove.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
+        .addParam(
+            "GroupProducts",
+            appBase.getIsRegroupProductsOnPrintings() && stockMove.getGroupProductsOnPrintings())
+        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
+        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
+        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
+        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);

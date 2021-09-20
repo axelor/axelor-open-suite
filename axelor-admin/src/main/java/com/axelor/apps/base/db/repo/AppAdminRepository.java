@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.admin.module.AdminModule;
 import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.module.AdminModule;
 import com.axelor.db.JPA;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;

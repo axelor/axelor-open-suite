@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.service.batch;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -34,18 +33,19 @@ import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaFileRepository;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class BatchPayrollPreparationExport extends BatchStrategy {
 
   protected int total;
@@ -112,6 +112,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         }
         break;
+      case HrBatchRepository.EXPORT_TYPE_SILAE:
+        try {
+          batch.setMetaFile(silaeExport(payrollPreparationList));
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
+        }
+        break;
       default:
         break;
     }
@@ -143,20 +151,17 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
 
     String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
-    String filePath = AppSettings.get().get("file.upload.dir");
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    MetaFile metaFile = new MetaFile();
-    metaFile.setFileName(fileName);
-    metaFile.setFilePath(fileName);
-    metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
-
-    new File(filePath).mkdirs();
     CsvTool.csvWriter(
-        filePath,
-        fileName,
+        file.getParent(),
+        file.getName(),
         ';',
         Beans.get(PayrollPreparationService.class).getPayrollPreparationExportHeader(),
         list);
+
+    FileInputStream inStream = new FileInputStream(file);
+    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
 
     return metaFile;
   }
@@ -175,21 +180,18 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
 
     String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
-    String filePath = AppSettings.get().get("file.upload.dir");
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    MetaFile metaFile = new MetaFile();
-    metaFile.setFileName(fileName);
-    metaFile.setFilePath(fileName);
-    metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
-
-    new File(filePath).mkdirs();
     CsvTool.csvWriter(
-        filePath,
-        fileName,
+        file.getParent(),
+        file.getName(),
         ';',
         Beans.get(PayrollPreparationService.class)
             .getPayrollPreparationMeilleurGestionExportHeader(),
         list);
+
+    FileInputStream inStream = new FileInputStream(file);
+    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
 
     return metaFile;
   }
@@ -203,5 +205,33 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
     addComment(comment);
     super.stop();
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public MetaFile silaeExport(List<PayrollPreparation> payrollPreparationList)
+      throws IOException, AxelorException {
+
+    List<String[]> list = new ArrayList<>();
+
+    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+      payrollPreparation.addBatchListItem(batch);
+      payrollPreparationService.exportSilae(payrollPreparation, list);
+      total++;
+      incrementDone();
+    }
+
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
+    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+
+    CsvTool.csvWriter(
+        file.getParent(),
+        file.getName(),
+        ';',
+        payrollPreparationService.getPayrollPreparationSilaeExportHeader(),
+        list);
+
+    FileInputStream inStream = new FileInputStream(file);
+    MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
+    return metaFile;
   }
 }

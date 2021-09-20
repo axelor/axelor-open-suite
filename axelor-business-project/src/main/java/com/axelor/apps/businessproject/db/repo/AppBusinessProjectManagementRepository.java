@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,7 +44,7 @@ public class AppBusinessProjectManagementRepository extends AppBusinessProjectRe
       }
       return super.save(entity);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(I18n.get(IExceptionMessage.INVALID_EXCLUDE_TASK_FILTER));
     }
   }

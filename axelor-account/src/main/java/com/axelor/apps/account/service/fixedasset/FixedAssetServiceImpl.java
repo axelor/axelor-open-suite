@@ -33,12 +33,6 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-<<<<<<< HEAD:axelor-account/src/main/java/com/axelor/apps/account/service/FixedAssetServiceImpl.java
-import com.axelor.inject.Beans;
-=======
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
->>>>>>> f39c74c:axelor-account/src/main/java/com/axelor/apps/account/service/fixedasset/FixedAssetServiceImpl.java
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -47,12 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
-@RequestScoped
+@ApplicationScoped
 public class FixedAssetServiceImpl implements FixedAssetService {
 
   protected FixedAssetRepository fixedAssetRepo;

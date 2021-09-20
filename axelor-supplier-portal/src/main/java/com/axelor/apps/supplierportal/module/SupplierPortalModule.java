@@ -17,20 +17,9 @@
  */
 package com.axelor.apps.supplierportal.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.supplierportal.service.ProductSupplierService;
-import com.axelor.apps.supplierportal.service.ProductSupplierServiceImpl;
-import com.axelor.apps.supplierportal.service.SupplierViewService;
-import com.axelor.apps.supplierportal.service.SupplierViewServiceImpl;
-import com.axelor.apps.supplierportal.service.app.AppSupplierPortalService;
-import com.axelor.apps.supplierportal.service.app.AppSupplierPortalServiceImpl;
+import javax.interceptor.Interceptor;
 
-public class SupplierPortalModule extends AxelorModule {
+public class SupplierPortalModule {
 
-  @Override
-  protected void configure() {
-    bind(AppSupplierPortalService.class).to(AppSupplierPortalServiceImpl.class);
-    bind(SupplierViewService.class).to(SupplierViewServiceImpl.class);
-    bind(ProductSupplierService.class).to(ProductSupplierServiceImpl.class);
-  }
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 2100;
 }

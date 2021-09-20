@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -34,6 +35,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -44,7 +46,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -70,11 +71,11 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected StockMoveRepository stockMoverepository;
@@ -94,6 +95,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected UnitConversionService unitConversionService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected ReconcileService reconcileService;
+  protected AccountConfigService accountConfigService;
   protected int counter = 0;
 
   @Inject
@@ -114,7 +116,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveValidateService moveValidateService,
       UnitConversionService unitConversionService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
-      ReconcileService reconcileService) {
+      ReconcileService reconcileService,
+      AccountConfigService accountConfigService) {
 
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -133,6 +136,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.unitConversionService = unitConversionService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.reconcileService = reconcileService;
+    this.accountConfigService = accountConfigService;
   }
 
   public List<StockMove> getStockMoves(
@@ -297,7 +301,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             partner,
             moveDate,
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF);
 
     counter = 0;
 
@@ -434,8 +439,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       return null;
     }
 
-    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_EVEN);
-    amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_EVEN);
+    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_UP);
+    amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_UP);
 
     if (amountInCurrency == null || amountInCurrency.compareTo(BigDecimal.ZERO) == 0) {
       return null;
@@ -562,10 +567,11 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     return moveLine;
   }
 
-  protected void getAndComputeAnalyticDistribution(Product product, Move move, MoveLine moveLine) {
+  protected void getAndComputeAnalyticDistribution(Product product, Move move, MoveLine moveLine)
+      throws AxelorException {
 
-    if (appAccountService.getAppAccount().getAnalyticDistributionTypeSelect()
-        == AppAccountRepository.DISTRIBUTION_TYPE_FREE) {
+    if (accountConfigService.getAccountConfig(move.getCompany()).getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return;
     }
 

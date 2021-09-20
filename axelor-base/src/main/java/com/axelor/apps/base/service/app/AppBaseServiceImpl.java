@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,11 +23,15 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
+import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -181,7 +185,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       if (timePref.equals("days")) {
         duration = duration.multiply(appBase.getDailyWorkHours());
       } else if (timePref.equals("minutes")) {
-        duration = duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_EVEN);
+        duration = duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
       }
     }
 
@@ -205,7 +209,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       if (timePref.equals("days")
           && dailyWorkHrs != null
           && dailyWorkHrs.compareTo(BigDecimal.ZERO) != 0) {
-        duration = duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_EVEN);
+        duration = duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);
       } else if (timePref.equals("minutes")) {
         duration = duration.multiply(new BigDecimal(60));
       }
@@ -219,5 +223,18 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   @Transactional
   public void setManageMultiBanks(boolean manageMultiBanks) {
     getAppBase().setManageMultiBanks(manageMultiBanks);
+  }
+
+  @CallMethod
+  @Override
+  public String getCustomStyle() {
+
+    AppBase appBase = Beans.get(AppBaseRepository.class).all().fetchOne();
+    String style = appBase.getCustomAppStyle();
+    if (StringUtils.isBlank(style)) {
+      return null;
+    }
+
+    return style;
   }
 }

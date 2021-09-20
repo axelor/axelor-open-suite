@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,11 +28,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService {
 
   @Inject protected SaleOrderCreateService saleOrderCreateService;
@@ -79,7 +79,6 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
         null,
         opportunity.getName(),
         null,
-        appBaseService.getTodayDate(opportunity.getCompany()),
         Beans.get(PartnerPriceListService.class)
             .getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE),
         opportunity.getPartner(),

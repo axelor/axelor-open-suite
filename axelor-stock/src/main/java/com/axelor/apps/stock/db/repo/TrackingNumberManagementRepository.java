@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,16 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.db.AppStock;
+import com.axelor.apps.base.db.BarcodeTypeConfig;
+import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.meta.db.MetaFile;
 import java.math.BigDecimal;
 import java.util.Map;
 import javax.annotation.Priority;
@@ -34,6 +40,10 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
   @Inject private StockLocationRepository stockLocationRepo;
 
   @Inject private StockLocationLineService stockLocationLineService;
+
+  @Inject private AppStockService appStockService;
+
+  @Inject private BarcodeGeneratorService barcodeGeneratorService;
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
@@ -64,5 +74,47 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
     }
 
     return super.populate(json, context);
+  }
+
+  @Override
+  public TrackingNumber save(TrackingNumber trackingNumber) {
+
+    // Barcode generation
+    AppStock appStock = appStockService.getAppStock();
+    if (appStock != null
+        && appStock.getActivateTrackingNumberBarCodeGeneration()
+        && trackingNumber.getBarCode() == null) {
+      boolean addPadding = false;
+      /*
+       * Barcode type config defaulting rule :
+       * Check if edit barcode type config is enabled and tracking number was generated from configuration
+       *    If true
+       *        we take the type from configuration as default
+       *    Else
+       *        we take the barcode type config from App Stock as default
+       */
+      BarcodeTypeConfig barcodeTypeConfig;
+      if (appStock.getEditTrackingNumberBarcodeType()
+          && trackingNumber.getProduct() != null
+          && trackingNumber.getProduct().getTrackingNumberConfiguration() != null) {
+        TrackingNumberConfiguration trackingNumberConfiguration =
+            trackingNumber.getProduct().getTrackingNumberConfiguration();
+        barcodeTypeConfig = trackingNumberConfiguration.getBarcodeTypeConfig();
+      } else {
+        barcodeTypeConfig = appStock.getTrackingNumberBarcodeTypeConfig();
+      }
+      MetaFile barcodeFile =
+          barcodeGeneratorService.createBarCode(
+              trackingNumber.getId(),
+              "TrackingNumberBarCode%d.png",
+              trackingNumber.getSerialNumber(),
+              barcodeTypeConfig,
+              addPadding);
+      if (barcodeFile != null) {
+        trackingNumber.setBarCode(barcodeFile);
+      }
+    }
+
+    return super.save(trackingNumber);
   }
 }

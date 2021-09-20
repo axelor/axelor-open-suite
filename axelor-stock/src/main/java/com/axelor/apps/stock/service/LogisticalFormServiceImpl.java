@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,13 +65,13 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 
-@RequestScoped
+@ApplicationScoped
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
   @Inject ProductRepository productRepository;
@@ -491,9 +491,9 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       }
 
       totalVolume = totalVolume.divide(new BigDecimal(1_000_000), 10, RoundingMode.HALF_UP);
-      logisticalForm.setTotalNetMass(totalNetMass.setScale(3, RoundingMode.HALF_EVEN));
-      logisticalForm.setTotalGrossMass(totalGrossMass.setScale(3, RoundingMode.HALF_EVEN));
-      logisticalForm.setTotalVolume(totalVolume.setScale(3, RoundingMode.HALF_EVEN));
+      logisticalForm.setTotalNetMass(totalNetMass.setScale(3, RoundingMode.HALF_UP));
+      logisticalForm.setTotalGrossMass(totalGrossMass.setScale(3, RoundingMode.HALF_UP));
+      logisticalForm.setTotalVolume(totalVolume.setScale(3, RoundingMode.HALF_UP));
     }
   }
 

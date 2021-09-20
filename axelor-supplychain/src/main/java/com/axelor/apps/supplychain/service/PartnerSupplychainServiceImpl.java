@@ -8,14 +8,19 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
     implements PartnerSupplychainService {
 

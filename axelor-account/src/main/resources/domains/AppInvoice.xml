@@ -5,7 +5,9 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppInvoice" lang="java" extends="App">
+	<entity name="AppInvoice" lang="java">
+	
+		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
 		<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines"/>
 		<boolean name="isVentilationSkipped" title="Skip ventilation"/>

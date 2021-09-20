@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -136,7 +136,7 @@ public class DashboardBuilderService {
       otherView = "grid";
     }
 
-    String xmlId = StudioMetaService.XML_ID_PREFIX + actionName;
+    String xmlId = actionName;
     StringBuilder xml = new StringBuilder();
     xml.append("<action-view name=\"" + actionName + "\" ");
     xml.append("id=\"" + xmlId + "\" ");
@@ -166,6 +166,6 @@ public class DashboardBuilderService {
     }
     xml.append("\n</action-view>");
 
-    return metaService.updateMetaAction(actionName, "action-view", xml.toString(), model);
+    return metaService.updateMetaAction(actionName, "action-view", xml.toString(), model, xmlId);
   }
 }

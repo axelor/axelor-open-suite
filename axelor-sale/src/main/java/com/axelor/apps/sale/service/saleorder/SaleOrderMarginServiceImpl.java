@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,11 +22,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
 
   protected final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -55,11 +55,11 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
           marginRate =
               totalGrossProfit
                   .multiply(new BigDecimal(100))
-                  .divide(accountedRevenue, 2, RoundingMode.HALF_EVEN);
+                  .divide(accountedRevenue, 2, RoundingMode.HALF_UP);
           markup =
               totalGrossProfit
                   .multiply(new BigDecimal(100))
-                  .divide(totalCostPrice, 2, RoundingMode.HALF_EVEN);
+                  .divide(totalCostPrice, 2, RoundingMode.HALF_UP);
         }
       }
     }

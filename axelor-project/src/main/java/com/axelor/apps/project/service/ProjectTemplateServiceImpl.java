@@ -20,11 +20,16 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
+import com.axelor.apps.project.module.ProjectModule;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class ProjectTemplateServiceImpl implements ProjectTemplateService {
 
   protected ProjectTemplateRepository projectTemplateRepo;

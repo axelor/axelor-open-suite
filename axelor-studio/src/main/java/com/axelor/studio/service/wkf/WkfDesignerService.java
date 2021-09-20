@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
@@ -63,7 +63,7 @@ import org.xml.sax.SAXException;
  *
  * @author axelor
  */
-@RequestScoped
+@ApplicationScoped
 public class WkfDesignerService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,13 +62,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
-@RequestScoped
+@ApplicationScoped
 public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   int total;
@@ -150,6 +150,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
+        continue;
+      }
       try {
         createLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
@@ -170,7 +173,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   @Transactional(rollbackOn = {Exception.class})
   public void createLeaveManagement(Employee employee) throws AxelorException {
-    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       return;
     }
     batch = batchRepo.find(batch.getId());

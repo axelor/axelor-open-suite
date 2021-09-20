@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,9 +18,11 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
+import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
@@ -42,14 +44,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-@RequestScoped
+@ApplicationScoped
 public class AccessTemplateServiceImpl implements AccessTemplateService {
 
   private Map<String, String> menuApp;
@@ -84,7 +86,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
       appMenus = new ArrayList<>();
       defaultApp = null;
 
-      App app = appService.getApp("base");
+      App app = Beans.get(AppRepository.class).findByCode("base");
       if (app == null) {
         return null;
       }
@@ -185,7 +187,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     if (condition != null) {
       String[] cond = condition.split("__config__\\.app\\.isApp\\('");
       if (cond.length > 1) {
-        App app = appService.getApp(cond[1].split("'")[0]);
+        App app = Beans.get(AppRepository.class).findByCode(cond[1].split("'")[0]);
         if (app != null) {
           if (condition.trim().equals("__config__.app.isApp('" + app.getCode() + "')")
               && menu.getAction() == null) {

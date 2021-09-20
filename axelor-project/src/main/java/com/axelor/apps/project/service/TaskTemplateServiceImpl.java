@@ -18,8 +18,13 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.module.ProjectModule;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class TaskTemplateServiceImpl implements TaskTemplateService {
 
   @Override

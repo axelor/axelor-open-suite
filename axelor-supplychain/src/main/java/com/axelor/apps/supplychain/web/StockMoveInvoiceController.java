@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -206,7 +206,7 @@ public class StockMoveInvoiceController {
       String stockMoveListStr = (String) request.getContext().get("customerStockMoveToInvoice");
 
       for (String stockMoveId : stockMoveListStr.split(",")) {
-        stockMoveList.add(JPA.em().find(StockMove.class, new Long(stockMoveId)));
+        stockMoveList.add(JPA.em().find(StockMove.class, Long.valueOf(stockMoveId)));
       }
 
       // Check if paymentCondition, paymentMode or contactPartner are content in parameters
@@ -367,7 +367,7 @@ public class StockMoveInvoiceController {
       String stockMoveListStr = (String) request.getContext().get("supplierStockMoveToInvoice");
 
       for (String stockMoveId : stockMoveListStr.split(",")) {
-        stockMoveList.add(JPA.em().find(StockMove.class, new Long(stockMoveId)));
+        stockMoveList.add(JPA.em().find(StockMove.class, Long.valueOf(stockMoveId)));
       }
 
       PaymentCondition paymentCondition = null;

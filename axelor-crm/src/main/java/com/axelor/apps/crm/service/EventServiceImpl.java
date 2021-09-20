@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,12 +56,12 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.apache.commons.math3.exception.TooManyIterationsException;
 
-@RequestScoped
+@ApplicationScoped
 public class EventServiceImpl implements EventService {
 
   private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -523,7 +523,7 @@ public class EventServiceImpl implements EventService {
           IExceptionMessage.RECURRENCE_RECURRENCE_TYPE);
     }
 
-    int recurrenceType = new Integer(conf.getRecurrenceType().toString());
+    int recurrenceType = Integer.valueOf(conf.getRecurrenceType().toString());
 
     if (conf.getPeriodicity() == null) {
       throw new AxelorException(
@@ -531,7 +531,7 @@ public class EventServiceImpl implements EventService {
           I18n.get(IExceptionMessage.RECURRENCE_PERIODICITY));
     }
 
-    int periodicity = new Integer(conf.getPeriodicity().toString());
+    int periodicity = Integer.valueOf(conf.getPeriodicity().toString());
 
     if (periodicity < 1) {
       throw new AxelorException(
@@ -569,9 +569,9 @@ public class EventServiceImpl implements EventService {
       }
     }
 
-    int monthRepeatType = new Integer(conf.getMonthRepeatType().toString());
+    int monthRepeatType = Integer.valueOf(conf.getMonthRepeatType().toString());
 
-    int endType = new Integer(conf.getEndType().toString());
+    int endType = Integer.valueOf(conf.getEndType().toString());
 
     int repetitionsNumber = 0;
 
@@ -582,7 +582,7 @@ public class EventServiceImpl implements EventService {
             I18n.get(IExceptionMessage.RECURRENCE_REPETITION_NUMBER));
       }
 
-      repetitionsNumber = new Integer(conf.getRepetitionsNumber().toString());
+      repetitionsNumber = Integer.valueOf(conf.getRepetitionsNumber().toString());
 
       if (repetitionsNumber < 1) {
         throw new AxelorException(

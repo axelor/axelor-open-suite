@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,21 +22,30 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.DebtRecoveryConfigLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class AccountConfigService {
+
+  @Inject protected MoveRepository moveRepo;
+  @Inject protected JournalRepository journalRepo;
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
 
@@ -599,5 +608,42 @@ public class AccountConfigService {
     }
 
     return accountConfig.getFactorDebitAccount();
+  }
+
+  @Transactional
+  public void deactivateSimulatedMoves(Company company) {
+    List<Move> moveList =
+        moveRepo
+            .all()
+            .filter(
+                "self.company = ?1 AND self.statusSelect = ?2",
+                company,
+                MoveRepository.STATUS_SIMULATED)
+            .fetch();
+    for (Move move : moveList) {
+      moveRepo.remove(move);
+    }
+    List<Journal> journalList =
+        journalRepo
+            .all()
+            .filter("self.company = ?1 and self.authorizeSimulatedMove = true", company)
+            .fetch();
+    for (Journal journal : journalList) {
+      journal.setAuthorizeSimulatedMove(false);
+      journalRepo.save(journal);
+    }
+  }
+
+  public Partner getDasContactPartner(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getDasContactPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_42),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+
+    return accountConfig.getDasContactPartner();
   }
 }

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.project.db.Project;
@@ -30,8 +31,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BusinessProjectModule.PRIORITY)
 public class ProjectBusinessProjectRepository extends ProjectHRRepository {
 
   @Override

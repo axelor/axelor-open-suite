@@ -3,8 +3,13 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.module.SaleModule;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
 
   @Override

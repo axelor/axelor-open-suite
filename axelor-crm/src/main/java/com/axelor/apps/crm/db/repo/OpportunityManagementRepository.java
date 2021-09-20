@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.crm.db.repo;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.module.CrmModule;
 import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
@@ -33,6 +34,7 @@ public class OpportunityManagementRepository extends OpportunityRepository {
     Opportunity copy = super.copy(entity, deep);
     copy.setSalesStageSelect(OpportunityRepository.SALES_STAGE_NEW);
     copy.setLostReason(null);
+    copy.setOpportunitySeq(null);
     return copy;
   }
 
@@ -44,6 +46,7 @@ public class OpportunityManagementRepository extends OpportunityRepository {
       }
       return super.save(opportunity);
     } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
   }

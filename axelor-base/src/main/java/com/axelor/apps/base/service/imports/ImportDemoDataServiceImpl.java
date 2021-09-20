@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.imports;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
@@ -38,6 +39,8 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -45,6 +48,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class ImportDemoDataServiceImpl implements ImportDemoDataService {
 
   @Inject private MetaFiles metaFiles;

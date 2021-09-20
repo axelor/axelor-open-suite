@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,10 +20,12 @@ package com.axelor.apps.report.engine;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerServiceImpl;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.common.collect.Maps;
@@ -39,11 +41,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
-import javax.enterprise.context.RequestScoped;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
 public class ReportSettings {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -206,15 +208,25 @@ public class ReportSettings {
 
     AppSettings appSettings = AppSettings.get();
 
-    return this.addParam("DefaultDriver", appSettings.get("db.default.driver"))
+    return this.addParam("DefaultDriver", getDefaultDataSourceClassName())
         .addParam("DBName", appSettings.get("db.default.url"))
         .addParam("UserName", appSettings.get("db.default.user"))
         .addParam("Password", appSettings.get("db.default.password"));
   }
 
+  private String getDefaultDataSourceClassName() {
+    final Config config = ConfigProvider.getConfig();
+    return config.getValue("javax.sql.DataSource.default.dataSourceClassName", String.class);
+  }
+
   private ReportSettings addAttachmentPath() {
 
-    String attachmentPath = AppSettings.get().getPath("file.upload.dir", "");
+    String attachmentPath = null;
+    try {
+      attachmentPath = AppService.getFileUploadDir();
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
     if (attachmentPath == null) {
       return this;
     }

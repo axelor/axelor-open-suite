@@ -27,14 +27,14 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestFixedAssetLineComputationService {
 
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
 
-  @Before
+  @BeforeEach
   public void prepare() {
     fixedAssetLineComputationService = new FixedAssetLineComputationServiceImpl();
   }

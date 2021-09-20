@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,13 +17,17 @@
  */
 package com.axelor.apps.message.service;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.MultiRelated;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSupport;
 import com.axelor.db.Model;
@@ -45,22 +49,32 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import javax.enterprise.context.RequestScoped;
+import java.util.concurrent.TimeUnit;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
-@RequestScoped
+@ApplicationScoped
 public class MessageServiceImpl extends JpaSupport implements MessageService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final String CONFIG_SENDINGBLUE_URL_SENDSMS = "bondici.sendinblue.url.sendsms";
 
   private MetaAttachmentRepository metaAttachmentRepository;
   protected MessageRepository messageRepository;
@@ -102,10 +116,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
         createMessage(
             content,
             fromEmailAddress,
-            model,
-            id,
-            null,
-            0,
             false,
             MessageRepository.STATUS_DRAFT,
             subject,
@@ -118,10 +128,72 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             mediaTypeSelect,
             emailAccount,
             signature);
+    addMessageRelatedTo(message, model, id);
 
     messageRepository.save(message);
 
     attachMetaFiles(message, metaFiles);
+
+    return message;
+  }
+
+  @Override
+  public Message createMessage(
+      String model,
+      long id,
+      String subject,
+      String content,
+      EmailAddress fromEmailAddress,
+      List<EmailAddress> replyToEmailAddressList,
+      List<EmailAddress> toEmailAddressList,
+      List<EmailAddress> ccEmailAddressList,
+      List<EmailAddress> bccEmailAddressList,
+      Set<MetaFile> metaFiles,
+      String addressBlock,
+      int mediaTypeSelect,
+      EmailAccount emailAccount,
+      String signature,
+      Boolean isForTemporaryMessage) {
+
+    if (!isForTemporaryMessage) {
+      return createMessage(
+          model,
+          id,
+          subject,
+          content,
+          fromEmailAddress,
+          replyToEmailAddressList,
+          toEmailAddressList,
+          ccEmailAddressList,
+          bccEmailAddressList,
+          metaFiles,
+          addressBlock,
+          mediaTypeSelect,
+          emailAccount,
+          signature);
+    }
+
+    emailAccount =
+        emailAccount != null
+            ? Beans.get(EmailAccountRepository.class).find(emailAccount.getId())
+            : emailAccount;
+    Message message =
+        createMessage(
+            content,
+            fromEmailAddress,
+            false,
+            MessageRepository.STATUS_DRAFT,
+            subject,
+            MessageRepository.TYPE_SENT,
+            replyToEmailAddressList,
+            toEmailAddressList,
+            ccEmailAddressList,
+            bccEmailAddressList,
+            addressBlock,
+            mediaTypeSelect,
+            emailAccount,
+            signature);
+    addMessageRelatedTo(message, model, id);
 
     return message;
   }
@@ -146,10 +218,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   protected Message createMessage(
       String content,
       EmailAddress fromEmailAddress,
-      String relatedTo1Select,
-      long relatedTo1SelectId,
-      String relatedTo2Select,
-      long relatedTo2SelectId,
       boolean sentByEmail,
       int statusSelect,
       String subject,
@@ -205,30 +273,47 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             sentByEmail,
             emailAccount);
 
-    message.setRelatedTo1Select(relatedTo1Select);
-    message.setRelatedTo1SelectId(relatedTo1SelectId);
-    message.setRelatedTo2Select(relatedTo2Select);
-    message.setRelatedTo2SelectId(relatedTo2SelectId);
-
     return message;
   }
 
-  public Message sendMessage(Message message) throws AxelorException {
+  @Override
+  public Message sendMessage(Message message) throws AxelorException, JSONException, IOException {
     try {
-      if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
-        return sendByMail(message);
-      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {
-        return sendByEmail(message);
-      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
-        return sendToUser(message);
-      }
+      sendMessage(message, false);
     } catch (MessagingException e) {
       TraceBackService.trace(e);
     }
     return message;
   }
 
-  @Transactional
+  @Override
+  public Message sendMessage(Message message, Boolean isTemporaryEmail)
+      throws AxelorException, MessagingException, JSONException, IOException {
+
+    if (!isTemporaryEmail) {
+      if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
+        message = sendByMail(message);
+      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {
+        message = sendByEmail(message);
+      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
+        message = sendToUser(message);
+      } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_SMS) {
+        message = sendSMS(message);
+      }
+    } else {
+      if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_EMAIL) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.TEMPORARY_EMAIL_MEDIA_TYPE_ERROR));
+      }
+      message = sendByEmail(message, isTemporaryEmail);
+    }
+
+    return message;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendToUser(Message message) {
 
     if (message.getRecipientUser() == null) {
@@ -244,7 +329,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendByMail(Message message) {
 
     log.debug("Sent mail");
@@ -254,8 +340,15 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Override
   public Message sendByEmail(Message message) throws MessagingException, AxelorException {
+    return sendByEmail(message, false);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendByEmail(Message message, Boolean isTemporaryEmail)
+      throws MessagingException, AxelorException {
 
     EmailAccount mailAccount = message.getMailAccount();
 
@@ -312,7 +405,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     if (replytoRecipients != null && !replytoRecipients.isEmpty()) {
       mailBuilder.replyTo(Joiner.on(",").join(replytoRecipients));
     }
-    if (toRecipients != null && !toRecipients.isEmpty()) {
+    if (!toRecipients.isEmpty()) {
       mailBuilder.to(Joiner.on(",").join(toRecipients));
     }
     if (ccRecipients != null && !ccRecipients.isEmpty()) {
@@ -325,17 +418,88 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       mailBuilder.html(message.getContent());
     }
 
-    for (MetaAttachment metaAttachment : getMetaAttachments(message)) {
-      MetaFile metaFile = metaAttachment.getMetaFile();
-      mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
+    if (!isTemporaryEmail) {
+      for (MetaAttachment metaAttachment : getMetaAttachments(message)) {
+        MetaFile metaFile = metaAttachment.getMetaFile();
+        mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
+      }
+
+      getEntityManager().flush();
+      getEntityManager().lock(message, LockModeType.PESSIMISTIC_WRITE);
+      // send email using a separate process to avoid thread blocking
+      sendMailQueueService.submitMailJob(mailBuilder, message);
+
+    } else {
+
+      // Sending email(message) which is not saved.
+      // No separate thread or JPA persistence lock required
+      try {
+        mailBuilder.send();
+      } catch (IOException e) {
+        log.debug("Exception when sending email", e);
+        TraceBackService.trace(e);
+      }
+
+      log.debug("Email sent.");
     }
 
-    getEntityManager().flush();
-    getEntityManager().lock(message, LockModeType.PESSIMISTIC_WRITE);
-    // send email using a separate process to avoid thread blocking
-    sendMailQueueService.submitMailJob(mailBuilder, message);
-
     return message;
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendSMS(Message message) throws AxelorException, IOException, JSONException {
+
+    if (message.getMailAccount() == null
+        || Strings.isNullOrEmpty(message.getMailAccount().getSendingblueApiKey())) {
+      return message;
+    }
+    if (Strings.isNullOrEmpty(message.getToMobilePhone())) {
+      throw new AxelorException(
+          message,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          IExceptionMessage.SMS_ERROR_MISSING_MOBILE_NUMBER);
+    }
+
+    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+    builder.connectTimeout(30, TimeUnit.SECONDS);
+    builder.readTimeout(30, TimeUnit.SECONDS);
+    builder.writeTimeout(30, TimeUnit.SECONDS);
+    OkHttpClient client = new OkHttpClient(builder);
+    MediaType mediaType = MediaType.parse("application/json");
+    String datas =
+        new JSONObject()
+            .put("sender", getSender(message))
+            .put("recipient", message.getToMobilePhone())
+            .put("content", message.getContent().replaceAll("<\\/*\\w+>", ""))
+            .put("type", "transactional")
+            .toString();
+    RequestBody body = RequestBody.create(mediaType, datas);
+    Request request =
+        new Request.Builder()
+            .url(AppSettings.get().get(CONFIG_SENDINGBLUE_URL_SENDSMS))
+            .header("api-key", message.getMailAccount().getSendingblueApiKey())
+            .post(body)
+            .build();
+    Response response = client.newCall(request).execute();
+
+    if (!response.isSuccessful() || response.code() != 201) {
+      throw new AxelorException(
+          message,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format("%d %s", response.code(), response.message()));
+    }
+
+    message.setStatusSelect(MessageRepository.STATUS_SENT);
+    message.setSentDateT(LocalDateTime.now());
+
+    message.setSentByEmail(false);
+    return message;
+  }
+
+  protected String getSender(Message message) {
+    return message.getSenderUser().getCode();
   }
 
   public Set<MetaAttachment> getMetaAttachments(Message message) {
@@ -377,15 +541,20 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     Preconditions.checkNotNull(
         message.getTemplate(),
         I18n.get("Cannot regenerate message without template associated to message."));
-    Preconditions.checkNotNull(
-        message.getRelatedTo1Select(),
-        I18n.get("Cannot regenerate message without related model."));
-    Class m = Class.forName(message.getRelatedTo1Select());
-    Model model = JPA.all(m).filter("self.id = ?", message.getRelatedTo1SelectId()).fetchOne();
+
+    if (ObjectUtils.isEmpty(message.getMultiRelatedList())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get("Cannot regenerate message without related model."));
+    }
+
+    MultiRelated multiRelated = message.getMultiRelatedList().get(0);
+
+    Class m = Class.forName(multiRelated.getRelatedToSelect());
+    Model model = JPA.all(m).filter("self.id = ?", multiRelated.getRelatedToSelectId()).fetchOne();
     Message newMessage =
         Beans.get(TemplateMessageService.class).generateMessage(model, message.getTemplate());
-    newMessage.setRelatedTo2Select(message.getRelatedTo2Select());
-    newMessage.setRelatedTo2SelectId(message.getRelatedTo2SelectId());
+    newMessage.setMultiRelatedList(message.getMultiRelatedList());
     message.setArchived(true);
     return newMessage;
   }
@@ -393,5 +562,29 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   @Override
   public String getFullEmailAddress(EmailAddress emailAddress) {
     return emailAddress.getAddress();
+  }
+
+  @Override
+  @Transactional
+  public void addMessageRelatedTo(Message message, String relatedToSelect, Long relatedToSelectId) {
+
+    MultiRelated multiRelated =
+        Beans.get(MultiRelatedRepository.class)
+            .all()
+            .filter(
+                "self.message  = :message AND self.relatedToSelect = :relatedToSelect AND self.relatedToSelectId = :relatedToSelectId")
+            .bind("message", message)
+            .bind("relatedToSelect", relatedToSelect)
+            .bind("relatedToSelectId", relatedToSelectId)
+            .fetchOne();
+    if (multiRelated != null) {
+      return;
+    }
+
+    multiRelated = new MultiRelated();
+    multiRelated.setRelatedToSelect(relatedToSelect);
+    multiRelated.setRelatedToSelectId(relatedToSelectId);
+    message.addMultiRelatedListItem(multiRelated);
+    Beans.get(MultiRelatedRepository.class).save(multiRelated);
   }
 }

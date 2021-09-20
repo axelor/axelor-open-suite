@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.app;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.module.ProductionModule;
@@ -25,9 +26,15 @@ import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
@@ -39,8 +46,24 @@ import javax.transaction.Transactional;
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   @Inject
-  public ConfiguratorServiceProductionImpl(AppBaseService appBaseService) {
-    super(appBaseService);
+  public ConfiguratorServiceProductionImpl(
+      AppBaseService appBaseService,
+      ConfiguratorFormulaService configuratorFormulaService,
+      ProductRepository productRepository,
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderComputeService saleOrderComputeService,
+      MetaFieldRepository metaFieldRepository,
+      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService) {
+    super(
+        appBaseService,
+        configuratorFormulaService,
+        productRepository,
+        saleOrderLineService,
+        saleOrderLineRepository,
+        saleOrderComputeService,
+        metaFieldRepository,
+        configuratorMetaJsonFieldService);
   }
 
   /**

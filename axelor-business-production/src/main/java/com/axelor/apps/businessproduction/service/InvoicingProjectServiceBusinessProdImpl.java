@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
@@ -49,6 +50,12 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
       super.setLines(invoicingProject, project, counter);
       return;
+    }
+
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    if (appBusinessProject.getAutomaticInvoicing()) {
+      projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
+      timesheetLineBusinessService.timsheetLineInvoicing(project);
     }
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
@@ -93,7 +100,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
               Beans.get(ManufOrderRepository.class)
                   .all()
                   .filter(
-                      "self.productionOrder.project = ?1 AND (self.realStartDateT < ?2)",
+                      "self.productionOrderSet.project = ?1 AND (self.realStartDateT < ?2)",
                       project,
                       deadlineDateToDateTime)
                   .fetch());
@@ -103,7 +110,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
           .addAll(
               Beans.get(ManufOrderRepository.class)
                   .all()
-                  .filter("self.productionOrder.project = ?1", project)
+                  .filter("self.productionOrderSet.project = ?1", project)
                   .fetch());
     }
   }
@@ -134,7 +141,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
         (int)
             Beans.get(ManufOrderRepository.class)
                 .all()
-                .filter("self.productionOrder.project = ?1", project)
+                .filter("self.productionOrderSet.project = ?1", project)
                 .count();
     toInvoiceCount += productionOrderCount;
 

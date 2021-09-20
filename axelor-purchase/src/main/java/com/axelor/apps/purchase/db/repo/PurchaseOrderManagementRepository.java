@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.module.PurchaseModule;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
@@ -58,7 +59,8 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
       Beans.get(PurchaseOrderService.class).setDraftSequence(purchaseOrder);
       return purchaseOrder;
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 }

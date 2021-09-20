@@ -1,6 +1,7 @@
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -20,7 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJsonFieldService {
 
   /**

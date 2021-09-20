@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,11 +34,11 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class MoveRemoveService {
 
   protected MoveRepository moveRepo;
@@ -184,7 +184,8 @@ public class MoveRemoveService {
     for (Move move : moveList) {
       try {
         move = moveRepo.find(move.getId());
-        if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+        if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
           this.archiveDaybookMove(move);

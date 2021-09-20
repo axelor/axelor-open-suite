@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -304,6 +304,26 @@ public class SaleOrderLineController {
     Beans.get(SaleOrderLineService.class).checkMultipleQty(saleOrderLine, response);
   }
 
+  /**
+   * Called from sale order line form view on load and on discount type select change. Call {@link
+   * SaleOrderLineService#computeMaxDiscount} and set the message to the view.
+   *
+   * @param request
+   * @param response
+   */
+  public void fillMaxDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      BigDecimal maxDiscount = saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
+      response.setValue("$maxDiscount", maxDiscount);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   private void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
 
@@ -322,5 +342,40 @@ public class SaleOrderLineController {
         map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
                 .compareTo(saleOrder.getInAti() ? orderLine.getInTaxPrice() : orderLine.getPrice())
             == 0);
+  }
+
+  /**
+   * Called from sale order line form view, on product selection. Call {@link
+   * SaleOrderLineService#computeProductDomain(SaleOrderLine, SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void computeProductDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      response.setAttr(
+          "product", "domain", saleOrderLineService.computeProductDomain(saleOrderLine, saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computePricingScale(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      saleOrderLineService.computePricingScale(saleOrder, saleOrderLine);
+
+      response.setValues(saleOrderLine);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

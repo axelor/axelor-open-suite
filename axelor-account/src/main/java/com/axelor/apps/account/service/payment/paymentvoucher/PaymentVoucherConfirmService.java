@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -49,11 +50,15 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class PaymentVoucherConfirmService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -213,9 +218,11 @@ public class PaymentVoucherConfirmService {
                   payerPartner,
                   paymentDate,
                   paymentMode,
-                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
       move.setPaymentVoucher(paymentVoucher);
+      move.setTradingName(paymentVoucher.getTradingName());
 
       paymentVoucher.setGeneratedMove(move);
       // Create move lines for payment lines

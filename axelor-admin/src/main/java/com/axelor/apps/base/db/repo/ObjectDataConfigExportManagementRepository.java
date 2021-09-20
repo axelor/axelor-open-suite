@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.admin.module.AdminModule;
 import com.axelor.apps.base.db.ObjectDataConfigExport;
+import com.axelor.apps.base.module.AdminModule;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;

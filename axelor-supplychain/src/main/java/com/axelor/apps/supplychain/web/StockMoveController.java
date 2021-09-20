@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,9 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -30,9 +32,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 
-@RequestScoped
+@ApplicationScoped
 public class StockMoveController {
 
   public void verifyProductStock(ActionRequest request, ActionResponse response) {
@@ -89,6 +91,38 @@ public class StockMoveController {
             .isAllocatedStockMoveLineRemoved(stockMove)) {
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
       response.setFlash(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
+    }
+  }
+
+  /**
+   * Called from stock move form view, on delivered partner select. Call {@link
+   * PartnerSupplychainLinkService#computePartnerFilter}
+   *
+   * @param request
+   * @param response
+   */
+  public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  stockMove.getPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+
+      response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDefaultInvoicedPartner(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      Beans.get(StockMoveServiceSupplychain.class).setDefaultInvoicedPartner(stockMove);
+      response.setValues(stockMove);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

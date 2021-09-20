@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,6 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.RawMaterialRequirement;
 import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
-import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.annotation.Priority;
@@ -43,10 +42,8 @@ public class RawMaterialRequirementProductionRepository extends RawMaterialRequi
 
       return super.save(rawMaterialRequirement);
     } catch (Exception e) {
-      JPA.em().getTransaction().rollback();
-      JPA.runInTransaction(() -> TraceBackService.trace(e));
-      JPA.em().getTransaction().begin();
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.annotation.Priority;
@@ -45,7 +46,8 @@ public class BankOrderManagementRepository extends BankOrderRepository {
 
       return super.save(entity);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
     }
   }
 

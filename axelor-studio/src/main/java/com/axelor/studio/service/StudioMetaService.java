@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,17 +53,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class StudioMetaService {
-
-  public static final String XML_ID_PREFIX = "studio-build-";
 
   private final Logger log = LoggerFactory.getLogger(StudioMetaService.class);
 
@@ -83,26 +81,22 @@ public class StudioMetaService {
    * @param actionNames Comma separated string of action names.
    */
   @Transactional
-  public void removeMetaActions(String actionNames) {
+  public void removeMetaActions(String xmlIds) {
 
-    log.debug("Removing actions: {}", actionNames);
-    if (actionNames == null) {
+    log.debug("Removing actions: {}", xmlIds);
+    if (xmlIds == null) {
       return;
     }
 
-    actionNames = actionNames.replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "");
+    xmlIds = xmlIds.replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "");
     // .replaceAll(WkfTrackingService.ACTION_TRACK, "");
     List<MetaAction> metaActions =
         metaActionRepo
             .all()
-            .filter("self.name in ?1", Arrays.asList(actionNames.split(",")))
+            .filter("self.xmlId in ?1 OR self.name in ?1 ", Arrays.asList(xmlIds.split(",")))
             .fetch();
 
     for (MetaAction action : metaActions) {
-      if (action.getXmlId() == null
-          || !action.getXmlId().contentEquals(XML_ID_PREFIX + action.getName())) {
-        continue;
-      }
       List<MetaMenu> menus = metaMenuRepo.all().filter("self.action = ?1", action).fetch();
       for (MetaMenu metaMenu : menus) {
         metaMenu.setAction(null);
@@ -113,9 +107,9 @@ public class StudioMetaService {
   }
 
   @Transactional
-  public MetaAction updateMetaAction(String name, String actionType, String xml, String model) {
+  public MetaAction updateMetaAction(
+      String name, String actionType, String xml, String model, String xmlId) {
 
-    String xmlId = XML_ID_PREFIX + name;
     MetaAction action = metaActionRepo.findByID(xmlId);
 
     if (action == null) {
@@ -210,8 +204,15 @@ public class StudioMetaService {
   }
 
   public MetaMenu createMenu(MenuBuilder builder) {
-    String xmlId = XML_ID_PREFIX + builder.getName();
-    MetaMenu menu = metaMenuRepo.findByID(xmlId);
+    //    String xmlId = XML_ID_PREFIX + builder.getName();
+    String xmlId = builder.getXmlId();
+    MetaMenu menu = builder.getMetaMenu();
+
+    if (menu == null) {
+      menu = metaMenuRepo.findByID(xmlId);
+    } else {
+      menu.setXmlId(xmlId);
+    }
 
     if (menu == null) {
       menu = new MetaMenu(builder.getName());

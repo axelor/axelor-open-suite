@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -66,7 +67,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       ReconcileService reconcileService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoicePaymentToolService invoicePaymentToolService,
+      AppAccountService appAccountService) {
 
     super(
         paymentModeService,
@@ -75,7 +77,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
-        invoicePaymentToolService);
+        invoicePaymentToolService,
+        appAccountService);
 
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;

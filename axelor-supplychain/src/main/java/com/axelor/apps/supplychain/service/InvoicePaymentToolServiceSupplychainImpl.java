@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,12 +37,16 @@ import javax.transaction.Transactional;
 @Priority(SupplychainModule.PRIORITY)
 public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentToolServiceImpl {
 
+  protected PartnerSupplychainService partnerSupplychainService;
+
   @Inject
   public InvoicePaymentToolServiceSupplychainImpl(
       InvoiceRepository invoiceRepo,
       MoveToolService moveToolService,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      PartnerSupplychainService partnerSupplychainService) {
     super(invoiceRepo, moveToolService, invoicePaymentRepo);
+    this.partnerSupplychainService = partnerSupplychainService;
   }
 
   @Override
@@ -57,6 +61,10 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
     if (saleOrder != null) {
       // compute sale order totals
       Beans.get(SaleOrderComputeService.class)._computeSaleOrder(saleOrder);
+    }
+    if (invoice.getPartner().getHasBlockedAccount()
+        && !invoice.getPartner().getHasManuallyBlockedAccount()) {
+      partnerSupplychainService.updateBlockedAccount(invoice.getPartner());
     }
   }
 }

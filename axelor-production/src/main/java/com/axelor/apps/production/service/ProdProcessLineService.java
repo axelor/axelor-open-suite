@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,14 +17,12 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.production.db.WorkCenter;
-import java.math.BigDecimal;
+import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.WorkCenterGroup;
+import com.axelor.exception.AxelorException;
 
 public interface ProdProcessLineService {
 
-  public Long getProdProcessLineDurationFromWorkCenter(WorkCenter workCenter);
-
-  public BigDecimal getProdProcessLineMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
-
-  public BigDecimal getProdProcessLineMaxCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
+  public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
+      throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,16 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.repo.GroupRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
@@ -32,11 +35,14 @@ import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
+import com.axelor.meta.loader.ModuleManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,7 +53,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -89,18 +94,9 @@ public class ExportDbObjectService {
   public MetaFile exportObject() {
     group = Beans.get(GroupRepository.class).all().filter("self.code = 'admins'").fetchOne();
     try {
-      log.debug("Attachment dir: {}", AppSettings.get().get("file.upload.dir"));
-      String uploadDir = AppSettings.get().get("file.upload.dir");
+      log.debug("Attachment dir: {}", AppService.getFileUploadDir());
+      String uploadDir = AppService.getFileUploadDir();
       if (uploadDir == null || !new File(uploadDir).exists()) {
-        return null;
-      }
-      String appSrc = AppSettings.get().get("application.src");
-      log.debug("Module dir: {}", appSrc);
-      if (appSrc == null) {
-        return null;
-      }
-      File moduleDir = new File(appSrc);
-      if (!moduleDir.exists()) {
         return null;
       }
 
@@ -114,19 +110,22 @@ public class ExportDbObjectService {
       metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
 
       SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-      saxParserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      saxParserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      saxParserFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      saxParserFactory.setFeature(
+          "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+      saxParserFactory.setXIncludeAware(false);
 
       SAXParser parser = saxParserFactory.newSAXParser();
-      parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 
-      updateObjectMap(Arrays.asList(moduleDir.listFiles()), parser, new XmlHandler());
+      updateObjectMap(ModuleManager.getResolution(), parser, new XmlHandler());
 
       writeObjects(MetaFiles.getPath(metaFile).toFile());
 
       return metaFile;
 
-    } catch (ParserConfigurationException | SAXException | IOException e) {
+    } catch (ParserConfigurationException | SAXException | IOException | AxelorException e) {
       e.printStackTrace();
     }
     return null;
@@ -266,28 +265,22 @@ public class ExportDbObjectService {
   }
 
   @SuppressWarnings("unchecked")
-  private void updateObjectMap(List<File> modules, SAXParser parser, XmlHandler xmlHandler)
+  private void updateObjectMap(List<String> modules, SAXParser parser, XmlHandler xmlHandler)
       throws SAXException, IOException {
+    for (String module : modules) {
 
-    for (File module : modules) {
-      String modulePath = module.getAbsolutePath();
-      File modelDir = new File(modulePath + "/src/main/resources/domains/");
-      if (!modelDir.exists()) {
-        continue;
-      }
-      // log.debug("Module : {}",modelDir.getAbsolutePath());
+      List<URL> urls = MetaScanner.findAll(module, "domains", "(.*?)\\.xml$");
 
-      for (File objectFile : modelDir.listFiles()) {
-        // log.debug("Parsing domain : {}",objectFile.getName());
-        String objectName = objectFile.getName().split("\\.")[0];
-        parser.parse(new InputSource(new FileInputStream(objectFile)), xmlHandler);
+      for (URL url : urls) {
+        File file = MetaFiles.createTempFile("tempXml", ".xml").toFile();
+        org.apache.commons.io.FileUtils.copyURLToFile(url, file);
+        String objectName = Paths.get(url.getPath()).getFileName().toString().split("\\.")[0];
+        parser.parse(new InputSource(new FileInputStream(file)), xmlHandler);
         Map<String, Object> moduleMap = (Map<String, Object>) objectMap.get(objectName);
         if (moduleMap == null) {
           moduleMap = new HashMap<String, Object>();
         }
-        moduleMap.put(
-            module.getName(),
-            updateObjectModel(xmlHandler.fieldList, objectName, module.getName()));
+        moduleMap.put(module, updateObjectModel(xmlHandler.fieldList, objectName, module));
         objectMap.put(objectName, moduleMap);
       }
     }

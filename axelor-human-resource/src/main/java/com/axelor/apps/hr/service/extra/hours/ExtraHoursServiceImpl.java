@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,12 +30,13 @@ import com.axelor.exception.AxelorException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import wslite.json.JSONException;
 
-@RequestScoped
+@ApplicationScoped
 public class ExtraHoursServiceImpl implements ExtraHoursService {
 
   protected ExtraHoursRepository extraHoursRepo;
@@ -65,7 +66,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
 
   public Message sendCancellationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 
@@ -89,7 +90,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
 
   public Message sendConfirmationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 
@@ -114,7 +115,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
 
   public Message sendValidationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 
@@ -139,7 +140,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
 
   public Message sendRefusalEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException {
+          IllegalAccessException, MessagingException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 

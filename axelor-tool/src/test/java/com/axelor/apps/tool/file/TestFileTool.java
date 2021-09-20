@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,11 +19,11 @@ package com.axelor.apps.tool.file;
 
 import java.io.File;
 import java.io.IOException;
-import javax.enterprise.context.RequestScoped;
-import org.junit.Assert;
-import org.junit.Test;
+import javax.enterprise.context.ApplicationScoped;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-@RequestScoped
+@ApplicationScoped
 public class TestFileTool {
 
   @Test
@@ -42,7 +42,7 @@ public class TestFileTool {
     File file = FileTool.create(destinationFolder, fileName);
     file.deleteOnExit();
 
-    Assert.assertTrue(file.createNewFile());
+    Assertions.assertTrue(file.createNewFile());
   }
 
   @Test
@@ -61,6 +61,6 @@ public class TestFileTool {
     File file = FileTool.create(fileName);
     file.deleteOnExit();
 
-    Assert.assertTrue(file.createNewFile());
+    Assertions.assertTrue(file.createNewFile());
   }
 }

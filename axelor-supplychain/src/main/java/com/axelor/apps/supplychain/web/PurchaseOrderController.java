@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -145,14 +145,14 @@ public class PurchaseOrderController {
         // No confirmation popup, purchase orders are content in a parameter list
         List<Map> purchaseOrderMap = (List<Map>) request.getContext().get("purchaseOrderToMerge");
         for (Map map : purchaseOrderMap) {
-          purchaseOrderIdList.add(new Long((Integer) map.get("id")));
+          purchaseOrderIdList.add(Long.valueOf((Integer) map.get("id")));
         }
       } else {
         // After confirmation popup, purchase order's id are in a string separated by
         // ","
         String purchaseOrderIdListStr = (String) request.getContext().get("purchaseOrderToMerge");
         for (String purchaseOrderId : purchaseOrderIdListStr.split(",")) {
-          purchaseOrderIdList.add(new Long(purchaseOrderId));
+          purchaseOrderIdList.add(Long.valueOf(purchaseOrderId));
         }
         fromPopup = true;
       }
@@ -269,21 +269,23 @@ public class PurchaseOrderController {
           JPA.em()
               .find(
                   PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
+                  Long.valueOf((Integer) ((Map) request.getContext().get("priceList")).get("id")));
     }
     if (request.getContext().get("contactPartner") != null) {
       commonContactPartner =
           JPA.em()
               .find(
                   Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
     }
     if (request.getContext().get("stockLocation") != null) {
       commonLocation =
           JPA.em()
               .find(
                   StockLocation.class,
-                  new Long((Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
+                  Long.valueOf(
+                      (Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
     }
 
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existLocationDiff)) {
@@ -432,6 +434,20 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       Beans.get(PurchaseOrderSupplychainService.class).updateToValidatedStatus(purchaseOrder);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      String message =
+          Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
+      if (message != null) {
+        response.setFlash(message);
+      }
+      response.setValues(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

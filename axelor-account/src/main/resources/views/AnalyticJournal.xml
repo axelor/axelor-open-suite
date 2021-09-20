@@ -9,7 +9,7 @@
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 	</grid>
 	
-    <form name="analytic-journal-form" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default" >
+    <form name="analytic-journal-form" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default" onLoad="action-analytic-journal-on-load" >
         <panel name="mainPanel" >
         	<field name="name"/>
         	<field name="type" form-view="analytic-journal-type-form" grid-view="analytic-journal-type-grid"/>
@@ -25,5 +25,13 @@
     <search-filters name="analytic-journal-filters" model="com.axelor.apps.account.db.AnalyticJournal" title="Analytic journal filters">
     	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     </search-filters>
+    
+    <action-group name="action-analytic-journal-on-load">
+    	<action name="action-attrs-analytic-journal-on-load"/>
+    </action-group>
+    
+    <action-attrs name="action-attrs-analytic-journal-on-load">
+    	<attribute name="readonly" for="company" expr="eval: __repo__(AccountConfig).findByCompany(company).analyticJournal == __this__"/>
+    </action-attrs>
     
 </object-views>

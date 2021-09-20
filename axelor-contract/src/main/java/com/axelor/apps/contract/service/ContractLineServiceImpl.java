@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,10 +40,10 @@ import com.google.common.base.Preconditions;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-@RequestScoped
+@ApplicationScoped
 public class ContractLineServiceImpl implements ContractLineService {
   protected AppBaseService appBaseService;
   protected AccountManagementService accountManagementService;
@@ -154,7 +154,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     }
 
     BigDecimal exTaxTotal =
-        contractLine.getQty().multiply(contractLine.getPrice()).setScale(2, RoundingMode.HALF_EVEN);
+        contractLine.getQty().multiply(contractLine.getPrice()).setScale(2, RoundingMode.HALF_UP);
     contractLine.setExTaxTotal(exTaxTotal);
     BigDecimal inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     contractLine.setInTaxTotal(inTaxTotal);

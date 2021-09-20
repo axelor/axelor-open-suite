@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.tool.ModelTool;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -43,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 
 @ApplicationScoped
@@ -51,21 +51,20 @@ public class UserController {
   protected static final Map<String, String> UNIQUE_MESSAGES =
       ImmutableMap.of("code", IExceptionMessage.USER_CODE_ALREADY_EXISTS);
 
-  @Transactional
   public void setUserPartner(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
+      Partner partner =
+          Beans.get(PartnerRepository.class).find(context.asType(Partner.class).getId());
 
-      if (context.get("user_id") != null) {
+      if (context.get("created_from_user_id") != null && partner != null) {
+
         UserRepository userRepo = Beans.get(UserRepository.class);
-        Partner partner =
-            Beans.get(PartnerRepository.class).find(context.asType(Partner.class).getId());
-        User user = userRepo.find(((Integer) context.get("user_id")).longValue());
-        user.setPartner(partner);
-        userRepo.save(user);
+        User user = userRepo.find(((Integer) context.get("created_from_user_id")).longValue());
+        Beans.get(UserService.class).setUserPartner(partner, user);
       }
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

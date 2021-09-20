@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,12 +31,15 @@ import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.db.SelectionBuilder;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepository;
+import com.axelor.studio.db.repo.AppLoaderRepository;
 import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
+import com.axelor.studio.db.repo.SelectionBuilderRepository;
 import com.axelor.studio.service.wkf.WkfService;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -53,6 +56,8 @@ public class ImportService {
 
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
 
+  @Inject private SelectionBuilderRepository selectionBuilderRepo;
+
   @Inject private DashboardBuilderRepository dashboardBuilderRepo;
 
   @Inject private MenuBuilderRepository menuBuilderRepo;
@@ -67,6 +72,8 @@ public class ImportService {
 
   @Inject private MetaFileRepository metaFileRepo;
 
+  @Inject private AppLoaderRepository appLoaderRepository;
+
   public Object importMetaJsonModel(Object bean, Map<String, Object> values) {
 
     assert bean instanceof MetaJsonModel;
@@ -79,6 +86,14 @@ public class ImportService {
     assert bean instanceof MetaJsonField;
 
     return metaJsonFieldRepo.save((MetaJsonField) bean);
+  }
+
+  public Object importSelectionBuilder(Object bean, Map<String, Object> values)
+      throws JAXBException, AxelorException {
+
+    assert bean instanceof SelectionBuilder;
+
+    return selectionBuilderRepo.save((SelectionBuilder) bean);
   }
 
   public Object importChartBuilder(Object bean, Map<String, Object> values)
@@ -144,7 +159,15 @@ public class ImportService {
 
     AppBuilder appBuilder = (AppBuilder) bean;
 
-    return appBuilderRepo.save(appBuilder);
+    appBuilder = appBuilderRepo.save(appBuilder);
+
+    Long appLoaderId = (Long) values.get("appLoaderId");
+
+    if (appLoaderId != null) {
+      appLoaderRepository.find(appLoaderId).addImportedAppBuilderSetItem(appBuilder);
+    }
+
+    return appBuilder;
   }
 
   // Import methods specific for import from AppBuilder
@@ -183,7 +206,7 @@ public class ImportService {
       return null;
     }
 
-    return field;
+    return metaJsonFieldRepo.save(field);
   }
 
   public MetaJsonField importJsonField(Object bean, Map<String, Object> values) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -58,15 +59,16 @@ import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
+@ApplicationScoped
 public class MrpLineServiceImpl implements MrpLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -80,6 +82,7 @@ public class MrpLineServiceImpl implements MrpLineService {
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected MrpForecastRepository mrpForecastRepo;
+  protected MrpLineRepository mrpLineRepo;
 
   @Inject
   public MrpLineServiceImpl(
@@ -91,7 +94,8 @@ public class MrpLineServiceImpl implements MrpLineService {
       StockRulesService stockRulesService,
       SaleOrderLineRepository saleOrderLineRepo,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
-      MrpForecastRepository mrpForecastRepo) {
+      MrpForecastRepository mrpForecastRepo,
+      MrpLineRepository mrpLineRepo) {
 
     this.appBaseService = appBaseService;
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
@@ -102,6 +106,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.mrpForecastRepo = mrpForecastRepo;
+    this.mrpLineRepo = mrpLineRepo;
   }
 
   @Override
@@ -137,14 +142,18 @@ public class MrpLineServiceImpl implements MrpLineService {
     StockLocation stockLocation = mrpLine.getStockLocation();
     LocalDate maturityDate = mrpLine.getMaturityDate();
 
-    Partner supplierPartner = product.getDefaultSupplierPartner();
+    Partner supplierPartner = mrpLine.getSupplierPartner();
 
     if (supplierPartner == null) {
-      throw new AxelorException(
-          mrpLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MRP_LINE_1),
-          product.getFullName());
+      supplierPartner = product.getDefaultSupplierPartner();
+
+      if (supplierPartner == null) {
+        throw new AxelorException(
+            mrpLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MRP_LINE_1),
+            product.getFullName());
+      }
     }
 
     Company company = stockLocation.getCompany();
@@ -293,6 +302,10 @@ public class MrpLineServiceImpl implements MrpLineService {
 
     mrpLine = this.setMrpLineQty(mrpLine, product, stockLocation);
 
+    if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
+      mrpLine.setSupplierPartner(product.getDefaultSupplierPartner());
+    }
+
     this.updatePartner(mrpLine, model);
 
     this.createMrpLineOrigins(mrpLine, model);
@@ -357,6 +370,16 @@ public class MrpLineServiceImpl implements MrpLineService {
     return copyMrpLineOrigin;
   }
 
+  @Override
+  public void updateProposalToProcess(List<Integer> mrpLineIds, boolean proposalToProcess) {
+    MrpLine mrpLine;
+    for (Integer mrpId : mrpLineIds) {
+      mrpLine = mrpLineRepo.find(Long.valueOf(mrpId));
+
+      updateProposalToProcess(mrpLine, proposalToProcess);
+    }
+  }
+
   protected String computeRelatedName(Model model) {
 
     if (model instanceof SaleOrderLine) {
@@ -397,5 +420,18 @@ public class MrpLineServiceImpl implements MrpLineService {
       return ((MrpForecast) model).getPartner();
     }
     return null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateProposalToProcess(MrpLine mrpLine, boolean proposalToProcess) {
+    if (!mrpLine.getProposalGenerated()
+        && (mrpLine.getMrpLineType().getElementSelect()
+                == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+            || mrpLine.getMrpLineType().getElementSelect()
+                == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)) {
+      mrpLine.setProposalToProcess(proposalToProcess);
+      mrpLineRepo.save(mrpLine);
+    }
   }
 }

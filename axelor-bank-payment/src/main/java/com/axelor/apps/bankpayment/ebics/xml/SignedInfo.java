@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.account.ebics.schema.xmldsig.TransformType;
 import com.axelor.apps.account.ebics.schema.xmldsig.TransformsType;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
+import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -140,8 +141,7 @@ public class SignedInfo extends DefaultEbicsRootElement {
       Node node;
       Canonicalizer canonicalizer;
 
-      factory = DocumentBuilderFactory.newInstance();
-      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+      factory = Beans.get(XPathParse.class).getDocumentBuilderFactory();
       factory.setNamespaceAware(true);
       factory.setValidating(true);
       builder = factory.newDocumentBuilder();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,11 +46,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
+@ApplicationScoped
 public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   protected ABCAnalysisLineRepository abcAnalysisLineRepository;
   protected UnitConversionService unitConversionService;
@@ -183,11 +183,11 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   }
 
   protected String getProductCategoryQuery() {
-    return "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND dtype = 'Product'";
+    return "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.dtype = 'Product'";
   }
 
   protected String getProductFamilyQuery() {
-    return "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND dtype = 'Product'";
+    return "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.dtype = 'Product'";
   }
 
   protected void createAllABCAnalysisLine(ABCAnalysis abcAnalysis) throws AxelorException {
@@ -281,7 +281,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
           abcAnalysisLine
               .getDecimalQty()
               .multiply(BigDecimal.valueOf(100))
-              .divide(totalQty, 3, RoundingMode.HALF_EVEN);
+              .divide(totalQty, 3, RoundingMode.HALF_UP);
     }
 
     BigDecimal worth = BigDecimal.ZERO;
@@ -290,7 +290,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
           abcAnalysisLine
               .getDecimalWorth()
               .multiply(BigDecimal.valueOf(100))
-              .divide(totalWorth, 3, RoundingMode.HALF_EVEN);
+              .divide(totalWorth, 3, RoundingMode.HALF_UP);
     }
 
     incCumulatedQty(qty);
@@ -306,9 +306,9 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     BigDecimal maxQty = BigDecimal.ZERO;
     BigDecimal maxWorth = BigDecimal.ZERO;
     BigDecimal lineCumulatedQty =
-        abcAnalysisLine.getCumulatedQty().setScale(2, RoundingMode.HALF_EVEN);
+        abcAnalysisLine.getCumulatedQty().setScale(2, RoundingMode.HALF_UP);
     BigDecimal lineCumulatedWorth =
-        abcAnalysisLine.getCumulatedWorth().setScale(2, RoundingMode.HALF_EVEN);
+        abcAnalysisLine.getCumulatedWorth().setScale(2, RoundingMode.HALF_UP);
 
     for (ABCAnalysisClass abcAnalysisClass : abcAnalysisClassList) {
       maxQty = maxQty.add(abcAnalysisClass.getQty());

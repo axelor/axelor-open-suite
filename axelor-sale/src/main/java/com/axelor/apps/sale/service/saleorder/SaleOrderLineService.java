@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -142,12 +143,21 @@ public interface SaleOrderLineService {
    */
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
+  /**
+   * Fill the complementaryProductList of the saleOrderLine from the possible complementary products
+   * of the product of the line
+   *
+   * @param saleOrderLine
+   */
+  public void fillComplementaryProductList(SaleOrderLine saleOrderLine);
+
   public SaleOrderLine createSaleOrderLine(
       PackLine packLine,
       SaleOrder saleOrder,
       BigDecimal packQty,
       BigDecimal conversionRate,
-      Integer sequence);
+      Integer sequence)
+      throws AxelorException;
 
   /**
    * Get unique values of type field from pack lines
@@ -173,6 +183,27 @@ public interface SaleOrderLineService {
       BigDecimal packQty,
       List<SaleOrderLine> saleOrderLineList,
       Integer sequence);
+
+  /**
+   * Finds max discount from product category and his parents, and returns it.
+   *
+   * @param saleOrder a sale order (from context or sale order line)
+   * @param saleOrderLine a sale order line
+   * @return The maximal discount or null if the value is not needed
+   */
+  BigDecimal computeMaxDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  /**
+   * Compares sale order line discount with given max discount. Manages the two cases of amount
+   * percent and amount fixed.
+   *
+   * @param saleOrderLine a sale order line
+   * @param maxDiscount a max discount
+   * @return whether the discount is greather than the one authorized
+   */
+  boolean isSaleOrderLineDiscountGreaterThanMaxDiscount(
+      SaleOrderLine saleOrderLine, BigDecimal maxDiscount);
 
   /**
    * To create 'Start of pack' and 'End of pack' type {@link SaleOrderLine}.
@@ -257,4 +288,29 @@ public interface SaleOrderLineService {
    */
   public BigDecimal getInTaxUnitPriceFromPackLine(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+
+  /**
+   * Compute product domain from configurations and sale order.
+   *
+   * @param saleOrderLine a sale order line
+   * @param saleOrder a sale order (can be a sale order from context and not from database)
+   * @return a String with the JPQL expression used to filter product selection
+   */
+  String computeProductDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+
+  /**
+   * To manage Complementary Product sale order line.
+   *
+   * @param complementaryProduct
+   * @param saleOrder
+   * @param saleOrderLine
+   * @return New complementary sales order lines
+   * @throws AxelorException
+   */
+  public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
+      ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  public void computePricingScale(SaleOrder saleOrder, SaleOrderLine orderLine)
+      throws ClassNotFoundException, AxelorException;
 }

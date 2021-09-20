@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,17 +27,17 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import java.util.ArrayList;
-import javax.enterprise.context.RequestScoped;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import javax.enterprise.context.ApplicationScoped;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RequestScoped
+@ApplicationScoped
 public class TestSaleOrderStockService {
 
   private SaleOrderStockServiceImpl saleOrderStockService;
 
-  @Before
+  @BeforeEach
   public void prepare() throws AxelorException {
     saleOrderStockService = mock(SaleOrderStockServiceImpl.class);
     when(saleOrderStockService.isStockMoveProduct(any(SaleOrderLine.class), any(SaleOrder.class)))
@@ -49,7 +49,7 @@ public class TestSaleOrderStockService {
   public void testUpdateDeliveryStateSaleOrderWithNull() throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
     saleOrderStockService.updateDeliveryState(saleOrder);
-    Assert.assertEquals(
+    Assertions.assertEquals(
         SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED, (int) saleOrder.getDeliveryState());
   }
 
@@ -58,7 +58,7 @@ public class TestSaleOrderStockService {
     SaleOrder saleOrder = new SaleOrder();
     saleOrder.setSaleOrderLineList(new ArrayList<>());
     saleOrderStockService.updateDeliveryState(saleOrder);
-    Assert.assertEquals(
+    Assertions.assertEquals(
         SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED, (int) saleOrder.getDeliveryState());
   }
 
@@ -74,7 +74,7 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine2);
 
     saleOrderStockService.updateDeliveryState(saleOrder);
-    Assert.assertEquals(
+    Assertions.assertEquals(
         SaleOrderRepository.DELIVERY_STATE_DELIVERED, (int) saleOrder.getDeliveryState());
   }
 
@@ -89,7 +89,7 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine2);
 
     saleOrderStockService.updateDeliveryState(saleOrder);
-    Assert.assertEquals(
+    Assertions.assertEquals(
         SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED, (int) saleOrder.getDeliveryState());
   }
 
@@ -104,7 +104,7 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine2);
 
     saleOrderStockService.updateDeliveryState(saleOrder);
-    Assert.assertEquals(
+    Assertions.assertEquals(
         SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED, (int) saleOrder.getDeliveryState());
   }
 
@@ -123,7 +123,7 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine3);
 
     saleOrderStockService.updateDeliveryState(saleOrder);
-    Assert.assertEquals(
+    Assertions.assertEquals(
         SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED, (int) saleOrder.getDeliveryState());
   }
 
@@ -142,7 +142,7 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine3);
 
     saleOrderStockService.updateDeliveryState(saleOrder);
-    Assert.assertEquals(
+    Assertions.assertEquals(
         SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED, (int) saleOrder.getDeliveryState());
   }
 }

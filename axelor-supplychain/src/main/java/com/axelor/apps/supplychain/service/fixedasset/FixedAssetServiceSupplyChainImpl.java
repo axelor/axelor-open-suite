@@ -32,12 +32,7 @@ import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-<<<<<<< HEAD:axelor-supplychain/src/main/java/com/axelor/apps/supplychain/service/FixedAssetServiceSupplyChainImpl.java
-=======
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
->>>>>>> f39c74c:axelor-supplychain/src/main/java/com/axelor/apps/supplychain/service/fixedasset/FixedAssetServiceSupplyChainImpl.java
 import java.util.List;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;

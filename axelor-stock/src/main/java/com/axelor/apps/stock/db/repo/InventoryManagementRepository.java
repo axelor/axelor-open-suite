@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.annotation.Priority;
@@ -51,6 +52,7 @@ public class InventoryManagementRepository extends InventoryRepository {
         inventory.setInventorySeq(sequenceService.getDraftSequenceNumber(inventory));
       }
     } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
 

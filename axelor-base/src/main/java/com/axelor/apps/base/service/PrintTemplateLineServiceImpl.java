@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.PrintTemplateLineTest;
 import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -46,9 +47,13 @@ import com.axelor.tool.template.TemplateMaker;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
 
   protected static final char TEMPLATE_DELIMITER = '$';
