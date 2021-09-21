@@ -18,11 +18,15 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
@@ -449,6 +453,39 @@ public class MoveController {
       Beans.get(MoveValidateService.class).checkPreconditions(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void manageMoveLineAxis(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getCompany() != null) {
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+        if (accountConfig != null) {
+          AnalyticAxis analyticAxis = null;
+          for (int i = 1; i <= 5; i++) {
+            response.setAttr(
+                "moveLineList.axis" + i + "AnalyticAccount",
+                "hidden",
+                !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+            for (AnalyticAxisByCompany analyticAxisByCompany :
+                accountConfig.getAnalyticAxisByCompanyList()) {
+              if (analyticAxisByCompany.getOrderSelect() == i) {
+                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+              }
+            }
+            if (analyticAxis != null) {
+              response.setAttr(
+                  "moveLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
+              analyticAxis = null;
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
