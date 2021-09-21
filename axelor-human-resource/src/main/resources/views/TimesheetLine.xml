@@ -52,6 +52,9 @@
 	</grid>
 
 	<grid name="timesheet-line-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" canNew="false">
+		<toolbar>
+		  <button name="logTime" title="Log time" onClick="action-timesheet-line-log-time" showIf="_showLogTime" if="__user__.contextProject"/>
+		</toolbar>
 		<field name="timesheet.company"/>
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="timesheet.user"/>
@@ -153,8 +156,12 @@
 			<field name="timesheet.statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
 		</panel>
 		<panel-include view="timesheet-line-timesheet-form"/>
+		<panel-mail name="panelMail">
+			<mail-messages/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
-
+	
 	<form name="timesheet-line-timesheet-project-form" title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine"
 	onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
 	onLoad="action-timesheet-line-group-onload" width="large">
@@ -282,7 +289,7 @@
         <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="setDuration"/>
 	</action-method>
 	
-	<action-view name="action-project-task-view-time-spent" model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line Form">
+	<action-view name="action-project-task-view-time-spent" model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line">
   		<view name="timesheet-line-timesheet-project-task-form" type="form"/>
   		<view-param name="popup" value="reload"/>
   		<view-param name="show-toolbar" value="false"/>
@@ -344,6 +351,12 @@
 		<view type="form" name="timesheet-line-timesheet-project-task-form"/>
 		<view-param name="popup" value="true"/>
 		<domain>self.projectTask = :id</domain>
+	</action-view>
+	
+	<action-view name="action-timesheet-line-log-time" model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line Form">
+  		<view name="timesheet-line-timesheet-project-task-form" type="form"/>
+  		<context name="_project" expr="eval: __user__.contextProject"/>
+  		<context name="_user" expr="eval: __user__"/>
 	</action-view>
 
 </object-views>

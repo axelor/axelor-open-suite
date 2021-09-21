@@ -83,7 +83,7 @@
 				</panel>
 				<panel name="exportsPanel" title="Exports" colSpan="12">
 					<field name="exportPath"/>
-					<field name="dasContactPartner" domain="self.isEmployee = true" form-view="partner-form" grid-view="partner-grid"/>
+					<field name="dasContactPartner" domain="self.isEmployee = true AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 					<!-- <field name="exportFileName"/> -->
 				</panel>
 				<panel name="shiftToIrrecoverablePanel" title="Shift to irrecoverable" colSpan="12">
