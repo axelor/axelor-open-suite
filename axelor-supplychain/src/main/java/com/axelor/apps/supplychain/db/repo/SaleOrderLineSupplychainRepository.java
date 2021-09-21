@@ -38,7 +38,7 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
 
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 
-    if (this.isNotManageAvailability(saleOrderLine, saleOrder)) {
+    if (this.availabilityIsNotManaged(saleOrderLine, saleOrder)) {
       return super.populate(json, context);
     }
 
@@ -66,7 +66,7 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
     return super.populate(json, context);
   }
 
-  protected boolean isNotManageAvailability(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+  protected boolean availabilityIsNotManaged(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     return saleOrder == null
         || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
