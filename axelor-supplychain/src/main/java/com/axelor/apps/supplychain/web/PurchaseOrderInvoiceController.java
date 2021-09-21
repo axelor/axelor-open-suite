@@ -69,8 +69,6 @@ public class PurchaseOrderInvoiceController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      // TODO??
-      // Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(purchaseOrder);
       response.setView(
           ActionView.define("Invoicing")
               .model(PurchaseOrder.class.getName())
