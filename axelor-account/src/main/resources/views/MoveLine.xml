@@ -403,6 +403,8 @@
     <action name="action-move-line-method-set-currencyRate" />
     <action name="action-move-line-record-set-currencyAmount" />
     <action name="action-move-line-method-description-required" />
+    <action name="action-method-change-account-set-default-distribution-template"/>
+    <action name="action-method-move-line-set-required-analytic-accounts"/>
   </action-group>
 
   <action-group name="action-group-account-moveline-debitcredit-onchange">
@@ -439,6 +441,7 @@
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-account-move-line-method-set-partner-readonly"/>
     <action name="action-move-line-method-refresh-account-informations"/>
+    <action name="action-method-change-account-set-default-distribution-template"/>
     <action name="action-method-move-line-set-required-analytic-accounts"/>
   </action-group>
 

@@ -43,7 +43,6 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
 
   @Override
   public MoveLine computeAnalyticDistribution(MoveLine moveLine) {
-
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
@@ -98,7 +97,6 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
             moveLine.getDebit().add(moveLine.getCredit()),
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());
-
     if (moveLine.getAnalyticMoveLineList() == null) {
       moveLine.setAnalyticMoveLineList(new ArrayList<>());
     } else {
@@ -125,7 +123,9 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     } else {
       moveLine.setAnalyticDistributionTemplate(null);
     }
-    moveLine.getAnalyticMoveLineList().clear();
+    if (moveLine.getAnalyticMoveLineList() != null) {
+      moveLine.getAnalyticMoveLineList().clear();
+    }
     moveLine = computeAnalyticDistribution(moveLine);
     return moveLine;
   }

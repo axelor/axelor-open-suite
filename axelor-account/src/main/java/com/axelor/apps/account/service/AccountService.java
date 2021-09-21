@@ -158,6 +158,7 @@ public class AccountService {
                         .forEach(
                             analyticAccount ->
                                 rulesAnalyticAccountList.add(analyticAccount.getId())));
+
             for (Long analyticAccount : accountAnalyticAccountList) {
               if (!rulesAnalyticAccountList.contains(analyticAccount)) {
                 throw new AxelorException(
