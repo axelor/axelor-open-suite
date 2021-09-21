@@ -944,19 +944,22 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
 
-      if (stockMoveLine.getUnit().equals(manufOrder.getUnit())
-          && (stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED
-              || stockMoveLine.getStockMove().getStatusSelect()
-                  == StockMoveRepository.STATUS_REALIZED)) {
-        Product product = stockMoveLine.getProduct();
-        totalProducedQty =
-            totalProducedQty.add(
-                unitConversionService.convert(
-                    stockMoveLine.getUnit(),
-                    costSheet.getManufOrder().getUnit(),
-                    stockMoveLine.getQty(),
-                    stockMoveLine.getQty().scale(),
-                    product));
+      if (stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+          || stockMoveLine.getStockMove().getStatusSelect()
+              == StockMoveRepository.STATUS_REALIZED) {
+        if (stockMoveLine.getUnit() == null) {
+          totalProducedQty = totalProducedQty.add(stockMoveLine.getQty());
+        } else if (stockMoveLine.getUnit().equals(manufOrder.getUnit())) {
+          Product product = stockMoveLine.getProduct();
+          totalProducedQty =
+              totalProducedQty.add(
+                  unitConversionService.convert(
+                      stockMoveLine.getUnit(),
+                      costSheet.getManufOrder().getUnit(),
+                      stockMoveLine.getQty(),
+                      stockMoveLine.getQty().scale(),
+                      product));
+        }
       }
     }
 
