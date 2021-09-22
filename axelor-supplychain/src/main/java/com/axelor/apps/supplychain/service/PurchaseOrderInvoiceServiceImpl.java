@@ -538,7 +538,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
                 invoice, purchaseOrder.getInTaxTotal(), invoicingProduct, percentToInvoice);
 
     invoiceGenerator.populate(invoice, invoiceLinesList);
-    // invoice.setAddressStr(purchaseOrder.getMainInvoicingAddressStr());
 
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
