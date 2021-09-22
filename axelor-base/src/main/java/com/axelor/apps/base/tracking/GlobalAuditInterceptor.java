@@ -252,6 +252,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
     super.onDelete(entity, id, state, propertyNames, types);
     if (entity instanceof AuditableModel
         && !Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())) {
+      init();
       globalTracker.get().addLog((AuditableModel) entity, GlobalTrackingLogRepository.TYPE_DELETE);
     }
   }
