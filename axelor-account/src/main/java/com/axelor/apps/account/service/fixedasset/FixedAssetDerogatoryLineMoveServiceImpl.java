@@ -91,7 +91,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               fixedAssetDerogatoryLine,
               computeCreditAccount(fixedAssetDerogatoryLine),
               computeDebitAccount(fixedAssetDerogatoryLine),
-              amount);
+              amount,
+              false);
       if (fixedAssetDerogatoryLine.getIsSimulated() && deragotaryDepreciationMove != null) {
         this.moveValidateService.validate(deragotaryDepreciationMove);
       }
@@ -164,7 +165,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       FixedAssetDerogatoryLine fixedAssetDerogatoryLine,
       Account creditLineAccount,
       Account debitLineAccount,
-      BigDecimal amount)
+      BigDecimal amount,
+      Boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
 
@@ -195,6 +197,10 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             null);
 
     if (move != null) {
+
+      if (isSimulated) {
+        move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+      }
       List<MoveLine> moveLines = new ArrayList<>();
 
       if (creditLineAccount == null || debitLineAccount == null) {
@@ -268,7 +274,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               fixedAssetDerogatoryLine,
               computeCreditAccount(fixedAssetDerogatoryLine),
               computeDebitAccount(fixedAssetDerogatoryLine),
-              amount));
+              amount,
+              true));
     }
 
     fixedAssetDerogatoryLine.setIsSimulated(true);

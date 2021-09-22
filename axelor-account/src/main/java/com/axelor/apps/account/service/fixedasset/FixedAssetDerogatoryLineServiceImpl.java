@@ -249,7 +249,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
             .abs();
     firstPlannedDerogatoryLine.setDerogatoryDepreciationMove(
         fixedAssetDerogatoryLineMoveService.generateMove(
-            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount));
+            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount, false));
   }
 
   protected Account computeCessionDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
