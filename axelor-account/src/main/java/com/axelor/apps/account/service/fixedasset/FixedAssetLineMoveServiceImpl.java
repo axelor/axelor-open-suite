@@ -46,6 +46,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,9 +106,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
     if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
       if (generateMove) {
-        generateMove(fixedAssetLine);
+        generateMove(fixedAssetLine, false);
       }
-      generateImpairementAccountMove(fixedAssetLine);
+      generateImpairementAccountMove(fixedAssetLine, false);
     }
 
     if (fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
@@ -218,7 +219,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   }
 
   @Transactional
-  private void generateImpairementAccountMove(FixedAssetLine fixedAssetLine)
+  protected void generateImpairementAccountMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 
@@ -254,6 +255,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         && (correctedAccountingValue.signum() != 0)
         && impairmentValue != null
         && (impairmentValue.signum() != 0)) {
+
+      if (isSimulated) {
+        move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+      }
       List<MoveLine> moveLines = new ArrayList<>();
 
       FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
@@ -323,7 +328,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  private void generateMove(FixedAssetLine fixedAssetLine) throws AxelorException {
+  protected void generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
+      throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 
     Journal journal = fixedAsset.getJournal();
@@ -352,6 +358,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             origin,
             null);
     if (move != null) {
+      if (isSimulated) {
+        move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+      }
       List<MoveLine> moveLines = new ArrayList<>();
 
       FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
@@ -683,5 +692,87 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     moveRepo.save(move);
     fixedAsset.setSaleAccountMove(move);
     fixedAssetRepo.save(fixedAsset);
+  }
+
+  @Transactional
+  @Override
+  public void simulate(FixedAssetLine fixedAssetLine) throws AxelorException {
+    Objects.requireNonNull(fixedAssetLine);
+    if (fixedAssetLine.getIsSimulated()) {
+      return;
+    }
+    if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
+      generateMove(fixedAssetLine, false);
+      generateImpairementAccountMove(fixedAssetLine, false);
+    }
+
+    fixedAssetLine.setIsSimulated(true);
+    fixedAssetLineRepo.save(fixedAssetLine);
+    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    if (fixedAsset != null) {
+      simulateOthersLine(fixedAsset, fixedAssetLine.getDepreciationDate());
+    }
+  }
+
+  @Override
+  public void simulateOthersLine(FixedAsset fixedAsset, LocalDate depreciationDate)
+      throws AxelorException {
+    Objects.requireNonNull(fixedAsset);
+    Objects.requireNonNull(depreciationDate);
+    String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
+
+    if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)
+        && depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+      FixedAssetLine economicFixedAssetLine =
+          fixedAsset.getFixedAssetLineList().stream()
+              .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+              .findAny()
+              .orElse(null);
+      FixedAssetLine fiscalFixedAssetLine =
+          fixedAsset.getFiscalFixedAssetLineList().stream()
+              .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+              .findAny()
+              .orElse(null);
+      if (economicFixedAssetLine != null) {
+        simulate(economicFixedAssetLine);
+      }
+      if (fiscalFixedAssetLine != null) {
+        simulate(fiscalFixedAssetLine);
+      }
+
+      if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
+        FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
+            fixedAsset.getFixedAssetDerogatoryLineList().stream()
+                .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+                .findAny()
+                .orElse(null);
+        if (fixedAssetDerogatoryLine != null) {
+          fixedAssetDerogatoryLineMoveService.simulate(fixedAssetDerogatoryLine);
+        }
+      }
+    }
+    if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+      if (fixedAsset.getIfrsFixedAssetLineList() != null) {
+        FixedAssetLine ifrsFixedAssetLine =
+            fixedAsset.getIfrsFixedAssetLineList().stream()
+                .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+                .findAny()
+                .orElse(null);
+        if (ifrsFixedAssetLine != null) {
+          simulate(ifrsFixedAssetLine);
+        }
+      }
+    }
+  }
+
+  @Override
+  public boolean canSimulate(FixedAssetLine fixedAssetLine) throws AxelorException {
+    Objects.requireNonNull(fixedAssetLine);
+
+    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    if (fixedAsset != null && fixedAsset.getJournal() != null) {
+      return fixedAsset.getJournal().getAuthorizeSimulatedMove();
+    }
+    return false;
   }
 }

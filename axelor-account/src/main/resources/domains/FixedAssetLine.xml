@@ -23,6 +23,7 @@
   	<decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
   	<decimal name="impairmentValue" title="Impairment Value"/>
   	<many-to-one ref="com.axelor.apps.account.db.Move" name="impairmentAccountMove" title="Impairment Account Move"/>
+  	<boolean name="isSimulated" title="Is Simulated ?" help="If ticked, this means a depreciation move has been generated at the state Simulated."/> 
 
   	
   	<extra-code><![CDATA[

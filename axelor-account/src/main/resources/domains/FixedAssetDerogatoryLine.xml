@@ -19,5 +19,6 @@
   		<integer name="statusSelect" title="Status" selection="account.fixed.asset.line.status.select"/>
   		<many-to-one name="fixedAssetLine" ref="com.axelor.apps.account.db.FixedAssetLine" title="Income fixed asset line"/>
   		<many-to-one name="fiscalFixedAssetLine" ref="com.axelor.apps.account.db.FixedAssetLine" title="Fiscal fixed asset line"/>
+  		<boolean name="isSimulated" title="Is Simulated ?" help="If ticked, this means a depreciation move has been generated at the state Simulated."/> 
 	</entity>
 </domain-models>

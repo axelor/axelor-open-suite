@@ -62,4 +62,29 @@ public interface FixedAssetLineMoveService {
   void generateSaleMove(
       FixedAsset fixedAsset, TaxLine taxLine, BigDecimal disposalAmount, LocalDate disposalDate)
       throws AxelorException;
+
+  /**
+   * Method that only create a move on fixed asset line.
+   *
+   * @param fixedAssetLine
+   * @throws AxelorException
+   */
+  void simulate(FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  /**
+   * Method that only create a move all move lines of fixed asset that matches depreciationDate.
+   *
+   * @param fixedAssetLine
+   * @throws AxelorException
+   */
+  void simulateOthersLine(FixedAsset fixedAsset, LocalDate depreciationDate) throws AxelorException;
+
+  /**
+   * Method that checks if fixedAssetLine can be simulated or not.
+   *
+   * @param fixedAssetLine
+   * @return true if it can be simulated. false otherwise
+   * @throws AxelorException
+   */
+  boolean canSimulate(FixedAssetLine fixedAssetLine) throws AxelorException;
 }

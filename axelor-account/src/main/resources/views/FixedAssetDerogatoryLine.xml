@@ -21,6 +21,7 @@
 	  <panel name="mainPanel">
 	    <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
 	    <panel name="actionsPanel" hideIf="statusSelect == 2" colSpan="6">
+	    	<button onClick="action-attrs-account-fixed-asset-derogatory-line-simulate" name="simulateBtn" title="Simulate" showIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 1 || $get('fixedAsset.journal.authorizeSimulatedMove') == true"/>
 	    	<button name="realizeBtn" title="Realize" readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
 	  	</panel>
 	    <field name="depreciationDate"/>
@@ -30,7 +31,8 @@
 	    <field name="derogatoryAmount"/>
 	    <field name="incomeDepreciationAmount"/>
 	    <field name="derogatoryBalanceAmount"/>
-	    <field name="derogatoryDepreciationMove" showIf="statusSelect == 2" form-view="move-form" grid-view="move-grid"/>
+	    <field name="derogatoryDepreciationMove" showIf="statusSelect == 2 || isSimulated" form-view="move-form" grid-view="move-grid"/>
+	    <field name="isSimulated" widget="boolean" colSpan="3" showIf="statusSelect == 1 ||  $get('fixedAsset.journal.authorizeSimulatedMove') == true"/>
 	    <field name="fixedAsset.statusSelect" hidden="true"/>
 	  </panel>
 	</form>
@@ -41,6 +43,9 @@
 	</action-attrs>
 	<action-method name="action-attrs-account-fixed-asset-derogatory-line-realize">
 		<call class="com.axelor.apps.account.web.FixedAssetDerogatoryLineController" method="realize"/>
+	</action-method>
+		<action-method name="action-attrs-account-fixed-asset-derogatory-line-simulate">
+		<call class="com.axelor.apps.account.web.FixedAssetDerogatoryLineController" method="simulate"/>
 	</action-method>
 
 </object-views>

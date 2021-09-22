@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -232,5 +233,53 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     }
 
     return moveRepo.save(move);
+  }
+
+  @Transactional
+  @Override
+  public void simulate(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException {
+    Objects.requireNonNull(fixedAssetDerogatoryLine);
+
+    if (fixedAssetDerogatoryLine.getIsSimulated()) {
+      return;
+    }
+
+    BigDecimal derogatoryAmount = fixedAssetDerogatoryLine.getDerogatoryAmount();
+    BigDecimal incomeDepreciationAmount = fixedAssetDerogatoryLine.getIncomeDepreciationAmount();
+    BigDecimal derogatoryBalanceAmount = fixedAssetDerogatoryLine.getDerogatoryBalanceAmount();
+    // If derogatoryAmount or incomeDepreciationAmount or derogatoryBalanceAmount are different than
+    // 0
+    // Normally, they should be greater or equal to 0. But using signum gives better visibility.
+    if ((derogatoryAmount != null && derogatoryAmount.signum() != 0)
+        || (incomeDepreciationAmount != null && incomeDepreciationAmount.signum() != 0)
+        || (derogatoryBalanceAmount != null && derogatoryBalanceAmount.signum() != 0)) {
+
+      BigDecimal amount = computeAmount(fixedAssetDerogatoryLine);
+      fixedAssetDerogatoryLine.setDerogatoryDepreciationMove(
+          generateMove(
+              fixedAssetDerogatoryLine,
+              computeCreditAccount(fixedAssetDerogatoryLine),
+              computeDebitAccount(fixedAssetDerogatoryLine),
+              amount));
+    }
+
+    fixedAssetDerogatoryLine.setIsSimulated(true);
+    fixedAssetDerogatoryLineRepository.save(fixedAssetDerogatoryLine);
+
+    if (fixedAssetDerogatoryLine.getFixedAsset() != null) {
+      fixedAssetLineMoveService.simulateOthersLine(
+          fixedAssetDerogatoryLine.getFixedAsset(), fixedAssetDerogatoryLine.getDepreciationDate());
+    }
+  }
+
+  @Override
+  public boolean canSimulate(FixedAssetDerogatoryLine fixedAssetLine) throws AxelorException {
+    Objects.requireNonNull(fixedAssetLine);
+
+    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+    if (fixedAsset != null && fixedAsset.getJournal() != null) {
+      return fixedAsset.getJournal().getAuthorizeSimulatedMove();
+    }
+    return false;
   }
 }

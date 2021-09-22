@@ -24,6 +24,8 @@ package com.axelor.apps.account.exception;
  */
 public interface IExceptionMessage {
 
+  static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
+      /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
   static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =

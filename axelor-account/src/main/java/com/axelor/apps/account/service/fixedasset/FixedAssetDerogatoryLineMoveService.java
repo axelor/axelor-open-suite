@@ -18,4 +18,8 @@ public interface FixedAssetDerogatoryLineMoveService {
       Account debitLineAccount,
       BigDecimal amount)
       throws AxelorException;
+
+  void simulate(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException;
+
+  boolean canSimulate(FixedAssetDerogatoryLine fixedAssetLine) throws AxelorException;
 }

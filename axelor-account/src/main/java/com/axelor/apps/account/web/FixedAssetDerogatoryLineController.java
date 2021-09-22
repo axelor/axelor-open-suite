@@ -19,8 +19,10 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -37,6 +39,24 @@ public class FixedAssetDerogatoryLineController {
 
     try {
       Beans.get(FixedAssetDerogatoryLineMoveService.class).realize(fixedAssetLine, false, true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void simulate(ActionRequest request, ActionResponse response) {
+    FixedAssetDerogatoryLine fixedAssetLine =
+        request.getContext().asType(FixedAssetDerogatoryLine.class);
+    fixedAssetLine =
+        Beans.get(FixedAssetDerogatoryLineRepository.class).find(fixedAssetLine.getId());
+
+    try {
+      if (Beans.get(FixedAssetDerogatoryLineMoveService.class).canSimulate(fixedAssetLine)) {
+        Beans.get(FixedAssetDerogatoryLineMoveService.class).simulate(fixedAssetLine);
+      } else {
+        response.setError(I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CAN_NOT_SIMULATE));
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
