@@ -38,7 +38,7 @@
     </tree>
 
 	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large"
-		onNew="action-account-record-new" onLoad="action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company,save,action-on-change-distribution-template-account">
+		onNew="action-account-record-new" onLoad="action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account">
 		<panel name="mainPanel">
 			<panel name="accountDetailsPanel" colSpan="8">
 				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
@@ -66,7 +66,7 @@
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch" onChange="action-account-record-uncheck-analytic-distribution-required"/>
           <field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
-          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" onChange="action-on-change-distribution-template-account" domain="self.company = :company"/>
+          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" domain="self.company = :company"/>
         </panel>
 			</panel>
       <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">

@@ -126,7 +126,7 @@ public class AccountService {
   }
 
   public void checkAnalyticAxis(Account account) throws AxelorException {
-    if (account != null) {
+    if (account != null && account.getAnalyticDistributionAuthorized()) {
       if (account.getAnalyticDistributionTemplate() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -141,7 +141,7 @@ public class AccountService {
         } else {
           List<AnalyticRules> analyticRulesList =
               accountAnalyticRulesRepository.findByAccounts(account);
-          if (analyticRulesList != null && analyticRulesList.isEmpty()) {
+          if (analyticRulesList != null && !analyticRulesList.isEmpty()) {
             List<Long> accountAnalyticAccountList = new ArrayList<Long>();
             List<Long> rulesAnalyticAccountList = new ArrayList<Long>();
             account
