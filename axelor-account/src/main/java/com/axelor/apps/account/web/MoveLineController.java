@@ -20,7 +20,6 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -318,8 +317,8 @@ public class MoveLineController {
           && moveLine.getAccount() != null
           && moveLine.getAccount().getCompany() != null) {
         Integer nbrAxis =
-            Beans.get(AccountConfigRepository.class)
-                .findByCompany(moveLine.getAccount().getCompany())
+            Beans.get(AccountConfigService.class)
+                .getAccountConfig(moveLine.getAccount().getCompany())
                 .getNbrOfAnalyticAxisSelect();
 
         for (int i = 1; i <= 5; i++) {
