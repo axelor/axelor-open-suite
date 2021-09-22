@@ -958,7 +958,6 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
     	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
-      <action name="action-attrs-set-null-manage-financial-discount"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-operationtype-onchange">
