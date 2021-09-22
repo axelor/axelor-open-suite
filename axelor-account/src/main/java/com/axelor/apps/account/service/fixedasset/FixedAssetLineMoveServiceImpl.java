@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -43,6 +32,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -51,6 +41,15 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService {
 
@@ -70,6 +69,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected FixedAssetLineService fixedAssetLineService;
 
+  protected MoveValidateService moveValidateService;
+
   @Inject
   public FixedAssetLineMoveServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepo,
@@ -78,13 +79,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
       FixedAssetRepository fixedAssetRepo,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      FixedAssetLineService fixedAssetLineService) {
+      FixedAssetLineService fixedAssetLineService,
+      MoveValidateService moveValidateService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
     this.fixedAssetLineService = fixedAssetLineService;
+    this.moveValidateService = moveValidateService;
   }
 
   @Override
@@ -108,9 +111,17 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
     if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
       if (generateMove) {
-        generateMove(fixedAssetLine, false);
+        Move depreciationAccountMove = generateMove(fixedAssetLine, false);
+        if (fixedAssetLine.getIsSimulated() && depreciationAccountMove != null) {
+          this.moveValidateService.validate(depreciationAccountMove);
+        }
+        fixedAssetLine.setDepreciationAccountMove(depreciationAccountMove);
       }
-      generateImpairementAccountMove(fixedAssetLine, false);
+      Move impairementAccountMove = generateImpairementAccountMove(fixedAssetLine, false);
+      if (fixedAssetLine.getIsSimulated() && impairementAccountMove != null) {
+        this.moveValidateService.validate(impairementAccountMove);
+      }
+      fixedAssetLine.setImpairmentAccountMove(impairementAccountMove);
     }
 
     if (fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
@@ -221,7 +232,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   }
 
   @Transactional
-  protected void generateImpairementAccountMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
+  protected Move generateImpairementAccountMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 
@@ -324,13 +335,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
 
       move.getMoveLineList().addAll(moveLines);
-      moveRepo.save(move);
-      fixedAssetLine.setImpairmentAccountMove(move);
+      return moveRepo.save(move);
     }
+    return null;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
+  protected Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 
@@ -432,9 +443,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       move.getMoveLineList().addAll(moveLines);
     }
 
-    moveRepo.save(move);
-
-    fixedAssetLine.setDepreciationAccountMove(move);
+    return moveRepo.save(move);
   }
 
   @Override
@@ -704,8 +713,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       return;
     }
     if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-      generateMove(fixedAssetLine, true);
-      generateImpairementAccountMove(fixedAssetLine, true);
+      Move impairementAccountMove = generateImpairementAccountMove(fixedAssetLine, true);
+      fixedAssetLine.setImpairmentAccountMove(impairementAccountMove);
+      if (impairementAccountMove == null) {
+        fixedAssetLine.setDepreciationAccountMove(generateMove(fixedAssetLine, true));
+      }
     }
 
     fixedAssetLine.setIsSimulated(true);

@@ -11,6 +11,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -36,17 +37,20 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected MoveCreateService moveCreateService;
   protected MoveRepository moveRepo;
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
+  protected MoveValidateService moveValidateService;
 
   @Inject
   public FixedAssetDerogatoryLineMoveServiceImpl(
       FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository,
       MoveCreateService moveCreateService,
       MoveRepository moveRepo,
-      FixedAssetLineMoveService fixedAssetLineMoveService) {
+      FixedAssetLineMoveService fixedAssetLineMoveService,
+      MoveValidateService moveValidateService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
+    this.moveValidateService = moveValidateService;
   }
 
   @Override
@@ -82,12 +86,16 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         || (derogatoryBalanceAmount != null && derogatoryBalanceAmount.signum() != 0)) {
 
       BigDecimal amount = computeAmount(fixedAssetDerogatoryLine);
-      fixedAssetDerogatoryLine.setDerogatoryDepreciationMove(
+      Move deragotaryDepreciationMove =
           generateMove(
               fixedAssetDerogatoryLine,
               computeCreditAccount(fixedAssetDerogatoryLine),
               computeDebitAccount(fixedAssetDerogatoryLine),
-              amount));
+              amount);
+      if (fixedAssetDerogatoryLine.getIsSimulated() && deragotaryDepreciationMove != null) {
+        this.moveValidateService.validate(deragotaryDepreciationMove);
+      }
+      fixedAssetDerogatoryLine.setDerogatoryDepreciationMove(deragotaryDepreciationMove);
     }
     fixedAssetDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
     fixedAssetDerogatoryLineRepository.save(fixedAssetDerogatoryLine);
