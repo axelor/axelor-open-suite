@@ -265,11 +265,6 @@ public class MoveServiceImpl implements MoveService {
     List<MoveLine> debitMoveLines =
         moveDueService.getInvoiceDue(invoice, accountConfig.getAutoReconcileOnInvoice());
 
-    // Recuperation of advance payment
-    debitMoveLines.addAll(moveExcessPaymentService.getAdvancePaymentMoveList(invoice));
-    // Recuperation of excess payment
-    debitMoveLines.addAll(moveExcessPaymentService.getExcessPayment(invoice));
-
     if (!debitMoveLines.isEmpty()) {
       MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 

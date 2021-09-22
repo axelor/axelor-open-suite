@@ -167,7 +167,6 @@ public class VentilateState extends WorkflowInvoice {
     }
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-
     if (isPurchase && invoice.getOriginDate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

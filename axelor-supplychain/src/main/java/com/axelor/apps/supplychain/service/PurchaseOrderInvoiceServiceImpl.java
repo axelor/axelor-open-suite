@@ -65,19 +65,37 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private InvoiceService invoiceService;
+  private InvoiceService invoiceService;
 
-  @Inject private InvoiceRepository invoiceRepo;
+  private InvoiceRepository invoiceRepo;
 
-  @Inject protected TimetableRepository timetableRepo;
+  protected TimetableRepository timetableRepo;
 
-  @Inject protected AppSupplychainService appSupplychainService;
+  protected AppSupplychainService appSupplychainService;
 
-  @Inject protected AccountConfigService accountConfigService;
+  protected AccountConfigService accountConfigService;
 
-  @Inject protected CommonInvoiceService commonInvoiceService;
+  protected CommonInvoiceService commonInvoiceService;
 
-  @Inject protected AddressService addressService;
+  protected AddressService addressService;
+
+  @Inject
+  public PurchaseOrderInvoiceServiceImpl(
+      InvoiceService invoiceService,
+      InvoiceRepository invoiceRepo,
+      TimetableRepository timetableRepo,
+      AppSupplychainService appSupplychainService,
+      AccountConfigService accountConfigService,
+      CommonInvoiceService commonInvoiceService,
+      AddressService addressService) {
+    this.invoiceService = invoiceService;
+    this.invoiceRepo = invoiceRepo;
+    this.timetableRepo = timetableRepo;
+    this.appSupplychainService = appSupplychainService;
+    this.accountConfigService = accountConfigService;
+    this.commonInvoiceService = commonInvoiceService;
+    this.addressService = addressService;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -605,9 +623,12 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException {
     List<Invoice> invoices =
-        com.axelor.db.Query.of(Invoice.class)
+        invoiceRepo
+            .all()
             .filter(
-                " self.purchaseOrder.id = :purchaseOrderId AND self.statusSelect != :invoiceStatus AND self.operationTypeSelect = :operationTypeSelect")
+                " self.purchaseOrder.id = :purchaseOrderId "
+                    + "AND self.statusSelect != :invoiceStatus "
+                    + "AND self.operationTypeSelect = :operationTypeSelect")
             .bind("purchaseOrderId", purchaseOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)

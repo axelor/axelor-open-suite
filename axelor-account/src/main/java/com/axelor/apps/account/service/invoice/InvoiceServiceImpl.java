@@ -602,7 +602,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
     String filter = writeGeneralFilterForAdvancePayment();
     filter +=
-        " AND self.partner = :_partner AND self.currency = :_currency AND self.operationTypeSelect = :_operationTypeSelect";
+        " AND self.partner = :_partner "
+            + "AND self.currency = :_currency "
+            + "AND self.operationTypeSelect = :_operationTypeSelect";
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo
