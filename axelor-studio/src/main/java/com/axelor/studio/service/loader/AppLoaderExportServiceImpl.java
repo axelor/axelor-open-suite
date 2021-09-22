@@ -66,7 +66,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +98,9 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
       File exportDir = Files.createTempDir();
 
-      addImportConfigFile(appLoader, exportDir);
+      if (!CollectionUtils.isEmpty(appLoader.getAppDataLoaderList())) {
+        addImportConfigFile(appLoader, exportDir);
+      }
 
       addAppDataFile(appLoader, exportDir);
 
@@ -151,29 +152,22 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
   protected File addImportConfigFile(AppLoader appLoader, File parentDir)
       throws IOException, FileNotFoundException, ClassNotFoundException {
 
-    File configFile = new File(parentDir, "app-config.xml");
-    FileOutputStream fout = new FileOutputStream(configFile);
-    InputStream inStream = ResourceUtils.getResourceStream("data-import/import-bpm.xml");
-    IOUtils.copy(inStream, fout);
-    inStream.close();
-    fout.close();
+    File configFile = new File(parentDir, "data-config.xml");
 
-    if (CollectionUtils.isNotEmpty(appLoader.getAppDataLoaderList())) {
-      addDataImportconfig(configFile, appLoader);
-    }
-
-    return configFile;
-  }
-
-  protected void addDataImportconfig(File configFile, AppLoader appLoader)
-      throws ClassNotFoundException, IOException {
-
-    XMLConfig xmlConfig = XMLConfig.parse(configFile);
+    XMLConfig xmlConfig = new XMLConfig();
 
     for (AppDataLoader dataLoader : appLoader.getAppDataLoaderList()) {
       xmlConfig.getInputs().add(createInput(dataLoader, false));
       xmlConfig.getInputs().add(createInput(dataLoader, true));
     }
+
+    writeXmlConfig(configFile, xmlConfig);
+
+    return configFile;
+  }
+
+  @Override
+  public void writeXmlConfig(File configFile, XMLConfig xmlConfig) throws IOException {
 
     XStream xStream = XStreamUtils.createXStream();
     xStream.autodetectAnnotations(true);

@@ -18,7 +18,9 @@
 package com.axelor.studio.service.loader;
 
 import com.axelor.common.FileUtils;
+import com.axelor.common.ResourceUtils;
 import com.axelor.data.Listener;
+import com.axelor.data.xml.XMLConfig;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
@@ -34,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -43,9 +46,11 @@ import org.apache.commons.io.IOUtils;
 
 public class AppLoaderImportServiceImpl implements AppLoaderImportService {
 
-  @Inject private AppLoaderRepository appLoaderRepository;
+  @Inject protected AppLoaderRepository appLoaderRepository;
 
-  @Inject private MetaFiles metaFiles;
+  @Inject protected MetaFiles metaFiles;
+
+  @Inject protected AppLoaderExportService appLoaderExportService;
 
   @Override
   @Transactional
@@ -97,9 +102,10 @@ public class AppLoaderImportServiceImpl implements AppLoaderImportService {
   protected File importApp(AppLoader appLoader, File dataDir)
       throws IOException, FileNotFoundException {
 
+    File confiFile = getAppImportConfigFile(dataDir);
+
     XMLImporter xmlImporter =
-        new XMLImporter(
-            new File(dataDir, "app-config.xml").getAbsolutePath(), dataDir.getAbsolutePath());
+        new XMLImporter(confiFile.getAbsolutePath(), dataDir.getAbsolutePath());
     xmlImporter.setContext(getImportContext(appLoader));
 
     File logFile =
@@ -130,6 +136,31 @@ public class AppLoaderImportServiceImpl implements AppLoaderImportService {
     pw.flush();
     pw.close();
     return logFile;
+  }
+
+  protected File getAppImportConfigFile(File dataDir) throws FileNotFoundException, IOException {
+
+    File configFile = new File(dataDir, "app-config.xml");
+    FileOutputStream fout = new FileOutputStream(configFile);
+    InputStream inStream = geAppImportConfig();
+    IOUtils.copy(inStream, fout);
+    inStream.close();
+    fout.close();
+
+    File dataConfigFile = new File(dataDir, "data-config.xml");
+    if (dataConfigFile.exists()) {
+      XMLConfig xmlConfig = XMLConfig.parse(configFile);
+      XMLConfig dataConfig = XMLConfig.parse(dataConfigFile);
+      xmlConfig.getInputs().addAll(dataConfig.getInputs());
+      appLoaderExportService.writeXmlConfig(configFile, xmlConfig);
+    }
+
+    return configFile;
+  }
+
+  protected InputStream geAppImportConfig() {
+
+    return ResourceUtils.getResourceStream("data-import/import-bpm.xml");
   }
 
   protected Map<String, Object> getImportContext(AppLoader appLoader) {

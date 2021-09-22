@@ -17,9 +17,14 @@
  */
 package com.axelor.studio.service.loader;
 
+import com.axelor.data.xml.XMLConfig;
 import com.axelor.studio.db.AppLoader;
+import java.io.File;
+import java.io.IOException;
 
 public interface AppLoaderExportService {
 
   public void exportApps(AppLoader appLoader);
+
+  public void writeXmlConfig(File configFile, XMLConfig xmlConfig) throws IOException;
 }
