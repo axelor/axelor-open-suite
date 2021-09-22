@@ -38,7 +38,7 @@
     <panel name="statusSelectPanel" colSpan="12">
       <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
       <panel name="actionsPanel" hideIf="statusSelect == 2" colSpan="6">
-      	<button onClick="action-fixed-asset-line-method-simulate" title="Simulate" name="simulateBtn" showIf=" ($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2)  || statusSelect == 1)"/>
+      	<button onClick="action-fixed-asset-line-method-simulate" title="Simulate" name="simulateBtn" showIf=" ($get('fixedAsset.statusSelect') == 2 || $get('fiscalFixedAsset.statusSelect') == 2 || $get('ifrsFixedAsset.statusSelect') == 2)  &amp;&amp; statusSelect == 1)"/>
         <button name="realizeBtn" title="Realize" 
           readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
       </panel>
@@ -52,7 +52,7 @@
       <field name="residualValue"/>
       <field name="accountingValue"/>
       <field name="depreciationAccountMove" showIf="statusSelect == 2 || isSimulated" form-view="move-form" grid-view="move-grid"/>
-      <field name="isSimulated" readOnly="true" widget="boolean" colSpan="3" showIf="statusSelect == 1 ||  $get('$tmpFixedAsset.journal.authorizeSimulatedMove') == true"/>
+      <field name="isSimulated" readOnly="true" widget="boolean" colSpan="3" showIf="statusSelect == 1"/>
       <field name="fixedAsset.statusSelect" hidden="true"/>
    	  <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
    	  <field name="ifrsFixedAsset.statusSelect" hidden="true"/>
