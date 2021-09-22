@@ -16,7 +16,7 @@
     	<field name="fiscalFixedAsset.statusSelect" hidden="true"/>
     	<field name="ifrsFixedAsset.statusSelect" hidden="true"/>
     	<button name="realizeBtn" title="Realize" icon="fa-check-circle" 
-    	  readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 || $get('fiscalFixedAsset.statusSelect') &lt; 2 || $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
+    	  readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
     </grid>
     
     <grid name="fiscal-fixed-asset-line-grid" title="Fixed asset lines" model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
@@ -30,17 +30,17 @@
     	<field name="fiscalFixedAsset.statusSelect" hidden="true"/>
     	<field name="ifrsFixedAsset.statusSelect" hidden="true"/>
     	<button name="realizeBtn" title="Realize" icon="fa-check-circle"
-    	 readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 || $get('fiscalFixedAsset.statusSelect') &lt; 2 || $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
+    	 readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
     </grid>
     
-<form name="fixed-asset-line-form" title="Fixed asset line" model="com.axelor.apps.account.db.FixedAssetLine" onLoad="action-fixed-asset-line-attrs-onnew-onload, action-fixed-asset-line-init-temporary-fields" onNew="action-fixed-asset-line-record-default, action-fixed-asset-line-init-temporary-fields, action-fixed-asset-line-attrs-onnew-onload">
+<form name="fixed-asset-line-form" title="Fixed asset line" model="com.axelor.apps.account.db.FixedAssetLine" onLoad="action-fixed-asset-line-attrs-onnew-onload" onNew="action-fixed-asset-line-record-default, action-fixed-asset-line-attrs-onnew-onload">
   <panel>
     <panel name="statusSelectPanel" colSpan="12">
       <field name="statusSelect" showTitle="false" readonly="true" colSpan="6" widget="NavSelect"/>
       <panel name="actionsPanel" hideIf="statusSelect == 2" colSpan="6">
-      	<button onClick="action-fixed-asset-line-method-simulate" title="Simulate" name="simulateBtn" showIf=" $get('$tmpFixedAsset.journal.authorizeSimulatedMove') == true || ($get('$tmpFixedAsset.statusSelect') &lt; 2 || statusSelect == 1)"/>
+      	<button onClick="action-fixed-asset-line-method-simulate" title="Simulate" name="simulateBtn" showIf=" ($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2)  || statusSelect == 1)"/>
         <button name="realizeBtn" title="Realize" 
-          readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 || $get('fiscalFixedAsset.statusSelect') &lt; 2 || $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
+          readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2" onClick="save,action-fixed-asset-line-method-realize"/>
       </panel>
       <field name="typeSelect"/>
     </panel>
@@ -56,9 +56,6 @@
       <field name="fixedAsset.statusSelect" hidden="true"/>
    	  <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
    	  <field name="ifrsFixedAsset.statusSelect" hidden="true"/>
-   	  <field name="$tmpFixedAsset" hidden="true"/>
-   	   <field name="$tmpFixedAsset.statusSelect" hidden="true"/>
-   	  <field name="$tmpFixedAsset.journal.authorizeSimulatedMove" hidden="true" type="boolean"/>
     </panel>
   </panel>
   <panel-tabs name="mainPanelTab">
@@ -75,12 +72,6 @@
     	<field name="statusSelect" expr="1"/>
     	<field name="depreciationDate" expr="eval: __config__.date"/>
 
-    </action-record>
-    
-    <action-record name="action-fixed-asset-line-init-temporary-fields" model="com.axelor.apps.account.db.FixedAssetLine">
-        <field name="$tmpFixedAsset" expr="eval:fixedAsset" if="fixedAsset != null"/>
-    	<field name="$tmpFixedAsset" expr="eval:fiscalFixedAsset" if="fiscalFixedAsset != null"/>
-    	<field name="$tmpFixedAsset" expr="eval:ifrsFixedAsset" if="ifrsFixedAsset != null"/>
     </action-record>
     
     <action-attrs name="action-fixed-asset-line-attrs-onnew-onload">
