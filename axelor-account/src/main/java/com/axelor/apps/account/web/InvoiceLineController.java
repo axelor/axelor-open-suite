@@ -18,7 +18,10 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -28,11 +31,13 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Product;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -415,6 +420,86 @@ public class InvoiceLineController {
       response.setValue(
           "analyticMoveLineList",
           invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAxisDomains(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      invoiceLine.setInvoice(request.getContext().getParent().asType(Invoice.class));
+
+      List<Long> analyticAccountList = new ArrayList<Long>();
+
+      for (int i = 1; i <= 5; i++) {
+        InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+        if (invoiceLineService.compareNbrOfAnalyticAxisSelect(invoiceLine, i)) {
+          analyticAccountList = invoiceLineService.setAxisDomains(invoiceLine, i);
+          if (ObjectUtils.isEmpty(analyticAccountList)) {
+            response.setAttr("axis" + i + "AnalyticAccount", "domain", "self.id IN (0)");
+          } else {
+            String idList =
+                analyticAccountList.stream()
+                    .map(id -> id.toString())
+                    .collect(Collectors.joining(","));
+            response.setAttr(
+                "axis" + i + "AnalyticAccount", "domain", "self.id IN (" + idList + ")");
+          }
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageInvoiceLineAxis(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+      if (invoice.getCompany() != null) {
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+        if (accountConfig != null) {
+          AnalyticAxis analyticAxis = null;
+          for (int i = 1; i <= 5; i++) {
+            response.setAttr(
+                "axis" + i + "AnalyticAccount",
+                "hidden",
+                !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+            for (AnalyticAxisByCompany analyticAxisByCompany :
+                accountConfig.getAnalyticAxisByCompanyList()) {
+              if (analyticAxisByCompany.getOrderSelect() == i) {
+                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+              }
+            }
+            if (analyticAxis != null) {
+              response.setAttr("axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
+              analyticAxis = null;
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+      if (invoice != null) {
+        invoiceLine.setInvoice(invoice);
+      }
+      invoiceLine = Beans.get(InvoiceLineService.class).analyzeInvoiceLine(invoiceLine);
+      response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
