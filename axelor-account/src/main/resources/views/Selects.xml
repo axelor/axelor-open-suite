@@ -163,10 +163,16 @@
   </selection>
 
   <selection name='iinvoice.operation.type.select'>
-    <option value='1'>Supplier purchase</option>
-    <option value='2'>Supplier refund</option>
-    <option value='3'>Customer sale</option>
-    <option value='4'>Customer refund</option>
+    <option value="1">Supplier purchase</option>
+	<option value="2">Supplier refund</option>
+	<option value="3">Customer sale</option>
+	<option value="4">Customer refund</option>
+	<option value="5">Preinvoicing Purchasing group</option>
+	<option value="6">Preinvoicing Direct</option>
+	<option value="7">Debit Note</option>
+	<option value="8">Credit Note</option>
+	<option value="9">Retrocession</option>
+	<option value="10">Repayment</option>
   </selection>
 
   <selection name='iinvoice.operation.sub.type.select'>

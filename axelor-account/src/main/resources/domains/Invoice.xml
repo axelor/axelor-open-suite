@@ -160,6 +160,11 @@
 	<string name="legalNotice" title="Legal notice" large="true" help="Legal notice displayed on invoices where a discount was granted"/>
 	<date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
 
+	<many-to-one name="litigationReason" title="Litigation Reason" ref="com.axelor.apps.account.db.LitigationReason"/>
+	<date name="completionFromDate" title="Completion From"/>
+	<date name="executionFromDate" title="Completion to"/>
+	<date name="accountingDate" title="Accounting Date"/>
+
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[
@@ -238,6 +243,7 @@
       <field name="subscriptionFromDate" on="UPDATE"/>
       <field name="subscriptionToDate" on="UPDATE"/>
       <field name="headOfficeAddress" on="UPDATE"/>
+      <field name="litigationReason" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>
