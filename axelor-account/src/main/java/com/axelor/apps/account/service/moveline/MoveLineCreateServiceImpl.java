@@ -511,6 +511,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       Account account = partnerAccount;
+      BigDecimal amountInSpecificMoveCurrency = invoiceTerm.getAmount();
+      BigDecimal amountInCompanyCurrency =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(
+                  invoice.getCurrency(),
+                  companyCurrency,
+                  invoiceTerm.getAmount(),
+                  invoice.getInvoiceDate())
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       if (invoiceTerm.getIsHoldBack()) {
         account = invoiceService.getPartnerAccount(invoice, true);
         holdBackMoveLine =
@@ -518,14 +527,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 move,
                 partner,
                 account,
-                invoiceTerm.getAmount(),
-                currencyService
-                    .getAmountCurrencyConvertedAtDate(
-                        invoice.getCurrency(),
-                        companyCurrency,
-                        invoiceTerm.getAmount(),
-                        invoice.getInvoiceDate())
-                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                amountInSpecificMoveCurrency,
+                amountInCompanyCurrency,
                 null,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
@@ -543,14 +546,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   move,
                   partner,
                   account,
-                  invoiceTerm.getAmount(),
-                  currencyService
-                      .getAmountCurrencyConvertedAtDate(
-                          invoice.getCurrency(),
-                          companyCurrency,
-                          invoiceTerm.getAmount(),
-                          invoice.getInvoiceDate())
-                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                  amountInSpecificMoveCurrency,
+                  amountInCompanyCurrency,
                   null,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
@@ -562,17 +559,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         } else {
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
             // Debit
-            moveLine.setDebit(
-                moveLine
-                    .getDebit()
-                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+            moveLine.setDebit(moveLine.getDebit().add(amountInCompanyCurrency));
           } else {
             // Credit
-            moveLine.setCredit(
-                moveLine
-                    .getCredit()
-                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+            moveLine.setCredit(moveLine.getCredit().add(amountInCompanyCurrency));
           }
+          moveLine.setCurrencyAmount(
+              moveLine.getCurrencyAmount().add(amountInSpecificMoveCurrency));
         }
       }
     }
