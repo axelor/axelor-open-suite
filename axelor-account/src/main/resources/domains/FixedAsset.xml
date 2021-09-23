@@ -83,7 +83,10 @@
 	<integer name="disposalQtySelect" title="Disposal Quantity select" selection="account.fixed.asset.disposal.quantity.select" default="1" />
 	<decimal name="qty" title="Disposal Quantity" />
 	<one-to-many name="fixedAssetDerogatoryLineList" ref="com.axelor.apps.account.db.FixedAssetDerogatoryLine" title="Fiscal Fixed Asset Line List" mappedBy="fixedAsset"/>
-
+	
+	<string name="serialNumber" title="Serial Nbr"/>
+	<many-to-one ref="com.axelor.meta.db.MetaFile" name="barcode" title="Barcode"/>
+	<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
