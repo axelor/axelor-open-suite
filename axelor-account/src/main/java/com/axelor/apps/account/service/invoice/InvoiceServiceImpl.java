@@ -1125,6 +1125,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   public boolean applyFinancialDiscount(Invoice invoice) {
     return (invoice != null
+        && invoice.getFinancialDiscount() != null
         && invoice.getFinancialDiscountDeadlineDate() != null
         && invoice
                 .getFinancialDiscountDeadlineDate()
