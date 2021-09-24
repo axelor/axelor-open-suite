@@ -1,0 +1,3 @@
+---
+title: "INVOICE LINE: isFilterOnSupplier is always true and can be set false manually."
+type: fix
