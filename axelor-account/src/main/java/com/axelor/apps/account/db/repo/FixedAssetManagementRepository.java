@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.AppAccount;
@@ -33,28 +31,34 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class FixedAssetManagementRepository extends FixedAssetRepository {
-	
-	protected AppAccountService appAcccountService;
-	protected BarcodeGeneratorService barcodeGeneratorService;
-	
-	@Inject
- public FixedAssetManagementRepository(AppAccountService appAcccountService,
-		 BarcodeGeneratorService barcodeGeneratorService) {
-	this.appAcccountService = appAcccountService;
-	this.barcodeGeneratorService = barcodeGeneratorService;
-}
+
+  protected AppAccountService appAcccountService;
+  protected BarcodeGeneratorService barcodeGeneratorService;
+
+  @Inject
+  public FixedAssetManagementRepository(
+      AppAccountService appAcccountService, BarcodeGeneratorService barcodeGeneratorService) {
+    this.appAcccountService = appAcccountService;
+    this.barcodeGeneratorService = barcodeGeneratorService;
+  }
+
   @Override
   public FixedAsset save(FixedAsset fixedAsset) {
     try {
       computeReference(fixedAsset);
-      //barcode generation
-      if (!ObjectUtils.isEmpty(fixedAsset.getSerialNumber()) && fixedAsset.getBarcode() == null && appAcccountService.getAppAccount().getActivateSerialNumberBarcodeGeneration()) {
-    	  if (!isSerialNumberUniqueForCompany(fixedAsset)) {
-    		  throw new AxelorException(TraceBackRepository.CATEGORY_NO_UNIQUE_KEY, "This serial number is already used for this company.");
-    	  }
-    	  generateBarcode(fixedAsset);
+      // barcode generation
+      if (!ObjectUtils.isEmpty(fixedAsset.getSerialNumber())
+          && fixedAsset.getBarcode() == null
+          && appAcccountService.getAppAccount().getActivateSerialNumberBarcodeGeneration()) {
+        if (!isSerialNumberUniqueForCompany(fixedAsset)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
+              "This serial number is already used for this company.");
+        }
+        generateBarcode(fixedAsset);
       }
       return super.save(fixedAsset);
     } catch (Exception e) {
@@ -64,40 +68,43 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
   }
 
   private boolean isSerialNumberUniqueForCompany(FixedAsset fixedAsset) {
-	Boolean isUnique = all()
-			.filter("self.company = :company AND self.serialNumber = :serialNumber")
-			.bind("company", fixedAsset.getCompany())
-			.bind("serialNumber", fixedAsset.getSerialNumber()).fetchStream().count() <= 1;
-	return isUnique;
-}
-private void generateBarcode(FixedAsset fixedAsset) {
-	BarcodeTypeConfig barcodeTypeConfig;
-	
-	AppAccount appAccount = appAcccountService.getAppAccount();
-	if (!appAccount.getEditSerialNumberBarcodeType() || fixedAsset.getBarcodeTypeConfig() == null) {
-		barcodeTypeConfig = appAccount.getSerialNumberBarcodeTypeConfig();
-		
-	}
-	else {
-		barcodeTypeConfig = fixedAsset.getBarcodeTypeConfig();
-	}
-	if (barcodeTypeConfig == null) {
-		return;
-	}
-    MetaFile barcodeFile =
-            barcodeGeneratorService.createBarCode(
-                fixedAsset.getId(),
-                "FixedAssetBarCode%d.png",
-                fixedAsset.getSerialNumber(),
-                barcodeTypeConfig,
-                false);
-    if (barcodeFile != null) {
-    	fixedAsset.setBarcode(barcodeFile);
+    Boolean isUnique =
+        all()
+                .filter("self.company = :company AND self.serialNumber = :serialNumber")
+                .bind("company", fixedAsset.getCompany())
+                .bind("serialNumber", fixedAsset.getSerialNumber())
+                .fetchStream()
+                .count()
+            <= 1;
+    return isUnique;
+  }
+
+  private void generateBarcode(FixedAsset fixedAsset) {
+    BarcodeTypeConfig barcodeTypeConfig;
+
+    AppAccount appAccount = appAcccountService.getAppAccount();
+    if (!appAccount.getEditSerialNumberBarcodeType() || fixedAsset.getBarcodeTypeConfig() == null) {
+      barcodeTypeConfig = appAccount.getSerialNumberBarcodeTypeConfig();
+
+    } else {
+      barcodeTypeConfig = fixedAsset.getBarcodeTypeConfig();
     }
-	
-	
-}
-private void computeReference(FixedAsset fixedAsset) {
+    if (barcodeTypeConfig == null) {
+      return;
+    }
+    MetaFile barcodeFile =
+        barcodeGeneratorService.createBarCode(
+            fixedAsset.getId(),
+            "FixedAssetBarCode%d.png",
+            fixedAsset.getSerialNumber(),
+            barcodeTypeConfig,
+            false);
+    if (barcodeFile != null) {
+      fixedAsset.setBarcode(barcodeFile);
+    }
+  }
+
+  private void computeReference(FixedAsset fixedAsset) {
     try {
 
       if (fixedAsset.getId() != null && Strings.isNullOrEmpty(fixedAsset.getReference())) {

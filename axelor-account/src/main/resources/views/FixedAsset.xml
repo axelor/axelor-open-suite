@@ -18,7 +18,7 @@
 		<field name="statusSelect"/>
 	</grid> 
     
-    <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control" onNew="action-fixed-asset-record-default" onLoad="action-group-fixed-asset-panels-copy-fiscal-depreciation">
+    <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control" onNew="action-fixed-asset-record-default, action-record-account-fixed-asset-set-default-serial-number-config-type" onLoad="action-group-fixed-asset-panels-copy-fiscal-depreciation">
     <toolbar>
     	<button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0" onClick="save,action-fixed-asset-view-show-split-wizard"/>
     </toolbar>
@@ -427,4 +427,8 @@
     	<attribute name="value" for="fiscalComputationMethodSelect" expr="eval:'linear'"/>
     	<attribute name="value" for="computationMethodSelect" expr="eval:'linear'"/>
     </action-attrs>
+    
+    <action-record name="action-record-account-fixed-asset-set-default-serial-number-config-type" model="com.axelor.apps.account.db.FixedAsset">
+    	<field name="barcodeTypeConfig" expr="eval: __config__?.app?.getApp('account')?.getSerialNumberBarcodeTypeConfig()" if="__config__.app.getApp('account').getActivateSerialNumberBarcodeGeneration()"/>
+    </action-record>
 </object-views>
