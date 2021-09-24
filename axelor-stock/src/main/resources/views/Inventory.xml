@@ -72,6 +72,8 @@
 				<field name="product" grid-view="product-grid" form-view="product-form" domain="self.dtype = 'Product'"/>
 				<field name="excludeOutOfStock" colSpan="3"/>
 				<field name="includeObsolete" colSpan="3"/>
+				<spacer name="includeObsoleteSpacer" colSpan="6"/>
+				<field name="includeSubStockLocation"/>
 				<panel name="racksRangePanel" title="Racks range">
 					<field name="fromRack"/>
 					<field name="toRack"/>
@@ -85,6 +87,8 @@
 			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form" domain="self.dtype = 'Product'"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
+      <spacer name="includeObsoleteSpacer" colSpan="6"/>
+      <field name="includeSubStockLocation"/>
       <panel name="racksRangePanel" title="Racks range">
 		    <field name="fromRack"/>
 		    <field name="toRack"/>

@@ -227,7 +227,7 @@ public class InventoryController {
     Query query =
         JPA.em()
             .createQuery(
-                "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.trackingNumber HAVING COUNT(self) > 1");
+                "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.stockLocation, self.trackingNumber HAVING COUNT(self) > 1");
 
     try {
       query.setParameter("invent", inventory.getId()).getSingleResult();
