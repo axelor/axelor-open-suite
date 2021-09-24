@@ -34,15 +34,13 @@ public class BaseModule {
 
   public static final int PRIORITY = Interceptor.Priority.APPLICATION + 500;
 
-  ExportObserver exportObserver;
-
   void onStartup(@Observes StartupEvent event) {
     PartnerAddressRepository.modelPartnerFieldMap.put(PartnerAddress.class.getName(), "_parent");
 
     if (AppSettings.get()
         .get("hibernate.session_factory.interceptor", "")
         .equals(GlobalAuditInterceptor.class.getName())) {
-      exportObserver = Beans.get(ExportObserver.class);
+      Beans.get(ExportObserver.class).getInstance();
     }
   }
 }

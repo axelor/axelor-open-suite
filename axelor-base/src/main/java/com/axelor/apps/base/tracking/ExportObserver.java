@@ -40,6 +40,10 @@ import org.apache.commons.collections.CollectionUtils;
 @ApplicationScoped
 public class ExportObserver {
 
+  public ExportObserver getInstance() {
+    return this;
+  }
+
   void onExport(
       @Observes(notifyObserver = Reception.IF_EXISTS) @Named(RequestEvent.EXPORT) PostRequest event)
       throws IOException {
