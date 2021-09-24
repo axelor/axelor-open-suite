@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<form name="purchase-order-invoicing-wizard-form" title="Invoicing"
-		  model="com.axelor.apps.purchase.db.PurchaseOrder">
+		  model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-method-supplychain-purchase-order-wizard-set-default-values">
 		<panel name="operationSelectPanel">
 			<field name="operationSelect" title="Operation choice"
 				   type="selection"
@@ -34,5 +34,9 @@
 	
 	<action-method name="action-method-supplychain-purchase-order-invoicing-generate-advance-payment">
 	 	<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="generateAdvancePayment"/>
+	</action-method>
+	
+	<action-method name="action-method-supplychain-purchase-order-wizard-set-default-values">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="setWizardDefaultValues"/>
 	</action-method>
 </object-views>

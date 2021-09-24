@@ -121,6 +121,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     invoiceGenerator.populate(invoice, invoiceLineList);
 
     invoice.setPurchaseOrder(purchaseOrder);
+    invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     return invoice;
   }
 

@@ -726,11 +726,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       } else {
         List<MoveLine> debitMoveLines =
             invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, false);
-        debitMoveLines.forEach(
-            debitMoveLine -> {
-              // It may prevent a NPE later
-              debitMoveLine.getMove().setInvoice(advancePayment);
-            });
         advancePaymentMoveLines.addAll(debitMoveLines);
       }
     }

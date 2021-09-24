@@ -383,7 +383,7 @@
 382;408400;408000;"Fournisseurs d'immobilisations ";"payable";"true";1;;;;;"NDAS"
 383;408800;408000;"Fournisseurs - Intérêts courus";"payable";"true";1;;;;;"NDAS"
 384;409;400;"Fournisseurs débiteurs";"payable";;1;;;;;"NDAS"
-385;409100;409;"Fournisseurs - Avances et acomptes versés sur commandes";"currentAsset";"true";1;;;;;"NDAS"
+385;409100;409;"Fournisseurs - Avances et acomptes versés sur commandes";"payable";"true";1;;"true";;;"NDAS"
 386;409600;409;"Fournisseurs - Créances pour emballages et matériel à rendre";"currentAsset";"true";1;;;;;"NDAS"
 387;409700;409;"Fournisseurs - Autres avoirs";"currentAsset";"true";1;;;;;"NDAS"
 388;409710;409700;"Fournisseurs d'exploitation";"currentAsset";"true";1;;;;;"NDAS"

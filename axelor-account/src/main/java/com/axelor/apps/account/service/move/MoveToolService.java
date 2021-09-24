@@ -39,7 +39,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -423,7 +422,7 @@ public class MoveToolService {
     return moveLineList;
   }
 
-  public Collection<? extends MoveLine> getToReconcileDebitMoveLines(Move move) {
+  public List<MoveLine> getToReconcileDebitMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
     if (move.getStatusSelect() == MoveRepository.STATUS_VALIDATED
         || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {

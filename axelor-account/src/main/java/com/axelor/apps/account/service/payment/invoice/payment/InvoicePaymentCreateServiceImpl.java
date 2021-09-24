@@ -205,10 +205,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    */
   protected Invoice findAvancePaymentInvoiceFromPaymentInvoice(Move move, int operationTypeSelect) {
     List<MoveLine> moveLineList = move.getMoveLineList();
-    if (moveLineList == null || moveLineList.size() != 2) {
+    if (moveLineList == null || moveLineList.size() < 2) {
       return null;
     }
-    InvoicePaymentRepository invoicePaymentRepo = Beans.get(InvoicePaymentRepository.class);
     for (MoveLine moveLine : moveLineList) {
       // search for the reconcile between the debit line
       if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
