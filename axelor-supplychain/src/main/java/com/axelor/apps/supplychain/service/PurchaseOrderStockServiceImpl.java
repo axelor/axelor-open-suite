@@ -406,6 +406,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     if (taxLine != null) {
       taxRate = taxLine.getValue();
     }
+    if (purchaseOrderLine.getReceiptState() == 0) {
+      purchaseOrderLine.setReceiptState(PurchaseOrderLineRepository.RECEIPT_STATE_NOT_RECEIVED);
+    }
 
     return stockMoveLineServiceSupplychain.createStockMoveLine(
         product,
