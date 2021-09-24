@@ -30,6 +30,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -142,7 +143,7 @@ public class BankReconciliationController {
     try {
       String fileLink =
           ReportFactory.createReport(
-                  IReport.BANK_RECONCILIATION, "Bank Reconciliation" + "-${date}")
+                  IReport.BANK_RECONCILIATION, I18n.get("Bank Reconciliation") + "-${date}")
               .addParam("BankReconciliationId", bankReconciliation.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(
