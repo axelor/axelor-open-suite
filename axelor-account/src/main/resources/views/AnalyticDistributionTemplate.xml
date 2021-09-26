@@ -6,6 +6,7 @@
 	<grid name="analytic-distribution-template-grid" title="Analytic distribution templates" model="com.axelor.apps.account.db.AnalyticDistributionTemplate">
 		<field name="name"/>
 		<field name="company" massUpdate="true" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="isSpecific"/>
 	</grid>
     
     <form name="analytic-distribution-template-form" title="Analytic distribution template" model="com.axelor.apps.account.db.AnalyticDistributionTemplate"  
@@ -13,8 +14,13 @@
         <panel name="mainPanel" >
 	        <field name="name"/>
 	        <field name="company" required="true" onChange="save"/>
+   	        <field name="isSpecific" hidden="true"/>
         </panel>      
-        <panel-related name="analyticDistributionLineListPanel" field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+        <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific" field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+        <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific" field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid" form-view="analytic-distribution-line-personalized-form" onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="false"/>
+    	<panel name="buttonPanel" sidebar="true" hideIf="isSpecific">
+    		<button onClick="action-method-analytic-distribution-template-personalize" name="personalizeBtn" title="Personalize" />
+    	</panel>
     </form>
     
     <action-method name="action-analytic-dist-template-method-validate-tot-percentage">
@@ -41,5 +47,9 @@
     <search-filters name="analytic-distribution-template-filters" model="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic distribution template filters">
     	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     </search-filters>
+    
+    <action-method name="action-method-analytic-distribution-template-personalize">
+    	<call class="com.axelor.apps.account.web.AnalyticDistributionTemplateController" method="personalize"/>
+    </action-method>
 
 </object-views>
