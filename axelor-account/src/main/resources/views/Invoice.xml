@@ -307,7 +307,8 @@
                     onChange="action-group-account-invoice-operationtype-onchange" selection-in="[3,4]"/>
             </panel>
             <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
-            <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
+            <field name="operationSubTypeSelect" selection-in="[1,2,3,4,5,6,7]" showTitle="true" hideIf="statusSelect > 1 || operationTypeSelect != 3 || $readonly()"/>
+ 						<field name="operationSubTypeSelect" showTitle="true" selection-in="[1,8,9,10,11,12,13]" hideIf="statusSelect > 1 || operationTypeSelect != 1 || $readonly()"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
             <field name="currency" colSpan="3" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)" form-view="currency-form" grid-view="currency-grid"/>
             <field name="priceList" colSpan="3" canEdit="false" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
