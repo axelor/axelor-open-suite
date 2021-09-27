@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -37,6 +39,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -63,7 +66,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AnalyticAccountRepository analyticAccountRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      ListToolService listToolService) {
     super(
         currencyService,
         priceListService,
@@ -73,7 +79,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigService);
+        accountConfigService,
+        analyticAccountRepository,
+        accountAnalyticRulesRepository,
+        listToolService);
     this.purchaseProductService = purchaseProductService;
   }
 

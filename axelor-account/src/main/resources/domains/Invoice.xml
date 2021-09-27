@@ -160,6 +160,11 @@
 	<string name="legalNotice" title="Legal notice" large="true" help="Legal notice displayed on invoices where a discount was granted"/>
 	<date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
 
+	<many-to-one name="litigationReason" title="Litigation Reason" ref="com.axelor.apps.account.db.LitigationReason"/>
+	<date name="completionFromDate" title="Completion From"/>
+	<date name="executionFromDate" title="Completion to"/>
+	<date name="accountingDate" title="Accounting Date"/>
+
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[
@@ -187,6 +192,12 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+	    public static final int OPERATION_SUB_TYPE_PREINVOICING_PURCHASING_GROUP = 8;
+	    public static final int OPERATION_SUB_TYPE_PREINVOICING_DIRECT = 9;
+	    public static final int OPERATION_SUB_TYPE_DEBIT_NOTE = 10;
+	    public static final int OPERATION_SUB_TYPE_CREDIT_NOTE = 11;
+	    public static final int OPERATION_SUB_TYPE_RETROCESSION = 12;
+	    public static final int OPERATION_SUB_TYPE_REPAYMENT = 13;
 
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;
@@ -238,6 +249,7 @@
       <field name="subscriptionFromDate" on="UPDATE"/>
       <field name="subscriptionToDate" on="UPDATE"/>
       <field name="headOfficeAddress" on="UPDATE"/>
+      <field name="litigationReason" on="UPDATE"/>
       <field name="pfpValidatorUser" on="UPDATE"/>
       <field name="pfpValidateStatusSelect" on="UPDATE"/>
       <field name="reasonOfRefusalToPay" on="UPDATE"/>

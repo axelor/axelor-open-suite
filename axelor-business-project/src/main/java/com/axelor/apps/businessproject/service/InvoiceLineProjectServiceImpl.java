@@ -19,6 +19,8 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -31,6 +33,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
+import com.axelor.apps.tool.service.ListToolService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -49,7 +52,10 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AnalyticAccountRepository analyticAccountRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      ListToolService listToolService) {
     super(
         currencyService,
         priceListService,
@@ -60,7 +66,10 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigService);
+        accountConfigService,
+        analyticAccountRepository,
+        accountAnalyticRulesRepository,
+        listToolService);
   }
 
   @Transactional
