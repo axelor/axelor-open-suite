@@ -36,7 +36,8 @@ public class InventoryLineService {
       Product product,
       BigDecimal currentQty,
       String rack,
-      TrackingNumber trackingNumber) {
+      TrackingNumber trackingNumber,
+      StockLocation stockLocation) {
 
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
@@ -44,6 +45,7 @@ public class InventoryLineService {
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
+    inventoryLine.setStockLocation(stockLocation);
     this.compute(inventoryLine, inventory);
 
     return inventoryLine;
@@ -123,5 +125,18 @@ public class InventoryLineService {
     }
 
     return inventoryLine;
+  }
+
+  public BigDecimal getCurrentQty(StockLocation stockLocation, Product product) {
+    BigDecimal currentQty = BigDecimal.ZERO;
+
+    if (stockLocation != null && product != null) {
+      StockLocationLine stockLocationLine =
+          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
+      if (stockLocationLine != null) {
+        currentQty = stockLocationLine.getCurrentQty();
+      }
+    }
+    return currentQty;
   }
 }
