@@ -8,7 +8,6 @@
   <entity name="Company" lang="java" cacheable="true">
   
 	<one-to-one name="hrConfig" ref="com.axelor.apps.hr.db.HRConfig" title="HR config" mappedBy="company"/>
-	<boolean name="employees" title="Company.employees"/>
   </entity>
   
 </domain-models>
