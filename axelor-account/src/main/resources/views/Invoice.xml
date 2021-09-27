@@ -254,7 +254,7 @@
 	                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 2" x-translate>Supplier refund</span>
 	                            <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 3" x-translate>Customer sale</span>
 	                            <span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.operationTypeSelect == 4" x-translate>Customer refund</span>
-
+								
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 1 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Standard invoice</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 2 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Advance payment invoice</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 3 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Balance invoice</span>
@@ -262,8 +262,17 @@
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 5 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Contract closing invoice</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 6 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Subscription</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 7 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Periodic contract</span>
-
+								<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 8 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Preinvoicing Purchasing group</span>
+	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 9 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Preinvoicing Direct</span>
+	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 10 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Debit Note</span>
+	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 11 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Credit Note</span>
+	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 12 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Retrocession</span>
+	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 13 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Repayment</span>
+	                            	                            
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.operationTypeSelect == 3 || record.operationTypeSelect == 4) && record.partner.factorizedCustomer">Factorized customer</span>
+
+								<span class="label label-default" style="background-color: #2C75FF; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.litigationReason != null" >{{$fmt('litigationReason.name')}}</span>
+
 
 	                        </h4>
 	                    ]]>
@@ -298,7 +307,8 @@
                     onChange="action-group-account-invoice-operationtype-onchange" selection-in="[3,4]"/>
             </panel>
             <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
-            <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
+            <field name="operationSubTypeSelect" selection-in="[1,2,3,4,5,6,7]" showTitle="true" hideIf="statusSelect > 1 || operationTypeSelect != 3 || $readonly()"/>
+ 						<field name="operationSubTypeSelect" showTitle="true" selection-in="[1,8,9,10,11,12,13]" hideIf="statusSelect > 1 || operationTypeSelect != 1 || $readonly()"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
             <field name="currency" colSpan="3" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)" form-view="currency-form" grid-view="currency-grid"/>
             <field name="priceList" colSpan="3" canEdit="false" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
@@ -347,10 +357,19 @@
 			<field name="subscriptionFromDate" />
 			<field name="subscriptionToDate" />
 		</panel>
+		
+		<panel name="datesPanel">
+			<field name="accountingDate" colSpan="4"/>
+			<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" colSpan="4"/>
+			<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree" colSpan="4"/>
+			<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" colSpan="12"/>
+			<field name="completionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="6"/>
+			<field name="executionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="6"/>
+		</panel>
 
 		<panel-tabs name="mainPanelTab" hideIf="partner == null">
 			<panel name="invoiceContentPanel" title="Content" showTitle="false">
-				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change" canMove="true" orderBy="sequence"  height="30" />
+				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" editable="true" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-invoice-grid" onChange="action-invoice-group-invoice-line-list-on-change" canMove="true" orderBy="sequence"  height="30" />
 			</panel>
 			<panel name="invoiceTaxPanel" title="Tax" showTitle="false">
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
@@ -525,6 +544,7 @@ InvoiceSet.length > 0))"
 			</panel>
 			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
 			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
+			<field name="litigationReason" colSpan="6" hideIf="partner == null"/>
         </panel>
         <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"  hideIf="partner == null">
 			<field name="currency.code" hidden="true"/>
@@ -736,7 +756,7 @@ InvoiceSet.length > 0))"
 				<field name="internalReference"/>
 				<field name="externalReference"/>
 			</panel>
-			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
+			<panel name="datesPanelSidebar" title="Dates" readonlyIf="statusSelect == 3">
 				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" />
 				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
 				<field name="paymentCondition.isFree" hidden="true"/>
@@ -941,6 +961,7 @@ InvoiceSet.length > 0))"
         <action name="action-invoice-method-set-default-group-products-on-printings"/>
         <action name="action-invoice-record-set-display-stock-move-on-invoice-printing" if="__config__.app.isApp('supplychain')"/>
         <action name="action-attrs-set-null-manage-financial-discount"/>
+        <action name="action-invoice-method-manage-invoice-line-axis"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >
@@ -959,6 +980,7 @@ InvoiceSet.length > 0))"
     	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
       <action name="action-attrs-set-null-manage-financial-discount"/>
+      <action name="action-invoice-method-manage-invoice-line-axis"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -971,6 +993,7 @@ InvoiceSet.length > 0))"
     	<action name="action-invoice-attrs-hide-cancel-button"/>
         <action name="action-invoice-record-update-info-company"/>
         <action name="action-invoice-record-set-dummy-field-language"/>
+        <action name="action-invoice-method-manage-invoice-line-axis"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-partner-onchange">
@@ -1025,6 +1048,7 @@ InvoiceSet.length > 0))"
     <action-group name="action-invoice-group-invoice-line-list-on-change">
         <action name="action-invoice-method-update-product-qty-with-pack-header-qty" if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
         <action name="action-invoice-method-compute"/>
+        <action name="action-invoice-method-manage-invoice-line-axis"/>
         <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null" />
     </action-group>
 
@@ -1689,5 +1713,13 @@ InvoiceSet.length > 0))"
 		<field name="financialDiscountRate" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
 		<field name="financialDiscountDeadlineDate" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
 	</action-record>
+	
+	<action-method name="action-invoice-method-manage-invoice-line-axis">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="manageInvoiceLineAxis"/>
+    </action-method>
+    
+    <action-validate name="action-validate-dates-completion-execution-invoice">
+    	<error message="Execution from date cannot be before completion date." if="executionFromDate &amp;&amp; completionFromDate &amp;&amp; executionFromDate.isBefore(completionFromDate)"/>
+    </action-validate>
 
 </object-views>
