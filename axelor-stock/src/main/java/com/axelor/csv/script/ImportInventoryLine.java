@@ -94,7 +94,8 @@ public class ImportInventoryLine {
                 inventoryLine.getCurrentQty(),
                 inventoryLine.getRack(),
                 trackingNumber,
-                inventoryLine.getInventory().getStockLocation());
+                inventoryLine.getInventory().getStockLocation(),
+                null);
 
         inventoryLineNew.setUnit(inventoryLine.getProduct().getUnit());
 
