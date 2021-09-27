@@ -17,14 +17,17 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -120,6 +123,36 @@ public class FixedAssetController {
         response.setReload(true);
       } else {
         response.setFlash(I18n.get("Please select something to validate"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void personalizeAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+
+      if (fixedAsset.getAnalyticDistributionTemplate() != null
+          && !fixedAsset.getAnalyticDistributionTemplate().getIsSpecific()) {
+        AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
+            Beans.get(AnalyticDistributionTemplateService.class)
+                .personalizeAnalyticDistributionTemplate(
+                    fixedAsset.getAnalyticDistributionTemplate());
+        response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
+        response.setView(
+            ActionView.define("Specific Analytic Distribution Template")
+                .model(AnalyticDistributionTemplate.class.getName())
+                .add("form", "analytic-distribution-template-specific-form")
+                .param("popup", "true")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "true")
+                .context("_showRecord", specificAnalyticDistributionTemplate.getId())
+                .context("fixedAsset", fixedAsset.getId())
+                .map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

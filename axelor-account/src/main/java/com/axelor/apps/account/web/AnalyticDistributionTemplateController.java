@@ -1,11 +1,13 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -26,25 +28,13 @@ public class AnalyticDistributionTemplateController {
     }
   }
 
-  public void personalize(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void calculateAnalyticFixedAsset(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     try {
-      AnalyticDistributionTemplate analyticDistributionTemplate =
-          request.getContext().asType(AnalyticDistributionTemplate.class);
-      if (analyticDistributionTemplate != null && !analyticDistributionTemplate.getIsSpecific()) {
-        AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
-            Beans.get(AnalyticDistributionTemplateService.class)
-                .personalizeAnalyticDistributionTemplate(analyticDistributionTemplate);
-        response.setView(
-            ActionView.define("Specific Analytic Distribution Template")
-                .model(AnalyticDistributionTemplate.class.getName())
-                .add("form", "analytic-distribution-template-form")
-                .param("popup", "true")
-                .param("forceEdit", "true")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "false")
-                .param("popup-save", "true")
-                .context("_showRecord", specificAnalyticDistributionTemplate.getId())
-                .map());
+      if (request.getContext().get("fixedAsset") != null) {
+        Long fixedAssetId = (Long) Long.valueOf((Integer) request.getContext().get("fixedAsset"));
+        FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
+        Beans.get(FixedAssetService.class).updateAnalytic(fixedAsset);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

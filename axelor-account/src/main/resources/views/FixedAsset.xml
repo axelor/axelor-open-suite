@@ -39,6 +39,8 @@
 			<field name="purchaseAccount" canEdit="false" form-view="account-form" grid-view="account-grid" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"/>
 			<field name="journal" canEdit="false" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid" readonlyIf="statusSelect &gt; 1"/>
     		<field name="analyticDistributionTemplate" domain="self.company = :company" canEdit="false" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"  onChange="action-fixed-asset-method-create-analytic-distribution"/>
+    		<button onClick="action-method-fixed-asset-analytic-distribution-template-personalize" name="personalizeBtn" title="Personalize" colSpan="6" hideIf="!analyticDistributionTemplate || analyticDistributionTemplate.isSpecific"/>
+    		<field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
     	</panel>
     	
     	<panel-tabs name="mainPanelTab">
@@ -154,6 +156,10 @@
     </action-method>
     <action-method name="action-fixed-asset-method-mass-validation">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="massValidation"/>
+    </action-method>
+    
+    <action-method name="action-method-fixed-asset-analytic-distribution-template-personalize">
+    	<call class="com.axelor.apps.account.web.FixedAssetController" method="personalizeAnalyticDistributionTemplate"/>
     </action-method>
 
 	<search-filters name="fixed-asset-filters" model="com.axelor.apps.account.db.FixedAsset" title="Fixed asset filters">
