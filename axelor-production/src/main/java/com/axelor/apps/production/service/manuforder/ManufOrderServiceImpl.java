@@ -72,6 +72,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -867,15 +868,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    * Called by generateMultiLevelManufOrder controller to generate all manuf order for a given bill
    * of material list from a given manuf order.
    *
-   * @param billOfMaterialList
+   * @param billOfMaterialMap
    * @param manufOrder
    * @throws AxelorException
    * @return
    */
+  @Override
   public List<ManufOrder> generateAllSubManufOrder(
-      List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException {
+      Map<BillOfMaterial, BigDecimal> billOfMaterialMap, ManufOrder manufOrder)
+      throws AxelorException {
     List<ManufOrder> moList = new ArrayList<>();
-    List<BillOfMaterial> childBomList = new ArrayList<>(billOfMaterialList);
+    List<BillOfMaterial> childBomList = new ArrayList<>(billOfMaterialMap.keySet());
     // prevent infinite loop
     int depth = 0;
     while (!childBomList.isEmpty()) {
@@ -889,7 +892,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         moList.add(
             generateManufOrder(
                 childBom.getProduct(),
-                childBom.getQty(),
+                billOfMaterialMap.getOrDefault(childBom, childBom.getQty()),
                 childBom.getPriority(),
                 IS_TO_INVOICE,
                 childBom,

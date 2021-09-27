@@ -56,6 +56,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -607,10 +608,10 @@ public class ManufOrderController {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.NO_PRODUCT_SELECTED));
       }
-      List<BillOfMaterial> billOfMaterialList =
-          Beans.get(ManufOrderBOMService.class).generateBOMList(mo, prodProductList);
+      Map<BillOfMaterial, BigDecimal> billOfMaterialMap =
+          Beans.get(ManufOrderBOMService.class).generateBOMMap(mo, prodProductList);
       List<ManufOrder> moList =
-          Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialList, mo);
+          Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialMap, mo);
       response.setNotify(String.format(I18n.get(IExceptionMessage.MO_CREATED), moList.size()));
       response.setCanClose(true);
     } catch (Exception e) {
