@@ -265,13 +265,13 @@
 
 	<form name="multi-level-planing-wizard-form" title="Multi-level planning"
 				model="com.axelor.apps.production.db.ManufOrder"
-				onLoad="com.axelor.apps.production.web.ManufOrderController:multiLevelManufOrderOnLoad">
+				onLoad="action-method-production-manuf-order-multi-level-wizard-on-load">
 		<panel name="mainPanel" colSpan="12">
 			<field name="$components" title="Products" type="one-to-many" canView="false" readonly="true"
 						 target="com.axelor.apps.production.db.ProdProduct"
 						 grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
 			<button name="generateMO" title="Generate MO"
-							onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
+							onClick="action-method-production-manuf-order-multi-level-wizard-generate-mo"
 							colSpan="4" colOffset="8"/>
 		</panel>
 	</form>
@@ -529,6 +529,14 @@
 	       if="plannedEndDateT.isBefore(__config__.app.getTodayDateTime().toLocalDateTime())"/>
 	</action-validate>
 
+	<action-method name="action-method-production-manuf-order-multi-level-wizard-generate-mo">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="generateMultiLevelManufOrder"/>
+	</action-method>
+	
+	<action-method name="action-method-production-manuf-order-multi-level-wizard-on-load">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="multiLevelManufOrderOnLoad"/>
+	</action-method>
+	
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
   		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
   		<field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>

@@ -66,6 +66,18 @@ public interface ManufOrderService {
       int originType)
       throws AxelorException;
 
+  ManufOrder generateManufOrder(
+      Product product,
+      BigDecimal qtyRequested,
+      int priority,
+      boolean isToInvoice,
+      BillOfMaterial billOfMaterial,
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT,
+      int originType,
+      boolean useQtyRequested)
+      throws AxelorException;
+
   public void createToConsumeProdProductList(ManufOrder manufOrder);
 
   /**

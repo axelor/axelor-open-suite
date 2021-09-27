@@ -120,7 +120,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      int originType)
+      int originType,
+      boolean useQtyRequested)
       throws AxelorException {
 
     if (billOfMaterial == null) {
@@ -138,7 +139,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     ManufOrder manufOrder =
         this.createManufOrder(
             product,
-            qty,
+            useQtyRequested ? qtyRequested : qty,
             priority,
             IS_TO_INVOICE,
             company,
@@ -154,6 +155,30 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     return manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  public ManufOrder generateManufOrder(
+      Product product,
+      BigDecimal qtyRequested,
+      int priority,
+      boolean isToInvoice,
+      BillOfMaterial billOfMaterial,
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT,
+      int originType)
+      throws AxelorException {
+
+    return generateManufOrder(
+        product,
+        qtyRequested,
+        priority,
+        isToInvoice,
+        billOfMaterial,
+        plannedStartDateT,
+        plannedEndDateT,
+        originType,
+        false);
   }
 
   @Override
@@ -868,7 +893,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 childBom,
                 null,
                 manufOrder.getPlannedStartDateT(),
-                ORIGIN_TYPE_OTHER));
+                ORIGIN_TYPE_OTHER,
+                true));
         tempChildBomList.addAll(
             childBom.getBillOfMaterialSet().stream()
                 .filter(BillOfMaterial::getDefineSubBillOfMaterial)
