@@ -243,7 +243,7 @@ public interface ManufOrderService {
    * @return the query.
    */
   public String getConsumeAndMissingQtyForAProduct(
-      Long productId, Long companyId, Long stockLocationId);
+      Long productId, Long companyId, Long stockLocationId); 
 
   /**
    * Create a query to find product's building qty of a specific/all company and a specific/all
