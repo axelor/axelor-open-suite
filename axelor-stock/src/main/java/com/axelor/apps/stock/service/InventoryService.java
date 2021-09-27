@@ -615,22 +615,6 @@ public class InventoryService {
     if (stockLocationLineList != null) {
       Boolean succeed = false;
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        if (stockLocationLine.getTrackingNumber()
-            == null) { // if no tracking number on stockLocationLine, check if there is a tracking
-          // number on the product
-          long numberOfTrackingNumberOnAProduct =
-              stockLocationLineRepository
-                  .all()
-                  .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
-                      stockLocationLine.getProduct(),
-                      inventory.getStockLocation())
-                  .count();
-
-          if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product
-            continue;
-          }
-        }
         inventory.addInventoryLineListItem(this.createInventoryLine(inventory, stockLocationLine));
         succeed = true;
       }
@@ -728,7 +712,8 @@ public class InventoryService {
         stockLocationLine.getCurrentQty(),
         stockLocationLine.getRack(),
         stockLocationLine.getTrackingNumber(),
-        stockLocationLine.getStockLocation());
+        stockLocationLine.getStockLocation(),
+        stockLocationLine.getDetailsStockLocation());
   }
 
   public void initInventoryLines(Inventory inventory) {

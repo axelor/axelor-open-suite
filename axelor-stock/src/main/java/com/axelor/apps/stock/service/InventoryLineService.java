@@ -37,7 +37,8 @@ public class InventoryLineService {
       BigDecimal currentQty,
       String rack,
       TrackingNumber trackingNumber,
-      StockLocation stockLocation) {
+      StockLocation stockLocation,
+      StockLocation detailsStockLocation) {
 
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
@@ -46,6 +47,9 @@ public class InventoryLineService {
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
     inventoryLine.setStockLocation(stockLocation);
+    if (stockLocation == null) {
+      inventoryLine.setStockLocation(detailsStockLocation);
+    }
     this.compute(inventoryLine, inventory);
 
     return inventoryLine;
