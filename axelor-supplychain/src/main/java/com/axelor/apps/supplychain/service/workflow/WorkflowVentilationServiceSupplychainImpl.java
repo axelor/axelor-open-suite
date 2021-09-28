@@ -297,7 +297,11 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         try {
           qtyToCompare =
               unitConversionService.convert(
-                  invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
+                  invUnit,
+                  movUnit,
+                  qty,
+                  appBaseService.getNbDecimalDigitForQty(),
+                  invoiceLine.getProduct());
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
