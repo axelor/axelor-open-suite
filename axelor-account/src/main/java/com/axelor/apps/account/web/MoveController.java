@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -451,4 +452,18 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+  
+  public void validatePeriodPermission(ActionRequest request, ActionResponse response)
+	      throws AxelorException {
+	    try {
+	      Move move = request.getContext().asType(Move.class);
+	      
+	      if (move.getPeriod() != null && move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+	    	  response.setError(I18n.get("Error Message"));
+	      }
+	      
+	    } catch (Exception e) {
+	      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+	    }
+	  }
 }

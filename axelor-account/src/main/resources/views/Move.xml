@@ -243,6 +243,13 @@
     <action name="action-attrs-on-load-currencies"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
   </action-group>
+  
+  <action-group name="action-account-move-group-onsave">
+  	<action name="action-move-method-check-period-permissions"/>
+  	<action name="action-move-method-check-remove-lines"/>
+  	<action name="save"/>
+  	<action name="action-move-method-update-in-day-book-mode"/>
+  </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
   <action name="save"/>
@@ -430,6 +437,10 @@
 
 	<action-method name="action-move-method-simulate-multiple-moves">
 		<call class="com.axelor.apps.account.web.MoveController" method="simulateMultipleMoves"/>
+	</action-method>
+	
+	<action-method name="action-move-method-check-period-permissions">
+		<call class="com.axelor.apps.account.web.MoveController" method="validatePeriodPermission"/>	
 	</action-method>
 
 	<!-- ACTION VIEW -->
