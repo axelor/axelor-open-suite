@@ -247,7 +247,6 @@
       <field name="subscriptionFromDate" on="UPDATE"/>
       <field name="subscriptionToDate" on="UPDATE"/>
       <field name="headOfficeAddress" on="UPDATE"/>
-      <field name="litigationReason" on="UPDATE"/>
       <field name="pfpValidatorUser" on="UPDATE"/>
       <field name="pfpValidateStatusSelect" on="UPDATE"/>
       <field name="reasonOfRefusalToPay" on="UPDATE"/>
