@@ -1,6 +1,5 @@
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Move;
@@ -8,24 +7,18 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -171,77 +164,10 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       }
 
       if (taxLine != null) {
-
         String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
 
-        if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
-            || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
-            || accountType.equals(AccountTypeRepository.TYPE_INCOME)
-            || accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
-
-          BigDecimal debit = moveLine.getDebit();
-          BigDecimal credit = moveLine.getCredit();
-          BigDecimal currencyRate = moveLine.getCurrencyRate();
-          BigDecimal currencyAmount;
-          LocalDate date = moveLine.getDate();
-          Company company = move.getCompany();
-
-          MoveLine newOrUpdatedMoveLine = new MoveLine();
-
-          if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
-              || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
-            newOrUpdatedMoveLine.setAccount(
-                taxAccountService.getAccount(taxLine.getTax(), company, true, false));
-          } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
-            newOrUpdatedMoveLine.setAccount(
-                taxAccountService.getAccount(taxLine.getTax(), company, false, false));
-          } else if (accountType.equals(AccountTypeRepository.TYPE_ASSET)) {
-            newOrUpdatedMoveLine.setAccount(
-                taxAccountService.getAccount(taxLine.getTax(), company, true, true));
-          }
-
-          Account newAccount = newOrUpdatedMoveLine.getAccount();
-          if (newAccount == null) {
-            throw new AxelorException(
-                move,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.MOVE_LINE_6),
-                taxLine.getName(),
-                company.getName());
-          }
-          if (move.getPartner().getFiscalPosition() != null) {
-            newAccount =
-                fiscalPositionAccountService.getAccount(
-                    move.getPartner().getFiscalPosition(), newAccount);
-          }
-
-          String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
-
-          if (!map.containsKey(newSourceTaxLineKey) && !newMap.containsKey(newSourceTaxLineKey)) {
-
-            newOrUpdatedMoveLine =
-                moveLineCreateService.createNewMoveLine(
-                    debit, credit, date, accountType, taxLine, newOrUpdatedMoveLine);
-          } else {
-
-            if (newMap.containsKey(newSourceTaxLineKey)) {
-              newOrUpdatedMoveLine = newMap.get(newSourceTaxLineKey);
-            } else if (!newMap.containsKey(newSourceTaxLineKey)
-                && map.containsKey(newSourceTaxLineKey)) {
-              newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
-            }
-            newOrUpdatedMoveLine.setDebit(
-                newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
-            newOrUpdatedMoveLine.setCredit(
-                newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
-          }
-          newOrUpdatedMoveLine.setMove(move);
-          newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
-          newOrUpdatedMoveLine.setOrigin(move.getOrigin());
-          newOrUpdatedMoveLine.setDescription(move.getDescription());
-          newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
-          newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
-        }
+        moveLineCreateService.createMoveLineForAutoTax(
+            move, map, newMap, moveLine, taxLine, accountType);
       }
     }
 
