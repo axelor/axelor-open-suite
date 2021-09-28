@@ -37,7 +37,7 @@
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date" />
     <date name="dueDate" title="Due Date"/>
-    <date name="originDate" title="Origin date"/>
+    <date name="originDate" title="Invoice.originDate"/>
     <date name="paymentDate" title="Payment date" />
     
     <!-- Accounting information -->
@@ -160,10 +160,8 @@
 	<string name="legalNotice" title="Legal notice" large="true" help="Legal notice displayed on invoices where a discount was granted"/>
 	<date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
 
-	<many-to-one name="litigationReason" title="Litigation Reason" ref="com.axelor.apps.account.db.LitigationReason"/>
 	<date name="completionFromDate" title="Completion From"/>
 	<date name="executionFromDate" title="Completion to"/>
-	<date name="accountingDate" title="Accounting Date"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 
