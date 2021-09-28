@@ -41,6 +41,18 @@ public class PeriodController {
     }
   }
 
+  public void closeTemporarily(ActionRequest request, ActionResponse response) {
+    Period period = request.getContext().asType(Period.class);
+    period = Beans.get(PeriodRepository.class).find(period.getId());
+
+    try {
+      Beans.get(PeriodService.class).closeTemporarily(period);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void adjust(ActionRequest request, ActionResponse response) {
     Period period = request.getContext().asType(Period.class);
     period = Beans.get(PeriodRepository.class).find(period.getId());

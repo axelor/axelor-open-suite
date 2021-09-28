@@ -125,10 +125,25 @@ public class PeriodServiceImpl implements PeriodService {
     this.updateClosePeriod(period);
   }
 
+  public void closeTemporarily(Period period) throws AxelorException {
+    if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
+      adjustHistoryService.setEndDate(period);
+    }
+    this.updateCloseTemporarilyPeriod(period);
+  }
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   protected void updateClosePeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
     period.setClosureDateTime(LocalDateTime.now());
+
+    periodRepo.save(period);
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected void updateCloseTemporarilyPeriod(Period period) {
+    period.setStatusSelect(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
+    period.setTemporarilyCloseDate(LocalDate.now());
 
     periodRepo.save(period);
   }

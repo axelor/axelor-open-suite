@@ -44,6 +44,8 @@ public interface PeriodService {
 
   public void close(Period period) throws AxelorException;
 
+  public void closeTemporarily(Period period) throws AxelorException;
+
   @Transactional
   public void adjust(Period period);
 
