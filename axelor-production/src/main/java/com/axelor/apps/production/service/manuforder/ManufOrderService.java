@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface ManufOrderService {
 
@@ -243,7 +244,7 @@ public interface ManufOrderService {
    * @return the query.
    */
   public String getConsumeAndMissingQtyForAProduct(
-      Long productId, Long companyId, Long stockLocationId); 
+      Long productId, Long companyId, Long stockLocationId);
 
   /**
    * Create a query to find product's building qty of a specific/all company and a specific/all
@@ -255,5 +256,6 @@ public interface ManufOrderService {
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
 
   public List<ManufOrder> generateAllSubManufOrder(
-      List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException;
+      Map<BillOfMaterial, BigDecimal> billOfMaterialList, ManufOrder manufOrder)
+      throws AxelorException;
 }

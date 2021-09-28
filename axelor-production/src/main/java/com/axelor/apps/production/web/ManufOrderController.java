@@ -18,7 +18,6 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
