@@ -1,6 +1,8 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
@@ -76,20 +78,19 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             .getTechnicalTypeSelect()
             .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
 
-      for (int i = 0; i < move.getPartner().getAccountingSituationList().size(); i++) {
-        if (move.getPartner().getAccountingSituationList().get(i).equals(move.getCompany())) {
+      for (AccountingSituation accountingSituation :
+          move.getPartner().getAccountingSituationList()) {
+        if (accountingSituation.getCompany().equals(move.getCompany())) {
           if (move.getJournal()
               .getJournalType()
               .getTechnicalTypeSelect()
               .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
-            accountingAccount =
-                move.getPartner().getAccountingSituationList().get(i).getSupplierAccount();
+            accountingAccount = accountingSituation.getSupplierAccount();
           else if (move.getJournal()
               .getJournalType()
               .getTechnicalTypeSelect()
               .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
-            accountingAccount =
-                move.getPartner().getAccountingSituationList().get(i).getCustomerAccount();
+            accountingAccount = accountingSituation.getCustomerAccount();
         }
       }
     } else if (move.getJournal()
@@ -97,14 +98,10 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
         .getTechnicalTypeSelect()
         .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
       if (move.getPaymentMode() != null)
-        for (int i = 0; i < move.getPaymentMode().getAccountManagementList().size(); i++) {
-          if (move.getPaymentMode()
-              .getAccountManagementList()
-              .get(0)
-              .getCompany()
-              .equals(move.getCompany())) {
-            accountingAccount =
-                move.getPaymentMode().getAccountManagementList().get(0).getCashAccount();
+        for (AccountManagement accountManagement :
+            move.getPaymentMode().getAccountManagementList()) {
+          if (accountManagement.getCompany().equals(move.getCompany())) {
+            accountingAccount = accountManagement.getCashAccount();
           }
         }
     }
