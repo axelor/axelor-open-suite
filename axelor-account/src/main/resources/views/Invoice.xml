@@ -274,6 +274,7 @@
 								<span class="label label-default" style="background-color: #2C75FF; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.reasonOfRefusalToPay != null" >{{$fmt('reasonOfRefusalToPay.name')}}</span>
 
 
+
 	                        </h4>
 	                    ]]>
 	                </viewer>
@@ -545,6 +546,7 @@ InvoiceSet.length > 0))"
 			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
 			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
 			<field name="reasonOfRefusalToPay" colSpan="6" hideIf="partner == null"/>
+
         </panel>
         <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"  hideIf="partner == null">
 			<field name="currency.code" hidden="true"/>

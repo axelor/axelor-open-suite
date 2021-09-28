@@ -1487,6 +1487,8 @@
 "List of invoices to pay",,,
 "List of invoices/schedule lines with remaining amount to pay",,,
 "Litigation",,,
+"Litigation Reason",,,
+"Litigation Reasons",,,
 "Load cheques",,,
 "Load selected lines",,,
 "Long term debt duration (month)",,,

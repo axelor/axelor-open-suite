@@ -245,6 +245,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     analyticMoveLine.setPercentage(new BigDecimal(100));
 
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+
     if (invoiceLine.getAccount() != null) {
       analyticMoveLine.setAccount(invoiceLine.getAccount());
       if (invoiceLine.getAccount().getAccountType() != null) {
@@ -256,7 +257,9 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
       analyticMoveLine.setAnalyticAccount(analyticAccount);
     }
+
     analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+
     return analyticMoveLine;
   }
 }

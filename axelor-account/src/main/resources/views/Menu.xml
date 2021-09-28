@@ -1078,6 +1078,18 @@
 		<view type="grid" name="payment-delay-reason-grid" />
 		<view type="form" name="payment-delay-reason-form" />
 	</action-view>
+	
+	<menuitem name="debt-recovery-root-conf-litigation-reason"
+		parent="debt-recovery-root-conf" title="Litigation Reasons"
+		action="debt.recovery.root.conf.litigation.reason" />
+
+	<action-view
+		name="debt.recovery.root.conf.litigation.reason"
+		title="Litigation Reasons"
+		model="com.axelor.apps.account.db.LitigationReason">
+		<view type="grid" name="litigation-reason-grid" />
+		<view type="form" name="litigation-reason-form" />
+	</action-view>
 
 	<!-- Conf Referential -->
 
