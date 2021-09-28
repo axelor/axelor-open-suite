@@ -560,7 +560,7 @@ public class ManufOrderController {
       List<ManufOrder> moList =
           Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialMap, mo);
       response.setNotify(String.format(I18n.get(IExceptionMessage.MO_CREATED), moList.size()));
-      response.setCanClose(true);
+      response.setCanClose(true); 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
