@@ -20,6 +20,7 @@ package com.axelor.apps.stock.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
+import com.axelor.apps.base.service.ProductVariantServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
@@ -47,6 +48,7 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingServiceImpl;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.PartnerStockSettingsServiceImpl;
+import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryService;
@@ -109,5 +111,6 @@ public class StockModule extends AxelorModule {
     bind(StockHistoryService.class).to(StockHistoryServiceImpl.class);
     bind(StockCorrectionRepository.class).to(StockCorrectionStockRepository.class);
     bind(TrackingNumberConfigurationService.class).to(TrackingNumberConfigurationServiceImpl.class);
+    bind(ProductVariantServiceImpl.class).to(ProductVariantServiceStockImpl.class);
   }
 }
