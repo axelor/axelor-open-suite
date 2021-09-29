@@ -241,7 +241,11 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
               .getAnalyticJournal());
     }
 
-    analyticMoveLine.setDate(invoiceLine.getInvoice().getInvoiceDate());
+    if (invoiceLine.getInvoice().getInvoiceDate() != null) {
+      analyticMoveLine.setDate(invoiceLine.getInvoice().getInvoiceDate());
+    } else {
+      analyticMoveLine.setDate(LocalDate.now());
+    }
     analyticMoveLine.setPercentage(new BigDecimal(100));
 
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
