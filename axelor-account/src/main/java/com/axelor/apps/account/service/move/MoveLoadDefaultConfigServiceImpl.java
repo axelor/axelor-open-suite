@@ -67,29 +67,28 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
   public TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount) {
     TaxLine taxLine = null;
     Partner partner = move.getPartner();
-    if(!ObjectUtils.isEmpty(partner)) 
-    {
-    if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
-      if (accountingAccount != null && accountingAccount.getDefaultTax() != null) {
-        taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
-        if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-          taxLine =
-              findValidTaxLineForMoveLine(
-                  accountingAccount.getDefaultTax().getTaxLineList(), moveLine);
-        }
-      }
-    } else {
-      for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
-        if (accountingAccount != null
-            && taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
-          taxLine = taxEquiv.getToTax().getActiveTaxLine();
+    if (!ObjectUtils.isEmpty(partner)) {
+      if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
+        if (accountingAccount != null && accountingAccount.getDefaultTax() != null) {
+          taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
           if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-            taxLine = findValidTaxLineForMoveLine(taxEquiv.getToTax().getTaxLineList(), moveLine);
+            taxLine =
+                findValidTaxLineForMoveLine(
+                    accountingAccount.getDefaultTax().getTaxLineList(), moveLine);
           }
-          break;
+        }
+      } else {
+        for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
+          if (accountingAccount != null
+              && taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
+            taxLine = taxEquiv.getToTax().getActiveTaxLine();
+            if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
+              taxLine = findValidTaxLineForMoveLine(taxEquiv.getToTax().getTaxLineList(), moveLine);
+            }
+            break;
+          }
         }
       }
-    }
     }
     return taxLine;
   }
