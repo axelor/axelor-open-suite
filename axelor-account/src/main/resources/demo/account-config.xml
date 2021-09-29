@@ -185,8 +185,6 @@
 	<input file="account_paymentDelayReason.csv" separator=";"
 		type="com.axelor.apps.account.db.PaymentDelayReason" search="self.importId = :importId" />
 
-	<input file="account_analyticLevel.csv" separator=";" search="self.nbr = :nbr" call="com.axelor.csv.script.ImportAnalyticLevel:importAnalyticLevel" type="com.axelor.apps.account.db.AnalyticLevel"/>
-
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId"/>
 
 	<input file="account_analyticGrouping.csv" separator=";" type="com.axelor.apps.account.db.AnalyticGrouping" search="self.importId = :importId"/>
