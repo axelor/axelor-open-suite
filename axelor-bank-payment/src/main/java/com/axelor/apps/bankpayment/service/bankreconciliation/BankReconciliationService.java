@@ -85,7 +85,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BankReconciliationService {
-  protected static final int DESCRIPTION_SIZE_LIMIT = 255;
   protected static final int RETURNED_SCALE = 2;
 
   protected AccountManagementRepository accountManagementRepository;

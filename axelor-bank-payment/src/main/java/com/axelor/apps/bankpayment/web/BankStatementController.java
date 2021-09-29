@@ -51,7 +51,6 @@ public class BankStatementController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      response.setError(e.getMessage());
     }
   }
 
