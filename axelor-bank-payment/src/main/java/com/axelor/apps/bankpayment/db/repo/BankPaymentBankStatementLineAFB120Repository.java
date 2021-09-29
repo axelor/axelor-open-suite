@@ -44,11 +44,13 @@ public class BankPaymentBankStatementLineAFB120Repository
         .fetch();
   }
 
-  public Query<BankStatementLineAFB120> findByBankStatementAndLineType(
-      BankStatement bankStatement, int lineType) {
+  public Query<BankStatementLineAFB120> findByBankStatementBankDetailsAndLineType(
+      BankStatement bankStatement, BankDetails bankDetails, int lineType) {
     return all()
-        .filter("self.bankStatement = :bankStatement AND self.lineTypeSelect = :lineTypeSelect")
+        .filter(
+            "self.bankStatement = :bankStatement AND self.bankDetails = :bankDetails AND self.lineTypeSelect = :lineTypeSelect")
         .bind("bankStatement", bankStatement)
+        .bind("bankDetails", bankDetails)
         .bind("lineTypeSelect", lineType);
   }
 
