@@ -360,7 +360,7 @@
 		</panel>
 		
 		<panel name="datesPanel">
-			<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
+			<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree" colSpan="3"/>
 			<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" colSpan="3"/>
 			<field name="completionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="3"/>
 			<field name="executionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="3"/>
