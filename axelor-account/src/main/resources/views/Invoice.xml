@@ -360,7 +360,7 @@
 		</panel>
 		
 		<panel name="datesPanel">
-			<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" colSpan="3"/>
+			<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
 			<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" colSpan="3"/>
 			<field name="completionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="3"/>
 			<field name="executionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="3"/>
@@ -392,7 +392,7 @@
 				<panel name="accountingDetailsPanel" title="Accounting details"  colSpan="12">
 					<field name="journal" canEdit="false" readonlyIf="statusSelect == 3" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
 					<field name="partnerAccount" canEdit="false" readonlyIf="statusSelect == 3" onSelect="action-invoice-partner-account-domain" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-					<panel name="movePanel" showIf="move != null">
+					<panel name="movePanel" showIf="move != null" colSpan="12">
 						<field name="move" readonly="true" form-view="move-form" grid-view="move-grid" colSpan="4"/>
 						<field name="move.date" readonly="true" colSpan="4"/>
 						<field name="move.accountingOk" readonly="true" colSpan="4"/>
