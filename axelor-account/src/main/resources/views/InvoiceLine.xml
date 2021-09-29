@@ -257,6 +257,7 @@
 		<action name="action-invoice-line-attrs-readonly-form"/>
 		<action name="action-invoice-line-record-operation-type"/>
 		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+		<action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
 	</action-group>
 
     <action-group name="action-group-account-invoice-line-product-onchange">
@@ -395,6 +396,10 @@
 		<view type="form" name="project-task-form"/>
 		<domain>self.invoiceLine = :id</domain>
 	</action-view>
+
+	<action-attrs name="action-invoice-line-attrs-set-isFilterOnSupplier">
+		<attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
+	</action-attrs>
 
 	<search-filters name="invoice-line-filters" model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
 		<field name="invoice.invoiceDate" title="Invoice Date"/>
