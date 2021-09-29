@@ -393,9 +393,9 @@
 					<field name="journal" canEdit="false" readonlyIf="statusSelect == 3" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
 					<field name="partnerAccount" canEdit="false" readonlyIf="statusSelect == 3" onSelect="action-invoice-partner-account-domain" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 					<panel name="movePanel" showIf="move != null">
-						<field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
-						<field name="move.date" readonly="true"/>
-						<field name="move.accountingOk" readonly="true"/>
+						<field name="move" readonly="true" form-view="move-form" grid-view="move-grid" colSpan="4"/>
+						<field name="move.date" readonly="true" colSpan="4"/>
+						<field name="move.accountingOk" readonly="true" colSpan="4"/>
 					</panel>
 					<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
 					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
