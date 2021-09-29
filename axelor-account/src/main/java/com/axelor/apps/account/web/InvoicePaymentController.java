@@ -240,23 +240,17 @@ public class InvoicePaymentController {
 
         invoicePayment = invoiceService.changeAmount(invoicePayment, invoice);
 
-        BigDecimal totalAmountToPay = invoicePayment.getAmount();
-
-        if (invoicePayment.getApplyFinancialDiscount()) {
-          totalAmountToPay =
-              invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
-        }
+        BigDecimal amount = invoicePayment.getAmount();
         List<InvoiceTerm> invoiceTerms =
             Beans.get(InvoiceTermService.class)
                 .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
         if (!CollectionUtils.isEmpty(invoiceTerms)) {
           response.setValue("$invoiceTerms", invoiceTerms);
 
-          if (totalAmountToPay.compareTo(BigDecimal.ZERO) > 0) {
+          if (amount.compareTo(BigDecimal.ZERO) > 0) {
             invoicePayment =
                 Beans.get(InvoiceTermPaymentService.class)
-                    .initInvoiceTermPaymentsWithAmount(
-                        invoicePayment, invoiceTerms, totalAmountToPay);
+                    .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount);
           }
         }
         response.setAttr(

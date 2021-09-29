@@ -10,8 +10,6 @@
   	<many-to-one name="invoicePayment" ref="com.axelor.apps.account.db.InvoicePayment" title="Payment"/>
   	<many-to-one name="invoiceTerm" ref="com.axelor.apps.account.db.InvoiceTerm" title="Invoice term"/>
   	<decimal name="paidAmount" title="Paid amount"/>
-  	<many-to-one name="financialDiscount" ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
-    <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
 
   </entity>
 

@@ -120,21 +120,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     invoiceTermPayment.setInvoicePayment(invoicePayment);
     invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
     invoiceTermPayment.setPaidAmount(paidAmount);
-    manageInvoiceTermFinancialDiscount(invoiceTermPayment, invoicePayment, paidAmount);
     return invoiceTermPayment;
-  }
-
-  public void manageInvoiceTermFinancialDiscount(
-      InvoiceTermPayment invoiceTermPayment, InvoicePayment invoicePayment, BigDecimal paidAmount) {
-    if (invoicePayment.getApplyFinancialDiscount()) {
-      invoiceTermPayment.setFinancialDiscountAmount(
-          paidAmount
-              .multiply(invoicePayment.getFinancialDiscountTotalAmount())
-              .divide(
-                  invoicePayment.getAmount(),
-                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                  RoundingMode.HALF_UP));
-    }
   }
 
   @Override
@@ -154,19 +140,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     BigDecimal sum = BigDecimal.ZERO;
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPayments) {
-      BigDecimal paidAmount = invoiceTermPayment.getPaidAmount();
-      if (invoicePayment.getApplyFinancialDiscount()) {
-        BigDecimal base =
-            invoicePayment
-                .getFinancialDiscount()
-                .getDiscountRate()
-                .divide(
-                    new BigDecimal(100),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_UP);
-        paidAmount = paidAmount.divide(base.add(BigDecimal.ONE), RoundingMode.HALF_UP);
-      }
-      sum = sum.add(paidAmount);
+      sum = sum.add(invoiceTermPayment.getPaidAmount());
     }
 
     sum =
