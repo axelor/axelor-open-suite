@@ -256,10 +256,8 @@ public class PaymentServiceImpl implements PaymentService {
       String invoiceName = "";
       if (debitMoveLine.getMove().getInvoice() != null) {
         invoiceName = debitMoveLine.getMove().getInvoice().getInvoiceId();
-      } else {
-        if (payVoucherElementToPay != null) {
-          invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
-        }
+      } else if (payVoucherElementToPay != null) {
+        invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
       }
 
       MoveLine creditMoveLine =
