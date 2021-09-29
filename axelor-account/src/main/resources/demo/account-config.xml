@@ -189,7 +189,7 @@
 
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId"/>
 
-	<input file="account_analyticGrouping.csv" separator=";" call="com.axelor.csv.script.ImportAnalyticGrouping:importAnalyticGrouping" type="com.axelor.apps.account.db.AnalyticGrouping" search="self.importId = :importId"/>
+	<input file="account_analyticGrouping.csv" separator=";" type="com.axelor.apps.account.db.AnalyticGrouping" search="self.importId = :importId"/>
 
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" update="true"/>
 
