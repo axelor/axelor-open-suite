@@ -121,4 +121,6 @@ public interface InvoiceLineService {
   public InvoiceLine analyzeInvoiceLine(InvoiceLine invoiceLine) throws AxelorException;
 
   public InvoiceLine removeAnalyticOnRemoveProduct(InvoiceLine invoiceLine);
+
+  public InvoiceLine removeAnalyticOnRemoveAccount(InvoiceLine invoiceLine);
 }

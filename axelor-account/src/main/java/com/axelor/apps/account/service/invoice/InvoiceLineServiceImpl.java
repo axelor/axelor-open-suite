@@ -701,14 +701,27 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   @Override
   public InvoiceLine removeAnalyticOnRemoveProduct(InvoiceLine invoiceLine) {
     if (invoiceLine != null && invoiceLine.getProduct() == null) {
-      invoiceLine.setAnalyticDistributionTemplate(null);
-      invoiceLine.setAxis1AnalyticAccount(null);
-      invoiceLine.setAxis2AnalyticAccount(null);
-      invoiceLine.setAxis3AnalyticAccount(null);
-      invoiceLine.setAxis4AnalyticAccount(null);
-      invoiceLine.setAxis5AnalyticAccount(null);
-      invoiceLine.getAnalyticMoveLineList().clear();
+      invoiceLine = removeAnalytic(invoiceLine);
     }
+    return invoiceLine;
+  }
+
+  @Override
+  public InvoiceLine removeAnalyticOnRemoveAccount(InvoiceLine invoiceLine) {
+    if (invoiceLine != null && invoiceLine.getAccount() == null) {
+      invoiceLine = removeAnalytic(invoiceLine);
+    }
+    return invoiceLine;
+  }
+
+  public InvoiceLine removeAnalytic(InvoiceLine invoiceLine) {
+    invoiceLine.setAnalyticDistributionTemplate(null);
+    invoiceLine.setAxis1AnalyticAccount(null);
+    invoiceLine.setAxis2AnalyticAccount(null);
+    invoiceLine.setAxis3AnalyticAccount(null);
+    invoiceLine.setAxis4AnalyticAccount(null);
+    invoiceLine.setAxis5AnalyticAccount(null);
+    invoiceLine.getAnalyticMoveLineList().clear();
     return invoiceLine;
   }
 }
