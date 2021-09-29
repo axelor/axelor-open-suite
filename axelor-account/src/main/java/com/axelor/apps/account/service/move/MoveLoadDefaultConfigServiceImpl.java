@@ -67,6 +67,8 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
   public TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount) {
     TaxLine taxLine = null;
     Partner partner = move.getPartner();
+    if(!ObjectUtils.isEmpty(partner)) 
+    {
     if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
       if (accountingAccount != null && accountingAccount.getDefaultTax() != null) {
         taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
@@ -87,6 +89,7 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
           break;
         }
       }
+    }
     }
     return taxLine;
   }
