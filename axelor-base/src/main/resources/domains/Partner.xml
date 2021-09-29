@@ -117,6 +117,18 @@
 	]]>
 	</extra-code>
 	
+	<track>
+	  <field name="partnerCategory"/>
+	  <field name="industrySector"/>
+	  <field name="registrationCode"/>
+	  <field name="siren"/>
+	  <field name="mainActivity"/>
+	  <field name="partnerAddressList"/>
+	  <field name="fixedPhone"/>
+	  <field name="emailAddress"/>
+	  <field name="currency"/>
+	</track>
+	
   </entity>
   
 </domain-models>
