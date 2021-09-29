@@ -21,8 +21,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -83,38 +81,13 @@ public class BankReconciliationController {
   public void reconcileSelected(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      BankReconciliation br = context.asType(BankReconciliation.class);
-      BankReconciliationLine bankReconciliationLine;
-      List<MoveLine> moveLines =
-          Beans.get(MoveLineRepository.class)
-              .all()
-              .filter(
-                  "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
-                      + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
-                      + " AND self.isSelectedBankReconciliation = true"
-                      + " AND self.move.statusSelect < :statusSelect"
-                      + " AND self.account = :cashAccount AND"
-                      + " ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
-                      + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))")
-              .bind("cashAccount", br.getCashAccount())
-              .bind("statusSelect", MoveRepository.STATUS_CANCELED)
-              .bind("fromDate", br.getFromDate())
-              .bind("toDate", br.getToDate())
-              .fetch();
-      Beans.get(BankReconciliationService.class).checkReconciliation(moveLines, br);
-      bankReconciliationLine =
-          br.getBankReconciliationLineList().stream()
-              .filter(line -> line.getIsSelectedBankReconciliation())
-              .collect(Collectors.toList())
-              .get(0);
-      bankReconciliationLine.setMoveLine(moveLines.get(0));
-      bankReconciliationLine =
-          Beans.get(BankReconciliationLineService.class)
-              .reconcileBRLAndMoveLine(bankReconciliationLine, moveLines.get(0));
-      br = Beans.get(BankReconciliationRepository.class).find(br.getId());
-      response.setValue("bankReconciliationLineList", br.getBankReconciliationLineList());
+      BankReconciliation bankReconciliation = context.asType(BankReconciliation.class);
+      bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId());
+      Beans.get(BankReconciliationService.class).reconcileSelected(bankReconciliation);
+      bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId());
       response.setReload(true);
-
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

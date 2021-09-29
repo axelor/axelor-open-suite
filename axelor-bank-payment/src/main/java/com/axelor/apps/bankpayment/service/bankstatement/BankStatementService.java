@@ -292,7 +292,10 @@ public class BankStatementService {
 
     } else {
       deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
-      throw new Exception(I18n.get(IExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
+      throw new AxelorException(
+          bankStatement,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
     }
   }
 }

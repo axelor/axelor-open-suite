@@ -15,11 +15,11 @@ public class BankStatementQueryFetchService {
   }
 
   public BankStatementQuery findBySequenceAndRuleTypeExcludeId(
-      Integer sequence, Integer ruleType, Long id) {
-    String query = "self.sequence = :sequence AND self.ruleType = :ruleType";
+      Integer sequence, Integer ruleTypeSelect, Long id) {
+    String query = "self.sequence = :sequence AND self.ruleTypeSelect = :ruleTypeSelect";
     Map<String, Object> binding = new HashMap<String, Object>();
     binding.put("sequence", sequence);
-    binding.put("ruleType", ruleType);
+    binding.put("ruleTypeSelect", ruleTypeSelect);
     if (id != null) {
       query = query + " AND self.id != :id";
       binding.put("id", id);

@@ -10,7 +10,7 @@
     <field name="searchLabel" />
     <field name="counterpartAccount" />
     <field name="partner" />
-    <field name="ruleType" />
+    <field name="ruleTypeSelect" />
   </grid>
 
   <form name="bank-statement-rule-form" title="Bank statement rule" model="com.axelor.apps.bankpayment.db.BankStatementRule">
@@ -23,11 +23,11 @@
       <field name="accountManagement.interbankCodeLine.code" colspan="3" />
     </panel>
     <panel name="bankStatementMainPanel" title="Search and accounting rule Config.">
-      <field name="ruleType" readonlyIf="!accountManagement" requiredIf="ruleType = 0" />
-      <field name="partner" readonlyIf="!accountManagement" domain="self.partnerTypeSelect = 1" requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleType = 0" form-view="partner-form"
+      <field name="ruleTypeSelect" readonlyIf="!accountManagement" requiredIf="ruleTypeSelect = 0" />
+      <field name="partner" readonlyIf="!accountManagement" domain="self.partnerTypeSelect = 1" requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleTypeSelect = 0" form-view="partner-form"
         grid-view="partner-grid" />
-      <field name="bankStatementQuery" readonlyIf="!accountManagement" domain="self.ruleType = :ruleType" form-view="bank-statement-query-form" grid-view="bank-statement-query-grid" />
-      <field name="counterpartAccount" readonlyIf="!accountManagement" domain="self.company = :company" requiredIf="ruleType == 0" />
+      <field name="bankStatementQuery" readonlyIf="!accountManagement" domain="self.ruleTypeSelect = :ruleTypeSelect" form-view="bank-statement-query-form" grid-view="bank-statement-query-grid" />
+      <field name="counterpartAccount" readonlyIf="!accountManagement" domain="self.company = :company" requiredIf="ruleTypeSelect == 0" />
       <field name="searchLabel" readonlyIf="!accountManagement" />
       <field name="$company" hidden="true" type="many-to-one" target="com.axelor.apps.base.db.Company" />
     </panel>

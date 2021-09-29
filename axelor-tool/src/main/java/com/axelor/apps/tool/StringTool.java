@@ -301,4 +301,20 @@ public final class StringTool {
       return str;
     }
   }
+
+  /**
+   * Some strings cannot be over 255 char because of database restriction. Cut it to 252 - offset
+   * char then add "..." to indicate the string has been cut.
+   *
+   * @return the cut string
+   */
+  public static String cutTooLongStringWithOffset(String str, int offset) {
+    int defaultDbStrLength = 255 - offset;
+    String fillString = "...";
+    if (str.length() > defaultDbStrLength) {
+      return str.substring(0, defaultDbStrLength - fillString.length() - offset) + fillString;
+    } else {
+      return str;
+    }
+  }
 }

@@ -58,6 +58,7 @@ import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -65,6 +66,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -83,7 +85,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BankReconciliationService {
-  protected static final int DESCRIPTION_SIZE_LIMIT = 235;
+  protected static final int DESCRIPTION_SIZE_LIMIT = 255;
   protected static final int RETURNED_SCALE = 2;
 
   protected AccountManagementRepository accountManagementRepository;
@@ -175,11 +177,14 @@ public class BankReconciliationService {
             bankStatementRuleRepository
                 .all()
                 .filter(
-                    "self.ruleType = :ruleType AND self.accountManagement.interbankCodeLine = :interbankCodeLine")
-                .bind("ruleType", BankStatementRuleRepository.RULE_TYPE_ACCOUNTING_AUTO)
+                    "self.ruleTypeSelect = :ruleTypeSelect"
+                        + " AND self.accountManagement.interbankCodeLine = :interbankCodeLine"
+                        + " AND self.accountManagement.company = :company")
+                .bind("ruleTypeSelect", BankStatementRuleRepository.RULE_TYPE_ACCOUNTING_AUTO)
                 .bind(
                     "interbankCodeLine",
                     bankReconciliationLine.getBankStatementLine().getOperationInterbankCodeLine())
+                .bind("company", bankReconciliationLine.getBankReconciliation().getCompany())
                 .fetch();
         for (BankStatementRule bankStatementRule : bankStatementRules) {
 
@@ -200,6 +205,7 @@ public class BankReconciliationService {
         }
       }
       offset += limit;
+      JPA.clear();
       bankReconciliationLines =
           bankReconciliationLineRepository
               .findByBankReconciliation(bankReconciliation)
@@ -268,12 +274,13 @@ public class BankReconciliationService {
     String description = "";
     description =
         description.concat(bankReconciliationLine.getBankStatementLine().getDescription());
-    if (description.length() > DESCRIPTION_SIZE_LIMIT) {
-      description = description.substring(0, DESCRIPTION_SIZE_LIMIT - 1);
-    }
-    description = description.concat("ref:");
+    description = StringTool.cutTooLongString(description);
+
     if (!Strings.isNullOrEmpty(bankReconciliationLine.getReference())) {
-      description = description.concat(bankReconciliationLine.getReference());
+      String reference = "ref:";
+      reference = reference.concat(bankReconciliationLine.getReference());
+      description = StringTool.cutTooLongStringWithOffset(description, reference.length());
+      description = description.concat(reference);
     }
     moveLine.setDescription(description);
 
@@ -620,10 +627,11 @@ public class BankReconciliationService {
 
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
-        "(self.date >= :fromDate OR self.dueDate >= :fromDate) AND "
-            + "(self.date <= :toDate OR self.dueDate <= :toDate) AND self.move.statusSelect != "
-            + ":statusSelect AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit) OR "
-            + "(self.credit > 0 AND self.bankReconciledAmount < self.credit))";
+        "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
+            + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
+            + " AND self.move.statusSelect != :statusSelect"
+            + " AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
+            + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))";
     if (bankReconciliation.getJournal() != null) {
       query = query + " AND self.move.journal = :journal";
     }
@@ -657,7 +665,7 @@ public class BankReconciliationService {
   public BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation) {
     List<BankStatementQuery> bankStatementQueries =
         bankStatementQueryRepository
-            .findByRuleType(BankStatementRuleRepository.RULE_TYPE_RECONCILIATION_AUTO)
+            .findByRuleTypeSelect(BankStatementRuleRepository.RULE_TYPE_RECONCILIATION_AUTO)
             .fetch();
     List<BankReconciliationLine> bankReconciliationLines =
         bankReconciliation.getBankReconciliationLineList();
@@ -952,5 +960,27 @@ public class BankReconciliationService {
             I18n.get(IExceptionMessage.BANK_RECONCILIATION_SELECT_MOVE_LINE));
       }
     }
+  }
+
+  public void reconcileSelected(BankReconciliation bankReconciliation) throws Exception {
+    BankReconciliationLine bankReconciliationLine;
+    String filter = getRequestMoveLines(bankReconciliation);
+    filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
+    List<MoveLine> moveLines =
+        Beans.get(MoveLineRepository.class)
+            .all()
+            .filter(filter)
+            .bind(getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+    checkReconciliation(moveLines, bankReconciliation);
+    bankReconciliationLine =
+        bankReconciliation.getBankReconciliationLineList().stream()
+            .filter(line -> line.getIsSelectedBankReconciliation())
+            .collect(Collectors.toList())
+            .get(0);
+    bankReconciliationLine.setMoveLine(moveLines.get(0));
+    bankReconciliationLine =
+        bankReconciliationLineService.reconcileBRLAndMoveLine(
+            bankReconciliationLine, moveLines.get(0));
   }
 }
