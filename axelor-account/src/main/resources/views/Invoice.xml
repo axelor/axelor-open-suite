@@ -360,11 +360,11 @@
 		</panel>
 		
 		<panel name="datesPanel">
-			<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" colSpan="4"/>
-			<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree" colSpan="4"/>
 			<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" colSpan="12"/>
-			<field name="completionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="6"/>
-			<field name="executionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="6"/>
+			<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" colSpan="3"/>
+			<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree" colSpan="3"/>
+			<field name="completionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="3"/>
+			<field name="executionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="3"/>
 		</panel>
 
 		<panel-tabs name="mainPanelTab" hideIf="partner == null">
@@ -539,13 +539,14 @@ InvoiceSet.length > 0))"
             <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
 			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
 			<field name="pfpValidatorUser" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; statusSelect &gt; 1" readonlyIf="pfpValidateStatusSelect != 1" colSpan="6" onSelect="action-invoice-method-domain-pfp-validator-user-on-select" onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user" canEdit="false"/>
-			<panel name="pfpEmailPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
+			<field name="reasonOfRefusalToPay" colSpan="6" hideIf="partner == null || reasonOfRefusalToPay == null"/>
+			
+			<panel name="pfpEmailPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="12">
 				<field name="decisionPfpTakenDate" hidden="true"  showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; decisionPfpTakenDate" colSpan="12"/>
 				<button name="sendPfpNotifyEmailBtn" hidden="true" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1" colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
 			</panel>
 			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
 			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
-			<field name="reasonOfRefusalToPay" colSpan="6" hideIf="partner == null"/>
 
         </panel>
         <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"  hideIf="partner == null">

@@ -505,4 +505,16 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void removeProduct(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      if (invoiceLine != null && invoiceLine.getProduct() == null) {
+        Beans.get(InvoiceLineService.class).removeAnalyticOnRemoveProduct(invoiceLine);
+        response.setValues(invoiceLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -697,4 +697,18 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
     return invoiceLine;
   }
+
+  @Override
+  public InvoiceLine removeAnalyticOnRemoveProduct(InvoiceLine invoiceLine) {
+    if (invoiceLine != null && invoiceLine.getProduct() == null) {
+      invoiceLine.setAnalyticDistributionTemplate(null);
+      invoiceLine.setAxis1AnalyticAccount(null);
+      invoiceLine.setAxis2AnalyticAccount(null);
+      invoiceLine.setAxis3AnalyticAccount(null);
+      invoiceLine.setAxis4AnalyticAccount(null);
+      invoiceLine.setAxis5AnalyticAccount(null);
+      invoiceLine.getAnalyticMoveLineList().clear();
+    }
+    return invoiceLine;
+  }
 }

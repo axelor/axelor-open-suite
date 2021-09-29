@@ -119,4 +119,6 @@ public interface InvoiceLineService {
   public List<Long> setAxisDomains(InvoiceLine invoiceLine, int position) throws AxelorException;
 
   public InvoiceLine analyzeInvoiceLine(InvoiceLine invoiceLine) throws AxelorException;
+
+  public InvoiceLine removeAnalyticOnRemoveProduct(InvoiceLine invoiceLine);
 }

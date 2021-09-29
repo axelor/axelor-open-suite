@@ -316,6 +316,7 @@
     	<action name="action-budget-validate-exceed-line-amount"/>
     	<action name="action-invoice-line-method-get-fixed-asset-category" if="__config__.app.isApp('account')"/>
     	<action name="action-attrs-account-invoice-line-onnew-onload"/>
+    	<action name="action-method-invoice-line-remove-product" if="!product"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -480,6 +481,10 @@
     
     <action-method name="action-method-invoice-line-axis-create-analytic-line">
     	<call class="com.axelor.apps.account.web.InvoiceLineController" method="createAnalyticAccountLines"/>
+    </action-method>
+    
+    <action-method name="action-method-invoice-line-remove-product">
+    	<call class="com.axelor.apps.account.web.InvoiceLineController" method="removeProduct"/>    	
     </action-method>
 
 </object-views>
