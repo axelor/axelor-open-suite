@@ -38,6 +38,8 @@ import java.util.Optional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
+  public static final int DEFAULT_SCALE = 2;
+
   public DayOfWeek getFirstDayOfWeek() {
     WeeklyPlanning planning =
         Beans.get(UserService.class).getUserActiveCompany().getWeeklyPlanning();
@@ -202,7 +204,8 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
       }
     }
 
-    return BigDecimal.valueOf(value).divide(BigDecimal.valueOf(60), BigDecimal.ROUND_HALF_UP);
+    return BigDecimal.valueOf(value)
+        .divide(BigDecimal.valueOf(60), DEFAULT_SCALE, BigDecimal.ROUND_HALF_UP);
   }
 
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date) {

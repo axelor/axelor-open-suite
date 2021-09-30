@@ -53,6 +53,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -446,15 +447,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       ConfiguratorCreator creator = configurator.getConfiguratorCreator();
       List<? extends ConfiguratorFormula> configuratorFormulaList;
-      String setMappedByMethod;
       Class[] methodArg = new Class[1];
       if (creator.getGenerateProduct()) {
         configuratorFormulaList = creator.getConfiguratorProductFormulaList();
-        setMappedByMethod = "setProduct";
         methodArg[0] = Product.class;
       } else {
         configuratorFormulaList = creator.getConfiguratorSOLineFormulaList();
-        setMappedByMethod = "setSaleOrderLine";
         methodArg[0] = SaleOrderLine.class;
       }
       configuratorFormulaList =
@@ -466,16 +464,47 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       for (ConfiguratorFormula formula : configuratorFormulaList) {
         List<? extends Model> computedValue =
             (List<? extends Model>) computeFormula(formula.getFormula(), jsonAttributes);
+        if (computedValue == null) {
+          continue;
+        }
+        Method setMappedByMethod = computeMappedByMethod(formula);
         for (Model listElement : computedValue) {
-          listElement.getClass().getMethod(setMappedByMethod, methodArg).invoke(listElement, model);
+          setMappedByMethod.invoke(listElement, model);
           JPA.save(listElement);
         }
       }
-    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+    } catch (InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
     }
   }
 
+  /**
+   * Find the method used to fill the mapped by many-to-one of a one-to-many relationship. Example:
+   * for a one-to-many "purchaseProductMultipleQtyList" with a mapped by many-to-one called
+   * "purchaseProduct", this method will return the method "setPurchaseProduct"
+   *
+   * @param oneToManyFormula a ConfiguratorFormula used to fill a one-to-many
+   * @return the found method
+   * @throws AxelorException if the mapped by field in meta field is empty.
+   */
+  protected Method computeMappedByMethod(ConfiguratorFormula oneToManyFormula)
+      throws AxelorException, ClassNotFoundException {
+    MetaField metaField = oneToManyFormula.getMetaField();
+    String mappedBy = metaField.getMappedBy();
+    if (mappedBy == null || "".equals(mappedBy)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.CONFIGURATOR_ONE_TO_MANY_WITHOUT_MAPPED_BY_UNSUPPORTED));
+    }
+    return Mapper.of(Class.forName(MetaTool.computeFullClassName(metaField))).getSetter(mappedBy);
+  }
+
+  /**
+   * Fix relational fields of a product or a sale order line generated from a configurator. This
+   * method may become useless on a future ADK update.
+   *
+   * @param model
+   */
   protected void fetchManyToManyFields(Model model) throws AxelorException {
     // get all many to many fields
     List<MetaField> manyToManyFields =
@@ -515,8 +544,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (value != null) {
       Mapper mapper = Mapper.of(parentModel.getClass());
       try {
-        String className =
-            String.format("%s.%s", metaField.getPackageName(), metaField.getTypeName());
+        String className = MetaTool.computeFullClassName(metaField);
         Model manyToOneDbValue = JPA.find((Class<Model>) Class.forName(className), value.getId());
         mapper.set(parentModel, metaField.getName(), manyToOneDbValue);
       } catch (Exception e) {
@@ -531,8 +559,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (values != null) {
       Mapper mapper = Mapper.of(parentModel.getClass());
       try {
-        String className =
-            String.format("%s.%s", metaField.getPackageName(), metaField.getTypeName());
+        String className = MetaTool.computeFullClassName(metaField);
         Set<Model> dbValues = new HashSet<>();
         for (Model value : values) {
           Model dbValue = JPA.find((Class<Model>) Class.forName(className), value.getId());

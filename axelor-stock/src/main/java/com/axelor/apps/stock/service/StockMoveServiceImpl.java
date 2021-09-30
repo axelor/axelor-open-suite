@@ -387,7 +387,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
       stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
     }
-    checkExpirationDates(stockMove);
+    stockMoveLineService.checkExpirationDates(stockMove);
 
     setRealizedStatus(stockMove);
     stockMoveLineService.updateLocations(
@@ -1229,13 +1229,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       stockMoveLineService.setAvailableStatus(stockMoveLine);
-    }
-  }
-
-  @Override
-  public void checkExpirationDates(StockMove stockMove) throws AxelorException {
-    if (stockMove.getToStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-      stockMoveLineService.checkExpirationDates(stockMove);
     }
   }
 
