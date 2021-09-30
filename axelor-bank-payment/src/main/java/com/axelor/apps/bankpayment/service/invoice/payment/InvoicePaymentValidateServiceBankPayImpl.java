@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -65,9 +66,10 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService,
+      InvoiceTermService invoiceTermService,
+      AppAccountService appAccountService,
       BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService,
-      AppAccountService appAccountService) {
+      BankOrderService bankOrderService) {
     super(
         paymentModeService,
         moveCreateService,
@@ -78,8 +80,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         invoicePaymentRepository,
         reconcileService,
         invoicePaymentToolService,
+        invoiceTermService,
         appAccountService);
-
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
   }
@@ -139,7 +141,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     if (paymentMode.getGenerateBankOrder()) {
       this.createBankOrder(invoicePayment);
     }
-
+    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
     if (invoice != null
         && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {

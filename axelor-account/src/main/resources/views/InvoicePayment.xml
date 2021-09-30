@@ -19,6 +19,14 @@
     <form name="invoice-payment-form" title="Payment"
         model="com.axelor.apps.account.db.InvoicePayment"
         onNew="action-invoice-payment-group-new">
+        <panel name="invoiceTermToPay" hidden="true" showIf="invoice.invoiceTermList.length &gt; 1 &amp;&amp; id == null &amp;&amp; invoice.operationTypeSelect != 4 &amp;&amp; invoice.operationTypeSelect != 2">
+        	<field name="$invoiceTerms" title="Unpaid invoice terms" type="one-to-many" target="com.axelor.apps.account.db.InvoiceTerm" 
+        	grid-view="invoice-term-grid" form-view="invoice-term-form" readonly="true" colSpan="12"/>
+        	<button onClick="action-invoice-payement-method-add-invoice-terms-to-pay" name="selectInvoiceTermTopayBtn" title="Add selected invoice terms to pay"/>
+        </panel>
+        <panel-related name="invoiceTermPaymentPanel" field="invoiceTermPaymentList"
+        grid-view="invoice-term-payment-grid" form-view="invoice-term-payment-form" colSpan="12" readonly="true"
+        	hidden="true" showIf="invoice.invoiceTermList.length &gt; 1 &amp;&amp; invoice.operationTypeSelect != 4 &amp;&amp; invoice.operationTypeSelect != 2"/>
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
 			<field name="typeSelect" showIf="id" colSpan="12" />
             <field name="amount" onChange="action-invoice-payment-method-change-amount"/>
@@ -44,6 +52,7 @@
 		</panel>
 		<panel name="discountPanel" title="Financial Discount" if="__config__.app.getApp('account').getManageFinancialDiscount()">
 			<field name="applyFinancialDiscount" readonlyIf="!financialDiscount" onChange="action-invoice-payment-method-change-amount,action-attrs-on-change-invoice-payment-financial-discount"/>
+			<field name="$totalAmountWithFinancialDiscount" type="decimal" title="Total amount with Fin. Discount" showIf="applyFinancialDiscount &amp;&amp; $totalAmountWithFinancialDiscount != null" readonly="true"/>
 			<field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
 			<field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount" readonly="true"/>
 			<field name="financialDiscountAmount" showIf="applyFinancialDiscount" readonly="true"/>
@@ -56,7 +65,6 @@
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancelBtn" title="Cancel"  readonlyIf="statusSelect == 2 || move.statusSelect == 3" hideIf="move.statusSelect == 3" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
 			<field name="move.statusSelect" hidden="true" readonly="true"/>
-			
 		</panel>
 		<panel name="newInvoicePaymentPanel"  hideIf="id">
 			<button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"  onClick="action-invoice-payment-method-check-and-save,save,close"/>
@@ -88,13 +96,13 @@
 		</panel>
 	</form>
 
-
-
 	<action-group name="action-invoice-payment-group-new">
 		<action name="action-invoice-payment-record-new"/>
 		<action name="action-invoice-payment-attrs-new"/>
 		<action name="action-invoice-payment-method-new"/>
 		<action name="action-invoice-payment-method-new-discount"/>
+        <action name="action-invoice-payment-method-load-invoice-terms"/>
+        <action name="action-invoice-payment-method-change-amount"/>
 	</action-group>
 	
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
@@ -155,6 +163,15 @@
 	
 	<action-method name="action-invoice-payment-method-check-and-save">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
+	</action-method>
+
+        <action-method name="action-invoice-payment-method-load-invoice-terms">
+        <call class="com.axelor.apps.account.web.InvoicePaymentController" method="loadInvoiceTerms"/>
+	</action-method>
+
+
+	<action-method name="action-invoice-payement-method-add-invoice-terms-to-pay">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="addSelectedInvoiceTermsToPay"/>
 	</action-method>
 
 	<action-record name="action-record-on-change-invoice-payment-financial-discount" model="com.axelor.apps.account.db.InvoicePayment">

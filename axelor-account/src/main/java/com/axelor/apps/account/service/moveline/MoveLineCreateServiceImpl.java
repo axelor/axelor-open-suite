@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
@@ -22,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
@@ -290,8 +292,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
 
-    int moveLineId = 1;
-
     if (partner == null) {
       throw new AxelorException(
           invoice,
@@ -313,23 +313,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    // Creation of partner move line
-    MoveLine moveLine1 =
-        this.createMoveLine(
-            move,
-            partner,
-            partnerAccount,
-            invoice.getInTaxTotal(),
-            invoice.getCompanyInTaxTotal(),
-            null,
-            isDebitCustomer,
-            invoice.getInvoiceDate(),
-            invoice.getDueDate(),
-            invoice.getOriginDate(),
-            moveLineId++,
-            origin,
-            null);
-    moveLines.add(moveLine1);
+    moveLines.addAll(
+        addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+    int moveLineId = moveLines.size() + 1;
 
     // Creation of product move lines for each invoice line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
@@ -502,6 +488,97 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       moveLineConsolidateService.consolidateMoveLines(moveLines);
     }
 
+    return moveLines;
+  }
+
+  protected List<MoveLine> addInvoiceTermMoveLines(
+      Invoice invoice,
+      Account partnerAccount,
+      Move move,
+      Partner partner,
+      boolean isDebitCustomer,
+      String origin)
+      throws AxelorException {
+    int moveLineId = 1;
+    List<MoveLine> moveLines = new ArrayList<MoveLine>();
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+    MoveLine moveLine = null;
+    MoveLine holdBackMoveLine;
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+
+      Account account = partnerAccount;
+      if (invoiceTerm.getIsHoldBack()) {
+        account = invoiceService.getPartnerAccount(invoice, true);
+        holdBackMoveLine =
+            this.createMoveLine(
+                move,
+                partner,
+                account,
+                invoiceTerm.getAmount(),
+                currencyService
+                    .getAmountCurrencyConvertedAtDate(
+                        invoice.getCurrency(),
+                        companyCurrency,
+                        invoiceTerm.getAmount(),
+                        invoice.getInvoiceDate())
+                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                null,
+                isDebitCustomer,
+                invoice.getInvoiceDate(),
+                invoice.getDueDate(),
+                invoice.getOriginDate(),
+                moveLineId++,
+                origin,
+                null);
+        invoiceTerm.setMoveLine(holdBackMoveLine);
+        moveLines.add(holdBackMoveLine);
+      } else {
+        if (moveLine == null) {
+          moveLine =
+              this.createMoveLine(
+                  move,
+                  partner,
+                  account,
+                  invoiceTerm.getAmount(),
+                  currencyService
+                      .getAmountCurrencyConvertedAtDate(
+                          invoice.getCurrency(),
+                          companyCurrency,
+                          invoiceTerm.getAmount(),
+                          invoice.getInvoiceDate())
+                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                  null,
+                  isDebitCustomer,
+                  invoice.getInvoiceDate(),
+                  invoiceTerm.getDueDate(),
+                  invoice.getOriginDate(),
+                  moveLineId++,
+                  origin,
+                  null);
+        } else {
+          if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+            // Debit
+            moveLine.setDebit(
+                moveLine
+                    .getDebit()
+                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+          } else {
+            // Credit
+            moveLine.setCredit(
+                moveLine
+                    .getCredit()
+                    .add(invoiceTerm.getAmount().divide(moveLine.getCurrencyRate())));
+          }
+        }
+      }
+    }
+
+    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+      if (!invoiceTerm.getIsHoldBack()) {
+        invoiceTerm.setMoveLine(moveLine);
+      }
+    }
+    moveLines.add(moveLine);
     return moveLines;
   }
 
