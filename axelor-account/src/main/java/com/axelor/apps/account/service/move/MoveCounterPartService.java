@@ -5,7 +5,7 @@ import com.axelor.apps.account.db.MoveLine;
 
 public interface MoveCounterPartService {
 
-  void generateCounterpartMoveLine(Move move);
+  void generateCounterpartMoveLine(Move move) throws Exception;
 
-  MoveLine createCounterpartMoveLine(Move move);
+  MoveLine createCounterpartMoveLine(Move move) throws Exception;
 }

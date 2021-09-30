@@ -7,6 +7,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -16,45 +17,53 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
+  protected MoveLineCreateService moveLineCreateService;
 
   @Inject
   public MoveCounterPartServiceImpl(
-      MoveRepository moveRepository, MoveLineToolService moveLineToolService) {
+      MoveRepository moveRepository,
+      MoveLineToolService moveLineToolService,
+      MoveLineCreateService moveLineCreateService) {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
   @Transactional
-  public void generateCounterpartMoveLine(Move move) {
+  public void generateCounterpartMoveLine(Move move) throws Exception {
     move.addMoveLineListItem(createCounterpartMoveLine(move));
     moveRepository.save(move);
   }
 
   @Override
-  public MoveLine createCounterpartMoveLine(Move move) {
-    MoveLine moveLine = new MoveLine();
-    moveLine.setMove(moveRepository.find(move.getId()));
-    moveLine.setDate(move.getDate());
-    moveLine.setOrigin(move.getOrigin());
-    moveLine.setOriginDate(move.getOriginDate());
-    moveLine.setDescription(move.getDescription());
-    moveLine.setPartner(move.getPartner());
-    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
+  public MoveLine createCounterpartMoveLine(Move move) throws Exception {
 
     Account accountingAccount = getAccountingAccountFromJournal(move);
-
-    if (accountingAccount != null) moveLine.setAccount(accountingAccount);
-
+    boolean isDebit;
     BigDecimal amount = getCounterpartAmount(move);
     if (amount.compareTo(BigDecimal.ZERO) == -1) {
-      moveLine.setCredit(amount.abs());
+      isDebit = false;
     } else {
-      moveLine.setDebit(amount.abs());
+      isDebit = true;
     }
-
+    MoveLine moveLine =
+        moveLineCreateService.createMoveLine(
+            move,
+            move.getPartner(),
+            accountingAccount,
+            BigDecimal.ZERO,
+            amount.abs(),
+            BigDecimal.ZERO,
+            isDebit,
+            move.getDate(),
+            move.getDate(),
+            move.getOriginDate(),
+            move.getMoveLineList().size(),
+            move.getOrigin(),
+            move.getDescription());
+    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
-
     return moveLine;
   }
 
