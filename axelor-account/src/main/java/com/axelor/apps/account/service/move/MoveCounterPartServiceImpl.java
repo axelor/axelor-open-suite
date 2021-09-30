@@ -64,6 +64,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             move.getDescription());
     moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
+    moveLine.setDescription(move.getDescription());
     return moveLine;
   }
 
