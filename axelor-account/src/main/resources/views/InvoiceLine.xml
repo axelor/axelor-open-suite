@@ -18,9 +18,9 @@
     
     <grid name="invoice-line-invoice-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <hilite strong="true" color="default" if="typeSelect != 0"/>
-       	<field name="product" width="120" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect" hidden="true"/>
+       	<field name="product" width="120" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect"/>
         <field name="account" width="120" canEdit="false" onChange="action-attrs-account-invoice-line-account-onchange,action-method-account-invoice-line-account-onchange,action-method-invoice-line-axis-create-analytic-line,action-method-invoice-line-remove-account" onSelect="action-invoice-line-method-filter-account"/>
-        <field name="description"/>
+        <field name="productName"/>
         <field name="qty" x-scale="1" onChange="action-group-account-invoice-line-qty-onchange"/>
         <field name="price" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" x-scale="2"/>
         <field name="exTaxTotal" readonly="true"/>
