@@ -271,7 +271,8 @@
 	                            	                            
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.operationTypeSelect == 3 || record.operationTypeSelect == 4) && record.partner.factorizedCustomer">Factorized customer</span>
 
-								<span class="label label-default" style="background-color: #2C75FF; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.litigationReason != null" >{{$fmt('litigationReason.name')}}</span>
+								<span class="label label-default" style="background-color: #2C75FF; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.reasonOfRefusalToPay != null" >{{$fmt('reasonOfRefusalToPay.name')}}</span>
+
 
 
 	                        </h4>
@@ -338,9 +339,7 @@
 
               	</field>
             </panel>
-
-            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
-		    <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false" readonly="true">
+			<field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false" readonly="true">
               <viewer>
                 <![CDATA[
                	  <h4>
@@ -349,7 +348,9 @@
               	]]>
               </viewer>    
             </field>
-            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
+            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-account-invoice-atts-suppier-invoice-nbr" colSpan="6"/>
+		    
+            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" colSpan="6"/>
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
@@ -359,12 +360,10 @@
 		</panel>
 		
 		<panel name="datesPanel">
-			<field name="accountingDate" colSpan="4"/>
-			<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" colSpan="4"/>
-			<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree" colSpan="4"/>
-			<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" colSpan="12"/>
-			<field name="completionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="6"/>
-			<field name="executionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="6"/>
+			<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree" colSpan="3"/>
+			<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" colSpan="3"/>
+			<field name="completionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="3"/>
+			<field name="executionFromDate" onChange="action-validate-dates-completion-execution-invoice" colSpan="3"/>
 		</panel>
 
 		<panel-tabs name="mainPanelTab" hideIf="partner == null">
@@ -393,9 +392,10 @@
 				<panel name="accountingDetailsPanel" title="Accounting details"  colSpan="12">
 					<field name="journal" canEdit="false" readonlyIf="statusSelect == 3" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
 					<field name="partnerAccount" canEdit="false" readonlyIf="statusSelect == 3" onSelect="action-invoice-partner-account-domain" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-					<panel name="movePanel" showIf="move != null">
-						<field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
-						<field name="move.accountingOk" readonly="true"/>
+					<panel name="movePanel" showIf="move != null" colSpan="12">
+						<field name="move" readonly="true" form-view="move-form" grid-view="move-grid" colSpan="4"/>
+						<field name="move.date" readonly="true" colSpan="4"/>
+						<field name="move.accountingOk" readonly="true" colSpan="4"/>
 					</panel>
 					<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk &amp;&amp; statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
 					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
@@ -538,13 +538,15 @@ InvoiceSet.length > 0))"
             <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
 			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
 			<field name="pfpValidatorUser" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; statusSelect &gt; 1" readonlyIf="pfpValidateStatusSelect != 1" colSpan="6" onSelect="action-invoice-method-domain-pfp-validator-user-on-select" onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user" canEdit="false"/>
-			<panel name="pfpEmailPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
+			<field name="reasonOfRefusalToPay" colSpan="6" hideIf="partner == null || reasonOfRefusalToPay == null"/>
+			
+			<panel name="pfpEmailPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="12">
 				<field name="decisionPfpTakenDate" hidden="true"  showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; decisionPfpTakenDate" colSpan="12"/>
 				<button name="sendPfpNotifyEmailBtn" hidden="true" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1" colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
 			</panel>
 			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
 			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
-			<field name="litigationReason" colSpan="6" hideIf="partner == null"/>
+
         </panel>
         <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"  hideIf="partner == null">
 			<field name="currency.code" hidden="true"/>

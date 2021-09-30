@@ -213,8 +213,6 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       if (moveLine.getAccount().getAccountType() != null) {
         analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
       }
-    } else {
-      analyticMoveLine.setAccount(accountRepository.find((long) 1));
     }
 
     if (analyticAccount != null) {
@@ -244,23 +242,29 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
               .getAnalyticJournal());
     }
 
-    analyticMoveLine.setDate(invoiceLine.getInvoice().getInvoiceDate());
+    if (invoiceLine.getInvoice().getInvoiceDate() != null) {
+      analyticMoveLine.setDate(invoiceLine.getInvoice().getInvoiceDate());
+    } else {
+      analyticMoveLine.setDate(LocalDate.now());
+    }
     analyticMoveLine.setPercentage(new BigDecimal(100));
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+
     if (invoiceLine.getAccount() != null) {
       analyticMoveLine.setAccount(invoiceLine.getAccount());
       if (invoiceLine.getAccount().getAccountType() != null) {
         analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());
       }
-    } else {
-      analyticMoveLine.setAccount(accountRepository.find((long) 1));
     }
 
     if (analyticAccount != null) {
       analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
       analyticMoveLine.setAnalyticAccount(analyticAccount);
     }
-    analyticMoveLine.setAmount(invoiceLine.getInTaxTotal());
+
+    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+
     return analyticMoveLine;
   }
 }

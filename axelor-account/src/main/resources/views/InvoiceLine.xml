@@ -19,32 +19,32 @@
     <grid name="invoice-line-invoice-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <hilite strong="true" color="default" if="typeSelect != 0"/>
        	<field name="product" width="120" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect"/>
-        <field name="description"/>
+        <field name="account" width="120" canEdit="false" onChange="action-attrs-account-invoice-line-account-onchange,action-method-account-invoice-line-account-onchange,action-method-invoice-line-axis-create-analytic-line,action-method-invoice-line-remove-account" onSelect="action-invoice-line-method-filter-account"/>
+        <field name="productName"/>
         <field name="qty" x-scale="1" onChange="action-group-account-invoice-line-qty-onchange"/>
         <field name="price" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" x-scale="2"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid"
 	      form-view="analytic-distribution-template-form" onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template" onChange="action-invoice-line-method-create-distribution"
-	      readonlyIf="!product || product.analyticDistributionAuthorized == false || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
-	      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; product.analyticDistributionAuthorized &amp;&amp; product.analyticDistributionRequiredOnMoveLines 
+	      readonlyIf="!account || account.analyticDistributionAuthorized == false || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
+	      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines 
 	      &amp;&amp; (!axis1AnalyticAccount &amp;&amp; !axis2AnalyticAccount &amp;&amp; !axis3AnalyticAccount &amp;&amp; !axis4AnalyticAccount &amp;&amp; !axis5AnalyticAccount)" />
 		<field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
-			readonlyIf="product.analyticDistributionAuthorized == false || !product || analyticDistributionTemplate != null"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
 			onSelect="action-method-invoice-line-set-axis-domain" onChange="action-method-invoice-line-axis-create-analytic-line"/>
 		<field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
-			readonlyIf="product.analyticDistributionAuthorized == false || !product || analyticDistributionTemplate != null"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
 			onSelect="action-method-invoice-line-set-axis-domain" onChange="action-method-invoice-line-axis-create-analytic-line"/>
 		<field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
-			readonlyIf="product.analyticDistributionAuthorized == false || !product || analyticDistributionTemplate != null"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
 			onSelect="action-method-invoice-line-set-axis-domain" onChange="action-method-invoice-line-axis-create-analytic-line"/>
 		<field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
-			readonlyIf="product.analyticDistributionAuthorized == false || !product || analyticDistributionTemplate != null"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
 			onSelect="action-method-invoice-line-set-axis-domain" onChange="action-method-invoice-line-axis-create-analytic-line"/>
 		<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
-			readonlyIf="product.analyticDistributionAuthorized == false || !product || analyticDistributionTemplate != null"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
 			onSelect="action-method-invoice-line-set-axis-domain" onChange="action-method-invoice-line-axis-create-analytic-line"/>
-			
 		<field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid" form-view="analytic-move-line-move-line-form"/>	
     </grid>
 
@@ -317,6 +317,7 @@
     	<action name="action-budget-validate-exceed-line-amount"/>
     	<action name="action-invoice-line-method-get-fixed-asset-category" if="__config__.app.isApp('account')"/>
     	<action name="action-attrs-account-invoice-line-onnew-onload"/>
+    	<action name="action-method-invoice-line-remove-product" if="!product"/>
     </action-group>
     
     <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -485,6 +486,14 @@
     
     <action-method name="action-method-invoice-line-axis-create-analytic-line">
     	<call class="com.axelor.apps.account.web.InvoiceLineController" method="createAnalyticAccountLines"/>
+    </action-method>
+    
+    <action-method name="action-method-invoice-line-remove-product">
+    	<call class="com.axelor.apps.account.web.InvoiceLineController" method="removeProduct"/>    	
+    </action-method>
+    
+    <action-method name="action-method-invoice-line-remove-account">
+    	<call class="com.axelor.apps.account.web.InvoiceLineController" method="removeAccount"/>    	
     </action-method>
 
 </object-views>
