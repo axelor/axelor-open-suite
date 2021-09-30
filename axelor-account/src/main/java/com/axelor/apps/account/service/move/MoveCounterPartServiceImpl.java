@@ -7,6 +7,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -16,23 +18,30 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
+  protected AccountingSituationService accountingSituationService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public MoveCounterPartServiceImpl(
-      MoveRepository moveRepository, MoveLineToolService moveLineToolService) {
+      MoveRepository moveRepository,
+      MoveLineToolService moveLineToolService,
+      AccountingSituationService accountingSituationService,
+      AccountConfigService accountConfigService) {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
+    this.accountingSituationService = accountingSituationService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
   @Transactional
-  public void generateCounterpartMoveLine(Move move) {
+  public void generateCounterpartMoveLine(Move move) throws Exception {
     move.addMoveLineListItem(createCounterpartMoveLine(move));
     moveRepository.save(move);
   }
 
   @Override
-  public MoveLine createCounterpartMoveLine(Move move) {
+  public MoveLine createCounterpartMoveLine(Move move) throws Exception {
     MoveLine moveLine = new MoveLine();
     moveLine.setMove(moveRepository.find(move.getId()));
     moveLine.setDate(move.getDate());
@@ -67,7 +76,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     return amount;
   }
 
-  protected Account getAccountingAccountFromJournal(Move move) {
+  protected Account getAccountingAccountFromJournal(Move move) throws Exception {
     Account accountingAccount = null;
     if (move.getJournal()
             .getJournalType()
@@ -78,21 +87,20 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             .getTechnicalTypeSelect()
             .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
 
-      for (AccountingSituation accountingSituation :
-          move.getPartner().getAccountingSituationList()) {
-        if (accountingSituation.getCompany().equals(move.getCompany())) {
-          if (move.getJournal()
-              .getJournalType()
-              .getTechnicalTypeSelect()
-              .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
-            accountingAccount = accountingSituation.getSupplierAccount();
-          else if (move.getJournal()
-              .getJournalType()
-              .getTechnicalTypeSelect()
-              .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
-            accountingAccount = accountingSituation.getCustomerAccount();
-        }
+      AccountingSituation accountingSituation =
+          accountingSituationService.getAccountingSituation(move.getPartner(), move.getCompany());
+      if (move.getJournal()
+          .getJournalType()
+          .getTechnicalTypeSelect()
+          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)) {
+        accountingAccount = accountingSituation.getSupplierAccount();
+      } else if (move.getJournal()
+          .getJournalType()
+          .getTechnicalTypeSelect()
+          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
+        accountingAccount = accountingSituation.getCustomerAccount();
       }
+
     } else if (move.getJournal()
         .getJournalType()
         .getTechnicalTypeSelect()
@@ -110,7 +118,8 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
           .getJournalType()
           .getTechnicalTypeSelect()
           .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
-        accountingAccount = move.getCompany().getAccountConfig().getSupplierAccount();
+        accountingAccount =
+            accountConfigService.getAccountConfig(move.getCompany()).getSupplierAccount();
       else if (move.getJournal()
           .getJournalType()
           .getTechnicalTypeSelect()
