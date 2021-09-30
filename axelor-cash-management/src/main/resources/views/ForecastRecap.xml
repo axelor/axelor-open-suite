@@ -64,7 +64,7 @@
        		<field name="displayTypeSelect"/>
        		<field name="isComplete" hidden="true"/>
        		<button name="completeBtn" title="Populate" onClick="save,action-forecast-recap-method-populate" hideIf="isComplete"/>
-       		<button name="updateBtn" title="Update" onClick="save,action-forecast-report-complete,action-forecast-report-refresh" showIf="isComplete"/>		
+       		<button name="updateBtn" title="Update" onClick="save,action-forecast-recap-method-populate,action-forecast-report-refresh" showIf="isComplete"/>
        		<panel-dashlet name="reportDashletSalesPanel" action="forecast.report.sales.dashlet" colSpan="12" hideIf="!isComplete || displayTypeSelect == 2"/>
        		<panel-dashlet name="reportDashletSpendingPanel" action="forecast.report.spending.dashlet" colSpan="12" hideIf="!isComplete || displayTypeSelect == 1"/>
        		<panel-dashlet name="reportDashletMargesPanel" action="forecast.report.marges.dashlet" colSpan="12" hideIf="!isComplete || displayTypeSelect != 3"/>
