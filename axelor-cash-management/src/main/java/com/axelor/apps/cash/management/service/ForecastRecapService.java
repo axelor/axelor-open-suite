@@ -5,6 +5,7 @@ import com.axelor.apps.cash.management.db.ForecastRecapLineType;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 public interface ForecastRecapService {
 
@@ -28,4 +29,26 @@ public interface ForecastRecapService {
 
   String getForecastRecapFileLink(ForecastRecap forecastRecap, String reportType)
       throws AxelorException;
+
+  public void getOpportunities(
+      ForecastRecap forecastRecap,
+      Map<LocalDate, BigDecimal> mapExpected,
+      Map<LocalDate, BigDecimal> mapConfirmed)
+      throws AxelorException;
+
+  public void getInvoices(
+      ForecastRecap forecastRecap,
+      Map<LocalDate, BigDecimal> mapExpected,
+      Map<LocalDate, BigDecimal> mapConfirmed);
+
+  public void getTimetablesOrOrders(
+      ForecastRecap forecastRecap,
+      Map<LocalDate, BigDecimal> mapExpected,
+      Map<LocalDate, BigDecimal> mapConfirmed)
+      throws AxelorException;
+
+  public void getForecasts(
+      ForecastRecap forecastRecap,
+      Map<LocalDate, BigDecimal> mapExpected,
+      Map<LocalDate, BigDecimal> mapConfirmed);
 }

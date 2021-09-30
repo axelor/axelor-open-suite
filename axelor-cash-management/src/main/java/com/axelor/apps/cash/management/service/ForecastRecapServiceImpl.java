@@ -29,10 +29,12 @@ import com.axelor.apps.cash.management.db.ForecastRecapLine;
 import com.axelor.apps.cash.management.db.ForecastRecapLineType;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapLineTypeRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
+import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.axelor.apps.cash.management.exception.IExceptionMessage;
 import com.axelor.apps.cash.management.report.IReport;
 import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
@@ -40,6 +42,7 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.tool.StringTool;
@@ -81,6 +84,10 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected ForecastRecapLineTypeRepository forecastRecapLineTypeRepo;
   protected ForecastRecapRepository forecastRecapRepo;
   protected TimetableRepository timetableRepo;
+  protected OpportunityRepository opportunityRepo;
+  protected InvoiceRepository invoiceRepo;
+  protected SaleOrderRepository saleOrderRepo;
+  protected ForecastRepository forecastRepo;
 
   protected LocalDate today;
   protected Map<Integer, List<Integer>> invoiceStatusMap;
@@ -91,12 +98,20 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       CurrencyService currencyService,
       ForecastRecapLineTypeRepository forecastRecapLineTypeRepo,
       ForecastRecapRepository forecastRecapRepo,
-      TimetableRepository timetableRepo) {
+      TimetableRepository timetableRepo,
+      OpportunityRepository opportunityRepo,
+      InvoiceRepository invoiceRepo,
+      SaleOrderRepository saleOrderRepo,
+      ForecastRepository forecastRepo) {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.forecastRecapLineTypeRepo = forecastRecapLineTypeRepo;
     this.forecastRecapRepo = forecastRecapRepo;
     this.timetableRepo = timetableRepo;
+    this.opportunityRepo = opportunityRepo;
+    this.invoiceRepo = invoiceRepo;
+    this.saleOrderRepo = saleOrderRepo;
+    this.forecastRepo = forecastRepo;
   }
 
   @Override
@@ -758,5 +773,299 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         .addFormat(reportType)
         .generate()
         .getFileLink();
+  }
+
+  @Override
+  public void getOpportunities(
+      ForecastRecap forecastRecap,
+      Map<LocalDate, BigDecimal> mapExpected,
+      Map<LocalDate, BigDecimal> mapConfirmed)
+      throws AxelorException {
+    List<Opportunity> opportunityList = new ArrayList<Opportunity>();
+    if (forecastRecap.getBankDetails() != null) {
+      opportunityList =
+          opportunityRepo
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.bankDetails = ?2 AND self.expectedCloseDate BETWEEN ?3 AND ?4 AND self.saleOrderList IS EMPTY",
+                  forecastRecap.getCompany(),
+                  forecastRecap.getBankDetails(),
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate())
+              .fetch();
+    } else {
+      opportunityList =
+          opportunityRepo
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.expectedCloseDate BETWEEN ?2 AND ?3 AND self.saleOrderList IS EMPTY",
+                  forecastRecap.getCompany(),
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate())
+              .fetch();
+    }
+    for (Opportunity opportunity : opportunityList) {
+      BigDecimal amountCompanyCurr = BigDecimal.ZERO;
+      if (forecastRecap.getOpportunitiesTypeSelect()
+          == ForecastRecapRepository.OPPORTUNITY_TYPE_BASE) {
+        amountCompanyCurr =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    opportunity.getCurrency(),
+                    opportunity.getCompany().getCurrency(),
+                    opportunity
+                        .getAmount()
+                        .multiply(opportunity.getProbability())
+                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
+                .setScale(2, RoundingMode.HALF_UP);
+      } else if (forecastRecap.getOpportunitiesTypeSelect()
+          == ForecastRecapRepository.OPPORTUNITY_TYPE_BEST) {
+        amountCompanyCurr =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    opportunity.getCurrency(),
+                    opportunity.getCompany().getCurrency(),
+                    opportunity
+                        .getBestCase()
+                        .multiply(opportunity.getProbability())
+                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
+                .setScale(2, RoundingMode.HALF_UP);
+      } else {
+        amountCompanyCurr =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    opportunity.getCurrency(),
+                    opportunity.getCompany().getCurrency(),
+                    opportunity
+                        .getWorstCase()
+                        .multiply(opportunity.getProbability())
+                        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
+                .setScale(2, RoundingMode.HALF_UP);
+      }
+      if (opportunity.getSalesStageSelect() == 9) {
+        if (mapExpected.containsKey(opportunity.getExpectedCloseDate())) {
+          mapExpected.put(
+              opportunity.getExpectedCloseDate(),
+              mapExpected.get(opportunity.getExpectedCloseDate()).add(amountCompanyCurr));
+        } else {
+          mapExpected.put(opportunity.getExpectedCloseDate(), amountCompanyCurr);
+        }
+      } else {
+        if (mapConfirmed.containsKey(opportunity.getExpectedCloseDate())) {
+          mapConfirmed.put(
+              opportunity.getExpectedCloseDate(),
+              mapConfirmed.get(opportunity.getExpectedCloseDate()).add(amountCompanyCurr));
+        } else {
+          mapConfirmed.put(opportunity.getExpectedCloseDate(), amountCompanyCurr);
+        }
+      }
+    }
+  }
+
+  @Override
+  public void getInvoices(
+      ForecastRecap forecastRecap,
+      Map<LocalDate, BigDecimal> mapExpected,
+      Map<LocalDate, BigDecimal> mapConfirmed) {
+    List<Invoice> invoiceList = new ArrayList<Invoice>();
+    if (forecastRecap.getBankDetails() != null) {
+      invoiceList =
+          invoiceRepo
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.companyBankDetails = ?2 AND self.statusSelect = 3 AND self.estimatedPaymentDate BETWEEN ?3 AND ?4 AND self.companyInTaxTotalRemaining != 0",
+                  forecastRecap.getCompany(),
+                  forecastRecap.getBankDetails(),
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate())
+              .fetch();
+    } else {
+      invoiceList =
+          invoiceRepo
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.statusSelect = 3 AND self.estimatedPaymentDate BETWEEN ?2 AND ?3 AND self.companyInTaxTotalRemaining != 0",
+                  forecastRecap.getCompany(),
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate())
+              .fetch();
+    }
+    for (Invoice invoice : invoiceList) {
+      BigDecimal amountPaidExTax =
+          invoice
+              .getAmountPaid()
+              .multiply(invoice.getCompanyExTaxTotal())
+              .divide(invoice.getCompanyInTaxTotal(), 2, RoundingMode.HALF_UP);
+      BigDecimal amount = invoice.getCompanyExTaxTotal().subtract(amountPaidExTax);
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+        if (mapConfirmed.containsKey(invoice.getEstimatedPaymentDate())) {
+          mapConfirmed.put(
+              invoice.getEstimatedPaymentDate(),
+              mapConfirmed.get(invoice.getEstimatedPaymentDate()).add(amount));
+        } else {
+          mapConfirmed.put(invoice.getEstimatedPaymentDate(), amount);
+        }
+      }
+    }
+  }
+
+  @Override
+  public void getTimetablesOrOrders(
+      ForecastRecap forecastRecap,
+      Map<LocalDate, BigDecimal> mapExpected,
+      Map<LocalDate, BigDecimal> mapConfirmed)
+      throws AxelorException {
+    List<Timetable> timetableSaleOrderList = new ArrayList<Timetable>();
+    List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
+    if (forecastRecap.getBankDetails() != null) {
+      timetableSaleOrderList =
+          timetableRepo
+              .all()
+              .filter(
+                  "self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
+                      + " self.saleOrder.companyBankDetails = ?4 AND (self.saleOrder.statusSelect = 2 OR self.saleOrder.statusSelect = 3) AND self.amount != 0",
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate(),
+                  forecastRecap.getCompany(),
+                  forecastRecap.getBankDetails())
+              .fetch();
+    } else {
+      timetableSaleOrderList =
+          timetableRepo
+              .all()
+              .filter(
+                  "self.estimatedDate BETWEEN ?1 AND ?2 AND self.saleOrder.company = ?3 AND"
+                      + " (self.saleOrder.statusSelect = 2 OR self.saleOrder.statusSelect = 3) AND self.amount != 0",
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate(),
+                  forecastRecap.getCompany())
+              .fetch();
+    }
+    for (Timetable timetable : timetableSaleOrderList) {
+      saleOrderList.add(timetable.getSaleOrder());
+      BigDecimal amountCompanyCurr =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(
+                  timetable.getSaleOrder().getCurrency(),
+                  timetable.getSaleOrder().getCompany().getCurrency(),
+                  timetable.getAmount(),
+                  appBaseService.getTodayDate(forecastRecap.getCompany()))
+              .setScale(2, RoundingMode.HALF_UP);
+      if (timetable.getSaleOrder().getStatusSelect()
+          == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+        if (mapExpected.containsKey(timetable.getEstimatedDate())) {
+          mapExpected.put(
+              timetable.getEstimatedDate(),
+              mapExpected.get(timetable.getEstimatedDate()).add(amountCompanyCurr));
+        } else {
+          mapExpected.put(timetable.getEstimatedDate(), amountCompanyCurr);
+        }
+      } else {
+        if (mapConfirmed.containsKey(timetable.getEstimatedDate())) {
+          mapConfirmed.put(
+              timetable.getEstimatedDate(),
+              mapConfirmed.get(timetable.getEstimatedDate()).add(amountCompanyCurr));
+        } else {
+          mapConfirmed.put(timetable.getEstimatedDate(), amountCompanyCurr);
+        }
+      }
+    }
+    List<SaleOrder> saleOrderNoTimeTableList = new ArrayList<SaleOrder>();
+    if (forecastRecap.getBankDetails() != null) {
+      saleOrderNoTimeTableList =
+          saleOrderRepo
+              .all()
+              .filter(
+                  "self.expectedRealisationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
+                      + " self.companyBankDetails = ?4 AND (self.statusSelect = 2 OR self.statusSelect = 3)",
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate(),
+                  forecastRecap.getCompany(),
+                  forecastRecap.getBankDetails())
+              .fetch();
+    } else {
+      saleOrderNoTimeTableList =
+          saleOrderRepo
+              .all()
+              .filter(
+                  "self.expectedRealisationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
+                      + " (self.statusSelect = 2 OR self.statusSelect = 3)",
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate(),
+                  forecastRecap.getCompany())
+              .fetch();
+    }
+    for (SaleOrder saleOrder : saleOrderNoTimeTableList) {
+      if (!saleOrderList.contains(saleOrder)) {
+        BigDecimal amountCompanyCurr =
+            saleOrder.getCompanyExTaxTotal().subtract(saleOrder.getAmountInvoiced());
+        if (amountCompanyCurr.compareTo(BigDecimal.ZERO) == 0) {
+          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+            if (mapExpected.containsKey(saleOrder.getExpectedRealisationDate())) {
+              mapExpected.put(
+                  saleOrder.getExpectedRealisationDate(),
+                  mapExpected.get(saleOrder.getExpectedRealisationDate()).add(amountCompanyCurr));
+            } else {
+              mapExpected.put(saleOrder.getExpectedRealisationDate(), amountCompanyCurr);
+            }
+          } else {
+            if (mapConfirmed.containsKey(saleOrder.getExpectedRealisationDate())) {
+              mapConfirmed.put(
+                  saleOrder.getExpectedRealisationDate(),
+                  mapConfirmed.get(saleOrder.getExpectedRealisationDate()).add(amountCompanyCurr));
+            } else {
+              mapConfirmed.put(saleOrder.getExpectedRealisationDate(), amountCompanyCurr);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @Override
+  public void getForecasts(
+      ForecastRecap forecastRecap,
+      Map<LocalDate, BigDecimal> mapExpected,
+      Map<LocalDate, BigDecimal> mapConfirmed) {
+    List<Forecast> forecastList = new ArrayList<Forecast>();
+    if (forecastRecap.getBankDetails() != null) {
+      forecastList =
+          forecastRepo
+              .all()
+              .filter(
+                  "self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
+                      + " self.bankDetails = ?4 AND self.realizationDate IS NULL",
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate(),
+                  forecastRecap.getCompany(),
+                  forecastRecap.getBankDetails())
+              .fetch();
+    } else {
+      forecastList =
+          forecastRepo
+              .all()
+              .filter(
+                  "self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
+                      + " self.realizationDate IS NULL",
+                  forecastRecap.getFromDate(),
+                  forecastRecap.getToDate(),
+                  forecastRecap.getCompany())
+              .fetch();
+    }
+    for (Forecast forecast : forecastList) {
+      if (forecast.getAmount().compareTo(BigDecimal.ZERO) != -1) {
+        if (mapExpected.containsKey(forecast.getEstimatedDate())) {
+          mapExpected.put(
+              forecast.getEstimatedDate(),
+              mapExpected.get(forecast.getEstimatedDate()).add(forecast.getAmount()));
+        } else {
+          mapExpected.put(forecast.getEstimatedDate(), forecast.getAmount());
+        }
+      }
+    }
   }
 }
