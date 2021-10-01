@@ -331,7 +331,7 @@
               	</field>
             </panel>
 
-            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
+            <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))" onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
 		    <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false" readonly="true">
               <viewer>
                 <![CDATA[
@@ -341,7 +341,7 @@
               	]]>
               </viewer>    
             </field>
-            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
+            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date"/>
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
