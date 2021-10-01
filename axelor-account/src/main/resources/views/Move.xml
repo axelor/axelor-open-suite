@@ -490,9 +490,9 @@
     <filter title="Canceled Moves">
       <domain>self.statusSelect = 4</domain>
     </filter>
-  <filter title="Simulated Moves">
-			<domain>self.statusSelect = 5</domain>
-		</filter>
+    <filter title="Simulated Moves">
+	  <domain>self.statusSelect = 5</domain>
+    </filter>
 	</search-filters>
 <action-attrs name="action-attrs-hide-axis-analytic-account-move-line">
 		<attribute name="hidden" for="moveLineList.axis1AnalyticAccount" expr="eval: !(1 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
