@@ -73,6 +73,10 @@
 
 
 				</panel>
+				<panel name="managePeriodPanel" title="Period closure" colSpan="12">
+					<field name="temporaryClosureAuthorizedGroupList" colSpan="6" widget="TagSelect"/>
+					<field name="closureAuthorizedGroupList" colSpan="6" widget="TagSelect"/>
+				</panel>
 				<panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
 					<field name="cashPositionVariationAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>

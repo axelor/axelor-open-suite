@@ -19,9 +19,15 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Period;
+import com.axelor.auth.db.User;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
 
 public interface PeriodServiceAccount {
 
   public Query<Move> getMoveListToValidateQuery(Period period);
+
+  public boolean isManageClosedPeriod(Period period, User user) throws AxelorException;
+
+  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
 }
