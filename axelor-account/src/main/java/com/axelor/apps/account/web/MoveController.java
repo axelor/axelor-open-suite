@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
@@ -424,6 +425,18 @@ public class MoveController {
     try {
       Move move =
           Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      if (move.getPaymentMode() == null
+          && (move.getJournal()
+                  .getJournalType()
+                  .getTechnicalTypeSelect()
+                  .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+              || move.getJournal()
+                  .getJournalType()
+                  .getTechnicalTypeSelect()
+                  .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER))) {
+        response.setError(I18n.get("Please select a payment mode to generate the counterpart"));
+        return;
+      }
       Beans.get(MoveCounterPartService.class).generateCounterpartMoveLine(move);
       response.setReload(true);
     } catch (Exception e) {
