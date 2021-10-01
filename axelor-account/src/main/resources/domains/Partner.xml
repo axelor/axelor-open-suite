@@ -39,13 +39,13 @@
 		<many-to-one ref="com.axelor.apps.account.db.FinancialDiscount" name="financialDiscount" title="Financial discount" help="Field allowing to make this partner profit a discount and define its parameters"/>
 		
 		<track>
-		  <field name="inPaymentMode"/>
-		  <field name="outPaymentMode"/>
-		  <field name="paymentCondition"/>
-		  <field name="financialDiscount"/>
-		  <field name="das2Activity"/>
-		  <field name="paymentCondition"/>
-		  <field name="activeUmr"/>
+		  <field name="inPaymentMode" on="UPDATE"/>
+		  <field name="outPaymentMode" on="UPDATE"/>
+		  <field name="paymentCondition" on="UPDATE"/>
+		  <field name="financialDiscount" on="UPDATE"/>
+		  <field name="das2Activity" on="UPDATE"/>
+		  <field name="paymentCondition" on="UPDATE"/>
+		  <field name="activeUmr" on="UPDATE"/>
 		</track>
 		
     </entity>
