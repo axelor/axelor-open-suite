@@ -34,7 +34,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.CDI;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import org.slf4j.Logger;
@@ -318,7 +317,7 @@ public class TraceBackService {
   }
 
   private static void runInNewTransaction(Runnable task) {
-    CDI.current().select(NewTxRunner.class).get().run(task);
+    Beans.get(NewTxRunner.class).run(task);
   }
 
   @ApplicationScoped
