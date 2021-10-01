@@ -305,9 +305,7 @@ public class MoveLineController {
       Move move = parentContext.asType(Move.class);
       Partner partner = move.getPartner();
 
-      if (ObjectUtils.isEmpty(partner)) {
-        response.setError(I18n.get("Please select a partner"));
-      } else {
+      if (partner != null) {
         MoveLoadDefaultConfigService moveLoadDefaultConfigService =
             Beans.get(MoveLoadDefaultConfigService.class);
         Account accountingAccount =
