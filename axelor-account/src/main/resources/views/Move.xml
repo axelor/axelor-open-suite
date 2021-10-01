@@ -56,7 +56,7 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
             onChange="action-account-move-record-set-currency" />
           <field name="currency" colSpan="3" />
-          <field name="paymentMode" colSpan="3" requiredIf="$journalTechnicalTypeSelect == 4 || $journalTechnicalTypeSelect == 5"/>
+          <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
