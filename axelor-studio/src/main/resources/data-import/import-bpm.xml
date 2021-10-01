@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
  	
- 	<input file="bpm.xml" root="bpm" >
+ 	<input file="app-src.xml" root="bpm" >
  		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" update="true" call="com.axelor.studio.service.ImportService:importAppBuilderImg">
  			<bind node="name" to="name" />
  			<bind node="code" to="code" />
@@ -133,7 +133,7 @@
  
  	</input>
  	
- 	<input file="bpm.xml" root="bpm" >
+ 	<input file="app-src.xml" root="bpm" >
  		
  		<bind node="models/model" type="com.axelor.meta.db.MetaJsonModel" search="self.name = :name" create="false" call="com.axelor.studio.service.ImportService:importAppMetaJsonModel"  update="true">
  			<bind node="name" to="name" />
@@ -141,7 +141,7 @@
  		
  	</input>
  	
- 	<input file="bpm.xml" root="bpm" >
+ 	<input file="app-src.xml" root="bpm" >
  			
  		<bind node="selectionBuilders/selectionBuilder" type="com.axelor.studio.db.SelectionBuilder" search="self.name = :name" update="true">
  			<bind node="metaSelect" to="metaSelect" search="self.name = :metaSelect" create="false"/>
@@ -215,7 +215,7 @@
 		
  	</input>		
  	
- 	<input file="bpm.xml" root="bpm" >
+ 	<input file="app-src.xml" root="bpm" >
  	
  		<bind node="dashboardBuilders/dashboardBuilder" type="com.axelor.studio.db.DashboardBuilder" search="self.name = :name" create="false" call="com.axelor.studio.service.ImportService:importAppDashboardBuilder" update="true">
 			<bind node="name" to="name" />
@@ -223,11 +223,11 @@
 		
 	</input>
 	
-	<input file="bpm.xml" root="bpm" >
+	<input file="app-src.xml" root="bpm" >
 	
-		<bind node="actionBuilders/actionBuilder" type="com.axelor.studio.db.ActionBuilder" search="self.xmlId = :xmlId" call="com.axelor.studio.service.ImportService:importActionBuilder" update="true">
+		<bind node="actionBuilders/actionBuilder" type="com.axelor.studio.db.ActionBuilder" search="self.xmlId = :_xmlId" call="com.axelor.studio.service.ImportService:importActionBuilder" update="true">
 			<bind node="name" to="name" alias="_actionBuilder" />
-			<bind node="xmlId" to="xmlId" />
+			<bind node="xmlId" to="xmlId" alias="_xmlId"/>
 			<bind node="typeSelect" to="typeSelect" alias="_type" />
 			<bind node="model" to="model" alias="_model"/>
 			<bind node="targetModel" to="targetModel" alias="_targetModel" />
@@ -259,19 +259,19 @@
 					<bind node="text()" to="name" alias="birtTemplateName"/>
 				</bind>
 			</bind>
-			<bind node="actionBuilderViews/view" to="actionBuilderViews" search="self.viewType = :viewType and self.actionBuilder.xmlId = :xmlId">
-				<bind node="viewType" to="viewType" />
-				<bind node="viewName" to="viewName" />
+			<bind node="actionBuilderViews/view" to="actionBuilderViews" search="self.viewType = :viewType and self.viewName = :viewName and self.actionBuilder.xmlId = :_xmlId">
+				<bind node="viewType" to="viewType" alias="viewType" />
+				<bind node="viewName" to="viewName" alias="viewName"/>
 				<bind node="sequence" to="sequence" />
 			</bind>
 			<bind node="isJson" to="isJson" alias="_isJson" />
 			<bind node="domainCondition" to="domainCondition" />
-			<bind node="viewParams/line" to="viewParams" search="self.actionBuilder.xmlId = :xmlId and self.name = :name">
+			<bind node="viewParams/line" to="viewParams" search="self.actionBuilder.xmlId = :_xmlId and self.name = :name">
 				<bind node="name" to="name"/>
 				<bind node="value" to="value"/>
 			</bind>
 			<bind node="menuAction" to="menuAction"/>
-			<bind node="lines/line" to="lines" search="self.actionBuilder.xmlId = :xmlId and self.name = :_lineName">
+			<bind node="lines/line" to="lines" search="self.actionBuilder.xmlId = :_xmlId and self.name = :_lineName">
 				<bind node="target" alias="target" />
 				<bind node="source" alias="source" />
 				<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :target" create="false"/>
@@ -285,7 +285,7 @@
 				<bind node="validationMsg" to="validationMsg"/>
 				<bind node="name" to="name" alias="_lineName"/>
 				<bind node="dummy" to="dummy"/>
-				<bind node="subLines/line" to="subLines" search="self.parent.actionBuilder.xmlId = :xmlId and self.parent.name = :_lineName and self.name = :_subLineName">
+				<bind node="subLines/line" to="subLines" search="self.parent.actionBuilder.xmlId = :_xmlId and self.parent.name = :_lineName and self.name = :_subLineName">
 					<bind node="target" alias="target" />
 					<bind node="source" alias="source" />
 					<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :target" create="false"/>
@@ -299,7 +299,7 @@
 					<bind node="validationMsg" to="validationMsg"/>
 					<bind node="name" to="name" alias="_subLineName"/>
 					<bind node="dummy" to="dummy"/>
-					<bind node="subLines/line" to="subLines" search="self.parent.parent.actionBuilder.xmlId = :xmlId and self.parent.parent.name = :_lineName and self.parent.name = :_subLineName and self.name = :_subSubLineName">
+					<bind node="subLines/line" to="subLines" search="self.parent.parent.actionBuilder.xmlId = :_xmlId and self.parent.parent.name = :_lineName and self.parent.name = :_subLineName and self.name = :_subSubLineName">
 						<bind node="target" alias="target" />
 						<bind node="source" alias="source" />
 						<bind node="metaJsonField" to="metaJsonField" search="self.name = :metaJsonField and self.jsonModel.name = :target" create="false"/>
@@ -451,7 +451,7 @@
 		</bind>
  	</input> 
  	
- 	<input file="bpm.xml" root="bpm" >
+ 	<input file="app-src.xml" root="bpm" >
  		<bind node="wkfs/wkf" type="com.axelor.studio.db.Wkf" search="self.code = :code" create="false" call="com.axelor.studio.service.ImportService:importAppWkf">
 			<bind node="name" to="name" />
 		</bind>

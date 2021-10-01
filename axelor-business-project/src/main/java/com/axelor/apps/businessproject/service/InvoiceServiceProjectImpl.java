@@ -28,7 +28,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -67,7 +66,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
-      InvoiceTermService invoiceTermService,
       AppBaseService appBaseService) {
     super(
         validateFactory,
@@ -81,7 +79,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         accountConfigService,
         moveToolService,
         invoiceLineRepo,
-        invoiceTermService,
         appBaseService);
   }
 

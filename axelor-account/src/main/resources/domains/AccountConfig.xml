@@ -179,15 +179,11 @@
 		<many-to-one ref="com.axelor.apps.base.db.Partner" name="dasContactPartner" title="Main partner DAS"
 		help="Field to store the main contact used in DAS declaration export. Also make sure this contact has a valid email address, otherwise it will be impossible to generate the declaration file. If this field is empty, it will be impossible to generate the file, an alert will be generated."/>
 
-        <!-- Discount accounts -->
+
 		<many-to-one name="purchFinancialDiscountAccount" ref="com.axelor.apps.account.db.Account" title="Purchase financial discount account" />
 		<many-to-one name="saleFinancialDiscountAccount" ref="com.axelor.apps.account.db.Account" title="Sale financial discount account" />
 		<many-to-one name="purchFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax" title="Purchase financial discount tax" />
 		<many-to-one name="saleFinancialDiscountTax" ref="com.axelor.apps.account.db.Tax" title="Sale financial discount tax" />
-		
-		<!-- Holdback accounts -->
-		<many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Holdback Customer account"/>
-        <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account" title="Holdback Supplier account"/> 
 
 
     <finder-method name="findByCompany" using="company"/>
