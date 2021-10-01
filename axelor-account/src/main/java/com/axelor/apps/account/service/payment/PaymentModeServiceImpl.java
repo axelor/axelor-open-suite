@@ -79,6 +79,17 @@ public class PaymentModeServiceImpl implements PaymentModeService {
   }
 
   @Override
+  public Account getPaymentModeAccount(PaymentMode paymentMode, Company company)
+      throws AxelorException {
+    Account accountingAccount = null;
+    AccountManagement accountManagement = getAccountManagement(paymentMode, company);
+    if (accountManagement != null) {
+      accountingAccount = accountManagement.getCashAccount();
+    }
+    return accountingAccount;
+  }
+
+  @Override
   public AccountManagement getAccountManagement(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) {
 

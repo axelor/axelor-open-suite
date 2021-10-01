@@ -32,6 +32,9 @@ public interface PaymentModeService {
   public Account getPaymentModeAccount(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException;
 
+  public Account getPaymentModeAccount(PaymentMode paymentMode, Company company)
+      throws AxelorException;
+
   public AccountManagement getAccountManagement(
       PaymentMode paymentMode, Company company, BankDetails bankDetails);
 
