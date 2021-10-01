@@ -1,3 +1,22 @@
+## [6.0.14] (2021-10-01)
+
+#### Fixed
+
+* Contract Version: Fix NPE on contract version when we push a new version to waiting status and to ongoing status.
+* Quotation template: Resolved NPE while generating quotation from template that had title lines.
+* FixedAsset: add filter on company on fixed asset category.
+* INVOICE LINE: fixed issue where "Filter on supplier" option was set to false on invoice line modification.
+* IMPORT CONFIGURATION: reset fields on copy.
+* PURCHASEORDER: initialize correctly receipt state on generating stock move.
+* Contract line: linked generated invoice line to contract line.
+* PRODUCT: Fix barcode display for Code_39 and code_128.
+* Invoice: Fix missing file type on printedPdf metafile field.
+* TimesheetLine: Fix issue in working hours computation causing rounding errors.
+* ManufOrder: Reset Operation orders on Production process change.
+* Printings: fix printing issues when using an external birt runtime.
+* Invoice: display proper error on trying to do a payment with a wrong accounting configuration.
+* Print/PrintTemplate: Fix spelling for selection of footer font color.
+
 ## [6.0.13] (2021-07-28)
 
 #### Fixed
@@ -573,6 +592,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.14]: https://github.com/axelor/axelor-open-suite/compare/v6.0.13...v6.0.14
 [6.0.13]: https://github.com/axelor/axelor-open-suite/compare/v6.0.12...v6.0.13
 [6.0.12]: https://github.com/axelor/axelor-open-suite/compare/v6.0.11...v6.0.12
 [6.0.11]: https://github.com/axelor/axelor-open-suite/compare/v6.0.10...v6.0.11
