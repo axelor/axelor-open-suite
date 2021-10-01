@@ -268,6 +268,7 @@
     <action name="save" />
     <action name="action-account-move-validate-origin-description-is-empty" />
     <action name="action-account-move-method-set-origin-description-on-lines" />
+    <action name="action-attrs-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-validate name="action-account-validate-prompt">
