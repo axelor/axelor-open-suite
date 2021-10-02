@@ -1517,6 +1517,7 @@
 "Min. amount (€)",,,
 "Minimal number of lines required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message",,,
 "Misc. Moves",,,
+"Missing date on move line",,,
 "Missing deposit slip sequence for company %s",,,
 "Missing direct debit payment mode in the company's account configuration",,,
 "Missing subrogation release sequence for company %s",,,
