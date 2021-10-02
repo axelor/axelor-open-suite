@@ -149,11 +149,14 @@ public class BankReconciliationService {
           bankStatementRuleRepository
               .all()
               .filter(
-                  "self.ruleType = :ruleType AND self.accountManagement.interbankCodeLine = :interbankCodeLine")
+                  "self.ruleType = :ruleType"
+                      + " AND self.accountManagement.interbankCodeLine = :interbankCodeLine"
+                      + " AND self.accountManagement.bankDetails = :bankDetails")
               .bind("ruleType", BankStatementRuleRepository.RULE_TYPE_ACCOUNTING_AUTO)
               .bind(
                   "interbankCodeLine",
                   bankReconciliationLine.getBankStatementLine().getOperationInterbankCodeLine())
+              .bind("bankDetails", bankReconciliationLine.getBankStatementLine().getBankDetails())
               .fetch();
       for (BankStatementRule bankStatementRule : bankStatementRules) {
 
@@ -570,7 +573,6 @@ public class BankReconciliationService {
     Map<String, Object> params = new HashMap<>();
     params.put("fromDate", bankReconciliation.getFromDate());
     params.put("toDate", bankReconciliation.getToDate());
-    params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());

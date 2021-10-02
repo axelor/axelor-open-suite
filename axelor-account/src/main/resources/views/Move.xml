@@ -56,7 +56,7 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
             onChange="action-account-move-record-set-currency" />
           <field name="currency" colSpan="3" />
-          <field name="paymentMode" colSpan="3" requiredIf="$journalTechnicalTypeSelect == 4 || $journalTechnicalTypeSelect == 5"/>
+          <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
@@ -104,7 +104,7 @@
 				<button name="simulateBtn" title="Simulate" onClick="action-method-account-move-check-preconditions, action-move-record-set-status-simulate,action-move-attrs-validate-button-title,save" colSpan="12" showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-group-generate-tax-lines" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 5" />
-        <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-group-generate-counterpart" colSpan="12" />
+        <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-group-generate-counterpart" colSpan="12" hideIf="statusSelect == 3" />
       </panel>
     </panel>
 
@@ -490,9 +490,9 @@
     <filter title="Canceled Moves">
       <domain>self.statusSelect = 4</domain>
     </filter>
-  <filter title="Simulated Moves">
-			<domain>self.statusSelect = 5</domain>
-		</filter>
+    <filter title="Simulated Moves">
+	  <domain>self.statusSelect = 5</domain>
+    </filter>
 	</search-filters>
 <action-attrs name="action-attrs-hide-axis-analytic-account-move-line">
 		<attribute name="hidden" for="moveLineList.axis1AnalyticAccount" expr="eval: !(1 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
