@@ -151,8 +151,12 @@ public class BankReconciliationService {
     this.accountRepository = accountRepository;
   }
 
+<<<<<<< HEAD
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
       throws AxelorException {
+=======
+  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) throws AxelorException{
+>>>>>>> wip-6.2-accounting
     Context scriptContext;
     Move move;
     int limit = 10;
@@ -163,6 +167,7 @@ public class BankReconciliationService {
             .fetch(limit, offset);
 
     List<BankStatementRule> bankStatementRules;
+<<<<<<< HEAD
     while (bankReconciliationLines.size() > 0) {
       for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
         if (bankReconciliationLine.getMoveLine() != null) {
@@ -201,6 +206,47 @@ public class BankReconciliationService {
             moveValidateService.validate(move);
             break;
           }
+=======
+
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+      if (bankReconciliationLine.getMoveLine() != null) {
+        continue;
+      }
+      BankStatementLine bankStatementLine =
+          bankStatementLineRepository.find(bankReconciliationLine.getBankStatementLine().getId());
+      scriptContext =
+          new Context(
+              Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
+              BankStatementLineAFB120.class.getClass());
+      bankStatementRules =
+          bankStatementRuleRepository
+              .all()
+              .filter(
+                  "self.ruleType = :ruleType"
+                      + " AND self.accountManagement.interbankCodeLine = :interbankCodeLine"
+                      + " AND self.accountManagement.bankDetails = :bankDetails")
+              .bind("ruleType", BankStatementRuleRepository.RULE_TYPE_ACCOUNTING_AUTO)
+              .bind(
+                  "interbankCodeLine",
+                  bankReconciliationLine.getBankStatementLine().getOperationInterbankCodeLine())
+              .bind("bankDetails", bankReconciliationLine.getBankStatementLine().getBankDetails())
+              .fetch();
+      for (BankStatementRule bankStatementRule : bankStatementRules) {
+
+        if (Boolean.TRUE.equals(
+            new GroovyScriptHelper(scriptContext)
+                .eval(
+                    bankStatementRule
+                        .getBankStatementQuery()
+                        .getQuery()
+                        .replaceAll("%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
+          if (bankStatementRule.getAccountManagement().getJournal() == null) {
+            continue;
+          }
+          move = generateMove(bankReconciliationLine, bankStatementRule);
+          moveValidateService.validate(move);
+          break;
+>>>>>>> wip-6.2-accounting
         }
       }
       offset += limit;

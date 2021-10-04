@@ -27,6 +27,8 @@ import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.cash.management.service.ForecastRecapServiceImpl;
+import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
+import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentServiceImpl;
 import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
 
 public class CashManagementModule extends AxelorModule {
@@ -38,5 +40,6 @@ public class CashManagementModule extends AxelorModule {
     bind(ForecastGeneratorRepository.class).to(CashManagementForecastGeneratorRepository.class);
     bind(ForecastRepository.class).to(CashManagementForecastRepository.class);
     bind(ForecastRecapService.class).to(ForecastRecapServiceImpl.class);
+    bind(InvoiceEstimatedPaymentService.class).to(InvoiceEstimatedPaymentServiceImpl.class);
   }
 }

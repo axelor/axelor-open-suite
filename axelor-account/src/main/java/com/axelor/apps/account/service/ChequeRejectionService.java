@@ -127,6 +127,7 @@ public class ChequeRejectionService {
             null,
             partner,
             rejectionDate,
+            rejectionDate,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
