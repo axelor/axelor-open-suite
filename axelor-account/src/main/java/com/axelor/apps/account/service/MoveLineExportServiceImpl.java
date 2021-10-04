@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -79,7 +79,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   protected AccountingReportRepository accountingReportRepo;
   protected JournalRepository journalRepo;
   protected AccountRepository accountRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineConsolidateService moveLineConsolidateService;
   protected PartnerService partnerService;
 
   protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
@@ -96,7 +96,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       AccountingReportRepository accountingReportRepo,
       JournalRepository journalRepo,
       AccountRepository accountRepo,
-      MoveLineService moveLineService,
+      MoveLineConsolidateService moveLineConsolidateService,
       PartnerService partnerService) {
     this.accountingReportService = accountingReportService;
     this.sequenceService = sequenceService;
@@ -106,7 +106,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     this.accountingReportRepo = accountingReportRepo;
     this.journalRepo = journalRepo;
     this.accountRepo = accountRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineConsolidateService = moveLineConsolidateService;
     this.partnerService = partnerService;
     this.appAccountService = appAccountService;
   }
@@ -1393,7 +1393,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
               if (!moveLines.isEmpty()) {
 
-                List<MoveLine> moveLineList = moveLineService.consolidateMoveLines(moveLines);
+                List<MoveLine> moveLineList =
+                    moveLineConsolidateService.consolidateMoveLines(moveLines);
 
                 List<MoveLine> sortMoveLineList = this.sortMoveLineByDebitCredit(moveLineList);
 
@@ -1468,7 +1469,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         accountingReport);
   }
 
-  private MetaFile writeMoveLineToCsvFile(
+  protected MetaFile writeMoveLineToCsvFile(
       Company company,
       String fileName,
       String[] columnHeader,

@@ -95,23 +95,6 @@ public interface ITranslation {
   public static final String INVOICE_DELIVERY_ADDRESS = /*$$(*/ "Invoice.deliveryAddress"; /*)*/
   public static final String INVOICE_ORIGINAL_INVOICE = /*$$(*/ "Invoice.originalInvoice"; /*)*/
   public static final String INVOICE_SHIPPING_DATE = /*$$(*/ "Invoice.shippingDate"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_NAME = /*$$(*/ "Invoice.invoiceTermName"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_AMOUNT = /*$$(*/
-      "Invoice.invoiceTermAmount"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_AMOUNT_REMAINING = /*$$(*/
-      "Invoice.invoiceTermAmountRemaining"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_DUE_DATE = /*$$(*/
-      "Invoice.invoiceTermDueDate"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_ESTIMATED_PAYMENT_DATE = /*$$(*/
-      "Invoice.invoiceTermEstimatedPaymentDate"; /*)*/
-  public static final String INVOICE_INVOICE_TERMS_FINANCIAL_DISCOUNT =
-      "Invoice.invoiceTermsFinancialDiscount";
-  public static final String INVOICE_INVOICE_TERM_PERCENTAGE = /*$$(*/
-      "Invoice.invoiceTermPercentage"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_HOLD_BACK = /*$$(*/
-      "Invoice.invoiceTermHoldBack"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_PAID = /*$$(*/ "Invoice.invoiceTermPaid"; /*)*/
-  public static final String INVOICE_INVOICE_TERMS = /*$$(*/ "Invoice.invoiceTerms"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
@@ -713,6 +696,10 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_20_TO = /*$$(*/ "AccountingReportType20.to"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType20.total_report"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_PROVISIONAL =
+      /*$$(*/ "AccountingReportType.provisional"; /*)*/
+  public static final String ACCOUNTING_REPORT_LABEL_STATUS_SELECT_TITLE =
+      /*$$(*/ "AccountingReportType.status_select_title"; /*)*/
 
   public static final String INVOICE_PAYMENT_DATE = /*$$(*/ "InvoicePayment.date"; /*)*/
   public static final String INVOICE_PAYMENT_TYPE = /*$$(*/ "InvoicePayment.type"; /*)*/

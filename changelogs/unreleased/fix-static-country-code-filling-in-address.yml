@@ -1,0 +1,5 @@
+---
+title: Address :Fixed static code for filling country field on creation of new record
+type: fix
+Description: |
+      Changed static country code to dynamic ,Now it will take country code directly from active users  company's country and if company is not there or company address is missing then by default it will take France

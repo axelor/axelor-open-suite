@@ -210,4 +210,6 @@ public interface ITranslation {
       "BankReconciliationStatementNew.bankStatementExtract"; /*)*/
   public static final String BANK_RECONCILIATION_ACCOUNTING_EXTRACT = /*$$(*/
       "BankReconciliationStatementNew.accountingExtract"; /*)*/
+  public static final String BANK_RECONCILIATION_SELECT_A_LINE = /*$$(*/
+      "Please select at least one bank reconciliation line (button on right side of table)."; /*)*/
 }

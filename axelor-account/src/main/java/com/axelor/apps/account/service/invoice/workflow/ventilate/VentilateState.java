@@ -28,10 +28,9 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
@@ -57,7 +56,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected SequenceService sequenceService;
 
-  protected MoveService moveService;
+  protected MoveCreateFromInvoiceService moveCreateFromInvoiceService;
 
   protected AccountConfigService accountConfigService;
 
@@ -71,28 +70,24 @@ public class VentilateState extends WorkflowInvoice {
 
   protected FixedAssetService fixedAssetService;
 
-  protected InvoiceTermService invoiceTermService;
-
   @Inject
   public VentilateState(
       SequenceService sequenceService,
-      MoveService moveService,
+      MoveCreateFromInvoiceService moveCreateFromInvoiceService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
       UserService userService,
-      FixedAssetService fixedAssetService,
-      InvoiceTermService invoiceTermService) {
+      FixedAssetService fixedAssetService) {
     this.sequenceService = sequenceService;
-    this.moveService = moveService;
+    this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.invoiceRepo = invoiceRepo;
     this.workflowService = workflowService;
     this.userService = userService;
     this.fixedAssetService = fixedAssetService;
-    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -133,7 +128,7 @@ public class VentilateState extends WorkflowInvoice {
   protected void setPartnerAccount() throws AxelorException {
     // Partner account is actually set upon validation but we keep this for backward compatibility
     if (invoice.getPartnerAccount() == null) {
-      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, false);
+      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice);
 
       if (account == null) {
         throw new AxelorException(
@@ -182,11 +177,10 @@ public class VentilateState extends WorkflowInvoice {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
     }
-    this.setInvoiceTermDueDates();
 
     if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
         || invoice.getDueDate() == null) {
-      invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
+      invoice.setDueDate(this.getDueDate());
     }
   }
 
@@ -244,14 +238,14 @@ public class VentilateState extends WorkflowInvoice {
     }
   }
 
-  protected void setInvoiceTermDueDates() throws AxelorException {
+  protected LocalDate getDueDate() throws AxelorException {
 
     if (InvoiceToolService.isPurchase(invoice)) {
 
-      invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
+      return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getOriginDate());
     }
 
-    invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+    return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getInvoiceDate());
   }
 
   protected void setMove() throws AxelorException {
@@ -262,10 +256,10 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("In Set Move");
     // Création de l'écriture comptable
-    Move move = moveService.createMove(invoice);
+    Move move = moveCreateFromInvoiceService.createMove(invoice);
     if (move != null) {
 
-      moveService.createMoveUseExcessPaymentOrDue(invoice);
+      moveCreateFromInvoiceService.createMoveUseExcessPaymentOrDue(invoice);
     }
   }
 

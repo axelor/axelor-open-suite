@@ -92,8 +92,9 @@
 		<action name="action-base-address-check-address-used"/>
 	</action-group>
 
-	<action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
-		<field name="addressL7Country" expr="action:default-address-country-record" />
+	<action-record name="default-address-record" model="com.axelor.apps.base.db.Address"> 
+		<field name="addressL7Country" expr="eval: __user__?.activeCompany?.address?.addressL7Country" if="__user__?.activeCompany?.address"/>
+		<field name="addressL7Country" expr="action:default-address-country-record" if="!__user__?.activeCompany?.address" />
 	</action-record>
 	
 	<action-record name="action-address-change-city" model="com.axelor.apps.base.db.Address">

@@ -31,8 +31,8 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
@@ -92,7 +92,7 @@ public class BankReconciliationService {
   protected MoveRepository moveRepository;
   protected BankStatementLineRepository bankStatementLineRepository;
   protected BankStatementRuleRepository bankStatementRuleRepository;
-  protected MoveService moveService;
+  protected MoveValidateService moveValidateService;
   protected PeriodService periodService;
   protected BankReconciliationLineService bankReconciliationLineService;
   protected MoveLineService moveLineService;
@@ -110,7 +110,7 @@ public class BankReconciliationService {
       BankStatementLineRepository bankStatementLineRepository,
       BankStatementRuleRepository bankStatementRuleRepository,
       PeriodService periodService,
-      MoveService moveService,
+      MoveValidateService moveValidateService,
       BankReconciliationLineService bankReconciliationLineService,
       MoveLineService moveLineService,
       BankReconciliationLineRepository bankReconciliationLineRepository) {
@@ -124,7 +124,7 @@ public class BankReconciliationService {
     this.moveRepository = moveRepository;
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
-    this.moveService = moveService;
+    this.moveValidateService = moveValidateService;
     this.periodService = periodService;
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.moveLineService = moveLineService;
@@ -149,11 +149,14 @@ public class BankReconciliationService {
           bankStatementRuleRepository
               .all()
               .filter(
-                  "self.ruleType = :ruleType AND self.accountManagement.interbankCodeLine = :interbankCodeLine")
+                  "self.ruleType = :ruleType"
+                      + " AND self.accountManagement.interbankCodeLine = :interbankCodeLine"
+                      + " AND self.accountManagement.bankDetails = :bankDetails")
               .bind("ruleType", BankStatementRuleRepository.RULE_TYPE_ACCOUNTING_AUTO)
               .bind(
                   "interbankCodeLine",
                   bankReconciliationLine.getBankStatementLine().getOperationInterbankCodeLine())
+              .bind("bankDetails", bankReconciliationLine.getBankStatementLine().getBankDetails())
               .fetch();
       for (BankStatementRule bankStatementRule : bankStatementRules) {
 
@@ -167,7 +170,7 @@ public class BankReconciliationService {
           if (bankStatementRule.getAccountManagement().getJournal() == null) continue;
           move = generateMove(bankReconciliationLine, bankStatementRule);
           try {
-            moveService.getMoveValidateService().validate(move);
+            moveValidateService.validate(move);
           } catch (AxelorException e) {
             TraceBackService.trace(e);
           }
@@ -570,7 +573,6 @@ public class BankReconciliationService {
     Map<String, Object> params = new HashMap<>();
     params.put("fromDate", bankReconciliation.getFromDate());
     params.put("toDate", bankReconciliation.getToDate());
-    params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());

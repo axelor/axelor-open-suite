@@ -28,11 +28,10 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
-import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
@@ -65,9 +64,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected ReconcileSequenceService reconcileSequenceService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
-  protected InvoiceTermService invoiceTermService;
-  protected MoveLineService moveLineService;
-  protected InvoicePaymentRepository invoicePaymentRepo;
+  protected MoveLineTaxService moveLineTaxService;
   protected AppBaseService appBaseService;
   protected PaymentMoveLineDistributionService paymentMoveLineDistributionService;
 
@@ -81,9 +78,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       ReconcileSequenceService reconcileSequenceService,
       InvoicePaymentCancelService invoicePaymentCancelService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      MoveLineService moveLineService,
-      InvoicePaymentRepository invoicePaymentRepo,
-      InvoiceTermService invoiceTermService,
+      MoveLineTaxService moveLineTaxService,
       AppBaseService appBaseService,
       PaymentMoveLineDistributionService paymentMoveLineDistributionService) {
 
@@ -95,9 +90,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.reconcileSequenceService = reconcileSequenceService;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
-    this.moveLineService = moveLineService;
-    this.invoicePaymentRepo = invoicePaymentRepo;
-    this.invoiceTermService = invoiceTermService;
+    this.moveLineTaxService = moveLineTaxService;
     this.appBaseService = appBaseService;
     this.paymentMoveLineDistributionService = paymentMoveLineDistributionService;
   }
@@ -353,14 +346,14 @@ public class ReconcileServiceImpl implements ReconcileService {
         && creditMoveLine.getAccount().getUseForPartnerBalance()) {
       InvoicePayment debitInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
-      debitInvoicePayment.addReconcileListItem(reconcile);
+      debitInvoicePayment.setReconcile(reconcile);
     }
     if (creditInvoice != null
         && debitMoveLine.getAccount().getUseForPartnerBalance()
         && creditMoveLine.getAccount().getUseForPartnerBalance()) {
       InvoicePayment creditInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
-      creditInvoicePayment.addReconcileListItem(reconcile);
+      creditInvoicePayment.setReconcile(reconcile);
     }
   }
 
@@ -371,11 +364,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice creditInvoice = creditMove.getInvoice();
 
     if (debitInvoice != null && creditInvoice == null) {
-      moveLineService.generateTaxPaymentMoveLineList(
+      moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getCreditMoveLine(), debitInvoice, reconcile);
     }
     if (creditInvoice != null && debitInvoice == null) {
-      moveLineService.generateTaxPaymentMoveLineList(
+      moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getDebitMoveLine(), creditInvoice, reconcile);
     }
   }
@@ -431,7 +424,6 @@ public class ReconcileServiceImpl implements ReconcileService {
     // Update amount remaining on invoice or refund
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
-    this.updateInvoiceTermsAmountRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
@@ -445,10 +437,10 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice debitInvoice = debitMove.getInvoice();
     Invoice creditInvoice = creditMove.getInvoice();
     if (debitInvoice == null) {
-      moveLineService.reverseTaxPaymentMoveLines(reconcile.getDebitMoveLine(), reconcile);
+      moveLineTaxService.reverseTaxPaymentMoveLines(reconcile.getDebitMoveLine(), reconcile);
     }
     if (creditInvoice == null) {
-      moveLineService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
+      moveLineTaxService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
     }
   }
 
@@ -478,18 +470,15 @@ public class ReconcileServiceImpl implements ReconcileService {
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {
 
     log.debug("updateInvoicePaymentsCanceled : reconcile : {}", reconcile);
-    for (InvoicePayment invoicePayment :
-        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
+
+    List<InvoicePayment> invoicePaymentList =
+        Beans.get(InvoicePaymentRepository.class)
+            .all()
+            .filter("self.reconcile = ?1", reconcile)
+            .fetch();
+
+    for (InvoicePayment invoicePayment : invoicePaymentList) {
       invoicePaymentCancelService.updateCancelStatus(invoicePayment);
-    }
-  }
-
-  public void updateInvoiceTermsAmountRemaining(Reconcile reconcile) throws AxelorException {
-
-    log.debug("updateInvoiceTermsAmountRemaining : reconcile : {}", reconcile);
-    for (InvoicePayment invoicePayment :
-        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
-      invoiceTermService.updateInvoiceTermsAmountRemaining(invoicePayment);
     }
   }
 

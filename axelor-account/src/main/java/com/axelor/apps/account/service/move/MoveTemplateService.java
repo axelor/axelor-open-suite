@@ -29,6 +29,8 @@ import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -50,10 +52,11 @@ import org.slf4j.LoggerFactory;
 public class MoveTemplateService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected PartnerRepository partnerRepo;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected TaxService taxService;
@@ -62,20 +65,21 @@ public class MoveTemplateService {
 
   @Inject
   public MoveTemplateService(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
-      TaxService taxService) {
-    this.moveService = moveService;
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+    this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.partnerRepo = partnerRepo;
     this.analyticMoveLineService = analyticMoveLineService;
     this.taxService = taxService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
   @Transactional
@@ -135,19 +139,18 @@ public class MoveTemplateService {
       }
       if (moveTemplate.getJournal().getCompany() != null) {
         Move move =
-            moveService
-                .getMoveCreateService()
-                .createMove(
-                    moveTemplate.getJournal(),
-                    moveTemplate.getJournal().getCompany(),
-                    null,
-                    partner,
-                    moveDate,
-                    null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                    0,
-                    origin,
-                    null);
+            moveCreateService.createMove(
+                moveTemplate.getJournal(),
+                moveTemplate.getJournal().getCompany(),
+                null,
+                partner,
+                moveDate,
+                moveDate,
+                null,
+                MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                0,
+                origin,
+                null);
 
         int counter = 1;
 
@@ -173,7 +176,7 @@ public class MoveTemplateService {
                   .divide(hundred, RoundingMode.HALF_UP);
 
           MoveLine moveLine =
-              moveLineService.createMoveLine(
+              moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   moveTemplateLine.getAccount(),
@@ -199,7 +202,7 @@ public class MoveTemplateService {
 
           moveLine.setAnalyticDistributionTemplate(
               moveTemplateLine.getAnalyticDistributionTemplate());
-          moveLineService.generateAnalyticMoveLines(moveLine);
+          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
           counter++;
         }
@@ -227,19 +230,18 @@ public class MoveTemplateService {
 
       if (moveTemplate.getJournal().getCompany() != null) {
         Move move =
-            moveService
-                .getMoveCreateService()
-                .createMove(
-                    moveTemplate.getJournal(),
-                    moveTemplate.getJournal().getCompany(),
-                    null,
-                    null,
-                    moveDate,
-                    null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-                    0,
-                    moveTemplate.getFullName(),
-                    null);
+            moveCreateService.createMove(
+                moveTemplate.getJournal(),
+                moveTemplate.getJournal().getCompany(),
+                null,
+                null,
+                moveDate,
+                moveDate,
+                null,
+                MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                0,
+                moveTemplate.getFullName(),
+                null);
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
@@ -247,7 +249,7 @@ public class MoveTemplateService {
           BigDecimal amount = moveTemplateLine.getDebit().add(moveTemplateLine.getCredit());
 
           MoveLine moveLine =
-              moveLineService.createMoveLine(
+              moveLineCreateService.createMoveLine(
                   move,
                   moveTemplateLine.getPartner(),
                   moveTemplateLine.getAccount(),
@@ -273,7 +275,7 @@ public class MoveTemplateService {
 
           moveLine.setAnalyticDistributionTemplate(
               moveTemplateLine.getAnalyticDistributionTemplate());
-          moveLineService.generateAnalyticMoveLines(moveLine);
+          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
           counter++;
         }
