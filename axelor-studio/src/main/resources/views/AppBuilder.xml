@@ -6,6 +6,7 @@
 	<grid name="app-builder-grid" title="App builder" model="com.axelor.studio.db.AppBuilder">
 		<field name="name" />
 		<field name="code" />
+		<field name="generatedApp.active" />
 	</grid>
 	
 	<form name="app-builder-form" title="App builder" model="com.axelor.studio.db.AppBuilder" width="large">
