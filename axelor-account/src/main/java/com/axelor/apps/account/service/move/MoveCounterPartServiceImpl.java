@@ -11,6 +11,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -36,13 +37,13 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   @Override
   @Transactional
-  public void generateCounterpartMoveLine(Move move) throws Exception {
+  public void generateCounterpartMoveLine(Move move) throws AxelorException {
     move.addMoveLineListItem(createCounterpartMoveLine(move));
     moveRepository.save(move);
   }
 
   @Override
-  public MoveLine createCounterpartMoveLine(Move move) throws Exception {
+  public MoveLine createCounterpartMoveLine(Move move) throws AxelorException {
     MoveLine moveLine = new MoveLine();
     moveLine.setMove(moveRepository.find(move.getId()));
     moveLine.setDate(move.getDate());
@@ -77,7 +78,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     return amount;
   }
 
-  protected Account getAccountingAccountFromJournal(Move move) throws Exception {
+  protected Account getAccountingAccountFromJournal(Move move) throws AxelorException {
     Account accountingAccount = null;
     if (move.getJournal()
             .getJournalType()
