@@ -130,7 +130,8 @@ public class BankReconciliationService {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
   }
 
-  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) throws AxelorException{
+  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
+      throws AxelorException {
     Context scriptContext;
     Move move;
     List<BankReconciliationLine> bankReconciliationLines =
@@ -572,8 +573,10 @@ public class BankReconciliationService {
 
   public Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation) {
     Map<String, Object> params = new HashMap<>();
-    params.put("fromDate", bankReconciliation.getFromDate());
-    params.put("toDate", bankReconciliation.getToDate());
+    int dateMargin =
+        bankReconciliation.getCompany().getBankPaymentConfig().getBnkStmtAutoReconcileDateMargin();
+    params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
+    params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());
