@@ -645,12 +645,4 @@ public class AccountConfigService {
 
     return accountConfig.getDasContactPartner();
   }
-
-  @Transactional
-  public void enableAnalyticAccounting() throws AxelorException {
-    for (AccountConfig accountConfig : accountConfigRepository.all().fetch()) {
-      accountConfig.setManageAnalyticAccounting(false);
-      accountConfigRepository.save(accountConfig);
-    }
-  }
 }

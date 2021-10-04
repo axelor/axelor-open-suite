@@ -21,13 +21,11 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticRules;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -170,32 +168,6 @@ public class AccountService {
             }
           }
         }
-      }
-    }
-  }
-
-  @Transactional
-  public void enableAnalyticAccounting() {
-    for (Account account : accountRepository.all().fetch()) {
-      if (account.getAnalyticDistributionAuthorized()) {
-        account.setAnalyticDistributionAuthorized(false);
-        account.setAnalyticDistributionRequiredOnInvoiceLines(false);
-        account.setAnalyticDistributionRequiredOnMoveLines(false);
-        account.setAnalyticDistributionTemplate(null);
-        accountRepository.save(account);
-      }
-    }
-  }
-
-  @Transactional
-  public void enableAnalyticAccounting(Company company) {
-    for (Account account : accountRepository.findByCompany(company).fetch()) {
-      if (account.getAnalyticDistributionAuthorized()) {
-        account.setAnalyticDistributionAuthorized(false);
-        account.setAnalyticDistributionRequiredOnInvoiceLines(false);
-        account.setAnalyticDistributionRequiredOnMoveLines(false);
-        account.setAnalyticDistributionTemplate(null);
-        accountRepository.save(account);
       }
     }
   }
