@@ -44,7 +44,6 @@ public class AccountConfigService {
 
   @Inject protected MoveRepository moveRepo;
   @Inject protected JournalRepository journalRepo;
-  @Inject protected AccountConfigRepository accountConfigRepository;
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
 
