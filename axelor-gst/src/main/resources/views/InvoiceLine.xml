@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" extension="true" id="gst-invoice-line-form">
+		<extend target="//panel[@name='discountPanel']">
+			<insert position="after">
+				<panel if-module="axelor-gst" if="__config__.app.isApp('gst')">
+					<field name="hsbn" />
+					<field name="igst" />
+					<field name="sgst" />
+					<field name="cgst" />
+					<field name="gstRate" />
+				</panel>
+			</insert>
+		</extend>
+	</form>
+
+	<action-group id="gst-action-group-invoice-line-product-onchange" name="action-group-account-invoice-line-product-onchange" if-module="axelor-gst">
+		<action name="action-invoice-line-method-get-product-information" />
+		<action name="action-invoice-line-method-compute" if="__config__.app.isApp('gst')"/>
+		<action name="action-invoice-line-method-get-and-compute-analytic-distribution" />
+		<action name="action-budget-validate-exceed-line-amount" />
+		<action if="__config__.app.isApp('account')" name="action-invoice-line-method-get-fixed-asset-category" />
+		<action name="action-attrs-account-invoice-line-onnew-onload" />
+		<action name="action-invoice-line-record-set-gstrate" if="__config__.app.isApp('gst')"/>
+	</action-group>
+
+	<action-group id="gst-action-group-invoice-line-onload" name="action-group-account-invoice-line-onload" if-module="axelor-gst">
+		<action name="action-attrs-account-invoice-line-onnew-onload" />
+		<action name="action-invoice-line-attrs-readonly-form" />
+		<action name="action-invoice-line-record-operation-type" />
+		<action if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"
+			name="action-budget-distribution-attrs-budget-amount-available" />
+		<action name="action-invoice-line-record-set-gstrate" if="__config__.app.isApp('gst')"/>
+	</action-group>
+
+
+	<action-record name="action-invoice-line-record-set-gstrate" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-gst" >
+		<field if="product" name="gstRate" expr="eval:product.gstRate" />
+	</action-record>
+
+	<action-method id="gst-action-method-invoice-line-compute" name="action-invoice-line-method-compute" if-module="axelor-gst">
+		<call method="compute" class="com.axelor.apps.gst.web.InvoiceLineController" />
+	</action-method>
+
+</object-views>

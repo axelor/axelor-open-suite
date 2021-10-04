@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" extension="true" id="gst-address-form">
+		<extend target="//field[@name='addressL7Country']">
+			<insert position="before">
+				<field name="type" />
+			</insert>
+		</extend>
+
+		<extend target="//field[@name='city']">
+			<insert position="after">
+				<field name="state" canNew="true" form-view="state-form" grid-view="state-grid"/>
+			</insert>
+		</extend>
+	</form>
+</object-views>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+	<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" extension="true" id="gst-invoice-form">
+		<extend target="//panel[@name='totalsPanel']">
+			<insert position="before">
+				<panel sidebar="true" name="gstPanel" title="Gsts" showTitle="false" itemSpan="4" if-module="axelor-gst" if="__config__.app.isApp('gst')">
+					<field name="netIgst" />
+					<field name="netCgst" />
+					<field name="netSgst" />
+				</panel>
+			</insert>
+		</extend>
+	</form>
+
+	<action-group id="gst-action-method-company-onchange-calculate" name="action-group-account-invoice-company-onchange">
+		<action name="action-invoice-method-compute" />
+	</action-group>
+
+	<action-group id="gst-action-method-partner-onchange-calculate" name="action-group-account-invoice-partner-onchange" if-module="axelor-gst">
+		<action name="action-invoice-record-partner-change" />
+		<action name="action-invoice-method-payment-mode-condition" />
+		<action name="action-invoice-record-due-date" />
+		<action name="action-invoice-record-estimated-payment-date" />
+		<action name="action-invoice-method-fill-company-bank-details" />
+		<action name="action-invoice-record-specific-note-on-invoice" />
+		<action name="action-invoice-method-fill-advance-payment-set" />
+		<action name="action-invoice-method-set-default-mail" />
+		<action name="action-invoice-method-fill-price-list" />
+		<action name="action-invoice-attrs-interco-supplychain" />
+		<action name="action-invoice-record-interco-supplychain" />
+		<action name="action-invoice-method-check-partner-bank-details-list" />
+		<action
+			if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) ) "
+			name="action-invoice-method-set-pfp-validator-user" />
+		<action name="action-invoice-record-set-dummy-field-language" />
+		<action name="action-invoice-method-compute" if="__config__.app.isApp('gst')"/>
+	</action-group>
+
+	<action-group id="gst-action-group-invoice-print" name="action-invoice-group-report-print" if-module="axelor-gst">
+		<action if="reportType != null &amp;&amp; reportType != 4" name="action-invoice-method-show-invoice" />
+		<action if="reportType != null &amp;&amp; reportType == 4" name="action-invoice-validate-regenerate-invoice" />
+		<action if="reportType != null &amp;&amp; reportType == 4" name="action-invoice-method-regenerate-and-show-invoice" />
+	</action-group>
+
+	<action-method id="gst-action-method-calculate" name="action-invoice-method-compute" if-module="axelor-gst">
+		<call method="calculate" class="com.axelor.apps.gst.web.InvoiceController" />
+	</action-method>
+
+	<action-method id="gst-action-method-invoice-print" name="action-invoice-method-show-invoice" if-module="axelor-gst">
+		<call method="showInvoice" class="com.axelor.apps.gst.web.InvoiceController" />
+	</action-method>
+
+
+</object-views>

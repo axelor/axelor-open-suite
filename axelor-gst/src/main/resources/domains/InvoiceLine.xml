@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
+	<module name="account" package="com.axelor.apps.account.db" />
+
+	<entity name="InvoiceLine" lang="java">
+		<string name="hsbn" title="HSBN" />
+		<decimal name="gstRate" title="GST Rate" readonly="true" />
+		<decimal name="igst" title="IGST" readonly="true" />
+		<decimal name="sgst" title="SGST" readonly="true" />
+		<decimal name="cgst" title="CGST" readonly="true" />
+	</entity>
+</domain-models>
