@@ -54,9 +54,13 @@
 				</editor> 
 			</field>
 		</panel>
+		<panel name="attachedFilesPanel" sidebar="true" colSpan="12" showIf="metaFileSet != null">
+			<field name="metaFileSet" colSpan="12" widget="TagSelect" canEdit="false"/>
+		</panel>
     </form>
     
     <action-group name="action-group-base-message-onnew">
+    	<action name="action-message-method-display-generate-message" if="_message != null"/>
     	<action name="action-message-record-default"/>
     	<action name="action-message-record-mail-account"/>
     	<action name="action-message-record-get-signature"/>

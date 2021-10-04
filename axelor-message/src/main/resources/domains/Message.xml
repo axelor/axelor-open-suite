@@ -27,6 +27,8 @@
   	<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.EmailAccount" title="Mail account" initParam="true"/>
   	<one-to-many name="multiRelatedList" ref="com.axelor.apps.message.db.MultiRelated" title="Related to" mappedBy="message"/>
   	
+  	<many-to-many name="metaFileSet" ref="com.axelor.meta.db.MetaFile" title="Attached files" />
+  	
   	<!--   	Intern message -->
   	<many-to-one name="senderUser" ref="com.axelor.auth.db.User" title="Sender (User)" readonly="true"/>
   	<many-to-one name="recipientUser" ref="com.axelor.auth.db.User" title="Recipient"/>

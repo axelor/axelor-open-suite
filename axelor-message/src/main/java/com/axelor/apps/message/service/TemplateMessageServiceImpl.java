@@ -177,6 +177,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
       message = Beans.get(MessageRepository.class).save(message);
       messageService.attachMetaFiles(message, getMetaFiles(template, templates, templatesContext));
+    } else {
+      message.setMetaFileSet(getMetaFiles(template, templates, templatesContext));
     }
 
     return message;

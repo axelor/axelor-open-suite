@@ -75,9 +75,13 @@
 				</editor> 
 			</field>
 		</panel>
+		<panel name="attachedFilesPanel" sidebar="true" colSpan="12" showIf="metaFileSet != null">
+			<field name="metaFileSet" colSpan="12" widget="TagSelect" canEdit="false"/>
+		</panel>
 	</form>
     
 	<action-group name="action-group-message-message-onnew">
+		<action name="action-message-method-display-generate-message" if="_message != null"/>
 		<action name="action-message-record-default"/>
 		<action name="action-message-record-mail-account"/>
 		<action name="action-message-record-get-signature"/>
@@ -130,6 +134,10 @@
 
 	<action-method name="action-message-method-regenerate-messages">
 		<call class="com.axelor.apps.message.web.MessageController" method="regenerateMessages"/>
+	</action-method>
+
+	<action-method name="action-message-method-display-generate-message">
+		<call class="com.axelor.apps.message.web.MessageController" method="setContextValues" />
 	</action-method>
 
     <!-- 	Common action for all messages sent by email using a template and the context -->
