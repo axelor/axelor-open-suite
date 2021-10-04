@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
@@ -10,6 +11,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -114,17 +116,19 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
         }
     }
     if (accountingAccount == null) {
+    	AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
       if (move.getJournal()
           .getJournalType()
           .getTechnicalTypeSelect()
           .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
         accountingAccount =
-            accountConfigService.getAccountConfig(move.getCompany()).getSupplierAccount();
+            accountConfigService.getSupplierAccount(accountConfig);
       else if (move.getJournal()
           .getJournalType()
           .getTechnicalTypeSelect()
           .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
-        accountingAccount = move.getCompany().getAccountConfig().getCustomerAccount();
+        accountingAccount =
+            accountConfigService.getCustomerAccount(accountConfig);
     }
     return accountingAccount;
   }
