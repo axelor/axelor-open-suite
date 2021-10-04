@@ -10,14 +10,14 @@
   
   <form name="app-data-loader-form" title="App Data Loader" model="com.axelor.studio.db.AppDataLoader">
   	  <panel name="mainPanel">
-  	  	<panel name="panelAppDataLoaderJson" colSpan="12" showIf="isJson == null || !isJson">
+  	  	<panel name="panelMetaModel" colSpan="12" showIf="isJson == null || !isJson">
 			<field name="metaModel" colSpan="4" onChange="action-app-data-loader-attrs-set-model-name" requiredIf="isJson == null || !isJson"/>
 			<field name="isJson" onChange="action-app-data-loader-attrs-is-json-change" colSpan="2" />
 			<field name="searchMetaFieldSet" readonlyIf="!metaModel" widget="TagSelect" domain="self.metaModel = :metaModel" canNew="false" requiredIf="isJson == null || !isJson"/>
 			<field name="metaFieldSet"  readonlyIf="!metaModel" widget="TagSelect" colSpan="12" domain="self.metaModel = :metaModel" canNew="false" requiredIf="isJson == null || !isJson"/>
 			<field name="filterQuery" readonlyIf="!metaModel" widget="String" colSpan="12"/>
 		</panel>
-		<panel name="panelAppDataLoaderNoJson" colSpan="12" showIf="isJson != null &amp;&amp; isJson">
+		<panel name="panelJsonModel" colSpan="12" showIf="isJson != null &amp;&amp; isJson">
 		    <field name="jsonModel" colSpan="4" onChange="action-app-data-loader-attrs-set-model-name" requiredIf="isJson != null &amp;&amp; isJson"/>
 			<field name="isJson" onChange="action-app-data-loader-attrs-is-json-change" colSpan="2" />
 			<field name="searchJsonFieldSet" readonlyIf="!jsonModel"  widget="TagSelect" domain="self.jsonModel = :jsonModel and self.type not in ('panel','separator','button','label','spacer')" canNew="false" requiredIf="isJson != null &amp;&amp; isJson"/>

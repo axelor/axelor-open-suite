@@ -19,10 +19,11 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -420,8 +421,8 @@ public class MoveLineController {
           && moveLine.getAccount() != null
           && moveLine.getAccount().getCompany() != null) {
         Integer nbrAxis =
-            Beans.get(AccountConfigRepository.class)
-                .findByCompany(moveLine.getAccount().getCompany())
+            Beans.get(AccountConfigService.class)
+                .getAccountConfig(moveLine.getAccount().getCompany())
                 .getNbrOfAnalyticAxisSelect();
 
         for (int i = 1; i <= 5; i++) {
@@ -450,6 +451,39 @@ public class MoveLineController {
       response.setValue("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageAxis(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      if (request.getContext().getParent() != null) {
+        Move move = request.getContext().getParent().asType(Move.class);
+        if (move.getCompany() != null) {
+          AccountConfig accountConfig =
+              Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+          if (accountConfig != null) {
+            AnalyticAxis analyticAxis = null;
+            for (int i = 1; i <= 5; i++) {
+              response.setAttr(
+                  "axis" + i + "AnalyticAccount",
+                  "hidden",
+                  !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+              for (AnalyticAxisByCompany analyticAxisByCompany :
+                  accountConfig.getAnalyticAxisByCompanyList()) {
+                if (analyticAxisByCompany.getOrderSelect() == i) {
+                  analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+                }
+              }
+              if (analyticAxis != null) {
+                response.setAttr("axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
+                analyticAxis = null;
+              }
+            }
+          }
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
