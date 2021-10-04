@@ -30,7 +30,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public void generateCounterpartMoveLine(Move move) throws Exception {
     move.addMoveLineListItem(createCounterpartMoveLine(move));
     moveRepository.save(move);
