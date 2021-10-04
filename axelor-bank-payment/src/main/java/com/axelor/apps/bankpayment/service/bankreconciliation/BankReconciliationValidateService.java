@@ -137,6 +137,7 @@ public class BankReconciliationValidateService {
             null,
             partner,
             effectDate,
+            effectDate,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,

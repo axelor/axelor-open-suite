@@ -98,6 +98,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         currency,
         partner,
         appAccountService.getTodayDate(company),
+        null,
         paymentMode,
         technicalOriginSelect,
         functionalOriginSelect,
@@ -125,6 +126,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Currency currency,
       Partner partner,
       LocalDate date,
+      LocalDate originDate,
       PaymentMode paymentMode,
       int technicalOriginSelect,
       int functionalOriginSelect,
@@ -137,6 +139,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         currency,
         partner,
         date,
+        originDate,
         paymentMode,
         technicalOriginSelect,
         functionalOriginSelect,
@@ -169,6 +172,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       Currency currency,
       Partner partner,
       LocalDate date,
+      LocalDate originDate,
       PaymentMode paymentMode,
       int technicalOriginSelect,
       int functionalOriginSelect,
@@ -205,6 +209,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     }
 
     move.setDate(date);
+    move.setOriginDate(originDate);
     move.setMoveLineList(new ArrayList<MoveLine>());
 
     Currency companyCurrency = companyConfigService.getCompanyCurrency(company);
@@ -266,6 +271,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             paymentVoucher.getCurrency(),
             partner,
             date,
+            null,
             paymentMode,
             technicalOriginSelect,
             functionalOriginSelect,
@@ -300,6 +306,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             currency,
             partner,
             date,
+            null,
             paymentMode,
             technicalOriginSelect,
             functionalOriginSelect,

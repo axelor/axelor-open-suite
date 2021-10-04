@@ -21,12 +21,15 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppLoader;
 import com.axelor.studio.db.repo.AppLoaderRepository;
-import com.axelor.studio.service.AppLoaderService;
+import com.axelor.studio.service.loader.AppLoaderExportService;
+import com.axelor.studio.service.loader.AppLoaderImportService;
 import com.google.inject.Inject;
 
 public class AppLoaderController {
 
-  @Inject protected AppLoaderService appLoaderService;
+  @Inject protected AppLoaderImportService appLoaderImportService;
+
+  @Inject protected AppLoaderExportService appLoaderExportService;
 
   @Inject protected AppLoaderRepository appLoaderRepository;
 
@@ -34,7 +37,7 @@ public class AppLoaderController {
 
     AppLoader appLoader = request.getContext().asType(AppLoader.class);
     appLoader = appLoaderRepository.find(appLoader.getId());
-    appLoaderService.exportApps(appLoader);
+    appLoaderExportService.exportApps(appLoader);
     response.setReload(true);
   }
 
@@ -42,7 +45,7 @@ public class AppLoaderController {
 
     AppLoader appLoader = request.getContext().asType(AppLoader.class);
     appLoader = appLoaderRepository.find(appLoader.getId());
-    appLoaderService.importApps(appLoader);
+    appLoaderImportService.importApps(appLoader);
     response.setReload(true);
   }
 }
