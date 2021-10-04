@@ -18,8 +18,14 @@
 package com.axelor.studio.service.loader;
 
 import com.axelor.studio.db.AppLoader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
 
 public interface AppLoaderImportService {
 
   public void importApps(AppLoader appLoader);
+
+  public List<File> getAppImportConfigFiles(File dataDir) throws FileNotFoundException, IOException;
 }
