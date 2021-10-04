@@ -33,6 +33,7 @@
    	   	<many-to-one name="analyticDistributionTemplate" ref="AnalyticDistributionTemplate" title="Analytic Distribution Template" massUpdate="true" help="This analytical distribution will be used by default when entering invoice lines or entries as soon as this accounting account is selected."/>
 
    	   	<unique-constraint columns="code,company"/>
+		<finder-method name="findByCompany" using="company" all="true"/>
 
         <track>
       		<field name="name"/>

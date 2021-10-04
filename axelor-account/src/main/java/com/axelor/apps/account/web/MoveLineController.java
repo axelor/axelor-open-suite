@@ -404,7 +404,7 @@ public class MoveLineController {
           }
         } else {
           response.setAttr("analyticDistributionTemplate", "hidden", true);
-          response.setAttr("analyticMoveLineList","hidden", true);
+          response.setAttr("analyticMoveLineList", "hidden", true);
           for (int i = 1; i <= 5; i++) {
             response.setAttr("axis" + i + "AnalyticAccount", "hidden", true);
           }

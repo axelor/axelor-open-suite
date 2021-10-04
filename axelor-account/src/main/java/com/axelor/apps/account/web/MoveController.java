@@ -422,7 +422,7 @@ public class MoveController {
           }
         } else {
           response.setAttr("moveLineList.analyticDistributionTemplate", "hidden", true);
-          response.setAttr("moveLineList.analyticMoveLineList","hidden", true);
+          response.setAttr("moveLineList.analyticMoveLineList", "hidden", true);
           for (int i = 1; i <= 5; i++) {
             response.setAttr("moveLineList.axis" + i + "AnalyticAccount", "hidden", true);
           }

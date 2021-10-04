@@ -44,6 +44,7 @@ public class AccountConfigService {
 
   @Inject protected MoveRepository moveRepo;
   @Inject protected JournalRepository journalRepo;
+  @Inject protected AccountConfigRepository accountConfigRepository;
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
 
@@ -643,5 +644,13 @@ public class AccountConfigService {
     }
 
     return accountConfig.getDasContactPartner();
+  }
+
+  @Transactional
+  public void enableAnalyticAccounting() throws AxelorException {
+    for (AccountConfig accountConfig : accountConfigRepository.all().fetch()) {
+      accountConfig.setManageAnalyticAccounting(false);
+      accountConfigRepository.save(accountConfig);
+    }
   }
 }

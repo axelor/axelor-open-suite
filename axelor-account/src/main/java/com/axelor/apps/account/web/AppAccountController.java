@@ -17,8 +17,12 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
+import com.axelor.apps.base.db.AppAccount;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -42,5 +46,15 @@ public class AppAccountController {
     Beans.get(AppAccountService.class).generateAccountConfigurations();
 
     response.setReload(true);
+  }
+
+  public void manageAnalyticAccounting(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    AppAccount appAccount = request.getContext().asType(AppAccount.class);
+    if (appAccount != null && !appAccount.getManageAnalyticAccounting()) {
+      Beans.get(AccountConfigService.class).enableAnalyticAccounting();
+      Beans.get(AccountService.class).enableAnalyticAccounting();
+    }
   }
 }

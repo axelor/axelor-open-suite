@@ -5,7 +5,7 @@
 	
 	<form name="app-account-config-form" title="App account" model="com.axelor.apps.base.db.AppAccount" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
-			<field name="manageAnalyticAccounting" widget="boolean-switch"/>
+			<field name="manageAnalyticAccounting" widget="boolean-switch" onChange="action-method-app-account-analytic-accounting"/>
 			<field name="manageCustomerCredit" widget="boolean-switch"/>
 			<field name="manageFactors" widget="Boolean-switch"/>
 			<field name="manageAdvancePaymentInvoice" widget="boolean-switch"/>
@@ -42,6 +42,10 @@
 
 	<action-method name="action-app-account-method-payer-quality-process">
 		<call class="com.axelor.apps.account.web.AppAccountController" method="payerQualityProcess" />
+	</action-method>
+	
+	<action-method name="action-method-app-account-analytic-accounting">
+		<call class="com.axelor.apps.account.web.AppAccountController" method="manageAnalyticAccounting"/>
 	</action-method>
 
 	<action-view name="admin.root.conf.account.config" title="Account configurations"

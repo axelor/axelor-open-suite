@@ -41,10 +41,10 @@
 		<field name="account.analyticDistributionAuthorized" hidden="true"/>
 		<field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
 		<field name="date" width="100" onChange="account-move-line-group-date-onchange"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-group-account-move-line-on-change"/>
-        <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0"/>
-        <field name="credit" onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid" width="150" onSelect="action-account-move-line-partner-group" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-group-account-move-line-on-change"/>
+        <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="100" readonlyIf="amountPaid &gt; 0"/>
+        <field name="credit" onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange" width="100" readonlyIf="amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
 		<field name="amountPaid" hidden="true"/>
     	<field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
@@ -67,7 +67,7 @@
 		<field name="axis5AnalyticAccount" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-account-grid" form-view="analytic-account-form"
 			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
 			onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
-		<field name="origin" width="120" hidden="true"/>
+		<field name="origin" hidden="true"/>
         <field name="description" requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
         <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid" form-view="analytic-move-line-move-line-form"/>
         <field name="reconcileGroup" hidden="true"/>

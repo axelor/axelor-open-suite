@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -31,5 +32,13 @@ public class AccountConfigController {
 
     AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
     Beans.get(AccountConfigService.class).deactivateSimulatedMoves(accountConfig.getCompany());
+  }
+
+  public void manageAnalyticAccounting(ActionRequest request, ActionResponse response) {
+
+    AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
+    if (accountConfig != null && !accountConfig.getManageAnalyticAccounting()) {
+      Beans.get(AccountService.class).enableAnalyticAccounting(accountConfig.getCompany());
+    }
   }
 }
