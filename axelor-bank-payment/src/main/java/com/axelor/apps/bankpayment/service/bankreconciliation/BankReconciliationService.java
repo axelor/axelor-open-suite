@@ -62,7 +62,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
@@ -131,7 +130,7 @@ public class BankReconciliationService {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
   }
 
-  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) {
+  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) throws AxelorException{
     Context scriptContext;
     Move move;
     List<BankReconciliationLine> bankReconciliationLines =
@@ -140,7 +139,11 @@ public class BankReconciliationService {
     List<BankStatementRule> bankStatementRules;
 
     for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      if (bankReconciliationLine.getMoveLine() != null) continue;
+      if (bankReconciliationLine.getMoveLine() != null) {
+        continue;
+      }
+      BankStatementLine bankStatementLine =
+          bankStatementLineRepository.find(bankReconciliationLine.getBankStatementLine().getId());
       scriptContext =
           new Context(
               Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
@@ -167,13 +170,11 @@ public class BankReconciliationService {
                         .getBankStatementQuery()
                         .getQuery()
                         .replaceAll("%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
-          if (bankStatementRule.getAccountManagement().getJournal() == null) continue;
-          move = generateMove(bankReconciliationLine, bankStatementRule);
-          try {
-            moveValidateService.validate(move);
-          } catch (AxelorException e) {
-            TraceBackService.trace(e);
+          if (bankStatementRule.getAccountManagement().getJournal() == null) {
+            continue;
           }
+          move = generateMove(bankReconciliationLine, bankStatementRule);
+          moveValidateService.validate(move);
           break;
         }
       }
