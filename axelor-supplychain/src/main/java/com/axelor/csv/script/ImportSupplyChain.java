@@ -95,7 +95,8 @@ public class ImportSupplyChain {
   }
 
   @Transactional
-  public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values) {
+  public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values)
+      throws Exception {
 
     try {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
@@ -151,13 +152,15 @@ public class ImportSupplyChain {
 
     } catch (Exception e) {
       TraceBackService.trace(e);
+      throw e;
     }
 
     return null;
   }
 
   @Transactional
-  public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values) {
+  public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values)
+      throws Exception {
     try {
       SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
@@ -205,6 +208,7 @@ public class ImportSupplyChain {
       saleOrderRepo.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(e);
+      throw e;
     }
     return null;
   }
