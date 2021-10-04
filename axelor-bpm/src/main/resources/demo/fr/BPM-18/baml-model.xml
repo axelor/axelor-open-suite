@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<baml-models>
+
+	
+		<baml-model>
+							
+			<name>Dynamic Create Invoice From Sale Order</name>
+							
+			<bamlXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<process-actions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <process-action id="ProcessAction_1" name="Create new invoice" targetModel="Invoice" sourceModel="SaleOrder" staticCompile="false">
+    <new-record id="NewRecord_0ai6a9f" name="Create Invoice" target="invoice" expression="Invoice" />
+    <assignation id="Assignation_0gntmso" name="Assign values to invoice from sale order">
+      <assignElements>
+        <assign id="assign_eezv02bjedm9b37ych2x3epc7" target="invoice.partner" expression="saleOrder.clientPartner.getTarget()" />
+        <assign id="assign_19oevlsdsbe3r57jjkhbozibs" target="invoice.operationTypeSelect" expression="3" />
+        <assign id="assign_bhv9cme5p90x1lcf4r91ivt6e" target="invoice.operationSubTypeSelect" expression="1" />
+        <assign id="assign_9fhij1agy17nsd02xkrqhxsut" target="invoice.company" expression="saleOrder.company.getTarget()" />
+        <assign id="assign_64q5a1jgfh6ywabf5c34xi67s" target="invoice.currency" expression="saleOrder.currency.getTarget()" />
+      </assignElements>
+    </assignation>
+    <sequenceFlow id="Flow_0byodc7" sourceRef="NewRecord_0ai6a9f" targetRef="Assignation_0gntmso" />
+    <loop id="Loop_17yugyw" name="Loop on sale order lines" target="saleOrderLine" expression="saleOrder.saleOrderLineList">
+      <new-record id="NewRecord_1yz59wq" name="Create Invoice line" target="invoiceLine" expression="InvoiceLine" />
+      <assignation id="Assignation_0wqvhdj" name="Assign values from sale order line to invoice lines">
+        <assignElements>
+          <assign id="assign_bh8cdabusc9ruy5l8dktvu2cm" target="invoiceLine.product" expression="saleOrderLine.product.getTarget()" if="saleOrderLine.product != null" />
+          <assign id="assign_7es1l4aqda72dqiljw0avqql7" target="invoiceLine.productName" expression="saleOrderLine.productName" />
+          <assign id="assign_05dtw2yvwi7i4ikcx4dfroakh" target="invoiceLine.price" expression="saleOrderLine.price" />
+          <assign id="assign_0qm0ze5p87pap7846veeh0u9e" target="invoiceLine.exTaxTotal" expression="saleOrderLine.exTaxTotal" />
+          <assign id="assign_9boaee4j67inwjklkci19j503" target="invoice.invoiceLineList" expression="invoiceLine.getTarget()" add="true" />
+          <assign id="assign_e3ui7gfhpmrzrlwntck1h6z30" target="invoiceLine.invoice" expression="invoice.getTarget()" />
+          <assign id="assign_6gnptzq9eeic96a36cvnzq9nl" target="invoiceLine.priceDiscounted" expression="saleOrderLine.priceDiscounted" />
+          <assign id="assign_4yx6sezcxqnmpfdokygx1fed7" target="invoiceLine.qty" expression="saleOrderLine.qty" />
+          <assign id="assign_58l0if5xat21kternfyq1clqk" target="invoiceLine.unit" expression="saleOrderLine.unit.getTarget()" />
+        </assignElements>
+      </assignation>
+      <sequenceFlow id="Flow_0g2mdv7" sourceRef="NewRecord_1yz59wq" targetRef="Assignation_0wqvhdj" />
+    </loop>
+    <sequenceFlow id="Flow_1h4c5ub" sourceRef="Assignation_0gntmso" targetRef="Loop_17yugyw" />
+    <conditional id="Condition_1g6dv7n" name="If invoice lines are there" target="" expression="!invoice.invoiceLineList?.empty">
+      <assignation id="Assignation_1tdhlxb" name="Calculate total">
+        <assignElements>
+          <assign id="assign_9s4yr4prwbu01a9m7c5b9ju9g" target="invoice.exTaxTotal" expression="invoice.invoiceLineList.collect{it-&#62;it.exTaxTotal}.sum()" />
+          <assign id="assign_ckliz98avimuk0cgza247ydcl" target="invoice.inTaxTotal" expression="saleOrder.inTaxTotal" />
+        </assignElements>
+      </assignation>
+    </conditional>
+    <sequenceFlow id="Flow_06yl128" sourceRef="Loop_17yugyw" targetRef="Condition_1g6dv7n" />
+  </process-action>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ProcessAction_1">
+      <bpmndi:BPMNEdge id="Flow_06yl128_di" bpmnElement="Flow_06yl128">
+        <di:waypoint x="540" y="390" />
+        <di:waypoint x="540" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h4c5ub_di" bpmnElement="Flow_1h4c5ub">
+        <di:waypoint x="310" y="290" />
+        <di:waypoint x="365" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0byodc7_di" bpmnElement="Flow_0byodc7">
+        <di:waypoint x="160" y="290" />
+        <di:waypoint x="210" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="NewRecord_0ai6a9f_di" bpmnElement="NewRecord_0ai6a9f">
+        <dc:Bounds x="60" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Assignation_0gntmso_di" bpmnElement="Assignation_0gntmso">
+        <dc:Bounds x="210" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Loop_17yugyw_di" bpmnElement="Loop_17yugyw" isExpanded="true">
+        <dc:Bounds x="365" y="190" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0g2mdv7_di" bpmnElement="Flow_0g2mdv7">
+        <di:waypoint x="490" y="280" />
+        <di:waypoint x="515" y="280" />
+        <di:waypoint x="515" y="279" />
+        <di:waypoint x="540" y="279" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="NewRecord_1yz59wq_di" bpmnElement="NewRecord_1yz59wq">
+        <dc:Bounds x="390" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Assignation_0wqvhdj_di" bpmnElement="Assignation_0wqvhdj">
+        <dc:Bounds x="540" y="239" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Condition_1g6dv7n_di" bpmnElement="Condition_1g6dv7n" isExpanded="true">
+        <dc:Bounds x="365" y="440" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Assignation_1tdhlxb_di" bpmnElement="Assignation_1tdhlxb">
+        <dc:Bounds x="450" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</process-actions>]]></bamlXml>
+							
+			<resultScript><![CDATA[null]]></resultScript>
+							
+			<appBuilder>BPM-18</appBuilder>
+							
+		</baml-model>
+		<baml-model>
+							
+			<name>Create inventory</name>
+							
+			<bamlXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<process-actions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <process-action id="Process_1" name="Create new inventory" targetModel="Inventory" staticCompile="true">
+    <new-record id="NewRecord_0lszdb9" name="Create Inventory" target="inventory" expression="Inventory" />
+    <query id="Query_0hr41ft" name="Fetch stock location" target="stockLocation" expression="self.name = &#39;Main Warehouse&#39;" model="StockLocation" returnType="SINGLE" />
+    <sequenceFlow id="Flow_06rr7tu" sourceRef="NewRecord_0lszdb9" targetRef="Query_0hr41ft" />
+    <assignation id="Assignation_1us7xh3" name="Assign values on Inventory">
+      <assignElements>
+        <assign id="assign_8537om5xh1wrd9t0yly6y7o3f" target="inventory.inventoryTitle" expression="&#39;Inventory from BAML&#39;" />
+        <assign id="assign_e2jruc9hqcgadjdf6mhho456f" target="inventory.typeSelect" expression="1" />
+        <assign id="assign_aj6qqr3tm0izjxymlaxcbr87c" target="inventory.stockLocation" expression="stockLocation" />
+      </assignElements>
+    </assignation>
+    <sequenceFlow id="Flow_0q741c6" sourceRef="Query_0hr41ft" targetRef="Assignation_1us7xh3" />
+    <query id="Query_0n02cyd" name="Fetch products" target="products" expression="self.productFamily.name = &#39;Components&#39;" model="Product" returnType="MULTIPLE" />
+    <sequenceFlow id="Flow_03a44zr" sourceRef="Assignation_1us7xh3" targetRef="Query_0n02cyd" />
+    <loop id="Loop_0zw5h5y" name="Loop on products" target="product" expression="products">
+      <new-record id="NewRecord_0h9i6c3" name="Create an inventory line" target="invl" expression="InventoryLine" />
+      <assignation id="Assignation_08awube" name="Assign value on inventory lines">
+        <assignElements>
+          <assign id="assign_91uftb5g612vcue3spy8xf4mu" target="invl.product" expression="product" />
+          <assign id="assign_56nmyczxcf11wmy7ue4xlr89b" target="inventory.inventoryLineList" expression="invl" add="true" />
+        </assignElements>
+      </assignation>
+      <sequenceFlow id="Flow_0ms5wlz" sourceRef="NewRecord_0h9i6c3" targetRef="Assignation_08awube" />
+    </loop>
+    <sequenceFlow id="Flow_10i3xms" sourceRef="Query_0n02cyd" targetRef="Loop_0zw5h5y" />
+  </process-action>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNEdge id="Flow_10i3xms_di" bpmnElement="Flow_10i3xms">
+        <di:waypoint x="650" y="105" />
+        <di:waypoint x="650" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03a44zr_di" bpmnElement="Flow_03a44zr">
+        <di:waypoint x="540" y="80" />
+        <di:waypoint x="625" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q741c6_di" bpmnElement="Flow_0q741c6">
+        <di:waypoint x="355" y="80" />
+        <di:waypoint x="440" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06rr7tu_di" bpmnElement="Flow_06rr7tu">
+        <di:waypoint x="230" y="80" />
+        <di:waypoint x="305" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="NewRecord_0lszdb9_di" bpmnElement="NewRecord_0lszdb9">
+        <dc:Bounds x="130" y="40" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Query_0hr41ft_di" bpmnElement="Query_0hr41ft" isMarkerVisible="true">
+        <dc:Bounds x="305" y="55" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="301" y="18" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Assignation_1us7xh3_di" bpmnElement="Assignation_1us7xh3">
+        <dc:Bounds x="440" y="40" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Query_0n02cyd_di" bpmnElement="Query_0n02cyd" isMarkerVisible="true">
+        <dc:Bounds x="625" y="55" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="613" y="31" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Loop_0zw5h5y_di" bpmnElement="Loop_0zw5h5y" isExpanded="true">
+        <dc:Bounds x="130" y="210" width="695" height="220" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0ms5wlz_di" bpmnElement="Flow_0ms5wlz">
+        <di:waypoint x="330" y="310" />
+        <di:waypoint x="440" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="NewRecord_0h9i6c3_di" bpmnElement="NewRecord_0h9i6c3">
+        <dc:Bounds x="230" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Assignation_08awube_di" bpmnElement="Assignation_08awube">
+        <dc:Bounds x="440" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</process-actions>]]></bamlXml>
+							
+			<resultScript><![CDATA[null]]></resultScript>
+							
+			<appBuilder>BPM-18</appBuilder>
+							
+		</baml-model>
+	
+	
+</baml-models>

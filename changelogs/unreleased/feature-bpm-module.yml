@@ -1,0 +1,6 @@
+---
+title: "BPM: Axelor BPM feature"
+type: feature
+description: |
+  "New module that allows management of business processes by using BPM2.0 standard.
+  It adds features to create, deploy, run, edit and monitor the entire business process."
