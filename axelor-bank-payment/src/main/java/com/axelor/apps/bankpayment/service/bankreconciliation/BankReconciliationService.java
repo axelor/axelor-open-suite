@@ -130,7 +130,7 @@ public class BankReconciliationService {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
   }
 
-  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) throws Exception {
+  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) throws AxelorException{
     Context scriptContext;
     Move move;
     List<BankReconciliationLine> bankReconciliationLines =
