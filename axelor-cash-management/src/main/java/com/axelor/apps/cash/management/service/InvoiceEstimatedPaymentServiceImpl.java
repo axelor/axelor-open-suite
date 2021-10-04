@@ -8,7 +8,9 @@ public class InvoiceEstimatedPaymentServiceImpl implements InvoiceEstimatedPayme
   @Override
   public LocalDate computeEstimatedPaymentDate(Invoice invoice) {
     LocalDate estimatedPaymentDate = invoice.getDueDate();
-    if (estimatedPaymentDate != null && invoice.getPartner() != null && invoice.getPartner().getPaymentDelay() != null) {
+    if (estimatedPaymentDate != null
+        && invoice.getPartner() != null
+        && invoice.getPartner().getPaymentDelay() != null) {
       estimatedPaymentDate =
           estimatedPaymentDate.plusDays(invoice.getPartner().getPaymentDelay().intValue());
     }
