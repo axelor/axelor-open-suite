@@ -57,6 +57,7 @@ import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -809,5 +810,23 @@ public class BankReconciliationService {
     bankReconciliationLine.setIsSelectedBankReconciliation(
         !bankReconciliationLineContext.getIsSelectedBankReconciliation());
     return bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
+
+  public String createDomainForMoveLine(BankReconciliation bankReconciliation) {
+    String domain = "";
+    List<MoveLine> authorizedMoveLines =
+        moveLineRepository
+            .all()
+            .filter(getRequestMoveLines(bankReconciliation))
+            .bind(getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+
+    String idList = StringTool.getIdListString(authorizedMoveLines);
+    if (idList.equals("")) {
+      domain = "self.id IN (0)";
+    } else {
+      domain = "self.id IN (" + idList + ")";
+    }
+    return domain;
   }
 }

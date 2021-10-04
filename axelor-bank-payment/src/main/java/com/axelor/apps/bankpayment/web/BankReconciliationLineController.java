@@ -65,9 +65,9 @@ public class BankReconciliationLineController {
         Beans.get(BankReconciliationService.class);
 
     String domain =
-        bankReconciliationService.getJournalDomain(
+        bankReconciliationService.createDomainForMoveLine(
             bankReconciliationLineContext.getBankReconciliation());
 
-    response.setAttr("journal", "domain", domain);
+    response.setAttr("moveLine", "domain", domain);
   }
 }
