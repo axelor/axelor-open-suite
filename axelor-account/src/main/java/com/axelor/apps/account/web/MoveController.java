@@ -40,7 +40,6 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -154,22 +153,20 @@ public class MoveController {
                 .order("date")
                 .fetch();
         if (!moveList.isEmpty()) {
-          boolean error = Beans.get(MoveValidateService.class).validateMultiple(moveList);
-          if (error) {
-            response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
-          } else {
-            MoveRepository moveRepository = Beans.get(MoveRepository.class);
-            PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
-            Integer userId = (Integer) request.getContext().get("_userId");
-            User user = Beans.get(UserRepository.class).find(Long.valueOf(userId));
-            for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
-              Move move = moveRepository.find(Long.valueOf(id));
-              if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-                  && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
-                response.setError(
-                    String.format(
-                        I18n.get(IExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
-                        move.getReference()));
+          PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
+          User user = AuthUtils.getUser();
+          for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
+            Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
+            if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
+                && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+              response.setError(
+                  String.format(
+                      I18n.get(IExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
+                      move.getReference()));
+            } else {
+              boolean error = Beans.get(MoveValidateService.class).validateMultiple(moveList);
+              if (error) {
+                response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
               } else {
                 response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
                 response.setReload(true);
