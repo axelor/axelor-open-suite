@@ -1,0 +1,3 @@
+---
+title: "ManufOrder: Fix creation of sub-manuf-order which were not considered"
+type: fix

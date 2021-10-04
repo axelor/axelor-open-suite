@@ -283,6 +283,20 @@
 							colSpan="4" colOffset="8"/>
 		</panel>
 	</form>
+	
+	<grid name="generated-manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false" canEdit="false" canDelete="false">
+    	<field name="manufOrderSeq" width="120"/>
+	    <field name="product" form-view="product-form" grid-view="product-grid"/>
+	    <field name="qty" x-scale="2"/>
+	    <field name="unit"/>
+	    <button name="openManufOrderBtn" title="Manufacturing Order" icon="fa-file-text-o" onClick="action-manuf-order-view-open-form-view-onclick,close"/>
+	</grid>
+
+	<action-view name="action-manuf-order-view-open-form-view-onclick" title="Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
+		<view type="form" name="manuf-order-form" />
+		<view type="grid" name="manuf-order-grid" />
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
 
 	<action-view name="action-manuf-order-update-real-qty-popup-form-view" title="Update real quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="popup-manuf-order-form-update-real-qty"/>
