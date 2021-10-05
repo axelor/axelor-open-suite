@@ -543,18 +543,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               move.getPartner().getFiscalPosition(), newAccount);
     }
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
-    MoveLine newOrUpdatedMoveLine = new MoveLine();
+    MoveLine newOrUpdatedMoveLine;
 
-    newOrUpdatedMoveLine.setAccount(newAccount);
     if (!map.containsKey(newSourceTaxLineKey) && !newMap.containsKey(newSourceTaxLineKey)) {
 
-      newOrUpdatedMoveLine =
-          this.createNewMoveLine(debit, credit, date, accountType, taxLine, newOrUpdatedMoveLine);
+      newOrUpdatedMoveLine = this.createMoveLine(debit, credit, date, taxLine, newAccount, move);
     } else {
-
       if (newMap.containsKey(newSourceTaxLineKey)) {
         newOrUpdatedMoveLine = newMap.get(newSourceTaxLineKey);
-      } else if (!newMap.containsKey(newSourceTaxLineKey) && map.containsKey(newSourceTaxLineKey)) {
+      } else {
         newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
       }
       newOrUpdatedMoveLine.setDebit(
@@ -562,29 +559,39 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLine.setCredit(
           newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
     }
-    newOrUpdatedMoveLine.setMove(move);
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
-    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
-    newOrUpdatedMoveLine.setDescription(move.getDescription());
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
     return newOrUpdatedMoveLine;
   }
 
-  protected MoveLine createNewMoveLine(
+  public MoveLine createMoveLine(
       BigDecimal debit,
       BigDecimal credit,
       LocalDate date,
-      String accountType,
       TaxLine taxLine,
-      MoveLine newOrUpdatedMoveLine) {
+      Account account,
+      Move move)
+      throws AxelorException {
+    MoveLine moveLine;
+    debit = debit.multiply(taxLine.getValue());
+    credit = credit.multiply(taxLine.getValue());
+    boolean isDebit = debit.signum() > 0;
+    int counter = move.getMoveLineList().size() + 1;
 
-    newOrUpdatedMoveLine.setSourceTaxLine(taxLine);
-    newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
-    newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
-    newOrUpdatedMoveLine.setDescription(taxLine.getTax().getName());
-    newOrUpdatedMoveLine.setDate(date);
+    moveLine =
+        createMoveLine(
+            move,
+            move.getPartner(),
+            account,
+            debit.add(credit),
+            isDebit,
+            date,
+            counter,
+            move.getOrigin(),
+            move.getDescription());
+    moveLine.setSourceTaxLine(taxLine);
 
-    return newOrUpdatedMoveLine;
+    return moveLine;
   }
 }
