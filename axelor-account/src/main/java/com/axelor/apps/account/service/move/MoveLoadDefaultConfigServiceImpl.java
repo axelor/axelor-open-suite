@@ -5,13 +5,15 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,11 +21,13 @@ import java.util.stream.Collectors;
 public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigService {
 
   protected FiscalPositionAccountService fiscalPositionAccountService;
+  protected TaxService taxService;
 
   @Inject
   public MoveLoadDefaultConfigServiceImpl(
-      FiscalPositionAccountService fiscalPositionAccountService) {
+      FiscalPositionAccountService fiscalPositionAccountService, TaxService taxService) {
     this.fiscalPositionAccountService = fiscalPositionAccountService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -64,40 +68,21 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
   }
 
   @Override
-  public TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount) {
-    TaxLine taxLine = null;
+  public TaxLine getTaxLine(Move move, MoveLine moveLine, Account accountingAccount)
+      throws AxelorException {
+    Tax tax;
+    TaxLine taxLine;
     Partner partner = move.getPartner();
-    if (ObjectUtils.isEmpty(partner.getFiscalPosition())) {
-      if (accountingAccount != null && accountingAccount.getDefaultTax() != null) {
-        taxLine = accountingAccount.getDefaultTax().getActiveTaxLine();
-        if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-          taxLine =
-              findValidTaxLineForMoveLine(
-                  accountingAccount.getDefaultTax().getTaxLineList(), moveLine);
-        }
-      }
-    } else {
-      for (TaxEquiv taxEquiv : partner.getFiscalPosition().getTaxEquivList()) {
-        if (accountingAccount != null
-            && taxEquiv.getFromTax().equals(accountingAccount.getDefaultTax())) {
-          taxLine = taxEquiv.getToTax().getActiveTaxLine();
-          if (taxLine == null || !taxLine.getStartDate().isBefore(moveLine.getDate())) {
-            taxLine = findValidTaxLineForMoveLine(taxEquiv.getToTax().getTaxLineList(), moveLine);
-          }
-          break;
-        }
-      }
+    if (accountingAccount == null || accountingAccount.getDefaultTax() == null) {
+      return null;
     }
-    return taxLine;
-  }
+    tax = accountingAccount.getDefaultTax();
 
-  protected TaxLine findValidTaxLineForMoveLine(List<TaxLine> taxLineList, MoveLine moveLine) {
-    return taxLineList.stream()
-        .filter(
-            tl ->
-                !moveLine.getDate().isBefore(tl.getEndDate())
-                    && !tl.getStartDate().isAfter(moveLine.getDate()))
-        .findFirst()
-        .orElse(null);
+    if (!ObjectUtils.isEmpty(partner) && !ObjectUtils.isEmpty(partner.getFiscalPosition())) {
+      tax = fiscalPositionAccountService.getTax(partner.getFiscalPosition(), tax);
+    }
+
+    taxLine = taxService.getTaxLine(tax, moveLine.getDate());
+    return taxLine;
   }
 }
