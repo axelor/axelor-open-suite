@@ -3,7 +3,6 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
@@ -11,6 +10,9 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -22,17 +24,20 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
+  protected AccountManagementService accountManagementService;
 
   @Inject
   public MoveCounterPartServiceImpl(
       MoveRepository moveRepository,
       MoveLineToolService moveLineToolService,
       AccountingSituationService accountingSituationService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AccountManagementService accountManagementService) {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
+    this.accountManagementService = accountManagementService;
   }
 
   @Override
@@ -80,53 +85,35 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected Account getAccountingAccountFromJournal(Move move) throws AxelorException {
     Account accountingAccount = null;
-    if (move.getJournal()
-            .getJournalType()
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
-        || move.getJournal()
-            .getJournalType()
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
-
-      AccountingSituation accountingSituation =
-          accountingSituationService.getAccountingSituation(move.getPartner(), move.getCompany());
-      if (move.getJournal()
-          .getJournalType()
-          .getTechnicalTypeSelect()
-          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)) {
-        accountingAccount = accountingSituation.getSupplierAccount();
-      } else if (move.getJournal()
-          .getJournalType()
-          .getTechnicalTypeSelect()
-          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
-        accountingAccount = accountingSituation.getCustomerAccount();
+    Company company = move.getCompany();
+    int technicalTypeSelect = move.getJournal().getJournalType().getTechnicalTypeSelect();
+    if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+        || technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+      if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+        accountingAccount =
+            accountingSituationService.getSupplierAccount(move.getPartner(), move.getCompany());
+      } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+        accountingAccount =
+            accountingSituationService.getCustomerAccount(move.getPartner(), move.getCompany());
       }
 
-    } else if (move.getJournal()
-        .getJournalType()
-        .getTechnicalTypeSelect()
-        .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
-      if (move.getPaymentMode() != null)
-        for (AccountManagement accountManagement :
-            move.getPaymentMode().getAccountManagementList()) {
-          if (accountManagement.getCompany().equals(move.getCompany())) {
-            accountingAccount = accountManagement.getCashAccount();
-          }
+    } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
+      if (move.getPaymentMode() != null) {
+        AccountManagement accountManagement =
+            accountManagementService.getAccountManagement(
+                move.getPaymentMode().getAccountManagementList(), company);
+        if (ObjectUtils.notEmpty(accountManagement)) {
+          accountingAccount = accountManagement.getCashAccount();
         }
+      }
     }
     if (accountingAccount == null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
-      if (move.getJournal()
-          .getJournalType()
-          .getTechnicalTypeSelect()
-          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE))
+      if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
         accountingAccount = accountConfigService.getSupplierAccount(accountConfig);
-      else if (move.getJournal()
-          .getJournalType()
-          .getTechnicalTypeSelect()
-          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE))
+      } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
         accountingAccount = accountConfigService.getCustomerAccount(accountConfig);
+      }
     }
     return accountingAccount;
   }
