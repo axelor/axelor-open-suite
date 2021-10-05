@@ -210,9 +210,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
     if (moveLine.getAccount() != null) {
       analyticMoveLine.setAccount(moveLine.getAccount());
-      if (moveLine.getAccount().getAccountType() != null) {
-        analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
-      }
+      analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
     }
 
     if (analyticAccount != null) {

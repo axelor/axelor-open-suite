@@ -45,6 +45,8 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -110,23 +112,15 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   public void validate(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
+    Invoice invoice = invoicePayment.getInvoice();
+    validatePartnerAccount(invoice);
+
     if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
       return;
     }
 
-    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-
-    // TODO assign an automatic reference
-
-    Company company = invoicePayment.getInvoice().getCompany();
-
-    if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
-      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
-    } else {
-      Beans.get(AccountingSituationService.class)
-          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
-      invoicePayment = invoicePaymentRepository.save(invoicePayment);
-    }
+    setInvoicePaymentStatus(invoicePayment);
+    createInvoicePaymentMove(invoicePayment);
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
@@ -135,6 +129,34 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
+  }
+
+  protected void validatePartnerAccount(Invoice invoice) throws AxelorException {
+    Account partnerAccount = invoice.getPartnerAccount();
+    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              com.axelor.apps.account.exception.IExceptionMessage
+                  .ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
+    }
+  }
+
+  protected void createInvoicePaymentMove(InvoicePayment invoicePayment)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+    Invoice invoice = invoicePayment.getInvoice();
+    if (accountConfigService
+        .getAccountConfig(invoice.getCompany())
+        .getGenerateMoveForInvoicePayment()) {
+      this.createMoveForInvoicePayment(invoicePayment);
+    } else {
+      Beans.get(AccountingSituationService.class).updateCustomerCredit(invoice.getPartner());
+      invoicePaymentRepository.save(invoicePayment);
+    }
+  }
+
+  protected void setInvoicePaymentStatus(InvoicePayment invoicePayment) throws AxelorException {
+    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
   }
 
   @Override
@@ -196,6 +218,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             company,
             invoicePayment.getCurrency(),
             partner,
+            paymentDate,
             paymentDate,
             paymentMode,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,

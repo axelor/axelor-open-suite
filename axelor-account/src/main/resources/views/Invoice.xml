@@ -324,7 +324,7 @@
             <field name="partner" colSpan="3" canEdit="false" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"  onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str,action-record-invoice-set-discount-values" onSelect="action-invoice-method-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
             <field name="contactPartner" colSpan="3" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true AND :company member of self.companySet" readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
             <field name="paymentMode" colSpan="3" canEdit="false" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details,action-invoice-method-check-partner-bank-details-list" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-            <field name="paymentCondition" colSpan="3" canEdit="false" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+            <field name="paymentCondition" colSpan="3" canEdit="false" readonlyIf="statusSelect == 3" widget="SuggestBox" onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
     		<field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true" readonly="true" colSpan="12">
       			<viewer><![CDATA[
                		<span x-translate style="color:red">Watch out, this partner has no active bank details</span>
@@ -651,8 +651,8 @@ InvoiceSet.length > 0))"
 				<field name="externalReference"/>
 			</panel>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true" collapseIf="true">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
-				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date" readonlyIf="ventilatedByUser || ventilatedDate"/>
+				<field name="dueDate" onChange="action-invoice-method-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
 				<field name="paymentCondition.isFree" hidden="true"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" colSpan="12"/>
 			</panel>
@@ -758,9 +758,9 @@ InvoiceSet.length > 0))"
 				<field name="internalReference"/>
 				<field name="externalReference"/>
 			</panel>
-			<panel name="datesPanelSidebar" title="Dates" readonlyIf="statusSelect == 3">
-				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" />
-				<field name="dueDate" onChange="action-invoice-record-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
+			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
+				<field name="invoiceDate" onChange="action-invoice-record-due-date,action-invoice-method-estimated-payment-date" />
+				<field name="dueDate" onChange="action-invoice-method-estimated-payment-date" readonlyIf="!paymentCondition.isFree"/>
 				<field name="paymentCondition.isFree" hidden="true"/>
 				<field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')" />
 			</panel>
@@ -1002,7 +1002,7 @@ InvoiceSet.length > 0))"
     	<action name="action-invoice-record-partner-change"/>
 		  <action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-due-date"/>
-    	<action name="action-invoice-record-estimated-payment-date"/>
+    	<action name="action-invoice-method-estimated-payment-date"/>
 			<action name="action-invoice-method-fill-company-bank-details"/>
 			<action name="action-invoice-record-specific-note-on-invoice"/>
 			<action name="action-invoice-method-fill-advance-payment-set"/>
@@ -1074,10 +1074,6 @@ InvoiceSet.length > 0))"
     </action-attrs>
 
 	<!-- ACTION RECORD -->
-
-	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
-		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())" if="__config__.app.isApp('cash-management')" />
-	</action-record>
 
 	<action-record name="action-invoice-record-hide-discount" model="com.axelor.apps.account.db.Invoice">
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
@@ -1332,6 +1328,10 @@ InvoiceSet.length > 0))"
 
 	<action-method name="action-invoice-method-regenerate-and-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="regenerateAndShowInvoice"/>
+	</action-method>
+
+	<action-method name="action-invoice-method-estimated-payment-date">
+		<call class="com.axelor.apps.cash.management.web.InvoiceController" method="fillEstimatedPaymentDate"/>
 	</action-method>
 
 	<action-validate name="action-invoice-validate-regenerate-invoice">
