@@ -340,11 +340,14 @@ public class MoveLineController {
         if (accountingAccount != null && !accountingAccount.getUseForPartnerBalance()) {
           response.setValue("partner", null);
         }
+
+
         TaxLine taxLine =
             Beans.get(MoveLoadDefaultConfigService.class)
                 .getTaxLine(move, moveLine, accountingAccount);
         response.setValue("taxLine", taxLine);
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
