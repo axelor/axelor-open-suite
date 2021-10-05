@@ -55,11 +55,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     Account accountingAccount = getAccountingAccountFromJournal(move);
     boolean isDebit;
     BigDecimal amount = getCounterpartAmount(move);
-    if (amount.compareTo(BigDecimal.ZERO) < 0) {
-      isDebit = false;
-    } else {
-      isDebit = true;
-    }
+    isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
