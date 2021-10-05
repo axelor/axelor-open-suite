@@ -31,7 +31,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional(rollbackOn = AxelorException.class)
   public void generateCounterpartMoveLine(Move move) throws AxelorException {
     move.addMoveLineListItem(createCounterpartMoveLine(move));
     moveRepository.save(move);
