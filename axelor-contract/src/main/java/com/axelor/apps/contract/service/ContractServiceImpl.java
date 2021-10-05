@@ -398,7 +398,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             .peek(contractLine -> contractLine.setIsInvoiced(true))
             .collect(Collectors.toList());
     for (ContractLine line : additionalLines) {
-      generate(invoice, line);
+      InvoiceLine invLine = generate(invoice, line);
+      invLine.setContractLine(line);
       contractLineRepo.save(line);
     }
 
@@ -438,7 +439,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
         tmp.setQty(tmp.getQty().multiply(ratio).setScale(QTY_SCALE, RoundingMode.HALF_UP));
         tmp = this.contractLineService.computeTotal(tmp);
-        generate(invoice, tmp);
+        InvoiceLine invLine = generate(invoice, tmp);
+        invLine.setContractLine(line);
       }
     }
 
@@ -447,6 +449,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     for (Entry<ContractLine, Collection<ConsumptionLine>> entries : consLines.asMap().entrySet()) {
       ContractLine line = entries.getKey();
       InvoiceLine invoiceLine = generate(invoice, line);
+      invoiceLine.setContractLine(line);
       entries.getValue().stream()
           .peek(cons -> cons.setInvoiceLine(invoiceLine))
           .forEach(cons -> cons.setIsInvoiced(true));

@@ -402,11 +402,15 @@ public class BankReconciliationController {
   }
 
   public void autoAccounting(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
-    bankReconciliationService.computeBalances(
-        bankReconciliationRepository.find(bankReconciliation.getId()));
-    response.setReload(true);
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+      bankReconciliationService.computeBalances(
+          bankReconciliationRepository.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void checkIncompleteBankReconciliationLine(

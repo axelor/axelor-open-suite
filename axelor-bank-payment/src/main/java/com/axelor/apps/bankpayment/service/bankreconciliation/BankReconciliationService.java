@@ -62,7 +62,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
@@ -131,7 +130,7 @@ public class BankReconciliationService {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
   }
 
-  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) {
+  public void generateMovesAutoAccounting(BankReconciliation bankReconciliation) throws AxelorException{
     Context scriptContext;
     Move move;
     List<BankReconciliationLine> bankReconciliationLines =
@@ -140,7 +139,11 @@ public class BankReconciliationService {
     List<BankStatementRule> bankStatementRules;
 
     for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      if (bankReconciliationLine.getMoveLine() != null) continue;
+      if (bankReconciliationLine.getMoveLine() != null) {
+        continue;
+      }
+      BankStatementLine bankStatementLine =
+          bankStatementLineRepository.find(bankReconciliationLine.getBankStatementLine().getId());
       scriptContext =
           new Context(
               Mapper.toMap(bankReconciliationLine.getBankStatementLine()),
@@ -149,11 +152,14 @@ public class BankReconciliationService {
           bankStatementRuleRepository
               .all()
               .filter(
-                  "self.ruleType = :ruleType AND self.accountManagement.interbankCodeLine = :interbankCodeLine")
+                  "self.ruleType = :ruleType"
+                      + " AND self.accountManagement.interbankCodeLine = :interbankCodeLine"
+                      + " AND self.accountManagement.bankDetails = :bankDetails")
               .bind("ruleType", BankStatementRuleRepository.RULE_TYPE_ACCOUNTING_AUTO)
               .bind(
                   "interbankCodeLine",
                   bankReconciliationLine.getBankStatementLine().getOperationInterbankCodeLine())
+              .bind("bankDetails", bankReconciliationLine.getBankStatementLine().getBankDetails())
               .fetch();
       for (BankStatementRule bankStatementRule : bankStatementRules) {
 
@@ -164,13 +170,11 @@ public class BankReconciliationService {
                         .getBankStatementQuery()
                         .getQuery()
                         .replaceAll("%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
-          if (bankStatementRule.getAccountManagement().getJournal() == null) continue;
-          move = generateMove(bankReconciliationLine, bankStatementRule);
-          try {
-            moveValidateService.validate(move);
-          } catch (AxelorException e) {
-            TraceBackService.trace(e);
+          if (bankStatementRule.getAccountManagement().getJournal() == null) {
+            continue;
           }
+          move = generateMove(bankReconciliationLine, bankStatementRule);
+          moveValidateService.validate(move);
           break;
         }
       }
@@ -570,7 +574,6 @@ public class BankReconciliationService {
     Map<String, Object> params = new HashMap<>();
     params.put("fromDate", bankReconciliation.getFromDate());
     params.put("toDate", bankReconciliation.getToDate());
-    params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     params.put("statusSelect", MoveRepository.STATUS_CANCELED);
     if (bankReconciliation.getJournal() != null) {
       params.put("journal", bankReconciliation.getJournal());
