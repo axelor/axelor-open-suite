@@ -68,11 +68,13 @@ public class AnalyticDistributionTemplateServiceImpl
       boolean checkJournal = false;
       for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
         if (analyticDistributionTemplate.getCompany()
-            != analyticDistributionLine.getAnalyticAxis().getCompany()) {
+                != analyticDistributionLine.getAnalyticAxis().getCompany()
+            || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
           checkAxis = true;
         }
         if (analyticDistributionTemplate.getCompany()
-            != analyticDistributionLine.getAnalyticJournal().getCompany()) {
+                != analyticDistributionLine.getAnalyticJournal().getCompany()
+            || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
           checkJournal = true;
         }
       }
