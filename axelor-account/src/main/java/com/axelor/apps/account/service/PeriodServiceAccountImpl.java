@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -76,22 +77,26 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   public boolean isManageClosedPeriod(Period period, User user) throws AxelorException {
-    if (period.getYear().getCompany() != null) {
+    if (period.getYear().getCompany() != null && user.getGroup() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
-      if (accountConfig.getClosureAuthorizedGroupList().contains(user.getGroup())) {
-        return true;
+      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+          return true;
+        }
       }
     }
     return false;
   }
 
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
-    if (period.getYear().getCompany() != null) {
+    if (period.getYear().getCompany() != null && user.getGroup() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
-      if (accountConfig.getTemporaryClosureAuthorizedGroupList().contains(user.getGroup())) {
-        return true;
+      for (Role role : accountConfig.getTemporaryClosureAuthorizedRoleList()) {
+        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+          return true;
+        }
       }
     }
     return false;

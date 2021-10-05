@@ -74,8 +74,8 @@
 
 				</panel>
 				<panel name="managePeriodPanel" title="Period closure" colSpan="12">
-					<field name="temporaryClosureAuthorizedGroupList" colSpan="6" widget="TagSelect"/>
-					<field name="closureAuthorizedGroupList" colSpan="6" widget="TagSelect"/>
+					<field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
+					<field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
 				</panel>
 				<panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
