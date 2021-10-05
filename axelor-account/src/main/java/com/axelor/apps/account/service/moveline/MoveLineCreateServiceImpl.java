@@ -537,7 +537,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           taxLine.getName(),
           company.getName());
     }
-    if (move.getPartner().getFiscalPosition() != null) {
+    if (move.getPartner() != null && move.getPartner().getFiscalPosition() != null) {
       newAccount =
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);
