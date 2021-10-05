@@ -3,6 +3,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -33,7 +34,7 @@ public class AnalyticDistributionTemplateController {
       Beans.get(AnalyticDistributionTemplateService.class)
           .checkAnalyticDistributionTemplateCompany(analyticDistributionTemplate);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
