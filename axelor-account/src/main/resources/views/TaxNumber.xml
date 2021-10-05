@@ -12,6 +12,7 @@
 		<panel name="mainPanel">
 			<field name="taxNbr"/>
 			<field name="company"/>
+			<field name="includeInDEB" widget="boolean-switch"/>
 			<field name="fiscalPositionSet" colSpan="12" canSelect="true" canNew="false" canEdit="false"/>
 		</panel>
 	</form>

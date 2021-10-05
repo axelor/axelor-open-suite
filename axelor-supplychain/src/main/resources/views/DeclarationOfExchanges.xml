@@ -91,7 +91,8 @@
         != COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country)
         AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
         = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)
-		AND self.product.usedInDEB = true
+		AND self.product.usedInDEB = true 
+		AND (self.saleOrderLine is NULL OR self.saleOrderLine.saleOrder.taxNumber is NULL OR self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true)
       </domain>
       <context name="fromDate" expr="eval: period?.fromDate"/>
       <context name="toDate" expr="eval: period?.toDate"/>
