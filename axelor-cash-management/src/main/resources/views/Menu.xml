@@ -5,6 +5,18 @@
 
 	<menuitem name="forecast-root" title="Cash management" order="-86"  if="__config__.app.isApp('cash-management')"
 		icon="fa-money"  icon-background="#e0a83c"/>
+		
+	<menuitem name="forecast-root-forecast-dashboard" title="Forecast dashboard" action="forecast.root.forecast.dashboard" parent="forecast-root"/>
+	
+	<action-view name="forecast.root.forecast.dashboard" title="Forecast dashboard" model="com.axelor.apps.cash.management.db.Forecast">
+	    <view type="form" name="forecast-dashboard-form"/>
+	</action-view>
+	
+	<menuitem name="forecast-root-my-forecast-dashboard" title="My forecast dashboard" action="forecast.root.my.forecast.dashboard" parent="forecast-root"/>
+	
+	<action-view name="forecast.root.my.forecast.dashboard" title="My forecast dashboard" model="com.axelor.apps.cash.management.db.Forecast">
+	    <view type="form" name="forecast-my-dashboard-form"/>
+	</action-view>
 	
 	<menuitem name="forecast-config-manual-forecast" order="10" parent="forecast-conf"
 		title="Manual forecasts" action="forecast-config-manual-forecast" />

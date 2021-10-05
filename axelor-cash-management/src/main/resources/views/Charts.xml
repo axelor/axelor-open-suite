@@ -37,5 +37,29 @@
 		<category key="date" type="date" />
 		<series key="amount" type="bar"/>
 	</chart>
-
+	
+	<chart name="chart.forecast.in.out.total" title="Forecasts in out total" onInit="action-chart-attrs-show-search-fields">
+	  	<dataset type="jpql">
+		    <![CDATA[
+			SELECT self.amount as amount, 
+			MONTH(self.estimatedDate) as month
+			FROM
+				ForecastRecapLine AS self
+			INNER JOIN self.forecastRecap AS recap ON recap.isUseForReport = true 
+			WHERE self.estimatedDate is not null
+			AND (:bankDetails is null OR :bankDetails MEMBER OF recap.bankDetailsSet)
+			AND (recap.user = :_user OR :_user is null)
+			AND self.estimatedDate BETWEEN :fromDate AND :toDate
+		    ]]>
+	    </dataset>
+	   	<category key="month" type="month" title="Month"/>
+		<series key="amount" title="Amount" type="bar" aggregate="sum"/>
+	</chart>
+	
+	<chart name="chart.cash.balance.over.time" title="Cash balance over time">
+	  	<dataset type="rpc">com.axelor.apps.cash.management.web.ChartController:getCashBalanceData</dataset>
+	    <category key="week" type="text" title="Week"/>
+		<series key="balance" title="Balance" type="line"/>
+	</chart>
+	
 </object-views>
