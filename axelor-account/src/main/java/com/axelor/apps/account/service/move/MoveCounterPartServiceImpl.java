@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -21,6 +22,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
+  protected MoveLineCreateService moveLineCreateService;
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
   protected AccountManagementService accountManagementService;
@@ -29,18 +31,20 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   public MoveCounterPartServiceImpl(
       MoveRepository moveRepository,
       MoveLineToolService moveLineToolService,
+      MoveLineCreateService moveLineCreateService,
       AccountingSituationService accountingSituationService,
       AccountConfigService accountConfigService,
       AccountManagementService accountManagementService) {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
+    this.moveLineCreateService = moveLineCreateService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
     this.accountManagementService = accountManagementService;
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void generateCounterpartMoveLine(Move move) throws AxelorException {
     move.addMoveLineListItem(createCounterpartMoveLine(move));
     moveRepository.save(move);
@@ -48,28 +52,28 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   @Override
   public MoveLine createCounterpartMoveLine(Move move) throws AxelorException {
-    MoveLine moveLine = new MoveLine();
-    moveLine.setMove(moveRepository.find(move.getId()));
-    moveLine.setDate(move.getDate());
-    moveLine.setOrigin(move.getOrigin());
-    moveLine.setOriginDate(move.getOriginDate());
-    moveLine.setDescription(move.getDescription());
-    moveLine.setPartner(move.getPartner());
-    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
-
     Account accountingAccount = getAccountingAccountFromJournal(move);
-
-    if (accountingAccount != null) moveLine.setAccount(accountingAccount);
-
+    boolean isDebit;
     BigDecimal amount = getCounterpartAmount(move);
-    if (amount.compareTo(BigDecimal.ZERO) == -1) {
-      moveLine.setCredit(amount.abs());
-    } else {
-      moveLine.setDebit(amount.abs());
-    }
-
+    isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
+    MoveLine moveLine =
+        moveLineCreateService.createMoveLine(
+            move,
+            move.getPartner(),
+            accountingAccount,
+            BigDecimal.ZERO,
+            amount.abs(),
+            BigDecimal.ZERO,
+            isDebit,
+            move.getDate(),
+            move.getDate(),
+            move.getOriginDate(),
+            move.getMoveLineList().size() + 1,
+            move.getOrigin(),
+            move.getDescription());
+    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
-
+    moveLine.setDescription(move.getDescription());
     return moveLine;
   }
 
