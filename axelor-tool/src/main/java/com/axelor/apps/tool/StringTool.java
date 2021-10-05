@@ -32,6 +32,7 @@ public final class StringTool {
       new String[] {"*", "\"", "/", "\\", "?", "%", ":", "|", "<", ">"};
   private static final String[] FILENAME_REPLACEMENT_LIST =
       new String[] {"#", "'", "_", "_", "_", "_", "_", "_", "_", "_"};
+  private static final int STRING_MAX_LENGTH = 255;
 
   private StringTool() {}
 
@@ -293,23 +294,18 @@ public final class StringTool {
    * @return the cut string
    */
   public static String cutTooLongString(String str) {
-    int defaultDbStrLength = 255;
-    String fillString = "...";
-    if (str.length() > defaultDbStrLength) {
-      return str.substring(0, defaultDbStrLength - fillString.length()) + fillString;
-    } else {
-      return str;
-    }
+    return cutTooLongStringWithOffset(str, 0);
   }
 
   /**
    * Some strings cannot be over 255 char because of database restriction. Cut it to 252 - offset
    * char then add "..." to indicate the string has been cut.
-   *
+   * offset must be between 0 and 255. Throw exception if offset is out of bound.
+   * 
    * @return the cut string
    */
   public static String cutTooLongStringWithOffset(String str, int offset) {
-    int defaultDbStrLength = 255 - offset;
+    int defaultDbStrLength = STRING_MAX_LENGTH - offset;
     String fillString = "...";
     if (str.length() > defaultDbStrLength) {
       return str.substring(0, defaultDbStrLength - fillString.length() - offset) + fillString;
