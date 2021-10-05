@@ -85,6 +85,8 @@ import com.axelor.apps.account.service.AnalyticAxisService;
 import com.axelor.apps.account.service.AnalyticAxisServiceImpl;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateServiceImpl;
+import com.axelor.apps.account.service.AnalyticFixedAssetService;
+import com.axelor.apps.account.service.AnalyticFixedAssetServiceImpl;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
@@ -118,10 +120,20 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -150,6 +162,8 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveToolServiceImpl;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.move.MoveValidateServiceImpl;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.MoveViewHelperServiceImpl;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
@@ -311,7 +325,8 @@ public class AccountModule extends AxelorModule {
 
     bind(FixedAssetLineMoveService.class).to(FixedAssetLineMoveServiceImpl.class);
 
-    bind(FixedAssetLineComputationService.class).to(FixedAssetLineComputationServiceImpl.class);
+    bind(FixedAssetLineComputationService.class)
+        .to(FixedAssetLineEconomicComputationServiceImpl.class);
 
     bind(ExtractContextMoveService.class).to(ExtractContextMoveServiceImpl.class);
 
@@ -344,6 +359,19 @@ public class AccountModule extends AxelorModule {
 
     bind(MoveCreateService.class).to(MoveCreateServiceImpl.class);
 
+    bind(AnalyticFixedAssetService.class).to(AnalyticFixedAssetServiceImpl.class);
+
+    bind(FixedAssetDerogatoryLineService.class).to(FixedAssetDerogatoryLineServiceImpl.class);
+
+    bind(FixedAssetDerogatoryLineMoveService.class)
+        .to(FixedAssetDerogatoryLineMoveServiceImpl.class);
+
+    bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
+
+    bind(FixedAssetFailOverControlService.class).to(FixedAssetFailOverControlServiceImpl.class);
+
+    bind(FixedAssetGenerationService.class).to(FixedAssetGenerationServiceImpl.class);
+
     bind(MoveComputeService.class).to(MoveComputeServiceImpl.class);
 
     bind(MoveCounterPartService.class).to(MoveCounterPartServiceImpl.class);
@@ -367,5 +395,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineToolService.class).to(MoveLineToolServiceImpl.class);
 
     bind(MoveLineTaxService.class).to(MoveLineTaxServiceImpl.class);
+
+    bind(MoveValidateService.class).to(MoveValidateServiceImpl.class);
   }
 }

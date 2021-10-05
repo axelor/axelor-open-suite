@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
+import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -29,14 +29,16 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 
 @Singleton
-public class FixedAssetLineController {
+public class FixedAssetDerogatoryLineController {
 
   public void realize(ActionRequest request, ActionResponse response) {
-    FixedAssetLine fixedAssetLine = request.getContext().asType(FixedAssetLine.class);
-    fixedAssetLine = Beans.get(FixedAssetLineRepository.class).find(fixedAssetLine.getId());
+    FixedAssetDerogatoryLine fixedAssetLine =
+        request.getContext().asType(FixedAssetDerogatoryLine.class);
+    fixedAssetLine =
+        Beans.get(FixedAssetDerogatoryLineRepository.class).find(fixedAssetLine.getId());
 
     try {
-      Beans.get(FixedAssetLineMoveService.class).realize(fixedAssetLine, false, true);
+      Beans.get(FixedAssetDerogatoryLineMoveService.class).realize(fixedAssetLine, false, true);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -44,12 +46,14 @@ public class FixedAssetLineController {
   }
 
   public void simulate(ActionRequest request, ActionResponse response) {
-    FixedAssetLine fixedAssetLine = request.getContext().asType(FixedAssetLine.class);
-    fixedAssetLine = Beans.get(FixedAssetLineRepository.class).find(fixedAssetLine.getId());
+    FixedAssetDerogatoryLine fixedAssetLine =
+        request.getContext().asType(FixedAssetDerogatoryLine.class);
+    fixedAssetLine =
+        Beans.get(FixedAssetDerogatoryLineRepository.class).find(fixedAssetLine.getId());
 
     try {
-      if (Beans.get(FixedAssetLineMoveService.class).canSimulate(fixedAssetLine)) {
-        Beans.get(FixedAssetLineMoveService.class).simulate(fixedAssetLine);
+      if (Beans.get(FixedAssetDerogatoryLineMoveService.class).canSimulate(fixedAssetLine)) {
+        Beans.get(FixedAssetDerogatoryLineMoveService.class).simulate(fixedAssetLine);
       } else {
         response.setError(I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CAN_NOT_SIMULATE));
       }

@@ -33,7 +33,7 @@
         public static final String TREASURY_INTERFACE = "treasuryInterface";
         public static final String PURCHASE_INTERFACE = "purchaseInterface";
         public static final String SUB_ROGATION_RELEASE = "subrogationRelease";
-        
+        public static final String FIXED_ASSET = "fixedAsset";
         ]]></extra-code>
   </entity>
 

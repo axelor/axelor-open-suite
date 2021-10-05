@@ -396,6 +396,7 @@
     <option value="depositSlip">Deposit slip</option>
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
+    <option value="fixedAsset">Fixed asset</option>
   </selection>
 
   <selection name="account.notification.item.type.select">
@@ -458,6 +459,7 @@
     <option value="2">Validated</option>
   </selection>
 
+
   <selection name='move.line.reimbursement.status.select'>
     <option value='0'></option>
     <option value='1'>Reimbursement ongoing</option>
@@ -518,6 +520,66 @@
     <option value="creditTransfer">Credit transfer</option>
     <option value="reportedBalance">Reported balance</option>
   </selection>
+
+	<selection name="account.fixed.asset.transfer.reason">
+		<option value="1">Scrapping</option>
+		<option value="2">Cession</option>
+		<option value="3">Partial cession</option>
+	</selection>
+
+	<selection name="account.fixed.asset.depreciation.plan">
+		<option value="0">None</option>
+		<option value="1">Fiscal</option>
+		<option value="2">Economic</option>
+		<option value="3">Derogation</option>
+		<option value="4">IFRS</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.first.depreciation.date.ref.select">
+		<option value="1">Acquisition Date</option>
+		<option value="2">First Service Date</option>
+	</selection>
+	<selection name="account.fixed.asset.origin">
+		<option value="1">Manual</option>
+		<option value="2">Invoice</option>
+		<option value="3">Move line</option>
+		<option value="4">Scission</option>
+		<option value="5">Partial Scrapping</option>
+		<option value="6">Partial Sale</option>
+		<option value="99">Import</option>
+	</selection>
+	
+	<selection name="account.fixed.type.category.fiscal.computation.method.select">
+		<option value="linear">Linear</option>
+		<option value="degressive">Degressive</option>
+	</selection>
+	
+	
+	<selection name="account.fixed.asset.periodicity.type">
+		<option value="1">Month</option>
+		<option value="12">Year</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.fiscal.periodicity.type">
+		<option value="1">Month</option>
+		<option value="12">Year</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.line.type.select">
+		<option value="1">Economic</option>
+		<option value="2">Fiscal</option>
+		<option value="3">IFRS</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.disposal.type.select">
+		<option value="1">Scrapping</option>
+		<option value="2">Disposal Cession</option>
+	</selection>
+	
+	<selection name="account.fixed.asset.disposal.quantity.select">
+		<option value="1">Total</option>
+		<option value="2">Partial</option>
+	</selection>
 
   <selection name="account.deposit.type.select">
     <option value="1">Cheque</option>
