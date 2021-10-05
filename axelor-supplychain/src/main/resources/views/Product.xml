@@ -8,6 +8,7 @@
           <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators" domain="self.stockManaged = true AND self.dtype = 'Product' AND self.productTypeSelect = 'storable'"/>
           <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-record-empty-company-and-stock-location, action-group-supplychain-update-indicators"/>
           <field name="$stockLocation" title="Stock location" showIf="$product &amp;&amp; $company" domain="self.typeSelect != 3 and self.company = :company" canEdit="false" target="com.axelor.apps.stock.db.StockLocation" type="many-to-one" form-view="stock-location-form" grid-view="stock-location-grid" onChange="action-group-supplychain-update-indicators" />
+          <field name="$stockLocationIdList" hidden="true"/>
       </panel>
       <panel name="mainPanelIndicators" showIf="$product">
         <panel name="indicators" title="Indicators" colSpan="12">
@@ -110,7 +111,7 @@
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
       AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
      <context name="productId" expr="eval:product?.id"/>
-     <context name="location" expr="eval: __stockLocationIdList"/>
+     <context name="location" expr="eval: stockLocationIdList"/>
      <context name="companyId" expr="eval: company?.id "/>
      <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
   </action-view>
@@ -127,7 +128,7 @@
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
       AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
-    <context name="location" expr="eval: __stockLocationIdList"/>
+    <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
     <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
   </action-view>
@@ -144,7 +145,7 @@
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
       AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
-    <context name="location" expr="eval: __stockLocationIdList"/>
+    <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
     <context name="statusSelect" expr="eval: __repo__(StockMove).STATUS_REALIZED" />
   </action-view>
