@@ -27,8 +27,8 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
   @Inject
   public MoveLoadDefaultConfigServiceImpl(
       FiscalPositionAccountService fiscalPositionAccountService,
-      AccountingSituationService accountingSituationService, 
-    TaxService taxService) {
+      AccountingSituationService accountingSituationService,
+      TaxService taxService) {
     this.fiscalPositionAccountService = fiscalPositionAccountService;
     this.accountingSituationService = accountingSituationService;
     this.taxService = taxService;
