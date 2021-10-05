@@ -36,6 +36,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.TraceBack;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -118,6 +119,8 @@ public class StockMoveController {
       // we have to inject TraceBackService to use non static methods
       TraceBackService traceBackService = Beans.get(TraceBackService.class);
       long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
+      Optional<TraceBack> lastTracebackBeforeOptional =
+          traceBackService.findLastAlertTraceBack(stockMove);
       String newSeq = Beans.get(StockMoveService.class).realize(stockMove);
 
       response.setReload(true);
@@ -146,6 +149,15 @@ public class StockMoveController {
                                 com.axelor.apps.message.exception.IExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
+      }
+      Optional<TraceBack> lastTracebackAfterOptional =
+          traceBackService.findLastAlertTraceBack(stockMove);
+      if (lastTracebackAfterOptional.isPresent()) {
+        TraceBack lastTracebackAfter = lastTracebackAfterOptional.get();
+        if (!lastTracebackBeforeOptional.isPresent()
+            || !lastTracebackAfter.equals(lastTracebackBeforeOptional.get())) {
+          response.setFlash(lastTracebackAfter.getMessage());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

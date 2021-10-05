@@ -30,7 +30,7 @@
     </extend>
 
     <extend target="//panel[@name='componentsPanel']">
-      <attribute name="hideIf" value="typeSelect != 1"/>
+      <attribute name="hideIf" value="typeSelect == 2 || typeSelect == 3"/>
     </extend>
 
     <extend target="//field[@name='product.defaultBillOfMaterial']">

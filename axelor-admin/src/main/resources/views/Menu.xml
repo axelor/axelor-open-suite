@@ -41,6 +41,7 @@
 	<view type="cards" name="app-cards"/>
 	<view type="grid" name="app-grid"/>
 	<view type="form" name="app-form"/>
+	<domain>self.isCustom = null OR self.isCustom = false</domain>
   </action-view>
   
   <menuitem name="admin-root-maintenance" parent="admin-root" if="__config__.app.isApp('base')"

@@ -77,5 +77,8 @@ public interface IExceptionMessage {
   String SALE_ORDER_DISCOUNT_TOO_HIGH = /*$$(*/
       "There are lines with a discount superior to the maximal authorized discount." /*)*/;
 
+  String CONFIGURATOR_ONE_TO_MANY_WITHOUT_MAPPED_BY_UNSUPPORTED = /*$$(*/
+      "Missing mapped by: unidirectional one-to-many are not supported by the configurator." /*)*/;
+
   static final String COPY = /*$$(*/ "copy" /*)*/;
 }
