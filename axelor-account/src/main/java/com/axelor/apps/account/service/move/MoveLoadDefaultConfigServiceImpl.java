@@ -9,6 +9,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -16,44 +17,44 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigService {
 
   protected FiscalPositionAccountService fiscalPositionAccountService;
+  protected AccountingSituationService accountingSituationService;
   protected TaxService taxService;
 
   @Inject
   public MoveLoadDefaultConfigServiceImpl(
-      FiscalPositionAccountService fiscalPositionAccountService, TaxService taxService) {
+      FiscalPositionAccountService fiscalPositionAccountService,
+      AccountingSituationService accountingSituationService,
+      TaxService taxService) {
     this.fiscalPositionAccountService = fiscalPositionAccountService;
+    this.accountingSituationService = accountingSituationService;
     this.taxService = taxService;
   }
-
+  
   @Override
   public Account getAccountingAccountFromAccountConfig(Move move) {
-    List<AccountingSituation> accountConfigs =
-        move.getPartner().getAccountingSituationList().stream()
-            .filter(
-                accountingSituation -> accountingSituation.getCompany().equals(move.getCompany()))
-            .collect(Collectors.toList());
+    AccountingSituation accountSituation =
+        accountingSituationService.getAccountingSituation(move.getPartner(), move.getCompany());
     Account accountingAccount = null;
 
     JournalType journalType = move.getJournal().getJournalType();
-    if (journalType != null && accountConfigs.size() > 0) {
+    if (journalType != null) {
       if (journalType.getTechnicalTypeSelect()
           == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
-        accountingAccount = accountConfigs.get(0).getDefaultExpenseAccount();
+        accountingAccount = accountSituation.getDefaultExpenseAccount();
       } else if (journalType.getTechnicalTypeSelect()
           == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
-        accountingAccount = accountConfigs.get(0).getDefaultIncomeAccount();
+        accountingAccount = accountSituation.getDefaultIncomeAccount();
       } else if (journalType.getTechnicalTypeSelect()
           == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
         if (move.getPaymentMode() != null) {
           if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.IN)) {
-            accountingAccount = accountConfigs.get(0).getCustomerAccount();
+            accountingAccount = accountSituation.getCustomerAccount();
           } else if (move.getPaymentMode().getInOutSelect().equals(PaymentModeRepository.OUT)) {
-            accountingAccount = accountConfigs.get(0).getSupplierAccount();
+            accountingAccount = accountSituation.getSupplierAccount();
           }
         }
       }
