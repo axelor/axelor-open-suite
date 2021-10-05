@@ -299,16 +299,19 @@ public final class StringTool {
 
   /**
    * Some strings cannot be over 255 char because of database restriction. Cut it to 252 - offset
-   * char then add "..." to indicate the string has been cut.
-   * offset must be between 0 and 255. Throw exception if offset is out of bound.
-   * 
+   * char then add "..." to indicate the string has been cut. offset must be between 0 and 255.
+   * Throw exception if offset is out of bound.
+   *
    * @return the cut string
    */
   public static String cutTooLongStringWithOffset(String str, int offset) {
     int defaultDbStrLength = STRING_MAX_LENGTH - offset;
     String fillString = "...";
+    if (defaultDbStrLength < fillString.length()) {
+      fillString = "";
+    }
     if (str.length() > defaultDbStrLength) {
-      return str.substring(0, defaultDbStrLength - fillString.length() - offset) + fillString;
+      return str.substring(0, defaultDbStrLength - fillString.length()) + fillString;
     } else {
       return str;
     }

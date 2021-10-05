@@ -277,7 +277,8 @@ public class BankReconciliationService {
 
     if (!Strings.isNullOrEmpty(bankReconciliationLine.getReference())) {
       String reference = "ref:";
-      reference = StringTool.cutTooLongString(reference.concat(bankReconciliationLine.getReference()));
+      reference =
+          StringTool.cutTooLongString(reference.concat(bankReconciliationLine.getReference()));
       description = StringTool.cutTooLongStringWithOffset(description, reference.length());
       description = description.concat(reference);
     }
