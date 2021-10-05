@@ -32,7 +32,8 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
     this.fiscalPositionAccountService = fiscalPositionAccountService;
     this.accountingSituationService = accountingSituationService;
     this.taxService = taxService;
-
+  }
+  
   @Override
   public Account getAccountingAccountFromAccountConfig(Move move) {
     AccountingSituation accountSituation =
