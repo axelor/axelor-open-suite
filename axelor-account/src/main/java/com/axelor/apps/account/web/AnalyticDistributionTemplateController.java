@@ -24,4 +24,16 @@ public class AnalyticDistributionTemplateController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkTemplateCompany(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          request.getContext().asType(AnalyticDistributionTemplate.class);
+      Beans.get(AnalyticDistributionTemplateService.class)
+          .checkAnalyticDistributionTemplateCompany(analyticDistributionTemplate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
