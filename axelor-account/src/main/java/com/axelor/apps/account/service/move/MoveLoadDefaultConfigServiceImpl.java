@@ -16,7 +16,6 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigService {
 
@@ -33,7 +32,7 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
     this.accountingSituationService = accountingSituationService;
     this.taxService = taxService;
   }
-  
+
   @Override
   public Account getAccountingAccountFromAccountConfig(Move move) {
     AccountingSituation accountSituation =
