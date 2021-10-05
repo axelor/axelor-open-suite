@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -221,6 +222,47 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     } else if (moveLine.getDebit().signum() > 0) {
       analyticMoveLine.setAmount(moveLine.getDebit());
     }
+    return analyticMoveLine;
+  }
+
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      InvoiceLine invoiceLine, AnalyticAccount analyticAccount) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
+    if (invoiceLine.getInvoice() != null
+        && accountConfigService
+                .getAccountConfig(invoiceLine.getInvoice().getCompany())
+                .getAnalyticJournal()
+            != null) {
+
+      analyticMoveLine.setAnalyticJournal(
+          accountConfigService
+              .getAccountConfig(analyticAccount.getAnalyticAxis().getCompany())
+              .getAnalyticJournal());
+    }
+
+    if (invoiceLine.getInvoice().getInvoiceDate() != null) {
+      analyticMoveLine.setDate(invoiceLine.getInvoice().getInvoiceDate());
+    } else {
+      analyticMoveLine.setDate(LocalDate.now());
+    }
+    analyticMoveLine.setPercentage(new BigDecimal(100));
+
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+
+    if (invoiceLine.getAccount() != null) {
+      analyticMoveLine.setAccount(invoiceLine.getAccount());
+      if (invoiceLine.getAccount().getAccountType() != null) {
+        analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());
+      }
+    }
+
+    if (analyticAccount != null) {
+      analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
+      analyticMoveLine.setAnalyticAccount(analyticAccount);
+    }
+
+    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+
     return analyticMoveLine;
   }
 }

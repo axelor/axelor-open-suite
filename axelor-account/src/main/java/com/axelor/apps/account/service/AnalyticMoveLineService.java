@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -53,4 +54,7 @@ public interface AnalyticMoveLineService {
 
   AnalyticMoveLine computeAnalyticMoveLine(MoveLine moveLine, AnalyticAccount analyticAccount)
       throws AxelorException;
+
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      InvoiceLine invoiceLine, AnalyticAccount axis1AnalyticAccount) throws AxelorException;
 }

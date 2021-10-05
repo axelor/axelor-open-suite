@@ -18,6 +18,9 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
@@ -26,7 +29,9 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -47,6 +52,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -74,6 +80,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected InvoiceLineRepository invoiceLineRepo;
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
+  protected AnalyticAccountRepository analyticAccountRepository;
+  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
+  protected ListToolService listToolService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -85,7 +94,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AnalyticAccountRepository analyticAccountRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      ListToolService listToolService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -96,6 +108,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.invoiceLineRepo = invoiceLineRepo;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
+    this.analyticAccountRepository = analyticAccountRepository;
+    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
+    this.listToolService = listToolService;
   }
 
   @Override
@@ -124,9 +139,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   @Override
   public List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine) {
 
-    List<AnalyticMoveLine> analyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
+    List<AnalyticMoveLine> AnalyticMoveLineList = invoiceLine.getAnalyticMoveLineList();
 
-    if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
+    if ((AnalyticMoveLineList == null || AnalyticMoveLineList.isEmpty())) {
       return createAnalyticDistributionWithTemplate(invoiceLine);
     } else {
       LocalDate date =
@@ -137,18 +152,18 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
                       .map(User::getActiveCompany)
                       .orElse(null));
       if (invoiceLine.getAnalyticMoveLineList() != null) {
-        for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        for (AnalyticMoveLine AnalyticMoveLine : AnalyticMoveLineList) {
           analyticMoveLineService.updateAnalyticMoveLine(
-              analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
+              AnalyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
         }
       }
-      return analyticMoveLineList;
+      return AnalyticMoveLineList;
     }
   }
 
   @Override
   public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
-    List<AnalyticMoveLine> analyticMoveLineList =
+    List<AnalyticMoveLine> AnalyticMoveLineList =
         analyticMoveLineService.generateLines(
             invoiceLine.getAnalyticDistributionTemplate(),
             invoiceLine.getCompanyExTaxTotal(),
@@ -160,7 +175,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
                         .map(User::getActiveCompany)
                         .orElse(null)));
 
-    return analyticMoveLineList;
+    return AnalyticMoveLineList;
   }
 
   @Override
@@ -411,7 +426,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             .getAccountConfig(invoice.getCompany())
             .getAnalyticDistributionTypeSelect()
         == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-      productInformation.put("analyticMoveLineList", null);
+      productInformation.put("AnalyticMoveLineList", null);
     }
     return productInformation;
   }
@@ -559,9 +574,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   private InvoiceLine computeAnalyticDistributionWithUpdatedQty(InvoiceLine invoiceLine) {
 
     if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
-      List<AnalyticMoveLine> analyticMoveLineList = this.computeAnalyticDistribution(invoiceLine);
-      if (ObjectUtils.notEmpty(analyticMoveLineList)) {
-        invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
+      List<AnalyticMoveLine> AnalyticMoveLineList = this.computeAnalyticDistribution(invoiceLine);
+      if (ObjectUtils.notEmpty(AnalyticMoveLineList)) {
+        invoiceLine.setAnalyticMoveLineList(AnalyticMoveLineList);
       }
     }
     return invoiceLine;
@@ -586,6 +601,127 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setAnalyticDistributionTemplate(null);
     }
 
+    return invoiceLine;
+  }
+
+  @Override
+  public boolean compareNbrOfAnalyticAxisSelect(InvoiceLine invoiceLine, int position)
+      throws AxelorException {
+    return invoiceLine != null
+        && invoiceLine.getInvoice() != null
+        && invoiceLine.getInvoice().getCompany() != null
+        && position
+            <= accountConfigService
+                .getAccountConfig(invoiceLine.getInvoice().getCompany())
+                .getNbrOfAnalyticAxisSelect();
+  }
+
+  public List<Long> setAxisDomains(InvoiceLine invoiceLine, int position) throws AxelorException {
+    List<Long> analyticAccountListByAxis = new ArrayList<Long>();
+    List<Long> analyticAccountListByRules = new ArrayList<Long>();
+
+    AnalyticAxis analyticAxis = new AnalyticAxis();
+
+    if (compareNbrOfAnalyticAxisSelect(invoiceLine, position)) {
+
+      for (AnalyticAxisByCompany axis :
+          accountConfigService
+              .getAccountConfig(invoiceLine.getInvoice().getCompany())
+              .getAnalyticAxisByCompanyList()) {
+        if (axis.getOrderSelect() == position) {
+          analyticAxis = axis.getAnalyticAxis();
+        }
+      }
+
+      for (AnalyticAccount analyticAccount :
+          analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
+        analyticAccountListByAxis.add(analyticAccount.getId());
+      }
+      if (invoiceLine.getAccount() != null) {
+        List<AnalyticAccount> analyticAccountList =
+            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(invoiceLine.getAccount());
+        if (!analyticAccountList.isEmpty()) {
+          for (AnalyticAccount analyticAccount : analyticAccountList) {
+            analyticAccountListByRules.add(analyticAccount.getId());
+          }
+          analyticAccountListByAxis =
+              listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
+        }
+      }
+    }
+    return analyticAccountListByAxis;
+  }
+
+  @Override
+  public InvoiceLine analyzeInvoiceLine(InvoiceLine invoiceLine) throws AxelorException {
+    if (invoiceLine != null) {
+
+      if (invoiceLine.getAnalyticMoveLineList() == null) {
+        invoiceLine.setAnalyticMoveLineList(new ArrayList<>());
+      } else {
+        invoiceLine.getAnalyticMoveLineList().clear();
+      }
+
+      AnalyticMoveLine analyticMoveLine = null;
+
+      if (invoiceLine.getAxis1AnalyticAccount() != null) {
+        analyticMoveLine =
+            analyticMoveLineService.computeAnalyticMoveLine(
+                invoiceLine, invoiceLine.getAxis1AnalyticAccount());
+        invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (invoiceLine.getAxis2AnalyticAccount() != null) {
+        analyticMoveLine =
+            analyticMoveLineService.computeAnalyticMoveLine(
+                invoiceLine, invoiceLine.getAxis2AnalyticAccount());
+        invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (invoiceLine.getAxis3AnalyticAccount() != null) {
+        analyticMoveLine =
+            analyticMoveLineService.computeAnalyticMoveLine(
+                invoiceLine, invoiceLine.getAxis3AnalyticAccount());
+        invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (invoiceLine.getAxis4AnalyticAccount() != null) {
+        analyticMoveLine =
+            analyticMoveLineService.computeAnalyticMoveLine(
+                invoiceLine, invoiceLine.getAxis4AnalyticAccount());
+        invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (invoiceLine.getAxis5AnalyticAccount() != null) {
+        analyticMoveLine =
+            analyticMoveLineService.computeAnalyticMoveLine(
+                invoiceLine, invoiceLine.getAxis5AnalyticAccount());
+        invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+    }
+    return invoiceLine;
+  }
+
+  @Override
+  public InvoiceLine removeAnalyticOnRemoveProduct(InvoiceLine invoiceLine) {
+    if (invoiceLine != null && invoiceLine.getProduct() == null) {
+      invoiceLine = removeAnalytic(invoiceLine);
+    }
+    return invoiceLine;
+  }
+
+  @Override
+  public InvoiceLine removeAnalyticOnRemoveAccount(InvoiceLine invoiceLine) {
+    if (invoiceLine != null && invoiceLine.getAccount() == null) {
+      invoiceLine = removeAnalytic(invoiceLine);
+    }
+    return invoiceLine;
+  }
+
+  public InvoiceLine removeAnalytic(InvoiceLine invoiceLine) {
+    invoiceLine.setAnalyticDistributionTemplate(null);
+    invoiceLine.setAxis1AnalyticAccount(null);
+    invoiceLine.setAxis2AnalyticAccount(null);
+    invoiceLine.setAxis3AnalyticAccount(null);
+    invoiceLine.setAxis4AnalyticAccount(null);
+    invoiceLine.setAxis5AnalyticAccount(null);
+    invoiceLine.getAnalyticMoveLineList().clear();
     return invoiceLine;
   }
 }
