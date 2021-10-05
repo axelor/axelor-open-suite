@@ -302,46 +302,55 @@ public class MoveLineController {
   public void loadAccountInformation(ActionRequest request, ActionResponse response) {
     Context parentContext = request.getContext().getParent();
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    if (parentContext != null) {
-      Move move = parentContext.asType(Move.class);
-      Partner partner = move.getPartner();
+    try {
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        Partner partner = move.getPartner();
 
-      if (partner != null) {
-        MoveLoadDefaultConfigService moveLoadDefaultConfigService =
-            Beans.get(MoveLoadDefaultConfigService.class);
-        Account accountingAccount =
-            moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
+        if (partner != null) {
+          MoveLoadDefaultConfigService moveLoadDefaultConfigService =
+              Beans.get(MoveLoadDefaultConfigService.class);
+          Account accountingAccount =
+              moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
 
-        if (accountingAccount != null) {
-          response.setValue("account", accountingAccount);
-          if (!accountingAccount.getUseForPartnerBalance()) {
-            response.setValue("partner", null);
+          if (accountingAccount != null) {
+            response.setValue("account", accountingAccount);
+            if (!accountingAccount.getUseForPartnerBalance()) {
+              response.setValue("partner", null);
+            }
           }
-        }
 
-        TaxLine taxLine =
-            moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
-        response.setValue("taxLine", taxLine);
+          TaxLine taxLine =
+              moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
+          response.setValue("taxLine", taxLine);
+        }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void refreshAccountInformation(ActionRequest request, ActionResponse response) {
     Context parentContext = request.getContext().getParent();
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    if (parentContext != null) {
-      Move move = parentContext.asType(Move.class);
-      Account accountingAccount = moveLine.getAccount();
-      if (accountingAccount != null) {
-        if (!accountingAccount.getUseForPartnerBalance()) {
-          response.setValue("partner", null);
+    try {
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        Account accountingAccount = moveLine.getAccount();
+        if (accountingAccount != null) {
+          if (!accountingAccount.getUseForPartnerBalance()) {
+            response.setValue("partner", null);
+          }
         }
+
+        TaxLine taxLine =
+            Beans.get(MoveLoadDefaultConfigService.class)
+                .getTaxLine(move, moveLine, accountingAccount);
+        response.setValue("taxLine", taxLine);
       }
 
-      TaxLine taxLine =
-          Beans.get(MoveLoadDefaultConfigService.class)
-              .getTaxLine(move, moveLine, accountingAccount);
-      response.setValue("taxLine", taxLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
