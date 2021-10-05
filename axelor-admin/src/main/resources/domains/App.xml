@@ -21,6 +21,7 @@
 		<integer name="installOrder" title="Install order" />
 		<string name="languageSelect" title="Language" selection="select.language" />
 		<one-to-many name="accessConfigList" ref="AccessConfig" title="Access config" mappedBy="app"/>
+		<boolean name="isCustom" title="Custom" />
 		
 		<finder-method name="findByCode" using="code" cacheable="true" />
 		
