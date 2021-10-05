@@ -71,6 +71,19 @@ import org.slf4j.LoggerFactory;
 
 public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
+  private static final String[] EXPORT_TEMPLATES =
+      new String[] {
+        "app-builder",
+        "json-model",
+        "json-field",
+        "menu-builder",
+        "action-builder",
+        "dashboard-builder",
+        "dashlet-builder",
+        "chart-builder",
+        "selection-builder"
+      };
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final List<String> JSON_EXTRACT_TYPES =
@@ -98,13 +111,11 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
       File exportDir = Files.createTempDir();
 
-      if (!CollectionUtils.isEmpty(appLoader.getAppDataLoaderList())) {
-        addImportConfigFile(appLoader, exportDir);
-      }
-
       addAppDataFile(appLoader, exportDir);
 
       if (CollectionUtils.isNotEmpty(appLoader.getAppDataLoaderList())) {
+
+        addImportConfigFile(appLoader, exportDir);
 
         for (AppDataLoader dataLoader : appLoader.getAppDataLoaderList()) {
 
@@ -145,8 +156,17 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return ctx;
   }
 
-  protected InputStream getTemplate() {
-    return ResourceUtils.getResourceStream("data-export/export-bpm.tmpl");
+  protected Map<String, InputStream> getExportTemplateResources() {
+
+    Map<String, InputStream> templateMap = new HashMap<String, InputStream>();
+
+    for (String filePrefix : EXPORT_TEMPLATES) {
+      templateMap.put(
+          filePrefix + ".xml",
+          ResourceUtils.getResourceStream("data-export/" + filePrefix + ".tmpl"));
+    }
+
+    return templateMap;
   }
 
   protected File addImportConfigFile(AppLoader appLoader, File parentDir)
@@ -209,6 +229,10 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
       xmlBind.setUpdate(true);
     }
 
+    if (relationalInput) {
+      xmlBind.setCreate(false);
+    }
+
     xmlBind.setBindings(getMetaFieldBinding(modelMapper, dataLoader, relationalInput));
 
     List<XMLBind> rootBindings = new ArrayList<XMLBind>();
@@ -248,6 +272,10 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     if (!CollectionUtils.isEmpty(dataLoader.getSearchJsonFieldSet())) {
       xmlBindJson.setSearch(getJsonSearchFields(dataLoader, jsonFieldMap));
       xmlBindJson.setUpdate(true);
+    }
+
+    if (relationalInput) {
+      xmlBindJson.setCreate(false);
     }
 
     xmlBindJson.setBindings(geJsonFieldBinding(jsonFieldMap, dataLoader, relationalInput));
@@ -491,17 +519,22 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return zipFile;
   }
 
-  protected File addAppDataFile(AppLoader appLoader, File exportDir) throws IOException {
+  protected void addAppDataFile(AppLoader appLoader, File exportDir) throws IOException {
 
-    InputStream inputStream = getTemplate();
+    Map<String, InputStream> inputStreams = getExportTemplateResources();
     GroovyTemplates templates = new GroovyTemplates();
-    File file = new File(exportDir, "app-src.xml");
-    FileWriter writer = new FileWriter(file);
-    Map<String, Object> ctx = getExportContext(appLoader);
-    templates.from(new InputStreamReader(inputStream)).make(ctx).render(writer);
-    writer.close();
 
-    return file;
+    for (String xmlFileName : inputStreams.keySet()) {
+      log.debug("Exporting file: {}", xmlFileName);
+      File file = new File(exportDir, xmlFileName);
+      FileWriter writer = new FileWriter(file);
+      Map<String, Object> ctx = getExportContext(appLoader);
+      templates.from(new InputStreamReader(inputStreams.get(xmlFileName))).make(ctx).render(writer);
+      writer.close();
+      if (file.length() == 0) {
+        file.delete();
+      }
+    }
   }
 
   protected boolean allowRead(Class klass, Long... ids) {
