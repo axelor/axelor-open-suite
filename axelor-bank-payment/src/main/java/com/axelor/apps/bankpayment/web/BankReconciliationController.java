@@ -155,7 +155,6 @@ public class BankReconciliationController {
   }
 
   public void loadOtherBankStatement(ActionRequest request, ActionResponse response) {
-
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       bankReconciliation =
@@ -170,7 +169,6 @@ public class BankReconciliationController {
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
-
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       Beans.get(BankReconciliationService.class)
@@ -182,7 +180,6 @@ public class BankReconciliationController {
   }
 
   public void computeBalances(ActionRequest request, ActionResponse response) {
-
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       Beans.get(BankReconciliationService.class)
@@ -195,7 +192,6 @@ public class BankReconciliationController {
   }
 
   public void validate(ActionRequest request, ActionResponse response) {
-
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       Beans.get(BankReconciliationValidateService.class)
@@ -207,7 +203,6 @@ public class BankReconciliationController {
   }
 
   public void validateMultipleReconcile(ActionRequest request, ActionResponse response) {
-
     try {
       Context context = request.getContext();
 
@@ -291,7 +286,6 @@ public class BankReconciliationController {
 
   public void setJournalDomain(ActionRequest request, ActionResponse response) {
     try {
-
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       String journalIds = null;
 
@@ -312,7 +306,6 @@ public class BankReconciliationController {
 
   public void setJournal(ActionRequest request, ActionResponse response) {
     try {
-
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       Journal journal = null;
 
@@ -327,7 +320,6 @@ public class BankReconciliationController {
 
   public void setCashAccountDomain(ActionRequest request, ActionResponse response) {
     try {
-
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       String cashAccountIds = null;
 
@@ -347,7 +339,6 @@ public class BankReconciliationController {
   }
 
   public void setCashAccount(ActionRequest request, ActionResponse response) {
-
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       Account cashAccount = null;
