@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="data-form-line-grid-meta-field" title="Data Form Line"
+    model="com.axelor.studio.db.DataFormLine" canMove="true" orderBy="sequence">
+    <field name="metaField"/>
+    <field name="canSelect"/>
+  </grid>
+
+  <grid name="data-form-line-grid-meta-json-field" title="Data Form Line"
+    model="com.axelor.studio.db.DataFormLine" canMove="true" orderBy="sequence">
+    <field name="metaJsonField"/>
+    <field name="canSelect"/>
+  </grid>
+
+  <form name="data-form-line-form" title="Data Form Line"
+    model="com.axelor.studio.db.DataFormLine">
+    <panel name="mainPanel" colSpan="12">
+      <panel name="fieldPanel" colSpan="6" itemSpan="12">
+        <field name="metaField" showIf="metaField"/>
+        <field name="metaJsonField" showIf="metaJsonField"/>
+      </panel>
+      <panel name="infoPanel" colSpan="6" hidden="true">
+        <field name="canSelect"/>
+        <field name="metaField.relationship"/>
+        <field name="metaField.packageName"/>
+        <field name="metaField.typeName"/>
+        <field name="metaJsonField.targetModel"/>
+        <field name="metaJsonField.targetJsonModel"/>
+        <field name="metaJsonField.targetJsonModel.name"/>
+      </panel>
+      <panel name="attrsPanel" title="Selected Records" colSpan="12" itemSpan="12"
+        showIf="canSelect">
+        <field name="attrs"/>
+      </panel>
+      <panel name="queryPanel" title="Query Filter" colSpan="12" itemSpan="6"
+        showIf="canSelect">
+        <field name="queryFilter" showTitle="false"/>
+      </panel>
+    </panel>
+  </form>
+
+</object-views>

@@ -8,6 +8,11 @@
 
     <panel name="mainPanel">
       <field name="enableAppBuilder" widget="Boolean-switch"/>
+      <field name="publicUser"/>
+      <field name="successfulFormSubmissionMessage"/>
+      <field name="failureFormSubmissionMessage"/>
+      <field name="generateCaptcha" widget="Boolean-switch"/>
+      <field name="dataFormSelectRecordLimit"/>
     </panel>
 
     <panel-mail name="mailPanel">
