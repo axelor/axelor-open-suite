@@ -30,6 +30,8 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -40,6 +42,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -529,4 +532,40 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e);
     }
   }
+  
+  public void clearAnalytic(ActionRequest request, ActionResponse response) {
+	    try {
+	        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+	        if (invoiceLine != null) {
+	          Beans.get(InvoiceLineService.class).clearAnalyticAccounting(invoiceLine);
+	          response.setValues(invoiceLine);
+	        }
+	      } catch (Exception e) {
+	        TraceBackService.trace(response, e);
+	      }
+	    }
+  
+  public void checkAnalytic(ActionRequest request, ActionResponse response) {
+	    try {
+	        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+	        if (invoiceLine != null && invoiceLine.getAnalyticDistributionTemplate() != null) {
+	          Beans.get(AnalyticMoveLineService.class).validateLines(invoiceLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
+	          Beans.get(AnalyticDistributionTemplateService.class).validateTemplatePercentages(invoiceLine.getAnalyticDistributionTemplate());
+	        }
+	      } catch (Exception e) {
+	        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+	      }
+	    }
+  
+  public void printAnalyticAccount(ActionRequest request, ActionResponse response) {
+	    try {
+	        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+	        if (invoiceLine != null && invoiceLine.getAnalyticDistributionTemplate() != null) {
+	          Beans.get(InvoiceLineService.class).printAnalyticAccount(invoiceLine);
+	          response.setValues(invoiceLine);
+	        }
+	      } catch (Exception e) {
+	        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+	      }
+	    }
 }

@@ -73,7 +73,7 @@
 			onSelect="action-attrs-move-line-set-domain-axis" onChange="action-group-analytic-axis-onchange"/>
 		<field name="origin" width="120" hidden="true"/>
     <field name="description" requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired" />
-    <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid" form-view="analytic-move-line-move-line-form"/>
+    <field name="analyticMoveLineList" hidden="true"/>
     <field name="reconcileGroup" hidden="true" />
     <field name="$isDescriptionRequired" type="boolean" hidden="true" />
     <field name="move.company.accountConfig.isDescriptionRequired" hidden="true" />

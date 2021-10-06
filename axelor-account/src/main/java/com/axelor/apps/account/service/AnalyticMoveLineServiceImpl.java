@@ -28,12 +28,15 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -143,7 +146,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList) {
+  public void validateLines(List<AnalyticDistributionLine> analyticDistributionLineList) throws AxelorException {
     if (analyticDistributionLineList != null) {
       Map<AnalyticAxis, BigDecimal> map = new HashMap<AnalyticAxis, BigDecimal>();
       for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
@@ -159,11 +162,12 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       }
       for (AnalyticAxis analyticAxis : map.keySet()) {
         if (map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0) {
-          return false;
+        	throw new AxelorException(
+        	          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        	          I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_NOT_VALIDATED));
         }
       }
     }
-    return true;
   }
 
   @Override

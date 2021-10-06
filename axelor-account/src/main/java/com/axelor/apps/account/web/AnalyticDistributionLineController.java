@@ -20,6 +20,9 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,13 +37,14 @@ public class AnalyticDistributionLineController {
         "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
   }
 
-  public void validateLines(ActionRequest request, ActionResponse response) {
+  public void validateLines(ActionRequest request, ActionResponse response) throws AxelorException {
+	  try {
     AnalyticDistributionTemplate analyticDistributionTemplate =
         request.getContext().asType(AnalyticDistributionTemplate.class);
-    if (!Beans.get(AnalyticMoveLineService.class)
-        .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
-      response.setError(
-          "The distribution is wrong, some axes percentage values are higher than 100%");
-    }
+    Beans.get(AnalyticMoveLineService.class)
+        .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList());
+	  }catch (Exception e) {
+	      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+	}
   }
 }

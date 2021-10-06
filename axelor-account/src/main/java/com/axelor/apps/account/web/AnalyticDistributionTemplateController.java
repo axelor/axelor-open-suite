@@ -3,6 +3,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -15,13 +16,10 @@ public class AnalyticDistributionTemplateController {
     try {
       AnalyticDistributionTemplate analyticDistributionTemplate =
           request.getContext().asType(AnalyticDistributionTemplate.class);
-      if (!Beans.get(AnalyticDistributionTemplateService.class)
-          .validateTemplatePercentages(analyticDistributionTemplate)) {
-        response.setError(
-            "The distribution is wrong, some axes percentage values are not equal to 100%");
-      }
+      Beans.get(AnalyticDistributionTemplateService.class)
+          .validateTemplatePercentages(analyticDistributionTemplate);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
