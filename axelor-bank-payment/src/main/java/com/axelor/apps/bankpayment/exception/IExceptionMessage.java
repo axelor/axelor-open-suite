@@ -209,6 +209,8 @@ public interface IExceptionMessage {
       "Bank statement already imported. Aborted." /*)*/;
   static final String BANK_STATEMENT_NOT_MATCHING = /*$$(*/
       "Current bank statement's initial balance does not match previous bank statement's final balance" /*)*/;
+  static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
+      "Curernt bank statement doesn't contain an initial line" /*)*/;
 
   /*
    * Batch direct debit

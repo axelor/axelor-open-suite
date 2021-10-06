@@ -341,7 +341,6 @@ public class MoveLineController {
           response.setValue("partner", null);
         }
 
-
         TaxLine taxLine =
             Beans.get(MoveLoadDefaultConfigService.class)
                 .getTaxLine(move, moveLine, accountingAccount);

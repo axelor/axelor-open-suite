@@ -224,13 +224,17 @@ public class BankStatementService {
   }
 
   public BankDetails getBankDetails(BankStatement bankStatement) {
-    return bankPaymentBankStatementLineAFB120Repository
-        .all()
-        .filter("self.bankStatement = :bankStatement")
-        .bind("bankStatement", bankStatement)
-        .order("-id")
-        .fetchOne()
-        .getBankDetails();
+    BankStatementLineAFB120 bankStatementLineAFB120 =
+        bankPaymentBankStatementLineAFB120Repository
+            .all()
+            .filter("self.bankStatement = :bankStatement")
+            .bind("bankStatement", bankStatement)
+            .order("-id")
+            .fetchOne();
+    if (ObjectUtils.isEmpty(bankStatementLineAFB120)) {
+      return null;
+    }
+    return bankStatementLineAFB120.getBankDetails();
   }
 
   public void checkAmountFollowing(BankStatement bankStatement) throws Exception {
@@ -249,6 +253,13 @@ public class BankStatementService {
                 BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
             .order("-sequence")
             .fetchOne();
+    if (ObjectUtils.isEmpty(initialBankStatementLineAFB120)) {
+      deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
+      throw new AxelorException(
+          bankStatement,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT));
+    }
     if (ObjectUtils.notEmpty(finalBankStatementLineAFB120)
         && !(initialBankStatementLineAFB120
                 .getCredit()
