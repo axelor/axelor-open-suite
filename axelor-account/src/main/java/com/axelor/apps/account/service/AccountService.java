@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AnalyticRules;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -150,11 +149,9 @@ public class AccountService {
                 I18n.get(
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
-            List<AnalyticRules> analyticRulesList =
-                accountAnalyticRulesRepository.findByAccounts(account);
-            if (analyticRulesList != null && !analyticRulesList.isEmpty()) {
+            List<Long> rulesAnalyticAccountList = getRulesIds(account);
+            if (rulesAnalyticAccountList != null && !rulesAnalyticAccountList.isEmpty()) {
               List<Long> accountAnalyticAccountList = new ArrayList<Long>();
-              List<Long> rulesAnalyticAccountList = new ArrayList<Long>();
               account
                   .getAnalyticDistributionTemplate()
                   .getAnalyticDistributionLineList()
@@ -162,13 +159,6 @@ public class AccountService {
                       analyticDistributionLine ->
                           accountAnalyticAccountList.add(
                               analyticDistributionLine.getAnalyticAccount().getId()));
-              analyticRulesList.forEach(
-                  rules ->
-                      rules
-                          .getAnalyticAccountSet()
-                          .forEach(
-                              analyticAccount ->
-                                  rulesAnalyticAccountList.add(analyticAccount.getId())));
               for (Long analyticAccount : accountAnalyticAccountList) {
                 if (!rulesAnalyticAccountList.contains(analyticAccount)) {
                   throw new AxelorException(
@@ -182,5 +172,16 @@ public class AccountService {
         }
       }
     }
+  }
+
+  public List<Long> getRulesIds(Account account) {
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT analyticAccount.id FROM AnalyticRules "
+                    + "self JOIN self.analyticAccountSet analyticAccount "
+                    + "WHERE self.fromAccount.code <= :account AND self.toAccount.code >= :account");
+    query.setParameter("account", account.getCode());
+    return query.getResultList();
   }
 }

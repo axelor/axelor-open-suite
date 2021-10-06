@@ -192,13 +192,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   public AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, AnalyticAccount analyticAccount) throws AxelorException {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
-    AnalyticJournal analyticJournal =
-        accountConfigService.getAccountConfig(moveLine.getMove().getCompany()).getAnalyticJournal();
-    if (moveLine.getMove() != null && analyticJournal != null) {
 
-      analyticMoveLine.setAnalyticJournal(analyticJournal);
+    if (moveLine.getMove() != null && moveLine.getMove().getCompany() != null) {
+      AnalyticJournal analyticJournal =
+          accountConfigService
+              .getAccountConfig(moveLine.getMove().getCompany())
+              .getAnalyticJournal();
+      if (analyticJournal != null) {
+        analyticMoveLine.setAnalyticJournal(analyticJournal);
+      }
     }
-
     analyticMoveLine.setDate(moveLine.getDate());
     analyticMoveLine.setPercentage(new BigDecimal(100));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);

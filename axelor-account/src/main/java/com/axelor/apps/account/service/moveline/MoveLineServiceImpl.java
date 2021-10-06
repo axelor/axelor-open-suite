@@ -284,8 +284,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       return analyticMoveLine
           .getPercentage()
           .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), CALCULATION_SCALE, RoundingMode.HALF_UP)
-          .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
   }
