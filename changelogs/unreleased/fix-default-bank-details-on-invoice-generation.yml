@@ -1,0 +1,3 @@
+---
+title: "Invoice: add default bank details from partner when the invoice is generated."
+type: fix

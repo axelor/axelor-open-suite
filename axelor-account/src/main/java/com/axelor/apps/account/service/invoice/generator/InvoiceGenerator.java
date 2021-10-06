@@ -289,6 +289,14 @@ public abstract class InvoiceGenerator {
     }
     invoice.setCompanyBankDetails(companyBankDetails);
 
+    if (partner.getBankDetailsList() != null && invoice.getBankDetails() == null) {
+      invoice.setBankDetails(
+          partner.getBankDetailsList().stream()
+              .filter(b -> b.getActive() && b.getIsDefault())
+              .findFirst()
+              .orElse(null));
+    }
+
     if (partner != null && !Strings.isNullOrEmpty(partner.getInvoiceComments())) {
       invoice.setNote(partner.getInvoiceComments());
     }
