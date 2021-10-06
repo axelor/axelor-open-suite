@@ -26,8 +26,7 @@ public class AnalyticDistributionTemplateController {
     }
   }
 
-  public void checkTemplateCompany(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void checkTemplateCompany(ActionRequest request, ActionResponse response) {
     try {
       AnalyticDistributionTemplate analyticDistributionTemplate =
           request.getContext().asType(AnalyticDistributionTemplate.class);

@@ -67,9 +67,10 @@ public class AnalyticDistributionTemplateServiceImpl
       boolean checkAxis = false;
       boolean checkJournal = false;
       for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-        if (analyticDistributionTemplate.getCompany()
-                != analyticDistributionLine.getAnalyticAxis().getCompany()
-            || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
+        if (analyticDistributionLine.getAnalyticAxis() != null
+            && (analyticDistributionTemplate.getCompany()
+                    != analyticDistributionLine.getAnalyticAxis().getCompany()
+                || analyticDistributionLine.getAnalyticAxis().getCompany() == null)) {
           checkAxis = true;
         }
         if (analyticDistributionTemplate.getCompany()
@@ -82,8 +83,8 @@ public class AnalyticDistributionTemplateServiceImpl
     }
   }
 
-  public void printCheckAnalyticDistributionTemplateCompany(boolean checkAxis, boolean checkJournal)
-      throws AxelorException {
+  protected void printCheckAnalyticDistributionTemplateCompany(
+      boolean checkAxis, boolean checkJournal) throws AxelorException {
     if (checkAxis && checkJournal) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
