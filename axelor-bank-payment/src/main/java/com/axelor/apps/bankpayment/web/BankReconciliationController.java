@@ -41,7 +41,6 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -475,22 +474,25 @@ public class BankReconciliationController {
     response.setReload(true);
   }
 
-  public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    BankReconciliationService bankReconciliationService =
-        Beans.get(BankReconciliationService.class);
-    ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
-    actionViewBuilder.model(MoveLine.class.getName());
-    actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
-    actionViewBuilder.add("form", "move-line-form");
-    actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
-    Map<String, Object> params =
-        bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
-    Set<String> keys = params.keySet();
-    for (String key : keys) {
-      actionViewBuilder.context(key, params.get(key));
+  public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
+      actionViewBuilder.model(MoveLine.class.getName());
+      actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
+      actionViewBuilder.add("form", "move-line-form");
+      actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
+      Map<String, Object> params =
+          bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
+      Set<String> keys = params.keySet();
+      for (String key : keys) {
+        actionViewBuilder.context(key, params.get(key));
+      }
+      response.setView(actionViewBuilder.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setView(actionViewBuilder.map());
   }
 }
