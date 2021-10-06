@@ -41,6 +41,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -474,7 +475,8 @@ public class BankReconciliationController {
     response.setReload(true);
   }
 
-  public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response) {
+  public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
     BankReconciliationService bankReconciliationService =
         Beans.get(BankReconciliationService.class);
