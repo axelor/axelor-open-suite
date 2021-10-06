@@ -565,7 +565,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     return newOrUpdatedMoveLine;
   }
 
-  public MoveLine createMoveLine(
+  protected MoveLine createMoveLine(
       BigDecimal debit,
       BigDecimal credit,
       LocalDate date,
