@@ -272,7 +272,7 @@
 	                            	                            
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.operationTypeSelect == 3 || record.operationTypeSelect == 4) && record.partner.factorizedCustomer">Factorized customer</span>
 
-								<span class="label label-default" style="background-color: #2C75FF; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.reasonOfRefusalToPay != null" >{{$fmt('reasonOfRefusalToPay.name')}}</span>
+								<span class="label label-default" style="background-color: #2C75FF; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.reasonOfRefusalToPay != null && record.pfpValidateStatusSelect != 2" >{{$fmt('reasonOfRefusalToPay.name')}}</span>
 
 
 
@@ -496,6 +496,12 @@ InvoiceSet.length > 0))"
 					<field name="reasonOfRefusalToPayStr" readonly="true" showIf="reasonOfRefusalToPay  &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3" colSpan="12" css="red">
 						<viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
 					</field>
+					<field name="reasonOfRefusalToPay" colSpan="6" hideIf="partner == null || reasonOfRefusalToPay == null"/>
+			
+					<panel name="pfpEmailPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="12">
+						<field name="decisionPfpTakenDate" hidden="true"  showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; decisionPfpTakenDate" colSpan="12"/>
+						<button name="sendPfpNotifyEmailBtn" hidden="true" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1" colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
+					</panel>
 				</panel>
 				<panel name="financialDiscountPanel" colSpan="12" if="__config__.app.getApp('account').getManageFinancialDiscount()">
 					<field name="financialDiscount" colSpan="6" onChange="action-record-invoice-set-financial-discount-informations" showIf="statusSelect &gt;=3"/>
@@ -541,12 +547,7 @@ InvoiceSet.length > 0))"
             <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
 			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
 			<field name="pfpValidatorUser" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; statusSelect &gt; 1" readonlyIf="pfpValidateStatusSelect != 1" colSpan="6" onSelect="action-invoice-method-domain-pfp-validator-user-on-select" onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user" canEdit="false"/>
-			<field name="reasonOfRefusalToPay" colSpan="6" hideIf="partner == null || reasonOfRefusalToPay == null"/>
 			
-			<panel name="pfpEmailPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="12">
-				<field name="decisionPfpTakenDate" hidden="true"  showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; decisionPfpTakenDate" colSpan="12"/>
-				<button name="sendPfpNotifyEmailBtn" hidden="true" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1" colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
-			</panel>
 			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
 			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
 
