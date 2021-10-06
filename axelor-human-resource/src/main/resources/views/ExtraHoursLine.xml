@@ -42,10 +42,15 @@
 	
 	<action-validate name="action-extra-hours-line-validate-qty">
 		<error message="Maximum value for hours exceeded (configure daily work hours in employee)" if="user?.employee == null || user?.employee?.dailyWorkHours &lt; qty" action="action-extra-hours-line-record-qty"/>
+		<error message="The value for hours can not be negative" if="qty &lt; 0" action="action-extra-hours-line-record-qty-min"/>
 	</action-validate>
 	
 	<action-record name="action-extra-hours-line-record-qty" model="com.axelor.apps.hr.db.ExtraHoursLine">
 		<field name="qty" expr="eval: user?.employee != null ? user?.employee?.dailyWorkHours : 0"/>
+	</action-record>
+
+	<action-record name="action-extra-hours-line-record-qty-min" model="com.axelor.apps.hr.db.ExtraHoursLine">
+		<field name="qty" expr="eval: 0"/>
 	</action-record>
 
 </object-views>
