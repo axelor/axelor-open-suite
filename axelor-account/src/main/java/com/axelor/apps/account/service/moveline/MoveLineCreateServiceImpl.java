@@ -631,8 +631,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       } else if (!newMap.containsKey(newSourceTaxLineKey) && map.containsKey(newSourceTaxLineKey)) {
         newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
       }
-      newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
-      newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
+      newOrUpdatedMoveLine.setDebit(
+          newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
+      newOrUpdatedMoveLine.setCredit(
+          newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
     }
     newOrUpdatedMoveLine.setMove(move);
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
