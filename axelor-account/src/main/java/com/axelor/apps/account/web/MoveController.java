@@ -501,13 +501,11 @@ public class MoveController {
     }
   }
 
-  public void validateOriginDescription(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateOriginDescription(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
       if (move.getOrigin() == null && move.getDescription() == null) {
-        response.setAlert(
-            String.format(I18n.get(IExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION)));
+        response.setAlert(I18n.get(IExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
