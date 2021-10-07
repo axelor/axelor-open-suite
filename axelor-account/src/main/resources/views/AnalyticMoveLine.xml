@@ -34,7 +34,7 @@
     </grid>
     
     <grid name="analytic-move-line-move-line-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
-        <field name="analyticAxis"/>
+        <field name="analyticAxis" />
         <field name="analyticAccount"/>
         <field name="percentage"/>
         <field name="amount"/>
@@ -52,10 +52,10 @@
     <form name="analytic-move-line-move-line-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onLoad="action-analytic-move-line-attrs-hide-fields" onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
         <panel name="mainPanel" >
    	        <field name="analyticJournal"/>
-	        <field name="analyticAxis"/>
-	        <field name="analyticAccount"/>
-	        <field name="percentage"/>
-	        <field name="date"/>
+	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" onChange="action-axis-change-remove-account" required="true"/>
+	        <field name="analyticAccount"  onChange="action-analytic-distribution-account-on-change" required="true" domain="(:analyticAxis IS NOT NULL AND self.analyticAxis = :analyticAxis) OR (:analyticAxis IS NULL)"/>
+	        <field name="percentage" required="true"/>
+	        <field name="date" hidden="true"/>
         </panel>      
     </form>
     
