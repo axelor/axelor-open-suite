@@ -17,15 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -50,6 +41,13 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class VentilateState extends WorkflowInvoice {

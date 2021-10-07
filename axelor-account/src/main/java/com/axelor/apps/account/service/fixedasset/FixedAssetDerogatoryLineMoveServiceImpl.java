@@ -190,6 +190,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             company.getCurrency(),
             partner,
             date,
+            date,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
