@@ -12,7 +12,7 @@
 	    <many-to-one name="expenseProduct" ref="com.axelor.apps.base.db.Product" title="Expense Type" required="true" />
 	    <date name="expenseDate" title="Expense date" required="true"/>
 	    <decimal name="untaxedAmount" title="Untaxed amount" readonly="true"/>
-	    <decimal name="totalTax" title="Total tax" min="0 "/>
+	    <decimal name="totalTax" title="Total tax" min="0"/>
 	    <decimal name="totalAmount" title="Total amount with tax" min="0" required="true"/>
 	    <string name="comments" title="Comments" large="true"/>
 	    <boolean name="toInvoice"/>

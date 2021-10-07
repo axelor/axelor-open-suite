@@ -12,9 +12,9 @@
 		<field name="expenseProduct" canView="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" width="200"/>
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
 		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"/>
-		<field name="totalAmount" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-validate-amount" width="170"/>
-		<field name="totalTax" aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax" width="80"
-			onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-validate-amount, action-expense-line-method-compute-analytic-distribution"/>
+		<field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)" aggregate="sum" onChange="action-expense-on-change-tax-untaxt-amount" width="170"/>
+		<field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)" aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax" width="80"
+			onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
         <field name="toInvoice"/>
 		<field name="comments" width="400"/>
 		<field name="untaxedAmount" hidden="true"/>
@@ -48,15 +48,15 @@
 
 	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
-		onSave="action-expense-line-validate-expenseDate,action-expense-line-validate-amount" width="large">
+		onSave="action-expense-line-validate-expenseDate" width="large">
 		
 		<panel name="mainPanel" title="Main">
 			<field name="user" hidden="true" showIf="expense.multipleUsers" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
 			<field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
 			<field name="expenseProduct" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
-			<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution,action-expense-line-validate-amount"/>
-			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution,action-expense-line-validate-amount" readonlyIf="expenseProduct.blockExpenseTax == true"/>
+			<field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
+			<field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonlyIf="expenseProduct.blockExpenseTax == true"/>
 			<field name="untaxedAmount" />
             <field name="toInvoice" colSpan="3"/>
             <field name="invoiced" colSpan="3" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
@@ -167,15 +167,6 @@
 	<action-validate name="action-expense-line-validate-expenseDate" model="com.axelor.apps.hr.db.ExpenseLine">
 		<error message="Date can't be in the future" if="expenseDate?.isAfter(__date__)" action="action-expense-line-record-expenseDate-invalide"/>
 	</action-validate>
-	
-	<action-validate name="action-expense-line-validate-amount" model="com.axelor.apps.hr.db.ExpenseLine">
-		<error message="Total tax can't be greater than Total amount with tax." if="totalAmount &lt; totalTax" action="action-expense-line-record-totalTax-invalide"/>
-	</action-validate>
-	
-	<action-record name="action-expense-line-record-totalTax-invalide" model="com.axelor.apps.hr.db.ExpenseLine">
-		<field name="totalTax" expr="0.0"/>
-	</action-record>
-
 
 	<action-record name="action-expense-line-record-expenseDate-invalide" model="com.axelor.apps.hr.db.ExpenseLine">
 		<field name="expenseDate" expr="eval :__date__"/>
