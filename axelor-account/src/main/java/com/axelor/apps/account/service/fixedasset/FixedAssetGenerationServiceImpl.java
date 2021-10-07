@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -285,7 +286,9 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
         fixedAsset.setName(
             invoiceLine.getProductName()
                 + " ("
-                + invoiceLine.getQty().setScale(appBaseService.getNbDecimalDigitForQty())
+                + invoiceLine
+                    .getQty()
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
                 + ")");
       }
 
