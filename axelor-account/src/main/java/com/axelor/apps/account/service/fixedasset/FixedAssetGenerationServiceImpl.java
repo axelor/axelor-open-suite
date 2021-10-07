@@ -16,6 +16,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -23,6 +24,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public FixedAssetGenerationServiceImpl(
@@ -50,13 +53,15 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       FixedAssetRepository fixedAssetRepository,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       SequenceService sequenceService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AppBaseService appBaseService) {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
     this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -272,11 +277,21 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       } else {
         fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
       }
-      fixedAsset.setAcquisitionDate(invoice.getInvoiceDate());
+      fixedAsset.setQty(invoiceLine.getQty());
+      fixedAsset.setAcquisitionDate(invoice.getOriginDate());
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
       fixedAsset.setFirstServiceDate(invoice.getInvoiceDate());
       fixedAsset.setReference(invoice.getInvoiceId());
-      fixedAsset.setName(invoiceLine.getProductName() + " (" + invoiceLine.getQty() + ")");
+      if (invoiceLine.getQty() != null) {
+        fixedAsset.setName(
+            invoiceLine.getProductName()
+                + " ("
+                + invoiceLine
+                    .getQty()
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                + ")");
+      }
+
       fixedAsset.setCompany(fixedAsset.getFixedAssetCategory().getCompany());
       fixedAsset.setJournal(fixedAsset.getFixedAssetCategory().getJournal());
       copyInfos(fixedAsset.getFixedAssetCategory(), fixedAsset);
