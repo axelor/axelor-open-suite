@@ -21,7 +21,10 @@ public class BankPaymentBankStatementLineAFB120Repository
     }
     return all()
         .filter(
-            "operationDate >= :fromDate and operationDate <= :toDate and lineTypeSelect = :lineType and bankDetails = :bankDetails")
+            "operationDate >= :fromDate"
+                + " AND operationDate <= :toDate"
+                + " AND lineTypeSelect = :lineType"
+                + " AND bankDetails = :bankDetails")
         .bind("fromDate", fromDate)
         .bind("toDate", toDate)
         .bind("lineType", lineType)
@@ -34,8 +37,10 @@ public class BankPaymentBankStatementLineAFB120Repository
       LocalDate fromDate, LocalDate toDate, int lineType, BankDetails bankDetails) {
     return all()
         .filter(
-            "operationDate >= :fromDate and operationDate <= :toDate"
-                + " and lineTypeSelect = :lineType and bankDetails = :bankDetails")
+            "operationDate >= :fromDate"
+                + " AND operationDate <= :toDate"
+                + " AND lineTypeSelect = :lineType"
+                + " AND bankDetails = :bankDetails")
         .bind("fromDate", fromDate)
         .bind("toDate", toDate)
         .bind("lineType", lineType)
@@ -48,7 +53,9 @@ public class BankPaymentBankStatementLineAFB120Repository
       BankStatement bankStatement, BankDetails bankDetails, int lineType) {
     return all()
         .filter(
-            "self.bankStatement = :bankStatement AND self.bankDetails = :bankDetails AND self.lineTypeSelect = :lineTypeSelect")
+            "self.bankStatement = :bankStatement"
+                + " AND self.bankDetails = :bankDetails"
+                + " AND self.lineTypeSelect = :lineTypeSelect")
         .bind("bankStatement", bankStatement)
         .bind("bankDetails", bankDetails)
         .bind("lineTypeSelect", lineType);
@@ -58,7 +65,9 @@ public class BankPaymentBankStatementLineAFB120Repository
       BankStatement bankStatement, BankDetails bankDetails, int lineType) {
     return all()
         .filter(
-            "self.bankStatement != :bankStatement AND self.bankDetails = :bankDetails AND self.lineTypeSelect = :lineTypeSelect")
+            "self.bankStatement != :bankStatement"
+                + " AND self.bankDetails = :bankDetails"
+                + " AND self.lineTypeSelect = :lineTypeSelect")
         .bind("bankStatement", bankStatement)
         .bind("bankDetails", bankDetails)
         .bind("lineTypeSelect", lineType);

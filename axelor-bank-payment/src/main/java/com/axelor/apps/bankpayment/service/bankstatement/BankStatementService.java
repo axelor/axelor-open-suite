@@ -42,8 +42,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Query;
 
 public class BankStatementService {
 
@@ -224,38 +224,20 @@ public class BankStatementService {
     return alreadyImported;
   }
 
-  public List<BankDetails> getBankDetails(BankStatement bankStatement) {
-    List<BankDetails> bankDetails = new ArrayList<BankDetails>();
-    int limit = 10;
-    int offset = 0;
-    List<BankStatementLineAFB120> bankStatementLineAFB120 =
-        bankPaymentBankStatementLineAFB120Repository
-            .all()
-            .filter("self.bankStatement = :bankStatement")
-            .bind("bankStatement", bankStatement)
-            .order("-id")
-            .fetch(limit, offset);
-    while (bankStatementLineAFB120.size() > 0) {
-      for (BankStatementLineAFB120 bsl : bankStatementLineAFB120) {
-        if (!bankDetails.contains(bsl.getBankDetails())) {
-          bankDetails.add(bsl.getBankDetails());
-        }
-      }
-      offset += limit;
-      bankStatementLineAFB120 =
-          bankPaymentBankStatementLineAFB120Repository
-              .all()
-              .filter("self.bankStatement = :bankStatement")
-              .bind("bankStatement", bankStatement)
-              .order("-id")
-              .fetch(limit, offset);
-    }
+  public List<BankDetails> fetchBankDetailsList(BankStatement bankStatement) {
+    List<BankDetails> bankDetails;
+    String query =
+        "select distinct bankDetails from BankStatementLineAFB120 as self"
+            + " where self.bankStatement = ?1";
+    Query q = JPA.em().createQuery(query, BankDetails.class);
+    q.setParameter(1, bankStatement);
+    bankDetails = (List<BankDetails>) q.getResultList();
 
     return bankDetails;
   }
 
   public void checkAmountWithPreviousBankStatement(
-      BankStatement bankStatement, List<BankDetails> bankDetails) throws Exception {
+      BankStatement bankStatement, List<BankDetails> bankDetails) throws AxelorException {
     boolean deleteLines = false;
     for (BankDetails bd : bankDetails) {
       BankStatementLineAFB120 initialBankStatementLineAFB120 =
@@ -291,7 +273,7 @@ public class BankStatementService {
   }
 
   public void checkAmountWithinBankStatement(
-      BankStatement bankStatement, List<BankDetails> bankDetails) throws Exception {
+      BankStatement bankStatement, List<BankDetails> bankDetails) throws AxelorException {
     boolean deleteLines = false;
     for (BankDetails bd : bankDetails) {
       List<BankStatementLineAFB120> initialBankStatementLineAFB120 =
@@ -341,11 +323,11 @@ public class BankStatementService {
     }
   }
 
-  public void checkImport(BankStatement bankStatement) throws Exception {
+  public void checkImport(BankStatement bankStatement) throws AxelorException {
     boolean alreadyImported = false;
     List<BankStatementLineAFB120> initialLines;
     List<BankStatementLineAFB120> finalLines;
-    List<BankDetails> bankDetails = getBankDetails(bankStatement);
+    List<BankDetails> bankDetails = fetchBankDetailsList(bankStatement);
     // Load lines
     for (BankDetails bd : bankDetails) {
       initialLines =
