@@ -99,6 +99,7 @@ public class BankStatementLineService {
         && ObjectUtils.notEmpty(finalBankStatementLine)) {
       fromDate = initalBankStatementLine.getOperationDate();
       toDate = finalBankStatementLine.getOperationDate();
+      System.err.println(exportType);
       fileLink =
           ReportFactory.createReport(
                   IReport.BANK_STATEMENT_LINES,
