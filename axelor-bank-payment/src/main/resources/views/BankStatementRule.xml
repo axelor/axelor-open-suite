@@ -13,7 +13,7 @@
     <field name="ruleType" />
   </grid>
 
-  <form name="bank-statement-rule-form" title="Bank statement rule" model="com.axelor.apps.bankpayment.db.BankStatementRule">
+  <form name="bank-statement-rule-form" title="Bank statement rule" model="com.axelor.apps.bankpayment.db.BankStatementRule" onLoad="account-bank-statement-rule-record-set-temp-company">
     <panel name="accountManagementPanel" title="BankDetails/Payment Mode/Interbank code configuration">
       <field name="accountManagement" onChange="account-bank-statement-rule-record-set-temp-company" domain="self.typeSelect = 3" form-view="account-management-form"
         grid-view="account-management-bank-statement-rule-grid" />
