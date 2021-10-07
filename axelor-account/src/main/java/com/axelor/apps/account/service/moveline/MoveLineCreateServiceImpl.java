@@ -547,35 +547,28 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     if (!map.containsKey(newSourceTaxLineKey) && !newMap.containsKey(newSourceTaxLineKey)) {
 
-      newOrUpdatedMoveLine = this.createMoveLine(debit, credit, date, taxLine, newAccount, move);
+      newOrUpdatedMoveLine = this.createMoveLine(date, taxLine, newAccount, move);
+    } else if (newMap.containsKey(newSourceTaxLineKey)) {
+      newOrUpdatedMoveLine = newMap.get(newSourceTaxLineKey);
     } else {
-      if (newMap.containsKey(newSourceTaxLineKey)) {
-        newOrUpdatedMoveLine = newMap.get(newSourceTaxLineKey);
-      } else {
-        newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
-      }
-      newOrUpdatedMoveLine.setDebit(
-          newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
-      newOrUpdatedMoveLine.setCredit(
-          newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
+      newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
     }
+
+    newOrUpdatedMoveLine.setDebit(
+        newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
+    newOrUpdatedMoveLine.setCredit(
+        newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
     return newOrUpdatedMoveLine;
   }
 
-  protected MoveLine createMoveLine(
-      BigDecimal debit,
-      BigDecimal credit,
-      LocalDate date,
-      TaxLine taxLine,
-      Account account,
-      Move move)
+  protected MoveLine createMoveLine(LocalDate date, TaxLine taxLine, Account account, Move move)
       throws AxelorException {
     MoveLine moveLine;
-    debit = debit.multiply(taxLine.getValue());
-    credit = credit.multiply(taxLine.getValue());
+    BigDecimal debit = BigDecimal.ZERO;
+    BigDecimal credit = BigDecimal.ZERO;
     boolean isDebit = debit.signum() > 0;
     int counter = move.getMoveLineList().size() + 1;
 
