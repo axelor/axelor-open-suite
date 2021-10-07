@@ -1,5 +1,17 @@
 package com.axelor.apps.account.service.fixedasset;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
@@ -16,21 +28,12 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationService {
 
@@ -42,6 +45,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public FixedAssetGenerationServiceImpl(
@@ -50,13 +54,15 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       FixedAssetRepository fixedAssetRepository,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       SequenceService sequenceService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AppBaseService appBaseService) {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
     this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -272,11 +278,15 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       } else {
         fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
       }
-      fixedAsset.setAcquisitionDate(invoice.getInvoiceDate());
+      fixedAsset.setQty(invoiceLine.getQty());
+      fixedAsset.setAcquisitionDate(invoice.getOriginDate());
       fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
       fixedAsset.setFirstServiceDate(invoice.getInvoiceDate());
       fixedAsset.setReference(invoice.getInvoiceId());
-      fixedAsset.setName(invoiceLine.getProductName() + " (" + invoiceLine.getQty() + ")");
+      if (invoiceLine.getQty() != null) {
+    	  fixedAsset.setName(invoiceLine.getProductName() + " (" + invoiceLine.getQty().setScale(appBaseService.getNbDecimalDigitForQty()) + ")");
+      }
+      
       fixedAsset.setCompany(fixedAsset.getFixedAssetCategory().getCompany());
       fixedAsset.setJournal(fixedAsset.getFixedAssetCategory().getJournal());
       copyInfos(fixedAsset.getFixedAssetCategory(), fixedAsset);
