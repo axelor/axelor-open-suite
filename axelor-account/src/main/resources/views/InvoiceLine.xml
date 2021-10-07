@@ -28,7 +28,7 @@
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid"
 	      form-view="analytic-distribution-template-form" onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template" onChange="action-group-invoice-line-analytic-distribution-template-onchange"
 	      readonlyIf="!account || account.analyticDistributionAuthorized == false"
-	      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines" />
+	      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines" />
 		<field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
 			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
 			onSelect="action-method-invoice-line-set-axis-domain" onChange="action-method-invoice-line-axis-create-analytic-line"/>

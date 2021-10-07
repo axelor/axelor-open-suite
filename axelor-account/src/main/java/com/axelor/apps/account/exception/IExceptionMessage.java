@@ -935,7 +935,7 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
-  
+
   static final String ANALYTIC_MOVE_LINE_NOT_VALIDATED = /*$$(*/
       "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
 

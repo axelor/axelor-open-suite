@@ -22,4 +22,12 @@ public interface MoveLineComputeAnalyticService {
   boolean compareNbrOfAnalyticAxisSelect(int position, MoveLine moveLine) throws AxelorException;
 
   public MoveLine analyzeMoveLine(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine removeAnalyticOnRemoveAccount(MoveLine moveLine);
+
+  public MoveLine clearAnalyticAccounting(MoveLine moveLine);
+
+  public MoveLine printAnalyticAccount(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine checkAnalyticMoveLineForAxis(MoveLine moveLine);
 }
