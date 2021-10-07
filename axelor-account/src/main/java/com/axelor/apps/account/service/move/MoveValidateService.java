@@ -87,7 +87,7 @@ public class MoveValidateService {
    *
    * @param move
    */
-  public void completeMoveLines(Move move) {
+  public void completeMoveStaticFields(Move move) {
     LocalDate date = move.getDate();
     Partner partner = move.getPartner();
 
@@ -113,6 +113,10 @@ public class MoveValidateService {
       moveLine.setCounter(counter);
       counter++;
     }
+    move.setCodeJournal(move.getJournal().getCode());
+    move.setNameJournal(move.getJournal().getName());
+    move.setCodeCompany(move.getCompany().getCode());
+    move.setNameCompany(move.getCompany().getName());
   }
 
   public void checkPreconditions(Move move) throws AxelorException {
@@ -236,16 +240,11 @@ public class MoveValidateService {
       move.setAdjustingMove(true);
     }
 
-    this.completeMoveLines(move);
+    this.completeMoveStaticFields(move);
 
     this.freezeAccountAndPartnerFieldsOnMoveLines(move);
 
     this.updateValidateStatus(move, dayBookMode);
-
-    move.setCodeJournal(move.getJournal().getCode());
-    move.setNameJournal(move.getJournal().getName());
-    move.setCodeCompany(move.getCompany().getCode());
-    move.setNameCompany(move.getCompany().getName());
 
     moveRepository.save(move);
 
