@@ -19,10 +19,11 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -301,48 +302,55 @@ public class MoveLineController {
   public void loadAccountInformation(ActionRequest request, ActionResponse response) {
     Context parentContext = request.getContext().getParent();
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    if (parentContext != null) {
-      Move move = parentContext.asType(Move.class);
-      Partner partner = move.getPartner();
+    try {
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        Partner partner = move.getPartner();
 
-      if (ObjectUtils.isEmpty(partner)) {
-        response.setError(I18n.get("Please select a partner"));
-      } else {
-        MoveLoadDefaultConfigService moveLoadDefaultConfigService =
-            Beans.get(MoveLoadDefaultConfigService.class);
-        Account accountingAccount =
-            moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
+        if (partner != null) {
+          MoveLoadDefaultConfigService moveLoadDefaultConfigService =
+              Beans.get(MoveLoadDefaultConfigService.class);
+          Account accountingAccount =
+              moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
 
-        if (accountingAccount != null) {
-          response.setValue("account", accountingAccount);
-          if (!accountingAccount.getUseForPartnerBalance()) {
-            response.setValue("partner", null);
+          if (accountingAccount != null) {
+            response.setValue("account", accountingAccount);
+            if (!accountingAccount.getUseForPartnerBalance()) {
+              response.setValue("partner", null);
+            }
           }
-        }
 
-        TaxLine taxLine =
-            moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
-        response.setValue("taxLine", taxLine);
+          TaxLine taxLine =
+              moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
+          response.setValue("taxLine", taxLine);
+        }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void refreshAccountInformation(ActionRequest request, ActionResponse response) {
     Context parentContext = request.getContext().getParent();
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    if (parentContext != null) {
-      Move move = parentContext.asType(Move.class);
-      Account accountingAccount = moveLine.getAccount();
-      if (accountingAccount != null) {
-        if (!accountingAccount.getUseForPartnerBalance()) {
-          response.setValue("partner", null);
+    try {
+      if (parentContext != null) {
+        Move move = parentContext.asType(Move.class);
+        Account accountingAccount = moveLine.getAccount();
+        if (accountingAccount != null) {
+          if (!accountingAccount.getUseForPartnerBalance()) {
+            response.setValue("partner", null);
+          }
         }
+
+        TaxLine taxLine =
+            Beans.get(MoveLoadDefaultConfigService.class)
+                .getTaxLine(move, moveLine, accountingAccount);
+        response.setValue("taxLine", taxLine);
       }
 
-      TaxLine taxLine =
-          Beans.get(MoveLoadDefaultConfigService.class)
-              .getTaxLine(move, moveLine, accountingAccount);
-      response.setValue("taxLine", taxLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -422,8 +430,8 @@ public class MoveLineController {
           && moveLine.getAccount() != null
           && moveLine.getAccount().getCompany() != null) {
         Integer nbrAxis =
-            Beans.get(AccountConfigRepository.class)
-                .findByCompany(moveLine.getAccount().getCompany())
+            Beans.get(AccountConfigService.class)
+                .getAccountConfig(moveLine.getAccount().getCompany())
                 .getNbrOfAnalyticAxisSelect();
 
         for (int i = 1; i <= 5; i++) {
@@ -452,6 +460,39 @@ public class MoveLineController {
       response.setValue("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageAxis(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      if (request.getContext().getParent() != null) {
+        Move move = request.getContext().getParent().asType(Move.class);
+        if (move.getCompany() != null) {
+          AccountConfig accountConfig =
+              Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+          if (accountConfig != null) {
+            AnalyticAxis analyticAxis = null;
+            for (int i = 1; i <= 5; i++) {
+              response.setAttr(
+                  "axis" + i + "AnalyticAccount",
+                  "hidden",
+                  !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+              for (AnalyticAxisByCompany analyticAxisByCompany :
+                  accountConfig.getAnalyticAxisByCompanyList()) {
+                if (analyticAxisByCompany.getOrderSelect() == i) {
+                  analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+                }
+              }
+              if (analyticAxis != null) {
+                response.setAttr("axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
+                analyticAxis = null;
+              }
+            }
+          }
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

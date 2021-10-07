@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -42,6 +41,8 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
 
+  protected InvoiceEstimatedPaymentService invoiceEstimatedPaymentService;
+
   @Inject
   public InvoiceServiceManagementImpl(
       ValidateFactory validateFactory,
@@ -56,7 +57,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
       InvoiceTermService invoiceTermService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      InvoiceEstimatedPaymentService invoiceEstimatedPaymentService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -71,106 +73,14 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         invoiceLineRepo,
         invoiceTermService,
         appBaseService);
+    this.invoiceEstimatedPaymentService = invoiceEstimatedPaymentService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
-    super.ventilate(invoice);
-    this.computeEstimatedPaymentDate(invoice);
-    invoiceRepo.save(invoice);
-  }
-
-  public Invoice computeEstimatedPaymentDate(Invoice invoice) {
-
-    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-      return invoice;
-    }
-    if (invoice.getPartner() != null && invoice.getPartner().getPaymentDelay() != null) {
-
-      int paymentDelay = invoice.getPartner().getPaymentDelay().intValue();
-
-      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-        if (invoiceTerm.getEstimatedPaymentDate() == null) {
-          invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
-        }
-      }
-    } else {
-      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-        if (invoiceTerm.getEstimatedPaymentDate() != null) {
-          continue;
-        }
-
-        LocalDate estimatedPaymentDate = invoiceTerm.getDueDate();
-
-        if (invoiceTerm.getPaymentConditionLine() != null) {
-          if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
-              == PaymentConditionLineRepository.TYPE_NET) {
-            if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-                == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
-              estimatedPaymentDate =
-                  estimatedPaymentDate.plusDays(
-                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
-            } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-                == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
-              estimatedPaymentDate =
-                  estimatedPaymentDate.plusMonths(
-                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
-            }
-          } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
-              == PaymentConditionLineRepository.TYPE_END_OF_MONTH_N_DAYS) {
-            estimatedPaymentDate =
-                estimatedPaymentDate.withDayOfMonth(estimatedPaymentDate.lengthOfMonth());
-            if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-                == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
-              estimatedPaymentDate =
-                  estimatedPaymentDate.plusDays(
-                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
-            } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-                == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
-              estimatedPaymentDate =
-                  estimatedPaymentDate.plusMonths(
-                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
-            }
-          } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
-              == PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH) {
-            if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-                == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
-              estimatedPaymentDate =
-                  estimatedPaymentDate.plusDays(
-                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
-            } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-                == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
-              estimatedPaymentDate =
-                  estimatedPaymentDate.plusMonths(
-                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
-            }
-            estimatedPaymentDate =
-                estimatedPaymentDate.withDayOfMonth(estimatedPaymentDate.lengthOfMonth());
-          } else if (invoiceTerm.getPaymentConditionLine().getTypeSelect()
-              == PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH_AT) {
-            if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-                == PaymentConditionLineRepository.PERIOD_TYPE_DAYS) {
-              estimatedPaymentDate =
-                  estimatedPaymentDate.plusDays(
-                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
-            } else if (invoiceTerm.getPaymentConditionLine().getPeriodTypeSelect()
-                == PaymentConditionLineRepository.PERIOD_TYPE_MONTH) {
-              estimatedPaymentDate =
-                  estimatedPaymentDate.plusMonths(
-                      invoiceTerm.getPaymentConditionLine().getPaymentTime());
-            }
-            estimatedPaymentDate =
-                estimatedPaymentDate.withDayOfMonth(
-                    invoiceTerm.getPaymentConditionLine().getDaySelect() == 0
-                        ? estimatedPaymentDate.lengthOfMonth()
-                        : invoiceTerm.getPaymentConditionLine().getDaySelect());
-          }
-        }
-
-        invoiceTerm.setEstimatedPaymentDate(estimatedPaymentDate);
-      }
-    }
-    return invoice;
+	  super.ventilate(invoice);
+	  
+	  invoiceEstimatedPaymentService.computeEstimatedPaymentDate(invoice);
   }
 }

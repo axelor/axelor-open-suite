@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
+import java.io.IOException;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -46,9 +49,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentValidateServiceImpl {
 
@@ -86,26 +86,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     this.bankOrderService = bankOrderService;
   }
 
-  /**
-   * Method to validate an invoice Payment
-   *
-   * <p>Create the eventual move (depending general configuration) and reconcile it with the invoice
-   * move Compute the amount paid on invoice Change the status to validated
-   *
-   * @param invoicePayment An invoice payment
-   * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws IOException
-   * @throws JAXBException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  public void validate(InvoicePayment invoicePayment, boolean force)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
-
-    if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
-      return;
-    }
-
+  @Override
+  protected void setInvoicePaymentStatus(InvoicePayment invoicePayment) throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (paymentMode == null) {
@@ -125,11 +107,15 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     } else {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
     }
+  }
 
-    // TODO assign an automatic reference
-
+  @Override
+  protected void createInvoicePaymentMove(InvoicePayment invoicePayment)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+    Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
 
+    PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
         && !paymentMode.getGenerateBankOrder()) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);

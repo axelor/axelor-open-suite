@@ -21,6 +21,7 @@ import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,10 @@ public class MetaTool {
           nameType);
     }
     return typeName;
+  }
+
+  public static String computeFullClassName(MetaField metaField) {
+    return String.format("%s.%s", metaField.getPackageName(), metaField.getTypeName());
   }
 
   /**

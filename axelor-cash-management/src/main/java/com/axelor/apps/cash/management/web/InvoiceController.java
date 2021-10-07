@@ -18,23 +18,19 @@
 package com.axelor.apps.cash.management.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
+
+import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
 
-@Singleton
 public class InvoiceController {
 
   public void computeEstimatedPaymentDates(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getDueDate() == null) {
-        return;
-      }
-      invoice = Beans.get(InvoiceServiceManagementImpl.class).computeEstimatedPaymentDate(invoice);
+      invoice = Beans.get(InvoiceEstimatedPaymentService.class).computeEstimatedPaymentDate(invoice);
       response.setValues(invoice);
 
     } catch (Exception e) {

@@ -280,6 +280,7 @@
 "Meta field",,,
 "Meta json",,,
 "Min",,,
+"Missing mapped by: unidirectional one-to-many are not supported by the configurator.",,,
 "Month",,,
 "Monthly",,,
 "My Opportunities",,,
