@@ -26,6 +26,8 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -37,6 +39,7 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -435,6 +438,74 @@ public class MoveLineController {
       response.setValue("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
       response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void removeAccount(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      if (moveLine != null && moveLine.getAccount() == null) {
+        Beans.get(MoveLineService.class).removeAnalyticOnRemoveAccount(moveLine);
+        response.setValues(moveLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void clearAnalytic(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      if (moveLine != null) {
+        Beans.get(MoveLineService.class).clearAnalyticAccounting(moveLine);
+        response.setValues(moveLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticByTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      if (moveLine != null && moveLine.getAnalyticDistributionTemplate() != null) {
+        AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
+        analyticMoveLineService.validateLines(
+            moveLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
+        if (!analyticMoveLineService.validateAnalyticMoveLines(
+            moveLine.getAnalyticMoveLineList())) {
+          response.setError(I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_LIST_NOT_VALIDATED));
+        }
+        Beans.get(AnalyticDistributionTemplateService.class)
+            .validateTemplatePercentages(moveLine.getAnalyticDistributionTemplate());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine.setMove(request.getContext().getParent().asType(Move.class));
+      if (moveLine != null) {
+        Beans.get(MoveLineService.class).printAnalyticAccount(moveLine);
+        response.setValues(moveLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticMoveLineForAxis(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      if (moveLine != null) {
+        Beans.get(MoveLineService.class).checkAnalyticMoveLineForAxis(moveLine);
+        response.setValues(moveLine);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

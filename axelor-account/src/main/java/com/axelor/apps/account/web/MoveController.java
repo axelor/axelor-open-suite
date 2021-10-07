@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Period;
@@ -401,6 +402,23 @@ public class MoveController {
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalytic(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
+        AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          if (!analyticMoveLineService.validateAnalyticMoveLines(
+              moveLine.getAnalyticMoveLineList())) {
+            response.setError(I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_LIST_NOT_VALIDATED));
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

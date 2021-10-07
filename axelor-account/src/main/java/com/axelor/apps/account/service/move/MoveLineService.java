@@ -162,4 +162,12 @@ public interface MoveLineService {
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
 
   public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine removeAnalyticOnRemoveAccount(MoveLine moveLine);
+
+  public MoveLine clearAnalyticAccounting(MoveLine moveLine);
+
+  public MoveLine printAnalyticAccount(MoveLine moveLine) throws AxelorException;
+
+  public MoveLine checkAnalyticMoveLineForAxis(MoveLine moveLine);
 }

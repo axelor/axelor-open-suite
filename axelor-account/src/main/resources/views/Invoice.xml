@@ -227,7 +227,8 @@
 
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
           onNew="action-account-invoice-onnew-group"
-          onLoad="action-account-invoice-onload-group" >
+          onLoad="action-account-invoice-onload-group" 
+          onSave="action-invoice-method-check-all-invoice-line-analytic">
 
 		<toolbar>
 			<button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4" readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>

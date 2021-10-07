@@ -33,7 +33,7 @@
   </grid>
 
   <form name="move-form" title="Account move" canArchive="false" model="com.axelor.apps.account.db.Move" canDelete="false" width="large" onNew="action-account-move-onnew-group"
-    onLoad="action-account-move-group-onload" onSave="action-move-method-check-remove-lines,save,action-move-method-update-in-day-book-mode">
+    onLoad="action-account-move-group-onload" onSave="action-account-move-group-onsave">
 
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move" />
@@ -111,10 +111,10 @@
     <panel>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6"
         showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid"
-        form-view="move-line-move-form" onChange="save,action-account-move-method-compute-totals,action-attrs-hide-axis-analytic-account-move-line" />
+        form-view="move-line-move-form" onChange="action-group-move-move-line-list-onchange" />
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" height="6"
         showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid"
-        form-view="move-line-move-form" onChange="action-account-move-method-compute-totals,action-attrs-hide-axis-analytic-account-move-line" />
+        form-view="move-line-move-form" onChange="action-group-move-move-line-list-onchange" />
       <field name="$reconcileTags" colSpan="12" hidden="true" readonly="true" showTitle="false">
         <viewer depends="moveLineList">
                         <![CDATA[
@@ -243,6 +243,13 @@
     <action name="action-attrs-on-load-currencies"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
   </action-group>
+  
+  <action-group name="action-account-move-group-onsave">
+  	<action name="action-move-method-check-all-move-line-analytic"/>
+  	<action name="action-move-method-check-remove-lines"/>
+  	<action name="save"/>
+  	<action name="action-move-method-update-in-day-book-mode"/>
+  </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
   <action name="save"/>
@@ -268,6 +275,13 @@
     <action name="save" />
     <action name="action-account-move-validate-origin-description-is-empty" />
     <action name="action-account-move-method-set-origin-description-on-lines" />
+  </action-group>
+  
+  <action-group name="action-group-move-move-line-list-onchange">
+  	<action name="action-move-method-check-all-move-line-analytic"/>
+  	<action name="save"/>
+  	<action name="action-account-move-method-compute-totals"/>
+  	<action name="action-attrs-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-validate name="action-account-validate-prompt">
@@ -428,6 +442,11 @@
 	<action-method name="action-move-method-simulate-multiple-moves">
 		<call class="com.axelor.apps.account.web.MoveController" method="simulateMultipleMoves"/>
 	</action-method>
+	
+	<action-method name="action-move-method-check-all-move-line-analytic">
+		<call class="com.axelor.apps.account.web.MoveController" method="checkAnalytic"/>
+	</action-method>
+        
 
 	<!-- ACTION VIEW -->
   <action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
