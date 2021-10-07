@@ -1,0 +1,6 @@
+---
+title: "Contract: display of supposedEndDate in contract-grid"
+type: fix
+description: |
+     Display supposedEndDate field in contract-grid.
+   
