@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
-import java.io.IOException;
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
@@ -49,6 +46,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentValidateServiceImpl {
 

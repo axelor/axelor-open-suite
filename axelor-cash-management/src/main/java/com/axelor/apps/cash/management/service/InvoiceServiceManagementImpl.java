@@ -18,7 +18,6 @@
 package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -36,8 +35,6 @@ import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
-import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
 
@@ -79,8 +76,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
-	  super.ventilate(invoice);
-	  
-	  invoiceEstimatedPaymentService.computeEstimatedPaymentDate(invoice);
+    super.ventilate(invoice);
+
+    invoiceEstimatedPaymentService.computeEstimatedPaymentDate(invoice);
   }
 }

@@ -811,6 +811,7 @@ public interface IExceptionMessage {
   /** Invoice payment controller */
   static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;
+
   static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
 

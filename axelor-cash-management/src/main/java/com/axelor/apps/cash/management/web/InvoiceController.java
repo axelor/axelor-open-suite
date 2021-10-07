@@ -18,7 +18,6 @@
 package com.axelor.apps.cash.management.web;
 
 import com.axelor.apps.account.db.Invoice;
-
 import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -30,7 +29,8 @@ public class InvoiceController {
   public void computeEstimatedPaymentDates(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      invoice = Beans.get(InvoiceEstimatedPaymentService.class).computeEstimatedPaymentDate(invoice);
+      invoice =
+          Beans.get(InvoiceEstimatedPaymentService.class).computeEstimatedPaymentDate(invoice);
       response.setValues(invoice);
 
     } catch (Exception e) {
