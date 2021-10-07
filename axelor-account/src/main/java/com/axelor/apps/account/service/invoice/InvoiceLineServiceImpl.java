@@ -472,6 +472,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("taxLine", taxLine);
       productInformation.put("taxRate", taxLine.getValue());
       productInformation.put("taxCode", taxLine.getTax().getCode());
+      productInformation.put("fixedAssets", product.getFixedAssets());
 
       Tax tax = accountManagementAccountService.getProductTax(product, company, null, isPurchase);
       TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
@@ -479,7 +480,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
       Account account =
           accountManagementAccountService.getProductAccount(
-              product, company, fiscalPosition, isPurchase, invoiceLine.getFixedAssets());
+              product, company, fiscalPosition, isPurchase, product.getFixedAssets());
       productInformation.put("account", account);
 
     } catch (AxelorException e) {

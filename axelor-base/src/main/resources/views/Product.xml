@@ -218,8 +218,9 @@
 	      		if-module="axelor-purchase" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 	    	</panel>
             <panel name="accountingPanel" title="Accounting">
-                <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
-							<field name="usedInDEB" title="Used in DES" showIf="productTypeSelect =='service'"/>
+                <field name="isAnalyticCapture" colSpan="4" if-module="axelor-account" if="__config__.app.isApp('account')"/>
+                <field name="fixedAssets" colSpan="4" if-module="axelor-account" if="__config__.app.isApp('account')"/>
+				<field name="usedInDEB" title="Used in DES" showIf="productTypeSelect =='service'" colSpan="4"/>
                 <panel-related name="accountManagementListPanel" field="accountManagementList" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
             	<panel name="stockPanel" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
