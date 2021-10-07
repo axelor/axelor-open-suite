@@ -8,6 +8,7 @@
   <entity name="Product" lang="java">
   
     <boolean name="isAnalyticCapture" title="Use for Analytic Capture"/>
+    <boolean name="fixedAssets" title="Fixed Assets"/>
     
   </entity>
 
