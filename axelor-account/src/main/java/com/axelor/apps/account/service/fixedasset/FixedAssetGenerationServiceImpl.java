@@ -1,17 +1,5 @@
 package com.axelor.apps.account.service.fixedasset;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
@@ -34,6 +22,16 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationService {
 
@@ -284,9 +282,13 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setFirstServiceDate(invoice.getInvoiceDate());
       fixedAsset.setReference(invoice.getInvoiceId());
       if (invoiceLine.getQty() != null) {
-    	  fixedAsset.setName(invoiceLine.getProductName() + " (" + invoiceLine.getQty().setScale(appBaseService.getNbDecimalDigitForQty()) + ")");
+        fixedAsset.setName(
+            invoiceLine.getProductName()
+                + " ("
+                + invoiceLine.getQty().setScale(appBaseService.getNbDecimalDigitForQty())
+                + ")");
       }
-      
+
       fixedAsset.setCompany(fixedAsset.getFixedAssetCategory().getCompany());
       fixedAsset.setJournal(fixedAsset.getFixedAssetCategory().getJournal());
       copyInfos(fixedAsset.getFixedAssetCategory(), fixedAsset);
