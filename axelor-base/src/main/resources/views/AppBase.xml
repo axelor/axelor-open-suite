@@ -11,7 +11,7 @@
 		    <button name="exportObjectsBtn" title="Export Object" onClick="action-base-general-export-objects"/>
 		    <button name="remindTimesheetsBtn" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
 		</toolbar>
-		<panel name="todayPanel" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
+		<panel name="testingPanel" title="Testing" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
 			<field name="today"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
