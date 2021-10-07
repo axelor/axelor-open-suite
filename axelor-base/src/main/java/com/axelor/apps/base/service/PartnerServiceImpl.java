@@ -373,17 +373,17 @@ public class PartnerServiceImpl implements PartnerService {
       if (emailType == MessageRepository.TYPE_RECEIVED) {
         query =
             query.substring(0, query.length() - 1)
-                + " AND (email.fromEmailAddress.id = "
-                + partner.getEmailAddress().getId()
-                + "))";
+                + " AND (email.fromEmailAddress.address = '"
+                + partner.getEmailAddress().getAddress()
+                + "'))";
 
       } else {
         query =
             query.substring(0, query.length() - 1)
-                + " AND (:emailAddress MEMBER OF email.toEmailAddressSet))";
+                + " AND (:emailAddress IN (SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet)))";
         return JPA.em()
             .createQuery(query)
-            .setParameter("emailAddress", partner.getEmailAddress())
+            .setParameter("emailAddress", partner.getEmailAddress().getAddress())
             .getResultList();
       }
     } else {
