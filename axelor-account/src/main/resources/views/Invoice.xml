@@ -1053,6 +1053,7 @@ InvoiceSet.length > 0))"
         <action name="action-invoice-method-update-product-qty-with-pack-header-qty" if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
         <action name="action-invoice-method-compute"/>
         <action name="action-invoice-method-manage-invoice-line-axis"/>
+        <action name="action-invoice-method-check-all-invoice-line-analytic"/>
         <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null" />
     </action-group>
 
@@ -1453,6 +1454,10 @@ InvoiceSet.length > 0))"
 
 	<action-method name="action-invoice-method-hide-send-email-pfp-btn">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="hideSendEmailPfpBtn"/>
+	</action-method>
+	
+	<action-method name="action-invoice-method-check-all-invoice-line-analytic">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="checkAnalytic"/>
 	</action-method>
 
     <action-view name="action-invoice-view-register-payment" title="Register a payment" model="com.axelor.apps.account.db.InvoicePayment">

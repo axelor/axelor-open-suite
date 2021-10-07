@@ -22,12 +22,14 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -1041,6 +1043,23 @@ public class InvoiceController {
                   "invoiceLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
               analyticAxis = null;
             }
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalytic(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()) {
+        AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
+        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+          if (!analyticMoveLineService.validateAnalyticMoveLines(
+              invoiceLine.getAnalyticMoveLineList())) {
+            response.setError(I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_LIST_NOT_VALIDATED));
           }
         }
       }

@@ -27,6 +27,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.time.LocalDate;
 
 @Singleton
 public class AnalyticDistributionLineController {
@@ -38,13 +39,25 @@ public class AnalyticDistributionLineController {
   }
 
   public void validateLines(ActionRequest request, ActionResponse response) throws AxelorException {
-	  try {
-    AnalyticDistributionTemplate analyticDistributionTemplate =
-        request.getContext().asType(AnalyticDistributionTemplate.class);
-    Beans.get(AnalyticMoveLineService.class)
-        .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList());
-	  }catch (Exception e) {
-	      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-	}
+    try {
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          request.getContext().asType(AnalyticDistributionTemplate.class);
+      Beans.get(AnalyticMoveLineService.class)
+          .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void initializeAnalyticMoveLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+      if (analyticMoveLine != null) {
+        response.setValue("date", LocalDate.now());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

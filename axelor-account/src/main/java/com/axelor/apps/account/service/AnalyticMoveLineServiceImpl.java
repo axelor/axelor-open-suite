@@ -146,7 +146,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public void validateLines(List<AnalyticDistributionLine> analyticDistributionLineList) throws AxelorException {
+  public void validateLines(List<AnalyticDistributionLine> analyticDistributionLineList)
+      throws AxelorException {
     if (analyticDistributionLineList != null) {
       Map<AnalyticAxis, BigDecimal> map = new HashMap<AnalyticAxis, BigDecimal>();
       for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
@@ -162,9 +163,9 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       }
       for (AnalyticAxis analyticAxis : map.keySet()) {
         if (map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0) {
-        	throw new AxelorException(
-        	          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        	          I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_NOT_VALIDATED));
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_NOT_VALIDATED));
         }
       }
     }
@@ -185,7 +186,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         }
       }
       for (AnalyticAxis analyticAxis : map.keySet()) {
-        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0) {
+        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) != 0) {
           return false;
         }
       }
