@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
@@ -660,6 +659,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       if (invoiceLine.getAnalyticMoveLineList() == null) {
         invoiceLine.setAnalyticMoveLineList(new ArrayList<>());
       } else {
+        invoiceLine
+            .getAnalyticMoveLineList()
+            .forEach(analyticMoveLine -> analyticMoveLine.setInvoiceLine(null));
         invoiceLine.getAnalyticMoveLineList().clear();
       }
 
@@ -717,51 +719,108 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
   public InvoiceLine removeAnalytic(InvoiceLine invoiceLine) {
     invoiceLine.setAnalyticDistributionTemplate(null);
+    return clearAnalyticAccounting(invoiceLine);
+  }
+
+  @Override
+  public InvoiceLine clearAnalyticAccounting(InvoiceLine invoiceLine) {
     invoiceLine.setAxis1AnalyticAccount(null);
     invoiceLine.setAxis2AnalyticAccount(null);
     invoiceLine.setAxis3AnalyticAccount(null);
     invoiceLine.setAxis4AnalyticAccount(null);
     invoiceLine.setAxis5AnalyticAccount(null);
+    invoiceLine
+        .getAnalyticMoveLineList()
+        .forEach(analyticMoveLine -> analyticMoveLine.setInvoiceLine(null));
     invoiceLine.getAnalyticMoveLineList().clear();
     return invoiceLine;
   }
-  
-  @Override
-  public InvoiceLine clearAnalyticAccounting(InvoiceLine invoiceLine) {
-	    invoiceLine.setAxis1AnalyticAccount(null);
-	    invoiceLine.setAxis2AnalyticAccount(null);
-	    invoiceLine.setAxis3AnalyticAccount(null);
-	    invoiceLine.setAxis4AnalyticAccount(null);
-	    invoiceLine.setAxis5AnalyticAccount(null);
-	    invoiceLine.getAnalyticMoveLineList().clear();
-	    return invoiceLine;
-	  }
-  
+
   @Override
   public InvoiceLine printAnalyticAccount(InvoiceLine invoiceLine) throws AxelorException {
-	  if (invoiceLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList() != null 
-			  && !invoiceLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList().isEmpty()
-			  && invoiceLine.getInvoice() != null && invoiceLine.getInvoice().getCompany() != null) {
-		  List<AnalyticDistributionLine> analyticDistributionLineList = new ArrayList();
-		  for (AnalyticAxisByCompany analyticAxisByCompany : accountConfigService.getAccountConfig(invoiceLine.getInvoice().getCompany()).getAnalyticAxisByCompanyList()) {
-			  for (AnalyticDistributionLine analyticDistributionLine : invoiceLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList()) {
-				  if (analyticDistributionLine.getAnalyticAxis() == analyticAxisByCompany.getAnalyticAxis()) {
-					  analyticDistributionLineList.add(analyticDistributionLine);
-				  }
-			  }
-			  if (analyticDistributionLineList.size() == 1 && analyticDistributionLineList.get(0).getPercentage().compareTo(new BigDecimal(100)) == 0) {
-				  switch (analyticAxisByCompany.getOrderSelect()) {
-				  	case 1 : invoiceLine.setAxis1AnalyticAccount(analyticDistributionLineList.get(0).getAnalyticAccount());
-				  	case 2 : invoiceLine.setAxis2AnalyticAccount(analyticDistributionLineList.get(0).getAnalyticAccount());
-				  	case 3 : invoiceLine.setAxis3AnalyticAccount(analyticDistributionLineList.get(0).getAnalyticAccount());
-				  	case 4 : invoiceLine.setAxis4AnalyticAccount(analyticDistributionLineList.get(0).getAnalyticAccount());
-				  	case 5 : invoiceLine.setAxis5AnalyticAccount(analyticDistributionLineList.get(0).getAnalyticAccount());
-				  }
-			  }
-			  analyticDistributionLineList.clear();
-		  }
-	  }
-	  return invoiceLine;
-	  }
-  
+    if (invoiceLine.getAnalyticMoveLineList() != null
+        && !invoiceLine.getAnalyticMoveLineList().isEmpty()
+        && invoiceLine.getInvoice() != null
+        && invoiceLine.getInvoice().getCompany() != null) {
+      List<AnalyticMoveLine> analyticMoveLineList = new ArrayList();
+      for (AnalyticAxisByCompany analyticAxisByCompany :
+          accountConfigService
+              .getAccountConfig(invoiceLine.getInvoice().getCompany())
+              .getAnalyticAxisByCompanyList()) {
+        for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+          if (analyticMoveLine.getAnalyticAxis() == analyticAxisByCompany.getAnalyticAxis()) {
+            analyticMoveLineList.add(analyticMoveLine);
+          }
+        }
+        if (analyticMoveLineList.size() == 1
+            && analyticMoveLineList.get(0).getPercentage().compareTo(new BigDecimal(100)) == 0) {
+          switch (analyticAxisByCompany.getOrderSelect()) {
+            case 1:
+              invoiceLine.setAxis1AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
+              break;
+            case 2:
+              invoiceLine.setAxis2AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
+              break;
+            case 3:
+              invoiceLine.setAxis3AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
+              break;
+            case 4:
+              invoiceLine.setAxis4AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
+              break;
+            case 5:
+              invoiceLine.setAxis5AnalyticAccount(analyticMoveLineList.get(0).getAnalyticAccount());
+              break;
+            default:
+              break;
+          }
+        }
+        analyticMoveLineList.clear();
+      }
+    }
+    return invoiceLine;
+  }
+
+  public boolean checkAxisAccount(InvoiceLine invoiceLine, AnalyticAxis analyticAxis) {
+    BigDecimal sum = BigDecimal.ZERO;
+    for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+      if (analyticMoveLine.getAnalyticAxis() == analyticAxis) {
+        sum = sum.add(analyticMoveLine.getPercentage());
+      }
+    }
+
+    if (sum.compareTo(new BigDecimal(100)) != 0) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public InvoiceLine checkAnalyticMoveLineForAxis(InvoiceLine invoiceLine) {
+    if (invoiceLine.getAxis1AnalyticAccount() != null) {
+      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis1AnalyticAccount().getAnalyticAxis())) {
+        invoiceLine.setAxis1AnalyticAccount(null);
+      }
+    }
+    if (invoiceLine.getAxis2AnalyticAccount() != null) {
+      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis2AnalyticAccount().getAnalyticAxis())) {
+        invoiceLine.setAxis2AnalyticAccount(null);
+      }
+    }
+    if (invoiceLine.getAxis3AnalyticAccount() != null) {
+      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis3AnalyticAccount().getAnalyticAxis())) {
+        invoiceLine.setAxis3AnalyticAccount(null);
+      }
+    }
+    if (invoiceLine.getAxis4AnalyticAccount() != null) {
+      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis4AnalyticAccount().getAnalyticAxis())) {
+        invoiceLine.setAxis4AnalyticAccount(null);
+      }
+    }
+    if (invoiceLine.getAxis5AnalyticAccount() != null) {
+      if (!checkAxisAccount(invoiceLine, invoiceLine.getAxis5AnalyticAccount().getAnalyticAxis())) {
+        invoiceLine.setAxis5AnalyticAccount(null);
+      }
+    }
+    return invoiceLine;
+  }
 }

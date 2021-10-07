@@ -5,5 +5,6 @@ import com.axelor.exception.AxelorException;
 
 public interface AnalyticDistributionTemplateService {
 
-  void validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException;
+  void validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException;
 }

@@ -55,6 +55,7 @@
 	        <field name="analyticAxis"/>
 	        <field name="analyticAccount"/>
 	        <field name="percentage"/>
+	        <field name="date"/>
         </panel>      
     </form>
     
@@ -142,6 +143,7 @@
 		<action name="action-analytic-move-line-attrs-set-original-piece-amount"/>
 		<action name="action-analytic-move-line-attrs-hide-fields"/>
 		<action name="action-analytic-move-line-attrs-set-type-select"/>
+		<action name="action-analytic-move-line-method-onnew"/>
 	</action-group>
 	
 	<action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
@@ -173,5 +175,9 @@
     	<attribute name="readonly" for="analyticAccount" expr="eval: !analyticAxis" if="eval: !analyticAxis"/>
     	<attribute name="value" for="analyticAccount" expr="eval: null" if="!analyticAxis"/>
     </action-attrs>
+    
+    <action-method name="action-analytic-move-line-method-onnew">
+    	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="initializeAnalyticMoveLine"/>
+    </action-method>
 
 </object-views>

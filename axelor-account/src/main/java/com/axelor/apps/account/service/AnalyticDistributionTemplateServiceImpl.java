@@ -7,7 +7,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +40,8 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
-  public void validateTemplatePercentages(
-      AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException {
+  public void validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
     List<AnalyticDistributionLine> analyticDistributionLineList =
         analyticDistributionTemplate.getAnalyticDistributionLineList();
     List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
@@ -53,9 +52,9 @@ public class AnalyticDistributionTemplateServiceImpl
         sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
       }
       if (sum.intValue() != 100) {
-    	  throw new AxelorException(
-    	          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-    	          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
       }
     }
   }

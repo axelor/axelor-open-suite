@@ -897,10 +897,13 @@ public interface IExceptionMessage {
 
   static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING = /*$$(*/
       "Please set up an accounting batch to block customers with late payments" /*)*/;
-  
+
   static final String ANALYTIC_MOVE_LINE_NOT_VALIDATED = /*$$(*/
-	  "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
-  
+      "The distribution is wrong, some axes percentage values are higher than 100%" /*)*/;
+
   static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
-	  "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+      "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+
+  static final String ANALYTIC_MOVE_LINE_LIST_NOT_VALIDATED = /*$$(*/
+      "Invalid Analytic moveLines, some axes percentage values are not equal to 100%." /*)*/;
 }

@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -532,40 +533,60 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e);
     }
   }
-  
+
   public void clearAnalytic(ActionRequest request, ActionResponse response) {
-	    try {
-	        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-	        if (invoiceLine != null) {
-	          Beans.get(InvoiceLineService.class).clearAnalyticAccounting(invoiceLine);
-	          response.setValues(invoiceLine);
-	        }
-	      } catch (Exception e) {
-	        TraceBackService.trace(response, e);
-	      }
-	    }
-  
-  public void checkAnalytic(ActionRequest request, ActionResponse response) {
-	    try {
-	        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-	        if (invoiceLine != null && invoiceLine.getAnalyticDistributionTemplate() != null) {
-	          Beans.get(AnalyticMoveLineService.class).validateLines(invoiceLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
-	          Beans.get(AnalyticDistributionTemplateService.class).validateTemplatePercentages(invoiceLine.getAnalyticDistributionTemplate());
-	        }
-	      } catch (Exception e) {
-	        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-	      }
-	    }
-  
-  public void printAnalyticAccount(ActionRequest request, ActionResponse response) {
-	    try {
-	        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-	        if (invoiceLine != null && invoiceLine.getAnalyticDistributionTemplate() != null) {
-	          Beans.get(InvoiceLineService.class).printAnalyticAccount(invoiceLine);
-	          response.setValues(invoiceLine);
-	        }
-	      } catch (Exception e) {
-	        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-	      }
-	    }
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      if (invoiceLine != null) {
+        Beans.get(InvoiceLineService.class).clearAnalyticAccounting(invoiceLine);
+        response.setValues(invoiceLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticByTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      if (invoiceLine != null && invoiceLine.getAnalyticDistributionTemplate() != null) {
+        AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
+        analyticMoveLineService.validateLines(
+            invoiceLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
+        if (!analyticMoveLineService.validateAnalyticMoveLines(
+            invoiceLine.getAnalyticMoveLineList())) {
+          response.setError(I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_LIST_NOT_VALIDATED));
+        }
+        Beans.get(AnalyticDistributionTemplateService.class)
+            .validateTemplatePercentages(invoiceLine.getAnalyticDistributionTemplate());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      invoiceLine.setInvoice(request.getContext().getParent().asType(Invoice.class));
+      if (invoiceLine != null) {
+        Beans.get(InvoiceLineService.class).printAnalyticAccount(invoiceLine);
+        response.setValues(invoiceLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticMoveLineForAxis(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      if (invoiceLine != null) {
+        Beans.get(InvoiceLineService.class).checkAnalyticMoveLineForAxis(invoiceLine);
+        response.setValues(invoiceLine);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -46,7 +46,8 @@ public interface AnalyticMoveLineService {
   public void updateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
 
-  public void validateLines(List<AnalyticDistributionLine> analyticDistributionLineList) throws AxelorException;
+  public void validateLines(List<AnalyticDistributionLine> analyticDistributionLineList)
+      throws AxelorException;
 
   @CallMethod
   boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticDistributionLineList);

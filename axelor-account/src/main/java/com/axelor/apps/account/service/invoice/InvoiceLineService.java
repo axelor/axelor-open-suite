@@ -127,4 +127,6 @@ public interface InvoiceLineService {
   public InvoiceLine clearAnalyticAccounting(InvoiceLine invoiceLine);
 
   public InvoiceLine printAnalyticAccount(InvoiceLine invoiceLine) throws AxelorException;
+
+  public InvoiceLine checkAnalyticMoveLineForAxis(InvoiceLine invoiceLine);
 }
