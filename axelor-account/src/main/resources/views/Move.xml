@@ -265,8 +265,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-set-origin-and-description-on-lines">
-    <action name="save" />
-    <action name="action-account-move-validate-origin-description-is-empty" />
+    <action name="action-account-move-method-origin-description-is-empty" />
     <action name="action-account-move-method-set-origin-description-on-lines" />
   </action-group>
 
@@ -279,9 +278,9 @@
       if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))" />
   </action-validate>
 
-  <action-validate name="action-account-move-validate-origin-description-is-empty">
-    <alert message="The move fields origin and description are empty, do you wish to continue ?" if="origin == null &amp;&amp; description == null" />
-  </action-validate>
+  <action-method name="action-account-move-method-origin-description-is-empty">
+  	<call class="com.axelor.apps.account.web.MoveController" method="validateOriginDescription"/>
+  </action-method>
 
   <!-- ACTION RECORD -->
   <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
