@@ -315,7 +315,7 @@ public class BankReconciliationController {
     try {
       String fileLink =
           ReportFactory.createReport(
-                  IReport.BANK_RECONCILIATION, "Bank Reconciliation" + "-${date}")
+                  IReport.BANK_RECONCILIATION, I18n.get("Bank Reconciliation") + "-${date}")
               .addParam("BankReconciliationId", bankReconciliation.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(
