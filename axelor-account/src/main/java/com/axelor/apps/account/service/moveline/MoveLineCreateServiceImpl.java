@@ -189,7 +189,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     BigDecimal debit = BigDecimal.ZERO;
     BigDecimal credit = BigDecimal.ZERO;
 
-    if (amountInCompanyCurrency.compareTo(BigDecimal.ZERO) == -1) {
+    if (amountInCompanyCurrency.compareTo(BigDecimal.ZERO) < 0) {
       isDebit = !isDebit;
       amountInCompanyCurrency = amountInCompanyCurrency.negate();
     }
@@ -558,7 +558,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue())));
     newOrUpdatedMoveLine.setCredit(
         newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue())));
-    newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
     return newOrUpdatedMoveLine;
@@ -569,7 +568,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     MoveLine moveLine;
     BigDecimal debit = BigDecimal.ZERO;
     BigDecimal credit = BigDecimal.ZERO;
-    boolean isDebit = debit.signum() > 0;
+    boolean isDebit = false;
     int counter = move.getMoveLineList().size() + 1;
 
     moveLine =
