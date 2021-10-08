@@ -294,22 +294,23 @@ public class BankStatementService {
         deleteLines = true;
         break;
       }
-
-      for (int i = 0; i < initialBankStatementLineAFB120.size(); i++) {
-        deleteLines =
-            deleteLines
-                || (initialBankStatementLineAFB120
-                            .get(i)
-                            .getDebit()
-                            .compareTo(finalBankStatementLineAFB120.get(i).getDebit())
-                        != 0
-                    || initialBankStatementLineAFB120
-                            .get(i)
-                            .getCredit()
-                            .compareTo(finalBankStatementLineAFB120.get(i).getCredit())
-                        != 0);
-        if (deleteLines) {
-          break;
+      if (!deleteLines) {
+        for (int i = 0; i < initialBankStatementLineAFB120.size(); i++) {
+          deleteLines =
+              deleteLines
+                  || (initialBankStatementLineAFB120
+                              .get(i)
+                              .getDebit()
+                              .compareTo(finalBankStatementLineAFB120.get(i).getDebit())
+                          != 0
+                      || initialBankStatementLineAFB120
+                              .get(i)
+                              .getCredit()
+                              .compareTo(finalBankStatementLineAFB120.get(i).getCredit())
+                          != 0);
+          if (deleteLines) {
+            break;
+          }
         }
       }
       if (deleteLines) {
