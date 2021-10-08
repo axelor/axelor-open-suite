@@ -17,11 +17,6 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -38,6 +33,9 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
+import java.util.List;
+import javax.persistence.PersistenceException;
 
 public class MoveManagementRepository extends MoveRepository {
 
@@ -104,7 +102,7 @@ public class MoveManagementRepository extends MoveRepository {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
       if (move.getCompanyCurrency() != null && move.getCurrencyCode() == null) {
-    	  move.setCurrencyCode(move.getCompanyCurrency().getCode());
+        move.setCurrencyCode(move.getCompanyCurrency().getCode());
       }
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       List<MoveLine> moveLineList = move.getMoveLineList();

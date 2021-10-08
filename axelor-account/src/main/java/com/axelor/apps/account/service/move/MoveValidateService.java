@@ -17,17 +17,6 @@
  */
 package com.axelor.apps.account.service.move;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -53,6 +42,15 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveValidateService {
 
@@ -242,9 +240,9 @@ public class MoveValidateService {
     if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       move.setAdjustingMove(true);
     }
-    //Setting currency code in case it not valued
+    // Setting currency code in case it not valued
     if (move.getCompanyCurrency() != null && move.getCurrencyCode() == null) {
-  	  move.setCurrencyCode(move.getCompanyCurrency().getCode());
+      move.setCurrencyCode(move.getCompanyCurrency().getCode());
     }
 
     this.completeMoveLines(move);
