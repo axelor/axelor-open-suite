@@ -349,6 +349,12 @@ public class InvoiceLineController {
                       invoice.getPartner().getFiscalPosition(),
                       InvoiceToolService.isPurchase(invoice),
                       invoiceLine.getFixedAssets());
+          if (invoiceLine.getFixedAssets()) {
+            FixedAssetCategory fixedAssetCategory =
+                Beans.get(AccountManagementServiceAccountImpl.class)
+                    .getProductFixedAssetCategory(product, invoice.getCompany());
+            response.setValue("fixedAssetCategory", fixedAssetCategory);
+          }
           response.setValue("account", account);
         }
       }
