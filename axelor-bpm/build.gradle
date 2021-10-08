@@ -12,6 +12,10 @@ axelor {
         description "Axelor BPM  Module"
 }
 
+test {
+	exclude "com/axelor/apps/baml/test/**"
+}
+
 
 dependencies {
   compile ("org.camunda.bpm:camunda-engine:7.15.0")
