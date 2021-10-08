@@ -191,7 +191,7 @@
     <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
 			<field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"/>
 		</panel>
-		<panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab">
 	<panel name="generateFixedAssetPanel" title="Generate fixed asset">
 		<field name="$generateFixedAsset" title="Generate a fixed asset from this line ? " hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
 		<field name="fixedAssetCategory" showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false" />
@@ -284,7 +284,7 @@
 						</h3>
 					]]>
 				</viewer>
-			</field>
+              </field>
       <panel name="datesPanel" colSpan="12">
         <field name="date" onChange="account-move-line-group-date-onchange" />
         <field name="dueDate" showIf="dueDate" />
@@ -329,7 +329,7 @@
 				onSelect="action-attrs-move-line-set-domain-axis" onChange="action-group-analytic-axis-onchange"/>
 
     </panel>
-		<panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab">
 	<panel name="generateFixedAssetPanel" title="Generate fixed asset">
 		<field name="$generateFixedAsset" title="Generate a fixed asset from this line ? " hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
 		<field name="fixedAssetCategory" showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false" />
