@@ -34,6 +34,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -61,6 +62,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected MoveCreateService moveCreateService;
 
+  protected MoveLineCreateService moveLineCreateService;
+
   protected MoveRepository moveRepo;
 
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
@@ -80,7 +83,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       FixedAssetRepository fixedAssetRepo,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       FixedAssetLineService fixedAssetLineService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveLineCreateService moveLineCreateService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -88,6 +92,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.moveValidateService = moveValidateService;
+    this.moveLineCreateService = moveLineCreateService;
+    this.fixedAssetRepo = fixedAssetRepo;
   }
 
   @Override
@@ -240,7 +246,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
-    String origin = fixedAsset.getReference();
+    String origin = fixedAsset.getFixedAssetSeq();
+    BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
+    BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -248,95 +256,87 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         company.getName(),
         journal.getCode());
 
-    // Creating move
-    Move move =
-        moveCreateService.createMove(
-            journal,
-            company,
-            company.getCurrency(),
-            partner,
-            date,
-            date,
-            null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
-            origin,
-            null);
-    BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
-    BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
-    if (move != null
-        && correctedAccountingValue != null
+    if (correctedAccountingValue != null
         && (correctedAccountingValue.signum() != 0)
         && impairmentValue != null
         && (impairmentValue.signum() != 0)) {
 
-      if (isSimulated) {
-        move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
-      }
-      List<MoveLine> moveLines = new ArrayList<>();
+      // Creating move
+      Move move =
+          moveCreateService.createMove(
+              journal,
+              company,
+              company.getCurrency(),
+              partner,
+              date,
+              date,
+              null,
+              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+              MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+              origin,
+              fixedAsset.getName());
 
-      FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
-      Account debitLineAccount;
-      Account creditLineAccount;
-      BigDecimal amount;
-      if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
-        if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
-            || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-              "provisionTangibleFixedAssetAccount/wbProvisionTangibleFixedAssetAccount");
+      if (move != null) {
+
+        if (isSimulated) {
+          move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
         }
+        List<MoveLine> moveLines = new ArrayList<>();
 
-        debitLineAccount = fixedAssetCategory.getChargeAccount();
-        creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
-      } else {
-        debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
-        creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
+        FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+        Account debitLineAccount;
+        Account creditLineAccount;
+        BigDecimal amount;
+        if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
+          if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
+              || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
+                "provisionTangibleFixedAssetAccount/wbProvisionTangibleFixedAssetAccount");
+          }
+
+          debitLineAccount = fixedAssetCategory.getChargeAccount();
+          creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+        } else {
+          debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+          creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
+        }
+        amount = impairmentValue.abs();
+
+        MoveLine debitMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                debitLineAccount,
+                amount,
+                true,
+                date,
+                1,
+                origin,
+                fixedAsset.getName());
+        moveLines.add(debitMoveLine);
+
+        this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
+
+        MoveLine creditMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                creditLineAccount,
+                amount,
+                false,
+                date,
+                2,
+                origin,
+                fixedAsset.getName());
+        moveLines.add(creditMoveLine);
+
+        this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
+
+        move.getMoveLineList().addAll(moveLines);
+        return moveRepo.save(move);
       }
-      amount = impairmentValue.abs();
-      // Creating accounting debit move line
-      MoveLine debitMoveLine =
-          new MoveLine(
-              move,
-              partner,
-              debitLineAccount,
-              date,
-              null,
-              1,
-              amount,
-              BigDecimal.ZERO,
-              fixedAsset.getName(),
-              origin,
-              null,
-              BigDecimal.ZERO,
-              date);
-      moveLines.add(debitMoveLine);
-
-      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
-
-      // Creating accounting debit move line
-      MoveLine creditMoveLine =
-          new MoveLine(
-              move,
-              partner,
-              creditLineAccount,
-              date,
-              null,
-              2,
-              BigDecimal.ZERO,
-              amount,
-              fixedAsset.getName(),
-              origin,
-              null,
-              BigDecimal.ZERO,
-              date);
-      moveLines.add(creditMoveLine);
-
-      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
-
-      move.getMoveLineList().addAll(moveLines);
-      return moveRepo.save(move);
     }
     return null;
   }
@@ -350,7 +350,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
-    String origin = fixedAsset.getReference();
+    String origin = fixedAsset.getFixedAssetSeq();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -371,7 +371,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
-            null);
+            fixedAsset.getName());
     if (move != null) {
       if (isSimulated) {
         move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
@@ -402,42 +402,24 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       }
       BigDecimal amount = fixedAssetLine.getDepreciation();
 
-      // Creating accounting debit move line
       MoveLine debitMoveLine =
-          new MoveLine(
-              move,
-              partner,
-              debitLineAccount,
-              date,
-              null,
-              1,
-              amount,
-              BigDecimal.ZERO,
-              fixedAsset.getName(),
-              origin,
-              null,
-              BigDecimal.ZERO,
-              date);
+          moveLineCreateService.createMoveLine(
+              move, partner, debitLineAccount, amount, true, date, 1, origin, fixedAsset.getName());
       moveLines.add(debitMoveLine);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
 
-      // Creating accounting debit move line
       MoveLine creditMoveLine =
-          new MoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               creditLineAccount,
-              date,
-              null,
-              2,
-              BigDecimal.ZERO,
               amount,
-              fixedAsset.getName(),
+              false,
+              date,
+              2,
               origin,
-              null,
-              BigDecimal.ZERO,
-              date);
+              fixedAsset.getName());
       moveLines.add(creditMoveLine);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
@@ -460,7 +442,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
-    String origin = fixedAsset.getReference();
+    String origin = fixedAsset.getFixedAssetSeq();
 
     // Creating move
     Move move =
@@ -475,7 +457,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
-            null);
+            fixedAsset.getName());
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
@@ -503,66 +485,51 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       } else {
         chargeAccount = fixedAsset.getFixedAssetCategory().getChargeAccount();
       }
-
-      // Creating accounting debit move line for charge account
       MoveLine chargeAccountDebitMoveLine =
-          new MoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               chargeAccount,
-              disposalDate,
-              null,
-              1,
               chargeAmount,
-              BigDecimal.ZERO,
-              fixedAsset.getName(),
+              true,
+              disposalDate,
+              1,
               origin,
-              null,
-              BigDecimal.ZERO,
-              disposalDate);
+              fixedAsset.getName());
       moveLines.add(chargeAccountDebitMoveLine);
 
       this.addAnalyticToMoveLine(
           fixedAsset.getAnalyticDistributionTemplate(), chargeAccountDebitMoveLine);
 
       if (cumulativeDepreciationAmount != null && cumulativeDepreciationAmount.signum() > 0) {
-        // Creating accounting debit move line for deprecation account
+
         MoveLine deprecationAccountDebitMoveLine =
-            new MoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 partner,
                 depreciationAccount,
-                disposalDate,
-                null,
-                1,
                 cumulativeDepreciationAmount,
-                BigDecimal.ZERO,
-                fixedAsset.getName(),
+                true,
+                disposalDate,
+                1,
                 origin,
-                null,
-                BigDecimal.ZERO,
-                disposalDate);
+                fixedAsset.getName());
         moveLines.add(deprecationAccountDebitMoveLine);
         this.addAnalyticToMoveLine(
             fixedAsset.getAnalyticDistributionTemplate(), deprecationAccountDebitMoveLine);
       }
 
-      // Creating accounting credit move line
       MoveLine creditMoveLine =
-          new MoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               purchaseAccount,
-              disposalDate,
-              null,
-              2,
-              BigDecimal.ZERO,
               fixedAsset.getGrossValue(),
-              fixedAsset.getName(),
+              false,
+              disposalDate,
+              2,
               origin,
-              null,
-              BigDecimal.ZERO,
-              disposalDate);
+              fixedAsset.getName());
       moveLines.add(creditMoveLine);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
@@ -592,7 +559,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Journal journal = company.getAccountConfig().getCustomerSalesJournal();
     Partner partner = fixedAsset.getPartner();
-    String origin = fixedAsset.getReference();
+    String origin = fixedAsset.getFixedAssetSeq();
 
     // Creating move
     Move move =
@@ -607,7 +574,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
-            null);
+            fixedAsset.getName());
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
@@ -646,58 +613,46 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       }
 
       MoveLine creditMoveLine1 =
-          new MoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               creditAccountOne,
-              disposalDate,
-              null,
-              1,
-              BigDecimal.ZERO,
               creditAmountOne,
-              fixedAsset.getName(),
+              false,
+              disposalDate,
+              1,
               origin,
-              null,
-              BigDecimal.ZERO,
-              disposalDate);
+              fixedAsset.getName());
       moveLines.add(creditMoveLine1);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine1);
 
       MoveLine creditMoveLine2 =
-          new MoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               creditAccountTwo,
-              disposalDate,
-              null,
-              1,
-              BigDecimal.ZERO,
               creditAmountTwo,
-              fixedAsset.getName(),
+              false,
+              disposalDate,
+              1,
               origin,
-              null,
-              BigDecimal.ZERO,
-              disposalDate);
+              fixedAsset.getName());
       moveLines.add(creditMoveLine2);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);
 
       MoveLine debitMoveLine =
-          new MoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               debitAccount,
-              disposalDate,
-              null,
-              2,
               debitAmount,
-              BigDecimal.ZERO,
-              fixedAsset.getName(),
+              true,
+              disposalDate,
+              2,
               origin,
-              null,
-              BigDecimal.ZERO,
-              disposalDate);
+              fixedAsset.getName());
       moveLines.add(debitMoveLine);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
