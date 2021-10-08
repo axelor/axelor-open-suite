@@ -1366,10 +1366,7 @@
 "IFRS Periodicity Type",,,
 "IFRS depreciation",,,
 "If this field is activated, the management of cost accounting will be offered at each place where the entry or choice of parameters related to cost accounting is necessary at the same time as the company.",,,
-<<<<<<< HEAD
 "If this field is filled, once the move will change from Draft to Validated, a new fixed asset record will be generated based on this moveLine data and the selected category data",,,
-=======
->>>>>>> kevin/wip-6.2-feature-fixed-assets-feature-41688
 "If ticked, this means a depreciation move has been generated at the state Simulated.",,,
 "Ignore in accounting",,,
 "Ignore in debt recovery process",,,
@@ -2347,10 +2344,7 @@
 "The distribution is wrong, some axes percentage values are higher than 100%",,,
 "The distribution is wrong, some axes percentage values are not equal to 100%",,,
 "The from date is incorrect",,,
-<<<<<<< HEAD
 "The input failover date is not conforme compare with the dates and configured depreciation duration.",,,
-=======
->>>>>>> kevin/wip-6.2-feature-fixed-assets-feature-41688
 "The line can not be simulated because there is no journal or it does not authorize simulated move",,,
 "The move %s cannot be empty",,,
 "The move fields origin and description are empty, do you wish to continue ?",,,
