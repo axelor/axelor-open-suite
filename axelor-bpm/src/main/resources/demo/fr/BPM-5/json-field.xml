@@ -28,8 +28,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -112,8 +110,6 @@
 			<visibleInGrid>false</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
