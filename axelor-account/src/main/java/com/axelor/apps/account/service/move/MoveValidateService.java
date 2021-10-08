@@ -240,10 +240,6 @@ public class MoveValidateService {
     if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       move.setAdjustingMove(true);
     }
-    // Setting currency code in case it not valued
-    if (move.getCompanyCurrency() != null && move.getCurrencyCode() == null) {
-      move.setCurrencyCode(move.getCompanyCurrency().getCode());
-    }
 
     this.completeMoveLines(move);
 
