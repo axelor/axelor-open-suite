@@ -113,6 +113,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       } else {
         functionalOrigin = 0;
       }
+      boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+
       move =
           moveCreateService.createMove(
               journal,
@@ -120,6 +122,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               invoice.getCurrency(),
               partner,
               invoice.getInvoiceDate(),
+              isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               functionalOrigin,
@@ -131,8 +134,6 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setInvoice(invoice);
 
         move.setTradingName(invoice.getTradingName());
-
-        boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
@@ -285,6 +286,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                 null,
                 partner,
                 invoice.getInvoiceDate(),
+                invoice.getInvoiceDate(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                 MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
@@ -364,6 +366,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             company,
             null,
             partner,
+            invoice.getInvoiceDate(),
             invoice.getInvoiceDate(),
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,

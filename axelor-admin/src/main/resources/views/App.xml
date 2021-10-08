@@ -39,7 +39,7 @@
 	<form model="com.axelor.apps.base.db.App" title="Bulk install" name="bulk-install-app-form">
 		<panel name="mainPanel">
 			<button name="selectAllBtn" title="Select all" colSpan="4" onClick="action-app-attrs-bulk-install-select-all,action-app-bulk-install-apps-set-change"/>
-			<field type="many-to-many" name="appsSet" target="com.axelor.apps.base.db.App" colSpan="12" title="Apps" canNew="false" domain="self.active = false or self.demoDataLoaded = false" height="200" onChange="action-app-bulk-install-apps-set-change"/>			
+			<field type="many-to-many" name="appsSet" target="com.axelor.apps.base.db.App" colSpan="12" title="Apps" canNew="false" domain="(self.isCustom = null OR self.isCustom = false) AND (self.active = false or self.demoDataLoaded = false)" height="200" onChange="action-app-bulk-install-apps-set-change"/>			
 			<field name="languageSelect" type="string" selection="select.language" title="Language" colSpan="4" selection-in="['en','fr']"/>
 			<field type="boolean" name="importDemoData" title="Import demo data" colSpan="3" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'"/>
 			<button name="installBtn" title="Install" colSpan="4" onClick="action-app-method-bulk-install" hidden="true"/>
@@ -84,7 +84,7 @@
 	</cards>
 	
 	<action-attrs name="action-app-attrs-bulk-install-select-all" model="com.axelor.apps.base.db.App">
-	  <attribute name="value" for="appsSet" expr="eval: (__repo__(App).all().filter('self.active = false or self.demoDataLoaded = false').fetch()).toSet()"/>
+	  <attribute name="value" for="appsSet" expr="eval: (__repo__(App).all().filter('(self.isCustom = null OR self.isCustom = false) AND (self.active = false or self.demoDataLoaded = false)').fetch()).toSet()"/>
 	</action-attrs>
 	
 	<action-method name="action-method-app-import-data-demo">

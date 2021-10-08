@@ -302,6 +302,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             currency,
             partner,
             moveDate,
+            originDate,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,

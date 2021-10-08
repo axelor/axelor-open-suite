@@ -29,8 +29,6 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,17 +70,14 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
 
     Move paymentMove = invoicePayment.getMove();
-    List<Reconcile> reconciliations = invoicePayment.getReconcileList();
+    Reconcile reconcile = invoicePayment.getReconcile();
 
-    log.debug("cancel : reconcile : {}", reconciliations);
+    log.debug("cancel : reconcile : {}", reconcile);
 
-    if (!CollectionUtils.isEmpty(reconciliations)) {
-      for (Reconcile reconcile : reconciliations) {
-        if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-          reconcileService.unreconcile(reconcile);
-        }
-      }
+    if (reconcile != null && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+      reconcileService.unreconcile(reconcile);
     }
+
     if (paymentMove != null
         && invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_PAYMENT) {
       invoicePayment.setMove(null);

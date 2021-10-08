@@ -61,6 +61,10 @@
 		<panel name="specificNotesPanel" title="Specific notes" colSpan="12" if-module="axelor-account">
 			<field name="specificNoteOnInvoice" widget="html" colSpan="12"/>
 		</panel>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	</form>
 
 	<cards name="bank-details-cards" model="com.axelor.apps.base.db.BankDetails" title="Bank details" width="410px">

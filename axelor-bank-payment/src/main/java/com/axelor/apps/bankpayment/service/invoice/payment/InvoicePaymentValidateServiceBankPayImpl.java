@@ -21,13 +21,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -66,10 +64,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService,
-      InvoiceTermService invoiceTermService,
-      AppAccountService appAccountService,
       BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService) {
+      BankOrderService bankOrderService,
+      AppAccountService appAccountService) {
     super(
         paymentModeService,
         moveCreateService,
@@ -80,32 +77,14 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         invoicePaymentRepository,
         reconcileService,
         invoicePaymentToolService,
-        invoiceTermService,
         appAccountService);
+
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
   }
 
-  /**
-   * Method to validate an invoice Payment
-   *
-   * <p>Create the eventual move (depending general configuration) and reconcile it with the invoice
-   * move Compute the amount paid on invoice Change the status to validated
-   *
-   * @param invoicePayment An invoice payment
-   * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws IOException
-   * @throws JAXBException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  public void validate(InvoicePayment invoicePayment, boolean force)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
-
-    if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
-      return;
-    }
-
+  @Override
+  protected void setInvoicePaymentStatus(InvoicePayment invoicePayment) throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (paymentMode == null) {
@@ -125,11 +104,15 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     } else {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
     }
+  }
 
-    // TODO assign an automatic reference
-
+  @Override
+  protected void createInvoicePaymentMove(InvoicePayment invoicePayment)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+    Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
 
+    PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
         && !paymentMode.getGenerateBankOrder()) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
@@ -141,13 +124,6 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     if (paymentMode.getGenerateBankOrder()) {
       this.createBankOrder(invoicePayment);
     }
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-    invoicePaymentToolService.updateAmountPaid(invoice);
-    if (invoice != null
-        && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
-    }
-    invoicePaymentRepository.save(invoicePayment);
   }
 
   @Transactional(rollbackOn = {Exception.class})
