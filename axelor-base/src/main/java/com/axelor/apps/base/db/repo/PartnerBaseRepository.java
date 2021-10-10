@@ -20,6 +20,7 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -69,7 +70,9 @@ public class PartnerBaseRepository extends PartnerRepository {
 
     List<PartnerAddress> partnerAddressList = Lists.newArrayList();
 
-    if (deep && copy.getPartnerAddressList() != null) {
+    if (deep
+        && copy.getPartnerAddressList() != null
+        && !Beans.get(AppBaseService.class).getAppBase().getIsSharedAddress()) {
       for (PartnerAddress partnerAddress : copy.getPartnerAddressList()) {
 
         partnerAddressList.add(partnerAddressRepository.copy(partnerAddress, deep));
