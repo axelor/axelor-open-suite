@@ -615,5 +615,12 @@
 	   <option value="0">Tax excluded</option>
 	   <option value="1">Tax included</option>
   </selection>
+  
+  <selection name="account.fixed.asset.technical.type.select">
+    <option value="00">Immobilisation en cours</option>
+    <option value="10">Immobilisation corporelle</option>
+    <option value="20">Immobilisation incorporelle</option>
+    <option value="30">Immobilisation financière</option>
+  </selection>
 
 </object-views>
