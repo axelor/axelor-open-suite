@@ -1,0 +1,4 @@
+---
+title: "BANK PAYMENT BATCH: renamed the controller method launchBankPaymentBatch to actionEbicsCertificate"
+type: fix
+
