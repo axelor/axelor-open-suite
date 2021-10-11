@@ -33,6 +33,8 @@
 
 
     <boolean name="isConsProOnOperation" title="Manage consumed products on operations" initParam="true"/>
+    
+    <boolean name="planOnlyMissingQuantities" title="Plan only product with missing quantities"/>
 
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM" initParam="true"/>
@@ -67,6 +69,8 @@
 
     <string name="moCommentFromSaleOrder" title="MO's comment from sale order" large="true"/>
     <unique-constraint columns="manufOrderSeq,company"/>
+    
+    
 
 	<extra-code><![CDATA[
 		// STATUS SELECT
