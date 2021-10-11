@@ -15,6 +15,7 @@ libs.commons_validator = 'commons-validator:commons-validator:1.4.0'
 
 libs.httpclient = 'org.apache.httpcomponents:httpclient:4.5.12'
 
+libs.groovy = 'org.codehaus.groovy:groovy-all:3.0.9'
 libs.pdfbox = 'org.apache.pdfbox:pdfbox:2.0.9'
 libs.itextpdf = 'com.itextpdf:itextpdf:5.5.13.1'
 libs.itext7_core = 'com.itextpdf:itext7-core:7.0.4'
@@ -27,7 +28,10 @@ libs.ical4j = 'org.mnode.ical4j:ical4j:2.2.0'
 libs.ical4j_connector = dependencies.create("org.mnode.ical4j:ical4j-connector:1.0.1") {
   exclude group: 'asm', module: 'asm'
 }
-libs.ical4j_extensions = 'org.mnode.ical4j:ical4j-extensions:1.0.3'
+libs.ical4j_extensions = [
+  'org.mnode.ical4j:ical4j-extensions:1.0.3',
+  libs.groovy
+]
 
 libs.jsch = 'com.jcraft:jsch:0.1.55'
 
@@ -65,5 +69,8 @@ libs.weld_servlet = 'org.jboss.weld.servlet:weld-servlet-core:3.1.8.Final'
 
 libs.opencsv = 'com.opencsv:opencsv:5.5.2'
 
-libs.wslite = 'com.github.groovy-wslite:groovy-wslite:1.1.3'
+libs.wslite = [
+  'com.github.groovy-wslite:groovy-wslite:1.1.3',
+  libs.groovy
+]
 libs.pac4j_core = "org.pac4j:pac4j-core:4.5.2"
