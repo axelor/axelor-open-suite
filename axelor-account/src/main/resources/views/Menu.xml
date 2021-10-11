@@ -172,7 +172,7 @@
 		<view type="form" name="move-form"/>
 		<view-param name="search-filters" value="move-filters"/>
 		<domain>self.statusSelect != 5</domain>
-		<context name="_isActivateSimulatedMoves" expr="eval:__user__.activeCompany.accountConfig.isActivateSimulatedMove"/>
+		<context name="_isActivateSimulatedMoves" expr="eval:__user__.activeCompany.accountConfig.isActivateSimulatedMove" if="__user__.activeCompany!= null"/>
 	</action-view>
 
 	<menuitem name="account-root-move-move-line"
