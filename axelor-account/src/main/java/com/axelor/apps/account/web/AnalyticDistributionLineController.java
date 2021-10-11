@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -37,9 +38,13 @@ import java.time.LocalDate;
 public class AnalyticDistributionLineController {
 
   public void computeAmount(ActionRequest request, ActionResponse response) {
-    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-    response.setValue(
-        "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
+    try {
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+      response.setValue(
+          "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void validateLines(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -82,6 +87,22 @@ public class AnalyticDistributionLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+      MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+      if (analyticMoveLine != null && moveLine != null) {
+        response.setValue(
+            "amount",
+            Beans.get(MoveLineComputeAnalyticService.class)
+                .getAnalyticAmount(moveLine, analyticMoveLine));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

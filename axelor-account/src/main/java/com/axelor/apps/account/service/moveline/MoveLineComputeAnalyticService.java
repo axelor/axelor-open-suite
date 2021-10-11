@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface MoveLineComputeAnalyticService {
@@ -30,4 +31,6 @@ public interface MoveLineComputeAnalyticService {
   public MoveLine printAnalyticAccount(MoveLine moveLine) throws AxelorException;
 
   public MoveLine checkAnalyticMoveLineForAxis(MoveLine moveLine);
+
+  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine);
 }
