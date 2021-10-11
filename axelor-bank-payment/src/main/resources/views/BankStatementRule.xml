@@ -17,24 +17,24 @@
     <panel name="accountManagementPanel" title="BankDetails/Payment Mode/Interbank code configuration">
       <field name="accountManagement" onChange="account-bank-statement-rule-record-set-temp-company" domain="self.typeSelect = 3" form-view="account-management-form"
         grid-view="account-management-bank-statement-rule-grid" />
-      <field name="accountManagement.bankDetails" />
-      <field name="accountManagement.journal" />
-      <field name="accountManagement.interbankCodeLine" colspan="3" />
+      <field name="accountManagement.bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" />
+      <field name="accountManagement.journal" grid-view="journal-grid" form-view="journal-form" />
+      <field name="accountManagement.interbankCodeLine" colspan="3" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" />
       <field name="accountManagement.interbankCodeLine.code" colspan="3" />
+      <field name="accountManagement.company" hidden="true" />
     </panel>
-    <panel name="bankStatementMainPanel" title="Search and accounting rule Config.">
-      <field name="ruleType" readonlyIf="!accountManagement" requiredIf="ruleType = 0" />
-      <field name="partner" readonlyIf="!accountManagement" domain="self.partnerTypeSelect = 1" requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleType = 0" form-view="partner-form"
+    <panel name="bankStatementMainPanel" title="Search and accounting rule Config." readonlyIf="!accountManagement">
+      <field name="ruleType" requiredIf="ruleType = 0" />
+      <field name="partner" domain="self.partnerTypeSelect = 1" requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleType = 0" form-view="partner-form"
         grid-view="partner-grid" />
-      <field name="bankStatementQuery" readonlyIf="!accountManagement" domain="self.ruleType = :ruleType" form-view="bank-statement-query-form" grid-view="bank-statement-query-grid" />
-      <field name="counterpartAccount" readonlyIf="!accountManagement" domain="self.company = :company" requiredIf="ruleType == 0" />
-      <field name="searchLabel" readonlyIf="!accountManagement" />
-      <field name="$company" hidden="true" type="many-to-one" target="com.axelor.apps.base.db.Company" />
+      <field name="bankStatementQuery" domain="self.ruleType = :ruleType" form-view="bank-statement-query-form" grid-view="bank-statement-query-grid" />
+      <field name="counterpartAccount" requiredIf="ruleType == 0" onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"/>
+      <field name="searchLabel" />
     </panel>
   </form>
-
-  <action-record name="account-bank-statement-rule-record-set-temp-company" model="com.axelor.apps.bankpayment.db.BankStatementRule">
-    <field name="$company" expr="eval: accountManagement.company" />
-  </action-record>
+  
+  <action-attrs name="action-bank-statement-rule-attrs-set-counterpart-account-domain">
+    <attribute name="domain" for="counterpartAccount" expr="eval: &quot; self.company = ${accountManagement.company?.id} &quot;"/>
+  </action-attrs>
 
 </object-views>
