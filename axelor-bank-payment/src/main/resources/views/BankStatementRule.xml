@@ -17,9 +17,9 @@
     <panel name="accountManagementPanel" title="BankDetails/Payment Mode/Interbank code configuration">
       <field name="accountManagement" onChange="account-bank-statement-rule-record-set-temp-company" domain="self.typeSelect = 3" form-view="account-management-form"
         grid-view="account-management-bank-statement-rule-grid" />
-      <field name="accountManagement.bankDetails" />
-      <field name="accountManagement.journal" />
-      <field name="accountManagement.interbankCodeLine" colspan="3" />
+      <field name="accountManagement.bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" />
+      <field name="accountManagement.journal" grid-view="journal-grid" form-view="journal-form" />
+      <field name="accountManagement.interbankCodeLine" colspan="3" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" />
       <field name="accountManagement.interbankCodeLine.code" colspan="3" />
       <field name="accountManagement.company" hidden="true" />
     </panel>
