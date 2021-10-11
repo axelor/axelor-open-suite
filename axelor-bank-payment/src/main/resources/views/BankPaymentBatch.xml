@@ -44,7 +44,7 @@
 	</form>
 	
 	<action-method name="action-bank-payment-batch-method-action-ebics-certificate">
-		<call class="com.axelor.apps.bankpayment.web.BankPaymentBatchController" method="actionEbicsCertificate"/>
+		<call class="com.axelor.apps.bankpayment.web.BankPaymentBatchController" method="launchBankPaymentBatch"/>
 	</action-method>
 
 	<action-method name="action-bank-payment-batch-method-action-bank-statement">
