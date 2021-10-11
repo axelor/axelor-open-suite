@@ -32,8 +32,7 @@
   	<one-to-many name="wasteProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="wasteManufOrder" title="Waste"/>
 
 
-    <boolean name="isConsProOnOperation" title="Manage consumed products on operations" initParam="true"/>
-    
+    <boolean name="isConsProOnOperation" title="Manage consumed products on operations" initParam="true"/>    
     <boolean name="planOnlyMissingQuantities" title="Plan only product with missing quantities"/>
 
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -69,8 +68,6 @@
 
     <string name="moCommentFromSaleOrder" title="MO's comment from sale order" large="true"/>
     <unique-constraint columns="manufOrderSeq,company"/>
-    
-    
 
 	<extra-code><![CDATA[
 		// STATUS SELECT
