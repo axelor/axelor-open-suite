@@ -66,7 +66,6 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -897,7 +896,7 @@ public class BankReconciliationService {
   }
 
   public void checkReconciliation(List<MoveLine> moveLines, BankReconciliation br)
-      throws Exception {
+      throws AxelorException {
 
     if (br.getBankReconciliationLineList().stream()
                 .filter(line -> line.getIsSelectedBankReconciliation())
@@ -962,12 +961,12 @@ public class BankReconciliationService {
     }
   }
 
-  public void reconcileSelected(BankReconciliation bankReconciliation) throws Exception {
+  public void reconcileSelected(BankReconciliation bankReconciliation) throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
     String filter = getRequestMoveLines(bankReconciliation);
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
     List<MoveLine> moveLines =
-        Beans.get(MoveLineRepository.class)
+        moveLineRepository
             .all()
             .filter(filter)
             .bind(getBindRequestMoveLine(bankReconciliation))
