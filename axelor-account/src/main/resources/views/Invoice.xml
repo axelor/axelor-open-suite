@@ -966,7 +966,6 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-record-set-dummy-field-language"/>
         <action name="action-invoice-method-set-default-group-products-on-printings"/>
         <action name="action-invoice-record-set-display-stock-move-on-invoice-printing" if="__config__.app.isApp('supplychain')"/>
-        <action name="action-attrs-set-null-manage-financial-discount"/>
         <action name="action-invoice-method-manage-invoice-line-axis"/>
     </action-group>
 
@@ -985,7 +984,6 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
     	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
-      <action name="action-attrs-set-null-manage-financial-discount"/>
       <action name="action-invoice-method-manage-invoice-line-axis"/>
     </action-group>
 
@@ -1716,13 +1714,6 @@ InvoiceSet.length > 0))"
 		<field name="legalNotice" expr="eval: null" if="!financialDiscount"/>
 		<field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
 		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate &amp;&amp; financialDiscount"/>
-	</action-record>
-	
-	<action-record name="action-attrs-set-null-manage-financial-discount" model="com.axelor.apps.account.db.Invoice">
-		<field name="financialDiscount" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
-		<field name="legalNotice" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
-		<field name="financialDiscountRate" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
-		<field name="financialDiscountDeadlineDate" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
 	</action-record>
 	
 	<action-method name="action-invoice-method-manage-invoice-line-axis">
