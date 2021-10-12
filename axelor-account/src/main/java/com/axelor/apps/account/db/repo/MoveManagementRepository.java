@@ -101,8 +101,8 @@ public class MoveManagementRepository extends MoveRepository {
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
-      if (move.getCompanyCurrency() != null && move.getCurrencyCode() == null) {
-        move.setCurrencyCode(move.getCompanyCurrency().getCode());
+      if (move.getCurrency() != null) {
+        move.setCurrencyCode(move.getCurrency().getCode());
       }
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       List<MoveLine> moveLineList = move.getMoveLineList();
