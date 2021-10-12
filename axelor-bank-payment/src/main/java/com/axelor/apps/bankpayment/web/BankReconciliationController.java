@@ -315,7 +315,7 @@ public class BankReconciliationController {
     try {
       String fileLink =
           ReportFactory.createReport(
-                  IReport.BANK_RECONCILIATION, "Bank Reconciliation" + "-${date}")
+                  IReport.BANK_RECONCILIATION, I18n.get("Bank Reconciliation") + "-${date}")
               .addParam("BankReconciliationId", bankReconciliation.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(
@@ -402,11 +402,15 @@ public class BankReconciliationController {
   }
 
   public void autoAccounting(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
-    bankReconciliationService.computeBalances(
-        bankReconciliationRepository.find(bankReconciliation.getId()));
-    response.setReload(true);
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliationService.generateMovesAutoAccounting(bankReconciliation);
+      bankReconciliationService.computeBalances(
+          bankReconciliationRepository.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void checkIncompleteBankReconciliationLine(
@@ -471,20 +475,24 @@ public class BankReconciliationController {
   }
 
   public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response) {
-    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    BankReconciliationService bankReconciliationService =
-        Beans.get(BankReconciliationService.class);
-    ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
-    actionViewBuilder.model(MoveLine.class.getName());
-    actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
-    actionViewBuilder.add("form", "move-line-form");
-    actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
-    Map<String, Object> params =
-        bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
-    Set<String> keys = params.keySet();
-    for (String key : keys) {
-      actionViewBuilder.context(key, params.get(key));
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      BankReconciliationService bankReconciliationService =
+          Beans.get(BankReconciliationService.class);
+      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
+      actionViewBuilder.model(MoveLine.class.getName());
+      actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
+      actionViewBuilder.add("form", "move-line-form");
+      actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
+      Map<String, Object> params =
+          bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
+      Set<String> keys = params.keySet();
+      for (String key : keys) {
+        actionViewBuilder.context(key, params.get(key));
+      }
+      response.setView(actionViewBuilder.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setView(actionViewBuilder.map());
   }
 }

@@ -280,6 +280,7 @@
 "Meta field",,,
 "Meta json",,,
 "Min",,,
+"Missing mapped by: unidirectional one-to-many are not supported by the configurator.","Mapped by manquant: le configurateur ne permet pas de remplir des champs one-to-many unidirectionnels.",,
 "Month","Mois",,
 "Monthly","Mensuel",,
 "My Opportunities","Mes Opportunités",,

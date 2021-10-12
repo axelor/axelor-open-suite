@@ -40,6 +40,7 @@ import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
@@ -61,6 +62,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
 
   protected InvoiceLineRepository invoiceLineRepo;
+  protected IntercoService intercoService;
 
   @Inject
   public InvoiceServiceSupplychainImpl(
@@ -76,7 +78,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
       InvoiceTermService invoiceTermService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      IntercoService intercoService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -91,12 +94,18 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceTermService,
         appBaseService);
     this.invoiceLineRepo = invoiceLineRepo;
+    this.intercoService = intercoService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
     super.ventilate(invoice);
+
+    // cannot be called in WorkflowVentilationService since we need printedPDF
+    if (invoice.getInterco()) {
+      intercoService.generateIntercoInvoice(invoice);
+    }
 
     TimetableRepository timeTableRepo = Beans.get(TimetableRepository.class);
 

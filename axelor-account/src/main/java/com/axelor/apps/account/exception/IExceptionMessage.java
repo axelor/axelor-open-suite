@@ -234,6 +234,7 @@ public interface IExceptionMessage {
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
+  static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
 
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -793,6 +794,8 @@ public interface IExceptionMessage {
   static final String
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
+  static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
+      "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
   static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
       "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/refund" /*)*/;
 
@@ -910,4 +913,7 @@ public interface IExceptionMessage {
 
   static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING = /*$$(*/
       "Please set up an accounting batch to block customers with late payments" /*)*/;
+
+  static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
+      "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 }

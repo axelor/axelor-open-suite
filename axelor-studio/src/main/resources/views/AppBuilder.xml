@@ -4,12 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<grid name="app-builder-grid" title="App builder" model="com.axelor.studio.db.AppBuilder">
-		<toolbar>
-	 		<button name="exportAppBuildersBtn" title="Export" onClick="action-export-studio-app-builders" />
-	   		<button name="importAppBuildersBtn" title="Import" onClick="action-studio-open-import-bpm-form" />
-  	  	</toolbar>
 		<field name="name" />
 		<field name="code" />
+		<field name="generatedApp.active" />
 	</grid>
 	
 	<form name="app-builder-form" title="App builder" model="com.axelor.studio.db.AppBuilder" width="large">
@@ -41,28 +38,6 @@
 		</panel>
 	</form>
 	
-	<form name="import-bpm-form" title="Import BPM" model="com.axelor.studio.db.AppBuilder" >
-		<panel name="mainPanel"> 
-			<field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link" title="Data file"/>
-			<button name="importUsersBtn" title="Import" onClick="action-studio-app-builder-method-import-bpm" showIf="dataFile != null" colSpan="4" />
-			<field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
-		</panel>	
-	</form> 
-	
-	<action-export name="action-export-studio-app-builders" output="${date}${time}" download="true">
-	  <export name="BPM-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
-	    	  template="data-export/export-bpm.tmpl"
-	          engine="groovy"/>
-  	</action-export>
-  	
-  	<action-view name="action-studio-open-import-bpm-form" title="Import BPM" model="com.axelor.studio.db.AppBuilder">
-    	<view type="form" name="import-bpm-form"/>
-    	<view-param name="popup" value="true"/>
-    	<view-param name="popup-save" value="false"/>
-    	<view-param name="show-confirm" value="false"/>
-    	<view-param name="show-toolbar" value="false"/>
-    </action-view>
-
     <action-view name="action-studio-view-app-builder-custom-model" title="Custom models" model="com.axelor.meta.db.MetaJsonModel">
     	<view type="grid" name="json-model-grid"/>
     	<view type="form" name="json-model-form" />
@@ -73,7 +48,7 @@
     <action-view name="action-studio-view-app-builder-custom-field" title="Custom fields" model="com.axelor.meta.db.MetaJsonField">
     	<view type="grid" name="json-field-grid"/>
     	<view type="form" name="json-field-form" />
-    	<domain>self.appBuilder.id = :appBuilderId OR self.jsonModel.appBuilder.id = :appBuilderId</domain>
+    	<domain>self.appBuilder.id = :appBuilderId AND self.jsonModel IS NULL</domain>
     	<context name="appBuilderId" expr="eval: id"/>
     </action-view>
 

@@ -341,7 +341,7 @@
               	]]>
               </viewer>    
             </field>
-            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-group-payment-condition-onchange,action-invoice-method-estimated-payment-dates"/>
+            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-group-payment-condition-onchange"/>
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
@@ -946,7 +946,6 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-record-set-dummy-field-language"/>
         <action name="action-invoice-method-set-default-group-products-on-printings"/>
         <action name="action-invoice-record-set-display-stock-move-on-invoice-printing" if="__config__.app.isApp('supplychain')"/>
-        <action name="action-attrs-set-null-manage-financial-discount"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >
@@ -964,7 +963,6 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
     	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
-      <action name="action-attrs-set-null-manage-financial-discount"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -999,7 +997,7 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-record-set-dummy-field-language"/>
         <action name="action-invoice-method-set-default-group-products-on-printings"/>
         <action name="action-invoice-record-set-payment-condition"/>
-        
+
     </action-group>
 
 	<action-group name="action-invoice-group-currency-onchange">
@@ -1052,6 +1050,7 @@ InvoiceSet.length > 0))"
         <action name="action-invoice-method-generate-invoice-terms" />
         <action name="action-invoice-method-compute-invoice-terms-due-dates" />
         <action name="action-invoice-record-due-date" />
+				<action name="action-invoice-method-estimated-payment-dates"/>
    </action-group>
 
    <action-group name="action-invoice-onsave-group">
@@ -1080,10 +1079,6 @@ InvoiceSet.length > 0))"
     </action-attrs>
 
 	<!-- ACTION RECORD -->
-
-	<action-record name="action-invoice-record-estimated-payment-date" model="com.axelor.apps.account.db.Invoice" if-module="axelor-cash-management">
-		<field name="estimatedPaymentDate" expr="eval: dueDate?.plusDays(partner?.paymentDelay?.intValue())" if="__config__.app.isApp('cash-management')" />
-	</action-record>
 
 	<action-record name="action-invoice-record-hide-discount" model="com.axelor.apps.account.db.Invoice">
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
@@ -1182,7 +1177,7 @@ InvoiceSet.length > 0))"
 	<action-record name="action-invoice-method-set-default-group-products-on-printings" model="com.axelor.apps.account.db.Invoice">
 		<field name="groupProductsOnPrintings" expr="eval: partner?.groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" />
 	</action-record>
-        
+
         <action-record name="action-invoice-record-set-payment-condition" model="com.axelor.apps.account.db.Invoice">
                 <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
         </action-record>
@@ -1728,13 +1723,6 @@ InvoiceSet.length > 0))"
 		<field name="legalNotice" expr="eval: null" if="!financialDiscount"/>
 		<field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
 		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate &amp;&amp; financialDiscount"/>
-	</action-record>
-	
-	<action-record name="action-attrs-set-null-manage-financial-discount" model="com.axelor.apps.account.db.Invoice">
-		<field name="financialDiscount" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
-		<field name="legalNotice" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
-		<field name="financialDiscountRate" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
-		<field name="financialDiscountDeadlineDate" expr="eval: null" if="!__config__.app.getApp('account').getManageFinancialDiscount()"/>
 	</action-record>
 
 </object-views>

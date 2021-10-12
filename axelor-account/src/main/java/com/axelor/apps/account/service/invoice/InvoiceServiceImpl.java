@@ -1126,6 +1126,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public boolean applyFinancialDiscount(Invoice invoice) {
     return (invoice != null
         && invoice.getFinancialDiscountDeadlineDate() != null
+        && appAccountService.getAppAccount().getManageFinancialDiscount()
         && invoice
                 .getFinancialDiscountDeadlineDate()
                 .compareTo(appBaseService.getTodayDate(invoice.getCompany()))
