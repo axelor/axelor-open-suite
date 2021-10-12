@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -358,5 +359,13 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
           .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
+  }
+
+  @Override
+  public BigDecimal getAnalyticAmount(InvoiceLine invoiceLine, AnalyticMoveLine analyticMoveLine) {
+    return analyticMoveLine
+        .getPercentage()
+        .multiply(invoiceLine.getCompanyExTaxTotal())
+        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
   }
 }

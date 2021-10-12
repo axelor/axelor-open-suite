@@ -94,12 +94,23 @@ public class AnalyticDistributionLineController {
       throws AxelorException {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
-      if (analyticMoveLine != null && moveLine != null) {
-        response.setValue(
-            "amount",
-            Beans.get(MoveLineComputeAnalyticService.class)
-                .getAnalyticAmount(moveLine, analyticMoveLine));
+      Context parentContext = request.getContext().getParent();
+      if (MoveLine.class.equals(parentContext.getContextClass())) {
+        MoveLine moveLine = parentContext.asType(MoveLine.class);
+        if (analyticMoveLine != null && moveLine != null) {
+          response.setValue(
+              "amount",
+              Beans.get(MoveLineComputeAnalyticService.class)
+                  .getAnalyticAmount(moveLine, analyticMoveLine));
+        }
+      } else if (InvoiceLine.class.equals(parentContext.getContextClass())) {
+        InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
+        if (analyticMoveLine != null && invoiceLine != null) {
+          response.setValue(
+              "amount",
+              Beans.get(MoveLineComputeAnalyticService.class)
+                  .getAnalyticAmount(invoiceLine, analyticMoveLine));
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
