@@ -49,7 +49,7 @@
 			<panel name="moveDetailsPanel" colSpan="9">
                 <field name="reference" colSpan="12"/>
                 <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0" colSpan="12">
-                    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title,action-attrs-hide-axis-analytic-account-move-line" form-view="company-form" grid-view="company-grid"/>
+                    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title,action-method-hide-axis-analytic-account-move-line" form-view="company-form" grid-view="company-grid"/>
                     <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
@@ -100,8 +100,8 @@
 		</panel>
 		
 		<panel>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6" showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="save,action-account-move-method-compute-totals,action-attrs-hide-axis-analytic-account-move-line"/>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" height="6" showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals,action-attrs-hide-axis-analytic-account-move-line"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6" showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="save,action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" height="6" showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals,action-method-hide-axis-analytic-account-move-line"/>
 			<field name="$reconcileTags" colSpan="12" hidden="true" readonly="true" showTitle="false">
                     <viewer depends="moveLineList">
                         <![CDATA[
@@ -210,7 +210,7 @@
 		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
 		<action name="action-attrs-move-hide-trading-name"/>
 		<action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
-		<action name="action-attrs-hide-axis-analytic-account-move-line"/>
+		<action name="action-method-hide-axis-analytic-account-move-line"/>
 	</action-group>
 	
 	<action-group name="action-account-move-group-onload">
@@ -221,7 +221,7 @@
 		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
 		<action name="action-attrs-move-hide-trading-name"/>
 		<action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
-		<action name="action-attrs-hide-axis-analytic-account-move-line"/>
+		<action name="action-method-hide-axis-analytic-account-move-line"/>
 	</action-group>
 
     <action-group name="action-group-account-move-validate-click">
@@ -428,19 +428,8 @@
 		</filter>
 	</search-filters>
 	
-	<action-attrs name="action-attrs-hide-axis-analytic-account-move-line">
-		<attribute name="hidden" for="moveLineList.axis1AnalyticAccount" expr="eval: !(1 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
-		<attribute name="hidden" for="moveLineList.axis2AnalyticAccount" expr="eval: !(2 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
-		<attribute name="hidden" for="moveLineList.axis3AnalyticAccount" expr="eval: !(3 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
-		<attribute name="hidden" for="moveLineList.axis4AnalyticAccount" expr="eval: !(4 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
-		<attribute name="hidden" for="moveLineList.axis5AnalyticAccount" expr="eval: !(5 &lt;= __repo__(AccountConfig).findByCompany(__this__.company).nbrOfAnalyticAxisSelect)"/>
-		
-		<attribute name="title" for="moveLineList.axis1AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis?.name" if="(1 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="title" for="moveLineList.axis2AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 2 }?.analyticAxis?.name" if="(2 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="title" for="moveLineList.axis3AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 3 }?.analyticAxis?.name" if="(3 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="title" for="moveLineList.axis4AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 4 }?.analyticAxis?.name" if="(4 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="title" for="moveLineList.axis5AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__this__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 5 }?.analyticAxis?.name" if="(5 &lt;= __repo__(AccountConfig).findByCompany(__this__.company)?.nbrOfAnalyticAxisSelect)"/>
-		
-		</action-attrs>
+	<action-method name="action-method-hide-axis-analytic-account-move-line">
+		<call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
+	</action-method>
    
 </object-views>

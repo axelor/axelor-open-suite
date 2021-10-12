@@ -21,7 +21,7 @@
 			<field name="exportCode"/>
 			<field name="csp"/>
 			<field name="isAllCompanies" readonlyIf="companySet.length > 0"/>
-			<field name="companySet" widget="TagSelect" readonlyIf="isAllCompanies" domain="self.employees = true"/>
+			<field name="companySet" widget="TagSelect" readonlyIf="isAllCompanies"/>
 		</panel>
 		<panel-related field="qualificationSet" form-view="qualification-form" grid-view="qualification-employment-grid" domain="self.collectiveAgreement = :collectiveAgreement"/>
 		<panel-related field="qualificationLevelSet" form-view="qualification-level-form" grid-view="qualification-level-employment-grid" onSelect="action-employment-attrs-qualification-level-set-domain"/>

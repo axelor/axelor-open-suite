@@ -48,25 +48,26 @@
 		<field name="amountRemaining" hidden="true" width="150"/>
 		<field name="amountPaid" hidden="true"/>
     	<field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-        grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution,action-method-move-line-set-required-analytic-accounts" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
-        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; !axis1AnalyticAccount &amp;&amp; !axis2AnalyticAccount &amp;&amp; !axis3AnalyticAccount &amp;&amp; !axis4AnalyticAccount &amp;&amp; !axis5AnalyticAccount"/>
-        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" 
-        readonlyIf="account.analyticDistributionAuthorized == false || analyticDistributionTemplate != null"
-        onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
-		<field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" 
-		readonlyIf="account.analyticDistributionAuthorized == false || analyticDistributionTemplate != null" 
-		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
-		<field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" 
-		readonlyIf="account.analyticDistributionAuthorized == false || analyticDistributionTemplate != null" 
-		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
-		<field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" 
-		readonlyIf="account.analyticDistributionAuthorized == false || analyticDistributionTemplate != null"  
-		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
-		<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" 
-		readonlyIf="account.analyticDistributionAuthorized == false || analyticDistributionTemplate != null" 
-		onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
-        <field name="origin" width="120"/>
+        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid"
+      		form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution,action-method-move-line-set-required-analytic-accounts" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
+      		readonlyIf="!account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
+     		requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (!axis1AnalyticAccount &amp;&amp; !axis2AnalyticAccount &amp;&amp; !axis3AnalyticAccount &amp;&amp; !axis4AnalyticAccount &amp;&amp; !axis5AnalyticAccount)"/>
+		<field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null" 
+			onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+		<field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+			onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+		<field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+			onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+		<field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+			onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+		<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+			readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+			onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+		<field name="origin" width="120" hidden="true"/>
         <field name="description" requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
         <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid" form-view="analytic-move-line-move-line-form"/>
         <field name="reconcileGroup" hidden="true"/>
@@ -284,11 +285,25 @@
 			<field name="taxAmount" hidden="true"/>
 			<field name="move.statusSelect" hidden="true"/>
 			<field name="account.reconcileOk" hidden="true"/>
-			<field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
-			<field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
-			<field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
-			<field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
-			<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form" readonly="true"/>
+			<field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" colSpan="12"
+	      		form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution,action-method-move-line-set-required-analytic-accounts" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
+	      		readonlyIf="!account.analyticDistributionAuthorized || axis1AnalyticAccount || axis2AnalyticAccount || axis3AnalyticAccount || axis4AnalyticAccount || axis5AnalyticAccount"
+	     		requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (!axis1AnalyticAccount &amp;&amp; !axis2AnalyticAccount &amp;&amp; !axis3AnalyticAccount &amp;&amp; !axis4AnalyticAccount &amp;&amp; !axis5AnalyticAccount)"/>
+			<field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+				readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null" 
+				onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+			<field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+				readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+				onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+			<field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+				readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+				onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+			<field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+				readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+				onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
+			<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
+				readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+				onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line,action-method-move-line-set-required-analytic-accounts"/>
 
 		</panel>
 		<panel-tabs name="mainPanelTab">
@@ -384,7 +399,7 @@
 		<action name="action-move-line-attrs-readonly"/>
 		<action name="action-move-line-attrs-show-tax-amount"/>
 		<action name="action-move-line-method-description-required"/>
-		<action name="action-attrs-move-line-analytic-account-on-load"/>
+		<action name="action-method-move-line-hide-axis-analytic-account"/>
 	</action-group>
     
     <action-group name="action-group-account-moveline-usher-process-onchange">
@@ -569,7 +584,7 @@
 	<action-group name="action-group-account-move-line-on-change">
 		<action name="action-move-line-method-compute-analytic-distribution"/>
 		<action name="action-attrs-move-line-set-domain-axis"/>
-		<action name="action-attrs-move-line-analytic-account-on-load"/>
+		<action name="action-method-move-line-hide-axis-analytic-account"/>
 		<action name="action-method-move-line-set-required-analytic-accounts"/>
 		<action name="action-method-change-account-set-default-distribution-template"/>
 	</action-group>
@@ -582,20 +597,6 @@
 		<call class="com.axelor.apps.account.web.MoveLineController" method="setAxisDomains" />
 	</action-method>
 	
-	<action-attrs name="action-attrs-move-line-analytic-account-on-load">
-		<attribute name="hidden" for="axis1AnalyticAccount" expr="eval: !(1 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
-		<attribute name="hidden" for="axis2AnalyticAccount" expr="eval: !(2 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
-		<attribute name="hidden" for="axis3AnalyticAccount" expr="eval: !(3 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
-		<attribute name="hidden" for="axis4AnalyticAccount" expr="eval: !(4 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
-		<attribute name="hidden" for="axis5AnalyticAccount" expr="eval: !(5 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company).nbrOfAnalyticAxisSelect)"/>
-		
-		<attribute name="title" for="axis1AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 1 }?.analyticAxis?.name" if="(1 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="title" for="axis2AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 2 }?.analyticAxis?.name" if="(2 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="title" for="axis3AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 3 }?.analyticAxis?.name" if="(3 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="title" for="axis4AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 4 }?.analyticAxis?.name" if="(4 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-		<attribute name="title" for="axis5AnalyticAccount" expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList?.find{ it -> it.orderSelect == 5 }?.analyticAxis?.name" if="(5 &lt;= __repo__(AccountConfig).findByCompany(__parent__.company)?.nbrOfAnalyticAxisSelect)"/>
-	</action-attrs>
-	
 	<action-method name="action-method-move-line-set-required-analytic-accounts">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="setRequiredAnalyticAccount"/>
 	</action-method>
@@ -604,4 +605,8 @@
 		<call class="com.axelor.apps.account.web.MoveLineController" method="selectDefaultDistributionTemplate"/>
 	</action-method>
 
+	<action-method name="action-method-move-line-hide-axis-analytic-account">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="manageAxis"/>
+	</action-method>
+	
 </object-views>

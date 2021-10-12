@@ -238,6 +238,10 @@
       <field name="subscriptionFromDate" on="UPDATE"/>
       <field name="subscriptionToDate" on="UPDATE"/>
       <field name="headOfficeAddress" on="UPDATE"/>
+      <field name="pfpValidatorUser" on="UPDATE"/>
+      <field name="pfpValidateStatusSelect" on="UPDATE"/>
+      <field name="reasonOfRefusalToPay" on="UPDATE"/>
+      <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>
