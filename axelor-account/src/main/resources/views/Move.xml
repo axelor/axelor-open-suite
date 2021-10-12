@@ -183,7 +183,7 @@
       <panel name="currencyPanel" title="Currencies">
         <field name="currency" readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0" required="true" onChange="action-move-record-set-currency-code" />
         <field name="companyCurrency" readonly="true" />
-        <field name="currencyCode" readonly="true" />
+        <field name="currencyCode" hidden="true" />
       </panel>
 
       <panel name="othersPanel" title="Others">
