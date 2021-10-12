@@ -327,6 +327,7 @@
     	<action name="action-invoice-line-method-get-product-information"/>
     	<action name="action-invoice-line-method-compute"/>
     	<action name="action-invoice-line-method-get-and-compute-analytic-distribution"/>
+    	<action name="action-method-print-analytic-account-on-invoice-line"/>
     	<action name="action-budget-validate-exceed-line-amount"/>
     	<action name="action-invoice-line-method-get-fixed-asset-category" if="__config__.app.isApp('account')"/>
     	<action name="action-attrs-account-invoice-line-onnew-onload"/>
