@@ -234,17 +234,17 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
     // in the reconcile, search for the credit line to get the
     // associated payment
-    MoveLine canditateMoveLine;
+    MoveLine candidateMoveLine;
     if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
-      canditateMoveLine = reconcile.getDebitMoveLine();
+      candidateMoveLine = reconcile.getDebitMoveLine();
     } else {
-      canditateMoveLine = reconcile.getCreditMoveLine();
+      candidateMoveLine = reconcile.getCreditMoveLine();
     }
 
-    if (canditateMoveLine == null || canditateMoveLine.getMove() == null) {
+    if (candidateMoveLine == null || candidateMoveLine.getMove() == null) {
       return null;
     }
-    Move candidatePaymentMove = canditateMoveLine.getMove();
+    Move candidatePaymentMove = candidateMoveLine.getMove();
     InvoicePayment invoicePayment =
         invoicePaymentRepository
             .all()
