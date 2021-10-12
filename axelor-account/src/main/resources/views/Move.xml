@@ -55,7 +55,7 @@
             onSelect="action-move-set-trading-name-domain" />
           <field name="partner" colSpan="6" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
             onChange="action-account-move-record-set-currency" />
-          <field name="currency" colSpan="3" />
+          <field name="currency" colSpan="3" onChange="action-move-record-set-currency-code" />
           <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>
@@ -135,7 +135,7 @@
       <field name="$totalCurrency" title="Total Currency" type="integer" colSpan="3" readonly="true" showIf="currency.id != companyCurrency.id">
         <viewer>
           <![CDATA[
-            <h3>{{$fmt('$totalCurrency')+' '+$fmt('currency.code')}}</h3>
+            <h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
           ]]>
         </viewer>
       </field>
