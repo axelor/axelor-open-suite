@@ -338,8 +338,13 @@ public class WkfModelController {
 
   private ActionViewBuilder createActionBuilder(String status, MetaJsonModel metaJsonModel) {
 
+    String title =
+        Strings.isNullOrEmpty(status)
+            ? metaJsonModel.getTitle()
+            : metaJsonModel.getTitle() + "-" + status;
+
     ActionViewBuilder actionViewBuilder =
-        ActionView.define(metaJsonModel.getTitle() + "-" + status)
+        ActionView.define(title)
             .model(MetaJsonRecord.class.getName())
             .add("grid", metaJsonModel.getGridView().getName())
             .add("form", metaJsonModel.getFormView().getName())
@@ -353,8 +358,11 @@ public class WkfModelController {
 
     String viewPrefix = Inflector.getInstance().dasherize(metaModel.getName());
 
+    String title =
+        Strings.isNullOrEmpty(status) ? metaModel.getName() : metaModel.getName() + "-" + status;
+
     ActionViewBuilder actionViewBuilder =
-        ActionView.define(metaModel.getName() + "-" + status)
+        ActionView.define(title)
             .model(metaModel.getFullName())
             .add("grid", viewPrefix + "-grid")
             .add("form", viewPrefix + "-form")
@@ -504,7 +512,7 @@ public class WkfModelController {
 
   public void getModelPerView(ActionRequest request, ActionResponse response) {
     try {
-      this.openRecordView(request, response, null, "title", "recordIdsPerModel");
+      this.openRecordView(request, response, null, "modelName", "recordIdsPerModel");
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

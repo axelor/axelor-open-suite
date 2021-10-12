@@ -459,6 +459,7 @@ public class WkfModelServiceImpl implements WkfModelService {
                     !StringUtils.isBlank(processConfig.getTitle())
                         ? processConfig.getTitle()
                         : modelName);
+                put("modelName", modelName);
                 put("modelRecordCount", recordIdsPerModel.size());
                 put("isMetaModel", isMetaModel);
                 put("recordIdsPerModel", recordIdsPerModel);

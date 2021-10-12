@@ -111,9 +111,9 @@ public class WkfNodeService {
     } else {
       config = new WkfTaskConfig();
       config.setName(activity.getId());
-      config.setDescription(activity.getName());
       wkfConfigRepository.save(config);
     }
+    config.setDescription(activity.getName());
     config.setType(activity.getElementType().getTypeName());
     config.setButton(null);
     config.setExpression(null);

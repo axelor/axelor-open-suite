@@ -21,6 +21,12 @@
     </form>
     
     <form name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" id="studio-json-field-form" extension="true">
+        <extend target="//field[@name='modelField']">
+			<insert position="after">
+				<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+	      		<spacer name="appBuilderSpacer" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+			</insert>
+		</extend>
 		<extend target="panel-include[last()]">
 			<insert position="after">
 				<panel-mail name="mailPanel">

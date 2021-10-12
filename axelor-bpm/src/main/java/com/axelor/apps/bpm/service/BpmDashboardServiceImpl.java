@@ -137,6 +137,7 @@ public class BpmDashboardServiceImpl implements BpmDashboardService {
                       !StringUtils.isBlank(processConfig.getTitle())
                           ? processConfig.getTitle()
                           : modelName);
+                  put("modelName", modelName);
                   put("modelRecordCount", recordIdsModel.size());
                   put("isMetaModel", isMetaModel);
                   put("recordIdsPerModel", recordIdsModel);
