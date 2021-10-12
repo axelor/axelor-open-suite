@@ -33,7 +33,7 @@
 	      <field name="company" readonlyIf="statusSelect > 1" colSpan="3" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 	      <field name="company.currency" title="Currency" colSpan="3" form-view="currency-form" grid-view="currency-grid"/>
 	      <field name="fixedAssetCategory" domain="self.company = :company" readonlyIf="statusSelect > 1" canEdit="false" onChange="action-group-account-record-on-change-asset-category, action-method-account-fixed-asset-compute-first-depreciation-date" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"/>
-	      <field name="depreciationPlanSelect" readonlyIf="statusSelect > 1" showIf="fixedAssetCategory != null" onChange="action-attrs-account-fixed-asset-depreciation-plan-override-if-none, action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"/>
+	      <field name="depreciationPlanSelect" readonlyIf="statusSelect > 1" showIf="fixedAssetCategory != null" onChange="action-group-account-record-on-change-depreciation-plan" widget="MultiSelect"/>
 	      <field name="qty" required="true" min="0.01" title="Quantity" readonlyIf="statusSelect > 1" showIf="trackingNumber == null"/>
 	      <field if-module="axelor-supplychain" name="trackingNumber.counter" title="Quantity" showIf="trackingNumber != null"/>
 	      <field if-module="axelor-supplychain" name="stockLocation" canNew="false" canEdit="false" domain="self.company = :company" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -285,6 +285,7 @@
     <action-group name="action-group-fixed-asset-panels-copy-fiscal-depreciation">
     	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal"/>
     	<action name="action-attrs-fixed-asset-ifrs-depreciation-equal" if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
+        <action name="action-fixed-asset-account-method-set-depreciation-plan-select-readonly"/>
     </action-group>
     
     <action-attrs name="action-attrs-fixed-asset-fiscal-depreciation-equal">
@@ -318,10 +319,13 @@
     </action-attrs>
     
     <action-group name="action-group-account-record-on-change-depreciation-plan">
+        <action name="action-attrs-account-fixed-asset-depreciation-plan-override-if-none"/>
     	<action name="action-account-attrs-fill-fiscal-panel" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;)) "/>
     	<action name="action-account-attrs-fill-ifrs-panel" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-fixed-asset-record-onchange-set-values" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
+        <action name="action-fixed-asset-account-method-set-depreciation-plan-select"/>
+        <action name="action-fixed-asset-account-method-set-depreciation-plan-select-readonly"/>
     </action-group>
     
     <action-group name="action-group-account-record-on-change-asset-category">
@@ -390,6 +394,14 @@
     </action-method>
     <action-method name="action-method-account-fixed-asset-update-depreciation">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="updateDepreciation"/>
+    </action-method>
+    
+    <action-method name="action-fixed-asset-account-method-set-depreciation-plan-select">
+      <call class="com.axelor.apps.account.web.FixedAssetController" method="setDepreciationPlanSelect"/>
+    </action-method>
+    
+    <action-method name="action-fixed-asset-account-method-set-depreciation-plan-select-readonly">
+      <call class="com.axelor.apps.account.web.FixedAssetController" method="setDepreciationPlanSelectReadonly"/>
     </action-method>
     
     <action-group name="action-group-account-fixed-asset-onchange-fiscal-periodicity-type">

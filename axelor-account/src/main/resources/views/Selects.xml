@@ -617,10 +617,10 @@
   </selection>
   
   <selection name="account.fixed.asset.technical.type.select">
-    <option value="00">Immobilisation en cours</option>
-    <option value="10">Immobilisation corporelle</option>
-    <option value="20">Immobilisation incorporelle</option>
-    <option value="30">Immobilisation financière</option>
+    <option value="1" order="10">Ongoing asset</option>
+    <option value="2" order="20">Tangible asset</option>
+    <option value="3" order="30">Intangible asset</option>
+    <option value="4" order="40">Financial asset</option>
   </selection>
 
 </object-views>
