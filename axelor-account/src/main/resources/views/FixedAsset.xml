@@ -117,7 +117,7 @@
 	  <panel name="allValuesPanel" sidebar="true">
 	    <field name="grossValue" requiredIf="originSelect == 99" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
 	    <field name="residualValue"/>
-	    <field name="accountingValue"/>
+	    <field name="accountingValue" hideIf="deprecationPlanSelect == '0'"/>
 	  </panel>
 	  <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" sidebar="true" readonlyIf="statusSelect > 1" >
 	    <field name="failoverDate" requiredIf="originSelect == 99"/>
