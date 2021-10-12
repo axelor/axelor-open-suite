@@ -68,14 +68,15 @@ public class ForecastRecapController {
       if (bankDetailsSet != null) {
         BigDecimal amount = BigDecimal.ZERO;
         for (BankDetails bankDetails : bankDetailsSet) {
-          amount.add(
-              Beans.get(CurrencyService.class)
-                  .getAmountCurrencyConvertedAtDate(
-                      bankDetails.getCurrency(),
-                      forecastRecap.getCompany().getCurrency(),
-                      bankDetails.getBalance(),
-                      Beans.get(AppBaseService.class).getTodayDate(forecastRecap.getCompany()))
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+          amount =
+              amount.add(
+                  Beans.get(CurrencyService.class)
+                      .getAmountCurrencyConvertedAtDate(
+                          bankDetails.getCurrency(),
+                          forecastRecap.getCompany().getCurrency(),
+                          bankDetails.getBalance(),
+                          Beans.get(AppBaseService.class).getTodayDate(forecastRecap.getCompany()))
+                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
         }
         forecastRecap.setStartingBalance(amount);
       } else {
