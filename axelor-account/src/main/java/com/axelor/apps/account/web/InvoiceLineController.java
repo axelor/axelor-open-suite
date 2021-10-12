@@ -470,12 +470,7 @@ public class InvoiceLineController {
   public void manageInvoiceLineAxis(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      Invoice invoice = invoiceLine.getInvoice();
-      Context parentContext = request.getContext().getParent();
-      if (parentContext != null && Invoice.class.equals(parentContext.getContextClass())) {
-        invoice = parentContext.asType(Invoice.class);
-      }
+      Invoice invoice = this.getInvoice(request.getContext());
       if (invoice.getCompany() != null) {
         AccountConfig accountConfig =
             Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
