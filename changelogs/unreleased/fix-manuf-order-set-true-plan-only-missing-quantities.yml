@@ -1,0 +1,5 @@
+---
+title: "ManufOrder: plan only missing quantites is set to true when creating a manufOrder"
+type: fix
+description: |
+    "Plan only missing quantities is now set to true when creating a manufOrder and is now persisted in database." 
