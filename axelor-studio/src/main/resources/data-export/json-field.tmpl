@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 	query = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaJsonFieldRepository' as Class).all()
 	
@@ -61,7 +62,7 @@
 	})
 	
 	if (!jsonFields.isEmpty()) {
-		jsonFields = """<?xml version="1.0" encoding="utf-8"?>\n<jason-fields>\n""" +  jsonFields + """\n</jason-fields>"""
+		jsonFields = """<jason-fields>\n""" +  jsonFields + """\n</jason-fields>"""
 	}
 	
 	out << """$jsonFields"""

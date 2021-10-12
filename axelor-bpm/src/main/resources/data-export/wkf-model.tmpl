@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 	query = com.axelor.inject.Beans.get('com.axelor.apps.bpm.db.repo.WkfModelRepository' as Class).all()
 	
@@ -20,7 +21,7 @@
 	})
 	
 	if (!wkfModels.isEmpty()) {
-		wkfModels = """<?xml version="1.0" encoding="utf-8"?>\n<wkf-models>\n""" +  wkfModels + """\n</wkf-models>"""
+		wkfModels = """<wkf-models>\n""" +  wkfModels + """\n</wkf-models>"""
 	}
 	
 	out << """$wkfModels"""

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 	
 	query = com.axelor.inject.Beans.get('com.axelor.apps.bpm.db.repo.WkfDmnModelRepository' as Class).all()
@@ -19,7 +20,7 @@
 	})
 	
 	if (!wkfDmnModels.isEmpty()) {
-		wkfDmnModels = """<?xml version="1.0" encoding="utf-8"?>\n<wkf-dmn-models>\n""" +  wkfDmnModels + """\n</wkf-dmn-models>"""
+		wkfDmnModels = """<wkf-dmn-models>\n""" +  wkfDmnModels + """\n</wkf-dmn-models>"""
 	}
 	
 	out << """$wkfDmnModels"""

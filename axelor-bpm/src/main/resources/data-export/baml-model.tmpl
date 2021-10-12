@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 	query = com.axelor.inject.Beans.get('com.axelor.apps.bpm.db.repo.BamlModelRepository' as Class).all()
 	
@@ -16,7 +17,7 @@
 	})
 	
 	if (!bamlModels.isEmpty()) {
-		bamlModels = """<?xml version="1.0" encoding="utf-8"?>\n<baml-models>\n""" +  bamlModels + """\n</baml-models>"""
+		bamlModels = """<baml-models>\n""" +  bamlModels + """\n</baml-models>"""
 	}
 	
 	out << """$bamlModels"""
