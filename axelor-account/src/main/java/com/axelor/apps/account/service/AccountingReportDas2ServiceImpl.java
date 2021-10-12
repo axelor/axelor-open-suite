@@ -106,7 +106,11 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
             + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON MOVE.COMPANY = COMPANY.ID "
             + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVE_LINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVE_LINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVE_LINE.MOVE = DMOVE.ID "
             + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
+            + "AND DMOVE.STATUS_SELECT = 3 "
+            + "AND MOVE.STATUS_SELECT = 3 "
             + "AND PMVLD.OPERATION_DATE >= '"
             + accountingReport.getDateFrom()
             + "' "
@@ -146,7 +150,11 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON MOVE.PARTNER = PARTNER.ID "
             + "LEFT OUTER JOIN BASE_COMPANY COMPANY ON MOVE.COMPANY = COMPANY.ID "
             + "LEFT OUTER JOIN BASE_CURRENCY CURRENCY ON MOVE.COMPANY_CURRENCY = CURRENCY.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE DMOVE_LINE ON RECONCILE.DEBIT_MOVE_LINE = DMOVE_LINE.ID "
+            + "LEFT OUTER JOIN ACCOUNT_MOVE DMOVE ON DMOVE_LINE.MOVE = DMOVE.ID "
             + "WHERE RECONCILE.STATUS_SELECT IN (2,3)  "
+            + "AND DMOVE.STATUS_SELECT = 3 "
+            + "AND MOVE.STATUS_SELECT = 3 "
             + "AND PMVLD.OPERATION_DATE >= '"
             + accountingReport.getDateFrom()
             + "' "

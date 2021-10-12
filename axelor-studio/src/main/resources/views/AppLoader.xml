@@ -9,7 +9,9 @@
   
   <form name="app-loader-form" title="App Loader" model="com.axelor.studio.db.AppLoader"  width="large">
   	  <panel name="mainPanel">
-  	  	  <field name="name" />	
+  	  	  <field name="name" required="true"/>	
+  	  </panel>
+  	  <panel-tabs>
 	      <panel name="importPanel" title="Import"  colSpan="12" >
 		      <field name="importMetaFile" widget="BinaryLink" colSpan="3"/>
 		      <spacer name="spacerImportBtn" colSpan="9"/>
@@ -24,8 +26,9 @@
 		      <spacer name="spacerExportBtn" colSpan="10"/>
 		      <field name="exportMetaFile" widget="BinaryLink" colSpan="3" readonly="true"/>
 		      <field name="exportedOn" colSpan="3" readonly="true"/>
+		      <panel-related field="appDataLoaderList" colSpan="12" grid-view="app-data-loader-grid" form-view="app-data-loader-form" orderBy="sequence"/>
 	      </panel>
-	  </panel>
+	  </panel-tabs>
   </form>
   
   <action-method name="action-app-loader-method-export-apps">
@@ -36,6 +39,9 @@
   	<call class="com.axelor.studio.web.AppLoaderController" method="importApps"/>
   </action-method>
   
+  <action-attrs name="action-app-data-loader-attrs-on-new">
+  	<attribute name="value" for="isJson" expr="eval:true"/>
+  </action-attrs>
   
   
 </object-views>

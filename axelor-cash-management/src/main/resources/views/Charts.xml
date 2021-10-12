@@ -4,19 +4,36 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<chart name="chart.forecast.report.sales" title="Previsional Sales">
-		<dataset type="rpc">com.axelor.apps.cash.management.web.ForecastRecapController:sales</dataset>
+		<dataset type="jpql">
+		  SELECT self.estimatedDate as date, self.amount as amount
+		  FROM ForecastRecapLine self
+			WHERE self.typeSelect = 1 AND self.forecastRecap.id = :_id
+			ORDER BY estimatedDate
+		</dataset>
 		<category key="date" type="date" />
-		<series key="amount" groupBy="type" type="bar"/>
+		<series key="amount" type="bar"/>
 	</chart>
 	
 	<chart name="chart.forecast.report.spending" title="Previsional Spending">
-		<dataset type="rpc">com.axelor.apps.cash.management.web.ForecastRecapController:spending</dataset>
+		<dataset type="jpql">
+			SELECT self.estimatedDate as date, (self.amount * -1) as amount
+			FROM ForecastRecapLine self
+			WHERE self.typeSelect = 2 AND self.forecastRecap.id = :_id
+			ORDER BY estimatedDate
+		</dataset>
 		<category key="date" type="date" />
 		<series key="amount" type="bar"/>
 	</chart>
 	
 	<chart name="chart.forecast.report.marges" title="Previsional Marges">
-		<dataset type="rpc">com.axelor.apps.cash.management.web.ForecastRecapController:marges</dataset>
+		<dataset type="jpql">
+			SELECT self.estimatedDate as date,
+			SUM(self.amount) as amount
+			FROM ForecastRecapLine self
+			WHERE self.forecastRecap.id = :_id
+			GROUP BY estimatedDate
+			ORDER BY estimatedDate
+		</dataset>
 		<category key="date" type="date" />
 		<series key="amount" type="bar"/>
 	</chart>

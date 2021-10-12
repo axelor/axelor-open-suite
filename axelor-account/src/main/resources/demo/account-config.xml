@@ -161,6 +161,15 @@
 		<bind to="moveTemplate" column="moveTemplate" search="self.importId = :moveTemplate"/>
 	</input>
 
+	<input file="account_accountingReportType.csv" separator=";" type="com.axelor.apps.account.db.AccountingReportType"
+			 search="self.importId = :importId">
+		<bind to="name" column="name"/>
+		<bind to="reportExportTypeSelect" eval="'1'"/>
+		<bind to="typeSelect" eval="'3000'"/>
+		<bind to="reportTitle" column="name"/>
+		<bind to="company" column="company" search="self.importId = :company"/>
+	</input>
+
 	<input file="account_accountingReportConfigLine.csv" separator=";" type="com.axelor.apps.account.db.AccountingReportConfigLine"
 				 search="self.importId = :importId" call="com.axelor.csv.script.ImportAccountingReportConfigLine:setAccounts">
 		<bind	to="typeSelect" column="type"/>
@@ -169,15 +178,7 @@
 		<bind	to="code" column="code" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
 		<bind to="resultSelect" column="result" if="ruleTypeSelect == 2"/>
 		<bind to="rule" column="rule"/>
-	</input>
-
-	<input file="account_accountingReportType.csv" separator=";" type="com.axelor.apps.account.db.AccountingReportType"
-				 search="self.importId = :importId" call="com.axelor.csv.script.ImportAccountingReportType:setRules">
-		<bind to="name" column="name"/>
-		<bind to="reportExportTypeSelect" eval="'1'"/>
-		<bind to="typeSelect" eval="'3000'"/>
-		<bind to="reportTitle" column="name"/>
-		<bind to="company" column="company" search="self.importId = :company"/>
+		<bind to="reportType" search="self.importId = :reportTypeId"/>
 	</input>
 
 	<input file="account_paymentDelayReason.csv" separator=";"

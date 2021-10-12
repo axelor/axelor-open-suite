@@ -43,6 +43,8 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -101,23 +103,15 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   public void validate(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
+    Invoice invoice = invoicePayment.getInvoice();
+    validatePartnerAccount(invoice);
+
     if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
       return;
     }
 
-    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-
-    // TODO assign an automatic reference
-
-    Company company = invoicePayment.getInvoice().getCompany();
-
-    if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
-      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
-    } else {
-      Beans.get(AccountingSituationService.class)
-          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
-      invoicePayment = invoicePaymentRepository.save(invoicePayment);
-    }
+    setInvoicePaymentStatus(invoicePayment);
+    createInvoicePaymentMove(invoicePayment);
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
@@ -126,6 +120,34 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
+  }
+
+  protected void validatePartnerAccount(Invoice invoice) throws AxelorException {
+    Account partnerAccount = invoice.getPartnerAccount();
+    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              com.axelor.apps.account.exception.IExceptionMessage
+                  .ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
+    }
+  }
+
+  protected void createInvoicePaymentMove(InvoicePayment invoicePayment)
+      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+    Invoice invoice = invoicePayment.getInvoice();
+    if (accountConfigService
+        .getAccountConfig(invoice.getCompany())
+        .getGenerateMoveForInvoicePayment()) {
+      this.createMoveForInvoicePayment(invoicePayment);
+    } else {
+      Beans.get(AccountingSituationService.class).updateCustomerCredit(invoice.getPartner());
+      invoicePaymentRepository.save(invoicePayment);
+    }
+  }
+
+  protected void setInvoicePaymentStatus(InvoicePayment invoicePayment) throws AxelorException {
+    invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
   }
 
   @Override
@@ -172,50 +194,50 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         return null;
       }
       customerAccount = invoiceMoveLine.getAccount();
-
-      Move move =
-          moveService
-              .getMoveCreateService()
-              .createMove(
-                  journal,
-                  company,
-                  invoicePayment.getCurrency(),
-                  partner,
-                  paymentDate,
-                  paymentMode,
-                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
-
-      MoveLine customerMoveLine = null;
-      move.setTradingName(invoice.getTradingName());
-
-      if (invoicePayment.getApplyFinancialDiscount()
-          && invoicePayment.getFinancialDiscount() != null
-          && appAccountService.getAppAccount().getManageFinancialDiscount()) {
-
-        move = getMoveWithFinancialDiscount(invoicePayment, move, customerAccount);
-      } else {
-        move = getMoveWithoutFinancialDiscount(invoicePayment, move, customerAccount);
-      }
-
-      moveService.getMoveValidateService().validate(move);
-
-      for (MoveLine moveline : move.getMoveLineList()) {
-        if (moveline.getAccount() == customerAccount) {
-          customerMoveLine = moveline;
-        }
-      }
-
-      if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-        Reconcile reconcile =
-            reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
-
-        invoicePayment.setReconcile(reconcile);
-      }
-      invoicePayment.setMove(move);
-
-      invoicePaymentRepository.save(invoicePayment);
     }
+
+    Move move =
+        moveService
+            .getMoveCreateService()
+            .createMove(
+                journal,
+                company,
+                invoicePayment.getCurrency(),
+                partner,
+                paymentDate,
+                paymentMode,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+
+    MoveLine customerMoveLine = null;
+    move.setTradingName(invoice.getTradingName());
+
+    if (invoicePayment.getApplyFinancialDiscount()
+        && invoicePayment.getFinancialDiscount() != null
+        && appAccountService.getAppAccount().getManageFinancialDiscount()) {
+
+      move = fillMoveWithFinancialDiscount(invoicePayment, move, customerAccount);
+    } else {
+      move = fillMoveWithoutFinancialDiscount(invoicePayment, move, customerAccount);
+    }
+
+    moveService.getMoveValidateService().validate(move);
+
+    for (MoveLine moveline : move.getMoveLineList()) {
+      if (moveline.getAccount() == customerAccount) {
+        customerMoveLine = moveline;
+      }
+    }
+
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      Reconcile reconcile =
+          reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
+
+      invoicePayment.setReconcile(reconcile);
+    }
+    invoicePayment.setMove(move);
+
+    invoicePaymentRepository.save(invoicePayment);
     return invoicePayment;
   }
 
@@ -242,7 +264,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Move getMoveWithoutFinancialDiscount(
+  public Move fillMoveWithoutFinancialDiscount(
       InvoicePayment invoicePayment, Move move, Account customerAccount) throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
@@ -285,7 +307,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Move getMoveWithFinancialDiscount(
+  public Move fillMoveWithFinancialDiscount(
       InvoicePayment invoicePayment, Move move, Account customerAccount) throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
@@ -304,7 +326,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       }
 
       move =
-          getMoveLineWithFinancialDiscount(
+          fillMoveLinesWithFinancialDiscount(
               invoicePayment,
               move,
               customerAccount,
@@ -322,7 +344,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       }
 
       move =
-          getMoveLineWithFinancialDiscount(
+          fillMoveLinesWithFinancialDiscount(
               invoicePayment,
               move,
               customerAccount,
@@ -334,7 +356,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Move getMoveLineWithFinancialDiscount(
+  public Move fillMoveLinesWithFinancialDiscount(
       InvoicePayment invoicePayment,
       Move move,
       Account customerAccount,
