@@ -1,3 +1,29 @@
+## [5.4.9] (2021-06-08)
+
+#### Changes
+
+* Email: do not block process when an error occurs on sending mail.
+
+Automatic mail notification can be enabled on stock moves, invoices, and
+manufacturing order. If we have an error when sending the message, the
+process will now not be blocking but will still show the error to the user.
+
+#### Fixed
+
+* ManufOrder: make linked sale order sequence appears a origin in printing.
+* Move reversion: Fill reversal date in analytical moveline on reversed move.
+* SaleOrder: fix NPE on product selection when the current user does not have an active company.
+* Invoice: fix rounding error on advance payment imputation.
+* Purchase order: fix display of purchase order lines from menu entry Historical.
+* StockLocation: content lines and detail lines are no longer duplicated on copy.
+* Manufacturing order: fix an issue where the button to generate waste stock move was not clickable.
+* TrackingNumberConfig: Fix sequence being required even if we do not generate automatically a tracking number for purchase.
+* Email sending: fix NPE when sending email from scheduler.
+* Sale order: fix button to print invoices from invoicing dashlet.
+* MRP: fix MRP process being stuck in a loop with wrong mrp line type configuration.
+* Invoice Line: Fix filter on supplier in supplier invoice.
+* Product: Empty last purchase price on copy.
+
 ## [5.4.8] (2021-04-21)
 
 #### Fixed
@@ -374,6 +400,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.9]: https://github.com/axelor/axelor-open-suite/compare/v5.4.8...v5.4.9
 [5.4.8]: https://github.com/axelor/axelor-open-suite/compare/v5.4.7...v5.4.8
 [5.4.7]: https://github.com/axelor/axelor-open-suite/compare/v5.4.6...v5.4.7
 [5.4.6]: https://github.com/axelor/axelor-open-suite/compare/v5.4.5...v5.4.6

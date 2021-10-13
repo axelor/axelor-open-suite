@@ -1,0 +1,3 @@
+---
+title: "Stocks : Fixed an issue where dashboards 'Upcoming supplier arrivals' and 'Late supplier arrivals' would either be empty or displaying unrelevant data"
+type: fix

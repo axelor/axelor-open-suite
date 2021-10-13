@@ -242,6 +242,7 @@
 		<action name="action-invoice-line-attrs-readonly-form"/>
 		<action name="action-invoice-line-record-operation-type"/>
 		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
+		<action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
 	</action-group>
 
     <action-group name="action-group-account-invoice-line-product-onchange">
@@ -371,6 +372,10 @@
 	<action-attrs name="action-invoice-line-attrs-compute-total-pack">
 		<attribute name="value" for="totalPack" expr="eval:subLineList.collect{it->it.inTaxTotal}.sum()" if="typeSelect == 2 &amp;&amp; subLineList != null &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 	</action-attrs>
+	
+	<action-attrs name="action-invoice-line-attrs-set-isFilterOnSupplier">
+		<attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
+	</action-attrs>
 
 	<action-view name="action-invoice-line-view-team-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="team-task-grid"/>
@@ -385,7 +390,7 @@
 		<field name="invoice.statusSelect" title="Status select"/>
 		<field name="companyExTaxTotal" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
 		<field name="budgetDistributionSumAmount" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
-		<field name="budget" hidden="true" if="!(__config__.app.isApp('budget') &amp; &amp; !__config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="budget" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget').getManageMultiBudget())"/>
 		<field name="budgetDistributionList" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
 		<field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines())"/>
 		<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>

@@ -233,7 +233,7 @@ public class MrpServiceImpl implements MrpService {
 
       for (Product product : this.getProductList(level)) {
 
-        this.checkInsufficientCumulativeQty(product, true);
+        this.checkInsufficientCumulativeQty(product);
       }
     }
   }
@@ -272,8 +272,20 @@ public class MrpServiceImpl implements MrpService {
     return maxLevel;
   }
 
-  protected void checkInsufficientCumulativeQty(Product product, boolean firstPass)
+  protected void checkInsufficientCumulativeQty(Product product) throws AxelorException {
+    checkInsufficientCumulativeQty(product, 0);
+  }
+
+  protected void checkInsufficientCumulativeQty(Product product, int counter)
       throws AxelorException {
+
+    final int MAX_ITERATION = 1000;
+
+    if (counter > MAX_ITERATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MRP_TOO_MANY_ITERATIONS));
+    }
 
     boolean doASecondPass = false;
 
@@ -297,7 +309,7 @@ public class MrpServiceImpl implements MrpService {
           this.checkInsufficientCumulativeQty(
               mrpLineRepository.find(mrpLine.getId()),
               productRepository.find(product.getId()),
-              firstPass);
+              counter == 0);
       JPA.clear();
       if (doASecondPass) {
         break;
@@ -306,7 +318,7 @@ public class MrpServiceImpl implements MrpService {
 
     if (doASecondPass) {
 
-      this.checkInsufficientCumulativeQty(product, false);
+      this.checkInsufficientCumulativeQty(product, counter + 1);
     }
   }
 
@@ -331,6 +343,9 @@ public class MrpServiceImpl implements MrpService {
                 && firstPass))
         && cumulativeQty.compareTo(mrpLine.getMinQty()) < 0) {
 
+      Company company = null;
+      StockLocation stockLocation = mrpLine.getStockLocation();
+
       log.debug(
           "Cumulative qty ({} < {}) is insufficient for product ({}) at the maturity date ({})",
           cumulativeQty,
@@ -343,7 +358,7 @@ public class MrpServiceImpl implements MrpService {
       StockRules stockRules =
           stockRulesService.getStockRules(
               product,
-              mrpLine.getStockLocation(),
+              stockLocation,
               StockRulesRepository.TYPE_FUTURE,
               StockRulesRepository.USE_CASE_USED_FOR_MRP);
 
@@ -351,8 +366,12 @@ public class MrpServiceImpl implements MrpService {
         reorderQty = reorderQty.max(stockRules.getReOrderQty());
       }
 
+      if (stockLocation.getCompany() != null) {
+        company = stockLocation.getCompany();
+      }
+
       MrpLineType mrpLineTypeProposal =
-          this.getMrpLineTypeForProposal(stockRules, product, mrpLine.getCompany());
+          this.getMrpLineTypeForProposal(stockRules, product, company);
 
       long duplicateCount =
           mrpLineRepository
@@ -374,7 +393,7 @@ public class MrpServiceImpl implements MrpService {
           product,
           mrpLineTypeProposal,
           reorderQty,
-          mrpLine.getStockLocation(),
+          stockLocation,
           mrpLine.getMaturityDate(),
           mrpLine.getMrpLineOriginList(),
           mrpLine.getRelatedToSelectName());

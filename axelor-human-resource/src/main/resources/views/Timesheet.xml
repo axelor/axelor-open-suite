@@ -79,7 +79,8 @@
 				<item name="printTimesheetItem" title="Print" action="save,action-print-timesheet"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench">
-				<item title="Lines Generation Wizard" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generate-lines-panel-hidden-false"/>
+				<item name="lineGenerationWizardItem" title="Lines Generation Wizard" showIf="statusSelect == 1"
+						action="action-timesheet-group-line-generation-wizard"/>
 				<item title="Generate Lines From Expected Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-expected-planning" />
 			</menu>
 		</menubar>
@@ -238,6 +239,12 @@
 		<action name="action-timesheet-method-remove-after-to-date-timesheetlines" if="id &amp;&amp; toDate != null"/>
 		<action name="action-timesheet-prefill-lines" if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
 		<action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
+	</action-group>
+
+	<action-group name="action-timesheet-group-line-generation-wizard">
+		<action name="action-timesheet-record-default-generation-date"/>
+		<action name="action-timesheet-attrs-set-log-time-title"/>
+		<action name="action-timesheet-attrs-generate-lines-panel-hidden-false"/>
 	</action-group>
 	
 	<action-method name="action-timesheet-prefill-lines">
