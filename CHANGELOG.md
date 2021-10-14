@@ -1,3 +1,14 @@
+## [6.0.15] (2021-10-14)
+
+#### Fixed
+
+* MRP: In MRP computation, the procurement method selection configured per company in the product is now chosen instead of always selecting the value in the base product.
+* Extra Hours: extra hours quantity can no longer be negative on the view.
+* Contract: display "supposed end date" field in default grid view.
+* Invoice: fix estimated payment date computation.
+* Invoice: add default bank details from partner when the invoice is generated.
+* Extra hours: fix typo in french translation.
+
 ## [6.0.14] (2021-10-01)
 
 #### Fixed
@@ -592,6 +603,7 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.15]: https://github.com/axelor/axelor-open-suite/compare/v6.0.14...v6.0.15
 [6.0.14]: https://github.com/axelor/axelor-open-suite/compare/v6.0.13...v6.0.14
 [6.0.13]: https://github.com/axelor/axelor-open-suite/compare/v6.0.12...v6.0.13
 [6.0.12]: https://github.com/axelor/axelor-open-suite/compare/v6.0.11...v6.0.12
