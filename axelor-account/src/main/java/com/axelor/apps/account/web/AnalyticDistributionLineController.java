@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -40,7 +41,7 @@ public class AnalyticDistributionLineController {
     if (!Beans.get(AnalyticMoveLineService.class)
         .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
       response.setError(
-          "The distribution is wrong, some axes percentage values are higher than 100%");
+          I18n.get("The configured distribution is incorrect, the sum of percentages for at least an axis is higher than 100%"));
     }
   }
 }
