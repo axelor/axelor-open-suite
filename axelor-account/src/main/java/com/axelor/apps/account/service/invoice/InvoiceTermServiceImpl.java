@@ -150,16 +150,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return invoice;
     }
 
-    LocalDate nDaysDate = null;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       LocalDate dueDate =
           InvoiceToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
       if (!invoiceTerm.getIsCustomized()) {
         invoiceTerm.setDueDate(dueDate);
-      }
-
-      if (nDaysDate == null || dueDate.isBefore(nDaysDate)) {
-        nDaysDate = dueDate;
       }
     }
 
@@ -205,6 +200,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) {
 
     return filterInvoiceTermsByHoldBack(getUnpaidInvoiceTerms(invoice));
+  }
+
+  @Override
+  public LocalDate getLatestInvoiceTermDueDate(Invoice invoice) {
+
+    List<InvoiceTerm> invoiceTerms = invoice.getInvoiceTermList();
+    if (CollectionUtils.isEmpty(invoiceTerms)) {
+      return invoice.getInvoiceDate();
+    }
+    LocalDate dueDate = null;
+    for (InvoiceTerm invoiceTerm : invoiceTerms) {
+      if (!invoiceTerm.getIsHoldBack()
+          && (dueDate == null || dueDate.isBefore(invoiceTerm.getDueDate()))) {
+        dueDate = invoiceTerm.getDueDate();
+      }
+    }
+    return dueDate;
   }
 
   @Override

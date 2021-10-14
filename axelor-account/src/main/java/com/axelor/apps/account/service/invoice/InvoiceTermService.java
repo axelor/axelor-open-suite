@@ -77,6 +77,15 @@ public interface InvoiceTermService {
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice);
 
   /**
+   * Return the latest invoice terms due date by ignoring holdback invoice terms Return invoice due
+   * date if no invoice terms found
+   *
+   * @param invoice
+   * @return
+   */
+  public LocalDate getLatestInvoiceTermDueDate(Invoice invoice);
+
+  /**
    * Update amount remaining and paid status
    *
    * @param invoicePayment
@@ -117,7 +126,7 @@ public interface InvoiceTermService {
   public boolean checkInvoiceTermsPercentageSum(Invoice invoice) throws AxelorException;
 
   /**
-   * Update invoice terms financial fiscount if not paid with invoice financial discount
+   * Update invoice terms financial discount if not paid with invoice financial discount
    *
    * @param invoice
    * @return
