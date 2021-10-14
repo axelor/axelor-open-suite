@@ -55,6 +55,7 @@ public class MoveValidateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected MoveLineControlService moveLineControlService;
   protected AccountConfigService accountConfigService;
   protected MoveSequenceService moveSequenceService;
   protected MoveCustAccountService moveCustAccountService;
@@ -65,6 +66,7 @@ public class MoveValidateService {
 
   @Inject
   public MoveValidateService(
+      MoveLineControlService moveLineControlService,
       AccountConfigService accountConfigService,
       MoveSequenceService moveSequenceService,
       MoveCustAccountService moveCustAccountService,
@@ -72,7 +74,7 @@ public class MoveValidateService {
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
       AppBaseService appBaseService) {
-
+    this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
     this.moveCustAccountService = moveCustAccountService;
@@ -188,7 +190,7 @@ public class MoveValidateService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
-        moveLineService.validateMoveLine(moveLine);
+        moveLineControlService.validateMoveLine(moveLine);
       }
       this.validateWellBalancedMove(move);
     }
