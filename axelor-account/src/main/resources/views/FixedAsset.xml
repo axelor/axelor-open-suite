@@ -115,14 +115,14 @@
 	    <field name="firstDepreciationDate" onChange="action-fixed-asset-validate-check-first-depreciation-date" required="true"/>
 	  </panel>	  
 	  <panel name="allValuesPanel" sidebar="true">
-	    <field name="grossValue" requiredIf="originSelect == 99" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
+	    <field name="grossValue"  requiredIf="originSelect == 99" min="0" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
 	    <field name="residualValue"/>
 	    <field name="accountingValue"/>
 	  </panel>
 	  <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" sidebar="true" readonlyIf="statusSelect > 1" >
-	    <field name="failoverDate" requiredIf="originSelect == 99"/>
-	    <field name="nbrOfPastDepreciations" requiredIf="originSelect == 99"/>
-	    <field name="alreadyDepreciatedAmount" requiredIf="originSelect == 99"/>
+	    <field name="failoverDate"/>
+	    <field name="nbrOfPastDepreciations"  min="0"/>
+	    <field name="alreadyDepreciatedAmount" min="0"/>
 	  </panel>
 	  <panel name="toUpdateValuesPanel" title="Update Depreciation parameters" showIf="statusSelect == 2" readonlyIf="!$canUpdateDepreciation" sidebar="true">
 	    <field name="correctedAccountingValue" readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2"/>
@@ -137,8 +137,6 @@
 	  </panel>
 	</form>
 
-
-    
     <form model="com.axelor.apps.base.db.Wizard" title="Disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew, action-attrs-account-fixed-asset-wizard-form-disposal-amount, action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     	<panel name="mainPanel">
     		<field name="disposalDate" onChange="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line" type="date" title="Fixed asset Disposal date"/>
@@ -161,6 +159,7 @@
     		<button name="splitBtn" title="Split" colSpan="4" onClick="action-method-account-fixed-asset-split"/>
     	</panel>
     </form>
+    
     <action-method name="action-method-account-fixed-asset-split">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="splitFixedAsset"/>
     </action-method>
