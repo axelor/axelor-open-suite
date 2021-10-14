@@ -813,6 +813,7 @@
 		<view type="form" name="analytic-distribution-template-form" />
 		<view-param name="search-filters"
 			value="analytic-distribution-template-filters" />
+		<domain>self.isSpecific = false</domain>
 	</action-view>
 
 	<menuitem name="account-conf-payment" parent="account-conf"

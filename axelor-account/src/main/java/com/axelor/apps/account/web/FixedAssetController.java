@@ -133,13 +133,13 @@ public class FixedAssetController {
       ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-
-      if (fixedAsset.getAnalyticDistributionTemplate() != null
-          && !fixedAsset.getAnalyticDistributionTemplate().getIsSpecific()) {
-        AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
-            Beans.get(AnalyticDistributionTemplateService.class)
-                .personalizeAnalyticDistributionTemplate(
-                    fixedAsset.getAnalyticDistributionTemplate());
+      AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
+          Beans.get(AnalyticDistributionTemplateService.class)
+              .personalizeAnalyticDistributionTemplate(
+                  fixedAsset.getAnalyticDistributionTemplate(), fixedAsset.getCompany());
+      if (fixedAsset.getAnalyticDistributionTemplate() == null
+          || !(fixedAsset.getAnalyticDistributionTemplate() != null
+              && fixedAsset.getAnalyticDistributionTemplate().getIsSpecific())) {
         response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         response.setView(
             ActionView.define("Specific Analytic Distribution Template")
@@ -154,6 +154,23 @@ public class FixedAssetController {
                 .context("fixedAsset", fixedAsset.getId())
                 .map());
       }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setTitleForButton(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      if (fixedAsset.getAnalyticDistributionTemplate() != null) {
+        response.setAttr(
+            "personalizeBtn", "title", I18n.get("Personalize selected analytic template"));
+      } else {
+        response.setAttr(
+            "personalizeBtn", "title", I18n.get("Create personalized analytic template"));
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

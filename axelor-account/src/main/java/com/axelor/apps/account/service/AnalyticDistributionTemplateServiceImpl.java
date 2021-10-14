@@ -7,6 +7,7 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -71,18 +72,18 @@ public class AnalyticDistributionTemplateServiceImpl
   @Override
   @Transactional
   public AnalyticDistributionTemplate personalizeAnalyticDistributionTemplate(
-      AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException {
-    if (analyticDistributionTemplate == null || analyticDistributionTemplate.getIsSpecific()) {
+      AnalyticDistributionTemplate analyticDistributionTemplate, Company company)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null && analyticDistributionTemplate.getIsSpecific()) {
       return null;
     }
     AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
         new AnalyticDistributionTemplate();
-    specificAnalyticDistributionTemplate.setCompany(analyticDistributionTemplate.getCompany());
-    specificAnalyticDistributionTemplate.setName(analyticDistributionTemplate.getName());
+    specificAnalyticDistributionTemplate.setCompany(company);
+    specificAnalyticDistributionTemplate.setName("Template - ");
 
     specificAnalyticDistributionTemplate.setIsSpecific(true);
-    AccountConfig accountConfig =
-        accountConfigService.getAccountConfig(analyticDistributionTemplate.getCompany());
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     for (AnalyticAxisByCompany analyticAxisByCompany :
         accountConfig.getAnalyticAxisByCompanyList()) {
@@ -91,7 +92,9 @@ public class AnalyticDistributionTemplateServiceImpl
       specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
           specificAnalyticDistributionTemplate);
       specificAnalyticDistributionLine.setAnalyticJournal(accountConfig.getAnalyticJournal());
-      if (!analyticDistributionTemplate.getAnalyticDistributionLineList().isEmpty()) {
+
+      if (analyticDistributionTemplate != null
+          && !analyticDistributionTemplate.getAnalyticDistributionLineList().isEmpty()) {
         for (AnalyticDistributionLine analyticDistributionLine :
             analyticDistributionTemplate.getAnalyticDistributionLineList()) {
           if (analyticDistributionLine
@@ -107,10 +110,16 @@ public class AnalyticDistributionTemplateServiceImpl
           specificAnalyticDistributionLine);
     }
     analyticDistributionTemplateRepository.save(specificAnalyticDistributionTemplate);
-    specificAnalyticDistributionTemplate.setName(
-        analyticDistributionTemplate.getName()
-            + " - "
-            + specificAnalyticDistributionTemplate.getId());
+    if (analyticDistributionTemplate != null) {
+      specificAnalyticDistributionTemplate.setName(
+          analyticDistributionTemplate.getName()
+              + " - "
+              + specificAnalyticDistributionTemplate.getId());
+    } else {
+      specificAnalyticDistributionTemplate.setName(
+          "Template - " + specificAnalyticDistributionTemplate.getId());
+    }
+
     return specificAnalyticDistributionTemplate;
   }
 }
