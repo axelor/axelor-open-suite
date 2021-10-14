@@ -42,6 +42,7 @@ import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -615,6 +616,10 @@ public class InventoryService {
     if (stockLocationLineList != null) {
       Boolean succeed = false;
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
+        if (ObjectUtils.notEmpty(stockLocationLine.getProduct().getTrackingNumberConfiguration())
+            && ObjectUtils.isEmpty(stockLocationLine.getTrackingNumber())) {
+          continue;
+        }
         inventory.addInventoryLineListItem(this.createInventoryLine(inventory, stockLocationLine));
         succeed = true;
       }
