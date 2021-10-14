@@ -1,3 +1,0 @@
----
-title: "Address: when creating a new address, the default country is now determined from the logged user active company instead of always selecting France."
-type: change
