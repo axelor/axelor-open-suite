@@ -1,5 +1,8 @@
 package com.axelor.apps.account.service.fixedasset;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
@@ -8,8 +11,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 
 public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverControlService {
 
@@ -47,15 +48,15 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
                 : ChronoUnit.YEARS;
         if (fixedAssetCategory.getFirstDepreciationDateInitSelect()
                 == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION
-            && chronoUnit.between(fixedAsset.getAcquisitionDate(), fixedAsset.getFailoverDate())
-                >= fixedAsset.getFiscalNumberOfDepreciation()) {
+            && (chronoUnit.between(fixedAsset.getAcquisitionDate(), fixedAsset.getFailoverDate())
+                >= fixedAsset.getFiscalNumberOfDepreciation() || fixedAsset.getFailoverDate().isBefore(fixedAsset.getAcquisitionDate()))) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM));
         } else if (fixedAssetCategory.getFirstDepreciationDateInitSelect()
                 == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
-            && chronoUnit.between(fixedAsset.getFirstServiceDate(), fixedAsset.getFailoverDate())
-                >= fixedAsset.getFiscalNumberOfDepreciation()) {
+            && (chronoUnit.between(fixedAsset.getFirstServiceDate(), fixedAsset.getFailoverDate())
+                >= fixedAsset.getFiscalNumberOfDepreciation() || fixedAsset.getFailoverDate().isBefore(fixedAsset.getFirstServiceDate()))) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM));
