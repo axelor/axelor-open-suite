@@ -158,7 +158,6 @@ public class PurchaseOrderLineController {
                 ? (String) catalogInfo.get("productCode")
                 : product.getCode();
       } else {
-        price = product.getPurchasePrice();
         productName = product.getName();
         productCode = product.getCode();
       }
