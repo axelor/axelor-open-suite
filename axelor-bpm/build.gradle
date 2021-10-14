@@ -1,0 +1,25 @@
+apply plugin: "com.axelor.app-module"
+
+apply from: "../libs.gradle"
+apply from: "../version.gradle"
+
+apply {
+        version = openSuiteVersion
+}
+
+axelor {
+        title "Axelor BPM"
+        description "Axelor BPM  Module"
+}
+
+test {
+	exclude "com/axelor/apps/baml/test/**"
+}
+
+
+dependencies {
+  compile ("org.camunda.bpm:camunda-engine:7.15.0")
+  compile ("org.camunda.bpm:camunda-engine-plugin-spin:7.15.0")
+  compile ("org.camunda.spin:camunda-spin-dataformat-json-jackson:1.10.1")
+  api project(":modules:axelor-studio")
+}
