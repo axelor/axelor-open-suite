@@ -41,11 +41,11 @@
       <field name="isCustomized" readonly="true" colSpan="3"/>
       <field name="isPaid" readonly="true" colSpan="3"/>
       <separator colSpan="12"/>
-      <field name="amount" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree" onChange="action-invoice-term-method-compute-customized-percentage"/>
+      <field name="amount" validIf="amount > 0" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree" onChange="action-invoice-term-method-compute-customized-percentage"/>
       <field name="amountRemaining" readonly="true"/>
       <field name="dueDate" requiredIf="isCustomized" onChange="action-invoice-term-record-update-customized-true" readonlyIf="isPaid"/>
       <field name="estimatedPaymentDate" onChange="action-invoice-term-record-update-customized-true" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree" if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-      <field name="percentage" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree" onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
+      <field name="percentage" validIf="percentage > 0" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !invoice.paymentCondition.isFree" onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
       <field name="isHoldBack" readonly="true"/>
       <field name="paymentMode" readonlyIf="isPaid"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
