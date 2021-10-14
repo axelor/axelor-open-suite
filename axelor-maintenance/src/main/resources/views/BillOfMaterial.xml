@@ -52,8 +52,7 @@
   </action-group>
   
   <action-group name="action-maintenance-bill-of-material-group-onload">
-    <action name="action-bill-of-material-attrs-price-and-qty-digits"/>
-    <action name="action-bill-of-material-record-count-number-of-components"/>
+    <action name="action-bill-of-material-group-on-load"/>
     <action name="action-maintenance-bill-of-material-attrs-set-attributes"/>
   </action-group>
   

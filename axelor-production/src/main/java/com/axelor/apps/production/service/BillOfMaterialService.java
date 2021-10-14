@@ -22,6 +22,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -53,7 +54,7 @@ public interface BillOfMaterialService {
   public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom);
 
   @Transactional
-  public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial);
+  public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial) throws AxelorException;
@@ -66,4 +67,7 @@ public interface BillOfMaterialService {
 
   void addRawMaterials(long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException;
+
+  @CallMethod
+  public BillOfMaterial getDefaultBOM(Product originalProduct) throws AxelorException;
 }
