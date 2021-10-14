@@ -483,8 +483,7 @@ public class MoveController {
 
   public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
@@ -497,6 +496,17 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       Beans.get(MoveValidateService.class).checkPreconditions(move);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void validateOriginDescription(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getOrigin() == null && move.getDescription() == null) {
+        response.setAlert(I18n.get(IExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

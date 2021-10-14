@@ -168,14 +168,24 @@ public class BankReconciliationLineService {
     return moveLine;
   }
 
-  public int checkIncompleteLine(BankReconciliationLine bankReconciliationLine) {
-    int brlStatus = BANK_RECONCILIATION_LINE_COMPLETE;
+  public void checkIncompleteLine(BankReconciliationLine bankReconciliationLine)
+      throws AxelorException {
     if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())) {
-      brlStatus = BANK_RECONCILIATION_LINE_COMPLETABLE;
       if (ObjectUtils.isEmpty(bankReconciliationLine.getAccount())) {
-        brlStatus = BANK_RECONCILIATION_LINE_INCOMPLETE;
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(
+                com.axelor.apps.bankpayment.exception.IExceptionMessage
+                    .BANK_RECONCILIATION_INCOMPLETE_LINE));
+      } else if (bankReconciliationLine.getBankReconciliation().getJournal() == null) {
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(
+                com.axelor.apps.bankpayment.exception.IExceptionMessage
+                    .BANK_RECONCILIATION_MISSING_JOURNAL));
       }
     }
-    return brlStatus;
   }
 }

@@ -24,6 +24,8 @@
     <many-to-one name="bankStatementQuery" ref="com.axelor.apps.bankpayment.db.BankStatementQuery" title="Bank accounting / reconciliation rule"/>
     <integer name="confidenceIndex" title="Confidence index" selection="bankpayment.bank.reconciliation.confidenceIndex"/>
     
+    <finder-method name="findByBankReconciliation" using="bankReconciliation" all="true"/>
+    
     <extra-code><![CDATA[
     
     // TYPE SELECT

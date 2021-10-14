@@ -48,7 +48,6 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
   @Transactional
   public void loadBankStatement(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
-    BankStatement bankStatement = bankReconciliation.getBankStatement();
     BankStatementLine initialBalanceBankStatementLine =
         getInitialBalanceBankStatementLine(bankReconciliation, includeBankStatement);
     BankStatementLine finalBalanceBankStatementLine =
@@ -79,9 +78,10 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
 
     if (bankStatementLineList != null) {
       for (BankStatementLine bankStatementLine : bankStatementLineList) {
-        if (bankStatementLine.getAmountRemainToReconcile().compareTo(BigDecimal.ZERO) != 0)
+        if (bankStatementLine.getAmountRemainToReconcile().compareTo(BigDecimal.ZERO) != 0) {
           bankReconciliation.addBankReconciliationLineListItem(
               bankReconciliationLineService.createBankReconciliationLine(bankStatementLine));
+        }
       }
     }
   }
