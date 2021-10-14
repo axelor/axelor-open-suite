@@ -257,6 +257,7 @@ public class InvoiceToolService {
     copy.setOriginalInvoice(null);
     copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
     copy.setAmountPaid(BigDecimal.ZERO);
+    copy.setAmountRemaining(copy.getInTaxTotal());
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
     copy.setPaymentProgress(0);

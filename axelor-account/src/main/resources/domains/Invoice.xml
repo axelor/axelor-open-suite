@@ -161,7 +161,7 @@
 	<date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
 	
 	<!-- Invoice terms -->
-	<integer name="paymentProgress" title="Payment progess" default="0"/>
+	<integer name="paymentProgress" title="Payment progress" default="0"/>
     <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm" mappedBy="invoice" title="Invoice terms"/>
     
 
