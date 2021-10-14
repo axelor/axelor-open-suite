@@ -32,6 +32,10 @@ public class MapperRecord {
 
   private boolean newRecord = true;
 
+  private boolean savedRecord = false;
+
+  private String targetVariable = "rec";
+
   private StringBuilder scriptBuilder = new StringBuilder();
 
   private List<MapperField> fields = new ArrayList<MapperField>();
@@ -52,6 +56,14 @@ public class MapperRecord {
     this.newRecord = newRecord;
   }
 
+  public boolean isSavedRecord() {
+    return savedRecord;
+  }
+
+  public void setSavedRecord(boolean savedRecord) {
+    this.savedRecord = savedRecord;
+  }
+
   public List<MapperField> getFields() {
     return fields;
   }
@@ -70,6 +82,14 @@ public class MapperRecord {
 
   public StringBuilder getScriptBuilder() {
     return this.scriptBuilder;
+  }
+
+  public String getTargetVariable() {
+    return targetVariable;
+  }
+
+  public void setTargetVariable(String targetVariable) {
+    this.targetVariable = targetVariable;
   }
 
   public String toScript() {
@@ -102,15 +122,20 @@ public class MapperRecord {
   public StringBuilder addTarget() {
 
     if (newRecord) {
-      scriptBuilder.append("def rec = $ctx.create('" + targetModel + "')\n");
-    } else {
+      scriptBuilder.append("def " + targetVariable + " = $ctx.create('" + targetModel + "')\n");
+    } else if (savedRecord) {
       scriptBuilder.append(
-          "def rec = $ctx.find('"
+          "def "
+              + targetVariable
+              + " = $ctx.find('"
               + targetModel
               + "',"
               + StringTool.toFirstLower(targetModel)
               + "Id)\n");
+    } else {
+      targetVariable = StringTool.toFirstLower(targetModel);
     }
+
     return scriptBuilder;
   }
 
@@ -118,12 +143,15 @@ public class MapperRecord {
 
     if (fields != null) {
       for (MapperField field : fields) {
-        scriptBuilder.append(field.toScript("rec") + "\n");
+        scriptBuilder.append(field.toScript(targetVariable) + "\n");
       }
     }
   }
 
   public void addReturn() {
-    scriptBuilder.append("return $ctx.save(rec)");
+
+    if (newRecord || savedRecord) {
+      scriptBuilder.append("return $ctx.save(" + targetVariable + ")");
+    }
   }
 }
