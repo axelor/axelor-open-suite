@@ -357,6 +357,9 @@ public class MrpServiceImpl implements MrpService {
                 && firstPass))
         && cumulativeQty.compareTo(mrpLine.getMinQty()) < 0) {
 
+      Company company = null;
+      StockLocation stockLocation = mrpLine.getStockLocation();
+
       log.debug(
           "Cumulative qty ({} < {}) is insufficient for product ({}) at the maturity date ({})",
           cumulativeQty,
@@ -369,7 +372,7 @@ public class MrpServiceImpl implements MrpService {
       StockRules stockRules =
           stockRulesService.getStockRules(
               product,
-              mrpLine.getStockLocation(),
+              stockLocation,
               StockRulesRepository.TYPE_FUTURE,
               StockRulesRepository.USE_CASE_USED_FOR_MRP);
 
@@ -377,8 +380,12 @@ public class MrpServiceImpl implements MrpService {
         reorderQty = reorderQty.max(stockRules.getReOrderQty());
       }
 
+      if (stockLocation.getCompany() != null) {
+        company = stockLocation.getCompany();
+      }
+
       MrpLineType mrpLineTypeProposal =
-          this.getMrpLineTypeForProposal(stockRules, product, mrpLine.getCompany());
+          this.getMrpLineTypeForProposal(stockRules, product, company);
 
       if (mrpLineTypeProposal == null) {
         return false;
@@ -404,7 +411,7 @@ public class MrpServiceImpl implements MrpService {
           product,
           mrpLineTypeProposal,
           reorderQty,
-          mrpLine.getStockLocation(),
+          stockLocation,
           mrpLine.getMaturityDate(),
           mrpLine.getMrpLineOriginList(),
           mrpLine.getRelatedToSelectName());
