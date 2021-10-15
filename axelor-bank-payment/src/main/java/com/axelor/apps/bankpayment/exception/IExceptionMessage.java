@@ -210,7 +210,7 @@ public interface IExceptionMessage {
   static final String BANK_STATEMENT_NOT_MATCHING = /*$$(*/
       "Current bank statement's initial balance does not match previous bank statement's final balance" /*)*/;
   static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
-      "Current bank statement doesn't contain an initial line" /*)*/;
+      "Curernt bank statement doesn't contain an initial line" /*)*/;
 
   /*
    * Batch direct debit
