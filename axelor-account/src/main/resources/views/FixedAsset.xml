@@ -411,10 +411,15 @@
     </action-attrs>
     
     <action-group name="action-group-account-fixed-asset-failover-control">
+    	<action name="action-validate-account-fixed-asset-failover-computation-method-linear" if="originSelect == 99"/>
         <action name="action-attrs-account-fixed-asset-failover-override" if="originSelect == 99"/>
     	<action name="action-method-account-fixed-asset-failover-control" if="originSelect == 99"/>
     	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal" if="originSelect == 99"/>
     </action-group>
+    
+    <action-validate name="action-validate-account-fixed-asset-failover-computation-method-linear">
+    	<alert if="computationMethodSelect == 'degressive'" message="The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal"/>
+    </action-validate>
     
     <action-method name="action-method-account-fixed-asset-failover-control">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="failOverControl"/>
