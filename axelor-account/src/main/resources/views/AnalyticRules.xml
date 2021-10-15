@@ -17,12 +17,11 @@
 			<field name="company" required="true"/>
 			<field name="fromAccount" domain="self.company = :company" requiredIf="company != null" readonlyIf="company == null"/>
 			<field name="toAccount" onSelect="action-on-select-to-account-set-domain" requiredIf="company != null" readonlyIf="company == null"/>
-			<field name="analyticAccountSet" colSpan="12" readonlyIf="company == null" domain="self.analyticAxis.company = :company" canNew="false" canEdit="false"/>
+			<field name="analyticAccountSet" colSpan="12" readonlyIf="company == null" domain="self.analyticAxis.company = :company OR self.analyticAxis.company IS NULL" canNew="false" canEdit="false"/>
         </panel>      
     </form>
     
     <action-attrs name="action-on-select-to-account-set-domain">
     	<attribute name="domain" for="toAccount" expr="eval: &quot;self.code &gt;= &apos;${fromAccount?.code}&apos; AND self.company.id = ${company?.id}&quot;" if="fromAccount"/>
     </action-attrs>
-
 </object-views>
