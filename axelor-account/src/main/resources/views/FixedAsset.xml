@@ -120,9 +120,9 @@
 	    <field name="accountingValue"/>
 	  </panel>
 	  <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" sidebar="true" readonlyIf="statusSelect > 1" >
-	    <field name="failoverDate"/>
-	    <field name="nbrOfPastDepreciations"  min="0"/>
-	    <field name="alreadyDepreciatedAmount" min="0"/>
+	    <field name="failoverDate" requiredIf="originSelect == 99"/>
+	    <field name="nbrOfPastDepreciations"  requiredIf="originSelect == 99" min="0"/>
+	    <field name="alreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"/>
 	  </panel>
 	  <panel name="toUpdateValuesPanel" title="Update Depreciation parameters" showIf="statusSelect == 2" readonlyIf="!$canUpdateDepreciation" sidebar="true">
 	    <field name="correctedAccountingValue" readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2"/>
