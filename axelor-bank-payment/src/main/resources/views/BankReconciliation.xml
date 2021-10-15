@@ -72,7 +72,7 @@
       <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3" onClick="save,action-bank-reconciliation-view-multiple-reconcile-wizard" />
       <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3" onClick="save,action-bank-reconciliation-method-unreconcile" />
       <button name="reconcileBtn" title="Reconcile selected" colSpan="3" onClick="save,action-bank-reconciliation-method-reconcile-selected" />
-      <panel-dashlet name="showUnreconciledMoveLinesPanel" colSpan="12" canSearch="true" action="action-bank-reconciliation-method-show-unreconciled-move-lines" />
+      <panel-dashlet name="showUnreconciledMoveLinesPanel" title="Unreconciled and On-going Reconciliation MoveLines" colSpan="12" canSearch="true" action="action-bank-reconciliation-method-show-unreconciled-move-lines" />
     </panel>
     <panel name="mainBalancePanel" colSpan="12" showIf="bankReconciliationLineList.length > 0">
       <spacer colSpan="6" />
