@@ -1,3 +1,5 @@
+package com.axelor.apps.bankpayment.translation;
+
 /*
  * Axelor Business Solutions
  *
@@ -16,3 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 // /*$$(*/ "Bank payment" /*)*/
+public interface ITranslation {
+  public static final String BANK_RECONCILIATION_UNRECONCILED_MOVE_LINE_LIST_PANEL_TITLE = /*$$(*/
+      "Unreconciled and On-going Reconciliation MoveLines"; /*)*/
+}

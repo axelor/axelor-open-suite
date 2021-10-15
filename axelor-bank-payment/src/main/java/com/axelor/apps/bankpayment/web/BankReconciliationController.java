@@ -411,7 +411,11 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       BankReconciliationService bankReconciliationService =
           Beans.get(BankReconciliationService.class);
-      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Reconciled move lines"));
+      ActionViewBuilder actionViewBuilder =
+          ActionView.define(
+              I18n.get(
+                  com.axelor.apps.bankpayment.translation.ITranslation
+                      .BANK_RECONCILIATION_UNRECONCILED_MOVE_LINE_LIST_PANEL_TITLE));
       actionViewBuilder.model(MoveLine.class.getName());
       actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
       actionViewBuilder.add("form", "move-line-form");
