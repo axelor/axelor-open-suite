@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
@@ -45,6 +39,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class FixedAssetController {
@@ -272,12 +271,11 @@ public class FixedAssetController {
 
   public void failOverControl(ActionRequest request, ActionResponse response)
       throws AxelorException {
-	  try {
-		    FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-		    Beans.get(FixedAssetFailOverControlService.class).controlFailOver(fixedAsset); 
-	  } catch (Exception e) {
-		TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-	}
-
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetFailOverControlService.class).controlFailOver(fixedAsset);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }
