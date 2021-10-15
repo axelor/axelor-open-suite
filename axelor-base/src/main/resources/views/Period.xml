@@ -13,7 +13,7 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet">
+    <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period" onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet, action-attrs-base-readonly-if-period-in-move">
 	    <panel name="mainPanel" readonlyIf="statusSelect == 2">
 	        <field name="name"/>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"  colSpan="3"/>
@@ -94,6 +94,11 @@
 
 	<action-attrs name="action-period-year-on-change-from-date">
 		<attribute for="fromDate" name="value" expr="eval: null"/>
+	</action-attrs>
+	
+	<action-attrs name="action-attrs-base-readonly-if-period-in-move">
+		<attribute name="readonly" for="fromDate" expr="eval: (__repo__(Move).all().filter('self.period = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1 &amp;&amp; year?.statusSelect == 1"/>
+		<attribute name="readonly" for="toDate" expr="eval: (__repo__(Move).all().filter('self.period = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1 &amp;&amp; year?.statusSelect == 1"/>
 	</action-attrs>
 
 	<action-validate name="action-period-year-on-change-to-date-validate">
