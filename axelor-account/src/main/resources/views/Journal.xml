@@ -108,7 +108,14 @@
 
 	<action-group name="action-journal-group-on-load-actions">
 		<action name="action-journal-method-set-totals" if="journalType.isDisplayBalances"/>
+		<action name="action-attrs-account-journal-readonly-if-journal-in-move"/>
 	</action-group>
+	
+	<action-attrs name="action-attrs-account-journal-readonly-if-journal-in-move">
+		<attribute name="readonly" for="name" expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
+		<attribute name="readonly" for="code" expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
+		<attribute name="readonly" for="journalType" expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
+	</action-attrs>
 
     <action-method name="action-journal-method-set-totals">
       <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>
