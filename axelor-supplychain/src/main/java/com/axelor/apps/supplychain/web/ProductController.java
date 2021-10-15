@@ -89,10 +89,10 @@ public class ProductController {
         List<Long> stockLocationIdList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocationId(stockLocation, false);
-        response.setValue("__stockLocationIdList", stockLocationIdList);
+        response.setValue("$stockLocationIdList", stockLocationIdList);
         return;
       }
     }
-    response.setValue("__stockLocationIdList", Arrays.asList(0L));
+    response.setValue("$stockLocationIdList", Arrays.asList(0L));
   }
 }
