@@ -26,8 +26,15 @@ public class ConditionalNode extends ProcessActionNode {
   @XmlAttribute(name = "expression")
   private String expression;
 
+  @XmlAttribute(name = "expressionValue")
+  private String expressionValue;
+
   public String getExpression() {
     return expression;
+  }
+
+  public String expressionValue() {
+    return expressionValue;
   }
 
   @Override

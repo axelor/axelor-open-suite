@@ -73,10 +73,16 @@ public class MapperNode extends BaseNode {
   public String toCode(boolean dynamic) {
 
     StringBuilder codeBuilder = new StringBuilder();
+    if (script == null) {
+      return codeBuilder.toString();
+    }
 
-    String target = StringTool.toFirstLower(targetField);
-
-    codeBuilder.append("def " + target + " = {\n" + script + "\n}()\n");
+    if (script.substring(script.lastIndexOf("\n") + 1).startsWith("return")) {
+      String target = StringTool.toFirstLower(targetField);
+      codeBuilder.append("def " + target + " = {\n" + script + "\n}()\n");
+    } else {
+      codeBuilder.append("\n" + script + "\n");
+    }
 
     return codeBuilder.toString();
   }

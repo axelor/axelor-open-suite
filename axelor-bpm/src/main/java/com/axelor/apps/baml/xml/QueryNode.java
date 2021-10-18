@@ -19,17 +19,11 @@ package com.axelor.apps.baml.xml;
 
 import com.axelor.meta.db.MetaJsonRecord;
 import com.google.common.base.Strings;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType
 public class QueryNode extends BaseTaskNode {
-
-  @XmlElements({@XmlElement(name = "parameter", type = QueryParameterNode.class)})
-  private List<QueryParameterNode> parameters;
 
   @XmlAttribute(name = "returnType")
   private ReturnType returnType;
@@ -39,10 +33,6 @@ public class QueryNode extends BaseTaskNode {
 
   @XmlAttribute(name = "isJson")
   private boolean isJson;
-
-  public List<QueryParameterNode> getParameters() {
-    return parameters;
-  }
 
   public ReturnType getReturnType() {
     return returnType;
@@ -63,24 +53,10 @@ public class QueryNode extends BaseTaskNode {
 
     String model = getModel();
 
-    StringBuilder params = new StringBuilder();
-    if (getParameters() != null) {
-      if (dynamic) {
-        params.append("[");
-      }
-      for (QueryParameterNode node : parameters) {
-        params.append(node.toCode(dynamic));
-      }
-      if (dynamic) {
-        params.deleteCharAt(params.length() - 1);
-        params.append("]");
-      }
-    }
-
     if (dynamic) {
-      addDynamicQuery(codeBuilder, model, params);
+      addDynamicQuery(codeBuilder, model);
     } else {
-      addQuery(codeBuilder, model, params);
+      addQuery(codeBuilder, model);
     }
 
     String target = getTarget();
@@ -92,11 +68,17 @@ public class QueryNode extends BaseTaskNode {
     return "\n" + target + " = " + codeBuilder.toString();
   }
 
-  private void addQuery(StringBuilder codeBuilder, String model, StringBuilder params) {
+  private void addQuery(StringBuilder codeBuilder, String model) {
 
     String filter = getExpression();
+
+    StringBuilder params = new StringBuilder();
+
     if (isJson) {
-      filter += "(" + filter + ") AND self.jsonModel = :jsonModel";
+      if (!Strings.isNullOrEmpty(filter)) {
+        filter = "(" + filter + ") AND ";
+      }
+      filter += "self.jsonModel = :jsonModel";
       params.append(".bind('jsonModel', '" + model + "')");
       model = MetaJsonRecord.class.getName();
     }
@@ -104,7 +86,7 @@ public class QueryNode extends BaseTaskNode {
     codeBuilder.append("com.axelor.db.Query.of(" + model + ")");
 
     if (!Strings.isNullOrEmpty(filter)) {
-      codeBuilder.append(".filter(\"" + filter + "\")");
+      codeBuilder.append(".filter(" + filter + ")");
       codeBuilder.append(params.toString());
     }
 
@@ -115,20 +97,14 @@ public class QueryNode extends BaseTaskNode {
     }
   }
 
-  private void addDynamicQuery(StringBuilder codeBuilder, String model, StringBuilder params) {
+  private void addDynamicQuery(StringBuilder codeBuilder, String model) {
 
-    String filter = "\"" + getExpression() + "\"";
-
-    String parameters = "";
-    if (params.length() != 0) {
-      parameters = "," + params.toString();
-    }
+    String filter = getExpression();
 
     if (returnType.equals(ReturnType.SINGLE)) {
-      codeBuilder.append(
-          "WkfContextHelper.filterOne('" + model + "'," + filter + parameters + ")\n");
+      codeBuilder.append("WkfContextHelper.filterOne('" + model + "'," + filter + ")\n");
     } else {
-      codeBuilder.append("WkfContextHelper.filter('" + model + "'," + filter + parameters + ")\n");
+      codeBuilder.append("WkfContextHelper.filter('" + model + "'," + filter + ")\n");
     }
   }
 }

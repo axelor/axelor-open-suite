@@ -21,15 +21,19 @@ import com.axelor.apps.baml.service.BamlService;
 import com.axelor.apps.bpm.context.WkfContextHelper;
 import com.axelor.apps.bpm.db.BamlModel;
 import com.axelor.apps.bpm.db.repo.BamlModelRepository;
+import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonRecord;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -42,8 +46,10 @@ public class BamlModelController {
     BamlModel model = request.getContext().asType(BamlModel.class);
 
     String xml = bamlService.extractBamlXml(model.getBamlXml());
-    String resultScript = Beans.get(BamlService.class).generateGroovyCode(xml);
-    response.setValue("resultScript", resultScript);
+    if (xml != null) {
+      String resultScript = Beans.get(BamlService.class).generateGroovyCode(xml);
+      response.setValue("resultScript", resultScript);
+    }
   }
 
   public void execute(ActionRequest request, ActionResponse response) {
@@ -63,19 +69,38 @@ public class BamlModelController {
 
     Model object = Beans.get(BamlService.class).execute(bamlModel, entity);
 
+    String modelName = object.getClass().getSimpleName();
+    String dasherizeModel = Inflector.getInstance().dasherize(modelName);
+
     String title = object.getClass().getSimpleName();
+    String formView = dasherizeModel + "-form";
+    String gridView = dasherizeModel + "-grid";
+
+    String jsonModel = null;
     if (object instanceof MetaJsonRecord) {
-      title = ((MetaJsonRecord) object).getJsonModel();
+      jsonModel = ((MetaJsonRecord) object).getJsonModel();
+      title = Beans.get(MetaJsonModelRepository.class).findByName(jsonModel).getTitle();
+      if (Strings.isNullOrEmpty(title)) {
+        title = jsonModel;
+      }
+      formView = "custom-model-" + jsonModel + "-form";
+      gridView = "custom-model-" + jsonModel + "-grid";
     }
 
     response.setCanClose(true);
 
-    response.setView(
+    ActionViewBuilder builder =
         ActionView.define(I18n.get(title))
             .model(object.getClass().getName())
-            .add("form")
-            .add("grid")
-            .context("_showRecord", object.getId())
-            .map());
+            .add("form", formView)
+            .add("grid", gridView)
+            .context("_showRecord", object.getId());
+
+    if (jsonModel != null) {
+      builder.context("jsonModel", jsonModel);
+      builder.domain("self.jsonModel = :jsonModel");
+    }
+
+    response.setView(builder.map());
   }
 }

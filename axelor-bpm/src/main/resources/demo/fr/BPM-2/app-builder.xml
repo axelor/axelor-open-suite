@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <app-builders>
 
-	
 	<app-builder>
 		<name>Pizza Delivery</name>
 		<code>BPM-2</code>
@@ -12,6 +11,4 @@
 		<modules></modules>
 		
 	</app-builder>
-	
-	
 </app-builders>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <json-models>
 
-	
 		<json-model>
 				
-			<name>AskPizza</name>
+			<name>Pizza</name>
 				
-			<title>Ask pizza</title>
+			<title>Pizza</title>
                 
 			<onNew></onNew>
 				
@@ -16,69 +15,7 @@
 				
 			<isGenerateMenu>true</isGenerateMenu>
 				
-			<menuBuilder name='studio-ask-pizza' title='Ask Pizza' xmlId='studio-ask-pizza' />
-                
-			<menuTitle></menuTitle>
-                
-			<menuIcon></menuIcon>
-                
-			<menuBackground></menuBackground>
-                
-			<menuOrder>0</menuOrder>
-                
-			<menuTop>false</menuTop>
-                
-			<menuParent></menuParent>
-				
-			<appBuilder>BPM-2</appBuilder>
-				
-		</json-model>
-		<json-model>
-				
-			<name>CalmCustomer</name>
-				
-			<title>Calm customer</title>
-                
-			<onNew></onNew>
-				
-			<onSave></onSave>
-				
-			<formWidth></formWidth>
-				
-			<isGenerateMenu>true</isGenerateMenu>
-				
-			<menuBuilder name='studio-pizza-calm-customer' title='Calm customer' xmlId='studio-pizza-calm-customer' />
-                
-			<menuTitle></menuTitle>
-                
-			<menuIcon></menuIcon>
-                
-			<menuBackground></menuBackground>
-                
-			<menuOrder>0</menuOrder>
-                
-			<menuTop>false</menuTop>
-                
-			<menuParent></menuParent>
-				
-			<appBuilder>BPM-2</appBuilder>
-				
-		</json-model>
-		<json-model>
-				
-			<name>HungryPizza</name>
-				
-			<title>Hungry Pizza</title>
-                
-			<onNew></onNew>
-				
-			<onSave></onSave>
-				
-			<formWidth></formWidth>
-				
-			<isGenerateMenu>true</isGenerateMenu>
-				
-			<menuBuilder name='studio-hungry-pizza' title='Hungry Pizza' xmlId='studio-hungry-pizza' />
+			<menuBuilder name='studio-pizza' title='Pizza' xmlId='studio-pizza' />
                 
 			<menuTitle></menuTitle>
                 
@@ -128,9 +65,9 @@
 		</json-model>
 		<json-model>
 				
-			<name>Pizza</name>
+			<name>HungryPizza</name>
 				
-			<title>Pizza</title>
+			<title>Hungry Pizza</title>
                 
 			<onNew></onNew>
 				
@@ -140,7 +77,7 @@
 				
 			<isGenerateMenu>true</isGenerateMenu>
 				
-			<menuBuilder name='studio-pizza' title='Pizza' xmlId='studio-pizza' />
+			<menuBuilder name='studio-hungry-pizza' title='Hungry Pizza' xmlId='studio-hungry-pizza' />
                 
 			<menuTitle></menuTitle>
                 
@@ -157,6 +94,66 @@
 			<appBuilder>BPM-2</appBuilder>
 				
 		</json-model>
-		
-	
+		<json-model>
+				
+			<name>CalmCustomer</name>
+				
+			<title>Calm customer</title>
+                
+			<onNew></onNew>
+				
+			<onSave></onSave>
+				
+			<formWidth></formWidth>
+				
+			<isGenerateMenu>true</isGenerateMenu>
+				
+			<menuBuilder name='studio-pizza-calm-customer' title='Calm customer' xmlId='studio-pizza-calm-customer' />
+                
+			<menuTitle></menuTitle>
+                
+			<menuIcon></menuIcon>
+                
+			<menuBackground></menuBackground>
+                
+			<menuOrder>0</menuOrder>
+                
+			<menuTop>false</menuTop>
+                
+			<menuParent></menuParent>
+				
+			<appBuilder>BPM-2</appBuilder>
+				
+		</json-model>
+		<json-model>
+				
+			<name>AskPizza</name>
+				
+			<title>Ask pizza</title>
+                
+			<onNew></onNew>
+				
+			<onSave></onSave>
+				
+			<formWidth></formWidth>
+				
+			<isGenerateMenu>true</isGenerateMenu>
+				
+			<menuBuilder name='studio-ask-pizza' title='Ask Pizza' xmlId='studio-ask-pizza' />
+                
+			<menuTitle></menuTitle>
+                
+			<menuIcon></menuIcon>
+                
+			<menuBackground></menuBackground>
+                
+			<menuOrder>0</menuOrder>
+                
+			<menuTop>false</menuTop>
+                
+			<menuParent></menuParent>
+				
+			<appBuilder>BPM-2</appBuilder>
+				
+		</json-model>
 </json-models>
