@@ -264,6 +264,7 @@ public class BankStatementService {
     }
     // delete imported
     if (deleteLines) {
+
       deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
       throw new AxelorException(
           bankStatement,
