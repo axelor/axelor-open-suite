@@ -8,7 +8,7 @@
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     
-    <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default" width="large">
+    <form name="payment-mode-form" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode" onLoad="action-attrs-base-set-readonly-fields-if-in-move" onNew="action-payment-mode-set-default" width="large">
         <panel name="mainPanel" >
         	<field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
@@ -33,6 +33,13 @@
 			</panel>
 		</panel-tabs>
     </form>
+    
+    <action-attrs name="action-attrs-base-set-readonly-fields-if-in-move">
+    	<attribute name="readonly" for="name" expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    	<attribute name="readonly" for="code" expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    	<attribute name="readonly" for="typeSelect" expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    	<attribute name="readonly" for="inOutSelect" expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    </action-attrs>
     
     <action-group name="action-payment-mode-group-empty" if-module="axelor-bank-payment">
     	<action name="action-payment-mode-record-empty"/>
