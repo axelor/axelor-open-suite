@@ -51,6 +51,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
@@ -99,6 +100,7 @@ import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
+import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -254,5 +256,6 @@ public class SupplychainModule extends AxelorModule {
         .to(OpportunitySaleOrderSupplychainServiceImpl.class);
     bind(PartnerSaleServiceImpl.class).to(PartnerSupplychainServiceImpl.class);
     bind(PartnerSupplychainService.class).to(PartnerSupplychainServiceImpl.class);
+    bind(ProductVariantServiceStockImpl.class).to(ProductVariantServiceSupplyChainImpl.class);
   }
 }
