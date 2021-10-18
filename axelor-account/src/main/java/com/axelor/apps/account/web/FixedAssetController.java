@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
@@ -299,14 +300,13 @@ public class FixedAssetController {
   public void setDepreciationPlanSelectReadonly(ActionRequest request, ActionResponse response) {
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-      boolean isReadonly = false;
-      if (ObjectUtils.notEmpty(fixedAsset.getFixedAssetCategory())
-          && ObjectUtils.notEmpty(fixedAsset.getFixedAssetCategory().getFixedAssetType())) {
-        isReadonly =
-            fixedAsset.getFixedAssetCategory().getFixedAssetType().getTechnicalTypeSelect()
-                == FixedAssetTypeRepository
-                    .FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_ONGOING_ASSET;
-      }
+      FixedAssetCategoryService fixedAssetCategoryService =
+          Beans.get(FixedAssetCategoryService.class);
+      boolean isReadonly =
+          fixedAssetCategoryService.compareFixedAssetCategoryTypeSelect(
+              fixedAsset,
+              FixedAssetTypeRepository.FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_ONGOING_ASSET);
+
       response.setAttr("depreciationPlanSelect", "readonly", isReadonly);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -122,6 +122,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
@@ -401,5 +403,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineTaxService.class).to(MoveLineTaxServiceImpl.class);
 
     bind(MoveValidateService.class).to(MoveValidateServiceImpl.class);
+
+    bind(FixedAssetCategoryService.class).to(FixedAssetCategoryServiceImpl.class);
   }
 }

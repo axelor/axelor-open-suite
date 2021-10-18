@@ -324,7 +324,7 @@
     	<action name="action-account-attrs-fill-ifrs-panel" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-fixed-asset-record-onchange-set-values" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
-        <action name="action-fixed-asset-account-method-set-depreciation-plan-select"/>
+        <action name="action-fixed-asset-account-method-set-depreciation-plan-select-to-none"/>
         <action name="action-fixed-asset-account-method-set-depreciation-plan-select-readonly"/>
     </action-group>
     
@@ -396,8 +396,8 @@
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="updateDepreciation"/>
     </action-method>
     
-    <action-method name="action-fixed-asset-account-method-set-depreciation-plan-select">
-      <call class="com.axelor.apps.account.web.FixedAssetController" method="setDepreciationPlanSelect"/>
+    <action-method name="action-fixed-asset-account-method-set-depreciation-plan-select-to-none">
+      <call class="com.axelor.apps.account.web.FixedAssetController" method="setDepreciationPlanSelectToNone"/>
     </action-method>
     
     <action-method name="action-fixed-asset-account-method-set-depreciation-plan-select-readonly">

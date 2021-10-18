@@ -71,7 +71,7 @@
 </form>
 
   <action-group name="action-fixed-asset-category-group-onchange-fixed-asset-type">
-    <action name="action-fixed-asset-category-method-set-depreciation-plan-select"/>
+    <action name="action-fixed-asset-category-method-set-depreciation-plan-select-to-none"/>
     <action name="action-fixed-asset-category-attrs-set-depreciation-plan-select-readonly"/>
   </action-group>
     
@@ -80,8 +80,8 @@
     	<field name="computationMethodSelect" expr="eval: 'linear'"/>
     </action-record>
 
-    <action-method name="action-fixed-asset-category-method-set-depreciation-plan-select">
-      <call class="com.axelor.apps.account.web.FixedAssetCategoryController" method="setDepreciationPlanSelect"/>
+    <action-method name="action-fixed-asset-category-method-set-depreciation-plan-select-to-none">
+      <call class="com.axelor.apps.account.web.FixedAssetCategoryController" method="setDepreciationPlanSelectToNone"/>
     </action-method>
     
     <action-record name="action-fixed-asset-category-record-compute-duration" model="com.axelor.apps.account.db.FixedAssetCategory">
