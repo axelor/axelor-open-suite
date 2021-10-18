@@ -123,7 +123,7 @@ public class MoveRemoveService {
     String moveModelError = null;
     for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
       String modelName = I18n.get(archivingToolService.getModelTitle(entry.getKey()));
-      if (!entry.getKey().equals("MoveLine")) {
+      if (!"MoveLine".equals(entry.getKey())) {
         if (moveModelError == null) {
           moveModelError = modelName;
         } else {
