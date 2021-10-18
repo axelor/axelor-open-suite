@@ -10,8 +10,8 @@
 		<field name="company" hidden="true"/>
 	</grid>
 	
-	<form name="analytic-axis-form" title="Analytic Axis"
-		model="com.axelor.apps.account.db.AnalyticAxis" onLoad="action-attrs-analytic-axis-hide-grouping">
+	<form name="analytic-axis-form" title="Analytic Axis" onSave="action-method-account-analytic-axis-control-unicity"
+		model="com.axelor.apps.account.db.AnalyticAxis" onLoad="action-attrs-analytic-axis-hide-grouping, action-attrs-account-analytic-axis-readonly-if-in-analytic-move-line">
 		<panel name="mainPanel">
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="name" />
@@ -63,6 +63,11 @@
 		</node>
 	</tree>
 	
+	<action-attrs name="action-attrs-account-analytic-axis-readonly-if-in-analytic-move-line">
+		<attribute name="readonly" for="name" expr="eval: __repo__(AnalyticMoveLine).all().filter('self.analyticAxis = ?', __this__).count() > 0"/>
+		<attribute name="readonly" for="code" expr="eval: __repo__(AnalyticMoveLine).all().filter('self.analyticAxis = ?', __this__).count() > 0"/>
+	</action-attrs>
+	
 	<action-attrs name="action-attrs-analytic-axis-hide-grouping">
 		<attribute name="hidden" for="analyticGrouping1" expr="eval: (nbrOfAnalyticGrouping &lt; 1)"/>
 		<attribute name="hidden" for="analyticGrouping2" expr="eval: (nbrOfAnalyticGrouping &lt; 2)"/>
@@ -88,6 +93,10 @@
 		<field name="analyticGrouping9" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 9"/>
 		<field name="analyticGrouping10" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 10"/>
 	</action-record>
+	
+	<action-method name="action-method-account-analytic-axis-control-unicity">
+		<call class="com.axelor.apps.account.web.AnalyticAxisController" method="controlUnicity"/>
+	</action-method>
 	
 	<action-validate name="action-validate-analytic-axis-check-1">
 		<alert if="analyticGrouping1 &amp;&amp; (analyticGrouping1 == analyticGrouping2 || analyticGrouping1 == analyticGrouping3 || analyticGrouping1 == analyticGrouping4 || analyticGrouping1 == analyticGrouping5 || analyticGrouping1 == analyticGrouping6 || analyticGrouping1 == analyticGrouping7 || analyticGrouping1 == analyticGrouping8 || analyticGrouping1 == analyticGrouping9 || analyticGrouping1 == analyticGrouping10)" message="This value is already selected in another field, please select another value" action="action-record-axis-delete-grouping-1"/>
