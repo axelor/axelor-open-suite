@@ -31,7 +31,7 @@
     </action-group>
     
     <action-attrs name="action-attrs-analytic-journal-on-load">
-    	<attribute name="readonly" for="company" expr="eval: __repo__(AccountConfig).findByCompany(company).analyticJournal == __this__"/>
+    	<attribute name="readonly" for="company" expr="eval: __repo__(AccountConfig).findByCompany(company).analyticJournal == __this__" if="company != null"/>
     </action-attrs>
     
 </object-views>
