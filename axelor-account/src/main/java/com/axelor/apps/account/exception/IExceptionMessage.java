@@ -913,4 +913,11 @@ public interface IExceptionMessage {
   /*Period */
   static final String FISCAL_YEARS_DIFFERENTS_DATE_WHEN_NOT_OPENED = /*$$(*/
       "This fiscal year contains period which are already in use by some accounting moves. The dates can't be modified anymore." /*)*/;
+
+  /* Analytic axis */
+  static final String NOT_UNIQUE_CODE_ANALYTIC_AXIS_WITH_COMPANY = /*$$(*/
+      "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
+  /* Analytic axis */
+  static final String NOT_UNIQUE_CODE_ANALYTIC_AXIS_NULL_COMPANY = /*$$(*/
+      "The code defined here is already used by another record. Code must be unique either by company or if shared. Please modify it accordingly." /*)*/;
 }
