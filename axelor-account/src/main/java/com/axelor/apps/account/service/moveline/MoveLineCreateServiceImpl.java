@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -537,7 +538,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           taxLine.getName(),
           company.getName());
     }
-    if (move.getPartner().getFiscalPosition() != null) {
+    if (ObjectUtils.notEmpty(move.getPartner())
+        && ObjectUtils.notEmpty(move.getPartner().getFiscalPosition())) {
       newAccount =
           fiscalPositionAccountService.getAccount(
               move.getPartner().getFiscalPosition(), newAccount);
