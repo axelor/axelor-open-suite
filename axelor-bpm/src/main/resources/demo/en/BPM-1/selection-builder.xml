@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selection-builders>
 
-	
 		<selection-builder>
 				
 			<metaSelect>sequence.generic.code.select</metaSelect>
@@ -66,6 +65,4 @@ pr:Demande d&apos;achat</selectionText>
 			<appBuilder>BPM-1</appBuilder>
 				
 		</selection-builder>
-		
-	
 </selection-builders>

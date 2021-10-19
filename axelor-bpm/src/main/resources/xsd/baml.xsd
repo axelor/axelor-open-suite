@@ -46,13 +46,13 @@
     <complexType name="ConditionalType">
     	<complexContent>
     		<extension base="xsd:BaseNodeType">
-                <choice minOccurs="0" maxOccurs="unbounded">
-                    <group ref="xsd:CommonGroup"></group>
+    			<choice minOccurs="0" maxOccurs="unbounded">
+    				<group ref="xsd:CommonGroup"></group>
     			</choice>
-    			<attribute name="target" type="string" use="required"></attribute>
     			<attribute name="expression" type="string"
     				use="required">
     			</attribute>
+    			<attribute name="expressionValue" type="string"></attribute>
     		</extension>
     	</complexContent>
     </complexType>
@@ -92,17 +92,13 @@
     <complexType name="QueryType">
     	<complexContent>
     		<extension base="xsd:BaseNodeType">
-    			<sequence>
-    				<element name="parameter" type="xsd:ParameterLineType"
-    					minOccurs="0" maxOccurs="1">
-    				</element>
-    			</sequence>
     			<attribute name="target" type="string" use="required"></attribute>
     			<attribute name="expression" type="string"
-    				use="required"/>
-    			<attribute name="model" type="string"
-    				use="required"/>
-    			<attribute name="isJson" type="boolean"  default="false"></attribute>
+    				use="required" />
+    			<attribute name="model" type="string" use="required" />
+    			<attribute name="isJson" type="boolean"
+    				default="false">
+    			</attribute>
     			<attribute name="returnType" use="required">
     				<simpleType>
     					<restriction base="string">
@@ -112,10 +108,11 @@
     					</restriction>
     				</simpleType>
     			</attribute>
+    			<attribute name="expressionValue" type="string"></attribute>
     		</extension>
     	</complexContent>
     </complexType>
-    
+
 
     <complexType name="ParameterLineType">
     	<attribute name="target" type="string" use="required"></attribute>

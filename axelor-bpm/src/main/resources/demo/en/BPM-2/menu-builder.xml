@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu-builders>
 
-	
 		<menu-builder>
 				
 			<name>studio-pizza-root</name>
@@ -320,6 +319,4 @@
 			<appBuilder>BPM-2</appBuilder>
 				
 		</menu-builder>
-	
-	
 </menu-builders>

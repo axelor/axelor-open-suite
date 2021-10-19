@@ -190,6 +190,10 @@ public class BamlServiceImpl implements BamlService {
   @Override
   public String extractBamlXml(String xml) throws AxelorException {
 
+    if (xml == null) {
+      return null;
+    }
+
     DocumentBuilderFactory docBuilderFactory = new XPathParse().getDocumentBuilderFactory();
 
     try {

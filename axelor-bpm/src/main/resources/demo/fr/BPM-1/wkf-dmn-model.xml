@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wkf-dmn-models>
 
-	
 		<wkf-dmn-model>
 							
 			<name>Budget check</name>
@@ -365,6 +364,4 @@
 			<appBuilder>BPM-1</appBuilder>
 							
 		</wkf-dmn-model>
-	
-	
 </wkf-dmn-models>

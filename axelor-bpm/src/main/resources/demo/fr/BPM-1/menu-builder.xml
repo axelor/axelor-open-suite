@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu-builders>
 
-	
 		<menu-builder>
 				
 			<name>studio-men-purchase-req-root</name>
@@ -161,6 +160,4 @@
 			<appBuilder>BPM-1</appBuilder>
 				
 		</menu-builder>
-	
-	
 </menu-builders>
