@@ -136,6 +136,7 @@
    		<action name="save"/>
    		<action name="action-bank-reconciliation-method-compute"/>
    		<action name="action-bank-reconciliation-check-incomplete-bankreconciliation-line"/>
+        <action name="action-bank-reconciliation-method-check-incomplete-bank-reconciliation-line"/>
    		<action name="action-bank-reconciliation-method-validate"/>
     <action name="action-bank-reconciliation-method-compute-balances"/>
     <action name="action-bank-reconciliation-method-set-bank-statement-is-fully-reconciled"/>
