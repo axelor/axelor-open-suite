@@ -23,14 +23,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -238,19 +234,6 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       List<MoveLine> moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
       moveLineList.add(moveLine);
-    }
-  }
-
-  @Override
-  public void validateMoveLine(MoveLine moveLine) throws AxelorException {
-    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
-        && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
-        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0) {
-      throw new AxelorException(
-          moveLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_LINE_7),
-          moveLine.getAccount().getCode());
     }
   }
 

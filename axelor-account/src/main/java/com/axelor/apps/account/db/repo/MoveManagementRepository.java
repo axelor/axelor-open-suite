@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
@@ -105,6 +106,7 @@ public class MoveManagementRepository extends MoveRepository {
         move.setCurrencyCode(move.getCurrency().getCode());
       }
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
+      MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
       List<MoveLine> moveLineList = move.getMoveLineList();
       if (moveLineList != null) {
         for (MoveLine moveLine : moveLineList) {
@@ -115,6 +117,7 @@ public class MoveManagementRepository extends MoveRepository {
               analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
             }
           }
+          moveLineControlService.controlAccountingAccount(moveLine);
         }
       }
       return super.save(move);

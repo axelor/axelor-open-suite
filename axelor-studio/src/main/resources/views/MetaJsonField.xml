@@ -3,16 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
-	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-studio-set-meta-json-field-defaults" 
-	onLoad="action-studio-meta-json-field-attrs-on-load">
+	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField">
 	    <panel name="overviewPanel" title="Overview">
 	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
 	      <spacer name="appBuilderSpacer" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
 	      <field name="name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
 	      <field name="title" />
-          <field name="parentModel" type="string" hidden="true" />
-          <field name="type" showIf="parentModel != 'com.axelor.studio.db.Wkf'" />
-          <field name="type" showIf="parentModel == 'com.axelor.studio.db.Wkf'" selection-in="['string', 'integer']" />
+          <field name="type" />
 	      <field name="defaultValue" />
 	      <field name="help" />
 	      <field name="sequence" />
@@ -24,15 +21,18 @@
     </form>
     
     <form name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" id="studio-json-field-form" extension="true">
+        <extend target="//field[@name='modelField']">
+			<insert position="after">
+				<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+	      		<spacer name="appBuilderSpacer" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+			</insert>
+		</extend>
 		<extend target="panel-include[last()]">
 			<insert position="after">
 				<panel-mail name="mailPanel">
 					<mail-messages limit="4"/>
 				</panel-mail>
 			</insert>
-		</extend>
-		<extend target="/">
-			<attribute name="onSave" value="action-studio-json-field-method-json-field-tracking"/>
 		</extend>
     </form>
 
@@ -63,38 +63,4 @@
       
     </grid>
     
-    <action-group name="action-studio-set-meta-json-field-defaults">
-      <action name="action-studio-record-set-meta-json-field-defaults" />
-      <action name="action-studio-attrs-set-meta-json-field-defaults" />
-    </action-group>
-  
-    <action-record name="action-studio-record-set-meta-json-field-defaults" model="com.axelor.meta.db.MetaJsonField">
-      <field name="parentModel" expr="eval:__parent__._model" />
-      <field name="appBuilder" expr="eval:__parent__?.appBuilder" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
-    </action-record>
-
-    <action-attrs name="action-studio-attrs-set-meta-json-field-defaults">
-      <attribute name="value" for="model" expr="eval:__parent__.model"
-        if="parentModel == 'com.axelor.studio.db.Wkf'" />
-      <attribute name="value" for="model" expr="eval:'com.axelor.meta.db.MetaJsonRecord'"
-        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; __parent__.isJson" />
-      <attribute name="value" for="jsonModel" expr="eval:__repo__(MetaJsonModel).all().filter('self.name = ?', __parent__.model).fetchOne()"
-        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; __parent__.isJson" />
-        
-      <attribute name="value" for="modelField" expr="eval:__parent__.jsonField"
-        if="parentModel == 'com.axelor.studio.db.Wkf'" />
-      <attribute name="value" for="modelField" expr="eval:'attrs'"
-        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; !__parent__.jsonField &amp;&amp; __parent__.isJson" />
-        
-      <attribute name="readonly" for="appBuilder" expr="eval: parentModel == 'com.axelor.studio.db.Wkf'" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
-    </action-attrs>
-    
-    <action-attrs name="action-studio-meta-json-field-attrs-on-load">
-    	<attribute name="readonly" for="appBuilder" expr="eval: __parent__?._model == 'com.axelor.studio.db.Wkf'" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
-    </action-attrs>
-    
-    <action-method name="action-studio-json-field-method-json-field-tracking">
-       <call class="com.axelor.studio.web.MetaJsonFieldController" method="trackJsonField"/>
-    </action-method>
-
 </object-views>

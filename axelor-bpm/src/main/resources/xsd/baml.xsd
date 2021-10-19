@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/baml" elementFormDefault="qualified"
+ attributeFormDefault="unqualified"  xmlns:xsd="http://www.example.org/baml">
+
+    <element name="process-actions">
+    	<complexType>
+    		<sequence>
+    			<element name="process-action" type="xsd:ProcessActionType" minOccurs="1" maxOccurs="unbounded"></element>
+    		</sequence>
+    	</complexType></element>
+    	
+    <complexType name="ProcessActionType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType">
+    			<group ref="xsd:CommonGroup"></group>
+    			<attribute name="sourceModel" type="string"></attribute>
+    			<attribute name="targetModel" type="string"></attribute>
+    			<attribute name="staticCompile" type="boolean" default="true"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="BaseNodeType" abstract="true">
+    	<attribute name="id" type="string" use="required"></attribute>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="StartType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="LoopType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType">
+    				<group ref="xsd:CommonGroup"></group>
+    			<attribute name="target" type="string" use="required"></attribute>
+    			<attribute name="expression" type="string"
+    				use="required">
+    			</attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="ConditionalType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType">
+    			<choice minOccurs="0" maxOccurs="unbounded">
+    				<group ref="xsd:CommonGroup"></group>
+    			</choice>
+    			<attribute name="expression" type="string"
+    				use="required">
+    			</attribute>
+    			<attribute name="expressionValue" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="EndType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType"></extension>
+    	</complexContent>
+    </complexType>
+
+
+    <complexType name="MapperType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType">
+    			<sequence>
+    				<element name="script" type="xsd:ScriptType"></element>
+    				<element name="scriptMeta" type="xsd:ScriptType"></element>
+    			</sequence>
+    			<attribute name="sourceField" type="string"></attribute>
+    			<attribute name="targetField" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+
+    <complexType name="NewRecordType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType">
+    			<attribute name="target" type="string" use="required"></attribute>
+    			<attribute name="expression" type="string"
+    				use="required">
+    			</attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+    
+    <complexType name="QueryType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType">
+    			<attribute name="target" type="string" use="required"></attribute>
+    			<attribute name="expression" type="string"
+    				use="required" />
+    			<attribute name="model" type="string" use="required" />
+    			<attribute name="isJson" type="boolean"
+    				default="false">
+    			</attribute>
+    			<attribute name="returnType" use="required">
+    				<simpleType>
+    					<restriction base="string">
+    						<enumeration value="MAP"></enumeration>
+    						<enumeration value="SINGLE"></enumeration>
+    						<enumeration value="MULTIPLE"></enumeration>
+    					</restriction>
+    				</simpleType>
+    			</attribute>
+    			<attribute name="expressionValue" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+
+    <complexType name="ParameterLineType">
+    	<attribute name="target" type="string" use="required"></attribute>
+    	<attribute name="expression" type="string" use="required"></attribute>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <complexType name="FunctionType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType">
+    			<sequence>
+    				<element name="parameters" type="string" minOccurs="0" maxOccurs="unbounded"></element>
+    			</sequence>
+    			<attribute name="functionName" type="string"
+    				use="required">
+    			</attribute>
+
+    			<attribute name="returnType" use="required">
+    				<simpleType>
+    					<restriction base="string">
+    						<enumeration value="MAP"></enumeration>
+    						<enumeration value="SINGLE"></enumeration>
+    						<enumeration value="MULTIPlE"></enumeration>
+    					</restriction>
+    				</simpleType>
+    			</attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <group name="CommonGroup">
+    	<sequence>
+	        <choice minOccurs="0" maxOccurs="unbounded">
+	        	<element name="loop" type="xsd:LoopType"></element>
+	        	<element name="mapper"
+	        		type="xsd:MapperType">
+	        	</element>
+	        	<element name="query" type="xsd:QueryType"></element>
+	        	<element name="function" type="xsd:FunctionType"></element>
+	        	<element name="new-record" type="xsd:NewRecordType"></element>
+	        	<element name="conditional"
+	        		type="xsd:ConditionalType">
+	        	</element>
+	        	<element name="sequenceFlow" type="xsd:SequenceFlowType"></element>
+	        </choice>
+    	</sequence>
+    </group>
+
+
+    <complexType name="SequenceFlowType">
+    	<complexContent>
+    		<extension base="xsd:BaseNodeType">
+    			<attribute name="sourceRef" type="string"></attribute>
+    			<attribute name="targetRef" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+
+    <simpleType name="ScriptType">
+    	<restriction base="string"></restriction>
+    </simpleType>
+</schema>

@@ -34,7 +34,6 @@ import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.SelectionBuilder;
-import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepository;
 import com.axelor.studio.db.repo.AppLoaderRepository;
@@ -42,7 +41,6 @@ import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.SelectionBuilderRepository;
-import com.axelor.studio.service.wkf.WkfService;
 import com.google.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -74,8 +72,6 @@ public class ImportService {
   @Inject private ActionBuilderRepository actionBuilderRepo;
 
   @Inject private AppBuilderRepository appBuilderRepo;
-
-  @Inject private WkfService wkfService;
 
   @Inject private MetaFiles metaFiles;
 
@@ -132,17 +128,6 @@ public class ImportService {
     assert bean instanceof ActionBuilder;
 
     return actionBuilderRepo.save((ActionBuilder) bean);
-  }
-
-  public Object importWkf(Object bean, Map<String, Object> values) throws Exception {
-
-    assert bean instanceof Wkf;
-
-    Wkf wkf = (Wkf) bean;
-
-    wkfService.process(wkf);
-
-    return wkf;
   }
 
   public Object importAppBuilderImg(Object bean, Map<String, Object> values) {
@@ -255,21 +240,6 @@ public class ImportService {
     JPA.refresh(dashboard);
 
     return dashboardBuilderRepo.save(dashboard);
-  }
-
-  public Object importAppWkf(Object bean, Map<String, Object> values) throws Exception {
-
-    assert bean instanceof Wkf;
-
-    Wkf wkf = (Wkf) bean;
-
-    JPA.flush();
-
-    JPA.refresh(wkf);
-
-    wkfService.process(wkf);
-
-    return wkf;
   }
 
   public Object importAppLoader(Object bean, Map<String, Object> values) throws Exception {
