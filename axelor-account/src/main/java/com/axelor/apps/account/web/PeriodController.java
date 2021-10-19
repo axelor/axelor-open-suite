@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.service.PeriodControlService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -66,6 +68,14 @@ public class PeriodController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
+    }
+  }
+
+  public void controlDates(ActionRequest request, ActionResponse response) {
+    try {
+      Beans.get(PeriodControlService.class).controlDates(request.getContext().asType(Period.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
