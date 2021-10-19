@@ -11,6 +11,8 @@ public interface FixedAssetCategoryService {
   public boolean compareFixedAssetCategoryTypeSelect(
       FixedAssetCategory fixedAssetCategory, int typeSelect);
 
+  public void setDepreciationPlanSelectToNone(FixedAsset fixedAsset, int typeSelect);
+
   void setDepreciationPlanSelectToNone(
       FixedAssetCategory fixedAssetCategory, int fixedAssetCategoryTechnicalTypeSelectOngoingAsset);
 }

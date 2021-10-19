@@ -28,6 +28,13 @@ public class FixedAssetCategoryServiceImpl implements FixedAssetCategoryService 
   }
 
   @Override
+  public void setDepreciationPlanSelectToNone(FixedAsset fixedAsset, int typeSelect) {
+    if (fixedAsset.getFixedAssetCategory() != null) {
+      setDepreciationPlanSelectToNone(fixedAsset.getFixedAssetCategory(), typeSelect);
+    }
+  }
+
+  @Override
   public void setDepreciationPlanSelectToNone(
       FixedAssetCategory fixedAssetCategory, int typeSelect) {
     if (fixedAssetCategory.getFixedAssetType() != null

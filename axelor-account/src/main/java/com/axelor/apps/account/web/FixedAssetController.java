@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
@@ -281,14 +280,12 @@ public class FixedAssetController {
   public void setDepreciationPlanSelect(ActionRequest request, ActionResponse response) {
     try {
       FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-      if (fixedAsset.getFixedAssetCategory() != null
-          && fixedAsset.getFixedAssetCategory().getFixedAssetType() != null
-          && fixedAsset.getFixedAssetCategory().getFixedAssetType().getTechnicalTypeSelect()
-              == FixedAssetTypeRepository
-                  .FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_ONGOING_ASSET) {
-        fixedAsset.setDepreciationPlanSelect(
-            FixedAssetCategoryRepository.DEPRECIATION_PLAN_SELECT_NONE);
-      }
+      FixedAssetCategoryService fixedAssetCategoryService =
+          Beans.get(FixedAssetCategoryService.class);
+
+      fixedAssetCategoryService.setDepreciationPlanSelectToNone(
+          fixedAsset,
+          FixedAssetTypeRepository.FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_ONGOING_ASSET);
       if (StringUtils.notEmpty(fixedAsset.getDepreciationPlanSelect())) {
         response.setValue("depreciationPlanSelect", fixedAsset.getDepreciationPlanSelect());
       }
