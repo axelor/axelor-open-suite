@@ -17,5 +17,7 @@
 		<bind to="typeSelect" column="type"/>
 		<bind to="company" column="company" search="self.importId = :company" update="true"/>
 	</input>
+	
+	<input file="account_analyticLevel.csv" separator=";" search="self.nbr = :nbr" call="com.axelor.csv.script.ImportAnalyticLevel:importAnalyticLevel" type="com.axelor.apps.account.db.AnalyticLevel"/>
     
 </csv-inputs>

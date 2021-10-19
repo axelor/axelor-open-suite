@@ -747,7 +747,7 @@
 	</action-record>
 	
 	<action-attrs name="action-purchase-order-attrs-set-stock-location-domain">
-		<attribute name="domain" for="stockLocation" expr="eval: &quot;self.company = :company AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<attribute name="domain" for="stockLocation" expr="eval: &quot;self.company = :company AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${(tradingName?.stockLocationList.collect{it.id}+[0]).join(',')}))&quot;" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<attribute name="domain" for="stockLocation" expr="eval: &quot;self.company = :company AND self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true&quot;" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
 	</action-attrs>
 </object-views>

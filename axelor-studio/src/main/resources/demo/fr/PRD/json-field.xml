@@ -28,8 +28,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -113,8 +111,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -198,8 +194,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -282,8 +276,6 @@
 			<visibleInGrid>true</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -368,8 +360,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -452,8 +442,6 @@
 			<visibleInGrid>true</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -538,8 +526,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -622,8 +608,6 @@
 			<visibleInGrid>true</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -708,8 +692,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -792,8 +774,6 @@
 			<visibleInGrid>false</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -878,8 +858,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -962,8 +940,6 @@
 			<visibleInGrid>false</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -1048,8 +1024,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -1132,8 +1106,6 @@
 			<visibleInGrid>true</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -1218,8 +1190,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -1302,8 +1272,6 @@
 			<visibleInGrid>true</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -1388,8 +1356,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -1472,8 +1438,6 @@
 			<visibleInGrid>true</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -1558,8 +1522,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -1642,8 +1604,6 @@
 			<visibleInGrid>true</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -1728,8 +1688,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -1812,8 +1770,6 @@
 			<visibleInGrid>false</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -1898,8 +1854,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -1982,8 +1936,6 @@
 			<visibleInGrid>false</visibleInGrid>
 				
 			<hideIf></hideIf>
-				
-			<isWkf>false</isWkf>
 				
 			<maxSize>0</maxSize>
 				
@@ -2068,8 +2020,6 @@
 				
 			<hideIf></hideIf>
 				
-			<isWkf>false</isWkf>
-				
 			<maxSize>0</maxSize>
 				
 			<minSize>0</minSize>
@@ -2119,771 +2069,6 @@
 			<targetJsonModel></targetJsonModel>
 				
 			<appBuilder>PRD</appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>wkfPOWKFwkfPanel</name>
-				
-			<title></title>
-				
-			<type>panel</type>
-				
-			<defaultValue></defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>false</hidden>
-				
-			<visibleInGrid>false</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick></onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>false</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection></selection>
-				
-			<sequence>-50</sequence>
-				
-			<showIf></showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget></widget>
-				
-			<widgetAttrs>{"colSpan": "12"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>wkfPOWKFwkfSeparator</name>
-				
-			<title></title>
-				
-			<type>separator</type>
-				
-			<defaultValue></defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>false</hidden>
-				
-			<visibleInGrid>false</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick></onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>false</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection></selection>
-				
-			<sequence>-1</sequence>
-				
-			<showIf></showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget></widget>
-				
-			<widgetAttrs>{"colSpan": "12"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>status</name>
-				
-			<title>Statut</title>
-				
-			<type>integer</type>
-				
-			<defaultValue>1</defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>false</hidden>
-				
-			<visibleInGrid>true</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick></onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>true</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection>wkf.commande-produit.status.select</selection>
-				
-			<sequence>-49</sequence>
-				
-			<showIf></showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget>NavSelect</widget>
-				
-			<widgetAttrs>{"colSpan": "10"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>wkfPOWKFwkfTrackFlow</name>
-				
-			<title>Track flow</title>
-				
-			<type>button</type>
-				
-			<defaultValue></defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>true</hidden>
-				
-			<visibleInGrid>false</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick>action-wkf-open-wkf-tracking</onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>false</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection></selection>
-				
-			<sequence>-48</sequence>
-				
-			<showIf></showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget></widget>
-				
-			<widgetAttrs>{"colSpan": "2"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>wkfPOWKFwkfTransition1Button</name>
-				
-			<title>Confirmer</title>
-				
-			<type>button</type>
-				
-			<defaultValue></defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>false</hidden>
-				
-			<visibleInGrid>false</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick>save,action-wkfPOWKFwkf-wkfpowkfwkftransition1,save,action-group-wkfPOWKFwkf</onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>false</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection></selection>
-				
-			<sequence>-46</sequence>
-				
-			<showIf>status == 1</showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget></widget>
-				
-			<widgetAttrs>{"colSpan": "3"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>wkfPOWKFwkfTransition2Button</name>
-				
-			<title>Valider</title>
-				
-			<type>button</type>
-				
-			<defaultValue></defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>false</hidden>
-				
-			<visibleInGrid>false</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick>action-wkfPOWKFwkf-wkfpowkfwkftransition2-alert,save,action-wkfPOWKFwkf-wkfpowkfwkftransition2,action-wkfPOWKFwkf-wkfpowkfwkftransition2-success,save,action-group-wkfPOWKFwkf</onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>false</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection></selection>
-				
-			<sequence>-45</sequence>
-				
-			<showIf>status == 2</showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget></widget>
-				
-			<widgetAttrs>{"colSpan": "3"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>wkfPOWKFwkfTransition3Button</name>
-				
-			<title>Annuler</title>
-				
-			<type>button</type>
-				
-			<defaultValue></defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>false</hidden>
-				
-			<visibleInGrid>false</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick>action-wkfPOWKFwkf-wkfpowkfwkftransition3-alert,save,action-wkfPOWKFwkf-wkfpowkfwkftransition3,save,action-group-wkfPOWKFwkf</onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>false</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection></selection>
-				
-			<sequence>-44</sequence>
-				
-			<showIf>status == 2</showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget></widget>
-				
-			<widgetAttrs>{"colSpan": "3"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>wkfPOWKFwkfTransition4Button</name>
-				
-			<title>Terminer</title>
-				
-			<type>button</type>
-				
-			<defaultValue></defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>false</hidden>
-				
-			<visibleInGrid>false</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick>action-wkfPOWKFwkf-wkfpowkfwkftransition4-alert,save,action-wkfPOWKFwkf-wkfpowkfwkftransition4,save,action-group-wkfPOWKFwkf</onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>false</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection></selection>
-				
-			<sequence>-43</sequence>
-				
-			<showIf>status == 3</showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget></widget>
-				
-			<widgetAttrs>{"colSpan": "3"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
-				
-			<modelAppBuilder>PRD</modelAppBuilder>
-				
-			<isSelectionField>false</isSelectionField>
-				
-			<selectionText></selectionText>
-				
-		</json-field>
-		<json-field>
-				
-			<name>wkfPOWKFwkfTransition5Button</name>
-				
-			<title>Réinitialiser</title>
-				
-			<type>button</type>
-				
-			<defaultValue></defaultValue>
-				
-			<domain></domain>
-				
-			<enumType></enumType>
-				
-			<help></help>
-				
-			<formView></formView>
-				
-			<gridView></gridView>
-				
-			<hidden>false</hidden>
-				
-			<visibleInGrid>false</visibleInGrid>
-				
-			<hideIf></hideIf>
-				
-			<isWkf>true</isWkf>
-				
-			<maxSize>0</maxSize>
-				
-			<minSize>0</minSize>
-				
-			<model>com.axelor.meta.db.MetaJsonRecord</model>
-				
-			<modelField>attrs</modelField>
-				
-			<nameField>false</nameField>
-				
-			<onChange></onChange>
-				
-			<onClick>save,action-wkfPOWKFwkf-wkfpowkfwkftransition5,save,action-group-wkfPOWKFwkf</onClick>
-				
-			<precision>6</precision>
-				
-			<regex></regex>
-				
-			<required>false</required>
-				
-			<requiredIf></requiredIf>
-				
-			<readonly>false</readonly>
-				
-			<readonlyIf></readonlyIf>
-				
-			<includeIf></includeIf>
-				
-			<scale>2</scale>
-				
-			<selection></selection>
-				
-			<sequence>-42</sequence>
-				
-			<showIf>status == 4</showIf>
-				
-			<targetModel></targetModel>
-				
-			<widget></widget>
-				
-			<widgetAttrs>{"colSpan": "3"}</widgetAttrs>
-				
-			<valueExpr></valueExpr>
-				
-			<jsonModel>ProductOrder</jsonModel>
-				
-			<targetJsonModel></targetJsonModel>
-				
-			<appBuilder></appBuilder>
 				
 			<modelAppBuilder>PRD</modelAppBuilder>
 				

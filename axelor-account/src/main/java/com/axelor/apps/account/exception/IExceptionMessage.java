@@ -88,7 +88,9 @@ public interface IExceptionMessage {
   static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
-      "The move lines %s are reconciled and should not have been removed." /*)*/;;
+      "The move lines %s are reconciled and should not have been removed." /*)*/;
+  static final String MOVE_LINE_RECONCILE_SELECT_A_PARTNER = /*$$(*/
+      "Please select a partner" /*)*/;
   static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
       "The move line %s is missing description in order to create fixed asset" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
@@ -266,6 +268,8 @@ public interface IExceptionMessage {
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
 
+  static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
+      "Designated account %s in move line %s is not allowed on the designated journal. Please modify journal settings or designated account to proceed." /*)*/;
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
@@ -932,4 +936,7 @@ public interface IExceptionMessage {
 
   static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING = /*$$(*/
       "Please set up an accounting batch to block customers with late payments" /*)*/;
+
+  static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
+      "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
 }

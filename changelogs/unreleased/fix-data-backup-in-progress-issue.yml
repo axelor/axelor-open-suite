@@ -1,3 +1,0 @@
----
-title: "DataBackup: Fix data backup stuck in 'In progress' status when exception occurs"
-type: fix

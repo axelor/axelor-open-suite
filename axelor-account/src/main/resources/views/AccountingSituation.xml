@@ -33,11 +33,11 @@
       <spacer />
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-      <field name="customerAccount" canNew="true" form-view="customer-account-form" grid-view="account-grid"/>
-      <field name="supplierAccount" canNew="true" form-view="supplier-account-form" grid-view="account-grid"/>
+      <field name="customerAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'" canNew="true" form-view="customer-account-form" grid-view="account-grid"/>
+      <field name="supplierAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'" canNew="true" form-view="supplier-account-form" grid-view="account-grid"/>
       <field name="defaultIncomeAccount" canNew="true" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" form-view="employee-account-form" grid-view="account-grid"/>
       <field name="defaultExpenseAccount" canNew="true" domain="self.company = :company AND self.accountType.technicalTypeSelect ='charge'" form-view="employee-account-form" grid-view="account-grid"/>
-      <field name="employeeAccount" canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
+      <field name="employeeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'" canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="pfpValidatorUser" showIf="company.accountConfig.isManagePassedForPayment" canEdit="false" domain=":company member of self.companySet and self.isPfpValidator = true" required="true"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="company.accountConfig" hidden="true"/>
       <field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
