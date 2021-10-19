@@ -144,8 +144,6 @@
 
 		<!-- Json field -->
         <string name="productAttrs" title="Fields" json="true" />
-        
-        <boolean name="expense" title="Expense"/>
 
 		<unique-constraint columns="product,company"/>
 

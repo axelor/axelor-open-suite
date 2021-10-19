@@ -41,21 +41,27 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.tool.ContextTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -702,5 +708,64 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     } else {
       response.setAttr("differentSupplierLabel", "hidden", true);
     }
+  }
+
+  @Override
+  public String getProductDomain(
+      PurchaseOrder purchaseOrder,
+      PurchaseOrderLine purchaseOrderLine,
+      Boolean isFilterOnSupplier) {
+    String domain = "self.id in (0)";
+    if (!appPurchaseService.getAppPurchase().getEnablePurchasesProductByTradName()
+        || (purchaseOrder != null
+            && purchaseOrder.getCompany() != null
+            && (purchaseOrder.getCompany().getTradingNameSet() == null
+                || purchaseOrder.getCompany().getTradingNameSet().isEmpty()))) {
+      domain =
+          "self.isModel = false and (self.endDate = null or self.endDate > :__date__) and self.purchasable = true and self.dtype = 'Product'";
+      if (isFilterOnSupplier
+          && appPurchaseService.getAppPurchase().getManageSupplierCatalog()
+          && purchaseOrder.getSupplierPartner() != null) {
+        List<Integer> idList =
+            JPA.em()
+                .createQuery(
+                    "SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = "
+                        + purchaseOrder.getSupplierPartner().getId())
+                .getResultList();
+        domain = domain + " and self.id IN (" + Joiner.on(",").join(idList) + ")";
+      }
+      if (isPurchasableCompanySpecificProductField(
+          appBaseService.getAppBase().getCompanySpecificProductFieldsSet())) {
+        Boolean isPurchasable =
+            (Boolean)
+                JPA.em()
+                    .createQuery(
+                        "SELECT purchasable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = "
+                            + purchaseOrder.getCompany().getId())
+                    .getResultList()
+                    .get(0);
+        domain = domain + " and " + isPurchasable + " IS TRUE";
+      }
+      if (purchaseOrder.getTradingName() != null) {
+        domain =
+            domain
+                + " and "
+                + purchaseOrder.getTradingName().getId()
+                + " member of self.tradingNameBuyerSet";
+      }
+    }
+    return domain;
+  }
+
+  protected Boolean isPurchasableCompanySpecificProductField(
+      Set<MetaField> companySpecificProductFields) {
+    if (companySpecificProductFields != null && companySpecificProductFields.isEmpty()) {
+      for (MetaField metafield : companySpecificProductFields) {
+        if (("purchasable").equals(metafield.getName())) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

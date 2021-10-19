@@ -128,4 +128,7 @@ public interface PurchaseOrderLineService {
 
   public void checkDifferentSupplier(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionResponse response);
+
+  public String getProductDomain(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, Boolean isFilterOnSupplier);
 }

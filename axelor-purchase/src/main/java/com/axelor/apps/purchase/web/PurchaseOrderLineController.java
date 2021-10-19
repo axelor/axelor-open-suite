@@ -404,4 +404,22 @@ public class PurchaseOrderLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setProductDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      Boolean isFilterOnSupplier = (Boolean) request.getContext().get("isFilterOnSupplier");
+
+      PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
+
+      String domain =
+          service.getProductDomain(purchaseOrder, purchaseOrderLine, isFilterOnSupplier);
+      response.setAttr("product", "domain", domain);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
