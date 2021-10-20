@@ -1795,6 +1795,7 @@
 "Please put AnalyticDistributionLines in the Analytic Distribution Template",,,
 "Please select 'Draft' or 'Accounted' or 'Canceled' moves",,,
 "Please select 'Draft' or 'Simulated' moves",,,
+"Please select a partner",,,
 "Please select a payment mode to generate the counterpart",,,
 "Please select something to validate",,,
 "Please select the invoice(s) to print.",,,
