@@ -111,8 +111,6 @@ public class BankStatementLineService {
           ReportFactory.createReport(
                   IReport.BANK_STATEMENT_LINES,
                   "Bank statement lines - " + fromDate + " to " + toDate)
-              .addParam("InitialLineId", initalBankStatementLine.getId())
-              .addParam("FinalLineId", finalBankStatementLine.getId())
               .addParam("FromDate", Date.valueOf(fromDate))
               .addParam("ToDate", Date.valueOf(toDate))
               .addParam("BankDetails", bankDetails.getId())

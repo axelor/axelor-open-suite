@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.web;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
