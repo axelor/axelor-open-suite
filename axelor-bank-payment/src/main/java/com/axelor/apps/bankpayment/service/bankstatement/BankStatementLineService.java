@@ -103,8 +103,7 @@ public class BankStatementLineService {
             BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE,
             false,
             bankDetails);
-    if (exportType.equals("pdf")
-        && ObjectUtils.notEmpty(initalBankStatementLine)
+    if (ObjectUtils.notEmpty(initalBankStatementLine)
         && ObjectUtils.notEmpty(finalBankStatementLine)) {
       fromDate = initalBankStatementLine.getOperationDate();
       toDate = finalBankStatementLine.getOperationDate();
@@ -118,7 +117,7 @@ public class BankStatementLineService {
               .addParam("ToDate", Date.valueOf(toDate))
               .addParam("BankDetails", bankDetails.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat(ReportSettings.FORMAT_PDF)
+              .addFormat(exportType)
               .generate()
               .getFileLink();
     }
