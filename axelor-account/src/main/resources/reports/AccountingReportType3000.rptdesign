@@ -269,7 +269,7 @@ var temp = {};]]></method>
 if (row["rule_type"] == 2) {
 	var value = row["account_diff"];
 	
-	if (row["result"] == 2) 
+	if (row["result"] == 2)
 		value *= -1;
 		
 	if (value == null)
@@ -279,7 +279,7 @@ if (row["rule_type"] == 2) {
 } else if (row["rule_type"] == 3)  {
 	rules[row["rule_code"]] = eval(row["rule"]);
 }
-	
+
 //for (key in temp) {
 //	value = eval(temp[key]);
 //	if (!value.isNaN()) {
@@ -354,7 +354,7 @@ if (row["rule_type"] == 2) {
 	ConfigLine.hidden 					  as hidden,
 	ConfigLine.rule	 					  as rule,
 	SUM(MoveLine.debit - MoveLine.credit) as account_diff
-	
+
 FROM account_accounting_report as Report
 
 JOIN account_accounting_report_type as ReportType
@@ -392,7 +392,7 @@ WHERE Report.id = ?
 	AND (Report.journal      IS NULL OR Move.journal 	  IS NULL OR Move.journal   	= Report.journal)
 	AND (Report.period	     IS NULL OR Move.period 	  IS NULL OR Move.period		= Report.period)
 	AND (Report.payment_mode IS NULL OR Move.payment_mode IS NULL OR Move.payment_mode  = Report.payment_mode)
-	AND (PartnerSet.account_accounting_report IS NULL OR MOVE.Partner IS NULL OR Move.partner = PartnerSet.partner_set)
+	AND (PartnerSet.account_accounting_report IS NULL OR MOVE.Partner IS NULL OR MoveLine.partner = PartnerSet.partner_set)
 	AND (MoveLine.id 	     IS NULL OR (
 		Report.currency	  = Move.company_currency
 		AND Report.company = Move.company
