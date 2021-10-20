@@ -55,7 +55,7 @@
             onSelect="action-move-set-trading-name-domain" />
           <field name="partner" colSpan="6" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
             onChange="action-account-move-record-set-currency" />
-          <field name="currency" colSpan="3" />
+          <field name="currency" colSpan="3" onChange="action-move-record-set-currency-code" />
           <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
         </panel>
@@ -104,7 +104,8 @@
 				<button name="simulateBtn" title="Simulate" onClick="action-method-account-move-check-preconditions, action-move-record-set-status-simulate,action-move-attrs-validate-button-title,save" colSpan="12" showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-group-generate-tax-lines" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 5" />
-        <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-group-generate-counterpart" colSpan="12" hideIf="statusSelect == 3" />
+        <button showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)" 
+        name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-group-generate-counterpart" colSpan="12" />
       </panel>
     </panel>
 
@@ -240,7 +241,6 @@
     <action name="action-attrs-move-hide-trading-name" />
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status" />
     <action name="action-method-hide-axis-analytic-account-move-line"/>
-    <action name="action-attrs-on-load-currencies"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
   </action-group>
 
@@ -265,8 +265,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-set-origin-and-description-on-lines">
-    <action name="save" />
-    <action name="action-account-move-validate-origin-description-is-empty" />
+    <action name="action-account-move-method-origin-description-is-empty" />
     <action name="action-account-move-method-set-origin-description-on-lines" />
   </action-group>
 
@@ -279,9 +278,9 @@
       if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))" />
   </action-validate>
 
-  <action-validate name="action-account-move-validate-origin-description-is-empty">
-    <alert message="The move fields origin and description are empty, do you wish to continue ?" if="origin == null &amp;&amp; description == null" />
-  </action-validate>
+  <action-method name="action-account-move-method-origin-description-is-empty">
+  	<call class="com.axelor.apps.account.web.MoveController" method="validateOriginDescription"/>
+  </action-method>
 
   <!-- ACTION RECORD -->
   <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">

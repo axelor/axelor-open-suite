@@ -31,11 +31,22 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 
 public class BankStatementLineService {
+
+  protected BankPaymentBankStatementLineAFB120Repository
+      bankPaymentBankStatementLineAFB120Repository;
+
+  @Inject
+  public BankStatementLineService(
+      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
+    this.bankPaymentBankStatementLineAFB120Repository =
+        bankPaymentBankStatementLineAFB120Repository;
+  }
 
   public BankStatementLine createBankStatementLine(
       BankStatement bankStatement,
@@ -80,13 +91,12 @@ public class BankStatementLineService {
     String fileLink = null;
 
     BankStatementLineAFB120 initalBankStatementLine =
-        Beans.get(BankPaymentBankStatementLineAFB120Repository.class)
-            .findLineBetweenDate(
-                fromDate,
-                toDate,
-                BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE,
-                true,
-                bankDetails);
+        bankPaymentBankStatementLineAFB120Repository.findLineBetweenDate(
+            fromDate,
+            toDate,
+            BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE,
+            true,
+            bankDetails);
     BankStatementLineAFB120 finalBankStatementLine =
         Beans.get(BankPaymentBankStatementLineAFB120Repository.class)
             .findLineBetweenDate(

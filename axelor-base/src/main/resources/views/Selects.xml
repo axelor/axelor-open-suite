@@ -217,6 +217,7 @@
 	<selection name="ibase.product.variant.value.application.price.select">
 		<option value="0">Sale price</option>
 		<option value="1">cost price</option>
+		<option value="2">Purchase price</option>
 	</selection>
 
 

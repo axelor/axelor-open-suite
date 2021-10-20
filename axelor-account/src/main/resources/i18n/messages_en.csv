@@ -1044,6 +1044,7 @@
 "Depreciation method",,,
 "Description",,,
 "Description required",,,
+"Designated account %s in move line %s is not allowed on the designated journal. Please modify journal settings or designated account to proceed.",,,
 "Detail",,,
 "Detail payment amount",,,
 "Detailed",,,
