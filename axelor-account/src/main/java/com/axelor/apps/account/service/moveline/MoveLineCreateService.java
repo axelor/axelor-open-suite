@@ -15,6 +15,22 @@ import java.util.Map;
 
 /** Interface of service to create {@link MoveLine} */
 public interface MoveLineCreateService {
+  MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal currencyAmount,
+      TaxLine taxLine,
+      BigDecimal amount,
+      BigDecimal currencyRate,
+      boolean isDebit,
+      LocalDate date,
+      LocalDate dueDate,
+      LocalDate originDate,
+      Integer counter,
+      String origin,
+      String description)
+      throws AxelorException;
 
   MoveLine createMoveLine(
       Move move,

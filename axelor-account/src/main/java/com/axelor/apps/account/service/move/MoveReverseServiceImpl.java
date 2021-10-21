@@ -145,23 +145,24 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   }
 
   protected MoveLine generateReverseMoveLine(
-      Move reverseMove, MoveLine orgineMoveLine, LocalDate dateOfReversion, boolean isDebit)
+      Move reverseMove, MoveLine origineMoveLine, LocalDate dateOfReversion, boolean isDebit)
       throws AxelorException {
     MoveLine reverseMoveLine =
         moveLineCreateService.createMoveLine(
             reverseMove,
-            orgineMoveLine.getPartner(),
-            orgineMoveLine.getAccount(),
-            orgineMoveLine.getCurrencyAmount(),
-            orgineMoveLine.getDebit().add(orgineMoveLine.getCredit()),
-            orgineMoveLine.getCurrencyRate(),
+            origineMoveLine.getPartner(),
+            origineMoveLine.getAccount(),
+            origineMoveLine.getCurrencyAmount(),
+            origineMoveLine.getTaxLine(),
+            origineMoveLine.getDebit().add(origineMoveLine.getCredit()),
+            origineMoveLine.getCurrencyRate(),
             !isDebit,
             dateOfReversion,
             dateOfReversion,
             dateOfReversion,
-            orgineMoveLine.getCounter(),
-            orgineMoveLine.getName(),
-            null);
+            origineMoveLine.getCounter(),
+            origineMoveLine.getOrigin(),
+            origineMoveLine.getDescription());
     return reverseMoveLine;
   }
 }
