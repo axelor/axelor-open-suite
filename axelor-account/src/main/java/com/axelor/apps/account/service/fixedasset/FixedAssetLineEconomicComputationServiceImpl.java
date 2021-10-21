@@ -65,7 +65,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      return fixedAsset.getGrossValue().subtract(fixedAsset.getAlreadyDepreciatedAmount());
+      return fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset));
     }
     return fixedAsset.getGrossValue();
   }
@@ -132,5 +132,16 @@ public class FixedAssetLineEconomicComputationServiceImpl
       return super.computeOnGoingDegressiveDepreciation(fixedAsset, dummyPreviousLine);
     }
     return super.computeInitialDegressiveDepreciation(fixedAsset, baseValue);
+  }
+
+  @Override
+  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return fixedAsset.getNbrOfPastDepreciations();
+  }
+
+  @Override
+  protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
+
+    return fixedAsset.getAlreadyDepreciatedAmount();
   }
 }

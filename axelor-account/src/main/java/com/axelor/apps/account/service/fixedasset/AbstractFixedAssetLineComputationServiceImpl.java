@@ -34,6 +34,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected abstract Integer getNumberOfDepreciation(FixedAsset fixedAsset);
 
+  protected abstract Integer getNumberOfPastDepreciation(FixedAsset fixedAsset);
+
+  protected abstract BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset);
+
   protected abstract String getComputationMethodSelect(FixedAsset fixedAsset);
 
   protected abstract BigDecimal getDegressiveCoef(FixedAsset fixedAsset);
@@ -163,10 +167,6 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     } else {
       return computeInitialLinearDepreciation(fixedAsset, baseValue);
     }
-  }
-
-  protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
-    return fixedAsset.getAlreadyDepreciatedAmount();
   }
 
   protected BigDecimal computeInitialLinearDepreciation(
@@ -327,9 +327,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     List<FixedAssetLine> fixedAssetLineList = getFixedAssetLineList(fixedAsset);
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       if (fixedAssetLineList == null) {
-        return fixedAsset.getNbrOfPastDepreciations();
+        return getNumberOfPastDepreciation(fixedAsset);
       }
-      return fixedAssetLineList.size() + fixedAsset.getNbrOfPastDepreciations();
+      return fixedAssetLineList.size() + getNumberOfPastDepreciation(fixedAsset);
     }
     if (fixedAssetLineList == null) {
       return 0;

@@ -23,16 +23,6 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
     Objects.requireNonNull(fixedAsset);
     FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
     if (isFailOver(fixedAsset) && fixedAssetCategory != null) {
-      if (fixedAssetCategory
-              .getComputationMethodSelect()
-              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)
-          && fixedAsset
-              .getComputationMethodSelect()
-              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR));
-      }
       if (fixedAsset.getAlreadyDepreciatedAmount() != null
           && fixedAsset.getAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue()) > 0) {
         throw new AxelorException(
@@ -71,10 +61,7 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
 
   @Override
   public boolean isFailOver(FixedAsset fixedAsset) {
-    return fixedAsset.getFailoverDate() != null
-        || (fixedAsset.getNbrOfPastDepreciations() != null
-            && fixedAsset.getNbrOfPastDepreciations() > 0)
-        || (fixedAsset.getAlreadyDepreciatedAmount() != null
-            && fixedAsset.getAlreadyDepreciatedAmount().signum() > 0);
+    return fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT
+        && fixedAsset.getFailoverDate() != null;
   }
 }
