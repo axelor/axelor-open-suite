@@ -58,6 +58,10 @@
 	      <field name="fiscalDurationInMonth" readonly="true" showIf="fiscalPeriodicityTypeSelect == 1" onChange="action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
 	      <field name="fixedAssetCategory.isProrataTemporis"/>
 	      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
+	      <panel name="fiscalFailoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" readonlyIf="statusSelect > 1" >
+	      	<field name="fiscalNbrOfPastDepreciations"  requiredIf="originSelect == 99" min="0"/>
+	    	<field name="fiscalAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"/>
+	      </panel>	      
 	      <panel-related name="fiscalFixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fiscalFixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fiscal-fixed-asset-line-grid" canNew="false"/>
 	    </panel>
 	        <panel name="depreciationInfo" title="Depreciation information" showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))" readonlyIf="statusSelect > 1">
@@ -70,6 +74,10 @@
 	      <field name="durationInMonth" readonly="true" showIf="periodicityTypeSelect == 1"/>
 	      <field name="fixedAssetCategory.isProrataTemporis"/>
 	      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
+	      <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" readonlyIf="statusSelect > 1" >
+	      	<field name="nbrOfPastDepreciations"  requiredIf="originSelect == 99" min="0"/>
+	    	<field name="alreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"/>
+	      </panel>
 	      <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
 	    </panel>
 	    <panel name="derogatoryPanel" title="Derogatory" showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)">
@@ -85,6 +93,10 @@
 	      <field name="ifrsDurationInMonth"  readonly="true" showIf="ifrsPeriodicityTypeSelect == 1"/>
 	      <field name="fixedAssetCategory.isProrataTemporis"/>
 	      <field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
+	      <panel name="ifrsFailoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" readonlyIf="statusSelect > 1" >
+	      	<field name="ifrsNbrOfPastDepreciations"  requiredIf="originSelect == 99" min="0"/>
+	    	<field name="ifrsAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"/>
+	      </panel>
 	      <panel-related name="ifrsFixedAssetLineListPanel" readonlyIf="statusSelect > 1" colSpan="12" field="ifrsFixedAssetLineList" form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
 	    </panel>
 	    <panel name="associatedFixedAssets" title="Associated Fixed Assets">
@@ -121,8 +133,6 @@
 	  </panel>
 	  <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" sidebar="true" readonlyIf="statusSelect > 1" >
 	    <field name="failoverDate" requiredIf="originSelect == 99"/>
-	    <field name="nbrOfPastDepreciations"  requiredIf="originSelect == 99" min="0"/>
-	    <field name="alreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"/>
 	  </panel>
 	  <panel name="toUpdateValuesPanel" title="Update Depreciation parameters" showIf="statusSelect == 2" readonlyIf="!$canUpdateDepreciation" sidebar="true">
 	    <field name="correctedAccountingValue" readonlyIf="accountingValue == null || accountingValue &lt;= 0 || statusSelect != 2"/>
@@ -411,15 +421,8 @@
     </action-attrs>
     
     <action-group name="action-group-account-fixed-asset-failover-control">
-    	<action name="action-validate-account-fixed-asset-failover-computation-method-linear" if="originSelect == 99"/>
-        <action name="action-attrs-account-fixed-asset-failover-override" if="originSelect == 99"/>
     	<action name="action-method-account-fixed-asset-failover-control" if="originSelect == 99"/>
-    	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal" if="originSelect == 99"/>
     </action-group>
-    
-    <action-validate name="action-validate-account-fixed-asset-failover-computation-method-linear">
-    	<alert if="computationMethodSelect == 'degressive'" message="The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal"/>
-    </action-validate>
     
     <action-method name="action-method-account-fixed-asset-failover-control">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="failOverControl"/>

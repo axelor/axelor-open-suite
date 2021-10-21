@@ -82,6 +82,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       FixedAssetLineService fixedAssetLineService,
       MoveValidateService moveValidateService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
+    this.fixedAssetRepo = fixedAssetRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;

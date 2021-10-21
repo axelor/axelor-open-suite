@@ -240,4 +240,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
     return BigDecimal.ZERO;
   }
+
+  @Override
+  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return fixedAsset.getNbrOfPastDepreciations();
+  }
 }
