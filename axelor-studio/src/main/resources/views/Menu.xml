@@ -10,14 +10,6 @@
         <view type="html" name="studio/custom-model" />
     </action-view>
 
-    <menuitem name="app-builder-bpm" title="BPM" parent="app-builder-root" action="action.bpm.view" order="20" />
-
-    <action-view name="action.bpm.view" title="BPM" model="com.axelor.studio.db.Wkf">
-        <view type="grid" name="wkf-grid" />
-        <view type="form" name="wkf-form" />
-    </action-view>
-
-
     <!-- Reporting menu -->
 
     <menuitem name="app-builder-reporting" title="Reporting" parent="app-builder-root" order="30" />
@@ -34,13 +26,6 @@
     <action-view name="action.dashboard.builders.view" title="Dashboard builders" model="com.axelor.studio.db.DashboardBuilder">
         <view type="grid" name="dashboard-builder-grid" />
         <view type="form" name="dashboard-builder-form" />
-    </action-view>
-
-    <menuitem name="app-builder-process-tracking" title="Process tracking" parent="app-builder-reporting" action="action.process.tracking.view" order="33" />
-
-    <action-view name="action.process.tracking.view" title="Process tracking" model="com.axelor.studio.db.WkfTracking">
-        <view type="grid" name="wkf-tracking-grid" />
-        <view type="form" name="wkf-tracking-form" />
     </action-view>
 
     <!-- Configuration menu -->

@@ -292,10 +292,6 @@
      <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="setCashAccount"/>
     </action-method>
     
-  <action-method name="action-bank-reconciliation-method-update-amounts">
-    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="updateAmounts" />
-  </action-method>
-
   <action-method name="action-bank-payment-bank-reconciliation-method-on-change-bank-statement">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="onChangeBankStatement" />
   </action-method>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%		
 	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.DashboardBuilderRepository' as Class).all()
 		
@@ -18,7 +19,7 @@
 	})
 	
 	if (!dashboardBuilders.isEmpty()) {
-		dashboardBuilders = """<?xml version="1.0" encoding="utf-8"?>\n<dashboard-builders>\n""" +  dashboardBuilders + """\n</dashboard-builders>"""
+		dashboardBuilders = """<dashboard-builders>\n""" +  dashboardBuilders + """\n</dashboard-builders>"""
 	}
 
 	out << """$dashboardBuilders"""

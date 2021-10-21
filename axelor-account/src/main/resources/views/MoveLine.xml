@@ -55,21 +55,26 @@
 	<field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid"
 	  form-view="analytic-distribution-template-form" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" onChange="action-group-move-line-analytic-distribution-template-onchange"
 	  readonlyIf="!account || account.analyticDistributionAuthorized == false"
-	  requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines" />
+	  requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null || axis2AnalyticAccount == null || axis3AnalyticAccount == null || axis4AnalyticAccount == null || axis5AnalyticAccount == null)" />
 	<field name="axis1AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
 	  readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+	  requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
 	  onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
 	<field name="axis2AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+      requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
 	  onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
 	<field name="axis3AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
 	  readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+	  requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
 	  onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
 	<field name="axis4AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
 	  readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+	  requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
 	  onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
 	<field name="axis5AnalyticAccount" grid-view="analytic-account-grid" form-view="analytic-account-form"
 	  readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
+	  requiredIf="account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; analyticDistributionTemplate == null"
 	  onSelect="action-attrs-move-line-set-domain-axis" onChange="action-method-move-line-axis-create-analytic-line"/>
 	<field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid" form-view="analytic-move-line-move-line-form" onChange="action-group-move-line-analytic-move-line-onchange"/>	
 	<field name="origin" width="120" hidden="true"/>
@@ -584,11 +589,11 @@
   </action-record>
 
   <action-record name="action-record-account-moveline-debit-onchange" model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
+    <field name="credit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
   </action-record>
 
   <action-record name="action-record-account-moveline-credit-onchange" model="com.axelor.apps.account.db.MoveLine">
-    <field name="credit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
+    <field name="debit" expr="0" if="credit != 0 &amp;&amp; debit != 0" />
   </action-record>
 
   <action-record name="account-move-line-record-date-onchange" model="com.axelor.apps.account.db.MoveLine">

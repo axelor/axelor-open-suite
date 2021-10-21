@@ -276,11 +276,9 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     } else {
       moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
-    if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
-      BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
-      moveLine.setCurrencyAmount(
-          unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
-    }
+    BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
+    moveLine.setCurrencyAmount(
+        unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
     return moveLine;
   }
 }

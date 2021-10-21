@@ -56,6 +56,7 @@
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
 	    <field name="name"/>
 	    <field name="productVariant" width="200"/>
+	    <field name="purchasePrice" width="120" x-scale="2"/>
 	    <field name="costPrice" width="120" x-scale="2"/>
 	    <field name="salePrice" width="120" x-scale="2"/>
     </grid>
@@ -284,6 +285,8 @@
 					            <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 					            <field name="productVariantAttr4" showIf="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value4" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
 					            <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantAttr5" showIf="productVariantAttr4" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value5" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+					            <field name="productVariantValue5Set" showIf="productVariantAttr5" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 				          	</editor>
 	        			</field>
 	        			<button name="generateProductVariantBtn" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
@@ -301,6 +304,8 @@
 					            <field name="productVariantValue3" showTitle="false" showIf="productVariantAttr3" widget="SuggestBox" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 					            <field name="productVariantAttr4" showTitle="false" readonly="true" showIf="productVariantAttr3" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
 					            <field name="productVariantValue4" showTitle="false" showIf="productVariantAttr4" widget="SuggestBox" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantAttr5" showTitle="false" readonly="true" showIf="productVariantAttr4" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+					            <field name="productVariantValue5" showTitle="false" showIf="productVariantAttr5" widget="SuggestBox" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 				          </editor>
 	        			</field>
 	        			<field name="parentProduct" canEdit="false" form-view="product-form" grid-view="product-grid"/>

@@ -18,7 +18,7 @@
 	   	<field name="forecastRecapLineType.sequence" hidden="true"/>
     </grid>
     
-    <grid name="forecast-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine" orderBy="estimatedDate,forecastRecapLineType.sequence">
+    <grid name="forecast-recap-line-grid" sortable="false" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine" orderBy="estimatedDate,forecastRecapLineType.sequence">
        	<hilite background="success" if="typeSelect==1"/>
        	<hilite background="warning" if="typeSelect==2"/>
        	<field name="estimatedDate"/>
