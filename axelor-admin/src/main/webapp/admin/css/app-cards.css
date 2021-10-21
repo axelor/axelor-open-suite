@@ -24,7 +24,7 @@
 .app-cards__buttons {
     grid-area: buttons;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: row-reverse;
     margin-top: 8px;
 }
 

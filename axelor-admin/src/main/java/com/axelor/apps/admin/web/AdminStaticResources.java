@@ -25,5 +25,6 @@ public class AdminStaticResources implements StaticResourceProvider {
   @Override
   public void register(List<String> resources) {
     resources.add("admin/css/custom-width.css");
+    resources.add("admin/css/app-cards.css");
   }
 }
