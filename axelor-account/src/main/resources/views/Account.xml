@@ -65,7 +65,12 @@
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch" onChange="action-account-record-uncheck-analytic-distribution-required"/>
           <field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
-          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" domain="self.company = :company"/>
+          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" domain="self.company = :company" colSpan="12"> 
+            <editor onNew="action-analytic-dist-template-method-on-new-from-account">
+              <field name="name"/>
+              <field name="analyticDistributionLineList" colSpan="12" editable="true"/>
+            </editor>
+          </field>
         </panel>
 			</panel>
       <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">

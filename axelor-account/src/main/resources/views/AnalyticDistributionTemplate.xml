@@ -17,6 +17,10 @@
         <panel-related name="analyticDistributionLineListPanel" field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
     </form>
     
+    <action-method name="action-analytic-dist-template-method-on-new-from-account">
+    	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="onNewFromAccount"/>
+    </action-method>
+    
     <action-method name="action-analytic-dist-template-method-validate-tot-percentage">
     	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="validateLines"/>
     </action-method>
