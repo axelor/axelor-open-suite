@@ -1,0 +1,33 @@
+.app-cards__container {
+    display: grid;
+    grid-template:
+                "image name name"         2fr
+                "buttons buttons buttons" 1fr
+                / 60px auto;
+    grid-column-gap: 6px;
+}
+
+.app-cards__image {
+    grid-area: image;
+}
+
+.app-cards__image > img {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.app-cards__name {
+    grid-area: name;
+}
+
+.app-cards__buttons {
+    grid-area: buttons;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.app-cards__buttons > a + a {
+    margin-left: 6px;
+}
