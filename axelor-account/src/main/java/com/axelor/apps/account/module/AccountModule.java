@@ -166,8 +166,6 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveToolServiceImpl;
-import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.move.MoveValidateServiceImpl;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.MoveViewHelperServiceImpl;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
@@ -403,7 +401,5 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineToolService.class).to(MoveLineToolServiceImpl.class);
 
     bind(MoveLineTaxService.class).to(MoveLineTaxServiceImpl.class);
-
-    bind(MoveValidateService.class).to(MoveValidateServiceImpl.class);
   }
 }
