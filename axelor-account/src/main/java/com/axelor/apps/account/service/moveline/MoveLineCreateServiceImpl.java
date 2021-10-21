@@ -567,7 +567,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
     newOrUpdatedMoveLine.setDescription(move.getDescription());
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
-    newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+    if (newOrUpdatedMoveLine.getDebit().signum() != 0
+        || newOrUpdatedMoveLine.getCredit().signum() != 0) {
+      newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+    }
     return newOrUpdatedMoveLine;
   }
 
@@ -580,6 +583,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       MoveLine newOrUpdatedMoveLine) {
 
     newOrUpdatedMoveLine.setSourceTaxLine(taxLine);
+    newOrUpdatedMoveLine.setTaxLine(taxLine);
     newOrUpdatedMoveLine.setDebit(debit.multiply(taxLine.getValue()));
     newOrUpdatedMoveLine.setCredit(credit.multiply(taxLine.getValue()));
     newOrUpdatedMoveLine.setDescription(taxLine.getTax().getName());
