@@ -1019,6 +1019,36 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <column id="5392"/>
             <column id="5393"/>
             <row id="5509">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">doc</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">docx</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">ppt</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">pptx</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">xls</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">xls_spudsoft</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">xlsx</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
                 <cell id="5510">
                     <property name="fontSize">24pt</property>
                     <property name="textAlign">center</property>
@@ -1055,6 +1085,59 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="fontSize">24pt</property>
                     <property name="textAlign">center</property>
                     <text id="5500">
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">ref</property>
+                                <text-property name="displayName">ref</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">report_title</property>
+                                <text-property name="displayName">report_title</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["report_title"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["report_title"] + " " + row["ref"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="5531">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">odt</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">ods</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">odp</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">html</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                    <structure>
+                        <property name="format">postscript</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5532">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">24pt</property>
+                    <property name="textAlign">center</property>
+                    <text id="5538">
                         <property name="dataSet">ReportDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
