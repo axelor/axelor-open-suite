@@ -387,7 +387,7 @@ public class AccountModule extends AxelorModule {
     bind(PeriodControlService.class).to(PeriodControlServiceImpl.class);
 
     bind(YearControlService.class).to(YearControlServiceImpl.class);
-    
+
     bind(AnalyticAxisControlService.class).to(AnalyticAxisControlServiceImpl.class);
 
     bind(AnalyticJournalControlService.class).to(AnalyticJournalControlServiceImpl.class);
