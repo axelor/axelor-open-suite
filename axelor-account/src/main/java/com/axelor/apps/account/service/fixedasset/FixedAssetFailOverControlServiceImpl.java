@@ -31,6 +31,24 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
                 IExceptionMessage
                     .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
       }
+      if (fixedAsset.getFiscalAlreadyDepreciatedAmount() != null
+          && fixedAsset.getFiscalAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
+              > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                IExceptionMessage
+                    .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
+      }
+      if (fixedAsset.getIfrsAlreadyDepreciatedAmount() != null
+          && fixedAsset.getIfrsAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
+              > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                IExceptionMessage
+                    .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
+      }
 
       if (fixedAsset.getFailoverDate() != null) {
         ChronoUnit chronoUnit =
