@@ -89,8 +89,6 @@ public interface IExceptionMessage {
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
       "The move lines %s are reconciled and should not have been removed." /*)*/;
-  static final String MOVE_LINE_RECONCILE_SELECT_A_PARTNER = /*$$(*/
-      "Please select a partner" /*)*/;
   static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
       "The move line %s is missing description in order to create fixed asset" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
