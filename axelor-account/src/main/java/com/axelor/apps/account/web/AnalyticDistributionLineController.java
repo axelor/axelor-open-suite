@@ -17,11 +17,9 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -31,7 +29,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -92,23 +89,6 @@ public class AnalyticDistributionLineController {
         response.setValue(
             "amount",
             Beans.get(MoveLineService.class).getAnalyticAmount(moveLine, analyticMoveLine));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void onNewFromAccount(ActionRequest request, ActionResponse response) {
-
-    try {
-      Context parentContext = request.getContext().getParent();
-      if (parentContext.getContextClass().toString().equals(Account.class.toString())) {
-        Account account = parentContext.asType(Account.class);
-        AnalyticDistributionTemplate analyticDistributionTemplate =
-            Beans.get(AnalyticDistributionTemplateService.class)
-                .createDistributionTemplateFromAccount(account);
-        account.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-        response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

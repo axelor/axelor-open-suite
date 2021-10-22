@@ -65,9 +65,10 @@
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch" onChange="action-account-record-uncheck-analytic-distribution-required"/>
           <field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
-          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" domain="self.company = :company" colSpan="12"> 
-            <editor onNew="action-analytic-dist-template-method-on-new-from-account">
+          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" domain="self.company = :company" colSpan="12" canNew="true" onChange="action-account-account-method-new-analytic-dist-template"> 
+            <editor>
               <field name="name"/>
+              <field name="company" readonly="true"/>
               <field name="analyticDistributionLineList" colSpan="12" editable="true"/>
             </editor>
           </field>
@@ -185,6 +186,10 @@
     
     <action-method name="action-account-method-check-if-code-already-exist-for-company">
     	<call class="com.axelor.apps.account.web.AccountController" method="checkIfCodeAccountAlreadyExistForCompany"/>
+    </action-method>
+    
+    <action-method name="action-account-account-method-new-analytic-dist-template">
+      <call class="com.axelor.apps.account.web.AccountController" method="createAnalyticDistTemplate"/>
     </action-method>
     
     <search-filters name="account-filters" model="com.axelor.apps.account.db.Account" title="Account filters">
