@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	query = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaJsonModelRepository' as Class).all()
 	
 	if(__ids__ != null) {
@@ -25,7 +26,7 @@
 	})
 	
 	if (!jsonModels.isEmpty()) {
-		jsonModels = """<?xml version="1.0" encoding="utf-8"?>\n<json-models>\n""" +  jsonModels + """\n</json-models>"""
+		jsonModels = """<json-models>\n""" +  jsonModels + """\n</json-models>"""
 	}
 	
 	out << """$jsonModels"""
