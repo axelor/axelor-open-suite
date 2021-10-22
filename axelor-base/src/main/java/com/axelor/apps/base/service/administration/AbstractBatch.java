@@ -17,6 +17,16 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -29,13 +39,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import javax.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBatch {
   private static final ThreadLocal<Long> threadBatchId = new ThreadLocal<>();
@@ -124,7 +127,7 @@ public abstract class AbstractBatch {
   }
 
   protected void start() throws IllegalAccessException {
-    LOG.info("Début batch {} ::: {}", model, batch.getStartDate());
+    LOG.info("Starting batch {} ::: {}", model, batch.getStartDate());
 
     model.setArchived(true);
     associateModel();
@@ -143,7 +146,7 @@ public abstract class AbstractBatch {
 
     checkPoint();
 
-    LOG.info("Fin batch {} ::: {}", model, batch.getEndDate());
+    LOG.info("Ending batch {} ::: {}", model, batch.getEndDate());
   }
 
   protected void incrementDone() {
@@ -198,7 +201,7 @@ public abstract class AbstractBatch {
   }
 
   private Long getDuring() {
-    return ChronoUnit.MINUTES.between(batch.getStartDate(), batch.getEndDate());
+    return ChronoUnit.SECONDS.between(batch.getStartDate(), batch.getEndDate());
   }
 
   private void associateModel() throws IllegalAccessException {
