@@ -305,9 +305,7 @@ public class MoveLineController {
         Move move = parentContext.asType(Move.class);
         Partner partner = move.getPartner();
 
-        if (ObjectUtils.isEmpty(partner)) {
-          response.setError(I18n.get(IExceptionMessage.MOVE_LINE_RECONCILE_SELECT_A_PARTNER));
-        } else {
+        if (partner != null) {
           MoveLoadDefaultConfigService moveLoadDefaultConfigService =
               Beans.get(MoveLoadDefaultConfigService.class);
           Account accountingAccount =
