@@ -8,6 +8,12 @@
   <entity name="Product" lang="java">
   
     <boolean name="isAnalyticCapture" title="Use for Analytic Capture"/>
+    <boolean name="fixedAssets" title="Fixed Assets"/>
+    
+    <boolean name="analyticDistributionRequiredOnInvoiceLines" title="Analytic distribution required on invoice lines" massUpdate="true" />
+    <boolean name="analyticDistributionRequiredOnMoveLines" title="Analytic distribution required on move lines" massUpdate="true" />
+    <boolean name="analyticDistributionAuthorized" title="Analytic distribution authorized" massUpdate="true" />
+    <many-to-one name="analyticDistributionTemplate" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic Distribution Template" massUpdate="true" help="This analytical distribution will be used by default when entering invoice lines or entries as soon as this product is selected."/>
     
   </entity>
 

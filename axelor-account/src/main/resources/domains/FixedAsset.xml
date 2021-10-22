@@ -33,14 +33,60 @@
 	<decimal name="grossValue" title="Gross value"/>
 	<decimal name="residualValue" title="Residual value"/>
 	
-	<date name="disposalDate" title="Disposal date"/>
+	<date name="disposalDate" title="Fixed asset Disposal date"/>
 	
 	<decimal name="disposalValue" title="Disposal value"/>
 	
 	<one-to-many name="fixedAssetLineList" ref="com.axelor.apps.account.db.FixedAssetLine" title="Depreciation board" mappedBy="fixedAsset"/>
-	<many-to-one name="disposalMove" ref="com.axelor.apps.account.db.Move" title="Disposal move"/>
+	<many-to-one name="disposalMove" ref="com.axelor.apps.account.db.Move" title="Fixed asset Disposal Move"/>
 	
 	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+	
+	
+	<integer name="transferredReasonSelect" title="Transferred Reason" selection="account.fixed.asset.transfer.reason"/>
+	<string name="fixedAssetSeq" title="Fixed Asset Sequence"/>
+	<many-to-one ref="com.axelor.apps.account.db.Move" name="purchaseAccountMove" title="Purchase Account Move"/>
+	<many-to-one ref="com.axelor.apps.account.db.Move" name="saleAccountMove" title="Sale Account Move"/>
+	<string name="depreciationPlanSelect" title="Depreciation Plan" selection="account.fixed.asset.depreciation.plan"/>
+	<integer name="originSelect" title="Origin" selection="account.fixed.asset.origin"/>
+	
+	<date name="firstServiceDate" title="First Service Date"/>
+	<date name="failoverDate" title="Failover Date"/>
+	<decimal name="pastDepreciation" title="Past Depreciation"/>
+	<integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>  
+	<decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+	<decimal name="accountingValue" title="Accounting value"/>
+	<decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
+	
+	<boolean name="isEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
+	<integer name="periodicityTypeSelect" title="Periodicity Type" selection="account.fixed.asset.periodicity.type" default="12"/>
+	<string name="fiscalComputationMethodSelect" title="Fiscal Computation Method Select" selection="account.fixed.type.category.fiscal.computation.method.select"/>
+	<decimal name="fiscalDegressiveCoef" title="Fiscal Degressive Coef"/>
+	<integer name="fiscalNumberOfDepreciation" title="Fiscal Number Of Depreciation"/>
+	<integer name="fiscalPeriodicityTypeSelect" title="Fiscal Periodicity Type" selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
+	<integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month" default="12"/>
+	<integer name="fiscalDurationInMonth" title="Fiscal Duration In Month"/>
+	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List" mappedBy="fiscalFixedAsset"/>
+	
+	<boolean name="isIfrsEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
+	<string name="ifrsComputationMethodSelect" title="IFRS Computation Method Select" selection="account.fixed.type.category.fiscal.computation.method.select"/>
+	<decimal name="ifrsDegressiveCoef" title="IFRS Degressive Coef"/>
+	<integer name="ifrsNumberOfDepreciation" title="IFRS Number Of Depreciation"/>
+	<integer name="ifrsPeriodicityTypeSelect" title="IFRS Periodicity Type" selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
+	<integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month" default="12"/>
+	<integer name="ifrsDurationInMonth" title="IFRS Duration In Month"/>
+	<one-to-many ref="com.axelor.apps.account.db.FixedAssetLine" name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List" mappedBy="ifrsFixedAsset"/>
+	
+	<many-to-many ref="com.axelor.apps.account.db.FixedAsset" name="associatedFixedAssetsSet" title="Associated Fixed Assets Set"/>
+	<string name="comments" large="true" multiline="true" title="Comments"/>
+	<integer name="disposalTypeSelect" title="Disposal Type" selection="account.fixed.asset.disposal.type.select" default="1" />
+	<integer name="disposalQtySelect" title="Disposal Quantity select" selection="account.fixed.asset.disposal.quantity.select" default="1" />
+	<decimal name="qty" title="Disposal Quantity" />
+	<one-to-many name="fixedAssetDerogatoryLineList" ref="com.axelor.apps.account.db.FixedAssetDerogatoryLine" title="Fiscal Fixed Asset Line List" mappedBy="fixedAsset"/>
+	
+	<string name="serialNumber" title="Serial Nbr"/>
+	<many-to-one ref="com.axelor.meta.db.MetaFile" name="barcode" title="Barcode"/>
+	<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
@@ -52,6 +98,39 @@
 		// COMPUTATION METHOD 
 		public static final String COMPUTATION_METHOD_LINEAR = "linear";
 		public static final String COMPUTATION_METHOD_DEGRESSIVE = "degressive";
+		
+		// DEPRECIATION PLAN SELECT
+		public static final String DEPRECIATION_PLAN_NONE = "0";
+		public static final String DEPRECIATION_PLAN_FISCAL = "1";
+		public static final String DEPRECIATION_PLAN_ECONOMIC = "2";
+		public static final String DEPRECIATION_PLAN_DEROGATION = "3";
+		public static final String DEPRECIATION_PLAN_IFRS = "4";
+		// PERIODICITY TYPE SELECT
+		public static final int PERIODICITY_TYPE_MONTH = 1;
+		public static final int PERIODICITY_TYPE_YEAR = 12;
+		
+		public static final int DISPOSABLE_TYPE_SELECT_SCRAPPING = 1;
+		public static final int DISPOSABLE_TYPE_SELECT_CESSION = 2;
+		
+		public static final int DISPOSABLE_QTY_SELECT_TOTAL = 1;
+		public static final int DISPOSABLE_QTY_SELECT_PARTIAL = 2;
+		
+		//Transfered reason
+		public static final int TRANSFERED_REASON_SCRAPPING = 1;
+		public static final int TRANSFERED_REASON_CESSION = 2;
+		public static final int TRANSFERED_REASON_PARTIAL_CESSION = 3;
+		
+		//Origin select
+		public static final int ORIGINAL_SELECT_MANUAL = 1;
+		public static final int ORIGINAL_SELECT_INVOICE = 2;
+		public static final int ORIGINAL_SELECT_WRITING = 3;
+		public static final int ORIGINAL_SELECT_SCISSION = 4;
+		public static final int ORIGINAL_SELECT_PARTIAL_SCRAPPING = 5;
+		public static final int ORIGINAL_SELECT_PARTIAL_SALE = 6;
+		public static final int ORIGINAL_SELECT_IMPORT = 99;
+		
+		//Split message
+		public static final String SPLIT_MESSAGE_COMMENT = "Split of %.2f realized on %s";
 		
 	]]></extra-code>
     

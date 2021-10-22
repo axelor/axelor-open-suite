@@ -1077,7 +1077,6 @@
 		<view type="form" name="payment-delay-reason-form" />
 	</action-view>
 
-
 	<!-- Conf Referential -->
 
 	<menuitem name="referential-conf-das2-activity" parent="referential-conf"

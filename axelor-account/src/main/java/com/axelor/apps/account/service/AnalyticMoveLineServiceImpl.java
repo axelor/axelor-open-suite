@@ -23,16 +23,20 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -142,7 +146,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList) {
+  public void validateLines(List<AnalyticDistributionLine> analyticDistributionLineList)
+      throws AxelorException {
     if (analyticDistributionLineList != null) {
       Map<AnalyticAxis, BigDecimal> map = new HashMap<AnalyticAxis, BigDecimal>();
       for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
@@ -158,11 +163,12 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       }
       for (AnalyticAxis analyticAxis : map.keySet()) {
         if (map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0) {
-          return false;
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.ANALYTIC_MOVE_LINE_NOT_VALIDATED));
         }
       }
     }
-    return true;
   }
 
   @Override
@@ -180,7 +186,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         }
       }
       for (AnalyticAxis analyticAxis : map.keySet()) {
-        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0) {
+        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) != 0) {
           return false;
         }
       }
@@ -219,6 +225,47 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     } else if (moveLine.getDebit().signum() > 0) {
       analyticMoveLine.setAmount(moveLine.getDebit());
     }
+    return analyticMoveLine;
+  }
+
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      InvoiceLine invoiceLine, AnalyticAccount analyticAccount) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
+    if (invoiceLine.getInvoice() != null
+        && accountConfigService
+                .getAccountConfig(invoiceLine.getInvoice().getCompany())
+                .getAnalyticJournal()
+            != null) {
+
+      analyticMoveLine.setAnalyticJournal(
+          accountConfigService
+              .getAccountConfig(analyticAccount.getAnalyticAxis().getCompany())
+              .getAnalyticJournal());
+    }
+
+    if (invoiceLine.getInvoice().getInvoiceDate() != null) {
+      analyticMoveLine.setDate(invoiceLine.getInvoice().getInvoiceDate());
+    } else {
+      analyticMoveLine.setDate(LocalDate.now());
+    }
+    analyticMoveLine.setPercentage(new BigDecimal(100));
+
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+
+    if (invoiceLine.getAccount() != null) {
+      analyticMoveLine.setAccount(invoiceLine.getAccount());
+      if (invoiceLine.getAccount().getAccountType() != null) {
+        analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());
+      }
+    }
+
+    if (analyticAccount != null) {
+      analyticMoveLine.setAnalyticAxis(analyticAccount.getAnalyticAxis());
+      analyticMoveLine.setAnalyticAccount(analyticAccount);
+    }
+
+    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+
     return analyticMoveLine;
   }
 }

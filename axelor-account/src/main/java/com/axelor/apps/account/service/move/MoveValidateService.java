@@ -22,9 +22,11 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -46,6 +48,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +65,7 @@ public class MoveValidateService {
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
   protected AppBaseService appBaseService;
+  protected FixedAssetGenerationService fixedAssetGenerationService;
 
   @Inject
   public MoveValidateService(
@@ -72,7 +76,8 @@ public class MoveValidateService {
       MoveRepository moveRepository,
       AccountRepository accountRepository,
       PartnerRepository partnerRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      FixedAssetGenerationService fixedAssetGenerationService) {
     this.moveLineControlService = moveLineControlService;
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
@@ -81,6 +86,7 @@ public class MoveValidateService {
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
     this.appBaseService = appBaseService;
+    this.fixedAssetGenerationService = fixedAssetGenerationService;
   }
 
   /**
@@ -253,6 +259,33 @@ public class MoveValidateService {
   }
 
   /**
+   * This method may generate fixed asset for each moveLine of move. It will generate if
+   * moveLine.fixedAssetCategory != null AND moveLine.account.accountType.technicalTypeSelect =
+   * 'immobilisation'
+   *
+   * @param move
+   * @throws AxelorException
+   * @throws NullPointerException if move is null or if a line does not have an account
+   */
+  public void generateFixedAssetMoveLine(Move move) throws AxelorException {
+    log.debug("Starting generation of fixed assets for move " + move);
+    Objects.requireNonNull(move);
+
+    List<MoveLine> moveLineList = move.getMoveLineList();
+    if (moveLineList != null) {
+      for (MoveLine line : moveLineList) {
+        if (line.getFixedAssetCategory() != null
+            && line.getAccount()
+                .getAccountType()
+                .getTechnicalTypeSelect()
+                .equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
+          fixedAssetGenerationService.generateAndSaveFixedAsset(move, line);
+        }
+      }
+    }
+  }
+
+  /**
    * Procédure permettant de vérifier qu'une écriture est équilibré, et la validé si c'est le cas
    *
    * @param move Une écriture
@@ -301,6 +334,7 @@ public class MoveValidateService {
     } else {
       move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
       move.setValidationDate(appBaseService.getTodayDate(move.getCompany()));
+      this.generateFixedAssetMoveLine(move);
     }
   }
 

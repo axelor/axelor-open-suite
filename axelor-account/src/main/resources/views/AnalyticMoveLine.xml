@@ -34,7 +34,7 @@
     </grid>
     
     <grid name="analytic-move-line-move-line-grid" title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
-        <field name="analyticAxis"/>
+        <field name="analyticAxis" />
         <field name="analyticAccount"/>
         <field name="percentage"/>
         <field name="amount"/>
@@ -52,9 +52,11 @@
     
     <form name="analytic-move-line-move-line-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onLoad="action-analytic-move-line-attrs-hide-fields" onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
         <panel name="mainPanel" >
+            <field name="analyticJournal"/>
 	        <field name="analyticAxis" onSelect="action-attrs-domain-onselect-axis-analytic-move-line" onChange="action-record-onchange-axis-analytic-move-line"/>
 	        <field name="analyticAccount" onSelect="action-attrs-domain-onselect-analytic-account" readonlyIf="!analyticAxis"/>
 	        <field name="percentage" min="0" max="100" onChange="action-method-calculate-amount-with-percentage-analytic-move-line"/>
+	        <field name="date" hidden="true"/>
         </panel>      
     </form>
     
@@ -142,7 +144,7 @@
 		<action name="action-analytic-move-line-attrs-set-original-piece-amount"/>
 		<action name="action-analytic-move-line-attrs-hide-fields"/>
 		<action name="action-analytic-move-line-attrs-set-type-select"/>
-		<action name="action-method-analytic-move-line-move-line-onnew"/>
+		<action name="action-analytic-move-line-method-onnew"/>
 	</action-group>
 	
 	<action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
@@ -176,13 +178,13 @@
     	<attribute name="domain" for="analyticAccount" expr="eval: &quot;self.analyticAxis.id = ${analyticAxis.id} &quot;" if="analyticAxis"/>
     </action-attrs>
     
+    <action-method name="action-analytic-move-line-method-onnew">
+    	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="initializeAnalyticMoveLine"/>
+    </action-method>
+
     <action-record name="action-record-onchange-axis-analytic-move-line" model="com.axelor.apps.account.db.AnalyticMoveLine">
     	<field name="analyticAccount" expr="eval: null"/>
     </action-record>
-    
-    <action-method name="action-method-analytic-move-line-move-line-onnew">
-    	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="manageNewAnalyticDistributionLine"/>
-    </action-method>
     
     <action-method name="action-method-calculate-amount-with-percentage-analytic-move-line">
     	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="calculateAmountWithPercentage"/>    	

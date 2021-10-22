@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.cash.management.web;
 
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.ForecastRecap;
@@ -36,6 +37,7 @@ import com.axelor.rpc.Context;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,15 +64,20 @@ public class ForecastRecapController {
   public void fillStartingBalance(ActionRequest request, ActionResponse response) {
     ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
     try {
-      if (forecastRecap.getBankDetails() != null) {
-        BigDecimal amount =
-            Beans.get(CurrencyService.class)
-                .getAmountCurrencyConvertedAtDate(
-                    forecastRecap.getBankDetails().getCurrency(),
-                    forecastRecap.getCompany().getCurrency(),
-                    forecastRecap.getBankDetails().getBalance(),
-                    Beans.get(AppBaseService.class).getTodayDate(forecastRecap.getCompany()))
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      Set<BankDetails> bankDetailsSet = forecastRecap.getBankDetailsSet();
+      if (bankDetailsSet != null) {
+        BigDecimal amount = BigDecimal.ZERO;
+        for (BankDetails bankDetails : bankDetailsSet) {
+          amount =
+              amount.add(
+                  Beans.get(CurrencyService.class)
+                      .getAmountCurrencyConvertedAtDate(
+                          bankDetails.getCurrency(),
+                          forecastRecap.getCompany().getCurrency(),
+                          bankDetails.getBalance(),
+                          Beans.get(AppBaseService.class).getTodayDate(forecastRecap.getCompany()))
+                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+        }
         forecastRecap.setStartingBalance(amount);
       } else {
         BigDecimal amount =

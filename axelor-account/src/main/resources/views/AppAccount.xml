@@ -16,6 +16,11 @@
 				<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 			</panel>
+			<panel name="serialNumberBarCodePanel" title="Fixed Asset Serial number" colSpan="12">
+				<field name="activateSerialNumberBarcodeGeneration" widget="Boolean-switch" colSpan="4"/>
+				<field name="editSerialNumberBarcodeType" showIf="activateSerialNumberBarcodeGeneration == true" widget="boolean-switch" colSpan="4"/>
+				<field name="serialNumberBarcodeTypeConfig" showIf="activateSerialNumberBarcodeGeneration == true" requiredIf="activateSerialNumberBarcodeGeneration &amp;&amp; !editSerialNumberBarcodeType" colSpan="4"/>
+			</panel>
 			<panel name="accountingExportPanel" title="Accounting exports">
 			    <field name="dasActiveNorm"/>
 			</panel>

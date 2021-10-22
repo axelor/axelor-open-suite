@@ -6,7 +6,8 @@ import com.axelor.exception.AxelorException;
 
 public interface AnalyticDistributionTemplateService {
 
-  boolean validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate);
+  void validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException;
 
   AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException;

@@ -112,4 +112,21 @@ public interface InvoiceLineService {
 
   public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
       throws AxelorException;
+
+  public boolean compareNbrOfAnalyticAxisSelect(InvoiceLine invoiceLine, int position)
+      throws AxelorException;
+
+  public List<Long> setAxisDomains(InvoiceLine invoiceLine, int position) throws AxelorException;
+
+  public InvoiceLine analyzeInvoiceLine(InvoiceLine invoiceLine) throws AxelorException;
+
+  public InvoiceLine removeAnalyticOnRemoveProduct(InvoiceLine invoiceLine);
+
+  public InvoiceLine removeAnalyticOnRemoveAccount(InvoiceLine invoiceLine);
+
+  public InvoiceLine clearAnalyticAccounting(InvoiceLine invoiceLine);
+
+  public InvoiceLine printAnalyticAccount(InvoiceLine invoiceLine) throws AxelorException;
+
+  public InvoiceLine checkAnalyticMoveLineForAxis(InvoiceLine invoiceLine);
 }

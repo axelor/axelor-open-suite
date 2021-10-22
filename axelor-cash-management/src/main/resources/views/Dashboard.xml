@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  
+  <form name="forecast-dashboard-form" model="com.axelor.apps.base.db.Wizard" title="Forecast Dashboard" width="large" canNew="false" canSave="false">
+     <panel name="detailsPanel">
+       <field name="$bankDetails" title="Bank details" target="com.axelor.apps.base.db.BankDetails" type="many-to-one" onChange="action-dashboard-forecast-refresh-dashlet-on-change" if="__config__.app.getApp('base').getManageMultiBanks()" domain="self.active = true"/>
+       <panel-dashlet action="dashlet.all.forecast.lines" name="chartForecastLines" colSpan="12"/>
+       <label title="&lt;h4&gt;Forecasts in out total&lt;/h4&gt;" colSpan="12"/>
+       <field name="$fromDate" title="From Date" required="true" type="date" onChange="action-dashboard-forecast-refresh-dashlet-on-change"/>
+       <field name="$toDate" title="To Date" required="true" type="date" onChange="action-dashboard-forecast-refresh-dashlet-on-change"/>
+       <panel-dashlet action="dashlet.forecast.in.out.total" name="chartForecastInOutTotal" title=" " colSpan="12"/>
+       <panel-dashlet action="dashlet.cash.balance.over.time" name="chartCashBalanceOverTime" colSpan="12"/>
+     </panel>
+  </form>
+  
+  <form name="forecast-my-dashboard-form" model="com.axelor.apps.base.db.Wizard" title="My forecast Dashboard" width="large" canNew="false" canSave="false">
+     <panel name="detailsPanel">
+       <field name="$bankDetails" title="Bank details" target="com.axelor.apps.base.db.BankDetails" type="many-to-one" onChange="action-dashboard-forecast-refresh-dashlet-on-change" if="__config__.app.getApp('base').getManageMultiBanks()" domain="self.active = true"/>
+       <panel-dashlet action="dashlet.my.forecast.lines" name="chartForecastLines" colSpan="12"/>
+       <label title="&lt;h4&gt;Forecasts in out total&lt;/h4&gt;" colSpan="12"/>
+       <field name="$fromDate" title="From Date" required="true" type="date" onChange="action-dashboard-forecast-refresh-dashlet-on-change"/>
+       <field name="$toDate" title="To Date" required="true" type="date" onChange="action-dashboard-forecast-refresh-dashlet-on-change"/>
+       <panel-dashlet action="dashlet.my.forecast.in.out.total" name="chartForecastInOutTotal" title=" " colSpan="12"/>
+       <panel-dashlet action="dashlet.my.cash.balance.over.time" name="chartCashBalanceOverTime" colSpan="12"/>
+     </panel>
+  </form>
+  
+  <action-view name="dashlet.forecast.in.out.total" title="Forecasts in out total" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+     <view type="chart" name="chart.forecast.in.out.total"/>
+  </action-view>
+  
+  <action-view name="dashlet.my.forecast.in.out.total" title="Forecasts in out total" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+     <view type="chart" name="chart.forecast.in.out.total"/>
+     <context name="_user" expr="eval: __user__"/>
+  </action-view>
+  
+  <action-view name="dashlet.cash.balance.over.time" title="Cash balance over time" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+     <view type="chart" name="chart.cash.balance.over.time"/>
+     <context name="_getAllUserData" expr="eval: true"/>
+  </action-view>
+  
+  <action-view name="dashlet.my.cash.balance.over.time" title="Cash balance over time" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+     <view type="chart" name="chart.cash.balance.over.time"/>
+  </action-view>
+  
+  <action-view name="dashlet.my.forecast.lines" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+	 <view type="grid" name="forecast-recap-line-dashboard-grid"/>
+	 <view type="form" name="forecast-recap-line-form"/>
+	 <view-param name="limit" value="100"/>
+	 <domain>self.forecastRecap.isUseForReport = true AND self.forecastRecap.user = :__user__ AND (:bankDetails is null OR :bankDetails MEMBER of self.forecastRecap.bankDetailsSet)</domain>
+	 <context name="_fromForecastDashboard" expr="eval: true"/>
+  </action-view>
+  
+  <action-view name="dashlet.all.forecast.lines" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+	 <view type="grid" name="forecast-recap-line-dashboard-grid"/>
+	 <view type="form" name="forecast-recap-line-form"/>
+	 <view-param name="limit" value="100"/>
+	 <domain>self.forecastRecap.isUseForReport = true AND (:bankDetails is null OR :bankDetails MEMBER of self.forecastRecap.bankDetailsSet)</domain>
+	  <context name="_fromForecastDashboard" expr="eval: true"/>
+  </action-view>
+  
+  <action-attrs name="action-dashboard-forecast-refresh-dashlet-on-change">
+     <attribute name="refresh" for="chartForecastLines" expr="eval: true"/>
+     <attribute name="refresh" for="chartForecastInOutTotal" expr="eval: true" if="fromDate &amp;&amp; toDate"/>
+     <attribute name="refresh" for="chartCashBalanceOverTime" expr="eval: true"/>
+  </action-attrs>
+  
+</object-views>

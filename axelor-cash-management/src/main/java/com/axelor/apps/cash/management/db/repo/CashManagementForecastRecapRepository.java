@@ -56,6 +56,17 @@ public class CashManagementForecastRecapRepository extends ForecastRecapReposito
         }
       }
 
+      if (entity.getIsUseForReport()) {
+        ForecastRecap lastUsedForReport =
+            all()
+                .filter("self.id <> ?1 AND self.isUseForReport = true", entity.getId())
+                .order("-createdOn")
+                .fetchOne();
+        if (lastUsedForReport != null) {
+          lastUsedForReport.setIsUseForReport(false);
+        }
+      }
+
       return super.save(entity);
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

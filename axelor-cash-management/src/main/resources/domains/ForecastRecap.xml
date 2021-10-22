@@ -7,7 +7,7 @@
 	
 	<string name="forecastRecapSeq" readonly="true" title="Seq." />
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
-	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank"/>
+	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank"/>
 	<decimal name="startingBalance" title="Starting Balance" required="true"/>
 	<decimal name="endingBalance" title="Ending Balance"/>
 	<decimal name="currentBalance"/>
@@ -21,6 +21,8 @@
 	<boolean name="isReport"/>
 	<boolean name="isComplete" default="false"/>
 	<date name="calculationDate" title="Calculation Date" readonly="true"/>
+	<boolean name="isUseForReport" title="Use for report"/>
+	<many-to-one name="user" title="User" ref="com.axelor.auth.db.User" column="user_id"/>
 	
 	<unique-constraint columns="forecastRecapSeq,company"/>
 	
