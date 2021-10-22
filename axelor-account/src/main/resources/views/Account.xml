@@ -63,10 +63,16 @@
           <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
-          <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch" onChange="action-account-record-uncheck-analytic-distribution-required"/>
+          <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch" onChange="action-account-group-on-change-analytic-distribution-authorized"/>
           <field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
-          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" domain="self.company = :company"/>
+          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" domain="self.company = :company" colSpan="12" canNew="true" onChange="action-account-account-method-new-analytic-dist-template"> 
+            <editor>
+              <field name="name"/>
+              <field name="company" readonly="true"/>
+              <field name="analyticDistributionLineList" colSpan="12" editable="true"/>
+            </editor>
+          </field>
         </panel>
 			</panel>
       <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings">
@@ -131,6 +137,11 @@
         <action  name="action-account-record-new-from-partner"/>
         <action  name="action-account-record-new-employee-account"/>
     </action-group>
+    
+    <action-group name="action-account-group-on-change-analytic-distribution-authorized">
+      <action name="action-account-record-uncheck-analytic-distribution-required"/>
+      <action name="action-account-account-method-new-analytic-dist-template"/>
+    </action-group>
 
     <action-record name="action-account-record-new" model="com.axelor.apps.account.db.Account">
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
@@ -181,6 +192,10 @@
     
     <action-method name="action-account-method-check-if-code-already-exist-for-company">
     	<call class="com.axelor.apps.account.web.AccountController" method="checkIfCodeAccountAlreadyExistForCompany"/>
+    </action-method>
+    
+    <action-method name="action-account-account-method-new-analytic-dist-template">
+      <call class="com.axelor.apps.account.web.AccountController" method="createAnalyticDistTemplate"/>
     </action-method>
     
     <search-filters name="account-filters" model="com.axelor.apps.account.db.Account" title="Account filters">

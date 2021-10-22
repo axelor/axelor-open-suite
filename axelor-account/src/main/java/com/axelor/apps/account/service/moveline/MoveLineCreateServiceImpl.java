@@ -670,4 +670,40 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     return newOrUpdatedMoveLine;
   }
+
+  @Override
+  public MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal currencyAmount,
+      TaxLine taxLine,
+      BigDecimal amount,
+      BigDecimal currencyRate,
+      boolean isDebit,
+      LocalDate date,
+      LocalDate dueDate,
+      LocalDate originDate,
+      Integer counter,
+      String origin,
+      String description)
+      throws AxelorException {
+    MoveLine moveLine =
+        createMoveLine(
+            move,
+            partner,
+            account,
+            currencyAmount,
+            amount,
+            currencyRate,
+            isDebit,
+            date,
+            dueDate,
+            originDate,
+            counter,
+            origin,
+            description);
+    moveLine.setTaxLine(taxLine);
+    return moveLine;
+  }
 }
