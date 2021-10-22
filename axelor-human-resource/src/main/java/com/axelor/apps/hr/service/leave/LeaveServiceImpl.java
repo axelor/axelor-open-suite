@@ -889,6 +889,7 @@ public class LeaveServiceImpl implements LeaveService {
     if ((leaveLine == null) || (leaveLine.getLeaveReason() != leaveReason)) {
       leaveLine = createLeaveReasonToJustify(employee, leaveReason);
     }
+    leaveLine.setName(leaveReason.getLeaveReason());
     return leaveLine;
   }
 
