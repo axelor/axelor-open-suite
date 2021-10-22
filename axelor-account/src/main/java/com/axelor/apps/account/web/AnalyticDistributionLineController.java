@@ -108,7 +108,7 @@ public class AnalyticDistributionLineController {
             Beans.get(AnalyticDistributionTemplateService.class)
                 .createDistributionTemplateFromAccount(account);
         account.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-        response.setValues(account);
+        response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
