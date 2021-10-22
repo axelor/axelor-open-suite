@@ -17,16 +17,6 @@
  */
 package com.axelor.apps.base.service.administration;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -39,6 +29,13 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBatch {
   private static final ThreadLocal<Long> threadBatchId = new ThreadLocal<>();
