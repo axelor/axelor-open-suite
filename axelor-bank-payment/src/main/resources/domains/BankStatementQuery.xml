@@ -8,12 +8,11 @@
 
     <string name="name" required="true" title="Name" />
     <string name="query" title="Test function" required="true" large="true" help="Legend for dynamic parameter manage in bank payment config : %amt+ for a tolerance of +X% on amount, %amt- for -X%, %date for a tolerance of + or - X days" />
-    <integer name="ruleType" title="Rule type" selection="bank.payment.bank.statement.rule.rule.type.select" default="0" required="true" />
+    <integer name="ruleTypeSelect" title="Rule type" selection="bank.payment.bank.statement.rule.rule.type.select" default="0" required="true" />
     <integer name="confidenceIndex" title="Confidence index" selection="bank.payment.bank.statement.query.confidence.index.select" default="1" help="Field indicating the confidence index for automatic reconcile. Green dot means 'Equal amount and date in range', orange dot means 'Equal amount and date out of range', red dot means 'Amount and date in range'"/>
     <integer name="sequence" title="Sequence" />
 
-    <finder-method name="findBySequenceAndRuleTypeAndId" using="sequence,ruleType,id" />
-    <finder-method name="findByRuleType" using="ruleType" orderBy="sequence" all="true" />
+    <finder-method name="findByRuleTypeSelect" using="ruleTypeSelect" orderBy="sequence" all="true" />
     
     <extra-code><![CDATA[
     // CONFIDENCE INDEX

@@ -82,6 +82,9 @@
 			<field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
             <field name="isShowTotal" colSpan="3" onChange="action-sale-order-line-record-reset-is-hide-unit-amounts" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3"/>
 			<field name="isHideUnitAmounts" colSpan="3" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3 &amp;&amp; isShowTotal"/>
+			<panel name="descriptionPanel" showIf="typeSelect == 1" title="Description" colSpan="12">
+				<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+			</panel>
 		</panel>
  
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect > 0">
