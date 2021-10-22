@@ -282,8 +282,12 @@ public interface ITranslation {
       "AccountingReportType2.debit"; /*)*/
   public static final String ACCOUNTING_REPORT_2_CREDIT = /*$$(*/
       "AccountingReportType2.credit"; /*)*/
-  public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/
-      "AccountingReportType2.generalBalance"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_VARIATION = /*$$(*/
+      "AccountingReportType2.variation"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_N = /*$$(*/ "AccountingReportType2.N"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_N_1 = /*$$(*/ "AccountingReportType2.N-1"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_VALUE = /*$$(*/
+      "AccountingReportType2.value"; /*)*/
 
   public static final String ACCOUNTING_REPORT_6_TITLE = /*$$(*/
       "AccountingReportType6.title"; /*)*/

@@ -238,6 +238,8 @@ public interface IExceptionMessage {
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
   static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
 
+  static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
+      "Designated account %s in move line %s is not allowed on the designated journal. Please modify journal settings or designated account to proceed." /*)*/;
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 

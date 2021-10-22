@@ -12,7 +12,7 @@
     <integer name="payDaySelect" title="Pay Day" selection="forecast.recap.line.type.pay.day.select"/>
     <string name="statusSelect" title="Statuses to take into account" />
     <integer name="estimatedDuration" title="Estimated duration after order creation (in days)" min="0"/>
-    <string name="name" title="Name"/>
+    <string name="name" title="Name" namecolumn="true"/>
 	<extra-code><![CDATA[
   
       // ELEMENT SELECT

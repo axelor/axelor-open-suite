@@ -11,10 +11,12 @@
 	<many-to-one name="productVariantAttr2" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr3" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantAttr4" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr5" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-many name="productVariantValue1Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-many name="productVariantValue2Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-many name="productVariantValue3Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-many name="productVariantValue4Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
+	<many-to-many name="productVariantValue5Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	
 	<string name="name" title="Name">
 		<![CDATA[
@@ -31,6 +33,10 @@
 		if(productVariantAttr4 != null)  { 
 			if(!name.equals(""))  {  name += ", ";  }
 		 	name += productVariantAttr4.getName();
+		}
+		if(productVariantAttr5 != null) {
+		    if(!name.equals(""))  {  name += ", ";  }
+		    name += productVariantAttr5.getName();
 		}
 		return name;
 	    ]]>
