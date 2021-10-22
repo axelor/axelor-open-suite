@@ -62,7 +62,7 @@
           <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
-          <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch" onChange="action-account-record-uncheck-analytic-distribution-required"/>
+          <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch" onChange="action-account-group-on-change-analytic-distribution-authorized"/>
           <field name="analyticDistributionRequiredOnInvoiceLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines" showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized" domain="self.company = :company" colSpan="12" canNew="true" onChange="action-account-account-method-new-analytic-dist-template"> 
@@ -135,6 +135,11 @@
     <action-group name="action-account-group-new-employee-account">
         <action  name="action-account-record-new-from-partner"/>
         <action  name="action-account-record-new-employee-account"/>
+    </action-group>
+    
+    <action-group name="action-account-group-on-change-analytic-distribution-authorized">
+      <action name="action-account-record-uncheck-analytic-distribution-required"/>
+      <action name="action-account-account-method-new-analytic-dist-template"/>
     </action-group>
 
     <action-record name="action-account-record-new" model="com.axelor.apps.account.db.Account">
