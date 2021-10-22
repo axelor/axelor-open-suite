@@ -20,7 +20,6 @@
  			<bind node="hidden" to="hidden" />
  			<bind node="visibleInGrid" to="visibleInGrid" />
  			<bind node="hideIf" to="hideIf" />
- 			<bind node="isWkf" to="isWkf" />
  			<bind node="maxSize" to="maxSize" />
  			<bind node="minSize" to="minSize" />
  			<bind node="model" to="model" />
@@ -70,7 +69,6 @@
  			<bind node="hidden" to="hidden" />
  			<bind node="visibleInGrid" to="visibleInGrid" />
  			<bind node="hideIf" to="hideIf" />
- 			<bind node="isWkf" to="isWkf" />
  			<bind node="maxSize" to="maxSize" />
  			<bind node="minSize" to="minSize" />
  			<bind node="model" to="model" />

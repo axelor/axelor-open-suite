@@ -77,12 +77,6 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
       invoice.setInvoiceDate(appBaseService.getTodayDate(company));
     }
 
-    invoice.setBankDetails(
-        contract.getPartner().getBankDetailsList().stream()
-            .filter(it -> it.getIsDefault())
-            .findFirst()
-            .orElse(null));
-
     return invoice;
   }
 

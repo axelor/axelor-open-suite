@@ -44,7 +44,6 @@ import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
-import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -86,8 +85,6 @@ public class StudioMetaService {
       return;
     }
 
-    xmlIds = xmlIds.replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "");
-    // .replaceAll(WkfTrackingService.ACTION_TRACK, "");
     List<MetaAction> metaActions =
         metaActionRepo
             .all()

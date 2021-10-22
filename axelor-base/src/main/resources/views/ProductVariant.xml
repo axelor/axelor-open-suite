@@ -8,10 +8,12 @@
         <field name="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
         <field name="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
         <field name="productVariantAttr4" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+        <field name="productVariantAttr5" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
         <field name="productVariantValue1" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
         <field name="productVariantValue2" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
         <field name="productVariantValue3" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
         <field name="productVariantValue4" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+        <field name="productVariantValue5" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
     </grid>
     
     <form name="product-variant-form" title="Product variant" model="com.axelor.apps.base.db.ProductVariant"
@@ -25,6 +27,8 @@
     	    <field name="productVariantValue3" showTitle="false" widget="SuggestBox" showIf="productVariantAttr3" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 	        <field name="productVariantAttr4" showTitle="false" readonly="true" showIf="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
     	    <field name="productVariantValue4" showTitle="false" widget="SuggestBox" showIf="productVariantAttr4" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+	        <field name="productVariantAttr5" showTitle="false" readonly="true" showIf="productVariantAttr4" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+    	    <field name="productVariantValue5" showTitle="false" widget="SuggestBox" showIf="productVariantAttr5" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>    	    
         </panel>
     </form>
     
@@ -35,6 +39,7 @@
     	<attribute name="domain" for="productVariantValue2" expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue2Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue2Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     	<attribute name="domain" for="productVariantValue3" expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue3Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue3Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     	<attribute name="domain" for="productVariantValue4" expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue4Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue4Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue5" expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue5Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue5Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     </action-attrs>
     
     
@@ -45,6 +50,7 @@
     	<field name="productVariantAttr2" expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr2"/>
     	<field name="productVariantAttr3" expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr3"/>
     	<field name="productVariantAttr4" expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr4"/>
+    	<field name="productVariantAttr5" expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr5"/>
     </action-record>
 
 </object-views>
