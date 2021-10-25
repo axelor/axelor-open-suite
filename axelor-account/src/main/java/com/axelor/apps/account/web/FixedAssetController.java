@@ -309,4 +309,15 @@ public class FixedAssetController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void onChangeDepreciationPlan(ActionRequest request, ActionResponse response) {
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      FixedAssetService fixedAssetService = Beans.get(FixedAssetService.class);
+      fixedAssetService.onChangeDepreciationPlan(fixedAsset);
+      response.setValues(fixedAsset);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

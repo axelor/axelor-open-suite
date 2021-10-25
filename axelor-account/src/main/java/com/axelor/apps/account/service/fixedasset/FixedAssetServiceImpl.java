@@ -30,6 +30,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -573,5 +575,27 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAssetDerogatoryLineService.multiplyLinesBy(fixedAssetDerogatoryLineList, prorata);
       }
     }
+  }
+
+  @Override
+  public void onChangeDepreciationPlan(FixedAsset fixedAsset) {
+    FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+    if (ObjectUtils.isEmpty(fixedAssetCategory)
+        || StringUtils.isEmpty(fixedAsset.getDepreciationPlanSelect())
+        || fixedAsset
+            .getDepreciationPlanSelect()
+            .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+      return;
+    }
+
+    fixedAsset.setJournal(fixedAssetCategory.getJournal());
+    fixedAsset.setComputationMethodSelect(fixedAssetCategory.getComputationMethodSelect());
+    fixedAsset.setDegressiveCoef(fixedAssetCategory.getDegressiveCoef());
+    fixedAsset.setPeriodicityInMonth(fixedAssetCategory.getPeriodicityInMonth());
+    fixedAsset.setNumberOfDepreciation(fixedAssetCategory.getNumberOfDepreciation());
+    fixedAsset.setDurationInMonth(fixedAssetCategory.getDurationInMonth());
+    fixedAsset.setAnalyticDistributionTemplate(
+        fixedAssetCategory.getAnalyticDistributionTemplate());
+    fixedAsset.setFiscalPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
   }
 }

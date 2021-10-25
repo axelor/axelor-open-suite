@@ -265,6 +265,11 @@
 	<action-method name="action-fixed-asset-method-create-analytic-distribution">
 		<call class="com.axelor.apps.account.web.FixedAssetController" method="createAnalyticDistributionWithTemplate"/>
 	</action-method>
+  
+    <action-method name="action-fixed-asset-method-onchange-set-values">
+		<call class="com.axelor.apps.account.web.FixedAssetController" method="onChangeDepreciationPlan"/>
+    </action-method>
+  
     <action-method name="action-fixed-asset-method-validate">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="validate"/>
     </action-method>
@@ -323,7 +328,7 @@
     	<action name="action-account-attrs-fill-fiscal-panel" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;)) "/>
     	<action name="action-account-attrs-fill-ifrs-panel" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
-    	<action name="action-fixed-asset-record-onchange-set-values" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
+    	<action name="action-fixed-asset-method-onchange-set-values" if="fixedAssetCategory != null &amp;&amp; depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
         <action name="action-fixed-asset-account-method-set-depreciation-plan-select-to-none"/>
         <action name="action-fixed-asset-account-method-set-depreciation-plan-select-readonly"/>
     </action-group>
