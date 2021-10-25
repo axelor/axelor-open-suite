@@ -163,6 +163,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             originMoveLine.getCounter(),
             originMoveLine.getName(),
             null);
+    reverseMove.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
     return reverseMoveLine;
   }
 }
