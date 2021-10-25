@@ -27,11 +27,11 @@ import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.actions.ActionRecord;
 import com.axelor.meta.schema.actions.ActionRecord.RecordField;
-import com.axelor.meta.schema.actions.ActionValidate;
-import com.axelor.meta.schema.actions.ActionValidate.Alert;
-import com.axelor.meta.schema.actions.ActionValidate.Info;
-import com.axelor.meta.schema.actions.ActionValidate.Notify;
-import com.axelor.meta.schema.actions.ActionValidate.Validator;
+import com.axelor.meta.schema.actions.validate.ActionValidate;
+import com.axelor.meta.schema.actions.validate.validator.Alert;
+import com.axelor.meta.schema.actions.validate.validator.Info;
+import com.axelor.meta.schema.actions.validate.validator.Notify;
+import com.axelor.meta.schema.actions.validate.validator.Validator;
 import com.axelor.studio.db.Filter;
 import com.axelor.studio.db.WkfTransition;
 import com.axelor.studio.service.StudioMetaService;
@@ -402,7 +402,7 @@ class WkfTransitionService {
 
     ActionValidate actionValidate = new ActionValidate();
     actionValidate.setName(name);
-    List<Validator> validators = new ArrayList<ActionValidate.Validator>();
+    List<Validator> validators = new ArrayList<>();
     String condition = getFilters(conditions, false, true);
     switch (type) {
       case "notify":
