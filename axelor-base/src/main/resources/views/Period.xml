@@ -34,7 +34,7 @@
 	        <button name="closeBtn" title="Permanently close period" onClick="action-period-group-close" hidden="true" prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
 	        <button name="temporarilyCloseBtn" title="Temporarily close period" onClick="action-period-group-close-temp" hidden="true" prompt="The temporarily closure of an accounting period will restrict operations on the Journal of accounting entries."/>
 	        <button name="adjustBtn" title="Adjust period" onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" hidden="true" />
-	        <button name="openBtn" title="Open period" onClick="save,action-period-record-status-open,save" hidden="true"/>
+	        <button name="openBtn" title="Open period" onClick="save,action-period-record-status-open,action-method-period-show-buttons" hidden="true"/>
     	</panel>
     </form>
     
