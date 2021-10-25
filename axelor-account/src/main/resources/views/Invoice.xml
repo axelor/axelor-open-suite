@@ -351,7 +351,7 @@
             </field>
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-account-invoice-atts-suppier-invoice-nbr" colSpan="6"/>
 		    
-            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date" colSpan="6"/>
+            <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-invoice-record-from-date" colSpan="6"/>
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
@@ -1714,6 +1714,11 @@ InvoiceSet.length > 0))"
 		<field name="legalNotice" expr="eval: null" if="!financialDiscount"/>
 		<field name="financialDiscountRate" expr="eval: BigDecimal.ZERO" if="!financialDiscount"/>
 		<field name="financialDiscountDeadlineDate" expr="eval: dueDate.minusDays(financialDiscount?.discountDelay?financialDiscount?.discountDelay:0)" if="dueDate &amp;&amp; financialDiscount"/>
+	</action-record>
+	
+	<action-record name="action-invoice-record-from-date" model="com.axelor.apps.account.db.Invoice">
+	    <field name="completionFromDate" expr="eval: originDate" if="originDate"/>
+	    <field name="executionFromDate" expr="eval: originDate" if="originDate"/>
 	</action-record>
 	
 	<action-method name="action-invoice-method-manage-invoice-line-axis">
