@@ -50,6 +50,10 @@ public class PurchaseOrderInvoiceController {
                 .add("form", "invoice-form")
                 .add("grid", "invoice-grid")
                 .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
+                .domain(
+                    "self.operationTypeSelect = "
+                        + String.valueOf(invoice.getOperationTypeSelect()))
+                .context("_operationTypeSelect", invoice.getOperationTypeSelect())
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());
       }
