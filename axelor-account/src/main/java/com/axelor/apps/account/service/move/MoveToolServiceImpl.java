@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTermPayment;
@@ -16,6 +17,10 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -474,5 +479,23 @@ public class MoveToolServiceImpl implements MoveToolService {
       moveLine.setDescription(move.getDescription());
       moveLine.setOrigin(move.getOrigin());
     }
+  }
+
+  @Override
+  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
+    if (period != null
+        && period.getYear().getCompany() != null
+        && user.getGroup() != null
+        && period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(period.getYear().getCompany());
+      for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
+        if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
   }
 }

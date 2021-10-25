@@ -77,7 +77,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   public boolean isManageClosedPeriod(Period period, User user) throws AxelorException {
-    if (period.getYear().getCompany() != null && user.getGroup() != null) {
+    if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
       for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
@@ -90,7 +90,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
-    if (period.getYear().getCompany() != null && user.getGroup() != null) {
+    if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
       for (Role role : accountConfig.getTemporaryClosureAuthorizedRoleList()) {

@@ -24,7 +24,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -174,4 +177,7 @@ public interface MoveToolService {
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   void setOriginAndDescriptionOnMoveLineList(Move move);
+
+  @CallMethod
+  boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
 }

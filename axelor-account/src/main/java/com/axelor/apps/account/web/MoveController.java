@@ -201,9 +201,22 @@ public class MoveController {
                 .fetch();
 
         if (!moveList.isEmpty()) {
-          Beans.get(MoveValidateService.class).simulateMultiple(moveList);
-          response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
-          response.setReload(true);
+          PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
+          User user = AuthUtils.getUser();
+          for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
+            Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
+            if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
+                && !periodServiceAccount.isManageClosedPeriod(move.getPeriod(), user)) {
+              response.setError(
+                  String.format(
+                      I18n.get(IExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
+                      move.getReference()));
+            } else {
+              Beans.get(MoveValidateService.class).simulateMultiple(moveList);
+              response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
+              response.setReload(true);
+            }
+          }
         } else {
           response.setFlash(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
         }
