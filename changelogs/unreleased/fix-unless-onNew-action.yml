@@ -1,0 +1,5 @@
+---
+title: "Lead: Useless Account action in onNew"
+type: fix
+description: |
+       removed useless action from the onNew action group.
