@@ -54,7 +54,7 @@ public class SaleBatchController {
     SaleBatch saleBatch = request.getContext().asType(SaleBatch.class);
     saleBatch = Beans.get(SaleBatchRepository.class).find(saleBatch.getId());
     Batch batch = Beans.get(BatchInvoicing.class).run(saleBatch);
-    response.setFlash(batch.getComments());
+    response.setInfo(batch.getComments());
     response.setReload(true);
   }
 }

@@ -162,7 +162,7 @@ public class InvoiceLineController {
         String errorMsg = (String) productInformation.get("error");
 
         if (!Strings.isNullOrEmpty(errorMsg)) {
-          response.setFlash(errorMsg);
+          response.setInfo(errorMsg);
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -211,7 +211,7 @@ public class InvoiceLineController {
       }
 
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -282,7 +282,7 @@ public class InvoiceLineController {
       response.setValue("inTaxPrice", inTaxPrice);
 
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 

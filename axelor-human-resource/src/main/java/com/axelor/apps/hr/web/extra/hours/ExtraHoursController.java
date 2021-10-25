@@ -197,7 +197,7 @@ public class ExtraHoursController {
 
       Message message = Beans.get(ExtraHoursService.class).sendConfirmationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -226,7 +226,7 @@ public class ExtraHoursController {
 
       Message message = Beans.get(ExtraHoursService.class).sendValidationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -251,7 +251,7 @@ public class ExtraHoursController {
 
       Message message = Beans.get(ExtraHoursService.class).sendRefusalEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -273,7 +273,7 @@ public class ExtraHoursController {
 
       Message message = Beans.get(ExtraHoursService.class).sendCancellationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));

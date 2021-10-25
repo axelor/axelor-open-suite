@@ -77,7 +77,7 @@ public class AddressController {
         Beans.get(AddressService.class).check(appBase.getQasWsdlUrl())
             ? appBase.getQasWsdlUrl() + " " + I18n.get(IExceptionMessage.ADDRESS_1)
             : I18n.get(IExceptionMessage.ADDRESS_2);
-    response.setFlash(msg);
+    response.setInfo(msg);
   }
 
   public void validate(ActionRequest request, ActionResponse response) {
@@ -107,7 +107,7 @@ public class AddressController {
       response.setValue("certifiedOk", true);
       response.setValue("pickList", new ArrayList<QAPicklistType>());
       if (addL1 != null) {
-        response.setFlash("Ligne 1: " + addL1);
+        response.setInfo("Ligne 1: " + addL1);
       }
     } else if (verifyLevel != null
         && (verifyLevel.value().equals("Multiple")
@@ -148,7 +148,7 @@ public class AddressController {
 
     } else if (verifyLevel != null && verifyLevel.value().equals("None")) {
       LOG.debug("address None");
-      response.setFlash(I18n.get(IExceptionMessage.ADDRESS_3));
+      response.setInfo(I18n.get(IExceptionMessage.ADDRESS_3));
     }
   }
 
@@ -191,7 +191,7 @@ public class AddressController {
         response.setValue("certifiedOk", true);
       }
 
-    } else response.setFlash(I18n.get(IExceptionMessage.ADDRESS_4));
+    } else response.setInfo(I18n.get(IExceptionMessage.ADDRESS_4));
   }
 
   public void export(ActionRequest request, ActionResponse response)
@@ -226,7 +226,7 @@ public class AddressController {
         mapView.put("viewType", "html");
         response.setView(mapView);
       } else {
-        response.setFlash(
+        response.setInfo(
             String.format(I18n.get(IExceptionMessage.ADDRESS_5), address.getFullName()));
       }
       response.setReload(true);
@@ -248,12 +248,12 @@ public class AddressController {
       Company company =
           Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       if (company == null) {
-        response.setFlash(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+        response.setInfo(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
         return;
       }
       Address departureAddress = company.getAddress();
       if (departureAddress == null) {
-        response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
+        response.setInfo(I18n.get(IExceptionMessage.ADDRESS_7));
         return;
       }
 
@@ -262,7 +262,7 @@ public class AddressController {
           Beans.get(AddressService.class).getOrUpdateLatLong(departureAddress);
 
       if (!departureLatLong.isPresent()) {
-        response.setFlash(
+        response.setInfo(
             String.format(I18n.get(IExceptionMessage.ADDRESS_5), departureAddress.getFullName()));
         return;
       }
@@ -273,7 +273,7 @@ public class AddressController {
           Beans.get(AddressService.class).getOrUpdateLatLong(arrivalAddress);
 
       if (!arrivalLatLong.isPresent()) {
-        response.setFlash(
+        response.setInfo(
             String.format(I18n.get(IExceptionMessage.ADDRESS_5), arrivalAddress.getFullName()));
         return;
       }

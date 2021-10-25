@@ -39,7 +39,7 @@ public class BankPaymentBatchController {
     Batch batch = Beans.get(BatchEbicsCertificate.class).ebicsCertificate(bankPaymentBatch);
 
     if (batch != null) {
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
     }
     response.setReload(true);
   }
@@ -51,7 +51,7 @@ public class BankPaymentBatchController {
 
       Batch batch = Beans.get(BatchBankStatement.class).bankStatement(bankPaymentBatch);
 
-      if (batch != null) response.setFlash(batch.getComments());
+      if (batch != null) response.setInfo(batch.getComments());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {

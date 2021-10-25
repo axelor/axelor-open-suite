@@ -44,7 +44,7 @@ public class MailBatchController {
         Beans.get(MailBatchService.class)
             .remindMail(Beans.get(MailBatchRepository.class).find(mailBatch.getId()));
 
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -58,7 +58,7 @@ public class MailBatchController {
       Batch batch = null;
       batch = Beans.get(MailBatchService.class).remindMail(mailBatch);
 
-      if (batch != null) response.setFlash(batch.getComments());
+      if (batch != null) response.setInfo(batch.getComments());
       response.setReload(true);
     } else {
       throw new AxelorException(

@@ -35,7 +35,7 @@ public class ContractBatchController {
       ContractBatch contractBatch = request.getContext().asType(ContractBatch.class);
       contractBatch = Beans.get(ContractBatchRepository.class).find(contractBatch.getId());
       Batch batch = Beans.get(BatchContract.class).run(contractBatch);
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

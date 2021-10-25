@@ -105,7 +105,7 @@ public class LeadController {
       response.setView(ActionView.define(title).add("html", fileLink).map());
 
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.LEAD_1));
+      response.setInfo(I18n.get(IExceptionMessage.LEAD_1));
     }
   }
 
@@ -152,7 +152,7 @@ public class LeadController {
     logger.debug("ImportConfig for lead: {}", leadImportConfig);
 
     if (leadImportConfig == null) {
-      response.setFlash(I18n.get(IExceptionMessage.LEAD_4));
+      response.setInfo(I18n.get(IExceptionMessage.LEAD_4));
     } else {
       response.setView(
           ActionView.define(I18n.get(IExceptionMessage.LEAD_5))

@@ -96,7 +96,7 @@ public class ICalendarController {
       response.setValue("isValid", true);
     } catch (Exception e) {
       TraceBackService.trace(e);
-      response.setFlash("Configuration error");
+      response.setInfo("Configuration error");
       response.setValue("isValid", false);
     }
   }

@@ -48,7 +48,7 @@ public class ProductionBatchController {
     productionBatch = Beans.get(ProductionBatchRepository.class).find(productionBatch.getId());
     Batch batch = Beans.get(ProductionBatchService.class).computeValuation(productionBatch);
     if (batch != null) {
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
     }
     response.setReload(true);
   }

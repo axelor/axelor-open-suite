@@ -73,7 +73,7 @@ public class LunchVoucherMgtController {
       Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
       Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -158,7 +158,7 @@ public class LunchVoucherMgtController {
     try {
       Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -167,7 +167,7 @@ public class LunchVoucherMgtController {
     try {
       Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 }

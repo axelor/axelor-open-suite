@@ -50,7 +50,7 @@ public class ProjectInvoicingAssistantBatchController {
       Batch batch =
           Beans.get(ProjectInvoicingAssistantBatchService.class)
               .updateTask(projectInvoicingAssistantBatch);
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -104,7 +104,7 @@ public class ProjectInvoicingAssistantBatchController {
           Beans.get(ProjectInvoicingAssistantBatchService.class)
               .generateInvoicingProject(projectInvoicingAssistantBatch);
 
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {

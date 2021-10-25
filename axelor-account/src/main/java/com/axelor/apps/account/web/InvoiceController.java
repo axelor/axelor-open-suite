@@ -225,7 +225,7 @@ public class InvoiceController {
     }
 
     Beans.get(InvoiceService.class).cancel(invoice);
-    response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
+    response.setInfo(I18n.get(IExceptionMessage.INVOICE_1));
     response.setReload(true);
   }
 
@@ -257,7 +257,7 @@ public class InvoiceController {
     try {
       String msg = Beans.get(InvoiceService.class).checkNotImputedRefunds(invoice);
       if (msg != null) {
-        response.setFlash(msg);
+        response.setInfo(msg);
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -272,7 +272,7 @@ public class InvoiceController {
     try {
       String msg = Beans.get(InvoiceService.class).checkNotLetteredAdvancePaymentMoveLines(invoice);
       if (msg != null) {
-        response.setFlash(msg);
+        response.setInfo(msg);
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -468,7 +468,7 @@ public class InvoiceController {
       Pair<Integer, Integer> massCount = function.apply(ids);
 
       String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
-      response.setFlash(message);
+      response.setInfo(message);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -605,7 +605,7 @@ public class InvoiceController {
     }
 
     if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
+      response.setInfo(fieldErrors.toString());
       return;
     }
 
@@ -704,7 +704,7 @@ public class InvoiceController {
         response.setCanClose(true);
       }
     } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
+      response.setInfo(e.getLocalizedMessage());
     }
   }
 

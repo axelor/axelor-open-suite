@@ -200,7 +200,7 @@ public class AdvancedExportController {
       File file = advancedExportService.export(advancedExport, recordIds, fileType);
 
       if (advancedExportService.getIsReachMaxExportLimit()) {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_EXPORT_3));
+        response.setInfo(I18n.get(IExceptionMessage.ADVANCED_EXPORT_3));
       }
 
       FileInputStream inStream = new FileInputStream(file);

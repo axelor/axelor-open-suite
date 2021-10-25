@@ -42,7 +42,7 @@ public class MessageController {
       Beans.get(MessageService.class)
           .sendMessage(Beans.get(MessageRepository.class).find(message.getId()));
       response.setReload(true);
-      response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
+      response.setInfo(I18n.get(IExceptionMessage.MESSAGE_4));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -61,7 +61,7 @@ public class MessageController {
           Message.class,
           idList,
           model -> Beans.get(MessageService.class).sendMessage((Message) model));
-      response.setFlash(
+      response.setInfo(
           String.format(I18n.get(IExceptionMessage.MESSAGES_SEND_IN_PROGRESS), idList.size()));
       response.setReload(true);
     } catch (AxelorException e) {
@@ -83,7 +83,7 @@ public class MessageController {
               Message.class,
               idList,
               model -> Beans.get(MessageService.class).regenerateMessage((Message) model));
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(IExceptionMessage.MESSAGES_REGENERATED), idList.size() - error, error));
       response.setReload(true);

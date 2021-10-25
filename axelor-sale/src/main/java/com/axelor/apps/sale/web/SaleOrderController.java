@@ -204,7 +204,7 @@ public class SaleOrderController {
             saleOrder.getCancelReason(),
             saleOrder.getCancelReasonStr());
 
-    response.setFlash(I18n.get("The sale order was canceled"));
+    response.setInfo(I18n.get("The sale order was canceled"));
     response.setCanClose(true);
   }
 
@@ -449,7 +449,7 @@ public class SaleOrderController {
     }
 
     if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
+      response.setInfo(fieldErrors.toString());
       return;
     }
 
@@ -532,7 +532,7 @@ public class SaleOrderController {
         response.setCanClose(true);
       }
     } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
+      response.setInfo(e.getLocalizedMessage());
     }
   }
 

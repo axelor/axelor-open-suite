@@ -74,7 +74,7 @@ public class ImportCityController {
       response.setAttr("$importHistoryList", "hidden", false);
       response.setAttr("$importHistoryList", "value", importHistoryList);
 
-      response.setFlash(I18n.get("City import completed"));
+      response.setInfo(I18n.get("City import completed"));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

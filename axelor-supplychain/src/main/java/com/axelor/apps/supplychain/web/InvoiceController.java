@@ -183,7 +183,7 @@ public class InvoiceController {
     }
 
     if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
+      response.setInfo(fieldErrors.toString());
       return;
     }
 
@@ -284,7 +284,7 @@ public class InvoiceController {
         response.setCanClose(true);
       }
     } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
+      response.setInfo(e.getLocalizedMessage());
     }
   }
 
@@ -293,7 +293,7 @@ public class InvoiceController {
     try {
       List<Invoice> invoices =
           Beans.get(SubscriptionInvoiceService.class).generateSubscriptionInvoices();
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(
                   com.axelor.apps.supplychain.exception.IExceptionMessage
@@ -304,7 +304,7 @@ public class InvoiceController {
         response.setReload(true);
       }
     } catch (Exception e) {
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(
                   com.axelor.apps.supplychain.exception.IExceptionMessage

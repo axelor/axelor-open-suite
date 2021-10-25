@@ -52,9 +52,9 @@ public class ImportDemoDataController {
       File tmpFile = File.createTempFile("Import", ".log");
 
       if (Beans.get(ImportDemoDataService.class).importDemoDataExcel(excelFile, tmpFile)) {
-        response.setFlash(I18n.get(IExceptionMessage.IMPORT_COMPLETED_MESSAGE));
+        response.setInfo(I18n.get(IExceptionMessage.IMPORT_COMPLETED_MESSAGE));
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.INVALID_DATA_FORMAT_ERROR));
+        response.setInfo(I18n.get(IExceptionMessage.INVALID_DATA_FORMAT_ERROR));
       }
 
       response.setAttr("$logFile", "hidden", false);

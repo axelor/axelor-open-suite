@@ -104,7 +104,7 @@ public class StockCorrectionController {
                 .context("_showRecord", stockMove.getId().toString())
                 .map());
       } else {
-        response.setFlash(I18n.get("No record found"));
+        response.setInfo(I18n.get("No record found"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

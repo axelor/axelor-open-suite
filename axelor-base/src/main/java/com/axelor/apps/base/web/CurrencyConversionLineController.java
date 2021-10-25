@@ -66,7 +66,7 @@ public class CurrencyConversionLineController {
         Beans.get(CurrencyService.class)
             .checkOverLappingPeriod(ccl, appBase.getCurrencyConversionLineList());
       } catch (AxelorException e) {
-        response.setFlash(e.getLocalizedMessage());
+        response.setInfo(e.getLocalizedMessage());
         response.setValue("fromDate", null);
         response.setValue("toDate", null);
       }
@@ -131,7 +131,7 @@ public class CurrencyConversionLineController {
             currencyConversionService.getRateWithDate(fromCurrency, toCurrency);
         rate = pair.getRight();
         if (rate.compareTo(new BigDecimal(-1)) == 0)
-          response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
+          response.setInfo(I18n.get(IExceptionMessage.CURRENCY_6));
         else {
           response.setValue("variations", "0");
           if (context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
@@ -163,13 +163,13 @@ public class CurrencyConversionLineController {
                 currencyConversionService.getVariations(rate, prevLine.getExchangeRate()));
 
           if (!rateRetrieveDate.equals(todayDate)) {
-            response.setFlash(
+            response.setInfo(
                 String.format(
                     I18n.get(IExceptionMessage.CURRENCY_10), todayDate, rateRetrieveDate));
           }
         }
       } catch (AxelorException axelorException) {
-        response.setFlash(axelorException.getMessage());
+        response.setInfo(axelorException.getMessage());
         response.setValue("fromDate", null);
         response.setValue("toDate", null);
         response.setCanClose(true);

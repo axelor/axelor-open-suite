@@ -103,10 +103,10 @@ public class WkfController {
                   .map();
           response.setView(view);
         } else {
-          response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+          response.setInfo(I18n.get(IExceptionMessage.WKF_1));
         }
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+        response.setInfo(I18n.get(IExceptionMessage.WKF_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -132,7 +132,7 @@ public class WkfController {
 
         response.setView(view);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.WKF_1));
+        response.setInfo(I18n.get(IExceptionMessage.WKF_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

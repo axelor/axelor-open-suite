@@ -205,7 +205,7 @@ public class SaleOrderLineController {
       }
 
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -228,7 +228,7 @@ public class SaleOrderLineController {
           "price",
           Beans.get(SaleOrderLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -251,7 +251,7 @@ public class SaleOrderLineController {
           "inTaxPrice",
           Beans.get(SaleOrderLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -278,7 +278,7 @@ public class SaleOrderLineController {
       response.setValue("inTaxPrice", inTaxPrice);
 
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 

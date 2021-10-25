@@ -46,7 +46,7 @@ public class AdvancedImportController {
       if (isValid) {
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
+        response.setInfo(I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -62,7 +62,7 @@ public class AdvancedImportController {
 
       boolean isLog = Beans.get(ValidatorService.class).validate(advancedImport);
       if (isLog) {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
+        response.setInfo(I18n.get(IExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
         response.setReload(true);
       } else {
         response.setValue("statusSelect", 1);
@@ -85,7 +85,7 @@ public class AdvancedImportController {
         response.setValue("errorLog", logFile);
       } else {
         response.setValue("errorLog", null);
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
+        response.setInfo(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
         response.setSignal("refresh-app", true);
       }
 
@@ -103,10 +103,10 @@ public class AdvancedImportController {
 
       boolean isReset = Beans.get(AdvancedImportService.class).resetImport(advancedImport);
       if (isReset) {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_RESET));
+        response.setInfo(I18n.get(IExceptionMessage.ADVANCED_IMPORT_RESET));
         response.setSignal("refresh-app", true);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_RESET));
+        response.setInfo(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_RESET));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

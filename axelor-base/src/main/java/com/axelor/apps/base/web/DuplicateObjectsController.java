@@ -163,7 +163,7 @@ public class DuplicateObjectsController {
       String filter = findDuplicated(request, fields, modelClass);
 
       if (filter == null) {
-        response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
+        response.setInfo(I18n.get(IExceptionMessage.GENERAL_1));
       } else {
         response.setView(
             ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
@@ -179,9 +179,9 @@ public class DuplicateObjectsController {
         }
       }
     } else if (context.get("_contextModel") == null) {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_10));
+      response.setInfo(I18n.get(IExceptionMessage.GENERAL_10));
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
+      response.setInfo(I18n.get(IExceptionMessage.GENERAL_3));
     }
   }
 

@@ -39,7 +39,7 @@ public class EmploymentContractController {
       Beans.get(EmploymentContractService.class)
           .addAmendment(
               Beans.get(EmploymentContractRepository.class).find(employmentContract.getId()));
-      response.setFlash(
+      response.setInfo(
           String.format(
               "Contrat %s - avenant %s",
               employmentContract.getFullName(), employmentContract.getEmploymentContractVersion()));

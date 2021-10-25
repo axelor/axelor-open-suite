@@ -42,7 +42,7 @@ public class DmsImportWizardController {
       dmsImportWizardService.importDMS(metaFile);
       response.setReload(true);
     } catch (AxelorException e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 }

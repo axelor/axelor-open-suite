@@ -49,7 +49,7 @@ public class InvoiceBatchController {
         Beans.get(InvoiceBatchService.class)
             .wkf(Beans.get(InvoiceBatchRepository.class).find(invoiceBatch.getId()));
 
-    response.setFlash(batch.getComments());
+    response.setInfo(batch.getComments());
     response.setReload(true);
   }
 

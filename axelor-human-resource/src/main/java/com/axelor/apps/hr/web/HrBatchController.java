@@ -46,7 +46,7 @@ public class HrBatchController {
             .run(Beans.get(HrBatchRepository.class).find(hrBatch.getId()));
 
     if (batch != null) {
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
     }
     response.setReload(true);
   }

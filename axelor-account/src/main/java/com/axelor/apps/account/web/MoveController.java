@@ -141,13 +141,13 @@ public class MoveController {
       if (!moveList.isEmpty()) {
         boolean error =
             Beans.get(MoveService.class).getMoveValidateService().validateMultiple(moveList);
-        if (error) response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
+        if (error) response.setInfo(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
         else {
-          response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
+          response.setInfo(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
           response.setReload(true);
         }
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
-    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
+      } else response.setInfo(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
+    } else response.setInfo(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
   }
 
   @SuppressWarnings("unchecked")
@@ -168,13 +168,13 @@ public class MoveController {
 
       if (!moveList.isEmpty()) {
         Beans.get(MoveService.class).getMoveValidateService().simulateMultiple(moveList);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
+        response.setInfo(I18n.get(IExceptionMessage.MOVE_SIMULATION_OK));
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
+        response.setInfo(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
       }
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
+      response.setInfo(I18n.get(IExceptionMessage.NO_NEW_MOVES_SELECTED));
     }
   }
 
@@ -209,13 +209,13 @@ public class MoveController {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
         || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
       moveService.getMoveRemoveService().deleteMove(move);
-      response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
+      response.setInfo(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
       moveService.getMoveRemoveService().archiveDaybookMove(move);
-      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+      response.setInfo(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
       moveService.getMoveRemoveService().archiveMove(move);
-      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+      response.setInfo(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
     }
   }
 
@@ -242,16 +242,16 @@ public class MoveController {
             int errorNB =
                 Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
             if (errorNB > 0) {
-              response.setFlash(
+              response.setInfo(
                   String.format(
                       I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
             } else {
-              response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
+              response.setInfo(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
               response.setReload(true);
             }
           }
-        } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+        } else response.setInfo(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+      } else response.setInfo(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

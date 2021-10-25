@@ -57,7 +57,7 @@ public class MoveTemplateController {
     if (valid) {
       response.setReload(true);
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_1));
+      response.setInfo(I18n.get(IExceptionMessage.MOVE_TEMPLATE_1));
     }
   }
 
@@ -115,7 +115,7 @@ public class MoveTemplateController {
                   .map());
         }
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_4));
+        response.setInfo(I18n.get(IExceptionMessage.MOVE_TEMPLATE_4));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

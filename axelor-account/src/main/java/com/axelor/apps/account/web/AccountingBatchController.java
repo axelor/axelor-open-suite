@@ -51,7 +51,7 @@ public class AccountingBatchController {
               .debtRecovery(
                   Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId()));
     }
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -72,7 +72,7 @@ public class AccountingBatchController {
             .doubtfulCustomer(
                 Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId()));
 
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -103,7 +103,7 @@ public class AccountingBatchController {
               accountingBatchRepository.find(accountingBatch.getId()));
     }
 
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -118,7 +118,7 @@ public class AccountingBatchController {
       AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
       accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
       Batch batch = Beans.get(AccountingBatchService.class).directDebit(accountingBatch);
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -143,7 +143,7 @@ public class AccountingBatchController {
             .accountCustomer(
                 Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId()));
 
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -164,7 +164,7 @@ public class AccountingBatchController {
             .moveLineExport(
                 Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId()));
 
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -172,7 +172,7 @@ public class AccountingBatchController {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch = Beans.get(AccountingBatchService.class).creditTransfer(accountingBatch);
-    response.setFlash(batch.getComments());
+    response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -181,7 +181,7 @@ public class AccountingBatchController {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch = Beans.get(AccountingBatchService.class).realizeFixedAssetLines(accountingBatch);
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -190,7 +190,7 @@ public class AccountingBatchController {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch = Beans.get(AccountingBatchService.class).closeAnnualAccounts(accountingBatch);
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -200,7 +200,7 @@ public class AccountingBatchController {
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch =
         Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 

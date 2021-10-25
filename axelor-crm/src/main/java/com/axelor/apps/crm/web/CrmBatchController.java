@@ -46,7 +46,7 @@ public class CrmBatchController {
         Beans.get(CrmBatchService.class)
             .eventReminder(Beans.get(CrmBatchRepository.class).find(crmBatch.getId()));
 
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -64,7 +64,7 @@ public class CrmBatchController {
         Beans.get(CrmBatchService.class)
             .target(Beans.get(CrmBatchRepository.class).find(crmBatch.getId()));
 
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 

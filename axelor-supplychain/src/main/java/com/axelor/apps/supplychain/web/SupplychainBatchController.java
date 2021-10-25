@@ -36,7 +36,7 @@ public class SupplychainBatchController {
       supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
       Batch batch =
           Beans.get(SupplychainBatchService.class).invoiceOutgoingStockMoves(supplychainBatch);
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -48,7 +48,7 @@ public class SupplychainBatchController {
       SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
       supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
       Batch batch = Beans.get(SupplychainBatchService.class).invoiceOrders(supplychainBatch);
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -60,7 +60,7 @@ public class SupplychainBatchController {
       SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
       supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
       Batch batch = Beans.get(SupplychainBatchService.class).accountingCutOff(supplychainBatch);
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

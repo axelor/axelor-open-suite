@@ -55,7 +55,7 @@ public class BaseBatchController {
       BaseBatch baseBatch = request.getContext().asType(BaseBatch.class);
       baseBatch = Beans.get(BaseBatchRepository.class).find(baseBatch.getId());
       Batch batch = Beans.get(BaseBatchService.class).synchronizeCalendars(baseBatch);
-      response.setFlash(batch.getComments());
+      response.setInfo(batch.getComments());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {

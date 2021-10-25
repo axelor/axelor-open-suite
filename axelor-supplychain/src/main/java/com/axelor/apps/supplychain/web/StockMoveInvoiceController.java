@@ -465,7 +465,7 @@ public class StockMoveInvoiceController {
         response.setView(viewBuilder.map());
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
-        response.setFlash(warningMessage);
+        response.setInfo(warningMessage);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -515,7 +515,7 @@ public class StockMoveInvoiceController {
         response.setView(viewBuilder.map());
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
-        response.setFlash(warningMessage);
+        response.setInfo(warningMessage);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
