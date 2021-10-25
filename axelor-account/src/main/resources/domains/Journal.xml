@@ -18,6 +18,7 @@
   	<boolean name="notExportOk" title="Do not export" default="false" massUpdate="true"/>
   	<integer name="statusSelect" title="Status" selection="account.journal.status.select"/>
 	<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines" default="false" massUpdate="true"/>
+    <boolean name="allowAccountingDaybook" title="Allow accounting daybook" default="false"/>
   	
   	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence" massUpdate="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
