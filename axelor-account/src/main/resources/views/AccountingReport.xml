@@ -46,10 +46,20 @@
 
 		<panel-tabs name="mainPanelTab">
 			<panel name="filterPanel" title="Filter">
+				<panel name="GeneralbalPanel" showIf="reportType.typeSelect == 2"  colSpan="12">
+					<field name="isComparativeBalance" widget="boolean-switch"/>
+					<panel name="prevPeriodGenralBalPanel" showIf="isComparativeBalance" colSpan="12">
+					    <spacer colSpan="6"/>
+						<field name="previousPeriod" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false" />
+						<field name="previousDateFrom"/>
+						<field name="previousDateTo"/>				
+					</panel>				
+				</panel>
 				<field name="year" canEdit="false" readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)" hideIf="reportType.typeSelect != 12  &amp;&amp; reportType.typeSelect != 15 &amp;&amp; reportType.typeSelect != 16  &amp;&amp; reportType.typeSelect != 17 &amp;&amp; reportType.typeSelect != 19 &amp;&amp; reportType.typeSelect != 20" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 ||  reportType.typeSelect == 16  || reportType.typeSelect == 17 || reportType.typeSelect == 19 || reportType.typeSelect == 20" grid-view="year-account-grid" form-view="year-account-form" />
 				<field name="period" canEdit="false" hideIf="reportType.typeSelect == 18 || reportType.typeSelect == 19 || reportType.typeSelect == 20" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false" />
 				<field name="dateFrom" readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)" hideIf="reportType.typeSelect == 18" onChange="action-move-Live-report-record-set-date-to" requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20" />
 				<field name="dateTo" readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)" hideIf="reportType.typeSelect == 18" requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20" />
+
 				<field name="journal" hideIf="[0,1,2,3,4,5,10,12,13,14,15,16,17,18,19,20].indexOf(reportType.typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid" canEdit="false" onChange="action-accounting-report-record-reset-display-simulated-move"/>
 				<field name="journalSet" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" widget="TagSelect" canNew="false" showIf="reportType.typeSelect == 18" colSpan="12" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="[1,2,3,4,5,10,12,13,14,15,16,17,18,19,20].indexOf(reportType.typeSelect) != -1"/>

@@ -190,6 +190,9 @@ public interface IExceptionMessage {
   static final String NO_PRODUCT_SELECTED = /*$$(*/
       "Please select at least one product in the list." /*)*/;
 
+  static final String DUPLICATE_PRODUCT_SELECTED = /*$$(*/
+      "Multiple same product selected in the list." /*)*/;
+
   static final String MO_CREATED = /*$$(*/ "%d MO created." /*)*/;
 
   // CostSheetLine service
