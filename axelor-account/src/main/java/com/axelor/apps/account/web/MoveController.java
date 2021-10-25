@@ -246,7 +246,7 @@ public class MoveController {
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
     try {
       List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-      if (!moveIds.isEmpty()) {
+      if (moveIds != null && !moveIds.isEmpty()) {
         List<? extends Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
