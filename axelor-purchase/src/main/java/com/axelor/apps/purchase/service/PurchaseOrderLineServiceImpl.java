@@ -725,7 +725,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                 || purchaseOrder.getCompany().getTradingNameSet().isEmpty()))) {
       domain =
           "self.isModel = false and (self.endDate = null or self.endDate > :__date__) and self.purchasable = true and self.dtype = 'Product'";
-
       if (isFilterOnSupplier
           && appPurchaseService.getAppPurchase().getManageSupplierCatalog()
           && purchaseOrder.getSupplierPartner() != null) {
@@ -737,6 +736,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                 .getResultList();
         if (!idList.isEmpty()) {
           domain = domain.concat(" and self.id IN (" + Joiner.on(",").join(idList) + ")");
+        } else {
           return ("self.id in (0)");
         }
       }
@@ -759,10 +759,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                     + purchaseOrder.getTradingName().getId()
                     + " member of self.tradingNameBuyerSet");
       }
+      System.err.println(isHRFieldInProduct());
       if (isHRFieldInProduct()) {
-        domain = domain.concat(" and self.expense = false");
+        domain = domain.concat(" and self.expense = false or self.expense is null");
       }
     }
+    System.err.println(domain);
     return domain;
   }
 

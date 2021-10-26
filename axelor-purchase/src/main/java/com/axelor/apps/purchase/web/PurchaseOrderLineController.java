@@ -410,7 +410,7 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-      Boolean isFilterOnSupplier = (Boolean) request.getContext().get("$isFilterOnSupplier");
+      Boolean isFilterOnSupplier = (Boolean) request.getContext().get("isFilterOnSupplier");
 
       PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
 
