@@ -42,6 +42,7 @@
 	<action-attrs name="action-attrs-account-readonly-if-period-in-move">
 		<attribute name="readonly" for="fromDate" expr="eval: (__repo__(Move).all().filter('self.period = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1 &amp;&amp; year?.statusSelect == 1"/>
 		<attribute name="readonly" for="toDate" expr="eval: (__repo__(Move).all().filter('self.period = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1 &amp;&amp; year?.statusSelect == 1"/>
+		<attribute name="readonly" for="year" expr="eval: (__repo__(Move).all().filter('self.period = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1 &amp;&amp; year?.statusSelect == 1"/>
 	</action-attrs>
 	
 </object-views>
