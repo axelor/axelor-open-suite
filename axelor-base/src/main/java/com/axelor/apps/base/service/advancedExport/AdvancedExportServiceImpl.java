@@ -129,8 +129,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
     return createQuery(
-        createQueryBuilder(
-            advancedExport.getMetaModel(), selectFieldBuilder, recordIds, orderByFieldBuilder));
+        createQueryBuilder(advancedExport, selectFieldBuilder, recordIds, orderByFieldBuilder));
   }
 
   /**
@@ -293,7 +292,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * @return
    */
   private StringBuilder createQueryBuilder(
-      MetaModel metaModel,
+      AdvancedExport advancedExport,
       StringBuilder selectFieldBuilder,
       List<Long> recordIds,
       StringBuilder orderByFieldBuilder) {
@@ -304,6 +303,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     selectionJoinField = String.join(" ", selectionJoinFieldSet);
 
     params = null;
+    MetaModel metaModel = advancedExport.getMetaModel();
     String criteria = getCriteria(metaModel, recordIds);
 
     if (!orderByFieldBuilder.toString().equals(""))
@@ -318,6 +318,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     queryBuilder.append(
         (!Strings.isNullOrEmpty(selectionJoinField)) ? selectionJoinField + " " : "");
     queryBuilder.append((!Strings.isNullOrEmpty(criteria)) ? criteria : "");
+    if (!advancedExport.getIncludeArchivedRecords()) {
+      queryBuilder.append("WHERE self.archived = 'f' OR self.archived IS NULL");
+    }
     queryBuilder.append((!Strings.isNullOrEmpty(orderByCol)) ? orderByCol : "");
 
     return queryBuilder;
