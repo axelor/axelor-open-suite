@@ -47,6 +47,9 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
@@ -56,7 +59,6 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -723,6 +725,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                 || purchaseOrder.getCompany().getTradingNameSet().isEmpty()))) {
       domain =
           "self.isModel = false and (self.endDate = null or self.endDate > :__date__) and self.purchasable = true and self.dtype = 'Product'";
+
       if (isFilterOnSupplier
           && appPurchaseService.getAppPurchase().getManageSupplierCatalog()
           && purchaseOrder.getSupplierPartner() != null) {
@@ -732,7 +735,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                     "SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = "
                         + purchaseOrder.getSupplierPartner().getId())
                 .getResultList();
-        domain = domain + " and self.id IN (" + Joiner.on(",").join(idList) + ")";
+        if (!idList.isEmpty()) {
+          domain = domain.concat(" and self.id IN (" + Joiner.on(",").join(idList) + ")");
+          return ("self.id in (0)");
+        }
       }
       if (isPurchasableCompanySpecificProductField(
           appBaseService.getAppBase().getCompanySpecificProductFieldsSet())) {
@@ -744,14 +750,17 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                             + purchaseOrder.getCompany().getId())
                     .getResultList()
                     .get(0);
-        domain = domain + " and " + isPurchasable + " IS TRUE";
+        domain = domain.concat(" and " + isPurchasable + " IS TRUE");
       }
       if (purchaseOrder.getTradingName() != null) {
         domain =
-            domain
-                + " and "
-                + purchaseOrder.getTradingName().getId()
-                + " member of self.tradingNameBuyerSet";
+            domain.concat(
+                " and "
+                    + purchaseOrder.getTradingName().getId()
+                    + " member of self.tradingNameBuyerSet");
+      }
+      if (isHRFieldInProduct()) {
+        domain = domain.concat(" and self.expense = false");
       }
     }
     return domain;
@@ -767,5 +776,11 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       }
     }
     return false;
+  }
+
+  protected boolean isHRFieldInProduct() {
+    MetaModel metaModel =
+        Beans.get(MetaModelRepository.class).all().filter("self.name like 'Product'").fetchOne();
+    return (Beans.get(MetaFieldRepository.class).findByModel("expense", metaModel) != null);
   }
 }
