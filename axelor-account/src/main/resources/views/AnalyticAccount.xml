@@ -25,14 +25,13 @@
         </node>
     </tree>
     
-    <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" onLoad="action-record-domain-analytic-level-parent,action-attrs-analytic-account-change-axis" >
+    <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" onLoad="action-attrs-analytic-account-change-axis" >
         <panel name="mainPanel">
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	        <field name="name"/>
-	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" required="true" onChange="action-record-analytic-account-set-values,action-attrs-analytic-account-change-axis,save"/>
-	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid" domain="self.analyticLevel.nbr = :level AND self.analyticAxis = :analyticAxis"/>
-	        <field name="analyticLevel" form-view="analytic-level-form" grid-view="analytic-level-grid" required="true" onChange="action-record-domain-analytic-level-parent"/>
-	        <field name="$level" type="integer" hidden="true"/>
+	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" required="true" onChange="action-record-analytic-account-set-values,action-attrs-analytic-account-change-axis"/>
+	        <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid" onSelect="action-method-set-domain-parent-level-analytic-account"/>
+	        <field name="analyticLevel" form-view="analytic-level-form" grid-view="analytic-level-grid" required="true"/>
         </panel>
         <panel name="groupingValuePanel" hidden="true">
         	<field name="analyticGroupingValue1" hidden="true"/>
@@ -104,9 +103,9 @@
     	<context name="_showRecord" expr="eval: id"/>
 	</action-view>
 	
-	<action-record name="action-record-domain-analytic-level-parent" model="com.axelor.apps.account.db.AnalyticAccount">
-		<field name="$level" expr="eval: analyticLevel.nbr +1" if="analyticLevel &amp;&amp; analyticLevel.nbr"/>
-	</action-record>
+	<action-method name="action-method-set-domain-parent-level-analytic-account">
+		<call class="com.axelor.apps.account.web.AnalyticAccountController" method="setParentDomain"/>
+	</action-method>
 	
 	<action-attrs name="action-attrs-analytic-account-change-axis">
 		<attribute name="hidden" for="groupingValuePanel" expr="eval: !analyticAxis"/>
@@ -141,7 +140,7 @@
 		<attribute name="domain" for="analyticGroupingValue10" expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping10?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;" if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping10 &amp;&amp; analyticAxis.analyticGrouping10.analyticGroupingValueList"/>
 		<attribute name="hidden" for="analyticGroupingValue10" expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping10)"/>
 		
-		<attribute name="hidden" for="parent" expr="eval: !analyticAxis.manageParentAccount"/>
+		<attribute name="hidden" for="parent" expr="eval: !analyticAxis.manageParentAccount" if="analyticAxis"/>
 	</action-attrs>
 	
 	<action-record name="action-record-analytic-account-set-values" model="com.axelor.apps.account.db.AnalyticAccount">
@@ -155,7 +154,7 @@
 		<field name="analyticGroupingValue8" expr="eval: null" if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping8)"/>
 		<field name="analyticGroupingValue9" expr="eval: null" if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping9)"/>
 		<field name="analyticGroupingValue10" expr="eval: null" if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping10)"/>
-		<field name="parent" expr="eval: null" if="!analyticAxis.manageParentAccount"/>
+		<field name="parent" expr="eval: null" if="analyticAxis &amp;&amp; !analyticAxis.manageParentAccount"/>
 	</action-record>
     
 </object-views>
