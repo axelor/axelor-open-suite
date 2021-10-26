@@ -759,12 +759,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                     + purchaseOrder.getTradingName().getId()
                     + " member of self.tradingNameBuyerSet");
       }
-      System.err.println(isHRFieldInProduct());
       if (isHRFieldInProduct()) {
         domain = domain.concat(" and self.expense = false or self.expense is null");
       }
     }
-    System.err.println(domain);
     return domain;
   }
 
