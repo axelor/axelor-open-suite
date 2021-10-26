@@ -272,7 +272,6 @@
   <action-group name="action-move-account-group-simulate">
     <action name="save"/>
     <action name="action-move-method-set-status-simulate"/>
-    <action name="action-move-attrs-validate-button-title"/>
   </action-group>
 
   <action-validate name="action-account-validate-prompt">
