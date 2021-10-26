@@ -1,15 +1,13 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class AnalyticAccountController {
 
-  public void setParentDomain(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setParentDomain(ActionRequest request, ActionResponse response) {
     try {
       AnalyticAccount analyticAccount = request.getContext().asType(AnalyticAccount.class);
 
