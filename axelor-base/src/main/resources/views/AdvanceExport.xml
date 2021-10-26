@@ -16,6 +16,7 @@
     		<button name="selectAllBtn" title="Select all fields" colSpan="3" onClick="save,action-method-get-model-all-fields"/>
     		<field name="maxExportLimit" colSpan="4" onChange="action-advanced-export-validate-export-limit" required="true"/>
 			<field name="queryFetchSize" colSpan="4" onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
+    		<field name="includeArchivedRecords" colSpan="5"/>
     		<label name="technicalHelperLabel" title="Warning, modifying those configuration can have technical repercussions." colSpan="12" css="label-bold label-danger"/>
     	</panel>
      	<panel-related name="advancedExportLineListPanel" field="advancedExportLineList" title="Fields" hideIf="metaModel == null" grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
