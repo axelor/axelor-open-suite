@@ -96,6 +96,9 @@ public class FixedAssetController {
     if (context.get("generateSaleMove") != null) {
       generateSaleMove = Boolean.parseBoolean(context.get("generateSaleMove").toString());
     }
+    if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_ONGOING_CESSION) {
+      generateSaleMove = false;
+    }
     if (context.get("saleTaxLine") != null) {
       saleTaxLine =
           Beans.get(TaxLineRepository.class)
