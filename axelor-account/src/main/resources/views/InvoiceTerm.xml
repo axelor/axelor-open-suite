@@ -46,6 +46,7 @@
       <field name="percentage" readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || !paymentConditionLine.paymentCondition.isFree" onChange="action-invoice-term-record-update-customized,action-invoice-term-method-compute-customized-amount"/>
       <field name="isHoldBack" readonly="true"/>
       <field name="paymentMode" readonlyIf="isPaid"/>
+      <field name="bankDetails"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4" hidden="true" showIf="financialDiscount != null">
           <field name="financialDiscount" readonly="true"/>

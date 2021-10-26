@@ -61,6 +61,7 @@
 					<field name="descriptionModel"/>
 					<field name="descriptionIdentificationOk"/>
 					<field name="authorizeSimulatedMove" showIf="company.accountConfig.isActivateSimulatedMove"/>
+                    <field name="allowAccountingDaybook" showIf="company.accountConfig.accountingDaybook"/>
 					<field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
 				</panel>  
 				<spacer name="moveLineSpacer"/>
