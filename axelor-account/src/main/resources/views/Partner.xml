@@ -58,13 +58,15 @@
         <panel name="blockingsPanel" title="Blockings" colSpan="12" showIf="isSupplier || isCustomer || isSubcontractor">
             <field name="blockingList" colSpan="12" title="Blockings" showIf="$readonly()">
 				<editor colSpan="12" x-viewer="true" x-show-on-new="false">
-					<field name="companySet" colSpan="3" widget="TagSelect"/>
+					<field name="companySet" colSpan="2" widget="TagSelect"/>
 					<field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
 					<field name="blockingToDate" colSpan="2">
 						<hilite if="$moment(blockingToDate) &gt; $moment(__config__.date)" color="danger" strong="true"/>
 					</field>
-					<field name="blockingReason" colSpan="3" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
+					<field name="blockingReason" colSpan="2" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
 					<field name="blockingByUser" colSpan="2" form-view="user-form" grid-view="user-grid"/>
+					<field name="createdOn" colSpan="1" />
+					<field name="updatedOn" colSpan="1" />
 				</editor>
             </field>
             <field name="blockingList" colSpan="12" title="Blockings" showIf="!$readonly()">
@@ -74,6 +76,10 @@
                     <field name="blockingToDate" colSpan="3" required="true"/>
                     <field name="blockingReason" colSpan="3" canNew="true" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
                     <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form" grid-view="user-grid"/>
+					<panel colSpan="3">
+						<field name="createdOn" colSpan="6" />
+						<field name="updatedOn" colSpan="6" />
+					</panel>
                 </editor>
             </field>
         </panel>
