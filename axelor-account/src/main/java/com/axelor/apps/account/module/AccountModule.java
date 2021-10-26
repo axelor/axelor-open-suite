@@ -381,7 +381,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineTaxService.class).to(MoveLineTaxServiceImpl.class);
 
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
-    
+
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
   }
 }
