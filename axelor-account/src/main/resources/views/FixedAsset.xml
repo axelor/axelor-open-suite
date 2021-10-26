@@ -117,7 +117,7 @@
 	  <panel name="allValuesPanel" sidebar="true">
 	    <field name="grossValue" requiredIf="originSelect == 99" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
 	    <field name="residualValue"/>
-	    <field name="accountingValue" hideIf="deprecationPlanSelect == '0'"/>
+	    <field name="accountingValue" hideIf="depreciationPlanSelect.includes('0')"/>
 	  </panel>
 	  <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" sidebar="true" readonlyIf="statusSelect > 1" >
 	    <field name="failoverDate" requiredIf="originSelect == 99"/>
@@ -194,17 +194,6 @@
     	<field name="firstServiceDate" expr="eval: __config__.date"/>
     	<field name="firstDepreciationDate" expr="eval: __config__.date"/>
     	<field name="originSelect" expr="eval:'1'"/>
-    </action-record>
-    
-    <action-record name="action-fixed-asset-record-onchange-set-values" model="com.axelor.apps.account.db.FixedAsset">
-    	<field name="journal" expr="eval: fixedAssetCategory?.journal"/>
-    	<field name="computationMethodSelect" expr="eval: fixedAssetCategory?.computationMethodSelect" />
-    	<field name="degressiveCoef" expr="eval: fixedAssetCategory?.degressiveCoef"/>
-    	<field name="periodicityInMonth" expr="eval: fixedAssetCategory?.periodicityInMonth"/>
-    	<field name="numberOfDepreciation" expr="eval: fixedAssetCategory?.numberOfDepreciation" />
-    	<field name="durationInMonth" expr="eval: fixedAssetCategory?.durationInMonth"/>
-    	<field name="analyticDistributionTemplate" expr="eval: fixedAssetCategory?.analyticDistributionTemplate"/>
-    	<field name="periodicityTypeSelect" expr="eval: fixedAssetCategory?.periodicityTypeSelect" />
     </action-record>
     
     <action-record name="action-fixed-asset-record-set-residual-value" model="com.axelor.apps.account.db.FixedAsset">
@@ -339,7 +328,7 @@
     	<action name="action-account-attrs-fill-ifrs-panel" if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-attrs-fixed-asset-fiscal-depreciation-equal" if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
     	<action name="action-attrs-fixed-asset-ifrs-depreciation-equal" if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;4&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
-    	<action name="action-fixed-asset-record-onchange-set-values" if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
+    	<action name="action-fixed-asset-method-onchange-set-values" if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
     </action-group>
     
     <action-attrs name="action-account-attrs-fill-depreciation-plan">
@@ -355,6 +344,7 @@
     	<attribute name="value" for="fiscalDurationInMonth" expr="eval:fixedAssetCategory?.durationInMonth"/>
     	<attribute name="value" for="fiscalNumberOfDepreciation" expr="eval:fixedAssetCategory.numberOfDepreciation"/>
     	<attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:true"/>
+      <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:false" if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
     	
     </action-attrs>
     

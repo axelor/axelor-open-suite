@@ -257,10 +257,16 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           .getDepreciationPlanSelect()
           .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
         fixedAsset = fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
+      } else {
+        fixedAsset.setNumberOfDepreciation(fixedAsset.getNumberOfDepreciation() - 1);
       }
 
       if (fixedAsset.getIsEqualToFiscalDepreciation()) {
         fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
+      } else if (fixedAsset
+          .getDepreciationPlanSelect()
+          .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+        fixedAsset.setAccountingValue(BigDecimal.ZERO);
       } else {
         fixedAsset.setAccountingValue(
             fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
@@ -592,7 +598,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setComputationMethodSelect(fixedAssetCategory.getComputationMethodSelect());
     fixedAsset.setDegressiveCoef(fixedAssetCategory.getDegressiveCoef());
     fixedAsset.setPeriodicityInMonth(fixedAssetCategory.getPeriodicityInMonth());
-    fixedAsset.setNumberOfDepreciation(fixedAssetCategory.getNumberOfDepreciation());
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+      fixedAsset.setNumberOfDepreciation(fixedAssetCategory.getNumberOfDepreciation() - 1);
+    } else {
+      fixedAsset.setNumberOfDepreciation(fixedAssetCategory.getNumberOfDepreciation());
+    }
     fixedAsset.setDurationInMonth(fixedAssetCategory.getDurationInMonth());
     fixedAsset.setAnalyticDistributionTemplate(
         fixedAssetCategory.getAnalyticDistributionTemplate());
