@@ -66,14 +66,14 @@
 		<field name="active"/>
 		<field name="sequence"/>
 		<template><![CDATA[
-			<div>
-			  <div class="span4 card-image">
+			<div class="app-cards__container">
+			  <div class="app-cards__image">
 			    <img ng-src="{{$image('image', 'content')}}" />
 			  </div>
-			  <div class="span8">
+			  <div class="app-cards__name">
 				 <strong x-translate>{{$fmt('name')}}</strong>
 			  </div>
-			  <div class="span12">
+			  <div class="app-cards__buttons">
 				<a class="btn btn-small btn-info pull-right" href="" ng-show="!active" ui-action-click="action-app-alert-install,action-app-method-install-app" x-translate>Install</a>
 				<a class="btn btn-small btn-success pull-right" href="" ng-show="active" ui-action-click="com.axelor.apps.base.web.AppController:configure" x-translate>Configure</a>
 				<a class="btn btn-small btn-danger pull-right" href="" ng-show="active" ui-action-click="action-app-alert-un-install,action-app-method-uninstall-app" x-translate>Uninstall</a>
