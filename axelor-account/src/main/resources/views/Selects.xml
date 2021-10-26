@@ -396,6 +396,17 @@
     <option value="1">Payment to the factor</option>
     <option value="2">Payment to the factor after factor return</option>
   </selection>
+  
+  <selection name="accounting.report.type.comparison.select">
+    <option value="1">No comparison</option>
+    <option value="2">Previous year</option>
+    <option value="3">Same period on previous year</option>
+  </selection>
+
+  <selection name="accounting.report.type.no.of.periods.select">
+   <option value="1">1</option>
+   <option value="2">2</option>
+  </selection>
 
   <selection name="account.fixed.type.category.computation.method.select">
     <option value="linear">Linear</option>
