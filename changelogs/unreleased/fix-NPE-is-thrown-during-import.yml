@@ -1,0 +1,5 @@
+---
+title: "GEONAMES: NPE is thrown during import"
+type: fix
+description: |
+         fix NPE while importing the  geonames city.
