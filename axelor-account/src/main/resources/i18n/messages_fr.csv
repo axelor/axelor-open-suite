@@ -641,6 +641,7 @@
 "Anomalies","Anomalies",,
 "Anomalies generated","Anomalies générées",,
 "Any Javascript operation can be written and the computed result will be displayed, but there must be only one line.","Toutes les opérations doivent être en Javascript et le résultat obtenu sera affiché, et il doit y avoir une seule et unique ligne",,
+"An invoice with the same number (%s) already exists for this supplier %s and the year %s.","Une facture avec un numéro identique (%s) existe déjà pour le fournisseur %s et l'année %s.",,
 "App",,,
 "App account","App Comptabilité",,
 "App budget","App Budget",,

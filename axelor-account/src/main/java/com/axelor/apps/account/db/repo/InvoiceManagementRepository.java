@@ -20,9 +20,13 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.List;
@@ -56,7 +60,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
                 .orElse(null);
         invoice.setPaymentDate(latestPaymentDate);
       }
-
+      checkDuplicateWithinSameYear(invoice);
       invoice = super.save(invoice);
       Beans.get(InvoiceService.class).setDraftSequence(invoice);
 
@@ -64,6 +68,29 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
+    }
+  }
+
+  protected void checkDuplicateWithinSameYear(Invoice invoice) throws AxelorException {
+    if (invoice.getSupplierInvoiceNb() != null
+        && invoice.getOriginDate() != null
+        && invoice.getPartner() != null
+        && (all()
+                .filter(
+                    "self.supplierInvoiceNb = ?1 AND self.partner.id = ?2 AND YEAR(self.originDate) = ?3",
+                    invoice.getSupplierInvoiceNb(),
+                    invoice.getPartner().getId(),
+                    invoice.getOriginDate().getYear())
+                .fetchStream()
+                .filter(savedInvoice -> !savedInvoice.getId().equals(invoice.getId()))
+                .count())
+            > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
+          I18n.get(IExceptionMessage.INVOICE_DUPLICATED_WITHIN_SAME_YEAR),
+          invoice.getSupplierInvoiceNb(),
+          invoice.getPartner().getName(),
+          invoice.getOriginDate().getYear());
     }
   }
 
