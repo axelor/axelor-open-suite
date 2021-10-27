@@ -188,6 +188,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       return FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION;
     } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
       return FixedAssetRepository.TRANSFERED_REASON_CESSION;
+    } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_ONGOING_CESSION) {
+      return FixedAssetRepository.TRANSFERED_REASON_ONGOING_CESSION;
     }
     return FixedAssetRepository.TRANSFERED_REASON_SCRAPPING;
   }

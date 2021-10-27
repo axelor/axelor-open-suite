@@ -520,6 +520,7 @@
 		<option value="1">Scrapping</option>
 		<option value="2">Cession</option>
 		<option value="3">Partial cession</option>
+        <option value="4">Ongoing Cession</option>
 	</selection>
 
 	<selection name="account.fixed.asset.depreciation.plan">

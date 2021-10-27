@@ -38,6 +38,8 @@
 	      <field if-module="axelor-supplychain" name="trackingNumber.counter" title="Quantity" showIf="trackingNumber != null"/>
 	      <field if-module="axelor-supplychain" name="stockLocation" canNew="false" canEdit="false" domain="self.company = :company" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field if-module="axelor-supplychain" name="trackingNumber" canNew="false" canEdit="false" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
+          <field name="fixedAssetCategory.fixedAssetType" hidden="true"/>
+          <field name="fixedAssetCategory.fixedAssetType.technicalTypeSelect" hidden="true"/>
 	    </panel>
 	  </panel>
 	  <panel name="otherDetailsPanel">
@@ -45,7 +47,7 @@
 	    <field name="invoiceLine" colSpan="3" domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 	    <field name="purchaseAccountMove" colSpan="3" domain="self.company = :company"/>
 	    <field name="journal" readonlyIf="statusSelect > 1" canEdit="false" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-	    <field name="purchaseAccount" required="true" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
+	    <field name="purchaseAccount" requiredIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect != 1" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
 	    <field if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" name="analyticDistributionTemplate" canEdit="false" onChange="action-fixed-asset-method-create-analytic-distribution" domain="self.company = :company" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>    
 	  </panel>
 	  <panel-tabs name="mainPanelTab">
@@ -116,7 +118,7 @@
 	  </panel>	  
 	  <panel name="allValuesPanel" sidebar="true">
 	    <field name="grossValue" requiredIf="originSelect == 99" readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
-	    <field name="residualValue"/>
+	    <field name="residualValue" readonlyIf="statusSelect > 1"/>
 	    <field name="accountingValue" hideIf="depreciationPlanSelect.includes('0')"/>
 	  </panel>
 	  <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters" sidebar="true" readonlyIf="statusSelect > 1" >
@@ -145,7 +147,7 @@
 	    	<field name="disposalTypeSelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
 	    	<field name="disposalQtySelect" onChange="action-attrs-account-fixed-asset-wizard-form-disposal-amount"/>
 	    	<field name="qty" onChange="action-validate-account-fixed-asset-wizard-form-validate-qty" showIf="disposalQtySelect == 2" min="0.01" type="decimal" />
-    		<field name="disposalAmount" showIf="disposalTypeSelect != 1"  type="decimal" title="Disposal amount" min="0.01"/>
+    		<field name="disposalAmount" showIf="disposalTypeSelect == 2"  type="decimal" title="Disposal amount" min="0.01"/>
     		<button name="disposalBtn" title="Disposal" colSpan="4" onClick="action-validate-account-fixed-asset-wizard-form-validate-qty, action-fixed-asset-disposal-wizard-method-disposal"/>
     		<field name="$generateSaleMove" title="Generate Sale Move" widget="boolean" showIf="disposalTypeSelect == 2"/>
     		<field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line" widget="many-to-one" target="com.axelor.apps.account.db.TaxLine" showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove"/>
@@ -171,6 +173,7 @@
     	<attribute name="domain" for="saleTaxLine" expr="eval: &quot;(self.endDate &gt; :disposalDate OR self.endDate IS NULL) AND self.startDate &lt; :disposalDate &quot;"/>
     </action-attrs>
     <action-attrs name="action-attrs-account-fixed-asset-wizard-form-disposal-amount">
+        <attribute name="value" for="disposalAmount" expr="eval: 0"/>
     	<attribute name="title" for="disposalAmount" expr="eval:com.axelor.i18n.I18n.get('Sales price excluding taxes')" if="disposalTypeSelect == 2"/>
     	<attribute name="title" for="disposalAmount" expr="eval:com.axelor.i18n.I18n.get('Amount excluding taxes')" if="disposalTypeSelect == 1"/>
     	<attribute name="readonly" for="disposalAmount" expr="false" if="disposalTypeSelect == 2"/>
@@ -236,11 +239,11 @@
     </action-validate>
     
     <action-validate name="action-fixed-asset-validate-check-puchase-account">
-    	<error message="Purchase account is required for fixed asset disposal move."/>
+    	<error message="Purchase account is required for fixed asset disposal move." if="!(purchaseAccount || fixedAssetCategory.fixedAssetType.technicalTypeSelect == 1)"/>
     </action-validate>
     
     <action-group name="action-fixed-asset-group-disposal-click">
-    	<action name="action-fixed-asset-validate-check-puchase-account" if="!purchaseAccount"/>
+    	<action name="action-fixed-asset-validate-check-puchase-account"/>
     	<action name="action-fixed-asset-view-show-disposal-wizard"/>
     </action-group>
     
