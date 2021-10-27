@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -64,4 +65,22 @@ public class PeriodController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void validateTempClosure(ActionRequest request, ActionResponse response) {
+    Period period = request.getContext().asType(Period.class);
+    try {
+      Beans.get(PeriodService.class).validateTempClosure(period);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
+  
+  public void validateClosure(ActionRequest request, ActionResponse response) {
+	    Period period = request.getContext().asType(Period.class);
+	    try {
+	      Beans.get(PeriodService.class).validateClosure(period);
+	    } catch (Exception e) {
+	      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+	    }
+	  }
 }

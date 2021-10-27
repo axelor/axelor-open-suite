@@ -452,4 +452,10 @@ public interface IExceptionMessage {
 
   public static final String PRICING_2 = /*$$(*/
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+
+  public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
+      "The previous period is not closed or temporarily closed." /*)*/;
+  
+  public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
+	  "The previous period is not closed." /*)*/;
 }
