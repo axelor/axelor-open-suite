@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<form name="app-stock-config-form" title="App stock" model="com.axelor.apps.base.db.AppStock" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
@@ -9,6 +9,7 @@
 			<field name="requireToFillConformityOnReceipt" widget="boolean-switch" colSpan="4"/>
 			<field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"/>
 			<field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
+			<field name="stockUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
 		<panel name="customsPanel" title="Customs">
           	<field name="economicArea"/>

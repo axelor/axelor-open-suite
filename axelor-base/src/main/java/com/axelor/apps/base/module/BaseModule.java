@@ -91,6 +91,8 @@ import com.axelor.apps.base.service.PrintTemplateLineService;
 import com.axelor.apps.base.service.PrintTemplateLineServiceImpl;
 import com.axelor.apps.base.service.PrintTemplateService;
 import com.axelor.apps.base.service.PrintTemplateServiceImpl;
+import com.axelor.apps.base.service.ProductCategoryService;
+import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductCompanyServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -217,6 +219,7 @@ public class BaseModule extends AxelorModule {
     bind(PartnerService.class).to(PartnerServiceImpl.class);
     bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
+    bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
     bind(GlobalTrackingLogService.class).to(GlobalTrackingLogServiceImpl.class);
     if (AppSettings.get()
         .get("hibernate.session_factory.interceptor", "")

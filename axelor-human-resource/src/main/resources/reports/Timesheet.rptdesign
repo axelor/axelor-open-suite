@@ -817,7 +817,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </list-property>
             <xml-property name="queryText"><![CDATA[select TimesheetLine.id, 
 TimesheetLine.date_val as timesheet_line_date,
-teamTask.full_name as task,
+projectTask.full_name as task,
 Product.name as product_name,
 TimesheetLine.hours_duration,
 Task.full_name as project,
@@ -827,7 +827,7 @@ appTimesheet.display_activity_column_in_printing
 
 from hr_timesheet as Timesheet
 inner join hr_timesheet_line as TimesheetLine on (TimesheetLine.timesheet = Timesheet.id)
-left join team_task as teamTask on (TimesheetLine.team_task = teamTask.id)
+left join project_project_task as projectTask on (TimesheetLine.project_task = projectTask.id)
 left join project_project as Task on (TimesheetLine.project = Task.id)
 left join project_project as Project on (Task.parent_project = Project.id)
 left join base_product as Product on (TimesheetLine.product = Product.id),

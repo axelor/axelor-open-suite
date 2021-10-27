@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 <!--   	Purchase Buyer Dashboard -->
 	
@@ -21,7 +21,7 @@
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="my-purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.buyerUser =:__user__ and self.company = :_active_company and self.statusSelect = 4</domain>
+		<domain>self.buyerUser =:__user__ and self.company = :_active_company and self.statusSelect = 3</domain>
     	<context name="_active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
@@ -33,11 +33,11 @@
     	<context name="_active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/> 
 	</action-view>
 
-	<action-view name="dashlet.purchase.buyer.dashboard.order.to.validate" title="My RFQs and POs To Validate (Requested &amp; Received)"
+	<action-view name="dashlet.purchase.buyer.dashboard.order.to.validate" title="My RFQs and POs To Validate"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="my-purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.buyerUser =:__user__ and self.statusSelect in (2,3) and self.company =:_active_company</domain>
+		<domain>self.buyerUser =:__user__ and self.statusSelect = 2 and self.company =:_active_company</domain>
     	<context name="_active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
@@ -93,11 +93,11 @@
 		<dashlet action="dashlet.50.latest.supplier.orders" canSearch="true" height="350"/>
 	</dashboard>
 
-	<action-view name="dashlet.purchase.manager.dashboard.validated.orders" title="Current Purchase orders"
+	<action-view name="dashlet.purchase.manager.dashboard.validated.orders" title="Current purchase quotations / orders"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect in (4,5)</domain>
+		<domain>self.statusSelect in (2,3)</domain>
 	</action-view>
 
 	<action-view name="dashlet.purchase.manager.dashboard.order.to.validate" title="RFQ And PO To Validate"
@@ -175,7 +175,6 @@
 	
 	<dashboard name="purchase.dashboard.1" title="Purchase Buyer">
 		<dashlet action="dashlet.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.purchase.buyer.dashboard.orders" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.my.purchase.per.product.family.volume" canSearch="true" height="350" />
 		<dashlet action="dashlet.my.purchase.amount.per.product.family" canSearch="true" height="350" />

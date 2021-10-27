@@ -19,8 +19,10 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface SaleOrderService {
 
@@ -79,4 +81,39 @@ public interface SaleOrderService {
    * @param saleOrder
    */
   SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty);
+
+  /**
+   * Handle the creation / updating of complementary products. Called onChange of saleOrderLineList.
+   *
+   * @param saleOrder
+   * @return
+   */
+  public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
+      throws AxelorException;
+
+  /**
+   * Blocks if the given sale order has line with a discount superior to the max authorized
+   * discount.
+   *
+   * @param saleOrder a sale order
+   * @throws AxelorException if the sale order is in anomaly
+   */
+  void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException;
+
+  /**
+   * To update product quantity with pack header quantity.
+   *
+   * @param saleOrder
+   * @return {@link SaleOrder}
+   * @throws AxelorException
+   */
+  public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException;
+
+  /**
+   * To manage Complementary Product sale order lines.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException;
 }

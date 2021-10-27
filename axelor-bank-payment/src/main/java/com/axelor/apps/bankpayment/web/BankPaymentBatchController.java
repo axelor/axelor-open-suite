@@ -29,7 +29,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class BankPaymentBatchController {
 
-  public void launchBankPaymentBatch(ActionRequest request, ActionResponse response) {
+  public void actionEbicsCertificate(ActionRequest request, ActionResponse response) {
 
     BankPaymentBatch bankPaymentBatch = request.getContext().asType(BankPaymentBatch.class);
     bankPaymentBatch = Beans.get(BankPaymentBatchRepository.class).find(bankPaymentBatch.getId());

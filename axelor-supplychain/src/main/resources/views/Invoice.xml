@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <grid name="subscription-so-invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<field name="subscriptionFromDate" />
@@ -13,6 +13,10 @@
     
     <action-method name="action-supplychain-method-generate-subscription-invoice">
     	<call class="com.axelor.apps.supplychain.web.InvoiceController" method="generateSubscriptionInvoices"/>
+    </action-method>
+    
+    <action-method name="action-invoice-method-update-product-qty-with-pack-header-qty">
+        <call class="com.axelor.apps.supplychain.web.InvoiceController" method="updateProductQtyWithPackHeaderQty"/>
     </action-method>
     
     <action-validate name="action-invoice-validate-pfp-stock-move">

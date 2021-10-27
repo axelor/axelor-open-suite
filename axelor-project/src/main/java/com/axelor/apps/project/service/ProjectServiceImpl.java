@@ -20,9 +20,11 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.TaskTemplate;
-import com.axelor.apps.project.db.TeamTaskCategory;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
@@ -34,7 +36,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -59,7 +60,8 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Inject WikiRepository wikiRepo;
-  @Inject TeamTaskProjectService teamTaskProjectService;
+  @Inject ProjectTaskService projectTaskService;
+  @Inject ResourceBookingService resourceBookingService;
 
   @Override
   public Project generateProject(
@@ -149,7 +151,7 @@ public class ProjectServiceImpl implements ProjectService {
       project.setTeam(projectTemplate.getTeam());
       project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
       project.setAssignedTo(projectTemplate.getAssignedTo());
-      project.setTeamTaskCategorySet(new HashSet<>(projectTemplate.getTeamTaskCategorySet()));
+      project.setProjectTaskCategorySet(new HashSet<>(projectTemplate.getProjectTaskCategorySet()));
       project.setSynchronize(projectTemplate.getSynchronize());
       project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
       project.setImputable(projectTemplate.getImputable());
@@ -172,6 +174,9 @@ public class ProjectServiceImpl implements ProjectService {
       projectRepository.save(project);
 
       Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
+      if (ObjectUtils.isEmpty(taskTemplateSet)) {
+        return project;
+      }
       List<TaskTemplate> taskTemplateList = new ArrayList<TaskTemplate>(taskTemplateSet);
       Collections.sort(
           taskTemplateList,
@@ -195,24 +200,23 @@ public class ProjectServiceImpl implements ProjectService {
     }
   }
 
-  public TeamTask createTask(
+  public ProjectTask createTask(
       TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
 
-    if (!ObjectUtils.isEmpty(project.getTeamTaskList())) {
-      for (TeamTask teamTask : project.getTeamTaskList()) {
-        if (teamTask.getName().equals(taskTemplate.getName())) {
-          return teamTask;
+    if (!ObjectUtils.isEmpty(project.getProjectTaskList())) {
+      for (ProjectTask projectTask : project.getProjectTaskList()) {
+        if (projectTask.getName().equals(taskTemplate.getName())) {
+          return projectTask;
         }
       }
     }
-    TeamTask task =
-        teamTaskProjectService.create(
-            taskTemplate.getName(), project, taskTemplate.getAssignedTo());
+    ProjectTask task =
+        projectTaskService.create(taskTemplate.getName(), project, taskTemplate.getAssignedTo());
     task.setDescription(taskTemplate.getDescription());
-    TeamTaskCategory teamTaskCategory = taskTemplate.getTeamTaskCategory();
-    if (teamTaskCategory != null) {
-      task.setTeamTaskCategory(teamTaskCategory);
-      project.addTeamTaskCategorySetItem(teamTaskCategory);
+    ProjectTaskCategory projectTaskCategory = taskTemplate.getProjectTaskCategory();
+    if (projectTaskCategory != null) {
+      task.setProjectTaskCategory(projectTaskCategory);
+      project.addProjectTaskCategorySetItem(projectTaskCategory);
     }
 
     TaskTemplate parentTaskTemplate = taskTemplate.getParentTaskTemplate();
@@ -222,5 +226,37 @@ public class ProjectServiceImpl implements ProjectService {
       return task;
     }
     return task;
+  }
+
+  public boolean checkIfResourceBooked(Project project) {
+
+    List<ResourceBooking> resourceBookingList = project.getResourceBookingList();
+    if (resourceBookingList != null) {
+      for (ResourceBooking resourceBooking : resourceBookingList) {
+        if (resourceBooking.getFromDate() != null
+            && resourceBooking.getToDate() != null
+            && (resourceBookingService.checkIfResourceBooked(resourceBooking)
+                || checkIfResourceBookedInList(resourceBookingList, resourceBooking))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean checkIfResourceBookedInList(
+      List<ResourceBooking> resourceBookingList, ResourceBooking resourceBooking) {
+
+    return resourceBookingList.stream()
+        .anyMatch(
+            x ->
+                !x.equals(resourceBooking)
+                    && x.getResource().equals(resourceBooking.getResource())
+                    && x.getFromDate() != null
+                    && x.getToDate() != null
+                    && ((resourceBooking.getFromDate().compareTo(x.getFromDate()) >= 0
+                            && resourceBooking.getFromDate().compareTo(x.getToDate()) <= 0)
+                        || (resourceBooking.getToDate().compareTo(x.getFromDate()) >= 0)
+                            && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
   }
 }

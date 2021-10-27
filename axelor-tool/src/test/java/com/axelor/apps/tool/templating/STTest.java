@@ -17,8 +17,13 @@
  */
 package com.axelor.apps.tool.templating;
 
+import com.axelor.app.AxelorModule;
 import com.axelor.apps.tool.db.Contact;
 import com.axelor.apps.tool.db.Title;
+import com.axelor.apps.tool.templating.STTest.MyModule;
+import com.axelor.inject.Beans;
+import com.axelor.test.GuiceModules;
+import com.axelor.test.GuiceRunner;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.collect.Maps;
 import java.math.BigDecimal;
@@ -30,8 +35,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+@RunWith(GuiceRunner.class)
+@GuiceModules({MyModule.class})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class STTest {
 
@@ -61,6 +69,14 @@ public class STTest {
           + "private String testKey2 = $testKey2$<br />"
           + "private String testKey3 = $testKey3$<br />"
           + "}</pre>";
+
+  public static class MyModule extends AxelorModule {
+
+    @Override
+    protected void configure() {
+      bind(Beans.class).asEagerSingleton();
+    }
+  }
 
   @Before
   public void prepareTest() {

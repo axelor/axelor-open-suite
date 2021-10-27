@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -36,6 +36,7 @@
     <boolean name="autoYearClosureMove" title="Year closure move"/>
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <integer name="functionalOriginSelect" title="Functional origin" readonly="true" selection="iaccount.move.functional.origin.select"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="Trading name"></many-to-one>
 
     <unique-constraint columns="reference,company"/>
     
@@ -43,7 +44,7 @@
 	
 	   	// STATUS SELECT
 		public static final int STATUS_NEW = 1;
-		public static final int STATUS_DAYBOOK = 2;
+		public static final int STATUS_ACCOUNTED = 2;
 		public static final int STATUS_VALIDATED = 3;
 		public static final int STATUS_CANCELED = 4;
 		
@@ -61,6 +62,11 @@
 		// FUNCTIONAL ORIGIN SELECT
 		public static final int FUNCTIONAL_ORIGIN_OPENING = 1;
 		public static final int FUNCTIONAL_ORIGIN_CLOSURE = 2;
+		public static final int FUNCTIONAL_ORIGIN_SALE = 3;
+		public static final int FUNCTIONAL_ORIGIN_PURCHASE = 4;
+		public static final int FUNCTIONAL_ORIGIN_PAYMENT = 5;
+		public static final int FUNCTIONAL_ORIGIN_CUT_OFF = 6;
+		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
 	]]></extra-code>
     
     <track>
@@ -75,7 +81,7 @@
     	<field name="ignoreInDebtRecoveryOk"/>
     	<message if="true" on="CREATE">Move created</message>
     	<message if="statusSelect == 1" tag="important">New move</message>
-	    <message if="statusSelect == 2" tag="info">Daybook move</message>
+	    <message if="statusSelect == 2" tag="info">Accounted move</message>
 	    <message if="statusSelect == 3" tag="success">Move validated</message>
 	    <message if="statusSelect == 4" tag="warning">Move canceled</message>
     </track>

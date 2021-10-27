@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <grid name="group-grid" id="base-group-grid" title="Groups" model="com.axelor.auth.db.Group">
         <field name="name" />
@@ -23,9 +23,10 @@
                 <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
                 <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false" target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.type = 'action-view' and self.home = true"/>
             </panel>
-            <field name="technicalStaff" colSpan="4"/>
-            <field name="isClient" colSpan="4"/>
-            <field name="isSupplier" colSpan="4"/>
+            <field name="technicalStaff" colSpan="3"/>
+            <field name="isClient" colSpan="3"/>
+            <field name="isSupplier" colSpan="3"/>
+            <field name="viewCustomizationPermission" colSpan="3"/>
         </panel>
         <panel-tabs name="mainPanelTab">
             <panel-related name="rolesPanel" field="roles" form-view="role-form" grid-view="role-grid"/>

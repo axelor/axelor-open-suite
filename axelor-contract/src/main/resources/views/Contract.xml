@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
 		<field name="contractId" width="120"/>
@@ -11,7 +11,7 @@
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="partner"/>
 		<field name="startDate"/>
-		<field name="supposedEndDate"/>
+		<field name="currentContractVersion.supposedEndDate"/>
 		<field name="statusSelect"/>
 	</grid>
 
@@ -379,7 +379,7 @@
     <action-validate name="action-contract-validate-on-going">
         <alert message="Attention the contract will have as starting date the provisional activation
         date ${currentContractVersion.supposedActivationDate}, Are you sure?"
-          if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __date__"/>
+          if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __config__.date"/>
     </action-validate>
 
     <action-attrs name="action-contract-readonly-if-unchangable" model="com.axelor.apps.contract.db.Contract">

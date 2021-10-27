@@ -43,4 +43,6 @@ public interface ProjectService {
   public Project createProjectFromTemplate(
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
       throws AxelorException;
+
+  boolean checkIfResourceBooked(Project project);
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
@@ -32,12 +32,14 @@
 		<option value="1">Mail</option>
 		<option value="2">Email</option>
 		<option value="3">Chat</option>
+		<option value="5">SMS</option>
 	</selection>
 	
 	<selection name="template.media.type.select">
 		<option value="1">Mail</option>
 		<option value="2">Email</option>
 		<option value="3">Chat</option>
+		<option value="5">SMS</option>
 	</selection>
 	
 	<selection name="mail.account.security.select">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<toolbar>
@@ -92,8 +92,9 @@
 		<action name="action-base-address-check-address-used"/>
 	</action-group>
 
-	<action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
-		<field name="addressL7Country" expr="action:default-address-country-record" />
+	<action-record name="default-address-record" model="com.axelor.apps.base.db.Address"> 
+		<field name="addressL7Country" expr="eval: __user__?.activeCompany?.address?.addressL7Country" if="__user__?.activeCompany?.address"/>
+		<field name="addressL7Country" expr="action:default-address-country-record" if="!__user__?.activeCompany?.address" />
 	</action-record>
 	
 	<action-record name="action-address-change-city" model="com.axelor.apps.base.db.Address">

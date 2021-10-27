@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
   
   	<module name="account" package="com.axelor.apps.account.db"/>
   	
@@ -35,6 +35,8 @@
 	 	
 <!-- 	 	<integer name="operationTypeSelect" title="Type de saisie paiement" required="true" selection="ipayment.operation.type.select"/> -->
 	 	<integer name="operationTypeSelect" title="Payment type" required="true" selection="iinvoice.operation.type.select"/>
+	 	
+	 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="TradingName" />
 	 	
 		<decimal name="remainingAmount" title="Amount remaining to allocate">
 			<![CDATA[

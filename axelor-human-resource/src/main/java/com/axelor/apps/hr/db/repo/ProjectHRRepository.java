@@ -21,10 +21,10 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class ProjectHRRepository extends ProjectManagementRepository {
 
     if (projectPlanningTimeList != null) {
       for (ProjectPlanningTime planningTime : projectPlanningTimeList) {
-        TeamTask task = planningTime.getTask();
+        ProjectTask task = planningTime.getProjectTask();
         if (task != null) {
           task.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(task));
         }

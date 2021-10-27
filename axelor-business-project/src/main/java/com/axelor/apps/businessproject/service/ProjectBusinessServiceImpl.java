@@ -29,21 +29,19 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
-import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.Set;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
@@ -142,6 +140,12 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                       .fetchOne()
                   != null;
       order.setInterco(interco);
+
+      // Automatic invoiced and delivered partners set in case of partner delegations
+      if (appSupplychain.getActivatePartnerRelations()) {
+        Beans.get(SaleOrderSupplychainService.class)
+            .setDefaultInvoicedAndDeliveredPartnersAndAddresses(order);
+      }
     }
     return Beans.get(SaleOrderRepository.class).save(order);
   }
@@ -236,12 +240,5 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     }
 
     return project;
-  }
-
-  @Override
-  public TeamTask createTask(
-      TaskTemplate taskTemplate, Project project, Set<TaskTemplate> taskTemplateSet) {
-    TeamTask task = super.createTask(taskTemplate, project, taskTemplateSet);
-    return task;
   }
 }

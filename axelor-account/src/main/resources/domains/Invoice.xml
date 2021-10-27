@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -91,6 +91,7 @@
     <string name="note" title="Notes" large="true"/>
       <string name="specificNotes" title="Specific notes" large="true"/>
     <many-to-one name="printedPDF" ref="com.axelor.meta.db.MetaFile"/>
+    <boolean name="groupProductsOnPrintings" title="Group products on printings" />
     
     <!-- Totals & Status -->
     
@@ -227,7 +228,7 @@
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>
-      <message if="statusSelect == 3 &amp;&amp; dueDate &amp;&amp; dueDate.isAfter(__date__)">Important</message>
+      <message if="statusSelect == 3 &amp;&amp; dueDate &amp;&amp; dueDate.isAfter(__config__.date)">Important</message>
     </track>
 
   </entity>

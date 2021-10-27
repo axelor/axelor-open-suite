@@ -44,6 +44,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveController {
@@ -181,7 +182,7 @@ public class MoveController {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
       moveService.getMoveRemoveService().deleteMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
-    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
       moveService.getMoveRemoveService().archiveDaybookMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
@@ -194,7 +195,7 @@ public class MoveController {
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
     try {
       List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-      if (!moveIds.isEmpty()) {
+      if (!CollectionUtils.isEmpty(moveIds)) {
         List<? extends Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
@@ -202,7 +203,7 @@ public class MoveController {
                     "self.id in ?1 AND self.statusSelect in (?2,?3,?4) AND (self.archived = false or self.archived = null)",
                     moveIds,
                     MoveRepository.STATUS_NEW,
-                    MoveRepository.STATUS_DAYBOOK,
+                    MoveRepository.STATUS_ACCOUNTED,
                     MoveRepository.STATUS_CANCELED)
                 .fetch();
         if (!moveList.isEmpty()) {
@@ -270,7 +271,7 @@ public class MoveController {
     move = Beans.get(MoveRepository.class).find(move.getId());
 
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
         Beans.get(MoveService.class).getMoveValidateService().updateInDayBookMode(move);
         response.setReload(true);
       }

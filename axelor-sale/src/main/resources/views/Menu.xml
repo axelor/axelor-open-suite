@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" order="-106"  if="__config__.app.isApp('sale')"
@@ -199,7 +199,7 @@
 		model="com.axelor.apps.base.db.PriceList" >
 		<view type="grid" name="price-list-grid" />
 		<view type="form" name="sale-price-list-form" />
-		<domain>self.typeSelect = 1</domain>
+		<domain>self.typeSelect = 1 and self.id not in (select priceList.id from PriceList priceList where parentPriceList IS NOT NULL ) and self.id not in (select priceList.id from PriceList priceList join PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where priceList.typeSelect = 1 and partnerPriceList.isExclusive IS TRUE )</domain>
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-templates" parent="sc-root-sale-conf" 
@@ -308,7 +308,7 @@
 		<view type="dashboard" name="sale.saleman.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 		
 	<menuitem name="menu-sale-manager-dashboard-sample" parent="sc-root-sale-report" order="-200"
@@ -316,28 +316,23 @@
 
 	<action-view name="sale.manager.dashboard.view.sample" title="Sales Manager Details">
 		<view type="dashboard" name="sale.manager.dashboard.sample" />
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>	
-	
-	<menuitem name="menu-sale-dashboard-1" parent="sc-root-sale-report"  
-		title="Sales Details"  action="sale.dashboard.1" />	
-		
-	<action-view name="sale.dashboard.1" title="Sales Details">
-		<view type="dashboard" name="sale.dashboard.view.1" />	 
-		<context name="_user" expr="eval:__user__"/>
-    	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
-	</action-view>
 	
 	<menuitem name="menu-sale-dashboard-2" parent="sc-root-sale-report"  
 		title="Turnover Study"  action="sale.dashboard.2" />	
 		
 	<action-view name="sale.dashboard.2" title="Turnover Study">
 		<view type="dashboard" name="sale.dashboard.view.2" />	 
-		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
+		<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"
-    	title="Customers" action="customer.list.dashboard.view"/>
+    	title="Customers / prospects" action="sale.customer.list.dashboard.view"/>
+    	
+    <!-- Add new action-view for change tab color. -->
+    <action-view name="sale.customer.list.dashboard.view" title="Customers / prospects">
+		<view type="dashboard" name="base.partner.list.dashboard" />
+	</action-view>
 
 </object-views>

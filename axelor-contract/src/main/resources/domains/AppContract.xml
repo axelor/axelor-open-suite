@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
-	<entity name="AppContract" lang="java" extends="App">
+	<entity name="AppContract" lang="java" >
+	
+	    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/> 
 
 		<boolean name="isUnchangableContract" title="Unchangable contract" />
 		<boolean name="isAmendmentManagement" title="Amendment management" />

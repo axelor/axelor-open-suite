@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<form name="app-supplychain-config-form" title="App Supplychain" model="com.axelor.apps.base.db.AppSupplychain" canDelete="false" canNew="false" width="large">
 		<panel name="saleOrderPanel" title="Sale order">
@@ -36,6 +36,10 @@
 			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
 			<field name="manageStockReservation" widget="boolean-switch" colSpan="4"/>
 			<field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
+
+			<field name="validStepForInvOutSM" showIf="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4" />
+			<field name="activatePartnerRelations" widget="boolean-switch" colSpan="4" />
+
 		</panel>
 		<panel name="intercoPanel" title="Interco">
 			<field name="intercoFromPurchase" widget="boolean-switch"/>

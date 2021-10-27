@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
   
   <grid name="action-builder-grid" title="Action builder" model="com.axelor.studio.db.ActionBuilder">
   	  <field name="name" />	
@@ -15,30 +15,29 @@
       	  <field name="isJson" onChange="action-action-builder-method-set-views,action-action-builder-type-select-change" colSpan="2"/>
 	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
 	      <spacer name="appBuilderSpacer" if="!__config__.app.getApp('bpm').getEnableAppBuilder()"/>
-	      <field name="name" colSpan="9" required="true"/>
+	      <field name="name" required="true"/>
+	      <field name="xmlId" colSpan="3" required="true"/>
 	      <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
 	      <panel name="modelPanel" colSpan="6" itemSpan="12">
 		      <field name="model"  widget="ref-text" x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel" 
-		      		requiredIf="(typeSelect &lt; 2 || typeSelect == 4) &amp;&amp; isJson" 
 		      		hideIf="typeSelect == 2 || !isJson"
 		      		onChange="action-action-builder-method-set-views,action-action-builder-attrs-model-change" />
 		      <field name="model" hideIf="typeSelect == 2 || isJson"
-		      		requiredIf="(typeSelect &lt; 2 || typeSelect == 4) &amp;&amp; !isJson" 
 		      		widget="ref-text" x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"
 		      		onChange="action-action-builder-method-set-views,action-action-builder-attrs-model-change" />
 	      </panel>
 	      <panel name="emailSendOptionSelectPanel" colSpan="6" showIf="typeSelect == 4">
-	      	<field name="emailSendOptionSelect" requiredIf="typeSelect == 4"/>
+	      	<field name="emailSendOptionSelect" />
 	      </panel>
 	      <panel name="targetModelPanel" colSpan="6" itemSpan="12">
-		      <field name="targetModel" requiredIf="typeSelect == 0 &amp;&amp; isJson" showIf="typeSelect == 0 &amp;&amp; isJson" widget="ref-text" 
+		      <field name="targetModel"  showIf="typeSelect == 0 &amp;&amp; isJson" widget="ref-text" 
 		      		x-target-name="name" x-target="com.axelor.meta.db.MetaJsonModel"/>
-		      <field name="targetModel"  requiredIf="typeSelect == 0 &amp;&amp; !isJson" showIf="typeSelect == 0 &amp;&amp; !isJson" widget="ref-text" 
+		      <field name="targetModel"   showIf="typeSelect == 0 &amp;&amp; !isJson" widget="ref-text" 
 		      		x-target-name="fullName" x-target="com.axelor.meta.db.MetaModel"/>
 		  </panel>
 		  <field name="openRecord" showIf="typeSelect == 0" colSpan="4" />
 		  <field name="displayMsg" showIf="typeSelect == 0" colSpan="8"/>
-      	  <field name="title" colSpan="12" showIf="typeSelect == 3" requiredIf="typeSelect == 3"/>
+      	  <field name="title" colSpan="12" showIf="typeSelect == 3" />
       	  <field name="actionBuilderViews"  showIf="typeSelect == 3" colSpan="12">
       	  	<editor x-show-on-new="false">
       	  		<field name="viewType" colSpan="3" />
@@ -68,7 +67,7 @@
 	      </panel>
 	      <panel name="emailTemplatePanel" colSpan="12">
 	      	<field name="scriptText" widget="html" title="Template" colSpan="12" showIf="typeSelect == 5"/>
-	      	<field name="emailTemplate" onSelect="action-action-builder-attrs-template-domain" requiredIf="typeSelect == 4" grid-view="template-grid" form-view="template-form" showIf="typeSelect == 4"/>
+	      	<field name="emailTemplate" onSelect="action-action-builder-attrs-template-domain"  grid-view="template-grid" form-view="template-form" showIf="typeSelect == 4"/>
 	      </panel>
 	  </panel>
   </form>
@@ -96,5 +95,10 @@
   <action-method name="action-action-builder-method-set-views">
   	<call class="com.axelor.studio.web.ActionBuilderController" method="setViews" if="typeSelect == 3"/>
   </action-method>
+  
+  <action-method name="action-mapper-method-create-script-from-json">
+  	<call class="com.axelor.studio.web.ActionBuilderController" method="createMapperScript"/>
+  </action-method>
+  
   
 </object-views>

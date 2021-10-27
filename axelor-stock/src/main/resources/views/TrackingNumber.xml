@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="tracking-number-grid" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber">
-		<hilite if="$moment(perishableExpirationDate).isBefore(__date__) || $moment(warrantyExpirationDate).isBefore(__date__)" color="danger" />
+		<hilite if="$moment(perishableExpirationDate).isBefore(__config__.date) || $moment(warrantyExpirationDate).isBefore(__config__.date)" color="danger" />
 		<hilite if="$moment(perishableExpirationDate).isBefore($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isBefore($moment(_datePlusTwoMonths))" color="warning" />
 		<hilite if="$moment(perishableExpirationDate).isAfter($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isAfter($moment(_datePlusTwoMonths))" color="success" />
     	<field name="trackingNumberSeq" width="120"/>
@@ -12,6 +12,7 @@
         <field name="warrantyExpirationDate"/>
         <field name="perishableExpirationDate"/>
         <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
+        <field name="origin"/>
     </grid>
     
     <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.stock.db.TrackingNumber"
@@ -22,6 +23,8 @@
 	        <field name="warrantyExpirationDate"/>
 	        <field name="perishableExpirationDate"/>
 	        <field name="counter"/>
+	        <field name="origin"/>
+			<field name="note" colSpan="12"/>
         </panel>
     </form>
 
@@ -33,6 +36,8 @@
 			<field name="warrantyExpirationDate" readonly="false"/>
 			<field name="perishableExpirationDate" readonly="false"/>
 			<field name="counter" hidden="true"/>
+			<field name="origin"/>
+			<field name="note" colSpan="12"/>
 		</panel>
 	</form>
 

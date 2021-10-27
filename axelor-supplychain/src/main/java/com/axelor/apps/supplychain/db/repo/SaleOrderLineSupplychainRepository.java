@@ -22,13 +22,14 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class SaleOrderLineSupplychainRepository extends SaleOrderLineRepository {
+public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
@@ -37,16 +38,7 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineRepository 
 
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 
-    if (saleOrder == null
-        || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE
-        || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
-        || saleOrder.getStockLocation() == null
-        || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
-        || (saleOrderLine.getProduct() != null
-            && saleOrderLine
-                .getProduct()
-                .getProductTypeSelect()
-                .equals(ProductRepository.PRODUCT_TYPE_SERVICE))) {
+    if (this.availabilityIsNotManaged(saleOrderLine, saleOrder)) {
       return super.populate(json, context);
     }
 
@@ -72,5 +64,18 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineRepository 
     json.put("availableStatusSelect", saleOrderLine.getAvailableStatusSelect());
 
     return super.populate(json, context);
+  }
+
+  protected boolean availabilityIsNotManaged(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    return saleOrder == null
+        || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
+        || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
+        || saleOrder.getStockLocation() == null
+        || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
+        || (saleOrderLine.getProduct() != null
+            && saleOrderLine
+                .getProduct()
+                .getProductTypeSelect()
+                .equals(ProductRepository.PRODUCT_TYPE_SERVICE));
   }
 }

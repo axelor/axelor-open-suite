@@ -118,7 +118,7 @@ public class OperationOrderController {
         return;
       }
       Beans.get(OperationOrderWorkflowService.class)
-          .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));
+          .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()), null);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

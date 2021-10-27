@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -49,7 +49,16 @@
   	<date name="estimatedDelivDate" title="Estimated shipping date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
 	<decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
-  	
+	
+	<!-- Complementary Products -->
+	<boolean name="isComplementaryProductsUnhandledYet" hidden="true"/>
+	<one-to-many name="selectedComplementaryProductList" ref="com.axelor.apps.sale.db.ComplementaryProductSelected" title="Complementary products" mappedBy="saleOrderLine"/>
+    <string name="manualId"/>
+    <string name="parentId"/>
+
+    <one-to-many name="complementarySaleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Complementary lines" mappedBy="mainSaleOrderLine"/>
+    <many-to-one name="mainSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+      	
 <!-- 	Margins -->
 	<decimal name="subTotalCostPrice" title="SubTotal cost price"/>
 	<decimal name="subTotalGrossMargin" title="Sub Total gross profit"/>
@@ -68,6 +77,9 @@
 	
 	<boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
 
+	<boolean name="discountsNeedReview" readonly="true"/>
+
+	<decimal name="discountDerogation" title="Discount derogation (%)" min="0" max="100"/>
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
 	<extra-code>
@@ -75,9 +87,14 @@
 			// TYPE SELECT
 			public static final int TYPE_NORMAL = 0;
 			public static final int TYPE_TITLE = 1;
+            public static final int TYPE_START_OF_PACK = 2;
+            public static final int TYPE_END_OF_PACK = 3;
+
 	  	]]>
 	</extra-code>
   	
   </entity>
+  
+  <sequence name="sale.order.line.idSeq" initial="1" increment="1" padding="10"/>
 
 </domain-models>

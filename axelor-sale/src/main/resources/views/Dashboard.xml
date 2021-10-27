@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 		<!-- SALES MAN DASHBOARD -->
 		
@@ -11,6 +11,8 @@
 		<dashlet action="dashlet.salesman.dashboard.activities" canSearch="true" height="350" />
 		<dashlet action="dashlet.salesman.dashboard.leads" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.salesman.dashboard.opportunities" canSearch="true" height="350" colSpan="12"/>
+		<dashlet action="dashlet.my.customers" height="350" canSearch="true"/>
+		<dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
 	</dashboard>
 	
 	<action-view name="dashlet.salesman.dashboard.orders" title="My Sales Orders" model="com.axelor.apps.sale.db.SaleOrder">
@@ -30,8 +32,8 @@
 		<view type="grid" name="my-event-grid"/>
 		<view type="form" name="event-form"/>
 	    <domain>self.startDateTime between :_today and :_tomorrow and self.user =:__user__</domain>
-	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).atStartOfDay()"/>
-	    <context name="_today" expr="eval: __date__.atStartOfDay()"/>
+	    <context name="_tomorrow" expr="eval: __config__.date.plusDays(1).atStartOfDay()"/>
+	    <context name="_today" expr="eval: __config__.date.atStartOfDay()"/>
 	</action-view>
 	
 	<action-view name="dashlet.salesman.dashboard.opportunities" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
@@ -49,7 +51,6 @@
 		<dashlet action="dashlet.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<dashlet action="dashlet.sales.turnover.ytd.vs.past.year" height="350"/>  	
 		<dashlet action="dashlet.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
-		<dashlet action="dashlet.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
 		<dashlet action="dashlet.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
 		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team" height="350"/>
 		<dashlet action="dashlet.sales.manager.dashboard.sales.distribution.per.family" height="350" />
@@ -57,11 +58,10 @@
 		<dashlet action="dashlet.sales.manager.dashboard.sales.per.country" height="350" />
 		<dashlet action="dashlet.turnover.sales.by.month.by.category" height="350" />    
    	    <dashlet action="dashlet.units.sold.on.cust.sales.by.category" height="350" />
-   	    <dashlet action="dashlet.stockMove.nbr.delivery.by.country" height="350" if-module="axelor-stock"  if="__config__.app.isApp('stock')" />
-   	    <dashlet action="dashlet.stockMoveLine.product.delivery.by.country" height="350" if-module="axelor-stock" if="__config__.app.isApp('stock')" />
-   	    <dashlet action="dashlet.stockMoveLine.product.delivery.by.country.by.family" height="350" if-module="axelor-stock" if="__config__.app.isApp('stock')" />
    	    <dashlet action="dashlet.stockMove.deliveries.time.delay.in.nbr" height="350" if-module="axelor-stock" if="__config__.app.isApp('stock')" />
    	    <dashlet action="dashlet.stockMove.average.delivery.time.delay" height="350" if-module="axelor-stock" if="__config__.app.isApp('stock')" />
+        <dashlet action="dashlet.margin.rate.per.customer"  height="400" colSpan="12"/>
+        <dashlet action="dashlet.markup.per.customer"  height="400"  colSpan="12"/>
 	</dashboard>
 	
 	<action-view title="Sales turnover comparison per month this year vs past years" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.ytd.vs.previous.years.by.month">
@@ -104,7 +104,7 @@
 
 	</action-view>
 	
-	<action-view name="dashlet.sales.manager.dashboard.sales.orders.per.salesman" title="Sales Orders per salesman">
+	<action-view name="dashlet.sales.manager.dashboard.sales.orders.per.salesman" title="Total order amount per salesman">
 	  <view type="chart" name="chart.sale.manager.dashboard.sales.orders.per.saleman"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
@@ -149,18 +149,6 @@
 	
 	<!-- Sales DashBoard -->
 	
-	<dashboard name="sale.dashboard.view.1" title="Sales Details">
-		<dashlet action="dashlet.salesman.dashboard.orders" canSearch="true" height="350" colSpan="12"/>
-		<dashlet action="dashlet.my.turnover.per.month"  height="350" />
-		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team"  height="350"/>
-		<dashlet action="dashlet.sales.manager.dashboard.sales.orders.per.salesman"  height="350" />
-		<dashlet action="dashlet.sales.manager.dashboard.sales.distribution.per.family"  height="350" />
-		<dashlet action="dashlet.sales.manager.dashboard.product.sales.per.category"  height="350" />
-		<dashlet action="dashlet.sales.manager.dashboard.sales.per.country"  height="350" />
-		<dashlet action="dashlet.turnover.sales.by.month.by.category"  height="350" />
-		<dashlet action="dashlet.units.sold.on.cust.sales.by.category"  height="350" />
-	</dashboard>
-	
 	<dashboard name="sale.dashboard.view.2" title="Turnover Study">
 		<dashlet action="dashlet.sales.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
 		<dashlet action="dashlet.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
@@ -168,25 +156,18 @@
 		<dashlet action="dashlet.sales.turnover.ytd.vs.past.year" height="350" />
 		<dashlet action="dashlet.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
 		<dashlet action="dashlet.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
-		<dashlet action="dashlet.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>
-	    <dashlet action="dashlet.turnover.per.month.per.salesman.over.4mth" canSearch="true" height="350"/>
+		<dashlet action="dashlet.turnover.per.month.per.salesman" canSearch="true" height="350" colSpan="12"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.type" canSearch="true" height="350"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.category" canSearch="true" height="350"/>
 	    <dashlet action="dashlet.sales.turnover.per.customer.sector" canSearch="true" height="350"/>
 	</dashboard>
 	
-    <action-view title="Turnover per month per saleman (6 month)" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman.over.6mth">
-		  <view type="chart" name="chart.turnover.per.month.per.saleman.over.6mth"/>
+    <action-view title="Turnover per month per salesman" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman">
+		  <view type="chart" name="chart.turnover.per.month.per.salesman"/>
 		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
-	
-	<action-view title="Turnover per month per saleman (4 month)" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman.over.4mth">
-		  <view type="chart" name="chart.turnover.per.month.per.saleman.over.4mth"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
-	</action-view>
-	
+		
 	<action-view title="Turnover per customer type" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.per.customer.type">
 		  <view type="chart" name="chart.sale.turnover.per.customer.type"/>
 		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
@@ -202,6 +183,18 @@
 	<action-view title="Turnover per customer sector" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.per.customer.sector">
 		  <view type="chart" name="chart.sale.turnover.per.customer.sector"/>
 		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+	</action-view>
+	
+	<action-view title="Average margin rate per customer" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.margin.rate.per.customer">
+		  <view type="chart" name="chart.margin.rate.per.customer"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+	</action-view>
+	
+	<action-view title="Average markup per customer" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.markup.per.customer">
+		  <view type="chart" name="chart.markup.rate.per.customer"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 		

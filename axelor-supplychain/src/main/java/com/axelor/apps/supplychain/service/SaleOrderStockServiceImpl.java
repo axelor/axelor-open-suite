@@ -43,6 +43,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -72,6 +73,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
+  protected AppSupplychainService appSupplychainService;
+  protected SupplyChainConfigService supplyChainConfigService;
   protected ProductCompanyService productCompanyService;
   protected PartnerStockSettingsService partnerStockSettingsService;
 
@@ -86,6 +89,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
+      AppSupplychainService appSupplychainService,
+      SupplyChainConfigService supplyChainConfigService,
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService) {
 
@@ -98,6 +103,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
+    this.appSupplychainService = appSupplychainService;
+    this.supplyChainConfigService = supplyChainConfigService;
     this.productCompanyService = productCompanyService;
     this.partnerStockSettingsService = partnerStockSettingsService;
   }
@@ -271,12 +278,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               stockConfigService.getStockConfig(company));
     }
 
+    Partner partner = computePartnerToUseForStockMove(saleOrder);
+
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
             saleOrder.getDeliveryAddress(),
             company,
-            saleOrder.getClientPartner(),
+            partner,
             saleOrder.getStockLocation(),
             toStockLocation,
             null,
@@ -298,6 +307,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
     stockMove.setNote(saleOrder.getDeliveryComments());
     stockMove.setPickingOrderComments(saleOrder.getPickingOrderComments());
+    stockMove.setGroupProductsOnPrintings(partner.getGroupProductsOnPrintings());
+    stockMove.setInvoicedPartner(saleOrder.getInvoicedPartner());
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
@@ -305,21 +316,46 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   /**
-   * Fill reservation date time in stock move lines with sale order confirmation date time.
+   * Fill reservation date time in stock move lines with sale order following supplychain
+   * configuration.
    *
    * @param stockMove
    * @param saleOrder
    */
-  protected void setReservationDateTime(StockMove stockMove, SaleOrder saleOrder) {
-    LocalDateTime reservationDateTime = saleOrder.getConfirmationDateTime();
-    if (reservationDateTime == null) {
-      reservationDateTime = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
-    }
+  protected void setReservationDateTime(StockMove stockMove, SaleOrder saleOrder)
+      throws AxelorException {
+    SupplyChainConfig supplyChainConfig =
+        supplyChainConfigService.getSupplyChainConfig(saleOrder.getCompany());
+
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    if (stockMoveLineList != null) {
-      for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        stockMoveLine.setReservationDateTime(reservationDateTime);
+    if (stockMoveLineList == null) {
+      stockMoveLineList = new ArrayList<>();
+    }
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      LocalDateTime reservationDateTime;
+
+      switch (supplyChainConfig.getSaleOrderReservationDateSelect()) {
+        case SupplyChainConfigRepository.SALE_ORDER_CONFIRMATION_DATE:
+          reservationDateTime = saleOrder.getConfirmationDateTime();
+          break;
+        case SupplyChainConfigRepository.SALE_ORDER_SHIPPING_DATE:
+          SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+          if (saleOrderLine == null || saleOrderLine.getEstimatedDelivDate() == null) {
+            reservationDateTime = null;
+          } else {
+            reservationDateTime = saleOrderLine.getEstimatedDelivDate().atStartOfDay();
+          }
+          break;
+        default:
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE));
       }
+
+      if (reservationDateTime == null) {
+        reservationDateTime = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+      }
+      stockMoveLine.setReservationDateTime(reservationDateTime);
     }
   }
 
@@ -522,6 +558,19 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       return Optional.ofNullable(saleOrderRepository.find(stockMove.getOriginId()));
     } else {
       return Optional.empty();
+    }
+  }
+
+  /**
+   * Use delivered partner if the configuration is set in generated stock move, else the default is
+   * client partner.
+   */
+  protected Partner computePartnerToUseForStockMove(SaleOrder saleOrder) {
+    if (appSupplychainService.getAppSupplychain().getActivatePartnerRelations()
+        && saleOrder.getDeliveredPartner() != null) {
+      return saleOrder.getDeliveredPartner();
+    } else {
+      return saleOrder.getClientPartner();
     }
   }
 }

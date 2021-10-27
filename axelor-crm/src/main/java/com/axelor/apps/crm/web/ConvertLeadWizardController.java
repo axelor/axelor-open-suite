@@ -202,7 +202,6 @@ public class ConvertLeadWizardController {
     response.setAttr("industrySector", "value", lead.getIndustrySector());
     response.setAttr("titleSelect", "value", lead.getTitleSelect());
     response.setAttr("emailAddress", "value", lead.getEmailAddress());
-    response.setAttr("fax", "value", lead.getFax());
     response.setAttr("mobilePhone", "value", lead.getMobilePhone());
     response.setAttr("fixedPhone", "value", lead.getFixedPhone());
     response.setAttr("webSite", "value", lead.getWebSite());
@@ -210,7 +209,19 @@ public class ConvertLeadWizardController {
     response.setAttr("department", "value", lead.getDepartment());
     response.setAttr("team", "value", lead.getTeam());
     response.setAttr("user", "value", lead.getUser());
-    response.setAttr("isProspect", "value", true);
+    if (lead.getUser() != null) {
+      if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
+          == CompanyRepository.CATEGORY_CUSTOMER) {
+        response.setAttr("isCustomer", "value", true);
+      } else if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
+          == CompanyRepository.CATEGORY_SUPPLIER) {
+        response.setAttr("isSupplier", "value", true);
+      } else {
+        response.setAttr("isProspect", "value", true);
+      }
+    } else {
+      response.setAttr("isProspect", "value", true);
+    }
     response.setAttr("partnerTypeSelect", "value", "1");
     response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
     response.setAttr("nbrEmployees", "value", 0);
@@ -239,7 +250,6 @@ public class ConvertLeadWizardController {
     response.setAttr("name", "value", lead.getName());
     response.setAttr("titleSelect", "value", lead.getTitleSelect());
     response.setAttr("emailAddress", "value", lead.getEmailAddress());
-    response.setAttr("fax", "value", lead.getFax());
     response.setAttr("mobilePhone", "value", lead.getMobilePhone());
     response.setAttr("fixedPhone", "value", lead.getFixedPhone());
     response.setAttr("user", "value", lead.getUser());

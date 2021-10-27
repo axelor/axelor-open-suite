@@ -68,7 +68,7 @@ public class MoveRemoveService {
   }
 
   public void archiveDaybookMove(Move move) throws Exception {
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
       this.checkDaybookMove(move);
       this.cleanMoveToArchived(move);
       move = this.updateMoveToArchived(move);
@@ -184,7 +184,7 @@ public class MoveRemoveService {
         move = moveRepo.find(move.getId());
         if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
           this.deleteMove(move);
-        } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+        } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
           this.archiveDaybookMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
           this.archiveMove(move);

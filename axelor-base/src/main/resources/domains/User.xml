@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
@@ -49,8 +49,10 @@
     <string name="attrs" json="true"/>
     
     <string name="emailSignature" title="Email signature" large="true"/>
+    
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="Trading name"></many-to-one>
 
-    <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
+    <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>    
 
     <track>
 			<field name="name"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
   
 	<grid id="studio-json-model-grid" name="json-model-grid" title="Custom models" model="com.axelor.meta.db.MetaJsonModel" groupBy="appBuilder">
 		<field name="title"/>
@@ -14,11 +14,8 @@
 		<field name="name"/>
   	</grid>
 
-  <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel" onSave="action-studio-json-model-onsave-group">
+  <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel">
     <!-- Studio changes -->
-    <toolbar>
-    	<button name="openWorkflowBtn" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
-    </toolbar>
     <panel name="appBuilderPanel" if="__config__.app.getApp('bpm').getEnableAppBuilder()">
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
     </panel>
@@ -45,7 +42,7 @@
     <!-- Menu panel removed -->
 
     <panel-tabs>
-      <panel-related field="fields" form-view="json-field-form-2" orderBy="sequence" canMove="true" onChange="action-studio-json-model-method-set-json-field-tracking">
+      <panel-related field="fields" form-view="json-field-form-2" orderBy="sequence" canMove="true">
         <field name="name"/>
         <field name="type"/>
         <field name="title"/>
@@ -62,26 +59,9 @@
 	</panel-mail>
   </form>
 
-  <action-method name="action-studio-json-model-method-open-workflow">
-	<call class="com.axelor.studio.web.MetaJsonModelController" method="openWorkflow"/>  
-  </action-method>
-  
-  <action-method name="action-studio-json-model-method-json-field-tracking">
-	<call class="com.axelor.studio.web.MetaJsonModelController" method="trackJsonField"/>
-  </action-method>
-
-  <action-method name="action-studio-json-model-method-set-json-field-tracking">
-    <call class="com.axelor.studio.web.MetaJsonModelController" method="setJsonFieldTracking"/>
-  </action-method>
-
   <action-method name="action-studio-json-model-method-isgeneratemenu-onchange">
   	<call class="com.axelor.studio.web.MetaJsonModelController" method="removeMenuBuilder"/>
   </action-method>
-
-  <action-group name="action-studio-json-model-onsave-group">
-     <action name="save" if="!id"/>
-     <action name="action-studio-json-model-method-json-field-tracking"/>
-  </action-group>
 
   <action-group name="action-studio-json-model-group-isgeneratemenu-onchange">
     <action if="id != null &amp;&amp; !isGenerateMenu" name="save"/>

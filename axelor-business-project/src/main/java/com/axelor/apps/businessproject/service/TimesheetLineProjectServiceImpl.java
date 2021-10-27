@@ -28,12 +28,12 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -43,7 +43,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     implements TimesheetLineBusinessService {
 
   protected ProjectRepository projectRepo;
-  protected TeamTaskRepository teamTaskaRepo;
+  protected ProjectTaskRepository projectTaskRepo;
   protected TimesheetLineRepository timesheetLineRepo;
 
   @Inject
@@ -53,12 +53,12 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       TimesheetRepository timesheetRepository,
       EmployeeRepository employeeRepository,
       ProjectRepository projectRepo,
-      TeamTaskRepository teamTaskaRepo,
+      ProjectTaskRepository projectTaskaRepo,
       TimesheetLineRepository timesheetLineRepo) {
     super(timesheetService, timesheetHRRepository, timesheetRepository, employeeRepository);
 
     this.projectRepo = projectRepo;
-    this.teamTaskaRepo = teamTaskaRepo;
+    this.projectTaskRepo = projectTaskaRepo;
     this.timesheetLineRepo = timesheetLineRepo;
   }
 
@@ -90,21 +90,21 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
         timesheetLine.getProject() != null
             ? projectRepo.find(timesheetLine.getProject().getId())
             : null;
-    TeamTask teamTask =
-        timesheetLine.getTeamTask() != null
-            ? teamTaskaRepo.find(timesheetLine.getTeamTask().getId())
+    ProjectTask projectTask =
+        timesheetLine.getProjectTask() != null
+            ? projectTaskRepo.find(timesheetLine.getProjectTask().getId())
             : null;
 
     boolean toInvoice;
 
-    if (teamTask == null && project != null) {
+    if (projectTask == null && project != null) {
       toInvoice = project.getIsInvoicingTimesheet();
-    } else if (teamTask != null) {
-      toInvoice = teamTask.getToInvoice();
-      if (teamTask.getParentTask() != null) {
+    } else if (projectTask != null) {
+      toInvoice = projectTask.getToInvoice();
+      if (projectTask.getParentTask() != null) {
         toInvoice =
-            teamTask.getParentTask().getInvoicingType()
-                == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT;
+            projectTask.getParentTask().getInvoicingType()
+                == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT;
       }
     } else {
       toInvoice = false;

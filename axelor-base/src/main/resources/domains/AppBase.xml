@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBase" lang="java" extends="App" >
-
+	<entity name="AppBase" lang="java">
+		
+		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+		
 		<datetime name="today" title="Today date" tz="true"/>
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
@@ -38,6 +40,13 @@
 		<integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0" max="10" default="2"/>
 		<integer name="globalTrackingLogPersistence" title="Tracking logs persistence (in months)" min="0" default="1"/>
 		
+        <!-- Enable grouped product when printing documents-->
+        <boolean name="isRegroupProductsOnPrintings" title="Regroup products on printings" default="false" />
+        <string name="regroupProductsTypeSelect" title="Product types to group" selection="base.app.base.regroup.products.type.select"/>
+        <string name="regroupProductsLevelSelect" title="Level of grouping" selection="base.app.base.regroup.products.level.select"/>
+        <string name="regroupProductsLabelServices" title="Label for grouped services" />
+        <string name="regroupProductsLabelProducts" title="Label for grouped products" />
+
 		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 
 		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="days"/>
@@ -78,6 +87,10 @@
     
 		<boolean name="isSharedAddress" title="Shared address" default="false"/>
 
+	   	<string name="productSequenceTypeSelect" selection="product.sequence.type.select" title="Sequence product type" default="Per product"/>
+
+    	<many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence" title="Product sequence"/>
+
 		<many-to-many name="companySpecificProductFieldsSet" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
 
 	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase"/>
@@ -85,9 +98,13 @@
 	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template for notifications" ref="com.axelor.apps.message.db.Template"/>
 
 	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
+
 	   	<string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
 	   	<string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
-	   	
+
+		<boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners" default="false"/>
+
+	   	<string name="customAppStyle" title="Custom style" large="true" help="Custom css to personnalize web user interface."/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -99,6 +116,11 @@
 	   			
 	   			public static final int ROUTING_API_YOURS = 1;
 	   			public static final int ROUTING_API_OSRM = 2;
+
+	   			public static final String SEQUENCE_PER_PRODUCT = "Per product";
+	   			public static final String SEQUENCE_PER_PRODUCT_CATEGORY = "Per product category";
+
+	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
 	   		]]>
 	   	</extra-code>
 	   	

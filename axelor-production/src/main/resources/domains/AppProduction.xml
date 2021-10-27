@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppProduction" lang="java" extends="App">
+	<entity name="AppProduction" lang="java" >
+		
+		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+		
 		<boolean name="prodOrderMgtOnSO" title="Production order management from sale order" default="false"/>
 		<boolean name="productionOrderGenerationAuto" title="Generate production orders automatically" default="false"/>
 		<boolean name="oneProdOrderPerSO" title="One production order per sale order" default="true"/>
@@ -34,6 +37,10 @@
 		<boolean name="manageOutsourcing" title="Manage outsourcing"/>
 		<boolean name="manageMpsCharge" title="Manage Master Production Scheduling Charge"/>
 		<boolean name="enableToolManagement" title="Enable Tool Management"/>
+		
+		<boolean name="isManufOrderPlannedAfterMerge" title="Automatically plan after fusion" />
+
+		<boolean name="manageWorkCenterGroup" title="Manage work center group"/>
 
 		<track>
 			<field name="prodOrderMgtOnSO" on="UPDATE"/>

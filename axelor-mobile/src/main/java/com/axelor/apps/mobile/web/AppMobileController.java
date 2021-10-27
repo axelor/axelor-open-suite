@@ -37,7 +37,7 @@ public class AppMobileController {
 
     AppMobile appMobile = (AppMobile) appService.getApp("mobile");
 
-    data.put("isAppMobileEnable", appMobile.getActive());
+    data.put("isAppMobileEnable", appMobile.getApp().getActive());
     data.put("isSaleAppEnable", appService.isApp("sale") ? appMobile.getIsSaleAppEnable() : false);
     data.put("isCrmAppEnable", appService.isApp("crm") ? appMobile.getIsCrmAppEnable() : false);
     data.put(
