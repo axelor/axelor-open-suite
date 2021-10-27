@@ -101,11 +101,11 @@
         <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch" readonlyIf="$validatePeriod"/>
         <field name="validationDate" readonly="true" showIf="statusSelect == 3" />
                 <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <button name="validateBtn" title="Validate" onClick="action-account-move-group-validate-click" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" />
+        <button name="validateBtn" title="Validate" readonlyIf="$validatePeriod" onClick="action-account-move-group-validate-click" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" />
 				<button name="simulateBtn" title="Simulate" onClick="action-method-account-move-check-preconditions, action-move-record-set-status-simulate,action-move-attrs-validate-button-title,save" colSpan="12" showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
-        <button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-group-generate-tax-lines" colSpan="12"
+        <button name="autoTaxLineGenerateBtn" title="Generate tax lines" readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 5"/>
-        <button name="counterpartGenerateBtn" title="Generate counterpart" onClick="action-account-move-group-generate-counterpart" colSpan="12" />
+        <button name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-counterpart" colSpan="12" />
       </panel>
     </panel>
 
