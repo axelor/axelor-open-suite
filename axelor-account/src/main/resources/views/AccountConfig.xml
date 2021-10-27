@@ -271,7 +271,7 @@
 				<field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
 				<field name="analyticJournal" domain="self.company = :company" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
 				<field name="analyticAxisByCompanyList" colSpan="12" canNew="$isCanNew" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" 
-				onChange="action-attrs-set-readonly-nbr-axis,action-attrs-account-config-set-is-can-new" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+				onChange="action-attrs-account-config-set-is-can-new" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
 				<field name="$isCanNew" type="boolean" hidden="true"/>
 			</panel>
 			
@@ -329,11 +329,6 @@
 	<action-method name="action-account-config-method-deactivate-simultated-moves">
 	    <call class="com.axelor.apps.account.web.AccountConfigController" method="deactivateSimulatedMoves" if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
 	</action-method>
-	
-	<action-attrs name="action-attrs-set-readonly-nbr-axis">
-		<attribute name="readonly" for="nbrOfAnalyticAxisSelect" expr="true" if="nbrOfAnalyticAxisSelect &lt; analyticAxisByCompanyList.size"/>
-		<attribute name="readonly" for="nbrOfAnalyticAxisSelect" expr="false" if="nbrOfAnalyticAxisSelect &gt;= analyticAxisByCompanyList.size"/>
-	</action-attrs>
 	
 	<action-attrs name="action-attrs-account-config-set-is-can-new">
 		<attribute name="value" for="$isCanNew" expr="eval: analyticAxisByCompanyList.size() &lt; nbrOfAnalyticAxisSelect" if="analyticAxisByCompanyList != null &amp;&amp; manageAnalyticAccounting"/>
