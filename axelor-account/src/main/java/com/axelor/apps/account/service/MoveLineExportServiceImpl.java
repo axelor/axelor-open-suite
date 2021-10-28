@@ -1176,7 +1176,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         moveLineRepo
             .all()
             .filter(moveLineQueryStr)
-            .order("move.validationDate")
+            .order("move.accountingDate")
             .order("date")
             .order("name")
             .fetch();
