@@ -1,290 +1,376 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-	
-	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form" extension="true">
-		<extend target="/">
-	  <attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
+    id="supplychain-sale-order-form" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
-		</extend>
-			<extend target="//field[@name='shipmentMode']">
-			<attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
-			<attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
-		</extend>
-		<extend target="//panel-related[@name='detailLinesPanel']">
-			<attribute name="onChange" value="action-sale-order-line-change-group,supplychain-action-create-shipment-cost-line"/>
-		</extend>
-	</form>
+    </extend>
+    <extend target="//field[@name='shipmentMode']">
+      <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
+      <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
+    </extend>
+    <extend target="//panel-related[@name='detailLinesPanel']">
+      <attribute name="onChange"
+        value="action-sale-order-line-change-group,supplychain-action-create-shipment-cost-line"/>
+    </extend>
+  </form>
 
-	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
-	onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload"
-	onSave="action-supplychain-saleorder-onsave">
+  <form name="sale-order-form-partner" title="Sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
+    onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
+    onLoad="action-group-supplychain-saleorder-onload" onSave="action-supplychain-saleorder-onsave">
 
-		<panel-include view="sale-order-form" from="axelor-sale"/>
-	</form>
+    <panel-include view="sale-order-form" from="axelor-sale"/>
+  </form>
 
-	<form name="sale-order-generate-po-select-supplierpartner-form" model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation" onLoad="action-record-load-dummy-supplier-partner">
-		<panel name="mainPanel" >
-			<field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one" target="com.axelor.apps.base.db.Partner" onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
-			<button name="generatePOConfirmBtn" title="Confirm Purchase order generation" onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
-		</panel>
-    </form>
+  <form name="sale-order-generate-po-select-supplierpartner-form"
+    model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation"
+    onLoad="action-record-load-dummy-supplier-partner">
+    <panel name="mainPanel">
+      <field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"
+        onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
+      <button name="generatePOConfirmBtn" title="Confirm Purchase order generation"
+        onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+    </panel>
+  </form>
 
-	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
-		  onNew="action-group-supplychain-saleorder-onnew"
-		  onSave="save,action-sale-order-method-compute,save" onLoad="action-group-supplychain-saleorder-onload" width="large">
-		<panel-include view="sale-order-form-client" from="axelor-sale"/>
-	</form>
-	
-	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form" extension="true">
-		<extend target="/">
-			<attribute name="onNew" value="action-group-sale-saleorder-onnew,action-saleorder-record-template"/>
-		</extend>
-	</form>
+  <form name="sale-order-form-client" id="supplychain-sale-order-form-client"
+    title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4"
+    onNew="action-group-supplychain-saleorder-onnew"
+    onSave="save,action-sale-order-method-compute,save"
+    onLoad="action-group-supplychain-saleorder-onload" width="large">
+    <panel-include view="sale-order-form-client" from="axelor-sale"/>
+  </form>
 
-	<form model="com.axelor.apps.sale.db.SaleOrder" title="Sales order" name="incl-sale-order-subscrption-form">
-		<panel name="subscriptionPanel" title="Contract/Subscription" showIf="saleOrderTypeSelect == 2" >
-			<field name="contractStartDate" onChange="action-sale-order-attrs-subscription-contract-start-date-change" />
-		    <field name="contractEndDate" onChange="action-sale-order-attrs-subscription-contract-end-date-change" />
-		    <field name="contractPeriodInMonths" onChange="action-sale-order-attrs-subscription-contract-period-change" />
-			<field name="currentContractPeriodEndDate" />
-			<field name="isTacitAgreement" />
-			<separator colSpan="12" />
-			<field name="numberOfPeriods" showIf="$readonly()" colSpan="4">
-		      <viewer><![CDATA[
+  <form name="sale-order-template-form" title="Template"
+    model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form"
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-group-sale-saleorder-onnew,action-saleorder-record-template"/>
+    </extend>
+  </form>
+
+  <form model="com.axelor.apps.sale.db.SaleOrder" title="Sales order"
+    name="incl-sale-order-subscrption-form">
+    <panel name="subscriptionPanel" title="Contract/Subscription"
+      showIf="saleOrderTypeSelect == 2">
+      <field name="contractStartDate"
+        onChange="action-sale-order-attrs-subscription-contract-start-date-change"/>
+      <field name="contractEndDate"
+        onChange="action-sale-order-attrs-subscription-contract-end-date-change"/>
+      <field name="contractPeriodInMonths"
+        onChange="action-sale-order-attrs-subscription-contract-period-change"/>
+      <field name="currentContractPeriodEndDate"/>
+      <field name="isTacitAgreement"/>
+      <separator colSpan="12"/>
+      <field name="numberOfPeriods" showIf="$readonly()" colSpan="4">
+        <viewer><![CDATA[
 		                  <span>{{record.numberOfPeriods}}</span>
 		                  <span> </span>
 		                  <span ng-show="record.periodicityTypeSelect == 1" x-translate>day(s)</span>
 		                  <span ng-show="record.periodicityTypeSelect == 2" x-translate>month(s)</span>
 				]]></viewer>
-		    </field>
-		    <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4"  onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
-		    <field name="periodicityTypeSelect" showIf="!$readonly()" colSpan="4"  onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
-			<field name="noticePeriodInDays" />
-			<field name="nextInvoicingDate" />
-			<field name="nextInvoicingStartPeriodDate" onChange="action-supplychain-so-method-set-next-invoicing-end-period-date" />
-			<field name="nextInvoicingEndPeriodDate" />
-			<field name="subscriptionComment" colSpan="12"/>
-			<field name="subscriptionText" colSpan="12"/>
-			<panel-dashlet name="subscriptionIsnvoicesPanel" action="action-sale-order-view-subscription-invoices" colSpan="12"/>
-		</panel>
-	</form>
-	
-  <action-group id="action-group-supplychain-sale-order-validate-changes" name="action-group-sale-order-validate-changes">
+      </field>
+      <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4"
+        onChange="action-supplychain-so-method-set-next-invoicing-end-period-date"/>
+      <field name="periodicityTypeSelect" showIf="!$readonly()" colSpan="4"
+        onChange="action-supplychain-so-method-set-next-invoicing-end-period-date"/>
+      <field name="noticePeriodInDays"/>
+      <field name="nextInvoicingDate"/>
+      <field name="nextInvoicingStartPeriodDate"
+        onChange="action-supplychain-so-method-set-next-invoicing-end-period-date"/>
+      <field name="nextInvoicingEndPeriodDate"/>
+      <field name="subscriptionComment" colSpan="12"/>
+      <field name="subscriptionText" colSpan="12"/>
+      <panel-dashlet name="subscriptionIsnvoicesPanel"
+        action="action-sale-order-view-subscription-invoices" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-group id="action-group-supplychain-sale-order-validate-changes"
+    name="action-group-sale-order-validate-changes">
     <action name="action-supplychain-saleorder-onsave"/>
     <action name="save"/>
     <action name="action-method-sale-order-validate-changes"/>
-	<action name="action-sale-order-method-notify-stock-move-created" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
+    <action name="action-sale-order-method-notify-stock-move-created"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
   </action-group>
 
-	<action-group name="action-group-supplychain-saleorder-onnew">
-        <action name="action-group-sale-saleorder-onnew"/>
-		<action name="action-sale-order-record-payment-mode"/>
-		<action name="action-supplychain-sale-order-method-get-stock-location" if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
-        <action name="action-sale-order-attrs-interco"/>
-		<action name="action-sale-order-record-interco"/>
-		<action name="supplychain-action-create-shipment-cost-line"/>
-		<action name="action-sale-order-record-set-default-tax-number"/>
-	</action-group>
-	
-	<action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
-		<action name="action-sale-order-supplychain-record-main-invoicing-address"/>
-		<action name="action-sale-order-method-address-str"/>
-	</action-group>
-	
-	<action-group name="action-group-sale-order-supplychain-set-delivery-address">
-		<action name="action-sale-order-supplychain-record-delivery-address"/>
-		<action name="action-sale-order-method-address-str"/>
-	</action-group>
-	
-	<action-group name="action-group-supplychain-saleorder-onload">
-        <action name="action-group-sale-saleorder-onload"/>
-		<action name="action-sale-order-attrs-interco"/>
-	</action-group>
+  <action-group name="action-group-supplychain-saleorder-onnew">
+    <action name="action-group-sale-saleorder-onnew"/>
+    <action name="action-sale-order-record-payment-mode"/>
+    <action name="action-supplychain-sale-order-method-get-stock-location"
+      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
+    <action name="action-sale-order-attrs-interco"/>
+    <action name="action-sale-order-record-interco"/>
+    <action name="supplychain-action-create-shipment-cost-line"/>
+    <action name="action-sale-order-record-set-default-tax-number"/>
+  </action-group>
 
-	<action-method name="action-supplychain-sale-order-method-get-stock-location">
-    	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
-    </action-method>
+  <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
+    <action name="action-sale-order-supplychain-record-main-invoicing-address"/>
+    <action name="action-sale-order-method-address-str"/>
+  </action-group>
 
-    <action-method name="action-supplychain-saleorder-onsave">
-        <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave" />
-    </action-method>
+  <action-group name="action-group-sale-order-supplychain-set-delivery-address">
+    <action name="action-sale-order-supplychain-record-delivery-address"/>
+    <action name="action-sale-order-method-address-str"/>
+  </action-group>
 
-    <action-method name="action-supplychain-sale-order-method-generate-invoice">
- 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
-	</action-method>
+  <action-group name="action-group-supplychain-saleorder-onload">
+    <action name="action-group-sale-saleorder-onload"/>
+    <action name="action-sale-order-attrs-interco"/>
+  </action-group>
 
-	<action-method name="action-supplychain-sale-order-create-stock-move" >
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
-	</action-method>
+  <action-method name="action-supplychain-sale-order-method-get-stock-location">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
+  </action-method>
 
-	<action-method name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines" >
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generatePurchaseOrdersFromSelectedSOLines"/>
-	</action-method>
+  <action-method name="action-supplychain-saleorder-onsave">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave"/>
+  </action-method>
 
-	<action-method name="action-supplychain-so-generate-supplier-partner-domain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="supplierPartnerSelectDomain"/>
-	</action-method>
-	
-	<action-method name="action-supplychain-so-method-set-next-invoicing-end-period-date">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setNextInvoicingStartPeriodDate" />
-	</action-method>
-	
-	<action-validate name="action-supplychain-sale-order-validate-check-amount-timetable">
-		<alert message="The amount to be spread over the timetable is negative." if="amountToBeSpreadOverTheTimetable &lt; 0"/>
-	</action-validate>
+  <action-method name="action-supplychain-sale-order-method-generate-invoice">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateInvoice"/>
+  </action-method>
 
-	<action-record name="action-record-load-dummy-supplier-partner" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(supplierPartnerId)"/>
-	</action-record>
+  <action-method name="action-supplychain-sale-order-create-stock-move">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
+  </action-method>
 
-	<action-record name="action-sale-order-record-payment-mode" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
-		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
-	</action-record>
+  <action-method
+    name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="generatePurchaseOrdersFromSelectedSOLines"/>
+  </action-method>
 
-	<action-record name="action-sale-order-record-interco"
-				   model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromSale
+  <action-method name="action-supplychain-so-generate-supplier-partner-domain">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="supplierPartnerSelectDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-so-method-set-next-invoicing-end-period-date">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setNextInvoicingStartPeriodDate"/>
+  </action-method>
+
+  <action-validate
+    name="action-supplychain-sale-order-validate-check-amount-timetable">
+    <alert message="The amount to be spread over the timetable is negative."
+      if="amountToBeSpreadOverTheTimetable &lt; 0"/>
+  </action-validate>
+
+  <action-record name="action-record-load-dummy-supplier-partner"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(supplierPartnerId)"/>
+  </action-record>
+
+  <action-record name="action-sale-order-record-payment-mode"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
+      if="clientPartner?.inPaymentMode != null"/>
+    <field name="paymentMode"
+      expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode"
+      if="clientPartner?.inPaymentMode == null"/>
+  </action-record>
+
+  <action-record name="action-sale-order-record-interco"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="interco"
+      expr="eval: __config__.app.getApp('supplychain')?.intercoFromSale
             &amp;&amp; !createdByInterco &amp;&amp; clientPartner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne()"/>
-	</action-record>
+  </action-record>
 
-  <action-record name="action-sale-order-record-direct-order-location-onchange" model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="stockLocation" expr="eval: company?.stockConfig?.directOrderStockLocation" if="directOrderLocation"/>
+  <action-record name="action-sale-order-record-direct-order-location-onchange"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="stockLocation" expr="eval: company?.stockConfig?.directOrderStockLocation"
+      if="directOrderLocation"/>
     <field name="stockLocation" expr="eval: null" if="!directOrderLocation"/>
   </action-record>
 
-	<action-record name="action-sale-order-supplychain-record-main-invoicing-address" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="mainInvoicingAddress" expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(invoicedPartner)" if="invoicedPartner != null"/>
-	</action-record>
-	
-	<action-record name="action-sale-order-supplychain-record-delivery-address" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="deliveryAddress" expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(deliveredPartner)" if="deliveredPartner != null"/>
-	</action-record>
+  <action-record name="action-sale-order-supplychain-record-main-invoicing-address"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="mainInvoicingAddress"
+      expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(invoicedPartner)"
+      if="invoicedPartner != null"/>
+  </action-record>
 
-	<action-attrs name="action-sale-order-attrs-interco">
-		<attribute for="interco" name="hidden"
-				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
-		<attribute for="interco" name="readonly" expr="eval: true"
-				   if="eval: statusSelect &gt; 3"/>
-	</action-attrs>
-	
-	<action-attrs name="action-sale-order-attrs-subscription-contract-start-date-change">
-		<attribute name="value" for="contractEndDate" expr="eval:contractStartDate.plusMonths(contractPeriodInMonths)" if="contractStartDate != null &amp;&amp; contractPeriodInMonths != 0"/>
-		<attribute name="value" for="contractPeriodInMonths" expr="eval:java.time.temporal.ChronoUnit.MONTHS.between(contractStartDate,contractEndDate)" if="contractStartDate != null &amp;&amp; contractEndDate != null &amp;&amp; contractPeriodInMonths == 0"/>	
-	</action-attrs>
-	
-	<action-attrs name="action-sale-order-attrs-subscription-contract-end-date-change">
-		<attribute name="value" for="contractPeriodInMonths" expr="eval:java.time.temporal.ChronoUnit.MONTHS.between(contractStartDate,contractEndDate)" if="contractStartDate != null &amp;&amp; contractEndDate != null"/>	
-	</action-attrs>
-	
-	<action-attrs name="action-sale-order-attrs-subscription-contract-period-change">
-		<attribute name="value" for="contractEndDate" expr="eval:contractStartDate.plusMonths(contractPeriodInMonths)" if="contractStartDate != null &amp;&amp; contractPeriodInMonths != 0"/>
-	</action-attrs>
+  <action-record name="action-sale-order-supplychain-record-delivery-address"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="deliveryAddress"
+      expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(deliveredPartner)"
+      if="deliveredPartner != null"/>
+  </action-record>
+
+  <action-attrs name="action-sale-order-attrs-interco">
+    <attribute for="interco" name="hidden"
+      expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+    <attribute for="interco" name="readonly" expr="eval: true"
+      if="eval: statusSelect &gt; 3"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-subscription-contract-start-date-change">
+    <attribute name="value" for="contractEndDate"
+      expr="eval:contractStartDate.plusMonths(contractPeriodInMonths)"
+      if="contractStartDate != null &amp;&amp; contractPeriodInMonths != 0"/>
+    <attribute name="value" for="contractPeriodInMonths"
+      expr="eval:java.time.temporal.ChronoUnit.MONTHS.between(contractStartDate,contractEndDate)"
+      if="contractStartDate != null &amp;&amp; contractEndDate != null &amp;&amp; contractPeriodInMonths == 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-subscription-contract-end-date-change">
+    <attribute name="value" for="contractPeriodInMonths"
+      expr="eval:java.time.temporal.ChronoUnit.MONTHS.between(contractStartDate,contractEndDate)"
+      if="contractStartDate != null &amp;&amp; contractEndDate != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-subscription-contract-period-change">
+    <attribute name="value" for="contractEndDate"
+      expr="eval:contractStartDate.plusMonths(contractPeriodInMonths)"
+      if="contractStartDate != null &amp;&amp; contractPeriodInMonths != 0"/>
+  </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-set-stock-location-domain">
-    <attribute name="domain" for="stockLocation" if="!tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-    	expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = false&quot;"/>
-    <attribute name="domain" for="stockLocation" if="!tradingName?.stockLocationList &amp;&amp; directOrderLocation"
-    	expr="eval: &quot;self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true&quot;"/>
-    <attribute name="domain" for="stockLocation" if="tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-    	expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true AND self.directOrderLocation = false) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
-    <attribute name="domain" for="stockLocation" if="tradingName?.stockLocationList &amp;&amp; directOrderLocation"
-    	expr="eval: &quot;(self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')})&quot;"/>
+    <attribute name="domain" for="stockLocation"
+      if="!tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
+      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = false&quot;"/>
+    <attribute name="domain" for="stockLocation"
+      if="!tradingName?.stockLocationList &amp;&amp; directOrderLocation"
+      expr="eval: &quot;self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true&quot;"/>
+    <attribute name="domain" for="stockLocation"
+      if="tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
+      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true AND self.directOrderLocation = false) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
+    <attribute name="domain" for="stockLocation"
+      if="tradingName?.stockLocationList &amp;&amp; directOrderLocation"
+      expr="eval: &quot;(self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')})&quot;"/>
   </action-attrs>
-	
-	<action-view name="action-view-show-invoices-from-sale-order" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-light-grid" />
-		<view type="form" name="invoice-form" />
-		<domain>self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList)))</domain>
-		<context name="saleOrderId" expr="eval: id" />
-		<context name="saleOrderLineIdList" expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
-    </action-view>
 
-	<action-group name="action-supplychain-sale-order-group-generate-invoice">
-		<action name="save"/>
-		<action name="action-sale-order-method-generate-invoice"/>
-	</action-group>
-   
-	<action-view name="action-sale-order-view-subscription-invoices" title="Invoiced periods"
-		model="com.axelor.apps.account.db.Invoice">
-		<view name="subscription-so-invoice-grid" type="grid"/>
-		<view name="invoice-form" type="form"/>
-		<domain>self.operationSubTypeSelect = 6 and (self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList))))</domain>
-		<context name="saleOrderId" expr="eval: id"/>
-		<context name="saleOrderLineIdList" expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
-	</action-view>
+  <action-view name="action-view-show-invoices-from-sale-order" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-light-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.saleOrder.id = :saleOrderId OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM
+      self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineIdList)))</domain>
+    <context name="saleOrderId" expr="eval: id"/>
+    <context name="saleOrderLineIdList"
+      expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
+  </action-view>
 
-    <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
-		<check error="A supplier partner must be selected" field="supplierPartnerSelect" if="supplierPartnerSelect == null"/>
-	</action-condition>
-	
-	<action-record name="action-sale-order-record-freight-carrier" model="com.axelor.apps.base.db.Partner">
-		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
-	</action-record>
-	
-	<action-record name="action-sale-order-record-partner-supplychain" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
-    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
-		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
-		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
-		<field name="stockLocation"  if="stockLocation == null" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(clientPartner, company)"/>
-		<field name="toStockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(clientPartner, company)"/>
-    </action-record>
-    
-    <action-record name="action-sale-order-record-update-timetable-amounts" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="timetableList" expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base').nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}" if="timetableList != null"/>
-	</action-record>
+  <action-group name="action-supplychain-sale-order-group-generate-invoice">
+    <action name="save"/>
+    <action name="action-sale-order-method-generate-invoice"/>
+  </action-group>
 
-    <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
-    	<attribute name="value" for="isIspmRequired" expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
-    </action-attrs>
+  <action-view name="action-sale-order-view-subscription-invoices"
+    title="Invoiced periods" model="com.axelor.apps.account.db.Invoice">
+    <view name="subscription-so-invoice-grid" type="grid"/>
+    <view name="invoice-form" type="form"/>
+    <domain>self.operationSubTypeSelect = 6 and (self.saleOrder.id = :saleOrderId OR
+      (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE
+      inli.saleOrderLine.id IN (:saleOrderLineIdList))))</domain>
+    <context name="saleOrderId" expr="eval: id"/>
+    <context name="saleOrderLineIdList"
+      expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
+  </action-view>
 
-	<action-method name="action-sale-order-method-allocate-all">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="allocateAll"/>
-	</action-method>
+  <action-condition name="action-supplychain-so-generate-po-check-supplier-partner">
+    <check error="A supplier partner must be selected" field="supplierPartnerSelect"
+      if="supplierPartnerSelect == null"/>
+  </action-condition>
 
-	<action-method name="action-sale-order-method-deallocate-all">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="deallocateAll"/>
-	</action-method>
+  <action-record name="action-sale-order-record-freight-carrier"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
+  </action-record>
 
-	<action-method name="action-sale-order-method-reserve-all">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="reserveAll"/>
-	</action-method>
+  <action-record name="action-sale-order-record-partner-supplychain"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
+    <field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
+    <field name="carrierPartner"
+      expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
+    <field name="incoterm"
+      expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm"
+      if="company != null &amp;&amp; clientPartner != null"/>
+    <field name="stockLocation" if="stockLocation == null"
+      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(clientPartner, company)"/>
+    <field name="toStockLocation"
+      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(clientPartner, company)"/>
+  </action-record>
 
-	<action-method name="action-sale-order-method-cancel-reservation">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="cancelReservation"/>
-	</action-method>
-	
-	<action-method name="action-sale-order-method-generate-invoice">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="showPopUpInvoicingWizard"/>
-	</action-method>
-	
-	<action-method name="action-sale-order-method-apply-timetable-template">
-		<call class="com.axelor.apps.supplychain.web.TimetableController" method="applyTemplate"/>
-	</action-method>
-	
-	<action-method name="supplychain-action-create-shipment-cost-line">
-     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createShipmentCostLine"/>
-    </action-method>
+  <action-record name="action-sale-order-record-update-timetable-amounts"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="timetableList"
+      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base').nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
+      if="timetableList != null"/>
+  </action-record>
 
-	<action-method name="action-sale-order-supplychain-method-set-invoiced-partner-domain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setInvoicedPartnerDomain"/>
-	</action-method>
+  <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
+    <attribute name="value" for="isIspmRequired"
+      expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
+  </action-attrs>
 
-	<action-method name="action-sale-order-supplychain-method-set-delivered-partner-domain">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setDeliveredPartnerDomain"/>
-	</action-method>
+  <action-method name="action-sale-order-method-allocate-all">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="allocateAll"/>
+  </action-method>
 
-	<action-method name="action-sale-order-supplychain-method-update-stock-reservation-date">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateStockReservationDate"/>
-	</action-method>
+  <action-method name="action-sale-order-method-deallocate-all">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="deallocateAll"/>
+  </action-method>
 
-	<action-method name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setDefaultInvoicedAndDeliveredPartnersAndAddresses"/>
-	</action-method>
-	
+  <action-method name="action-sale-order-method-reserve-all">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="reserveAll"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-cancel-reservation">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="cancelReservation"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-generate-invoice">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="showPopUpInvoicingWizard"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-apply-timetable-template">
+    <call class="com.axelor.apps.supplychain.web.TimetableController" method="applyTemplate"/>
+  </action-method>
+
+  <action-method name="supplychain-action-create-shipment-cost-line">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="createShipmentCostLine"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-supplychain-method-set-invoiced-partner-domain">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setInvoicedPartnerDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-supplychain-method-set-delivered-partner-domain">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setDeliveredPartnerDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-supplychain-method-update-stock-reservation-date">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateStockReservationDate"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setDefaultInvoicedAndDeliveredPartnersAndAddresses"/>
+  </action-method>
+
 </object-views>

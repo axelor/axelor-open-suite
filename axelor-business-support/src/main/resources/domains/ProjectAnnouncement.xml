@@ -10,11 +10,11 @@
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <date name="date" column="date_val"/>
     <string name="content" large="true" title="Content"/>
-    
+
     <track>
       <field name="title"/>
-	  <field name="project"/>
-	  <field name="date"/>
+      <field name="project"/>
+      <field name="date"/>
     </track>
   </entity>
 

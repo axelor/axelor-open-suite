@@ -154,10 +154,10 @@
     <option value="1">Estimated shipping date</option>
   </selection>
 
-	<selection name="supplychain.mrp.line.off.of.sales.select">
-		<option value="0">One-off sales included</option>
-		<option value="1">One-off sales excluded</option>
-		<option value="2">One-off sales only</option>
-	</selection>
+  <selection name="supplychain.mrp.line.off.of.sales.select">
+    <option value="0">One-off sales included</option>
+    <option value="1">One-off sales excluded</option>
+    <option value="2">One-off sales only</option>
+  </selection>
 
 </object-views>
