@@ -1,129 +1,184 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-    <grid name="production-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="production-order-grid" title="Production orders"
+    model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
     <hilite color="danger" if="prioritySelect == 3"/>
     <hilite color="warning" if="prioritySelect == 2"/>
     <hilite color="primary" if="prioritySelect == 1"/>
-        <field name="productionOrderSeq" width="120"/>
-        <field name="prioritySelect"/>
-        <field name="createdBy"/>
-        <field name="createdOn"/>
-        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer = true" canEdit="false" onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
-		<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false" onChange="action-production-order-record-client-partner-onchange-sale-order"/>
-        <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
-    </grid>
+    <field name="productionOrderSeq" width="120"/>
+    <field name="prioritySelect"/>
+    <field name="createdBy"/>
+    <field name="createdOn"/>
+    <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
+      domain="self.isCustomer = true" canEdit="false"
+      onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
+    <field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid"
+      onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false"
+      onChange="action-production-order-record-client-partner-onchange-sale-order"/>
+    <field name="project" if-module="axelor-business-production" form-view="project-form"
+      grid-view="project-grid"
+      if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
+  </grid>
 
-    <form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" onNew="action-production-order-attrs-title-project"
-        onLoad="action-production-order-attrs-title-project" width="large">
-        <toolbar>
-            <button name="showManufOrderWizardBtn" title="Add Manuf. Order" onClick="save,action-production-order-view-add-manuf-order-wizard"/>
-        </toolbar>
-        <panel name="mainPanel">
-        	<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-            <field name="productionOrderSeq"/>
-            <field name="prioritySelect">
-                <viewer>
+  <form name="production-order-form" title="Production order"
+    model="com.axelor.apps.production.db.ProductionOrder"
+    onNew="action-production-order-attrs-title-project"
+    onLoad="action-production-order-attrs-title-project" width="large">
+    <toolbar>
+      <button name="showManufOrderWizardBtn" title="Add Manuf. Order"
+        onClick="save,action-production-order-view-add-manuf-order-wizard"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
+        widget="NavSelect"/>
+      <field name="productionOrderSeq"/>
+      <field name="prioritySelect">
+        <viewer>
                 <![CDATA[
                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 1" x-translate>Low</span>
                     <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 2" x-translate>Normal</span>
                     <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 3" x-translate>High</span>
                 ]]>
-                </viewer>
-            </field>
-            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer = true" canEdit="false" onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
-			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false" onChange="action-production-order-record-client-partner-onchange-sale-order"/>
-            <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
-        </panel>
-	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
-        <panel-tabs name="mainPanelTab">
-            <panel-related name="manufOrderListPanel" field="manufOrderSet" colSpan="12" edit-window="blank" canNew="false" form-view="manuf-order-form">
-                <field name="manufOrderSeq"/>
-                <field name="product" form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
-                <field name="qty"/>
-                <field name="plannedStartDateT"/>
-                <field name="plannedEndDateT"/>
-                <field name="prioritySelect"/>
-                <field name="statusSelect"/>
-                <field name="createdBy"/>
-                <field name="createdOn"/>
-                <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
-            </panel-related>
-            <panel-dashlet name="operationOrderDetailsPanel" action="action-production-order-view-operation-order" title="Operation order"/>
-        </panel-tabs>
-    </form>
-    
-    <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Add Manuf. Order" onNew="action-production-order-record-default-wizard,action-add-manuf-order-wizard-attrs-scale">
-    	<panel name="wizardPanel">
-     		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
-        	<field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
-        	<field name="$qty" title="Quantity" type="decimal"/>
-        	<field name="$_startDate" widget="dateTime" title="Planned start date"/>
-        	<button name="AddManufOrderBtn" title="Add Manuf. Order" onClick="action-production-order-method-add-manuf-order"/>
-        </panel>
-        <panel name="productDefaultBomPanel" hidden="true">
-          <field name="$product.defaultBillOfMaterial" />
-        </panel>
-    </form>
-    
-    <action-attrs name="action-add-manuf-order-wizard-attrs-scale">
-    	<attribute name="scale" for="$qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    	<attribute name="domain" for="$product" expr="eval:&quot;self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce' AND self.dtype = 'Product'&quot;" if=" __config__.app.isApp('expense')" />
-    	<attribute name="domain" for="$product" expr="eval:&quot;self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce' AND self.dtype = 'Product'&quot;" if="!__config__.app.isApp('expense')" />
-    </action-attrs>
+        </viewer>
+      </field>
+      <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
+        domain="self.isCustomer = true" canEdit="false"
+        onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
+      <field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid"
+        onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false"
+        onChange="action-production-order-record-client-partner-onchange-sale-order"/>
+      <field name="project" if-module="axelor-business-production" form-view="project-form"
+        grid-view="project-grid"
+        if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
+    </panel>
+    <!-- <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order"
+      showIf="businessProject"/> -->
+    <panel-tabs name="mainPanelTab">
+      <panel-related name="manufOrderListPanel" field="manufOrderSet" colSpan="12"
+        edit-window="blank" canNew="false" form-view="manuf-order-form">
+        <field name="manufOrderSeq"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"
+          domain="self.dtype = 'Product'"/>
+        <field name="qty"/>
+        <field name="plannedStartDateT"/>
+        <field name="plannedEndDateT"/>
+        <field name="prioritySelect"/>
+        <field name="statusSelect"/>
+        <field name="createdBy"/>
+        <field name="createdOn"/>
+        <field name="project" if-module="axelor-business-production" form-view="project-form"
+          grid-view="project-grid"
+          if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
+      </panel-related>
+      <panel-dashlet name="operationOrderDetailsPanel"
+        action="action-production-order-view-operation-order" title="Operation order"/>
+    </panel-tabs>
+  </form>
 
-    <action-attrs if-module="axelor-business-production" name="action-production-order-attrs-title-project">
-		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
-	</action-attrs>
+  <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard"
+    title="Add Manuf. Order"
+    onNew="action-production-order-record-default-wizard,action-add-manuf-order-wizard-attrs-scale">
+    <panel name="wizardPanel">
+      <field name="$product" title="Product" type="many-to-one"
+        target="com.axelor.apps.base.db.Product" canEdit="false" form-view="product-form"
+        grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
+      <field name="$billOfMaterial" title="BOM" type="many-to-one"
+        onChange="action-production-order-wizard-record-product"
+        onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain"
+        target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form"
+        grid-view="bill-of-material-grid"/>
+      <field name="$qty" title="Quantity" type="decimal"/>
+      <field name="$_startDate" widget="dateTime" title="Planned start date"/>
+      <button name="AddManufOrderBtn" title="Add Manuf. Order"
+        onClick="action-production-order-method-add-manuf-order"/>
+    </panel>
+    <panel name="productDefaultBomPanel" hidden="true">
+      <field name="$product.defaultBillOfMaterial"/>
+    </panel>
+  </form>
 
-	<action-attrs name="action-production-order-wizard-attrs-bill-of-material-dummy-domain">
-		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;(self.product = ${product?.parentProduct?.id} OR self.product = ${product.id}) AND self.defineSubBillOfMaterial = true &quot;" if="product"/>
-		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;self.defineSubBillOfMaterial = true &quot;" if="!product"/>
-	</action-attrs>
-    
-   	<action-method name="action-production-order-method-add-manuf-order">
-    	<call class="com.axelor.apps.production.web.ProductionOrderController" method="addManufOrder"/>
-    </action-method>
-    
-    <action-record name="action-production-order-record-default-wizard" model="com.axelor.apps.base.db.Wizard">
-		<field name="$qty" expr="eval: 1.0"/>
-		<field name="$_startDate" expr="eval: __datetime__"/>
-	</action-record>
-	
-	<action-attrs name="action-production-order-atts-sale-order-onchange-client-partner">
-	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.clientPartner != clientPartner"/>
-	</action-attrs>
-	
-	<action-record name="action-production-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ProductionOrder">
-	  <field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
-	</action-record>
-	
-	<action-attrs name="action-production-order-attrs-sale-order-onselect">
-	  <attribute if="clientPartner != null" name="domain" expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrder"/>
-	  <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3" for="saleOrder"/>
-	</action-attrs>
-    
-    <action-view name="action-production-order-view-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
-  		<view type="grid" name="operation-order-group-grid"/>
-		<view type="form" name="operation-order-form"/>
-  		<domain>:id member of self.manufOrder.productionOrderSet</domain>
-  		<context name="id" expr="eval: id"/>
-  	</action-view>
+  <action-attrs name="action-add-manuf-order-wizard-attrs-scale">
+    <attribute name="scale" for="$qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="domain" for="$product"
+      expr="eval:&quot;self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce' AND self.dtype = 'Product'&quot;"
+      if=" __config__.app.isApp('expense')"/>
+    <attribute name="domain" for="$product"
+      expr="eval:&quot;self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce' AND self.dtype = 'Product'&quot;"
+      if="!__config__.app.isApp('expense')"/>
+  </action-attrs>
 
-	<action-view name="action-production-order-view-add-manuf-order-wizard" title="Add Manuf. Order" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="add-manuf-order-wizard-form"/>
-		<view-param name="popup" value="reload"/>
-		<view-param name="popup-save" value="false"/>
-		<view-param name="show-toolbar" value="false" />
-	</action-view>
+  <action-attrs if-module="axelor-business-production"
+    name="action-production-order-attrs-title-project">
+    <attribute name="title" for="project"
+      expr="eval: __config__.app.getApp('project').getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+  </action-attrs>
 
-    <search-filters name="production-order-filters" model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
-		<field name="project" hidden="true" if="!__config__.app.getApp('production').getManageBusinessProduction()"/>
-		<filter title="Production orders closed">
-			<domain>self.isClosed = true</domain>
-		</filter>
-	</search-filters>
-	
+  <action-attrs
+    name="action-production-order-wizard-attrs-bill-of-material-dummy-domain">
+    <attribute name="domain" for="$billOfMaterial"
+      expr="eval: &quot;(self.product = ${product?.parentProduct?.id} OR self.product = ${product.id}) AND self.defineSubBillOfMaterial = true &quot;"
+      if="product"/>
+    <attribute name="domain" for="$billOfMaterial"
+      expr="eval: &quot;self.defineSubBillOfMaterial = true &quot;" if="!product"/>
+  </action-attrs>
+
+  <action-method name="action-production-order-method-add-manuf-order">
+    <call class="com.axelor.apps.production.web.ProductionOrderController"
+      method="addManufOrder"/>
+  </action-method>
+
+  <action-record name="action-production-order-record-default-wizard"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="$qty" expr="eval: 1.0"/>
+    <field name="$_startDate" expr="eval: __datetime__"/>
+  </action-record>
+
+  <action-attrs name="action-production-order-atts-sale-order-onchange-client-partner">
+    <attribute name="value" expr="eval:null" for="saleOrder"
+      if="saleOrder?.clientPartner != clientPartner"/>
+  </action-attrs>
+
+  <action-record
+    name="action-production-order-record-client-partner-onchange-sale-order"
+    model="com.axelor.apps.production.db.ProductionOrder">
+    <field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
+  </action-record>
+
+  <action-attrs name="action-production-order-attrs-sale-order-onselect">
+    <attribute if="clientPartner != null" name="domain"
+      expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrder"/>
+    <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3"
+      for="saleOrder"/>
+  </action-attrs>
+
+  <action-view name="action-production-order-view-operation-order"
+    title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="grid" name="operation-order-group-grid"/>
+    <view type="form" name="operation-order-form"/>
+    <domain>:id member of self.manufOrder.productionOrderSet</domain>
+    <context name="id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-production-order-view-add-manuf-order-wizard"
+    title="Add Manuf. Order" model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="add-manuf-order-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
+  <search-filters name="production-order-filters"
+    model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
+    <field name="project" hidden="true"
+      if="!__config__.app.getApp('production').getManageBusinessProduction()"/>
+    <filter title="Production orders closed">
+      <domain>self.isClosed = true</domain>
+    </filter>
+  </search-filters>
+
 </object-views>

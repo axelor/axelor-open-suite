@@ -20,7 +20,7 @@
           <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
           <field name="showOnConfigurator" readonlyIf="metaField.relationship == 'OneToMany'"/>
           <field name="updateFromSelect"/>
-      <field name="metaField.relationship" hidden="true"/>
+          <field name="metaField.relationship" hidden="true"/>
         </panel>
         <panel name="actionPanel">
           <button name="checkScriptsBtn" title="Check the script"

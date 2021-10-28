@@ -9,55 +9,63 @@
 
     <string name="name" title="Label" required="true"/>
     <string name="code" title="Code"/>
-    <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Machine"/>
-    <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
+    <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine"
+      title="Machine"/>
+    <integer name="workCenterTypeSelect" title="Work center type"
+      selection="iproduction.work.center.type.select"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
     <boolean name="isRevaluationAtActualPrices" title="Revaluation at actual prices"/>
-	
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-	
-	<integer name="costTypeSelect" title="Cost type" selection="iproduction.work.center.cost.type.select"/>    
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+
+    <integer name="costTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
     <decimal name="costAmount" title="Cost (W.T.)"/>
-    
-    <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="workCenter" title="Human resources"/>
-    
-    <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
-    
-  	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
-    <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools"/>
-  	<integer name="sequence" title="Priority"/>
-  	<extra-code>
+
+    <one-to-many name="prodHumanResourceList"
+      ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="workCenter"
+      title="Human resources"/>
+
+    <many-to-one name="operationOrder"
+      ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+
+    <many-to-one name="costSheetGroup"
+      ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
+    <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool"
+      title="Tools"/>
+    <integer name="sequence" title="Priority"/>
+    <extra-code>
 		<![CDATA[
-		
+
 		//COST TYPE SELECT
         public static final int COST_TYPE_PER_HOUR = 1;
         public static final int COST_TYPE_PER_CYCLE = 2;
         public static final int COST_TYPE_PER_PIECE = 3;
-			
+
 	    //WORK CENTER TYPE SELECT
         public static final int WORK_CENTER_TYPE_HUMAN = 1;
         public static final int WORK_CENTER_TYPE_MACHINE = 2;
         public static final int WORK_CENTER_TYPE_BOTH = 3;
-        
+
 		]]>
-	</extra-code>
-    
+    </extra-code>
+
     <track>
-    	<field name="name"/>
-    	<field name="code"/>
-    	<field name="machine"/>
-    	<field name="workCenterTypeSelect"/>
-    	<field name="minCapacityPerCycle"/>
-    	<field name="maxCapacityPerCycle"/>
-    	<field name="durationPerCycle"/>
-    	<field name="isRevaluationAtActualPrices"/>
-    	<field name="product"/>
-    	<field name="costTypeSelect"/>
-    	<field name="costAmount"/>
-    	<field name="operationOrder"/>
-    	<field name="costSheetGroup"/>
+      <field name="name"/>
+      <field name="code"/>
+      <field name="machine"/>
+      <field name="workCenterTypeSelect"/>
+      <field name="minCapacityPerCycle"/>
+      <field name="maxCapacityPerCycle"/>
+      <field name="durationPerCycle"/>
+      <field name="isRevaluationAtActualPrices"/>
+      <field name="product"/>
+      <field name="costTypeSelect"/>
+      <field name="costAmount"/>
+      <field name="operationOrder"/>
+      <field name="costSheetGroup"/>
     </track>
   </entity>
 </domain-models>

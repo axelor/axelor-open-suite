@@ -6,15 +6,16 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Territory" lang="java">
-  
+
     <string name="name" title="Name" readonly="true" namecolumn="true"/>
-     
+
     <many-to-one name="country" ref="Country" title="Country"/>
     <many-to-one name="city" ref="City" title="City" required="true"/>
-    
-    <many-to-one name="authorityPartner" ref="com.axelor.apps.base.db.Partner" title="Authority Partner"/>
-        
-   
+
+    <many-to-one name="authorityPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Authority Partner"/>
+
+
 
   </entity>
 

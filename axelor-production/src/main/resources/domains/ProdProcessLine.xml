@@ -7,9 +7,11 @@
 
   <entity name="ProdProcessLine" lang="java">
 
- 	<many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
-    <many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
-  	<string name="name" title="Label"/>
+    <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess"
+      title="Production process"/>
+    <many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter"
+      title="Work center"/>
+    <string name="name" title="Label"/>
     <integer name="priority" title="Priority"/>
     <string name="description" title="Description" large="true"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
@@ -17,27 +19,37 @@
     <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
     <boolean name="outsourcing" title="Outsourcing"/>
     <boolean name="optional" title="Optional"/>
-    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location"/>
 
-    <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeProdProcessLine" title="Products to consume"/>
-    <one-to-many name="objectDescriptionList" ref="com.axelor.apps.production.db.ObjectDescription" mappedBy="prodProcessLine" title="Descriptions"/>
-    <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools"/>
-    <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
-   	<many-to-one name="workCenterGroup" ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"/>
-    <integer name="sequence" title="Sequence" />
-    <boolean name="useLineInGeneratedPurchaseOrder" title="Use this line in the generated purchase order" help="Products associated with the work center will be used"/>
-    
+    <one-to-many name="toConsumeProdProductList"
+      ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeProdProcessLine"
+      title="Products to consume"/>
+    <one-to-many name="objectDescriptionList"
+      ref="com.axelor.apps.production.db.ObjectDescription" mappedBy="prodProcessLine"
+      title="Descriptions"/>
+    <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool"
+      title="Tools"/>
+    <integer name="workCenterTypeSelect" title="Work center type"
+      selection="iproduction.work.center.type.select"/>
+    <many-to-one name="workCenterGroup"
+      ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"/>
+    <integer name="sequence" title="Sequence"/>
+    <boolean name="useLineInGeneratedPurchaseOrder"
+      title="Use this line in the generated purchase order"
+      help="Products associated with the work center will be used"/>
+
     <track>
-    	<field name="prodProcess"/>
-    	<field name="name"/>
-    	<field name="priority"/>
-    	<field name="description"/>
-    	<field name="minCapacityPerCycle"/>
-    	<field name="maxCapacityPerCycle"/>
-    	<field name="durationPerCycle"/>
-    	<field name="outsourcing"/>
-    	<field name="optional"/>
-    	<field name="stockLocation"/>
+      <field name="prodProcess"/>
+      <field name="name"/>
+      <field name="priority"/>
+      <field name="description"/>
+      <field name="minCapacityPerCycle"/>
+      <field name="maxCapacityPerCycle"/>
+      <field name="durationPerCycle"/>
+      <field name="outsourcing"/>
+      <field name="optional"/>
+      <field name="stockLocation"/>
     </track>
   </entity>
 </domain-models>
