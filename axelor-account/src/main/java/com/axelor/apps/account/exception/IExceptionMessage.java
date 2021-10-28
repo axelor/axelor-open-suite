@@ -41,9 +41,9 @@ public interface IExceptionMessage {
   static final String NO_NEW_MOVES_SELECTED = /*$$(*/
       "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
 
-  static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
-      "Error in move validation, please check the log" /*)*/;
-  static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
+  static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
+      "Error in move accounting, please check the log" /*)*/;
+  static final String MOVE_ACCOUNTING_OK = /*$$(*/ "Moves accounted successfully" /*)*/;
   static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
@@ -256,8 +256,8 @@ public interface IExceptionMessage {
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   static final String MOVE_11 = /*$$(*/
       "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
-  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
-      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
+  static final String MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/

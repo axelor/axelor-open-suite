@@ -63,7 +63,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
             "self.period.id = ?1 AND (self.statusSelect NOT IN (?2,?3, ?4) OR (self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)))",
             period.getId(),
             MoveRepository.STATUS_NEW,
-            MoveRepository.STATUS_VALIDATED,
+            MoveRepository.STATUS_ACCOUNTED,
             MoveRepository.STATUS_CANCELED)
         .order("date")
         .order("id");

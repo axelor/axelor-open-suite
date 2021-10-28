@@ -151,14 +151,14 @@ public class MoveController {
                 .filter(
                     "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
                     moveIds,
-                    MoveRepository.STATUS_VALIDATED,
+                    MoveRepository.STATUS_ACCOUNTED,
                     MoveRepository.STATUS_CANCELED)
                 .order("date")
                 .fetch();
         if (!moveList.isEmpty()) {
           boolean error = Beans.get(MoveValidateService.class).validateMultiple(moveList);
           if (error) {
-            response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
+            response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_NOT_OK));
           } else {
             response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
             response.setReload(true);
@@ -212,7 +212,7 @@ public class MoveController {
 
       this.removeOneMove(move, response);
 
-      if (!move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+      if (!move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
 
         response.setView(
             ActionView.define(I18n.get("Moves"))
@@ -235,7 +235,7 @@ public class MoveController {
         || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
       moveRemoveService.deleteMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
-    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
       moveRemoveService.archiveDaybookMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
@@ -256,7 +256,7 @@ public class MoveController {
                     "self.id in ?1 AND self.statusSelect in (?2,?3,?4,?5) AND (self.archived = false or self.archived = null)",
                     moveIds,
                     MoveRepository.STATUS_NEW,
-                    MoveRepository.STATUS_ACCOUNTED,
+                    MoveRepository.STATUS_DAYBOOK,
                     MoveRepository.STATUS_CANCELED,
                     MoveRepository.STATUS_SIMULATED)
                 .fetch();
@@ -331,7 +331,7 @@ public class MoveController {
     move = Beans.get(MoveRepository.class).find(move.getId());
 
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         Beans.get(MoveValidateService.class).updateInDayBookMode(move);
         response.setReload(true);
@@ -386,7 +386,7 @@ public class MoveController {
     boolean isHidden = true;
     try {
       if (move.getMoveLineList() != null
-          && move.getStatusSelect() < MoveRepository.STATUS_VALIDATED) {
+          && move.getStatusSelect() < MoveRepository.STATUS_ACCOUNTED) {
         for (MoveLine moveLine : move.getMoveLineList()) {
           if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
               || moveLine.getReconcileGroup() != null) {

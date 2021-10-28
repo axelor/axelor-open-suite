@@ -231,7 +231,7 @@ public class MoveValidateService {
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();
 
-    if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
+    if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       moveSequenceService.setSequence(move);
     }
 
@@ -297,9 +297,9 @@ public class MoveValidateService {
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
 
     if (daybook && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
-      move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
+      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     } else {
-      move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
+      move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
       move.setValidationDate(appBaseService.getTodayDate(move.getCompany()));
     }
   }

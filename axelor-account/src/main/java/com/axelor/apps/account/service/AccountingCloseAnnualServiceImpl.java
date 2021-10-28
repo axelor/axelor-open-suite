@@ -278,7 +278,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     Query q = JPA.em().createQuery(prepareQuery, BigDecimal.class);
     q.setParameter(1, year);
     q.setParameter(2, account);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     if (partner != null) {
       q.setParameter(4, partner);
@@ -331,7 +331,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
                 Long.class);
     q.setParameter(1, year);
     q.setParameter(2, accountIdList);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     List<Long> result = q.getResultList();
 
@@ -367,7 +367,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
                 Long.class);
     q.setParameter(1, year);
     q.setParameter(2, accountId);
-    q.setParameter(3, MoveRepository.STATUS_VALIDATED);
+    q.setParameter(3, MoveRepository.STATUS_ACCOUNTED);
 
     List<Long> result = q.getResultList();
 

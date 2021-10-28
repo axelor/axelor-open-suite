@@ -130,11 +130,11 @@
   </selection>
 
   <selection name='iaccount.move.status.select'>
-    <option value='1'>New</option>
-    <option value='2'>Accounted</option>
-    <option value='3'>Validated</option>
-    <option value='4'>Canceled</option>
-    <option value='5'>Simulated</option>
+    <option value='1' order="10">New</option>
+    <option value='2' order="30">DayBook</option>
+    <option value='3' order="40">Accounted</option>
+    <option value='4' order="50">Canceled</option>
+    <option value='5' order="20">Simulated</option>
   </selection>
 
   <selection name='iaccount.move.technical.origin.select'>

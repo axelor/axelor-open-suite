@@ -72,7 +72,7 @@
                             <h4 class="text-right">
                                 <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>New</span>
                                 <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Daybook</span>
-                                <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Validated</span>
+                                <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Accounted</span>
                                 <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 4" x-translate>Canceled</span>
                                 <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 5" x-translate>Simulated</span>
 
@@ -276,7 +276,7 @@
   </action-group>
 
   <action-validate name="action-account-validate-prompt">
-    <alert message="The validation of a move brings irrevocable integration of a move in Moves book" />
+    <alert message="The accounting of a move brings irrevocable integration of a move in Moves book" />
   </action-validate>
 
   <action-validate name="action-move-validate-check-date-of-reversion">
@@ -338,9 +338,9 @@
   </action-attrs>
 
   <action-attrs name="action-move-attrs-validate-button-title">
-    <attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Validate')"
+    <attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Account')"
       if="eval: !company?.accountConfig?.accountingDaybook || (statusSelect == MoveRepository.STATUS_ACCOUNTED || statusSelect == MoveRepository.STATUS_SIMULATED)" />
-    <attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
+    <attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Daybook')"
       if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect != MoveRepository.STATUS_ACCOUNTED &amp;&amp; statusSelect != MoveRepository.STATUS_SIMULATED)" />
   </action-attrs>
 
