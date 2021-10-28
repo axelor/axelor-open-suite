@@ -6,14 +6,17 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="CurrencyConversionLine" lang="java">
-  
-    <many-to-one name="appBase" ref="com.axelor.apps.base.db.AppBase" title="Administration"/>
-    <many-to-one name="startCurrency" ref="com.axelor.apps.base.db.Currency" title="Source Currency" required="true"/>
-    <many-to-one name="endCurrency" ref="com.axelor.apps.base.db.Currency" title="Destination Currency" required="true"/>
+
+    <many-to-one name="appBase" ref="com.axelor.apps.base.db.AppBase"
+      title="Administration"/>
+    <many-to-one name="startCurrency" ref="com.axelor.apps.base.db.Currency"
+      title="Source Currency" required="true"/>
+    <many-to-one name="endCurrency" ref="com.axelor.apps.base.db.Currency"
+      title="Destination Currency" required="true"/>
     <decimal name="exchangeRate" scale="8" precision="20" title="Exchange rate"/>
     <date name="fromDate" title="From Date" required="true"/>
     <date name="toDate" title="To Date"/>
-    <string name="variations"  title="Variation"/>
+    <string name="variations" title="Variation"/>
   </entity>
-  
+
 </domain-models>

@@ -6,11 +6,13 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="CustomerCatalog" lang="java">
-	
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
-	<many-to-one name="customerPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer"/>
-	<string name="productCustomerName" title="Product name on catalog"/>
-	<string name="productCustomerCode" title="Product code on catalog"/>
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <many-to-one name="customerPartner" ref="com.axelor.apps.base.db.Partner"
+      required="true" title="Customer"/>
+    <string name="productCustomerName" title="Product name on catalog"/>
+    <string name="productCustomerCode" title="Product code on catalog"/>
   </entity>
 
 </domain-models>

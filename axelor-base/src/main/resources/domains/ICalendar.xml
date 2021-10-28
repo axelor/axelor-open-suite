@@ -2,30 +2,34 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
-	<module name="base" package="com.axelor.apps.base.db"/>
-	
-	<entity name="ICalendar" table="ICAL_CALENDAR" sequential="true">
-	  <string name="name" required="true" title="Name" />
-	  <string name="cid" title="CID"/>
-	  <boolean name="keepRemote" default="false" title="Keep remote"/>
-<!-- 	  <one-to-many name="events" ref="com.axelor.apps.base.db.ICalendarEvent" mappedBy="calendar" title="Events"/> -->
-	  <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
-	  
-	  <string name="url" title="Url"/>
-	  <string name="login" title="Login"/>
-	  <string name="password" title="Password"/>
-	  <integer name="typeSelect" title="Type" selection="icrm.calendar.type.select"/>
-	  <string name="synchronizationSelect" title="Advanced synchronization" selection="icalendar.synchronization.select"/>
-	  <boolean name="isSslConnection" title="SSL"/>
-	  <integer name="port" title="Port"  default="80" />
-	  <boolean name="isValid" title="Valid"/>
-	  <datetime name="lastSynchronizationDateT" title="Last Synchronization"/>
-	  <integer name="synchronizationDuration" default="1" min="1" title="Synchronization duration (week)"/>
-	  <one-to-many name="sharingSettingList" ref="com.axelor.apps.base.db.SharingSetting" mappedBy="calendar" title="Sharing settings"/>
-      <finder-method name="findByUser" using="user" />
 
-	  <extra-code>
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ICalendar" table="ICAL_CALENDAR" sequential="true">
+    <string name="name" required="true" title="Name"/>
+    <string name="cid" title="CID"/>
+    <boolean name="keepRemote" default="false" title="Keep remote"/>
+    <!-- <one-to-many name="events" ref="com.axelor.apps.base.db.ICalendarEvent" mappedBy="calendar"
+      title="Events"/> -->
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
+
+    <string name="url" title="Url"/>
+    <string name="login" title="Login"/>
+    <string name="password" title="Password"/>
+    <integer name="typeSelect" title="Type" selection="icrm.calendar.type.select"/>
+    <string name="synchronizationSelect" title="Advanced synchronization"
+      selection="icalendar.synchronization.select"/>
+    <boolean name="isSslConnection" title="SSL"/>
+    <integer name="port" title="Port" default="80"/>
+    <boolean name="isValid" title="Valid"/>
+    <datetime name="lastSynchronizationDateT" title="Last Synchronization"/>
+    <integer name="synchronizationDuration" default="1" min="1"
+      title="Synchronization duration (week)"/>
+    <one-to-many name="sharingSettingList" ref="com.axelor.apps.base.db.SharingSetting"
+      mappedBy="calendar" title="Sharing settings"/>
+    <finder-method name="findByUser" using="user"/>
+
+    <extra-code>
       	<![CDATA[
       		// TYPE SELECT
 	  		public static final int ICAL_SERVER = 1;
@@ -39,8 +43,8 @@
 			// SYNCHRONISATION SELECT
 			public static final String ICAL_ONLY = "ICalEvent";
 	  ]]>
-      </extra-code>
-      
-	</entity>
-  
+    </extra-code>
+
+  </entity>
+
 </domain-models>

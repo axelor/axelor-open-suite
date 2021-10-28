@@ -13,7 +13,8 @@
   <form name="configurator-soline-formula-form" title="Calculated fields on configurator"
     model="com.axelor.apps.sale.db.ConfiguratorSOLineFormula">
     <panel name="mainPanel">
-      <field name="metaField" title="Sale order line field" domain="self.metaModel.name = 'SaleOrderLine' "/>
+      <field name="metaField" title="Sale order line field"
+        domain="self.metaModel.name = 'SaleOrderLine' "/>
       <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
       <field name="showOnConfigurator"/>
       <field name="updateFromSelect"/>

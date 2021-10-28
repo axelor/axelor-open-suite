@@ -6,12 +6,12 @@
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
   <entity name="BankOrderEconomicReason" lang="java">
-  
-	<string name="code" title="Code" min="3" max="3" required="true"/>
-	<string name="label" title="Label"/>
-	<string name="description" title="Description" large="true" multiline="true"/>
-	<string name="name" title="Name" namecolumn="true"/>
-  	
+
+    <string name="code" title="Code" min="3" max="3" required="true"/>
+    <string name="label" title="Label"/>
+    <string name="description" title="Description" large="true" multiline="true"/>
+    <string name="name" title="Name" namecolumn="true"/>
+
   </entity>
 
 </domain-models>

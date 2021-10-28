@@ -6,16 +6,16 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Sequence" lang="java">
-    
-     <extra-code><![CDATA[
-        
+
+    <extra-code><![CDATA[
+
         //SEQUENCE SELECT
   		public static final String PRODUCTION_ORDER = "productionOrder";
   		public static final String MANUF_ORDER = "manufOrder";
   		public static final String RAW_MATERIAL_REQUIREMENT = "rawMaterialRequirement";
 
      ]]></extra-code>
-    
+
   </entity>
 
 </domain-models>

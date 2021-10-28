@@ -6,11 +6,14 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountEquiv" lang="java">
-  
-    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position"/>
-    <many-to-one name="fromAccount" ref="com.axelor.apps.account.db.Account" title="Account to replace" required="true"/>
-    <many-to-one name="toAccount" ref="com.axelor.apps.account.db.Account" title="Account to set" required="true"/>
-    
+
+    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
+      title="Fiscal position"/>
+    <many-to-one name="fromAccount" ref="com.axelor.apps.account.db.Account"
+      title="Account to replace" required="true"/>
+    <many-to-one name="toAccount" ref="com.axelor.apps.account.db.Account"
+      title="Account to set" required="true"/>
+
   </entity>
 
 </domain-models>

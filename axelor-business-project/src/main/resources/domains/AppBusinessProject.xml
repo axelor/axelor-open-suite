@@ -1,60 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBusinessProject" lang="java" extends="App">
-		
-		<many-to-one name="productInvoicingProject" ref="com.axelor.apps.base.db.Product" title="Default Invoicing Product for Projects"/>
-		
-		<boolean name="showPurchaseOrderLineRelatedToProject" title="Show purchase order lines related to the project"/>
-		<boolean name="showSaleOrderLineRelatedToProject" title="Show sale order lines related to the project" />
-		<boolean name="showExpenseLineRelatedToProject" title="Show expense order lines related to the project" />
-		<boolean name="showProductionOrderRelatedToProject" title="Show production orders related to the project" />
-        <boolean name="showPurchaseInvoiceLineRelatedToProject" title="Show purchase invoice line related to the project"/>
-		<boolean name="showSaleInvoiceLineRelatedToProject" title="Show sale invoice line related to the project"/>
+  <entity name="AppBusinessProject" lang="java" extends="App">
 
-		<boolean name="enableToInvoiceTimesheet" title="Enable to invoice timesheet" />
-		<boolean name="enableToInvoiceExpense" title="Enable to invoice expense" />
+    <many-to-one name="productInvoicingProject" ref="com.axelor.apps.base.db.Product"
+      title="Default Invoicing Product for Projects"/>
 
-		<boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
-		<boolean name="automaticProject" title="Automatic Project"/>
+    <boolean name="showPurchaseOrderLineRelatedToProject"
+      title="Show purchase order lines related to the project"/>
+    <boolean name="showSaleOrderLineRelatedToProject"
+      title="Show sale order lines related to the project"/>
+    <boolean name="showExpenseLineRelatedToProject"
+      title="Show expense order lines related to the project"/>
+    <boolean name="showProductionOrderRelatedToProject"
+      title="Show production orders related to the project"/>
+    <boolean name="showPurchaseInvoiceLineRelatedToProject"
+      title="Show purchase invoice line related to the project"/>
+    <boolean name="showSaleInvoiceLineRelatedToProject"
+      title="Show sale invoice line related to the project"/>
 
-		<integer name="generatedElementTypeSelect" title="Generated element type" default="3" selection="business.project.config.generated.element.type"/>
+    <boolean name="enableToInvoiceTimesheet" title="Enable to invoice timesheet"/>
+    <boolean name="enableToInvoiceExpense" title="Enable to invoice expense"/>
 
-		<boolean name="projectSaleOrderLines" title="Project in Sale order lines"/>
-		<boolean name="projectPurchaseOrderLines" title="Project in Purchase order lines"/>
+    <boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
+    <boolean name="automaticProject" title="Automatic Project"/>
 
-		<boolean name="projectInvoiceLines" title="Project in Invoice Lines"/>
+    <integer name="generatedElementTypeSelect" title="Generated element type" default="3"
+      selection="business.project.config.generated.element.type"/>
 
-		<boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
-		
-		<string name="preTaskStatusSet" title="Status for invoice pre task tasks" selection="team.task.status"/>
-		<string name="postTaskStatusSet" title="Status for invoice post task tasks" selection="team.task.status"/>
-		<string name="exculdeTaskInvoicing" title="Exculde tasks for invoicing"/>
-		
-		<track>
-			<field name="productInvoicingProject" on="UPDATE"/>
-			
-			<field name="showPurchaseOrderLineRelatedToProject" on="UPDATE"/>
-			<field name="showSaleOrderLineRelatedToProject" on="UPDATE"/>
-			<field name="showExpenseLineRelatedToProject" on="UPDATE"/>
-			<field name="showProductionOrderRelatedToProject" on="UPDATE"/>
-			<field name="showPurchaseInvoiceLineRelatedToProject" on="UPDATE"/>
-			<field name="showSaleInvoiceLineRelatedToProject" on="UPDATE"/>
-			
-			<field name="enableToInvoiceTimesheet" on="UPDATE"/>
-			<field name="enableToInvoiceExpense" on="UPDATE"/>
-			<field name="generateProjectOrder" on="UPDATE"/>
-			<field name="automaticProject" on="UPDATE"/>
-			<field name="generatedElementTypeSelect" on="UPDATE"/>
-			<field name="projectSaleOrderLines" on="UPDATE"/>
-			<field name="projectPurchaseOrderLines" on="UPDATE"/>
-			<field name="projectInvoiceLines" on="UPDATE"/>
-			<field name="enableTaskTemplatesByProduct" on="UPDATE"/>
-		</track>
-		
-	</entity>
+    <boolean name="projectSaleOrderLines" title="Project in Sale order lines"/>
+    <boolean name="projectPurchaseOrderLines" title="Project in Purchase order lines"/>
+
+    <boolean name="projectInvoiceLines" title="Project in Invoice Lines"/>
+
+    <boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
+
+    <string name="preTaskStatusSet" title="Status for invoice pre task tasks"
+      selection="team.task.status"/>
+    <string name="postTaskStatusSet" title="Status for invoice post task tasks"
+      selection="team.task.status"/>
+    <string name="exculdeTaskInvoicing" title="Exculde tasks for invoicing"/>
+
+    <track>
+      <field name="productInvoicingProject" on="UPDATE"/>
+
+      <field name="showPurchaseOrderLineRelatedToProject" on="UPDATE"/>
+      <field name="showSaleOrderLineRelatedToProject" on="UPDATE"/>
+      <field name="showExpenseLineRelatedToProject" on="UPDATE"/>
+      <field name="showProductionOrderRelatedToProject" on="UPDATE"/>
+      <field name="showPurchaseInvoiceLineRelatedToProject" on="UPDATE"/>
+      <field name="showSaleInvoiceLineRelatedToProject" on="UPDATE"/>
+
+      <field name="enableToInvoiceTimesheet" on="UPDATE"/>
+      <field name="enableToInvoiceExpense" on="UPDATE"/>
+      <field name="generateProjectOrder" on="UPDATE"/>
+      <field name="automaticProject" on="UPDATE"/>
+      <field name="generatedElementTypeSelect" on="UPDATE"/>
+      <field name="projectSaleOrderLines" on="UPDATE"/>
+      <field name="projectPurchaseOrderLines" on="UPDATE"/>
+      <field name="projectInvoiceLines" on="UPDATE"/>
+      <field name="enableTaskTemplatesByProduct" on="UPDATE"/>
+    </track>
+
+  </entity>
 
 </domain-models>

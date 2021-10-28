@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="barcode-type-config-grid" title="Barcode type configurations" model="com.axelor.apps.base.db.BarcodeTypeConfig">
-        <field name="name"/>
-       	<field name="height"/>
-       	<field name="width"/>
-    </grid>
-    
-    <form name="barcode-type-config-form" title="Barcode type configuration" model="com.axelor.apps.base.db.BarcodeTypeConfig">
-    	<panel name="mainPanel">
-        	<field name="name" colSpan="12"/>
-       		<field name="height"/>
-       		<field name="width"/>
-        </panel>
-    </form>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="barcode-type-config-grid" title="Barcode type configurations"
+    model="com.axelor.apps.base.db.BarcodeTypeConfig">
+    <field name="name"/>
+    <field name="height"/>
+    <field name="width"/>
+  </grid>
+
+  <form name="barcode-type-config-form" title="Barcode type configuration"
+    model="com.axelor.apps.base.db.BarcodeTypeConfig">
+    <panel name="mainPanel">
+      <field name="name" colSpan="12"/>
+      <field name="height"/>
+      <field name="width"/>
+    </panel>
+  </form>
+
 </object-views>

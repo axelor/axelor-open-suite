@@ -6,9 +6,9 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="IndustrySector" lang="java" cacheable="true">
-     
+
     <string name="name" title="Name" required="true" unique="true"/>
-  
+
   </entity>
-  
+
 </domain-models>

@@ -1,45 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-	<grid name="bank-grid" title="Bank Identifier Codes" model="com.axelor.apps.base.db.Bank" edit-icon="true">
-		<toolbar>
-			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
-		</toolbar>
-		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-		<field name="bankName"/>
-		<field name="businessPartyPrefix"/>
-		<field name="country.alpha2Code" title="Country Code"/>
-		<field name="businessPartySuffix"/>
-		<field name="branchIdentifier"/>
-	</grid>
-    
-	<form name="bank-form" title="Bank Identifier Code" model="com.axelor.apps.base.db.Bank">
-		<panel name="mainPanel">
-			<field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large">
-				<editor x-show-titles="false">
-					<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" placeholder="BIC"  pattern="^[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?$"/>
-					<field name="bankName" colSpan="9" placeholder="Bank Name"/>
-				</editor>
-			</field>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-			<field name="bankDetailsTypeSelect"/>
-		</panel>
-		<panel name="addressPanel">
-			<field name="bankAddressList" colSpan="12">
-				<editor x-show-titles="false">
-					<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-method-bank-address-fill-full-name" colSpan="3"/>
-					<field name="address" onChange="action-method-bank-address-fill-full-name" colSpan="5"/>
-					<field name="label" onChange="action-method-bank-address-fill-full-name" colSpan="4"/>
-					<field name="fullAddress" hidden="true"/>
-				</editor>
-			</field>
-        </panel>
-		<panel name="detailsPanel" title="Details" colSpan="12" readonly="true">
-			<field name="businessPartyPrefix" colSpan="3"/>
-			<field name="country.alpha2Code" title="Country Code" colSpan="3"/>
-			<field name="businessPartySuffix" colSpan="3"/>
-			<field name="branchIdentifier" colSpan="3"/>
-		</panel>
-	</form>
+  <grid name="bank-grid" title="Bank Identifier Codes" model="com.axelor.apps.base.db.Bank"
+    edit-icon="true">
+    <toolbar>
+      <button name="checkDuplicateBtn" title="Check Duplicate"
+        onClick="action-general-check-duplicate-records"/>
+    </toolbar>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="bankName"/>
+    <field name="businessPartyPrefix"/>
+    <field name="country.alpha2Code" title="Country Code"/>
+    <field name="businessPartySuffix"/>
+    <field name="branchIdentifier"/>
+  </grid>
+
+  <form name="bank-form" title="Bank Identifier Code" model="com.axelor.apps.base.db.Bank">
+    <panel name="mainPanel">
+      <field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large">
+        <editor x-show-titles="false">
+          <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"
+            placeholder="BIC" pattern="^[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?$"/>
+          <field name="bankName" colSpan="9" placeholder="Bank Name"/>
+        </editor>
+      </field>
+
+      <field name="bankDetailsTypeSelect"/>
+    </panel>
+    <panel name="addressPanel">
+      <field name="bankAddressList" colSpan="12">
+        <editor x-show-titles="false">
+          <field name="code" x-bind="{{code|unaccent|uppercase}}"
+            onChange="action-method-bank-address-fill-full-name" colSpan="3"/>
+          <field name="address" onChange="action-method-bank-address-fill-full-name"
+            colSpan="5"/>
+          <field name="label" onChange="action-method-bank-address-fill-full-name" colSpan="4"/>
+          <field name="fullAddress" hidden="true"/>
+        </editor>
+      </field>
+    </panel>
+    <panel name="detailsPanel" title="Details" colSpan="12" readonly="true">
+      <field name="businessPartyPrefix" colSpan="3"/>
+      <field name="country.alpha2Code" title="Country Code" colSpan="3"/>
+      <field name="businessPartySuffix" colSpan="3"/>
+      <field name="branchIdentifier" colSpan="3"/>
+    </panel>
+  </form>
 </object-views>

@@ -3,17 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="ICalendar" table="ICAL_CALENDAR" sequential="true">
+  <entity name="ICalendar" table="ICAL_CALENDAR" sequential="true">
 
-		<extra-code>
+    <extra-code>
 		<![CDATA[
 			// SYNCHRONISATION SELECT
 			public static final String CRM_SYNCHRO = "Event";
 		]]>
-		</extra-code>
+    </extra-code>
 
-	</entity>
+  </entity>
 
 </domain-models>

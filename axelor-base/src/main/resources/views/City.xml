@@ -1,60 +1,71 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-   
-    <grid name="city-grid" title="Cities" model="com.axelor.apps.base.db.City">
-       <toolbar>
-       <button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
-       <button name="importCityBtn" title="Import city" onClick="action-base-view-import-city-popup"/>
-       </toolbar> 
-        <field name="name"/>
-		<field name="zip"/>
-    </grid>
-    
-    <form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large">
-    	<panel name="mainPanel">
-			<field name="name"/>
-			<field name="artmin" colSpan="2"/>
-			<field name="zip" colSpan="4"/>
-			<field name="inseeCode"/>
-			<field name="hasZipOnRight"/>
-		</panel>
-		<panel name="localizationPanel" title="Localization">
-			<field name="country" form-view="country-form" grid-view="country-grid" />
-			<field name="department" form-view="department-form" grid-view="department-grid"/>
-			<field name="canton" form-view="canton-form" grid-view="canton-grid"/>
-		</panel>  
-		<panel name="demographyPanel" title="Demography">
-			<field name="nbInhCommune"/>
-		</panel> 
-    </form>
-    
-    <form name="wizard-import-city-form" title="Import city" model="com.axelor.apps.base.db.Wizard" >
-    	<panel name="wizardPanel">
-    	  <panel name="typeSelectPanel" colSpan="12">
-    		<field name="typeSelect" type="string" title="Type select" selection="iterritory.city.type.select" />
-		  </panel>
-		  
-			<field name="metaFile" title="Input file" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
-			<field name="autoImportTypeSelect" title="Auto Import" selection="base.city.auto.import.type.select" showIf="typeSelect=='geonames'"/>
-			<button name="importBtn" colSpan="4" title="Import" readonlyIf=" (typeSelect == null || metaFile == null) &amp;&amp; autoImportTypeSelect == null" onClick="action-base-method-import-city"/>
-			<field name="$importHistoryList" type="one-to-many" target="com.axelor.apps.base.db.ImportHistory" hidden="true" title="Import Log" colSpan="12" canEdit="false" canNew="false" canRemove="false"/>
-    	</panel>
-    </form>
-    
-    <action-view name="action-base-view-import-city-popup" title="Import city" model="com.axelor.apps.base.db.Wizard">
-    	<view type="form" name="wizard-import-city-form"/>
-    	<view-param name="show-toolbar" value="false"/>
-  		<view-param name="width" value="800"/>
-    	<view-param name="popup" value="true"/>
-    	<view-param name="show-confirm" value="false"/>
-  		<view-param name="popup-save" value="false"/>
-  		<view-param name="popup" value="reload"/>
-    </action-view>
-    
-    <action-method name="action-base-method-import-city">
-    	<call class="com.axelor.apps.base.web.ImportCityController" method="importCity"/>
-    </action-method>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="city-grid" title="Cities" model="com.axelor.apps.base.db.City">
+    <toolbar>
+      <button name="checkDuplicateBtn" title="Check Duplicate"
+        onClick="action-base-method-show-duplicate"/>
+      <button name="importCityBtn" title="Import city"
+        onClick="action-base-view-import-city-popup"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="zip"/>
+  </grid>
+
+  <form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="artmin" colSpan="2"/>
+      <field name="zip" colSpan="4"/>
+      <field name="inseeCode"/>
+      <field name="hasZipOnRight"/>
+    </panel>
+    <panel name="localizationPanel" title="Localization">
+      <field name="country" form-view="country-form" grid-view="country-grid"/>
+      <field name="department" form-view="department-form" grid-view="department-grid"/>
+      <field name="canton" form-view="canton-form" grid-view="canton-grid"/>
+    </panel>
+    <panel name="demographyPanel" title="Demography">
+      <field name="nbInhCommune"/>
+    </panel>
+  </form>
+
+  <form name="wizard-import-city-form" title="Import city"
+    model="com.axelor.apps.base.db.Wizard">
+    <panel name="wizardPanel">
+      <panel name="typeSelectPanel" colSpan="12">
+        <field name="typeSelect" type="string" title="Type select"
+          selection="iterritory.city.type.select"/>
+      </panel>
+
+      <field name="metaFile" title="Input file" type="many-to-one"
+        target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
+      <field name="autoImportTypeSelect" title="Auto Import"
+        selection="base.city.auto.import.type.select" showIf="typeSelect=='geonames'"/>
+      <button name="importBtn" colSpan="4" title="Import"
+        readonlyIf=" (typeSelect == null || metaFile == null) &amp;&amp; autoImportTypeSelect == null"
+        onClick="action-base-method-import-city"/>
+      <field name="$importHistoryList" type="one-to-many"
+        target="com.axelor.apps.base.db.ImportHistory" hidden="true" title="Import Log" colSpan="12"
+        canEdit="false" canNew="false" canRemove="false"/>
+    </panel>
+  </form>
+
+  <action-view name="action-base-view-import-city-popup" title="Import city"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="wizard-import-city-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="width" value="800"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="reload"/>
+  </action-view>
+
+  <action-method name="action-base-method-import-city">
+    <call class="com.axelor.apps.base.web.ImportCityController" method="importCity"/>
+  </action-method>
+
 </object-views>

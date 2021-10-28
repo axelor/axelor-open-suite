@@ -1,72 +1,91 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-	<grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
-		<field name="name"/>
-		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-		<field name="fromDate"/>
-		<field name="toDate"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-	</grid>
-    
-    <form name="year-form" title="Year" model="com.axelor.apps.base.db.Year"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
+
+  <form name="year-form" title="Year" model="com.axelor.apps.base.db.Year"
     onNew="action-year-record-new" onSave="action-year-check-date,action-civil-year-check-date">
-    	<panel name="mainPanel" >
-	        <field name="name"/>
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="fromDate"/>
-	        <field name="toDate"/>
-	        <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
-	        <field name="typeSelect" readonly="true" />
-	    </panel>
-	    <panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
-	    <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2">
-			<field name="periodDurationSelect"/>
-			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-year-group-generate-period-click" />
-		</panel>
-    </form>
-    
-     <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    	<field name="typeSelect" expr="eval:0"/>
-    </action-record>
-    
-    <action-validate name="action-civil-year-check-date">
-		<error message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}." if="id == null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
- 		<error message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}." if="id != null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
-	</action-validate>
-	
-    <action-validate name="action-year-check-date">
-		<error message="Enter proper 'From' and 'To' date." if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate" action="action-year-set-empty-date"/>
-	</action-validate>
-	
-    <action-record name="action-year-set-empty-date" model="com.axelor.apps.base.db.Year">
-		<field name="fromDate" expr="eval:null" />
-		<field name="toDate" expr="eval:null" />
-	</action-record>
-	
-	<action-group name="action-year-group-generate-period-click">
-    	<action name="action-year-check-date"/>
-    	<action name="save"/>
-    	<action name="action-year-validate-generate-period"/>
-    	<action name="action-year-method-generate-periods"/>
-    	<action name="save"/>
-    </action-group>
-    
-    <action-validate name="action-year-validate-generate-period">
-	    <error message="To generate periods, please fill in the limits of the year." if="fromDate == null || toDate == null" />
-	    <error message="To generate periods, please fill in the Period duration." if="periodDurationSelect == null || periodDurationSelect == 0"/>
-	    <error message="Please clear all existing periods before generating new ones" if="!periodList.empty"/>
-	</action-validate>
-    
-    <action-method name="action-year-method-generate-periods">
-    	<call class="com.axelor.apps.base.web.YearController" method="generatePeriods"/>
-    </action-method>
-    
-    <search-filters name="year-filters" model="com.axelor.apps.base.db.Year" title="Year filters">
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-    </search-filters>
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="fromDate"/>
+      <field name="toDate"/>
+      <field name="company" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid" canEdit="false"/>
+      <field name="typeSelect" readonly="true"/>
+    </panel>
+    <panel-related name="periodListPanel" field="periodList" colSpan="12"
+      readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
+    <panel sidebar="true" name="periodsGenerationAssistantPanel"
+      title="Periods generation assistant" hideIf="statusSelect == 2">
+      <field name="periodDurationSelect"/>
+      <button name="generatePeriodsBtn" title="Generate periods"
+        onClick="action-year-group-generate-period-click"/>
+    </panel>
+  </form>
+
+  <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    <field name="typeSelect" expr="eval:0"/>
+  </action-record>
+
+  <action-validate name="action-civil-year-check-date">
+    <error
+      message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}."
+      if="id == null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
+    <error
+      message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}."
+      if="id != null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
+  </action-validate>
+
+  <action-validate name="action-year-check-date">
+    <error message="Enter proper 'From' and 'To' date."
+      if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate"
+      action="action-year-set-empty-date"/>
+  </action-validate>
+
+  <action-record name="action-year-set-empty-date"
+    model="com.axelor.apps.base.db.Year">
+    <field name="fromDate" expr="eval:null"/>
+    <field name="toDate" expr="eval:null"/>
+  </action-record>
+
+  <action-group name="action-year-group-generate-period-click">
+    <action name="action-year-check-date"/>
+    <action name="save"/>
+    <action name="action-year-validate-generate-period"/>
+    <action name="action-year-method-generate-periods"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-validate name="action-year-validate-generate-period">
+    <error message="To generate periods, please fill in the limits of the year."
+      if="fromDate == null || toDate == null"/>
+    <error message="To generate periods, please fill in the Period duration."
+      if="periodDurationSelect == null || periodDurationSelect == 0"/>
+    <error message="Please clear all existing periods before generating new ones"
+      if="!periodList.empty"/>
+  </action-validate>
+
+  <action-method name="action-year-method-generate-periods">
+    <call class="com.axelor.apps.base.web.YearController" method="generatePeriods"/>
+  </action-method>
+
+  <search-filters name="year-filters" model="com.axelor.apps.base.db.Year"
+    title="Year filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </search-filters>
 </object-views>

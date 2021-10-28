@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="address-export-grid" title="Export addresses" model="com.axelor.apps.base.db.AddressExport">
-		<field name="date" />
-		<field name="path" />
-	</grid>
+  <grid name="address-export-grid" title="Export addresses"
+    model="com.axelor.apps.base.db.AddressExport">
+    <field name="date"/>
+    <field name="path"/>
+  </grid>
 
-	<form name="address-export-form" title="Export Address" model="com.axelor.apps.base.db.AddressExport" onNew="action-default-address-export-record">
-		<panel name="mainPanel" >
-			<field name="date" colSpan="4" />
-			<field name="path" colSpan="8" />
-			<button name="exportBtn" title="Export" onClick="com.axelor.apps.base.web.AddressController:export" />
-			<spacer name="exportBtnSpacer" />
-			<field name="log" />
-		</panel>
-	</form>
+  <form name="address-export-form" title="Export Address"
+    model="com.axelor.apps.base.db.AddressExport" onNew="action-default-address-export-record">
+    <panel name="mainPanel">
+      <field name="date" colSpan="4"/>
+      <field name="path" colSpan="8"/>
+      <button name="exportBtn" title="Export"
+        onClick="com.axelor.apps.base.web.AddressController:export"/>
+      <spacer name="exportBtnSpacer"/>
+      <field name="log"/>
+    </panel>
+  </form>
 
-	<action-record name="action-default-address-export-record" model="com.axelor.apps.base.db.AddressExport">
-		<field name="date" expr="eval: __datetime__" />
-	</action-record>
+  <action-record name="action-default-address-export-record"
+    model="com.axelor.apps.base.db.AddressExport">
+    <field name="date" expr="eval: __datetime__"/>
+  </action-record>
 
 </object-views>

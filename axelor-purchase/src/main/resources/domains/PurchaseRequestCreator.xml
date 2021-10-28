@@ -6,10 +6,11 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseRequestCreator" lang="java" cacheable="true">
-	
-	<string name="name" title="Name" required="true" />
-	<one-to-many name="attributes" title="Attributes" ref="com.axelor.meta.db.MetaJsonField" orphanRemoval="true" />
-  	
+
+    <string name="name" title="Name" required="true"/>
+    <one-to-many name="attributes" title="Attributes"
+      ref="com.axelor.meta.db.MetaJsonField" orphanRemoval="true"/>
+
   </entity>
-  
+
 </domain-models>

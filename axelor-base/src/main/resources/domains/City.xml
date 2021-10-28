@@ -5,18 +5,18 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="City" lang="java" >
-  
+  <entity name="City" lang="java">
+
     <string name="name" title="Name" required="true"/>
     <string name="artmin" title="Artmin" selection="iterritory.artmin.select"/>
     <many-to-one name="canton" ref="Canton" title="Canton Code"/>
-    <string name="inseeCode" title="National Code" index="true" />
+    <string name="inseeCode" title="National Code" index="true"/>
     <many-to-one name="department" ref="Department" title="Department"/>
     <integer name="nbInhCommune" title="Nb. of Inhabitants"/>
     <string name="zip" title="Zip code"/>
-    <boolean name="hasZipOnRight" title="Zip On Right" />
-    <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country" />
-    
+    <boolean name="hasZipOnRight" title="Zip On Right"/>
+    <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+
     <finder-method name="findByZipAndCountry" using="zip,country" all="true"/>
   </entity>
 

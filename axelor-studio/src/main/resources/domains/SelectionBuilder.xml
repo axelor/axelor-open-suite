@@ -3,12 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="studio" package="com.axelor.studio.db" />
-  
-	<entity name="SelectionBuilder" cacheable="true">
-	    <string name="name" title="Name" required="true" />
-		<many-to-one name="metaSelect" ref="com.axelor.meta.db.MetaSelect" title="Existing selection"/>
-		<string name="selectionText" title="Selection" large="true" />
-	</entity>
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="SelectionBuilder" cacheable="true">
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="metaSelect" ref="com.axelor.meta.db.MetaSelect"
+      title="Existing selection"/>
+    <string name="selectionText" title="Selection" large="true"/>
+  </entity>
 
 </domain-models>

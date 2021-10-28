@@ -1,169 +1,172 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
-	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-	
-	<selection name="crm.lead.status.select">
-		<option value="1">New</option>
-		<option value="2">Assigned</option>
-		<option value="3">In process</option>
-		<option value="4">Converted</option>
-		<option value="5">Lost</option>
-	</selection>
-	
-	<selection name="crm.event.related.to.select">
-		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
-		<option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid" data-form="opportunity-form">Opportunity</option>
-		<option value="com.axelor.apps.crm.db.Event">Event</option>
-	</selection>
-	
-	<selection name="crm.event.priority.select">
-        <option value="1">Low</option>
-        <option value="2">Normal</option>
-        <option value="3">High</option>
-        <option value="4">Urgent</option>
-    </selection>
+  <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-	<selection name="crm.opportunity.sales.stage.select">
-		<option value="1">crm.New</option>
-		<option value="2">Qualification</option>
-		<option value="3">Proposition</option>
-		<option value="4">Negotiation</option>
-		<option value="5">Closed won</option>
-		<option value="6">Closed lost</option>
-	</selection>
-	
-	<selection name="crm.event.call.type.select">
-		<option value="1">Incoming</option>
-		<option value="2">Outgoing</option>
-	</selection>
-	
-	<selection name="crm.event.status.select">
-		<option value="1">Planned</option>
-		<option value="2">Realized</option>
-		<option value="3">Canceled</option>
-		
-		<!-- For tasks only -->
-		<option value="11">Not started</option>
-		<option value="12">On going</option>
-		<option value="13">Pending</option>
-		<option value="14">Finished</option>
-		<option value="15">Reported</option>
-	</selection>
-	
-	<selection name="crm.event.attendee.status.select">
-		<option value="1">Non-participant</option>
-		<option value="2">Optional participant</option>
-		<option value="3">Required participant</option>
-	</selection>
-	
-	<selection name="crm.event.reminder.type.select">
-		<option value="1">Email</option>
-	</selection>
-	
-	<selection name="crm.event.reminder.mode.select">
-		<option value="1">Before start date</option>
-		<option value="2">At specific date</option>
-	</selection>
-	
-	<selection name="crm.eventReminder.duration.type.select">
-		<option value="1">Minutes</option>
-		<option value="2">Hours</option>
-		<option value="3">Days</option>
-		<option value="4">Weeks</option>
-	</selection>
-	
-	<selection name="crm.eventReminder.assign.to.select">
-		<option value="1">For me</option>
-		<option value="3">For all</option>
-	</selection>
-	
-	<selection name="icrm.batch.action.select">
-		<option value="21">Event reminder</option>
-		<option value='22'>Target</option>
-	</selection>
-	
-	<selection name="crm.target.configuration.period.type.select">
-		<option value="0">None</option>
-		<option value="1">Monthly</option>
-		<option value="2">Weekly</option>
-		<option value="3">Daily</option>
-	</selection>
-	
-	<selection name="message.related.to.select" id="crm.message.related.to.select">
-	    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
-		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
-	    <option value="com.axelor.apps.crm.db.Event">Event</option>
-	</selection>
-	
-	<selection name="crm.event.recurrence.type">
-		<option value="1">Every day</option>
-		<option value="2">Every week</option>
-		<option value="3">Every month</option>
-		<option value="4">Every year</option>
-	</selection>
-	
-	<selection name="crm.event.recurrence.end.type">
-		<option value="1">After n repetitions</option>
-		<option value="2">At the date</option>
-	</selection>
-	
-	<selection name="crm.event.recurrence.month.repeat.type">
-		<option value="1">Day of month</option>
-		<option value="2">Day of week</option>
-	</selection>
-	
-	<selection name="meta.schedule.job.select" id="crm.meta.schedule.job.select">
-		<option value="com.axelor.apps.crm.job.EventReminderJob">com.axelor.apps.crm.job.EventReminderJob</option>
-	</selection>
+  <selection name="crm.lead.status.select">
+    <option value="1">New</option>
+    <option value="2">Assigned</option>
+    <option value="3">In process</option>
+    <option value="4">Converted</option>
+    <option value="5">Lost</option>
+  </selection>
 
-	<selection name="meta.schedule.batch.service.select" id="crm.meta.schedule.batch.service.select">
-		<option value="com.axelor.apps.crm.service.batch.CrmBatchService">com.axelor.apps.crm.service.batch.CrmBatchService</option>
-	</selection>
-	
-	<selection name="crm.convert.lead.wizard.lead.to.partner.select">
-		<option value="1">Create new partner</option>
-		<option value="2">Select existing partner</option>
-	</selection>
-	
-	<selection name="crm.convert.lead.wizard.lead.to.contact.select">
-		<option value="1">Create new contact</option>
-		<option value="2">Select existing contact</option>
-	</selection>
+  <selection name="crm.event.related.to.select">
+    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
+    <option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid"
+      data-form="opportunity-form">Opportunity</option>
+    <option value="com.axelor.apps.crm.db.Event">Event</option>
+  </selection>
 
-	<selection name="icalendar.synchronization.select" id="crm.icalendar.synchronization.select">
-		<option value="Event">CRM events</option>
-	</selection>
-	
-	<selection name="crm.app.crm.assignable.user.select">
-		<option value="0">All users</option>
-		<option value="1">Some user groups</option>
-	</selection>
-	
-	<selection name='trace.back.origin.select' id="trace.back.origin.select.crm">
-		<option value="crm">CRM</option>
-	</selection>
-	
-	<selection name="sequence.generic.code.select" id="crm.sequence.generic.code.select">
-		<option value="opportunity">Opportunity</option>
-	</selection>
-	
-	<selection name="crm.month.name.selection">
-		<option value="1">January</option>
-		<option value="2">February</option>
-		<option value="3">March</option>
-		<option value="4">April</option>
-		<option value="5">May</option>
-		<option value="6">June</option>
-		<option value="7">July</option>
-		<option value="8">August</option>
-		<option value="9">September</option>
-		<option value="10">October</option>
-		<option value="11">November</option>
-		<option value="12">December</option>
-	</selection>
+  <selection name="crm.event.priority.select">
+    <option value="1">Low</option>
+    <option value="2">Normal</option>
+    <option value="3">High</option>
+    <option value="4">Urgent</option>
+  </selection>
+
+  <selection name="crm.opportunity.sales.stage.select">
+    <option value="1">crm.New</option>
+    <option value="2">Qualification</option>
+    <option value="3">Proposition</option>
+    <option value="4">Negotiation</option>
+    <option value="5">Closed won</option>
+    <option value="6">Closed lost</option>
+  </selection>
+
+  <selection name="crm.event.call.type.select">
+    <option value="1">Incoming</option>
+    <option value="2">Outgoing</option>
+  </selection>
+
+  <selection name="crm.event.status.select">
+    <option value="1">Planned</option>
+    <option value="2">Realized</option>
+    <option value="3">Canceled</option>
+
+    <!-- For tasks only -->
+    <option value="11">Not started</option>
+    <option value="12">On going</option>
+    <option value="13">Pending</option>
+    <option value="14">Finished</option>
+    <option value="15">Reported</option>
+  </selection>
+
+  <selection name="crm.event.attendee.status.select">
+    <option value="1">Non-participant</option>
+    <option value="2">Optional participant</option>
+    <option value="3">Required participant</option>
+  </selection>
+
+  <selection name="crm.event.reminder.type.select">
+    <option value="1">Email</option>
+  </selection>
+
+  <selection name="crm.event.reminder.mode.select">
+    <option value="1">Before start date</option>
+    <option value="2">At specific date</option>
+  </selection>
+
+  <selection name="crm.eventReminder.duration.type.select">
+    <option value="1">Minutes</option>
+    <option value="2">Hours</option>
+    <option value="3">Days</option>
+    <option value="4">Weeks</option>
+  </selection>
+
+  <selection name="crm.eventReminder.assign.to.select">
+    <option value="1">For me</option>
+    <option value="3">For all</option>
+  </selection>
+
+  <selection name="icrm.batch.action.select">
+    <option value="21">Event reminder</option>
+    <option value='22'>Target</option>
+  </selection>
+
+  <selection name="crm.target.configuration.period.type.select">
+    <option value="0">None</option>
+    <option value="1">Monthly</option>
+    <option value="2">Weekly</option>
+    <option value="3">Daily</option>
+  </selection>
+
+  <selection name="message.related.to.select" id="crm.message.related.to.select">
+    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
+    <option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
+    <option value="com.axelor.apps.crm.db.Event">Event</option>
+  </selection>
+
+  <selection name="crm.event.recurrence.type">
+    <option value="1">Every day</option>
+    <option value="2">Every week</option>
+    <option value="3">Every month</option>
+    <option value="4">Every year</option>
+  </selection>
+
+  <selection name="crm.event.recurrence.end.type">
+    <option value="1">After n repetitions</option>
+    <option value="2">At the date</option>
+  </selection>
+
+  <selection name="crm.event.recurrence.month.repeat.type">
+    <option value="1">Day of month</option>
+    <option value="2">Day of week</option>
+  </selection>
+
+  <selection name="meta.schedule.job.select" id="crm.meta.schedule.job.select">
+    <option value="com.axelor.apps.crm.job.EventReminderJob">com.axelor.apps.crm.job.EventReminderJob</option>
+  </selection>
+
+  <selection name="meta.schedule.batch.service.select"
+    id="crm.meta.schedule.batch.service.select">
+    <option value="com.axelor.apps.crm.service.batch.CrmBatchService">com.axelor.apps.crm.service.batch.CrmBatchService</option>
+  </selection>
+
+  <selection name="crm.convert.lead.wizard.lead.to.partner.select">
+    <option value="1">Create new partner</option>
+    <option value="2">Select existing partner</option>
+  </selection>
+
+  <selection name="crm.convert.lead.wizard.lead.to.contact.select">
+    <option value="1">Create new contact</option>
+    <option value="2">Select existing contact</option>
+  </selection>
+
+  <selection name="icalendar.synchronization.select"
+    id="crm.icalendar.synchronization.select">
+    <option value="Event">CRM events</option>
+  </selection>
+
+  <selection name="crm.app.crm.assignable.user.select">
+    <option value="0">All users</option>
+    <option value="1">Some user groups</option>
+  </selection>
+
+  <selection name='trace.back.origin.select' id="trace.back.origin.select.crm">
+    <option value="crm">CRM</option>
+  </selection>
+
+  <selection name="sequence.generic.code.select" id="crm.sequence.generic.code.select">
+    <option value="opportunity">Opportunity</option>
+  </selection>
+
+  <selection name="crm.month.name.selection">
+    <option value="1">January</option>
+    <option value="2">February</option>
+    <option value="3">March</option>
+    <option value="4">April</option>
+    <option value="5">May</option>
+    <option value="6">June</option>
+    <option value="7">July</option>
+    <option value="8">August</option>
+    <option value="9">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </selection>
 
 </object-views>

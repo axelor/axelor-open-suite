@@ -1,145 +1,189 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-	<grid name="stock-location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.StockLocation">
-    <toolbar>
-		  <button name="printBtn" title="Print" icon="fa-print" onClick="save,action-stock-location-method-open-print-wizard"/>
-    </toolbar>
-		<field name="name"/>
-		<field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="address" form-view="address-form" grid-view="address-grid"/>
-		<field name="typeSelect"/>
-		<field name="stockLocationValue"/>
-	</grid>
-    
-    <tree name="stock-location-tree" title="Stock Locations">
-    	<column name="name" type="string" />
-    	<column name="typeSelect" type="integer" />
-    	<column name="company" type="reference" />
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    	<node model="com.axelor.apps.stock.db.StockLocation" domain="self.parentStockLocation is null" onClick="action-stock-location-view-show-form-view">
-            <field as="name" name="name"/>
-            <field name="typeSelect" as="typeSelect"/>
-            <field name="company" as="company"/>
-        </node>
-        
-        <node model="com.axelor.apps.stock.db.StockLocation" parent="parentStockLocation" draggable="true" onClick="action-stock-location-view-show-form-view" >
-            <field as="name" name="name"/>
-            <field name="typeSelect" as="typeSelect"/>
-        	<field name="company" as="company"/>
-        </node>
-    </tree>
-    
-	<form name="stock-location-form" title="Stock location" model="com.axelor.apps.stock.db.StockLocation" onNew="action-stock-location-record-new" width="large" onLoad="action-stock-location-method-set-stock-location-value">
-		<toolbar>
-			<button name="createInventoryBtn" title="Create inventory" onClick="action-location-view-create-inventory"/>
-			<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-stock-location-method-open-print-wizard"/>
-		</toolbar>
-		<panel name="mainPanel">
-			<field name="name"/>
-			<field name="typeSelect" colSpan="3"/>
-			<field name="parentStockLocation" canEdit="false" form-view="stock-location-form" grid-view="stock-location-grid"/>
-			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="partner" canEdit="false" showIf="typeSelect == 2" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="address" canEdit="false" form-view="address-form" grid-view="address-grid"/>
-			<field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
-			<field name="stockLocationValue" readonly="true" hideIf="typeSelect==3">
-			<viewer>
+  <grid name="stock-location-grid" title="Stock Locations"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <toolbar>
+      <button name="printBtn" title="Print" icon="fa-print"
+        onClick="save,action-stock-location-method-open-print-wizard"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="parentStockLocation" form-view="stock-location-form"
+      grid-view="stock-location-grid"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="address" form-view="address-form" grid-view="address-grid"/>
+    <field name="typeSelect"/>
+    <field name="stockLocationValue"/>
+  </grid>
+
+  <tree name="stock-location-tree" title="Stock Locations">
+    <column name="name" type="string"/>
+    <column name="typeSelect" type="integer"/>
+    <column name="company" type="reference"/>
+
+    <node model="com.axelor.apps.stock.db.StockLocation"
+      domain="self.parentStockLocation is null" onClick="action-stock-location-view-show-form-view">
+      <field as="name" name="name"/>
+      <field name="typeSelect" as="typeSelect"/>
+      <field name="company" as="company"/>
+    </node>
+
+    <node model="com.axelor.apps.stock.db.StockLocation" parent="parentStockLocation"
+      draggable="true" onClick="action-stock-location-view-show-form-view">
+      <field as="name" name="name"/>
+      <field name="typeSelect" as="typeSelect"/>
+      <field name="company" as="company"/>
+    </node>
+  </tree>
+
+  <form name="stock-location-form" title="Stock location"
+    model="com.axelor.apps.stock.db.StockLocation" onNew="action-stock-location-record-new"
+    width="large" onLoad="action-stock-location-method-set-stock-location-value">
+    <toolbar>
+      <button name="createInventoryBtn" title="Create inventory"
+        onClick="action-location-view-create-inventory"/>
+      <button name="printBtn" title="Print" icon="fa-print"
+        onClick="save,action-stock-location-method-open-print-wizard"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="typeSelect" colSpan="3"/>
+      <field name="parentStockLocation" canEdit="false" form-view="stock-location-form"
+        grid-view="stock-location-grid"/>
+      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid"/>
+      <field name="partner" canEdit="false" showIf="typeSelect == 2"
+        domain="self.isContact = false AND :company member of self.companySet"
+        form-view="partner-form" grid-view="partner-grid"/>
+      <field name="address" canEdit="false" form-view="address-form" grid-view="address-grid"/>
+      <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
+      <field name="stockLocationValue" readonly="true" hideIf="typeSelect==3">
+        <viewer>
 					<![CDATA[
 						<h4> {{record.stockLocationValue}} </h4>
 					]]>
-				</viewer>
-			</field>
-		</panel>    
-		<panel-tabs name="mainPanelTab">
-			<panel name="locationContentPanel" title="Location Content">
-				<panel-dashlet name="stockLocationLinesPanel" title="Location Lines" field="stockLocationLineList" canNew="false" colSpan="12" action="action-location-view-location-content" canSearch="true" height="600"/>
-			</panel> 
-			<panel-dashlet name="detailsStockLocationLinesPanel" title="Stock location details" field="detailsStockLocationLineList" action="action-location-details-view-location-content" canSearch="true" height="600"/>
-			<panel name="configPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-				<field name="usableOnSaleOrder" colSpan="3"/>
-				<field name="usableOnPurchaseOrder" colSpan="3"/>
-				<field name="usableOnProduction" colSpan="3"/>
-				<field name="directOrderLocation" colSpan="3"/>
-				<field name="isNotInMrp" colSpan="3" if="__config__.app.isApp('supplychain')"/>
-                <field name="isNotInCalculStock" colSpan="3"/>
-				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
-            </panel>
-		</panel-tabs>
-		
-	</form>
-    
-	<form model="com.axelor.apps.base.db.Wizard" title="Select format to Export" name="stock-location-print-wizard-form" onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
-		<panel name="mainPanel">
-            <field name="$printingType" title="Printing Type" selection="stock.stock.location.printing.type"/>
-			<field name="$exportTypeSelect" title="Export Type" selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
-			<button name="printBtn" title="Print" onClick="action-stock-location-method-print" readonlyIf="$exportTypeSelect == null" colSpan="3"/>
-		</panel>
-	</form>    
-    
-    <action-method name="action-stock-location-method-print">
-    	<call class="com.axelor.apps.stock.web.StockLocationController" method="print"/>
-    </action-method>
-    
-    <action-method name="action-stock-location-method-open-print-wizard">
-    	<call class="com.axelor.apps.stock.web.StockLocationController" method="openPrintWizard"/>
-    </action-method>
-        
-    <action-record name="action-stock-location-record-new" model="com.axelor.apps.stock.db.StockLocation">
-	    <field name="typeSelect" expr="1"/>
-	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    	<field name="usableOnProduction" expr="eval:_productionWorkshop"/>
-    	<field name="isWorkshop" expr="eval:_productionWorkshop"/>
-	</action-record>
-    
-    <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.stock.db.Inventory">
-		<view type="form" name="inventory-form"/>
-  		<view type="grid" name="inventory-grid"/>
-  		<context name="_location" expr="eval:__self__" if="__self__.typeSelect == 1 || __self__.typeSelect == 2"/>
-	</action-view>
-	
-    <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.stock.db.StockLocationLine">
-		<view type="grid" name="stock-location-line-grid" />
-		<view type="form" name="stock-location-line-form" />
-		<domain>self.stockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
-  		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
-    </action-view>
+        </viewer>
+      </field>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="locationContentPanel" title="Location Content">
+        <panel-dashlet name="stockLocationLinesPanel" title="Location Lines"
+          field="stockLocationLineList" canNew="false" colSpan="12"
+          action="action-location-view-location-content" canSearch="true" height="600"/>
+      </panel>
+      <panel-dashlet name="detailsStockLocationLinesPanel"
+        title="Stock location details" field="detailsStockLocationLineList"
+        action="action-location-details-view-location-content" canSearch="true" height="600"/>
+      <panel name="configPanel" title="Configuration" if-module="axelor-supplychain"
+        if="__config__.app.isApp('supplychain')">
+        <field name="usableOnSaleOrder" colSpan="3"/>
+        <field name="usableOnPurchaseOrder" colSpan="3"/>
+        <field name="usableOnProduction" colSpan="3"/>
+        <field name="directOrderLocation" colSpan="3"/>
+        <field name="isNotInMrp" colSpan="3" if="__config__.app.isApp('supplychain')"/>
+        <field name="isNotInCalculStock" colSpan="3"/>
+        <field name="isWorkshop" title="Workshop"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"
+          showIf="usableOnProduction"/>
+      </panel>
+    </panel-tabs>
 
-    <action-view name="action-location-details-view-location-content" title="Location content details" model="com.axelor.apps.stock.db.StockLocationLine">
-		<view type="grid" name="stock-location-line-details-grid" />
-		<view type="form" name="stock-location-line-details-form" />
-		<domain>self.detailsStockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
-  		<context name="contentLocationIds" expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)" />
-    </action-view>
-    
-    <action-method name="action-stock-location-method-set-stock-location-value">
-    	<call class="com.axelor.apps.stock.web.StockLocationController" method="setStocklocationValue"/>
-    </action-method>
-    
-    <action-view name="action-stock-location-view-show-form-view" title="Stock location" model="com.axelor.apps.stock.db.StockLocation">
-    	<view type="form" name="stock-location-form"/>
-    	<context name="_showRecord" expr="eval: id"/>
-    </action-view>
-    
-    <action-attrs name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
-        <attribute name="value" for="$printingType" expr="1"/>
-        <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
-    </action-attrs>
-    
-    <search-filters name="stock-location-filters" model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-        <field name="isWorkshop" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
-        <field name="usableOnSaleOrder" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-		<field name="usableOnPurchaseOrder" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-		<field name="usableOnProduction" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-		<field name="isNotInMrp" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-        <field name="isNotInCalculStock" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    </search-filters>
+  </form>
+
+  <form model="com.axelor.apps.base.db.Wizard" title="Select format to Export"
+    name="stock-location-print-wizard-form"
+    onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
+    <panel name="mainPanel">
+      <field name="$printingType" title="Printing Type"
+        selection="stock.stock.location.printing.type"/>
+      <field name="$exportTypeSelect" title="Export Type"
+        selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
+      <button name="printBtn" title="Print" onClick="action-stock-location-method-print"
+        readonlyIf="$exportTypeSelect == null" colSpan="3"/>
+    </panel>
+  </form>
+
+  <action-method name="action-stock-location-method-print">
+    <call class="com.axelor.apps.stock.web.StockLocationController" method="print"/>
+  </action-method>
+
+  <action-method name="action-stock-location-method-open-print-wizard">
+    <call class="com.axelor.apps.stock.web.StockLocationController" method="openPrintWizard"/>
+  </action-method>
+
+  <action-record name="action-stock-location-record-new"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <field name="typeSelect" expr="1"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    <field name="usableOnProduction" expr="eval:_productionWorkshop"/>
+    <field name="isWorkshop" expr="eval:_productionWorkshop"/>
+  </action-record>
+
+  <action-view name="action-location-view-create-inventory" title="Create inventory"
+    model="com.axelor.apps.stock.db.Inventory">
+    <view type="form" name="inventory-form"/>
+    <view type="grid" name="inventory-grid"/>
+    <context name="_location" expr="eval:__self__"
+      if="__self__.typeSelect == 1 || __self__.typeSelect == 2"/>
+  </action-view>
+
+  <action-view name="action-location-view-location-content" title="Location content"
+    model="com.axelor.apps.stock.db.StockLocationLine">
+    <view type="grid" name="stock-location-line-grid"/>
+    <view type="form" name="stock-location-line-form"/>
+    <domain>self.stockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND
+      (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
+    <context name="contentLocationIds"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)"/>
+  </action-view>
+
+  <action-view name="action-location-details-view-location-content"
+    title="Location content details" model="com.axelor.apps.stock.db.StockLocationLine">
+    <view type="grid" name="stock-location-line-details-grid"/>
+    <view type="form" name="stock-location-line-details-form"/>
+    <domain>self.detailsStockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND
+      (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true))</domain>
+    <context name="contentLocationIds"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)"/>
+  </action-view>
+
+  <action-method name="action-stock-location-method-set-stock-location-value">
+    <call class="com.axelor.apps.stock.web.StockLocationController"
+      method="setStocklocationValue"/>
+  </action-method>
+
+  <action-view name="action-stock-location-view-show-form-view" title="Stock location"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="form" name="stock-location-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-attrs
+    name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
+    <attribute name="value" for="$printingType" expr="1"/>
+    <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
+  </action-attrs>
+
+  <search-filters name="stock-location-filters"
+    model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="isWorkshop" hidden="true"
+      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
+    <field name="usableOnSaleOrder" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="usableOnPurchaseOrder" hidden="true"
+      if="!__config__.app.isApp('supplychain')"/>
+    <field name="usableOnProduction" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="isNotInMrp" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="isNotInCalculStock" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+  </search-filters>
 
 </object-views>

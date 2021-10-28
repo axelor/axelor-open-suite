@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
+
   <module name="base" package="com.axelor.apps.base.db"/>
-  
+
   <entity name="IndicatorGeneratorGrouping" lang="java">
-  
-  	<string name="code" title="Code" namecolumn="true" unique="true"/>
-  	<string name="name" title="Description"/>
-    <many-to-many name="indicatorGeneratorSet" ref="com.axelor.apps.base.db.IndicatorGenerator" title="Indicator generator list"/>
+
+    <string name="code" title="Code" namecolumn="true" unique="true"/>
+    <string name="name" title="Description"/>
+    <many-to-many name="indicatorGeneratorSet"
+      ref="com.axelor.apps.base.db.IndicatorGenerator" title="Indicator generator list"/>
     <string name="result" title="Result" multiline="true" large="true" readonly="true"/>
     <string name="log" title="Log" multiline="true" large="true" readonly="true"/>
     <string name="path" title="Path to export folder"/>
-    
+
   </entity>
 
 </domain-models>

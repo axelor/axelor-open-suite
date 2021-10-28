@@ -1,137 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBase" lang="java" extends="App" >
+  <entity name="AppBase" lang="java" extends="App">
 
-		<datetime name="today" title="Today date" tz="true"/>
-		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
-		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
-		<boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
-        <boolean name="storeStreets" title="Store streets" default="false" />
-        
-		<!-- Interfaces QAS et SVI -->
-		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
+    <datetime name="today" title="Today date" tz="true"/>
+    <many-to-one name="defaultProjectUnit" title="Default Project unit"
+      ref="com.axelor.apps.base.db.Unit"/>
+    <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
+      title="Default Partner language"/>
+    <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
+    <boolean name="storeStreets" title="Store streets" default="false"/>
 
-		<!-- Mapping API -->
-		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
-		
-		<!-- Routing service API for Open Street Map> -->
-		<integer name="osmRoutingServiceApiSelect" title="Routing service provider for Open Street Map" selection="base.app.base.osm.routing.api.select" default="1" />
-		
-		<string name="googleMapsApiKey" title="Google Maps API key"/>
-		
-		<!-- Currency Conversion Webservice URL -->
-		<string name="currencyWsURL" title="Currency Ws URL" selection="base.app.base.currency.api.select"/>
+    <!-- Interfaces QAS et SVI -->
+    <string name="qasWsdlUrl" title="URL to QAS WSDL"/>
 
-		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase" title="Currency conversion table"/>
-		
-		<boolean name="hasQasValidation" title="Use QAS Validation"/>
-		
-		<integer name="productInAtiSelect" title="Products ATI/WT" selection="base.in.ati.select" default="1"/>
-		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" min="0" max="10" default="2"/>
-		<integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0" max="10" default="2"/>
-		<integer name="globalTrackingLogPersistence" title="Tracking logs persistence (in months)" min="0" default="1"/>
-		
-		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
+    <!-- Mapping API -->
+    <integer name="mapApiSelect" title="Mapping service provider"
+      selection="base.app.base.map.api.select" default="1"/>
 
-		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="days"/>
-		<decimal name="dailyWorkHours" title="Daily Work Hours"/>
-		
-		<many-to-one name="unitDays" ref="com.axelor.apps.base.db.Unit" title="Days Unit"/>
-		<many-to-one name="unitHours" ref="com.axelor.apps.base.db.Unit" title="Hours Unit"/>
-		<many-to-one name="unitMinutes" ref="com.axelor.apps.base.db.Unit" title="Minutes Unit"/>
-		
-		<boolean name="teamManagement" title="Team Management" default="true"/>
-		
-		<boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
+    <!-- Routing service API for Open Street Map> -->
+    <integer name="osmRoutingServiceApiSelect"
+      title="Routing service provider for Open Street Map"
+      selection="base.app.base.osm.routing.api.select" default="1"/>
 
-		<boolean name="activateBarCodeGeneration" title="Activate bar code generation for products" default="false"/>
-		<boolean name="editProductBarcodeType" title="Edit product barcode type" default="false"/>
-		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
-		<boolean name="generateProductSequence" title="Generate sequence for products" default="false"/>
-		
-		<boolean name="generatePartnerSequence" title="Generate sequence for partners" default="true"/>
-		
-		<boolean name="manageMultiBanks" title="Manage multi banks"/>
+    <string name="googleMapsApiKey" title="Google Maps API key"/>
 
-		<boolean name="manageProductVariants" title="Manage product variants"/>
-		
-		<boolean name="enterpriseCommunication" title="Messaging" default="true"/>
-		
-		<boolean name="document" title="Documents" default="true" />
-		
-		<boolean name="enableTradingNamesManagement" default="false"/>
+    <!-- Currency Conversion Webservice URL -->
+    <string name="currencyWsURL" title="Currency Ws URL"
+      selection="base.app.base.currency.api.select"/>
 
-		<boolean name="enableCalendars" title="Calendar" default="true"/>
+    <one-to-many name="currencyConversionLineList"
+      ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="appBase"
+      title="Currency conversion table"/>
 
-        <boolean name="enableMultiCompany" title="Enable multi-company management" default="true"/>
-    
-        <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
-    
-        <integer name="limitNumberTasksGenerated" title="Number of tasks generated at most at once" min="1" default="100"/>
-    
-		<boolean name="isSharedAddress" title="Shared address" default="false"/>
+    <boolean name="hasQasValidation" title="Use QAS Validation"/>
 
-		<many-to-many name="companySpecificProductFieldsList" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
+    <integer name="productInAtiSelect" title="Products ATI/WT"
+      selection="base.in.ati.select" default="1"/>
+    <integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" min="0"
+      max="10" default="2"/>
+    <integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0"
+      max="10" default="2"/>
+    <integer name="globalTrackingLogPersistence"
+      title="Tracking logs persistence (in months)" min="0" default="1"/>
 
-	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
-		<extra-code>
+    <integer name="computeMethodDiscountSelect" title="Compute Method for Discounts"
+      selection="base.compute.method.discount.select" default="1"/>
+
+    <string name="timeLoggingPreferenceSelect" title="Time logging preference"
+      selection="hr.time.logging.preference.select" default="days"/>
+    <decimal name="dailyWorkHours" title="Daily Work Hours"/>
+
+    <many-to-one name="unitDays" ref="com.axelor.apps.base.db.Unit" title="Days Unit"/>
+    <many-to-one name="unitHours" ref="com.axelor.apps.base.db.Unit" title="Hours Unit"/>
+    <many-to-one name="unitMinutes" ref="com.axelor.apps.base.db.Unit"
+      title="Minutes Unit"/>
+
+    <boolean name="teamManagement" title="Team Management" default="true"/>
+
+    <boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
+
+    <boolean name="activateBarCodeGeneration"
+      title="Activate bar code generation for products" default="false"/>
+    <boolean name="editProductBarcodeType" title="Edit product barcode type" default="false"/>
+    <many-to-one name="barcodeTypeConfig" title="Barcode Type"
+      ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
+    <boolean name="generateProductSequence" title="Generate sequence for products"
+      default="false"/>
+
+    <boolean name="generatePartnerSequence" title="Generate sequence for partners"
+      default="true"/>
+
+    <boolean name="manageMultiBanks" title="Manage multi banks"/>
+
+    <boolean name="manageProductVariants" title="Manage product variants"/>
+
+    <boolean name="enterpriseCommunication" title="Messaging" default="true"/>
+
+    <boolean name="document" title="Documents" default="true"/>
+
+    <boolean name="enableTradingNamesManagement" default="false"/>
+
+    <boolean name="enableCalendars" title="Calendar" default="true"/>
+
+    <boolean name="enableMultiCompany" title="Enable multi-company management"
+      default="true"/>
+
+    <many-to-one name="passwordChangedTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
+
+    <integer name="limitNumberTasksGenerated"
+      title="Number of tasks generated at most at once" min="1" default="100"/>
+
+    <boolean name="isSharedAddress" title="Shared address" default="false"/>
+
+    <many-to-many name="companySpecificProductFieldsList"
+      ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
+
+    <one-to-many name="globalTrackingConfigurationLines"
+      ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase"
+      orphanRemoval="true"/>
+    <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
 	   			public static final int INCLUDE_DISCOUNT_REPLACE_ONLY = 2;
 	   			public static final int INCLUDE_DISCOUNT = 3;
-	   			
+
 	   			public static final int MAP_API_GOOGLE = 1;
 	   			public static final int MAP_API_OPEN_STREET_MAP = 2;
-	   			
+
 	   			public static final int ROUTING_API_YOURS = 1;
 	   			public static final int ROUTING_API_OSRM = 2;
 	   		]]>
-	   	</extra-code>
-	   	
-	   	<track>
-		   	<field name="today"  on="UPDATE"/>
-		   	<field name="defaultProjectUnit" on="UPDATE"/>
-		   	<field name="defaultPartnerLanguage" on="UPDATE"/>
-		   	<field name="emailAccountByUser" on="UPDATE"/>
+    </extra-code>
 
-		   	<field name="qasWsdlUrl" on="UPDATE"/>
-		   	<field name="mapApiSelect" on="UPDATE"/>
-		   	<field name="googleMapsApiKey" on="UPDATE"/>
-		   	<field name="currencyWsURL" on="UPDATE"/>
-		   	<field name="hasQasValidation" on="UPDATE"/>
-		   	<field name="productInAtiSelect" on="UPDATE"/>
-		   	<field name="nbDecimalDigitForUnitPrice" on="UPDATE"/>
-		   	<field name="computeMethodDiscountSelect" on="UPDATE"/>
-		   	<field name="timeLoggingPreferenceSelect" on="UPDATE"/>
-		   	<field name="dailyWorkHours" on="UPDATE"/>
-		   	
-			<field name="unitDays" on="UPDATE"/>
-		   	<field name="unitHours" on="UPDATE"/>
-		   	<field name="unitMinutes" on="UPDATE"/>
-		   	
-			<field name="teamManagement" on="UPDATE"/>
-		   	<field name="activateSendingEmail" on="UPDATE"/>
-		   	
-			<field name="activateBarCodeGeneration" on="UPDATE"/>
-		   	<field name="editProductBarcodeType" on="UPDATE"/>
-		   	<field name="barcodeTypeConfig" on="UPDATE"/>
-		   	<field name="generateProductSequence" on="UPDATE"/>
-		   	
-			<field name="manageMultiBanks" on="UPDATE"/>
-		   	<field name="manageProductVariants" on="UPDATE"/>
-		   	<field name="enterpriseCommunication" on="UPDATE"/>
-		   	<field name="document" on="UPDATE"/>
-		   	<field name="enableTradingNamesManagement" on="UPDATE"/>
-		   	<field name="enableCalendars" on="UPDATE"/>
-		   	<field name="passwordChangedTemplate" on="UPDATE"/>
-		   	<field name="generatePartnerSequence" on="UPDATE"/>
-<!-- 		   	31 fields -->
-	   	</track>
-	   	
-   	</entity>
+    <track>
+      <field name="today" on="UPDATE"/>
+      <field name="defaultProjectUnit" on="UPDATE"/>
+      <field name="defaultPartnerLanguage" on="UPDATE"/>
+      <field name="emailAccountByUser" on="UPDATE"/>
+
+      <field name="qasWsdlUrl" on="UPDATE"/>
+      <field name="mapApiSelect" on="UPDATE"/>
+      <field name="googleMapsApiKey" on="UPDATE"/>
+      <field name="currencyWsURL" on="UPDATE"/>
+      <field name="hasQasValidation" on="UPDATE"/>
+      <field name="productInAtiSelect" on="UPDATE"/>
+      <field name="nbDecimalDigitForUnitPrice" on="UPDATE"/>
+      <field name="computeMethodDiscountSelect" on="UPDATE"/>
+      <field name="timeLoggingPreferenceSelect" on="UPDATE"/>
+      <field name="dailyWorkHours" on="UPDATE"/>
+
+      <field name="unitDays" on="UPDATE"/>
+      <field name="unitHours" on="UPDATE"/>
+      <field name="unitMinutes" on="UPDATE"/>
+
+      <field name="teamManagement" on="UPDATE"/>
+      <field name="activateSendingEmail" on="UPDATE"/>
+
+      <field name="activateBarCodeGeneration" on="UPDATE"/>
+      <field name="editProductBarcodeType" on="UPDATE"/>
+      <field name="barcodeTypeConfig" on="UPDATE"/>
+      <field name="generateProductSequence" on="UPDATE"/>
+
+      <field name="manageMultiBanks" on="UPDATE"/>
+      <field name="manageProductVariants" on="UPDATE"/>
+      <field name="enterpriseCommunication" on="UPDATE"/>
+      <field name="document" on="UPDATE"/>
+      <field name="enableTradingNamesManagement" on="UPDATE"/>
+      <field name="enableCalendars" on="UPDATE"/>
+      <field name="passwordChangedTemplate" on="UPDATE"/>
+      <field name="generatePartnerSequence" on="UPDATE"/>
+      <!-- 31 fields -->
+    </track>
+
+  </entity>
 
 </domain-models>

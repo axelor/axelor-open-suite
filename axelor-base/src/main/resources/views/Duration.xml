@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="duration-grid" title="Durations" model="com.axelor.apps.base.db.Duration">
-        <field name="value"/>
-        <field name="typeSelect"/>
-    </grid>
-    
-    <form name="duration-form" title="Duration" model="com.axelor.apps.base.db.Duration" onNew="action-duration-application-type-select-record">
-    	<panel name="mainPanel">
-    	    <field name="value"/>
-        	<field name="typeSelect"/>
-        	<field name="applicationTypeSelect" hidden="true"/>
-        </panel>
-    </form>
-    
-    <action-record name="action-duration-application-type-select-record" model="com.axelor.apps.base.db.Duration">
-      <field name="applicationTypeSelect" expr="1" if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.sale.db.SaleOrder'"/>
-      <field name="applicationTypeSelect" expr="2" if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.contract.db.ContractVersion'"/>
-      <field name="applicationTypeSelect" expr="eval: _applicatioTypeSelect" if="__parent__ == null &amp;&amp; _applicatioTypeSelect != null"/>
-    </action-record>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="duration-grid" title="Durations" model="com.axelor.apps.base.db.Duration">
+    <field name="value"/>
+    <field name="typeSelect"/>
+  </grid>
+
+  <form name="duration-form" title="Duration" model="com.axelor.apps.base.db.Duration"
+    onNew="action-duration-application-type-select-record">
+    <panel name="mainPanel">
+      <field name="value"/>
+      <field name="typeSelect"/>
+      <field name="applicationTypeSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-record name="action-duration-application-type-select-record"
+    model="com.axelor.apps.base.db.Duration">
+    <field name="applicationTypeSelect" expr="1"
+      if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.sale.db.SaleOrder'"/>
+    <field name="applicationTypeSelect" expr="2"
+      if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.contract.db.ContractVersion'"/>
+    <field name="applicationTypeSelect" expr="eval: _applicatioTypeSelect"
+      if="__parent__ == null &amp;&amp; _applicatioTypeSelect != null"/>
+  </action-record>
 
 </object-views>

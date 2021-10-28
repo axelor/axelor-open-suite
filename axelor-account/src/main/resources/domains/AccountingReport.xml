@@ -1,66 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
+
   <module name="account" package="com.axelor.apps.account.db"/>
-  
+
   <entity name="AccountingReport" lang="java">
-    
+
     <string name="ref" title="Ref." namecolumn="true"/>
-    <date name="dateFrom" title="From" />
+    <date name="dateFrom" title="From"/>
     <date name="dateTo" title="To"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
     <many-to-one name="journal" ref="Journal" title="Journal"/>
-    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
+      title="Payment Mode"/>
     <many-to-many name="accountSet" ref="Account" title="Accounting.Accounts"/>
-    <string name="exportTypeSelect" title="Export type" selection="iadministration.export.type.select"/>
-    <integer name="typeSelect" title="Printing output"  required="true"  selection="accounting.report.type.select" />
-    <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
+    <string name="exportTypeSelect" title="Export type"
+      selection="iadministration.export.type.select"/>
+    <integer name="typeSelect" title="Printing output" required="true"
+      selection="accounting.report.type.select"/>
+    <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner"
+      title="Partners"/>
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
     <date name="date" column="date_val" title="Closing date" required="true"/>
     <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
-    
+
     <boolean name="detailed" title="Detailed" default="false"/>
-    <integer name="statusSelect" title="Status" selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
-    
+    <integer name="statusSelect" title="Status"
+      selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
+
     <decimal name="totalDebit" title="Total Debit" readonly="true"/>
     <decimal name="totalCredit" title="Total Credit" readonly="true"/>
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-    
-	<boolean name="displayClosingAccountingMoves" title="Display closing accounting moves" default="false"/>
-    <boolean name="displayOpeningAccountingMoves" title="Display opening accounting moves" default="true"/>
-    
-    <!--Report 7 : Partner genereal ledger  --> 
-    <boolean name="displayOnlyNotCompletelyLetteredMoveLines" title="Display only not completely lettered move lines" default="false"/>
-    <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
-    
-    
-	<!--Report 1 : general ledger  --> 
-    <boolean name="displayCodeAccountColumnOnPrinting" title="Display column with accounting number"/>
-    <boolean name="displayNameAccountColumnOnPrinting" title="Display column with accounting name"/>
-    <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
-    
-    <!-- Analytic report -->
-    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
-    <many-to-many name="analyticAxisSet" ref="com.axelor.apps.account.db.AnalyticAxis" title="Analytic axis"/>
-    <many-to-many name="analyticAccountSet" ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic accounts"/>
-    <many-to-many name="accountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Account types"/>
 
-    <many-to-one name="analyticDistributionTemplate" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic Distribution Template"/>
-    
+    <boolean name="displayClosingAccountingMoves" title="Display closing accounting moves"
+      default="false"/>
+    <boolean name="displayOpeningAccountingMoves" title="Display opening accounting moves"
+      default="true"/>
+
+    <!--Report 7 : Partner genereal ledger -->
+    <boolean name="displayOnlyNotCompletelyLetteredMoveLines"
+      title="Display only not completely lettered move lines" default="false"/>
+    <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
+
+
+    <!--Report 1 : general ledger -->
+    <boolean name="displayCodeAccountColumnOnPrinting"
+      title="Display column with accounting number"/>
+    <boolean name="displayNameAccountColumnOnPrinting"
+      title="Display column with accounting name"/>
+    <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
+
+    <!-- Analytic report -->
+    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal"
+      title="Analytic Journal"/>
+    <many-to-many name="analyticAxisSet" ref="com.axelor.apps.account.db.AnalyticAxis"
+      title="Analytic axis"/>
+    <many-to-many name="analyticAccountSet"
+      ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic accounts"/>
+    <many-to-many name="accountTypeSet" ref="com.axelor.apps.account.db.AccountType"
+      title="Account types"/>
+
+    <many-to-one name="analyticDistributionTemplate"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"
+      title="Analytic Distribution Template"/>
+
     <boolean name="subtotalByAnalyticDistribution" title="Subtotal by analytic distribution"/>
 
-	<unique-constraint columns="ref,company"/>
-    
+    <unique-constraint columns="ref,company"/>
+
     <extra-code><![CDATA[
-	
+
 	   	// TYPE SELECT
 		public static final int REPORT_GENERAL_LEDGER = 1;
 		public static final int REPORT_GENERAL_BALANCE = 2;
@@ -79,7 +96,7 @@
 		public static final int REPORT_ANALYTIC_GENERAL_LEDGER = 2001;
 		public static final int REPORT_ACQUISITIONS = 16;
 		public static final int REPORT_GROSS_VALUES_AND_DEPRECIATION = 17;
-		
+
 		// EXPORT TYPE SELECT
         public static final int EXPORT_ADMINISTRATION = 1000;
 		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1001;
@@ -88,13 +105,13 @@
 		public static final int EXPORT_TREASURY = 1008;
 		public static final int EXPORT_PURCHASES = 1009;
 		public static final int EXPORT_GENERAL_BALANCE = 1010;
-	
+
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_VALIDATED = 2;
-		
+
 	]]></extra-code>
-    
-    
+
+
   </entity>
 </domain-models>

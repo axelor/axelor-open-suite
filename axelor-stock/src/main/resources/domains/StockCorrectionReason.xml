@@ -7,7 +7,7 @@
 
   <entity name="StockCorrectionReason" lang="java">
 
-	<string name="name" namecolumn="true" required="true"/>
+    <string name="name" namecolumn="true" required="true"/>
 
   </entity>
 

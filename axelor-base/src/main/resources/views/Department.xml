@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="department-grid" title="Departments" model="com.axelor.apps.base.db.Department" orderBy="code">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="region" grid-view="region-grid" form-view="region-form"/>
-        <field name="name"/>
-    </grid>
-    
-    <form name="department-form" title="Department" model="com.axelor.apps.base.db.Department" width="large">
-    	<panel name="mainPanel" >
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="name"/>
-	        <field name="region" grid-view="region-grid" form-view="region-form"/>
-        </panel>
-        <panel-related name="cityListPanel" field="cityList" colSpan="12" form-view="city-form" grid-view="city-grid"/>
-        <panel-related name="cantonListPanel" field="cantonList" colSpan="12" form-view="canton-form" grid-view="canton-grid"/>
-    </form>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="department-grid" title="Departments" model="com.axelor.apps.base.db.Department"
+    orderBy="code">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="region" grid-view="region-grid" form-view="region-form"/>
+    <field name="name"/>
+  </grid>
+
+  <form name="department-form" title="Department" model="com.axelor.apps.base.db.Department"
+    width="large">
+    <panel name="mainPanel">
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="name"/>
+      <field name="region" grid-view="region-grid" form-view="region-form"/>
+    </panel>
+    <panel-related name="cityListPanel" field="cityList" colSpan="12"
+      form-view="city-form" grid-view="city-grid"/>
+    <panel-related name="cantonListPanel" field="cantonList" colSpan="12"
+      form-view="canton-form" grid-view="canton-grid"/>
+  </form>
+
 </object-views>

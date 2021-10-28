@@ -1,42 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="machine-grid" title="Machines" model="com.axelor.apps.production.db.Machine">
-		<field name="name"/>
-		<field name="serialNumber"/>
-		<field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
-		<field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
-	</grid>
+  <grid name="machine-grid" title="Machines" model="com.axelor.apps.production.db.Machine">
+    <field name="name"/>
+    <field name="serialNumber"/>
+    <field name="stockLocation" grid-view="stock-location-grid"
+      form-view="stock-location-form"/>
+    <field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
+  </grid>
 
-	<form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" width="large"
-		  onLoad="action-record-machine-set-operating-duration">
-		<panel name="mainPanel">
-			<panel name="informationsPanel" colSpan="9">
-				<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
-				<field name="$fullName" showTitle="false" css="label-bold bold large" colSpan="12">
-					<editor x-show-titles="false" x-viewer="true">
-						<field name="serialNumber" colSpan="3" placeholder="Serial Number"/>
-						<field name="name" colSpan="9" placeholder="Name"/>
-					</editor>
-				</field>
-			</panel>
-			<panel name="actionPanel" colSpan="3">
-				<button name="$operatingDurationBtn" onClick="" title="Operating duration" colSpan="12" icon="fa-clock-o" widget="info-button" />
-			</panel>
-			<field name="brand"/>
-			<field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form"/>
-			<field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
-			<field name="startingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
-			<field name="setupDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
-			<field name="endingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
-			<field name="weeklyPlanning" canNew="true"/>
-			<field name="description" colSpan="12"/>
-		</panel>
-	</form>
+  <form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine"
+    width="large" onLoad="action-record-machine-set-operating-duration">
+    <panel name="mainPanel">
+      <panel name="informationsPanel" colSpan="9">
+        <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
+        <field name="$fullName" showTitle="false" css="label-bold bold large" colSpan="12">
+          <editor x-show-titles="false" x-viewer="true">
+            <field name="serialNumber" colSpan="3" placeholder="Serial Number"/>
+            <field name="name" colSpan="9" placeholder="Name"/>
+          </editor>
+        </field>
+      </panel>
+      <panel name="actionPanel" colSpan="3">
+        <button name="$operatingDurationBtn" onClick="" title="Operating duration"
+          colSpan="12" icon="fa-clock-o" widget="info-button"/>
+      </panel>
+      <field name="brand"/>
+      <field name="stockLocation" required="true" grid-view="stock-location-grid"
+        form-view="stock-location-form"/>
+      <field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
+      <field name="startingDuration" colSpan="4" widget="duration" x-big="true"
+        x-seconds="true"/>
+      <field name="setupDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
+      <field name="endingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
+      <field name="weeklyPlanning" canNew="true"/>
+      <field name="description" colSpan="12"/>
+    </panel>
+  </form>
 
-	<action-record name="action-record-machine-set-operating-duration" model="com.axelor.apps.production.db.Machine">
-		<field name="$operatingDurationBtn" if="operatingDuration != null" expr="eval: String.format('%d:%02d:%02d', (int)(operatingDuration / 3600), (int)((operatingDuration % 3600) / 60), (int)((operatingDuration % 60)))"/>
-	</action-record>
+  <action-record name="action-record-machine-set-operating-duration"
+    model="com.axelor.apps.production.db.Machine">
+    <field name="$operatingDurationBtn" if="operatingDuration != null"
+      expr="eval: String.format('%d:%02d:%02d', (int)(operatingDuration / 3600), (int)((operatingDuration % 3600) / 60), (int)((operatingDuration % 60)))"/>
+  </action-record>
 </object-views>
