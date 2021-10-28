@@ -90,7 +90,7 @@ public class ImportMove {
 
         if (values.get("ValidDate") != null) {
           move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
-          move.setValidationDate(
+          move.setAccountingDate(
               LocalDate.parse(
                   values.get("ValidDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
         } else {

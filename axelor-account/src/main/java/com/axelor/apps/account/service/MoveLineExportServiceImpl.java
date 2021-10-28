@@ -1232,9 +1232,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[14] = "";
         }
 
-        if (move.getValidationDate() != null) {
+        if (move.getAccountingDate() != null) {
           items[15] =
-              move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+              move.getAccountingDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         }
 
         items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');

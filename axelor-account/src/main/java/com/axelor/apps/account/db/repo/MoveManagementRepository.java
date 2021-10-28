@@ -61,7 +61,7 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setExportNumber(null);
       copy.setExportDate(null);
       copy.setAccountingReport(null);
-      copy.setValidationDate(null);
+      copy.setAccountingDate(null);
       copy.setPeriod(period);
       copy.setAccountingOk(false);
       copy.setIgnoreInDebtRecoveryOk(false);

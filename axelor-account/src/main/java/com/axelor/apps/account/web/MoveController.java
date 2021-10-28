@@ -160,7 +160,7 @@ public class MoveController {
           if (error) {
             response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_NOT_OK));
           } else {
-            response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
+            response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_OK));
             response.setReload(true);
           }
         } else {

@@ -225,7 +225,7 @@ public class MoveValidateService {
         && !move.getAutoYearClosureMove()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_VALIDATION_FISCAL_PERIOD_CLOSED));
+          I18n.get(IExceptionMessage.MOVE_ACCOUNTING_FISCAL_PERIOD_CLOSED));
     }
 
     Boolean dayBookMode =
@@ -300,7 +300,7 @@ public class MoveValidateService {
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     } else {
       move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
-      move.setValidationDate(appBaseService.getTodayDate(move.getCompany()));
+      move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
     }
   }
 
