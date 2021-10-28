@@ -28,7 +28,7 @@
     </form>
 
     <action-method name="action-method-account-payment-voucher-element-pay-amount">
-        <call class="com.axelor.apps.account.web.PayVoucherElementController"
+        <call class="com.axelor.apps.account.web.PayVoucherElementToPayController"
               method="updateAmountToPayCurrency"/>
     </action-method>
 </object-views>

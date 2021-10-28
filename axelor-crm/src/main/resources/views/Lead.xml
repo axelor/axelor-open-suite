@@ -250,7 +250,6 @@
 	</action-method>
 
 	<action-group name="action-group-crm-lead-onnew">
-		<action name="action-account-record-new"/>
 		<action name="action-lead-default-record-new"/>
 	</action-group>
 	
