@@ -1,7 +1,6 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.service.AnalyticAxisByCompanyService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -13,13 +12,9 @@ public class AnalyticAxisByCompanyController {
 
   public void setAxisDomain(ActionRequest request, ActionResponse response) {
     try {
-      AnalyticAxisByCompany analyticAxisByCompany =
-          request.getContext().asType(AnalyticAxisByCompany.class);
-
-      if (analyticAxisByCompany.getAccountConfig() != null) {
-        String domain =
-            Beans.get(AnalyticAxisByCompanyService.class)
-                .getAxisDomain(analyticAxisByCompany.getAccountConfig());
+      AccountConfig accountConfig = request.getContext().getParent().asType(AccountConfig.class);
+      if (accountConfig != null) {
+        String domain = Beans.get(AnalyticAxisByCompanyService.class).getAxisDomain(accountConfig);
         if (domain != null) {
           response.setAttr("analyticAxis", "domain", domain);
         }
