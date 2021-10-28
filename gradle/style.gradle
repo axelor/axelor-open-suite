@@ -15,6 +15,14 @@ spotless {
     }
     googleJavaFormat()
   }
+  xml {
+    target fileTree(projectDir) {
+      include '**/*.xml'
+      exclude '**/build/**'
+    }
+    eclipseWtp('xml').configFile("${projectDir}/gradle/spotless.xml.prefs")
+    trimTrailingWhitespace()
+  }
 }
 
 task formatCode(dependsOn: ['licenseFormat', 'spotlessApply'])
