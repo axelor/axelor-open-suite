@@ -1,37 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="calendar-configuration-grid" title="Calendar configurations" model="com.axelor.apps.base.db.CalendarConfiguration">
-		<field name="name" />
-		<field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid" />
-		<field name="calendarUser" form-view="user-form" grid-view="user-grid"/>
-		<field name="calendarGroup" form-view="group-form" grid-view="group-grid"/>
-	</grid>
+  <grid name="calendar-configuration-grid" title="Calendar configurations"
+    model="com.axelor.apps.base.db.CalendarConfiguration">
+    <field name="name"/>
+    <field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid"/>
+    <field name="calendarUser" form-view="user-form" grid-view="user-grid"/>
+    <field name="calendarGroup" form-view="group-form" grid-view="group-grid"/>
+  </grid>
 
-	<form name="calendar-configuration-form" title="Calendar configuration" model="com.axelor.apps.base.db.CalendarConfiguration">
-		<panel name="mainPanel" >
-			<field name="name" readonlyIf="metaAction"/>
-			<field name="calendarUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" readonlyIf="metaAction"/>
-			<field name="calendarGroup" form-view="group-form" grid-view="group-grid" readonlyIf="metaAction"/>
-			<field name="parentMetaMenu" readonlyIf="metaAction"/>
-			<field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid" readonly="true"/>
-			<field name="role" form-view="role-form" grid-view="role-grid" readonly="true"/>
-		</panel>
-		<panel sidebar="true" name="actionPanel" title="Actions">
-			<button name="createActionBtn" title="Create menu entry" onClick="save,action-calendar-configuration-method-create-Action" readonlyIf="metaAction"/>
-			<button name="deleteActionBtn" title="Delete menu entry" onClick="save,action-calendar-configuration-method-delete-Action" />
-		</panel>
-		<panel-related name="calendarSetPanel" field="calendarSet" form-view="calendar-form" grid-view="calendar-grid"/>
-	</form>
+  <form name="calendar-configuration-form" title="Calendar configuration"
+    model="com.axelor.apps.base.db.CalendarConfiguration">
+    <panel name="mainPanel">
+      <field name="name" readonlyIf="metaAction"/>
+      <field name="calendarUser" canNew="false" canEdit="false" canView="false"
+        form-view="user-form" grid-view="user-grid" readonlyIf="metaAction"/>
+      <field name="calendarGroup" form-view="group-form" grid-view="group-grid"
+        readonlyIf="metaAction"/>
+      <field name="parentMetaMenu" readonlyIf="metaAction"/>
+      <field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid"
+        readonly="true"/>
+      <field name="role" form-view="role-form" grid-view="role-grid" readonly="true"/>
+    </panel>
+    <panel sidebar="true" name="actionPanel" title="Actions">
+      <button name="createActionBtn" title="Create menu entry"
+        onClick="save,action-calendar-configuration-method-create-Action" readonlyIf="metaAction"/>
+      <button name="deleteActionBtn" title="Delete menu entry"
+        onClick="save,action-calendar-configuration-method-delete-Action"/>
+    </panel>
+    <panel-related name="calendarSetPanel" field="calendarSet"
+      form-view="calendar-form" grid-view="calendar-grid"/>
+  </form>
 
-	<action-method name="action-calendar-configuration-method-create-Action">
-		<call class="com.axelor.apps.base.web.CalendarConfigurationController" method="createAction" />
-	</action-method>
+  <action-method name="action-calendar-configuration-method-create-Action">
+    <call class="com.axelor.apps.base.web.CalendarConfigurationController"
+      method="createAction"/>
+  </action-method>
 
-	<action-method name="action-calendar-configuration-method-delete-Action">
-		<call class="com.axelor.apps.base.web.CalendarConfigurationController" method="deleteAction" />
-	</action-method>
+  <action-method name="action-calendar-configuration-method-delete-Action">
+    <call class="com.axelor.apps.base.web.CalendarConfigurationController"
+      method="deleteAction"/>
+  </action-method>
 
 </object-views>

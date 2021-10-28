@@ -6,10 +6,10 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Function" lang="java" cacheable="true">
-  
+
     <string name="name" title="Function Name"/>
     <string name="code" title="Code"/>
-    
+
   </entity>
 
 </domain-models>

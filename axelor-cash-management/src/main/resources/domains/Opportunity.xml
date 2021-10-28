@@ -6,9 +6,10 @@
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
   <entity name="Opportunity" lang="java">
-  
-    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank"/>
-  
+
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Bank"/>
+
   </entity>
 
 </domain-models>

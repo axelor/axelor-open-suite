@@ -6,14 +6,17 @@
   <module name="supplierportal" package="com.axelor.apps.supplierportal.db"/>
 
   <entity name="ProductSupplier" lang="java">
-  	<string name="productCode" title="Code" unique="true"/>
-  	<string name="productName" title="Name"/>
-  	<many-to-one name="imgProduct" ref="com.axelor.meta.db.MetaFile" title="Picture" />
-  	<many-to-one name="purchaseUnit" ref="com.axelor.apps.base.db.Unit" title="Purchase unit" />
-  	<decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="10" />
-  	<many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency"	title="Purchase currency" />
-	<string name="description" large="true" title="Description"	translatable="true" />
-	<many-to-one name="productCreated" title="Product created" ref="com.axelor.apps.base.db.Product" readonly="true" />
+    <string name="productCode" title="Code" unique="true"/>
+    <string name="productName" title="Name"/>
+    <many-to-one name="imgProduct" ref="com.axelor.meta.db.MetaFile" title="Picture"/>
+    <many-to-one name="purchaseUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Purchase unit"/>
+    <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="10"/>
+    <many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency"
+      title="Purchase currency"/>
+    <string name="description" large="true" title="Description" translatable="true"/>
+    <many-to-one name="productCreated" title="Product created"
+      ref="com.axelor.apps.base.db.Product" readonly="true"/>
   </entity>
-  
+
 </domain-models>

@@ -2,21 +2,25 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
-	<module name="base" package="com.axelor.apps.base.db" />
-			
-		<entity name="PriceListLine"  lang="java">
-			<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
-			<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-			<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
-			<integer name="typeSelect" title="Discount/Additionnal/Replace" selection="base.price.list.line.type.select"/>
-			<integer name="amountTypeSelect" title="Fixed Amount/%" selection="base.price.list.line.amount.type.select"/>
-			<decimal name="amount" title="Amount/%" precision="20" scale="10" min="0"/>
-			<decimal name="minQty" title="Qty min (by product)" precision="20" scale="10" min="0"/>
 
-			<finder-method name="findByPriceListAndProduct" using="priceList,product"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-			<extra-code>
+  <entity name="PriceListLine" lang="java">
+    <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
+      title="Price list"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
+      title="Product category"/>
+    <integer name="typeSelect" title="Discount/Additionnal/Replace"
+      selection="base.price.list.line.type.select"/>
+    <integer name="amountTypeSelect" title="Fixed Amount/%"
+      selection="base.price.list.line.amount.type.select"/>
+    <decimal name="amount" title="Amount/%" precision="20" scale="10" min="0"/>
+    <decimal name="minQty" title="Qty min (by product)" precision="20" scale="10" min="0"/>
+
+    <finder-method name="findByPriceListAndProduct" using="priceList,product"/>
+
+    <extra-code>
 			<![CDATA[
 				// AMOUNT TYPE SELECT
 				public static final int AMOUNT_TYPE_NONE = 0;
@@ -28,7 +32,7 @@
 				public static final int TYPE_ADDITIONNAL = 2;
 				public static final int TYPE_REPLACE = 3;
 			]]>
-			</extra-code>
-		</entity>
-		
+    </extra-code>
+  </entity>
+
 </domain-models>

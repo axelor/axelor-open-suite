@@ -3,13 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="project" package="com.axelor.apps.project.db"/>
-	
-	<entity name="Wiki">
-  		<string name="title"/>
-  		<string name="content" large="true"/>
-  		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
-  		<many-to-one name="projectTemplate" ref="com.axelor.apps.project.db.ProjectTemplate" title="Project template"/>
-	</entity>
-	
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="Wiki">
+    <string name="title"/>
+    <string name="content" large="true"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="projectTemplate" ref="com.axelor.apps.project.db.ProjectTemplate"
+      title="Project template"/>
+  </entity>
+
 </domain-models>

@@ -1,50 +1,60 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="currency-conversion-line-grid" groupBy="startCurrency,endCurrency" orderBy="-fromDate" title="Currency conversion lines" model="com.axelor.apps.base.db.CurrencyConversionLine">
-        <field name="startCurrency" form-view="currency-form" grid-view="currency-grid"/>
-        <field name="endCurrency" form-view="currency-form" grid-view="currency-grid"/>
-        <field name="exchangeRate"/>
-        <field name="variations" />
-        <field name="fromDate"/>
-        <field name="toDate" />
-        <field name="appBase" hidden="true" />
-    </grid>
-    
-    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" width="large">
-        <panel name="mainPanel">
-		  <field name="startCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
-		  <field name="endCurrency" widget="SuggestBox" form-view="currency-form" grid-view="currency-grid"/>
-		  <button name="getRateBtn" title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null"   onClick="action-group-base-currencyconversionline-getrate-click"/>
-		</panel> 
-		<panel name="applicableDatesPanel" title="Applicable dates" readonlyIf="startCurrency == null || endCurrency == null">
-		    <field name="fromDate" onChange="action-currency-conversion-line-method-check-date"/>
-		    <field name="toDate" readonlyIf="fromDate == null" onChange="action-currency-conversion-line-method-check-date"/>
-		</panel>
-		<panel name="ratePanel" title="Rate">
-		    <field name="exchangeRate"/>
-		    <field name="variations"/>
-		</panel>
-    </form>
-    
-    <action-group name="action-group-base-currencyconversionline-getrate-click">
-    	<action name="action-currency-conversion-line-validate-rate-change"/>
-    	<action name="action-currency-conversion-line-method-convert"/>
-    </action-group>
-    
-    <action-method name="action-currency-conversion-line-method-check-date">
-    	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>
-    </action-method>
-    
-    <action-method name="action-currency-conversion-line-method-convert" >
-    	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="convert"/>
-    </action-method>
-    
-	<action-validate name="action-currency-conversion-line-validate-rate-change" >
-		<alert message="You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?" 
-		if="fromDate != null &amp;&amp; exchangeRate != null &amp;&amp; id != null"/>
-	</action-validate>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="currency-conversion-line-grid" groupBy="startCurrency,endCurrency"
+    orderBy="-fromDate" title="Currency conversion lines"
+    model="com.axelor.apps.base.db.CurrencyConversionLine">
+    <field name="startCurrency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="endCurrency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="exchangeRate"/>
+    <field name="variations"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="appBase" hidden="true"/>
+  </grid>
+
+  <form name="currency-conversion-line-form" title="Currency conversion line"
+    model="com.axelor.apps.base.db.CurrencyConversionLine" width="large">
+    <panel name="mainPanel">
+      <field name="startCurrency" widget="SuggestBox" form-view="currency-form"
+        grid-view="currency-grid"/>
+      <field name="endCurrency" widget="SuggestBox" form-view="currency-form"
+        grid-view="currency-grid"/>
+      <button name="getRateBtn" title="Get rate"
+        readonlyIf="startCurrency == null || endCurrency == null || toDate != null"
+        onClick="action-group-base-currencyconversionline-getrate-click"/>
+    </panel>
+    <panel name="applicableDatesPanel" title="Applicable dates"
+      readonlyIf="startCurrency == null || endCurrency == null">
+      <field name="fromDate" onChange="action-currency-conversion-line-method-check-date"/>
+      <field name="toDate" readonlyIf="fromDate == null"
+        onChange="action-currency-conversion-line-method-check-date"/>
+    </panel>
+    <panel name="ratePanel" title="Rate">
+      <field name="exchangeRate"/>
+      <field name="variations"/>
+    </panel>
+  </form>
+
+  <action-group name="action-group-base-currencyconversionline-getrate-click">
+    <action name="action-currency-conversion-line-validate-rate-change"/>
+    <action name="action-currency-conversion-line-method-convert"/>
+  </action-group>
+
+  <action-method name="action-currency-conversion-line-method-check-date">
+    <call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>
+  </action-method>
+
+  <action-method name="action-currency-conversion-line-method-convert">
+    <call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="convert"/>
+  </action-method>
+
+  <action-validate name="action-currency-conversion-line-validate-rate-change">
+    <alert
+      message="You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?"
+      if="fromDate != null &amp;&amp; exchangeRate != null &amp;&amp; id != null"/>
+  </action-validate>
 
 </object-views>

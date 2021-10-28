@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-   
-    <grid name="product-variant-value-grid" title="Product variant values"
-        model="com.axelor.apps.base.db.ProductVariantValue">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="priceExtra" x-scale="2"/>
-        <field name="applicationPriceSelect"/>
-    </grid>
-    
-    <form name="product-variant-value-form" title="Product variant value"
-        model="com.axelor.apps.base.db.ProductVariantValue"
-        onNew="action-product-variant-value-attrs-scale-and-precision"
-        onLoad="action-product-variant-value-attrs-scale-and-precision">
-    	<panel name="mainPanel" >
-	        <field name="name"/>
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="priceExtra"/>
-	        <field name="applicationPriceSelect"/>
-	  		<field name="colorSelect"/>
-        </panel>
-    </form>   
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    <action-attrs name="action-product-variant-value-attrs-scale-and-precision">
-        <attribute name="scale" for="priceExtra"
-            expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
-    </action-attrs>
+  <grid name="product-variant-value-grid" title="Product variant values"
+    model="com.axelor.apps.base.db.ProductVariantValue">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="priceExtra" x-scale="2"/>
+    <field name="applicationPriceSelect"/>
+  </grid>
+
+  <form name="product-variant-value-form" title="Product variant value"
+    model="com.axelor.apps.base.db.ProductVariantValue"
+    onNew="action-product-variant-value-attrs-scale-and-precision"
+    onLoad="action-product-variant-value-attrs-scale-and-precision">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="priceExtra"/>
+      <field name="applicationPriceSelect"/>
+      <field name="colorSelect"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-product-variant-value-attrs-scale-and-precision">
+    <attribute name="scale" for="priceExtra"
+      expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
 
 </object-views>

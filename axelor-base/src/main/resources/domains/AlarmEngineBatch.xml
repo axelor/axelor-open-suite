@@ -6,14 +6,17 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="AlarmEngineBatch" lang="java">
-  
-  	<!-- HEADER -->
+
+    <!-- HEADER -->
     <string name="code" title="Code" required="true" unique="true"/>
-    <many-to-many name="metaModelSet" ref="com.axelor.meta.db.MetaModel" title="Model" required="true"/>
-    <many-to-many name="alarmEngineSet" ref="com.axelor.apps.base.db.AlarmEngine" title="Alarm Engine"/>
-    <string name="description" title="Description" large="true" />
-    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="alarmEngineBatch" title="Batchs" />
-    
+    <many-to-many name="metaModelSet" ref="com.axelor.meta.db.MetaModel" title="Model"
+      required="true"/>
+    <many-to-many name="alarmEngineSet" ref="com.axelor.apps.base.db.AlarmEngine"
+      title="Alarm Engine"/>
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="alarmEngineBatch" title="Batchs"/>
+
   </entity>
 
 </domain-models>

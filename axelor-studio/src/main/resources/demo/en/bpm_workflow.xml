@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wkfs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  
-  <wkf code="POWKF" name="Product Order Flow" isJson="true" model="ProductOrder" statusField="status" displayTypeSelect="0" appBuilder="PRD">
-  	<xml>
+
+  <wkf code="POWKF" name="Product Order Flow" isJson="true" model="ProductOrder"
+    statusField="status" displayTypeSelect="0" appBuilder="PRD">
+    <xml>
   		<![CDATA[
   		<?xml version="1.0" encoding="UTF-8"?>
 		<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:x="http://axelor.com" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
@@ -99,59 +100,72 @@
 		  </bpmndi:BPMNDiagram>
 		</definitions>
   		]]>
-  	</xml>
+    </xml>
   </wkf>
-  
-  <wkfNode wkf="POWKF" name="Draft" title="Draft" nodeType="0" sequence="1" xmlId="StartEvent_07npy19"/>
-  <wkfNode wkf="POWKF" name="Confirmed" title="Confirmed" nodeType="1" sequence="2" xmlId="Task_07my1i6" />
-  <wkfNode wkf="POWKF" name="Validated" title="Validated" nodeType="1" sequence="3" xmlId="Task_0k79fbo" />
-  <wkfNode wkf="POWKF" name="Canceled" title="Canceled" nodeType="1" sequence="4" xmlId="Task_069h0a2"/>
-  <wkfNode wkf="POWKF" name="Finished" title="Finished" nodeType="2" sequence="5" xmlId="EndEvent_062urgf"/>
-  
-  <transition wkf="POWKF" name="Confirm" source="Draft" target="Confirmed" isButton="true" buttonTitle="Confirm" xmlId="SequenceFlow_0qljt6y"/>
-  <transition wkf="POWKF" name="Validate" source="Confirmed" target="Validated" isButton="true" buttonTitle="Validate" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1" alertMsg="Are you sure wants to validate." successMsg="Order validated" />
-  <transition wkf="POWKF" name="Cancel" source="Confirmed" target="Canceled" isButton="true" buttonTitle="Cancel" xmlId="SequenceFlow_02m6a90" alertTypeSelect="1" alertMsg="Are you sure wants to cancel ?" />
-  <transition wkf="POWKF" name="Finish" source="Validated" target="Finished" isButton="true" buttonTitle="Finish" xmlId="SequenceFlow_18u3b2a" alertTypeSelect="2" alertMsg="Order finished." />
-  <transition wkf="POWKF" name="Reset" source="Canceled" target="Draft" isButton="true" buttonTitle="Reset" xmlId="SequenceFlow_1yn5orr" />
-  
+
+  <wkfNode wkf="POWKF" name="Draft" title="Draft" nodeType="0" sequence="1"
+    xmlId="StartEvent_07npy19"/>
+  <wkfNode wkf="POWKF" name="Confirmed" title="Confirmed" nodeType="1" sequence="2"
+    xmlId="Task_07my1i6"/>
+  <wkfNode wkf="POWKF" name="Validated" title="Validated" nodeType="1" sequence="3"
+    xmlId="Task_0k79fbo"/>
+  <wkfNode wkf="POWKF" name="Canceled" title="Canceled" nodeType="1" sequence="4"
+    xmlId="Task_069h0a2"/>
+  <wkfNode wkf="POWKF" name="Finished" title="Finished" nodeType="2" sequence="5"
+    xmlId="EndEvent_062urgf"/>
+
+  <transition wkf="POWKF" name="Confirm" source="Draft" target="Confirmed"
+    isButton="true" buttonTitle="Confirm" xmlId="SequenceFlow_0qljt6y"/>
+  <transition wkf="POWKF" name="Validate" source="Confirmed" target="Validated"
+    isButton="true" buttonTitle="Validate" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1"
+    alertMsg="Are you sure wants to validate." successMsg="Order validated"/>
+  <transition wkf="POWKF" name="Cancel" source="Confirmed" target="Canceled"
+    isButton="true" buttonTitle="Cancel" xmlId="SequenceFlow_02m6a90" alertTypeSelect="1"
+    alertMsg="Are you sure wants to cancel ?"/>
+  <transition wkf="POWKF" name="Finish" source="Validated" target="Finished"
+    isButton="true" buttonTitle="Finish" xmlId="SequenceFlow_18u3b2a" alertTypeSelect="2"
+    alertMsg="Order finished."/>
+  <transition wkf="POWKF" name="Reset" source="Canceled" target="Draft" isButton="true"
+    buttonTitle="Reset" xmlId="SequenceFlow_1yn5orr"/>
+
   <node wkf="POWKF" name="Draft">
-  		<incomings>
-  			<incoming name="Reset" />
-  		</incomings>
-  		<outgoings>
-  			<outgoing name="Confirm" />
-  		</outgoings>
+    <incomings>
+      <incoming name="Reset"/>
+    </incomings>
+    <outgoings>
+      <outgoing name="Confirm"/>
+    </outgoings>
   </node>
   <node wkf="POWKF" name="Confirmed">
-  		<incomings>
-  			<incoming name="Confirm" />
-  		</incomings>
-  		<outgoings>
-  			<outgoing name="Validate" />
-  			<outgoing name="Cancel" />
-  		</outgoings>
+    <incomings>
+      <incoming name="Confirm"/>
+    </incomings>
+    <outgoings>
+      <outgoing name="Validate"/>
+      <outgoing name="Cancel"/>
+    </outgoings>
   </node>
   <node wkf="POWKF" name="Validated">
-  		<incomings>
-  			<incoming name="Validate" />
-  		</incomings>
-  		<outgoings>
-  			<outgoing name="Finish" />
-  		</outgoings>
+    <incomings>
+      <incoming name="Validate"/>
+    </incomings>
+    <outgoings>
+      <outgoing name="Finish"/>
+    </outgoings>
   </node>
   <node wkf="POWKF" name="Canceled">
-  		<incomings>
-  			<incoming name="Cancel" />
-  		</incomings>
-  		<outgoings>
-  			<outgoing name="Reset" />
-  		</outgoings>
+    <incomings>
+      <incoming name="Cancel"/>
+    </incomings>
+    <outgoings>
+      <outgoing name="Reset"/>
+    </outgoings>
   </node>
   <node wkf="POWKF" name="Finished">
-  		<incomings>
-  			<incoming name="Finish" />
-  		</incomings>
+    <incomings>
+      <incoming name="Finish"/>
+    </incomings>
   </node>
-  
-  <workflow code="POWKF" />
+
+  <workflow code="POWKF"/>
 </wkfs>

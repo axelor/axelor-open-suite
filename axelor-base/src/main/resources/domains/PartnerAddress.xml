@@ -3,26 +3,26 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-  	<entity name="PartnerAddress" lang="java">
-		<boolean name="isInvoicingAddr" title="Invoicing address" />
-		<boolean name="isDeliveryAddr" title="Delivery address" />
-		<boolean name="isDefaultAddr" title="Default address" />
-		<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
-		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" />
-	
-		<extra-imports>
-			import java.util.HashMap;
-			import java.util.Map;	
-		</extra-imports>
-		
-		<extra-code>
+  <entity name="PartnerAddress" lang="java">
+    <boolean name="isInvoicingAddr" title="Invoicing address"/>
+    <boolean name="isDeliveryAddr" title="Delivery address"/>
+    <boolean name="isDefaultAddr" title="Default address"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
+
+    <extra-imports>
+      import java.util.HashMap;
+      import java.util.Map;
+    </extra-imports>
+
+    <extra-code>
 		<![CDATA[
 			public  static Map<String,String> modelPartnerFieldMap = new HashMap<>();
 		]]>
-		</extra-code>
-	
-	</entity>
+    </extra-code>
+
+  </entity>
 
 </domain-models>

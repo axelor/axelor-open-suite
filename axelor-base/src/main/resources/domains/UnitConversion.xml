@@ -10,22 +10,23 @@
     <many-to-one name="startUnit" ref="Unit" title="From Unit" required="true"/>
     <many-to-one name="endUnit" ref="Unit" title="To Unit" required="true"/>
     <decimal name="coef" title="Coeff." required="true" precision="30" scale="12"/>
-    <integer name="typeSelect" title="Type" selection="unit.conversion.type.select" default="1"/>
+    <integer name="typeSelect" title="Type" selection="unit.conversion.type.select"
+      default="1"/>
     <string name="formula" title="Formula"/>
-  
+
     <string name="name" search="startUnit,endUnit" title="Name">
     	<![CDATA[
     		return startUnit.getName() + " => " + endUnit.getName();
     	]]>
-   	</string>
-   		
-   	<extra-code>
+    </string>
+
+    <extra-code>
    		<![CDATA[
     		public static final int TYPE_COEFF = 1;
 			public static final int TYPE_FORMULA = 2;;
     	]]>
-   	</extra-code>
-  
+    </extra-code>
+
   </entity>
 
 </domain-models>

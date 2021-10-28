@@ -2,16 +2,18 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
+
   <module name="docusign" package="com.axelor.apps.docusign.db"/>
 
   <entity name="DocuSignFieldSetting" lang="java">
-    
-    <many-to-one name="docuSignDocumentSetting" title="Document setting" ref="com.axelor.apps.docusign.db.DocuSignDocumentSetting"/>
-    <many-to-one name="docuSignSignerSetting" title="Signer setting" ref="com.axelor.apps.docusign.db.DocuSignSignerSetting"/>
+
+    <many-to-one name="docuSignDocumentSetting" title="Document setting"
+      ref="com.axelor.apps.docusign.db.DocuSignDocumentSetting"/>
+    <many-to-one name="docuSignSignerSetting" title="Signer setting"
+      ref="com.axelor.apps.docusign.db.DocuSignSignerSetting"/>
     <string name="name" title="Name"/>
     <integer name="typeSelect" title="Type" selection="docusign.field.setting.type.select"/>
-    <string name="value" title="Value"/>            
+    <string name="value" title="Value"/>
     <string name="tabLabel" title="Tab label"/>
     <string name="pageNumber" title="Page number"/>
     <string name="anchor" title="Anchor"/>
@@ -25,12 +27,14 @@
     <string name="fontSize" title="Font size"/>
     <string name="fontColor" title="Font color"/>
     <boolean name="isBold" title="Bold"/>
-    
-    <many-to-one name="parent" title="Parent" ref="com.axelor.apps.docusign.db.DocuSignFieldSetting"/>
-    <one-to-many name="docuSignFieldSettingList" title="Field settings" ref="com.axelor.apps.docusign.db.DocuSignFieldSetting" mappedBy="parent"/>    
-    
+
+    <many-to-one name="parent" title="Parent"
+      ref="com.axelor.apps.docusign.db.DocuSignFieldSetting"/>
+    <one-to-many name="docuSignFieldSettingList" title="Field settings"
+      ref="com.axelor.apps.docusign.db.DocuSignFieldSetting" mappedBy="parent"/>
+
     <extra-code><![CDATA[
-      
+
       //TYPE SELECT
 	  public static final int TYPE_SIGN_HERE = 1;
 	  public static final int TYPE_FULL_NAME = 2;
@@ -42,11 +46,11 @@
 	  public static final int TYPE_LIST = 8;
 	  public static final int TYPE_LIST_ITEM = 9;
 	  public static final int TYPE_APPROVE = 10;
-	  public static final int TYPE_DECLINE = 11;	  
-      
+	  public static final int TYPE_DECLINE = 11;
+
     ]]></extra-code>
-  
+
   </entity>
-  
-  
+
+
 </domain-models>

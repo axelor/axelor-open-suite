@@ -1,102 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
-  
+
   <module name="base" package="com.axelor.apps.base.db"/>
-  
+
   <entity name="Partner" lang="java">
-  
-  	<!-- En-tête  -->
-    <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory" title="Category" massUpdate="true"/>
+
+    <!-- En-tête -->
+    <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory"
+      title="Category" massUpdate="true"/>
     <string name="partnerSeq" title="Reference" readonly="true" unique="true"/>
-    
+
     <!-- ERP -->
-    <integer name="partnerTypeSelect" title="Partner Type" selection="partner.partner.type.select" />
-    <integer name="titleSelect" title="Civility" selection="partner.title.type.select" massUpdate="true"/>
+    <integer name="partnerTypeSelect" title="Partner Type"
+      selection="partner.partner.type.select"/>
+    <integer name="titleSelect" title="Civility" selection="partner.title.type.select"
+      massUpdate="true"/>
     <string name="name" title="Name/Company Name" required="true" index="false"/>
     <string name="firstName" title="First Name"/>
-    <many-to-one name="jobTitleFunction" title="Function" ref="com.axelor.apps.base.db.Function"/>
-    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" index="false"/>
+    <many-to-one name="jobTitleFunction" title="Function"
+      ref="com.axelor.apps.base.db.Function"/>
+    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo"
+      index="false"/>
     <boolean name="isCustomer" title="Customer"/>
     <boolean name="isProspect" title="Prospect"/>
     <boolean name="isSupplier" title="Supplier"/>
     <boolean name="isEmployee" title="Employee"/>
-    <boolean name="isContact" title="Contact" default="false" />
-    
-    
-    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language" massUpdate="true"/>
-    
-    <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true" index="false"/>
-    <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress" title="Addresses" mappedBy="partner"/>
-    
-    <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
-    <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main company" index="false"/>
-    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source" index="false" massUpdate="true"/>
-    
+    <boolean name="isContact" title="Contact" default="false"/>
+
+
+    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"
+      massUpdate="true"/>
+
+    <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Mother company" massUpdate="true" index="false"/>
+    <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress"
+      title="Addresses" mappedBy="partner"/>
+
+    <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner"
+      title="Contacts"/>
+    <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Main company" index="false"/>
+    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"
+      index="false" massUpdate="true"/>
+
     <!-- From contact -->
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
+    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress"
+      title="Email"/>
     <string name="fax" title="Fax"/>
     <string name="fixedPhone" title="Fixed phone"/>
     <string name="mobilePhone" title="Mobile phone"/>
     <string name="webSite" title="Website"/>
-    
+
     <string name="department" title="Dept./Div."/>
-    
-    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies associated to"/>
-   
-    <one-to-many name="bankDetailsList" ref="com.axelor.apps.base.db.BankDetails" mappedBy="partner" title="Bank Details list"/>
-   
-    <!--  Page règle de facturation/paiement -->
-<!--     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Details"/> -->
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false" massUpdate="true"/>
 
-    <many-to-one name="salePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Sale price lists"/>
-    <many-to-one name="purchasePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Purchase price lists"/>
-	<decimal name="paymentDelay" title="Payment delay (Average in days)" massUpdate="true" />
-   
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
+      title="Companies associated to"/>
+
+    <one-to-many name="bankDetailsList" ref="com.axelor.apps.base.db.BankDetails"
+      mappedBy="partner" title="Bank Details list"/>
+
+    <!-- Page règle de facturation/paiement -->
+    <!-- <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank
+      Details"/> -->
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
+      index="false" massUpdate="true"/>
+
+    <many-to-one name="salePartnerPriceList"
+      ref="com.axelor.apps.base.db.PartnerPriceList" title="Sale price lists"/>
+    <many-to-one name="purchasePartnerPriceList"
+      ref="com.axelor.apps.base.db.PartnerPriceList" title="Purchase price lists"/>
+    <decimal name="paymentDelay" title="Payment delay (Average in days)" massUpdate="true"/>
+
     <!-- PAGE Blocage -->
-	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
-	
-   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
-   
-    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" index="false" massUpdate="true"/>
-    <one-to-one name="linkedUser" ref="com.axelor.auth.db.User" title="User" mappedBy="partner"/>
-	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" index="false" massUpdate="true"/>
-	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" index="false"/>
-    <string name="description" title="Description"  large="true"/>
-   	<many-to-one name="industrySector" title="Industry sector" ref="com.axelor.apps.base.db.IndustrySector" index="false" massUpdate="true"/>
-	<integer name="nbrEmployees" title="Employees (Nbr)" min="0"/>
-	<integer name="saleTurnover" title="Turnover"/>
-	<string name="registrationCode" title="Registration code"/>
+    <one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking"
+      title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
+
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
+      title="Assigned to" index="false" massUpdate="true"/>
+    <one-to-one name="linkedUser" ref="com.axelor.auth.db.User" title="User"
+      mappedBy="partner"/>
+    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" index="false"
+      massUpdate="true"/>
+    <many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner"
+      title="Reports to" massUpdate="true" index="false"/>
+    <string name="description" title="Description" large="true"/>
+    <many-to-one name="industrySector" title="Industry sector"
+      ref="com.axelor.apps.base.db.IndustrySector" index="false" massUpdate="true"/>
+    <integer name="nbrEmployees" title="Employees (Nbr)" min="0"/>
+    <integer name="saleTurnover" title="Turnover"/>
+    <string name="registrationCode" title="Registration code"/>
     <string name="mainActivityCode" title="Main activity code"/>
-	<string name="taxNbr" title="Tax N°"/>
-	
- 	<string name="fullName" title="Name" namecolumn="true"/>
- 	<string name="simpleFullName" title="Name"/>
-	 
-   	<many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position" massUpdate="true"/>
-	<many-to-one name="mainAddress" ref="com.axelor.apps.base.db.Address" title="Address" />
-	
-	<string name="timeSlot" title="Time slot" large="true"/>
-	<string name="companyStr" title="Companies" />
-	
-	<!-- -Json fields -->
-	<string name="partnerAttrs" title="Fields" json="true" />
-	<string name="contactAttrs" title="Fields" json="true" />
-	<string name="headOfficeAddress" title="Head office address"/>
+    <string name="taxNbr" title="Tax N°"/>
 
-	<string name="invoiceComments" title="Comment to display on invoice" large="true"/>
-	<string name="saleOrderComments" title="Comment to display on sale order" large="true"/>
-	<string name="purchaseOrderComments" title="Comment to display on purchase order" large="true"/>
-	<string name="deliveryComments" title="Comment to display on delivery" large="true"/>
-	<string name="pickingOrderComments" title="Comment to display on picking order" large="true"/>
-	
-	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
+    <string name="fullName" title="Name" namecolumn="true"/>
+    <string name="simpleFullName" title="Name"/>
 
-	<finder-method name="findByPartnerSeq" using="partnerSeq"/>
+    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
+      title="Fiscal position" massUpdate="true"/>
+    <many-to-one name="mainAddress" ref="com.axelor.apps.base.db.Address"
+      title="Address"/>
 
-	<extra-code>
+    <string name="timeSlot" title="Time slot" large="true"/>
+    <string name="companyStr" title="Companies"/>
+
+    <!-- -Json fields -->
+    <string name="partnerAttrs" title="Fields" json="true"/>
+    <string name="contactAttrs" title="Fields" json="true"/>
+    <string name="headOfficeAddress" title="Head office address"/>
+
+    <string name="invoiceComments" title="Comment to display on invoice" large="true"/>
+    <string name="saleOrderComments" title="Comment to display on sale order" large="true"/>
+    <string name="purchaseOrderComments" title="Comment to display on purchase order"
+      large="true"/>
+    <string name="deliveryComments" title="Comment to display on delivery" large="true"/>
+    <string name="pickingOrderComments" title="Comment to display on picking order"
+      large="true"/>
+
+    <string name="proformaComments" title="Comment to display on proforma" large="true"/>
+
+    <finder-method name="findByPartnerSeq" using="partnerSeq"/>
+
+    <extra-code>
 	<![CDATA[
 		public static final int PARTNER_TYPE_COMPANY = 1;
 		public static final int PARTNER_TYPE_INDIVIDUAL = 2;
@@ -106,8 +134,8 @@
 		public static final int PARTNER_TITLE_DR = 3;
 		public static final int PARTNER_TITLE_PROF = 4;
 	]]>
-	</extra-code>
-	
+    </extra-code>
+
   </entity>
-  
+
 </domain-models>

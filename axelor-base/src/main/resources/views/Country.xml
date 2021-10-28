@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-    <grid name="country-grid" title="Countries" model="com.axelor.apps.base.db.Country">
-        <field name="name"/>
-        <field name="alpha3Code"/>
-        <field name="alpha2Code"/>
-        <field name="numericCode"/>
-    </grid>
-    
-    <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country" >
-    	<panel name="mainPanel">
-	        <field name="name" x-bind="{{name|uppercase}}"/>
-	        <field name="alpha3Code" x-bind="{{alpha3Code|uppercase}}"/>
-	        <field name="alpha2Code" x-bind="{{alpha2Code|uppercase}}"/>
-	        <field name="numericCode"/>
-            <field name="economicArea" canEdit="false"/>
-            <field name="citizenship"/>
-	    </panel>
-		<panel name="attributesPanel" title="Attributes">
-			<field name="cog" />
-		    <field name="phonePrefix" />			
-		</panel>
-		<panel name="standardsPanel" title="Standards" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-			<field name="isIspmRequired"/>
-		</panel>
-    </form>
-    
-    <search-filters name="country-filters" model="com.axelor.apps.base.db.Country" title="Country filters">
-    	<field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('stock')"/>
-    </search-filters>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="country-grid" title="Countries" model="com.axelor.apps.base.db.Country">
+    <field name="name"/>
+    <field name="alpha3Code"/>
+    <field name="alpha2Code"/>
+    <field name="numericCode"/>
+  </grid>
+
+  <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country">
+    <panel name="mainPanel">
+      <field name="name" x-bind="{{name|uppercase}}"/>
+      <field name="alpha3Code" x-bind="{{alpha3Code|uppercase}}"/>
+      <field name="alpha2Code" x-bind="{{alpha2Code|uppercase}}"/>
+      <field name="numericCode"/>
+      <field name="economicArea" canEdit="false"/>
+      <field name="citizenship"/>
+    </panel>
+    <panel name="attributesPanel" title="Attributes">
+      <field name="cog"/>
+      <field name="phonePrefix"/>
+    </panel>
+    <panel name="standardsPanel" title="Standards" if-module="axelor-stock"
+      if="__config__.app.isApp('stock')">
+      <field name="isIspmRequired"/>
+    </panel>
+  </form>
+
+  <search-filters name="country-filters" model="com.axelor.apps.base.db.Country"
+    title="Country filters">
+    <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('stock')"/>
+  </search-filters>
+
 </object-views>
 

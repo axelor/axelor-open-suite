@@ -1,63 +1,102 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-   
-    <grid name="product-variant-config-grid" title="Product variant configurations" model="com.axelor.apps.base.db.ProductVariantConfig">
-        <field name="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/> 
-        <field name="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
-        <field name="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
-        <field name="productVariantAttr4" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
-        <field name="productVariantValue1Set" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-        <field name="productVariantValue2Set" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-        <field name="productVariantValue3Set" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-        <field name="productVariantValue4Set" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-    </grid>
-    
-    <form name="product-variant-config-form" title="Product variant configuration" model="com.axelor.apps.base.db.ProductVariantConfig"  
-    	onLoad="action-product-variant-config-attrs-domain" onNew="action-product-variant-config-attrs-domain" width="large">
-    	<panel name="mainPanel" >
-        	<field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
-        	<field name="productVariantValue1Set" widget="TagSelect" canNew="false" showIf="productVariantAttr1" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-	        <field name="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
-    	    <field name="productVariantValue2Set" widget="TagSelect" canNew="false" showIf="productVariantAttr2" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-	        <field name="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr2" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
-    	    <field name="productVariantValue3Set" widget="TagSelect" canNew="false" showIf="productVariantAttr3" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-	        <field name="productVariantAttr4" canNew="true" onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr3" grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
-    	    <field name="productVariantValue4Set" widget="TagSelect" canNew="false" showIf="productVariantAttr4" colSpan="12" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-        </panel>
-    </form>
-    
-    <!-- ACTION ATTRS -->
-    
-    <action-attrs name="action-product-variant-config-attrs-domain">
-    	<attribute name="domain" for="productVariantValue1Set" expr="eval: (productVariantAttr1?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr1?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue2Set" expr="eval: (productVariantAttr2?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr2?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue3Set" expr="eval: (productVariantAttr3?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr3?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue4Set" expr="eval: (productVariantAttr4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    </action-attrs>
-    
-    <action-attrs name="action-product-nested-product-variant-config-attrs-domain">
-    	<attribute name="domain" for="productVariantConfig?.productVariantValue1Set" expr="eval: (productVariantConfig?.productVariantAttr1?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr1?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantConfig?.productVariantValue2Set" expr="eval: (productVariantConfig?.productVariantAttr2?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr2?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantConfig?.productVariantValue3Set" expr="eval: (productVariantConfig?.productVariantAttr3?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr3?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantConfig?.productVariantValue4Set" expr="eval: (productVariantConfig?.productVariantAttr4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    </action-attrs>
-    
-    <action-record name="action-product-variant-config-record-reset-variant-value1" model="com.axelor.apps.base.db.ProductVariantConfig">
-		<field name="productVariantValue1Set" expr="eval: null"/>
-    </action-record>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    <action-record name="action-product-variant-config-record-reset-variant-value2" model="com.axelor.apps.base.db.ProductVariantConfig">
-		<field name="productVariantValue2Set" expr="eval: null"/>
-    </action-record>
+  <grid name="product-variant-config-grid" title="Product variant configurations"
+    model="com.axelor.apps.base.db.ProductVariantConfig">
+    <field name="productVariantAttr1" grid-view="product-variant-attr-grid"
+      form-view="product-variant-attr-form"/>
+    <field name="productVariantAttr2" grid-view="product-variant-attr-grid"
+      form-view="product-variant-attr-form"/>
+    <field name="productVariantAttr3" grid-view="product-variant-attr-grid"
+      form-view="product-variant-attr-form"/>
+    <field name="productVariantAttr4" grid-view="product-variant-attr-grid"
+      form-view="product-variant-attr-form"/>
+    <field name="productVariantValue1Set" form-view="product-variant-value-form"
+      grid-view="product-variant-value-grid"/>
+    <field name="productVariantValue2Set" form-view="product-variant-value-form"
+      grid-view="product-variant-value-grid"/>
+    <field name="productVariantValue3Set" form-view="product-variant-value-form"
+      grid-view="product-variant-value-grid"/>
+    <field name="productVariantValue4Set" form-view="product-variant-value-form"
+      grid-view="product-variant-value-grid"/>
+  </grid>
 
-    <action-record name="action-product-variant-config-record-reset-variant-value3" model="com.axelor.apps.base.db.ProductVariantConfig">
-		<field name="productVariantValue3Set" expr="eval: null"/>
-    </action-record>
+  <form name="product-variant-config-form" title="Product variant configuration"
+    model="com.axelor.apps.base.db.ProductVariantConfig"
+    onLoad="action-product-variant-config-attrs-domain"
+    onNew="action-product-variant-config-attrs-domain" width="large">
+    <panel name="mainPanel">
+      <field name="productVariantAttr1" canNew="true"
+        onChange="action-product-variant-config-attrs-domain" grid-view="product-variant-attr-grid"
+        form-view="product-variant-attr-form"/>
+      <field name="productVariantValue1Set" widget="TagSelect" canNew="false"
+        showIf="productVariantAttr1" colSpan="12" form-view="product-variant-value-form"
+        grid-view="product-variant-value-grid"/>
+      <field name="productVariantAttr2" canNew="true"
+        onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr1"
+        grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+      <field name="productVariantValue2Set" widget="TagSelect" canNew="false"
+        showIf="productVariantAttr2" colSpan="12" form-view="product-variant-value-form"
+        grid-view="product-variant-value-grid"/>
+      <field name="productVariantAttr3" canNew="true"
+        onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr2"
+        grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+      <field name="productVariantValue3Set" widget="TagSelect" canNew="false"
+        showIf="productVariantAttr3" colSpan="12" form-view="product-variant-value-form"
+        grid-view="product-variant-value-grid"/>
+      <field name="productVariantAttr4" canNew="true"
+        onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr3"
+        grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+      <field name="productVariantValue4Set" widget="TagSelect" canNew="false"
+        showIf="productVariantAttr4" colSpan="12" form-view="product-variant-value-form"
+        grid-view="product-variant-value-grid"/>
+    </panel>
+  </form>
 
-    <action-record name="action-product-variant-config-record-reset-variant-value4" model="com.axelor.apps.base.db.ProductVariantConfig">
-		<field name="productVariantValue4Set" expr="eval: null"/>
-    </action-record>
+  <!-- ACTION ATTRS -->
+
+  <action-attrs name="action-product-variant-config-attrs-domain">
+    <attribute name="domain" for="productVariantValue1Set"
+      expr="eval: (productVariantAttr1?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr1?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantValue2Set"
+      expr="eval: (productVariantAttr2?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr2?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantValue3Set"
+      expr="eval: (productVariantAttr3?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr3?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantValue4Set"
+      expr="eval: (productVariantAttr4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-product-nested-product-variant-config-attrs-domain">
+    <attribute name="domain" for="productVariantConfig?.productVariantValue1Set"
+      expr="eval: (productVariantConfig?.productVariantAttr1?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr1?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantConfig?.productVariantValue2Set"
+      expr="eval: (productVariantConfig?.productVariantAttr2?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr2?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantConfig?.productVariantValue3Set"
+      expr="eval: (productVariantConfig?.productVariantAttr3?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr3?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantConfig?.productVariantValue4Set"
+      expr="eval: (productVariantConfig?.productVariantAttr4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+  </action-attrs>
+
+  <action-record name="action-product-variant-config-record-reset-variant-value1"
+    model="com.axelor.apps.base.db.ProductVariantConfig">
+    <field name="productVariantValue1Set" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-product-variant-config-record-reset-variant-value2"
+    model="com.axelor.apps.base.db.ProductVariantConfig">
+    <field name="productVariantValue2Set" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-product-variant-config-record-reset-variant-value3"
+    model="com.axelor.apps.base.db.ProductVariantConfig">
+    <field name="productVariantValue3Set" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-product-variant-config-record-reset-variant-value4"
+    model="com.axelor.apps.base.db.ProductVariantConfig">
+    <field name="productVariantValue4Set" expr="eval: null"/>
+  </action-record>
 
 </object-views>

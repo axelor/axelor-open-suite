@@ -6,11 +6,11 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="DebtRecoveryLevel" lang="java" cacheable="true">
-  
-  	<integer name="name" title="Level" unique="true" required="true"/>
-    <string name="code"  title="Code"/> 
-  	<string name="label" title="Label"/>
-  
+
+    <integer name="name" title="Level" unique="true" required="true"/>
+    <string name="code" title="Code"/>
+    <string name="label" title="Label"/>
+
   </entity>
- 
+
 </domain-models>

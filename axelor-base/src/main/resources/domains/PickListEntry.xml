@@ -6,18 +6,18 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="PickListEntry" lang="java">
-  
+
     <string name="picklist" title="Picklist QAS"/>
-    <string name="l2" title="Complement" />
+    <string name="l2" title="Complement"/>
     <string name="l3" title="Spatial information"/>
     <string name="partialAddress" title="Partial address"/>
     <string name="l5" title="Specific information"/>
-    <string name="postcode" title="Zip" />
+    <string name="postcode" title="Zip"/>
     <string name="inseeCode" title="INSEE Code"/>
     <string name="score" title="QAS score"/>
     <string name="moniker" title="QAS Moniker"/>
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
-    
+
     <string name="fullName" namecolumn="true" search="score,picklist" title="Address">
 	    <![CDATA[
             String fullName = "";
@@ -26,7 +26,7 @@
 	    	return fullName;
 	    ]]>
     </string>
-    
+
   </entity>
-  
+
 </domain-models>

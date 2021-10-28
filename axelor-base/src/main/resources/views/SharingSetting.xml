@@ -3,34 +3,40 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="sharing-setting-menu-grid" model="com.axelor.apps.base.db.SharingSetting" title="Sharing settings" canNew="false">
-		<field name="calendar"/>
-		<field name="calendar.user" title="calendar.owner"/>
-		<field name="rightsSelect"/>
-		<field name="visible"/>
-	</grid>
+  <grid name="sharing-setting-menu-grid" model="com.axelor.apps.base.db.SharingSetting"
+    title="Sharing settings" canNew="false">
+    <field name="calendar"/>
+    <field name="calendar.user" title="calendar.owner"/>
+    <field name="rightsSelect"/>
+    <field name="visible"/>
+  </grid>
 
-	<grid name="sharing-setting-calendar-grid" model="com.axelor.apps.base.db.SharingSetting" title="Sharing settings" canNew="false">
-		<field name="sharedWith" title="User"/>
-		<field name="rightsSelect"/>
-	</grid>
+  <grid name="sharing-setting-calendar-grid" model="com.axelor.apps.base.db.SharingSetting"
+    title="Sharing settings" canNew="false">
+    <field name="sharedWith" title="User"/>
+    <field name="rightsSelect"/>
+  </grid>
 
-	<form name="sharing-setting-calendar-form" model="com.axelor.apps.base.db.SharingSetting" title="Sharing settings" onNew="action-sharing-setting-record-calendar-origin">
-		<panel name="shareWithPanel" colSpan="12" title="Share with">
-			<field name="sharedWith" title="User" required="true" />
-			<field name="rightsSelect"/>
-			<field name="calendar" hidden="true"/>
-		</panel>
-	</form>
+  <form name="sharing-setting-calendar-form" model="com.axelor.apps.base.db.SharingSetting"
+    title="Sharing settings" onNew="action-sharing-setting-record-calendar-origin">
+    <panel name="shareWithPanel" colSpan="12" title="Share with">
+      <field name="sharedWith" title="User" required="true"/>
+      <field name="rightsSelect"/>
+      <field name="calendar" hidden="true"/>
+    </panel>
+  </form>
 
-	<form name="sharing-setting-menu-form" model="com.axelor.apps.base.db.SharingSetting" title="Sharing settings">
-		<panel name="sharingSettingsPanel" colSpan="12" title="Sharing settings">
-			<field name="calendar" readonlyIf="calendar != null &amp;&amp; calendar.user.code != $user" colSpan="4"/>
-			<field name="calendar.user.fullName" title="calendar.owner" readonly="true" colSpan="4"/>
-			<field name="rightsSelect" readonly="true" colSpan="3"/>
-			<field name="visible" widget="boolean-switch" readonlyIf="sharedWith.code != $user" colSpan="1"/>
-			<field name="sharedWith.code" hidden="true"/>
-		</panel>
-	</form>
-	
+  <form name="sharing-setting-menu-form" model="com.axelor.apps.base.db.SharingSetting"
+    title="Sharing settings">
+    <panel name="sharingSettingsPanel" colSpan="12" title="Sharing settings">
+      <field name="calendar"
+        readonlyIf="calendar != null &amp;&amp; calendar.user.code != $user" colSpan="4"/>
+      <field name="calendar.user.fullName" title="calendar.owner" readonly="true" colSpan="4"/>
+      <field name="rightsSelect" readonly="true" colSpan="3"/>
+      <field name="visible" widget="boolean-switch" readonlyIf="sharedWith.code != $user"
+        colSpan="1"/>
+      <field name="sharedWith.code" hidden="true"/>
+    </panel>
+  </form>
+
 </object-views>

@@ -6,14 +6,16 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Batch" lang="java" sequential="true">
-  	
-  	<date name="moveDate" title="Move date" />
-  	<integer name="accountingCutOffTypeSelect" title="Type" selection="supplychain.supplychain.batch.accounting.cut.off.type.select"/>
-	 
-  	<!-- NOT DISPLAY -->
-  	<many-to-one name="supplychainBatch" ref="com.axelor.apps.supplychain.db.SupplychainBatch"/>
 
-  
+    <date name="moveDate" title="Move date"/>
+    <integer name="accountingCutOffTypeSelect" title="Type"
+      selection="supplychain.supplychain.batch.accounting.cut.off.type.select"/>
+
+    <!-- NOT DISPLAY -->
+    <many-to-one name="supplychainBatch"
+      ref="com.axelor.apps.supplychain.db.SupplychainBatch"/>
+
+
   </entity>
 
 </domain-models>

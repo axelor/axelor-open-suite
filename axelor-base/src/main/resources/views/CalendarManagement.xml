@@ -1,45 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-    <grid name="calendar-management-grid" title="Calendar permissions" model="com.axelor.apps.base.db.CalendarManagement" >
-        <field name="user"/>
-        <field name="team"/>
-        <field name="allCalendars"/>
-        <field name="erpCalendars"/>
-        <field name="icalCalendars"/>
-    </grid>
-    
-    
-    <form name="calendar-management-form" title="Calendar permission" model="com.axelor.apps.base.db.CalendarManagement">
-    	<panel name="mainPanel" >
-    		<field name="user" canNew="false" canEdit="false" canView="false" showIf="team == null"/>
-	        <field name="team" canEdit="false" showIf="user == null" if="__config__.getAppBase().getTeamManagement()"/>
-	        <field name="allCalendars" onChange="action-calendar-management-record-all-calendars-checked" colSpan="4"/>
-	        <field name="erpCalendars" onChange="action-calendar-management-record-erp-calendars-checked" colSpan="4"/>
-	        <field name="icalCalendars" onChange="action-calendar-management-record-ical-calendars-checked" colSpan="4"/>
-    	</panel>
-    	<panel-related name="calendarSetPanel" field="calendarSet" domain="" hideIf="!icalCalendars" onSelect="action-calendar-management-attrs-domain-calendar-set" canNew="false" canSelect="true"/>
-    </form>
-       
-    <action-attrs name="action-calendar-management-attrs-domain-calendar-set">
-    	<attribute name="domain" for="calendarSet" expr="eval: &quot; self.user.id = ${__user__.id} &quot;"/>
-    </action-attrs>
-    
-    <action-record name="action-calendar-management-record-all-calendars-checked" model="com.axelor.apps.base.db.CalendarManagement">
-    	<field name="erpCalendars" expr="false"/>
-    	<field name="icalCalendars" expr="false"/>
-    </action-record>
-    
-    <action-record name="action-calendar-management-record-erp-calendars-checked" model="com.axelor.apps.base.db.CalendarManagement">
-    	<field name="allCalendars" expr="false"/>
-    	<field name="icalCalendars" expr="false"/>
-    </action-record>
-    
-    <action-record name="action-calendar-management-record-ical-calendars-checked" model="com.axelor.apps.base.db.CalendarManagement">
-    	<field name="erpCalendars" expr="false"/>
-    	<field name="allCalendars" expr="false"/>
-    </action-record>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="calendar-management-grid" title="Calendar permissions"
+    model="com.axelor.apps.base.db.CalendarManagement">
+    <field name="user"/>
+    <field name="team"/>
+    <field name="allCalendars"/>
+    <field name="erpCalendars"/>
+    <field name="icalCalendars"/>
+  </grid>
+
+
+  <form name="calendar-management-form" title="Calendar permission"
+    model="com.axelor.apps.base.db.CalendarManagement">
+    <panel name="mainPanel">
+      <field name="user" canNew="false" canEdit="false" canView="false" showIf="team == null"/>
+      <field name="team" canEdit="false" showIf="user == null"
+        if="__config__.getAppBase().getTeamManagement()"/>
+      <field name="allCalendars"
+        onChange="action-calendar-management-record-all-calendars-checked" colSpan="4"/>
+      <field name="erpCalendars"
+        onChange="action-calendar-management-record-erp-calendars-checked" colSpan="4"/>
+      <field name="icalCalendars"
+        onChange="action-calendar-management-record-ical-calendars-checked" colSpan="4"/>
+    </panel>
+    <panel-related name="calendarSetPanel" field="calendarSet" domain=""
+      hideIf="!icalCalendars" onSelect="action-calendar-management-attrs-domain-calendar-set"
+      canNew="false" canSelect="true"/>
+  </form>
+
+  <action-attrs name="action-calendar-management-attrs-domain-calendar-set">
+    <attribute name="domain" for="calendarSet"
+      expr="eval: &quot; self.user.id = ${__user__.id} &quot;"/>
+  </action-attrs>
+
+  <action-record name="action-calendar-management-record-all-calendars-checked"
+    model="com.axelor.apps.base.db.CalendarManagement">
+    <field name="erpCalendars" expr="false"/>
+    <field name="icalCalendars" expr="false"/>
+  </action-record>
+
+  <action-record name="action-calendar-management-record-erp-calendars-checked"
+    model="com.axelor.apps.base.db.CalendarManagement">
+    <field name="allCalendars" expr="false"/>
+    <field name="icalCalendars" expr="false"/>
+  </action-record>
+
+  <action-record name="action-calendar-management-record-ical-calendars-checked"
+    model="com.axelor.apps.base.db.CalendarManagement">
+    <field name="erpCalendars" expr="false"/>
+    <field name="allCalendars" expr="false"/>
+  </action-record>
+
 </object-views>

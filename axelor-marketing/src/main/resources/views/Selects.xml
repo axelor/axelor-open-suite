@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
-	<selection name="campaign.stage.select">
-		<option value="0">Draft</option>
-		<option value="1">Planned</option>
-		<option value="2">Started</option>
-		<option value="3">Suspended</option>
-		<option value="4">Ended</option>
-	</selection>
-	
-	<selection name="target.partner.type.select">
-		<option value="0">Partner</option>
-		<option value="1">Contact</option>
-		<option value="2">Both</option>
-	</selection>
-	
-	<selection name="campaign.attendee.related.to.select">
-		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
-		<option value="com.axelor.apps.base.db.Partner">Partner</option>
-	</selection>
-	
-	<selection id="marketing.template.media.type.select" name="template.media.type.select">
-		<option value="4">Emailing</option>
-	</selection>
-	
-	<selection name="marketing.target.list.query.type.select">
-		<option value="0">Guided</option>
-		<option value="1">Manual</option>
-	</selection>
-	
-	<selection name="message.related.to.select" id="marketing.message.related.to.select">
-	    <option value="com.axelor.apps.marketing.db.Campaign">Campaign</option>
-	</selection>
-	
-	<selection name="marketing.campaign.reminder.type.select">
-		<option value="1">Email</option>
-	</selection>
+  <selection name="campaign.stage.select">
+    <option value="0">Draft</option>
+    <option value="1">Planned</option>
+    <option value="2">Started</option>
+    <option value="3">Suspended</option>
+    <option value="4">Ended</option>
+  </selection>
 
-	<selection name="marketing.campaign.reminder.duration.type.select">
-		<option value="1">Minutes</option>
-		<option value="2">Hours</option>
-		<option value="3">Days</option>
-		<option value="4">Weeks</option>
-	</selection>
+  <selection name="target.partner.type.select">
+    <option value="0">Partner</option>
+    <option value="1">Contact</option>
+    <option value="2">Both</option>
+  </selection>
 
-	<selection name="marketing.campaign.reminder.assign.to.select">
-		<option value="1">Invited</option>
-		<option value="2">Enrolled</option>
-	</selection>
+  <selection name="campaign.attendee.related.to.select">
+    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
+    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+  </selection>
+
+  <selection id="marketing.template.media.type.select" name="template.media.type.select">
+    <option value="4">Emailing</option>
+  </selection>
+
+  <selection name="marketing.target.list.query.type.select">
+    <option value="0">Guided</option>
+    <option value="1">Manual</option>
+  </selection>
+
+  <selection name="message.related.to.select" id="marketing.message.related.to.select">
+    <option value="com.axelor.apps.marketing.db.Campaign">Campaign</option>
+  </selection>
+
+  <selection name="marketing.campaign.reminder.type.select">
+    <option value="1">Email</option>
+  </selection>
+
+  <selection name="marketing.campaign.reminder.duration.type.select">
+    <option value="1">Minutes</option>
+    <option value="2">Hours</option>
+    <option value="3">Days</option>
+    <option value="4">Weeks</option>
+  </selection>
+
+  <selection name="marketing.campaign.reminder.assign.to.select">
+    <option value="1">Invited</option>
+    <option value="2">Enrolled</option>
+  </selection>
 
 </object-views>

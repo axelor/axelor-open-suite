@@ -1,110 +1,117 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="vehicle-grid" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle" >
-       <field name="plateNo" />
-       <field name="vehicleModel" />
-       <field name="name" />
-       <field name="driverPartner" />
-       <field name="chasisNo" />
-       <field name="acquisitionDate" />
-       <field name="vehicleState" />
-       <field name="vehicleOdometer" />
-       <field name="vehicleOdometer.unit" />
-    </grid>
-    
-   <form name="vehicle-form" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle" width="large"
-    	onNew="action-fleet-vehicle-set-defaults" >
-       <panel name="mainPanel">
-       	   <panel name="imagePanel" colSpan="2">
-       	   		<field name="image" widget="Image" colSpan="12"/>
-       	   </panel>
-       	   <panel name="vehicleDetailsPanel" colSpan="6" itemSpan="12">
-       	   		<field name="isRentalCar" widget="boolean-switch"/>
-       	   		<field name="vehicleModel" onChange="action-fleet-set-vehicle-name" required="true"/>
-	     		<field name="name" readonly="true"/>
-	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
-	    		<field name="vehicleTagSet" widget="TagSelect"  /> 
-	    		<field name="vehicleState" widget="html"/> 
-	       </panel>
-	       <panel name="generalPropertiesPanel" colSpan="12" title="General Properties" >
-	       		<panel name="subProperties1Panel" itemSpan="12">
-	       			<field name="company" />
-		       		<field name="driverPartner" domain="self.isEmployee = true AND :company member of self.companySet" />
-		       		<field name="location" />
-		       		<field name="chasisNo" />
-	       		</panel>
-	       		<panel name="subProperties2Panel" itemSpan="12">
-		       		<field name="vehicleOdometer" colSpan="8"/>
-		       		<field name="acquisitionDate" />
-		       		<field name="carValue" />
-		       		<field name="isArchived"/>
-	       		</panel>
-	       </panel>
-	       <panel name="additionalPropertiesPanel" colSpan="12" title="Additional Properties">
-	       		<panel name="vehiclePartsDetailsPanel" itemSpan="12">
-		       		<field name="seats" />
-		       		<field name="doors" />
-		       		<field name="color" />
-	       		</panel>
-	       		<panel name="engineOptionsPanel" itemSpan="12" title="Engine Options">
-		       		<field name="transmissionSelect"/>
-		       		<field name="fuelTypeSelect"/>
-		       		<field name="co2emission" colSpan="8"/>
-		       		<label name="g/kmLabel" title="g/km" colSpan="2"/>
-		       		<field name="horsePower" />
-		       		<field name="horsePowerTax" />
-		       		<field name="powerKw" />
-	       		</panel>
-	       </panel>
-       </panel>
-       <panel name="rentalPanel" title="Rental" colSpan="12" hidden="true" showIf="isRentalCar">
-       		<field name="fuelCardNumber"/>
-       		<field name="fuelCardCode"/>
-       </panel>
-       <panel-tabs name="mainPanelTab">
-    		<panel-related name="vehicleFuelLogListPanel" field="vehicleFuelLogList" title="Vehicle Fuel Log"  colSpan="12">
-            	<field name="liter"/>
-            	<field name="pericePerLiter" />
-				<field name="date" />
-      		</panel-related>
-    		<panel-related name="vehicleServiceLogListPanel" field="vehicleServiceLogList" title="Vehicle service" colSpan="12">
-              <field name="date" />
-              <field name="purchasePartner"/>
-              <field name="invoiceRef"/>
-              <field name="vendorPartner" />
-      		</panel-related>
-      		<panel-related name="vehicleContractListPanel" field="vehicleContractList" title="Vehicle Contract" colSpan="12">
-            	<field name="costFrequencySelect"/>
-            	<field name="activationCost"/>
-            	<field name="vehicleOdometer" />
-      		</panel-related>
-      		<panel-related name="vehicleCostListPanel" field="vehicleCostList" title="Vehicle Cost" colSpan="12">
-            <field name="serviceType" />	
-            <field name="totalPrice"/>
-            <field name="date" />
-      		</panel-related>
-			<panel-related name="vehicleRepairListPanel" field="vehicleRepairList" title="Repairs" colSpan="12"/>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="vehicle-grid" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle">
+    <field name="plateNo"/>
+    <field name="vehicleModel"/>
+    <field name="name"/>
+    <field name="driverPartner"/>
+    <field name="chasisNo"/>
+    <field name="acquisitionDate"/>
+    <field name="vehicleState"/>
+    <field name="vehicleOdometer"/>
+    <field name="vehicleOdometer.unit"/>
+  </grid>
+
+  <form name="vehicle-form" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle"
+    width="large" onNew="action-fleet-vehicle-set-defaults">
+    <panel name="mainPanel">
+      <panel name="imagePanel" colSpan="2">
+        <field name="image" widget="Image" colSpan="12"/>
+      </panel>
+      <panel name="vehicleDetailsPanel" colSpan="6" itemSpan="12">
+        <field name="isRentalCar" widget="boolean-switch"/>
+        <field name="vehicleModel" onChange="action-fleet-set-vehicle-name" required="true"/>
+        <field name="name" readonly="true"/>
+        <field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
+        <field name="vehicleTagSet" widget="TagSelect"/>
+        <field name="vehicleState" widget="html"/>
+      </panel>
+      <panel name="generalPropertiesPanel" colSpan="12" title="General Properties">
+        <panel name="subProperties1Panel" itemSpan="12">
+          <field name="company"/>
+          <field name="driverPartner"
+            domain="self.isEmployee = true AND :company member of self.companySet"/>
+          <field name="location"/>
+          <field name="chasisNo"/>
+        </panel>
+        <panel name="subProperties2Panel" itemSpan="12">
+          <field name="vehicleOdometer" colSpan="8"/>
+          <field name="acquisitionDate"/>
+          <field name="carValue"/>
+          <field name="isArchived"/>
+        </panel>
+      </panel>
+      <panel name="additionalPropertiesPanel" colSpan="12" title="Additional Properties">
+        <panel name="vehiclePartsDetailsPanel" itemSpan="12">
+          <field name="seats"/>
+          <field name="doors"/>
+          <field name="color"/>
+        </panel>
+        <panel name="engineOptionsPanel" itemSpan="12" title="Engine Options">
+          <field name="transmissionSelect"/>
+          <field name="fuelTypeSelect"/>
+          <field name="co2emission" colSpan="8"/>
+          <label name="g/kmLabel" title="g/km" colSpan="2"/>
+          <field name="horsePower"/>
+          <field name="horsePowerTax"/>
+          <field name="powerKw"/>
+        </panel>
+      </panel>
+    </panel>
+    <panel name="rentalPanel" title="Rental" colSpan="12" hidden="true" showIf="isRentalCar">
+      <field name="fuelCardNumber"/>
+      <field name="fuelCardCode"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel-related name="vehicleFuelLogListPanel" field="vehicleFuelLogList"
+        title="Vehicle Fuel Log" colSpan="12">
+        <field name="liter"/>
+        <field name="pericePerLiter"/>
+        <field name="date"/>
+      </panel-related>
+      <panel-related name="vehicleServiceLogListPanel" field="vehicleServiceLogList"
+        title="Vehicle service" colSpan="12">
+        <field name="date"/>
+        <field name="purchasePartner"/>
+        <field name="invoiceRef"/>
+        <field name="vendorPartner"/>
+      </panel-related>
+      <panel-related name="vehicleContractListPanel" field="vehicleContractList"
+        title="Vehicle Contract" colSpan="12">
+        <field name="costFrequencySelect"/>
+        <field name="activationCost"/>
+        <field name="vehicleOdometer"/>
+      </panel-related>
+      <panel-related name="vehicleCostListPanel" field="vehicleCostList"
+        title="Vehicle Cost" colSpan="12">
+        <field name="serviceType"/>
+        <field name="totalPrice"/>
+        <field name="date"/>
+      </panel-related>
+      <panel-related name="vehicleRepairListPanel" field="vehicleRepairList"
+        title="Repairs" colSpan="12"/>
     </panel-tabs>
-    
-       
-       <panel-mail name="mailPanel">
-		  <mail-messages limit="4" />
-		  <mail-followers />
-	   </panel-mail>
-       
-    </form>
-    
-    <cards name="vehicle-cards" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle" width="25%" css="rect-image" orderBy="name">
-		<field name="image" />
-		<field name="name" />
-		<field name="plateNo" />
-		<field name="driverPartner" />
-		<field name="vehicleState" />
-		<field name="company"/>
-		<template><![CDATA[
+
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+
+  </form>
+
+  <cards name="vehicle-cards" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle"
+    width="25%" css="rect-image" orderBy="name">
+    <field name="image"/>
+    <field name="name"/>
+    <field name="plateNo"/>
+    <field name="driverPartner"/>
+    <field name="vehicleState"/>
+    <field name="company"/>
+    <template><![CDATA[
 		    <div class="span12"><strong>{{name}}</strong></div>
 			<div>
 			  <div class="span4 card-image" style="width: 128px; height: 64px;">
@@ -117,14 +124,15 @@
 			  </div>
 			</div>
 		]]>
-		</template>
-	</cards>
-    
+    </template>
+  </cards>
+
   <action-method name="action-fleet-set-vehicle-name">
-  	<call class="com.axelor.apps.fleet.web.VehicleController" method="setVehicleName"/>
+    <call class="com.axelor.apps.fleet.web.VehicleController" method="setVehicleName"/>
   </action-method>
-  
-  <action-method name="action-method-set-image-in-vehicle" model="com.axelor.apps.fleet.web.Vehicle">
-		<call class="com.axelor.apps.fleet.web.VehicleController" method="setImage"/>
-	</action-method>
+
+  <action-method name="action-method-set-image-in-vehicle"
+    model="com.axelor.apps.fleet.web.Vehicle">
+    <call class="com.axelor.apps.fleet.web.VehicleController" method="setImage"/>
+  </action-method>
 </object-views>

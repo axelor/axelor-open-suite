@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-	<grid name="company-department-grid" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
-		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-		<field name="name"/>
-		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-	</grid>
-    
-    <form name="company-department-form" title="Company department" model="com.axelor.apps.base.db.CompanyDepartment">
-    	<panel name="mainPanel">
-        	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-        	<field name="name"/>
-        	<field name="company"/>
-        </panel>
-    </form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    <grid name="company-department-company-grid" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="name"/>
-    </grid>
+  <grid name="company-department-grid" title="Company departments"
+    model="com.axelor.apps.base.db.CompanyDepartment">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
 
-    <form name="company-department-company-form" title="Company department" model="com.axelor.apps.base.db.CompanyDepartment">
-    	<panel name="mainPanel">
-        	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-        	<field name="name"/>
-        </panel>
-    </form>
+  <form name="company-department-form" title="Company department"
+    model="com.axelor.apps.base.db.CompanyDepartment">
+    <panel name="mainPanel">
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="name"/>
+      <field name="company"/>
+    </panel>
+  </form>
 
-	<search-filters name="company-department-filters" model="com.axelor.apps.base.db.CompanyDepartment" title="Company department filters">
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-    </search-filters>
+  <grid name="company-department-company-grid" title="Company departments"
+    model="com.axelor.apps.base.db.CompanyDepartment">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name"/>
+  </grid>
+
+  <form name="company-department-company-form" title="Company department"
+    model="com.axelor.apps.base.db.CompanyDepartment">
+    <panel name="mainPanel">
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="name"/>
+    </panel>
+  </form>
+
+  <search-filters name="company-department-filters"
+    model="com.axelor.apps.base.db.CompanyDepartment" title="Company department filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </search-filters>
 </object-views>

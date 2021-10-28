@@ -7,17 +7,17 @@
 
   <entity name="Permission" cacheable="true">
 
-		<track>
-			<field name="name"/>
-			<field name="object"/>
-			<field name="canRead"/>
-			<field name="canWrite"/>
-			<field name="canCreate"/>
-			<field name="canRemove"/>
-			<field name="canExport"/>
-			<field name="condition"/>
-			<field name="conditionParams"/>
-		</track>
+    <track>
+      <field name="name"/>
+      <field name="object"/>
+      <field name="canRead"/>
+      <field name="canWrite"/>
+      <field name="canCreate"/>
+      <field name="canRemove"/>
+      <field name="canExport"/>
+      <field name="condition"/>
+      <field name="conditionParams"/>
+    </track>
 
   </entity>
 
