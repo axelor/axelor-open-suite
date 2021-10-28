@@ -2303,6 +2303,7 @@
 "There is no reverse date select value of value %d",,,
 "There is no taxes on this invoice. Do you want to proceed ?",,,
 "There's no accounting situation.",,,
+"This analytic journal will not be selectable in any account configurations due to the absence of company.",,,
 "This analytical distribution will be used by default when entering invoice lines or entries as soon as this accounting account is selected.",,,
 "This axis already contains Analytic Move Lines attached to several companies. Please make sure to correctly reassign the analytic move lines currently attached to this axis to another axis before being able to assign other.",,,
 "This batch requires the bank payment module.",,,

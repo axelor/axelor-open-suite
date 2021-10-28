@@ -101,7 +101,7 @@
         <field name="validationDate" readonly="true" showIf="statusSelect == 3" />
                 <field name="journal.authorizeSimulatedMove" hidden="true"/>
         <button name="validateBtn" title="Validate" onClick="action-account-move-group-validate-click" colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4" />
-				<button name="simulateBtn" title="Simulate" onClick="action-method-account-move-check-preconditions, action-move-record-set-status-simulate,action-move-attrs-validate-button-title,save" colSpan="12" showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
+		<button name="simulateBtn" title="Simulate" onClick="action-move-account-group-simulate" colSpan="12" showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-group-generate-tax-lines" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 5" />
         <button showIf="journal != null &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)" 
@@ -269,6 +269,11 @@
     <action name="action-account-move-method-origin-description-is-empty" />
     <action name="action-account-move-method-set-origin-description-on-lines" />
   </action-group>
+  
+  <action-group name="action-move-account-group-simulate">
+    <action name="save"/>
+    <action name="action-move-method-set-status-simulate"/>
+  </action-group>
 
   <action-validate name="action-account-validate-prompt">
     <alert message="The validation of a move brings irrevocable integration of a move in Moves book" />
@@ -312,10 +317,6 @@
   <action-record name="action-account-move-record-set-currency" model="com.axelor.apps.account.db.Move">
     <field name="currency" expr="eval: partner?.currency" />
   </action-record>
-
-	<action-record name="action-move-record-set-status-simulate" model="com.axelor.apps.account.db.Move">
-		<field name="statusSelect" if="statusSelect == 1" expr="eval: statusSelect = 5"/>
-	</action-record>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select" model="com.axelor.apps.account.db.Move">
     <field name="$journalTechnicalTypeSelect" expr="eval: journal?.journalType.technicalTypeSelect"/>
@@ -424,8 +425,10 @@
   <action-method name="action-account-move-method-set-origin-description-on-lines">
     <call class="com.axelor.apps.account.web.MoveController" method="setOriginAndDescriptionOnLines" />
   </action-method>
-  <action-method name="action-method-account-move-check-preconditions">
-  	<call class="com.axelor.apps.account.web.MoveController" method="checkPreconditions" />
+  
+  
+    <action-method name="action-move-method-set-status-simulate">
+    <call class="com.axelor.apps.account.web.MoveController" method="setSimulate" />
   </action-method>
 
 	<action-method name="action-move-method-simulate-multiple-moves">

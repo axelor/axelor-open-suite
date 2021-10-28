@@ -7,8 +7,8 @@
 	<module name="account" package="com.axelor.apps.account.db" />
 
 	<entity name="AnalyticGroupingValue" lang="java">
-		<string name="name" title="Name" required="true" />
-		<string name="code" title="Code" required="true" />
+		<string name="name" title="Name" required="true" unique="true"/>
+		<string name="code" title="Code" required="true" unique="true"/>
 		<string name="fullName" title="Full name" required="true" namecolumn="true" search="code,name">
 			<![CDATA[
 			return code+"_"+ name;
