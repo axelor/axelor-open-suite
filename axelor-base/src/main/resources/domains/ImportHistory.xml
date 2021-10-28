@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db" />
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="ImportHistory" lang="java">
+  <entity name="ImportHistory" lang="java">
 
-		<many-to-one name="importConfiguration" ref="com.axelor.apps.base.db.ImportConfiguration" />
-		<many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" initParam="true" column="user_id"/>
-		<many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)" required="true" initParam="true" />
-		<many-to-one name="logMetaFile" title="Log" ref="com.axelor.meta.db.MetaFile" />
+    <many-to-one name="importConfiguration"
+      ref="com.axelor.apps.base.db.ImportConfiguration"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true"
+      initParam="true" column="user_id"/>
+    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)"
+      required="true" initParam="true"/>
+    <many-to-one name="logMetaFile" title="Log" ref="com.axelor.meta.db.MetaFile"/>
 
-	</entity>
+  </entity>
 
 </domain-models>

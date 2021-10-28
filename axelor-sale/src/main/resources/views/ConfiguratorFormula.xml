@@ -8,7 +8,8 @@
       method="checkGroovyFormula"/>
   </action-method>
 
-  <form name="incl-help-configurator-formula" model="com.axelor.apps.sale.db.ConfiguratorFormula" title="Help" >
+  <form name="incl-help-configurator-formula"
+    model="com.axelor.apps.sale.db.ConfiguratorFormula" title="Help">
     <panel name="helpPanel" title="Help">
       <field name="$helpViewer" showTitle="false" readonly="true" colSpan="12">
         <viewer><![CDATA[

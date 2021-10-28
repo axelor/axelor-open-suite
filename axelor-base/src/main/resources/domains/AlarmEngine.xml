@@ -4,22 +4,25 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
-  
+
   <entity name="AlarmEngine" lang="java" cacheable="true">
-  
-  	<!-- HEADER -->
-    <string name="code" title="Code" required="true" />
-    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model" required="true"/>
-    <many-to-one name="alarmMessage" ref="com.axelor.apps.base.db.AlarmMessage" title="Message" required="true"/>
-    <integer name="managerTypeSelect" title="Manager Type" selection="alarm.engine.manager.type"/>
+
+    <!-- HEADER -->
+    <string name="code" title="Code" required="true"/>
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"
+      required="true"/>
+    <many-to-one name="alarmMessage" ref="com.axelor.apps.base.db.AlarmMessage"
+      title="Message" required="true"/>
+    <integer name="managerTypeSelect" title="Manager Type"
+      selection="alarm.engine.manager.type"/>
     <boolean name="activeOk" title="Active" default="true"/>
     <boolean name="lockingOk" title="Blocking" default="false"/>
     <boolean name="externalOk" title="External" default="false"/>
-    
+
     <string name="query" title="Query" large="true"/>
- 
+
     <string name="description" title="Description" large="true"/>
-    
+
   </entity>
 
 </domain-models>

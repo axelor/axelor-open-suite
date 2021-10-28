@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-  <grid name="economic-area-grid" title="Economic areas" model="com.axelor.apps.base.db.EconomicArea">
+  <grid name="economic-area-grid" title="Economic areas"
+    model="com.axelor.apps.base.db.EconomicArea">
     <field name="code"/>
     <field name="name"/>
   </grid>
 
-  <form name="economic-area-form" title="Economic areas" model="com.axelor.apps.base.db.EconomicArea">
+  <form name="economic-area-form" title="Economic areas"
+    model="com.axelor.apps.base.db.EconomicArea">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|uppercase}}"/>
       <field name="name"/>
     </panel>
-    <panel-related name="countryListPanel" field="countryList" grid-view="country-grid" form-view="country-form"
-      canNew="false" canEdit="false" canSelect="true" height="30"/>
+    <panel-related name="countryListPanel" field="countryList"
+      grid-view="country-grid" form-view="country-form" canNew="false" canEdit="false"
+      canSelect="true" height="30"/>
   </form>
 
 </object-views>

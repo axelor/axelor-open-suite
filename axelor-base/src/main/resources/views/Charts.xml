@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<action-record model="com.axelor.apps.base.db.AppBase" name="action.base.chart.set.date.6m">
-	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
-	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
-	  <field name="monthSelect" expr="eval:6" />
-	</action-record>
-	
-	<action-record model="com.axelor.apps.base.db.AppBase" name="action.base.default.month.value">
-	  <field name="monthSelect" expr="eval:12"/>
-	</action-record>
-	
-	<chart name="chart.customers.by.country.bar" title="Customers by country">
-		<dataset type="sql">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <action-record model="com.axelor.apps.base.db.AppBase"
+    name="action.base.chart.set.date.6m">
+    <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
+    <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
+    <field name="monthSelect" expr="eval:6"/>
+  </action-record>
+
+  <action-record model="com.axelor.apps.base.db.AppBase"
+    name="action.base.default.month.value">
+    <field name="monthSelect" expr="eval:12"/>
+  </action-record>
+
+  <chart name="chart.customers.by.country.bar" title="Customers by country">
+    <dataset type="sql">
 		    <![CDATA[
 			SELECT
 			    count(_partner.id) AS partners,
 			    _country.name AS country_name
 			FROM
 				base_partner AS _partner
-			JOIN 
+			JOIN
 				base_partner_address AS _partner_address ON _partner_address.partner = _partner.id AND _partner_address.is_default_addr = true
 			JOIN
 				base_address AS _address ON _address.id = _partner_address.address
 			JOIN
 				base_country AS _country ON _country.id = _address.addressL7country
 			WHERE
-				_partner.is_customer = true		
+				_partner.is_customer = true
 			GROUP BY
 				_country.name
 		    ]]>
-	    </dataset>
-	    <category key="country_name" type="text" title="Country"/>
-	    <series key="partners"  type="donut" title="Customers"/>
-	 </chart>
-	  	
-	<chart name="chart.customers.by.industrySector.bar" title="Customers by Industry Sector">
-	    <dataset type="sql">
+    </dataset>
+    <category key="country_name" type="text" title="Country"/>
+    <series key="partners" type="donut" title="Customers"/>
+  </chart>
+
+  <chart name="chart.customers.by.industrySector.bar" title="Customers by Industry Sector">
+    <dataset type="sql">
 	    <![CDATA[
 		SELECT
           COUNT(self.id) AS _total_partner,
 	      industrySector.name as _industry_sector
 	    FROM
 	        base_partner as self
-	    JOIN 
+	    JOIN
 	    	base_industry_sector as industrySector on industrySector.id = self.industry_sector
 		WHERE
 			self.is_contact != true and self.is_customer = true
@@ -54,92 +56,102 @@
 		ORDER BY
 		   _industry_sector
 	    ]]>
-	    </dataset>
-	    <category key="_industry_sector" type="text" title="Industry Sector"/>
-    	<series key="_total_partner" type="donut" title="Customers"/>
-	 </chart>
+    </dataset>
+    <category key="_industry_sector" type="text" title="Industry Sector"/>
+    <series key="_total_partner" type="donut" title="Customers"/>
+  </chart>
 
-	<chart name="chart.suppliers.by.country.bar" title="Suppliers by country">
-	  <dataset type="sql">
-	    
-	    SELECT
-	      count(_partner.id) AS partners,
-	      _country.name AS country_name
-	    FROM
-	      base_partner AS _partner
-	    JOIN 
-			base_partner_address AS _partner_address ON _partner_address.partner = _partner.id AND _partner_address.is_default_addr = true
-		JOIN
-			base_address AS _address ON _address.id = _partner_address.address
-	    JOIN
-	      base_country AS _country ON _country.id = _address.addressL7country
-	    WHERE
-	      _partner.is_supplier = true        
-	    GROUP BY
-	      _country.name
-	    
-	  </dataset>
-	  <category key="country_name" type="text" title="Country"/>
-	  <series key="partners" type="donut" title="Suppliers"/>
-	</chart>
-	
-	<chart name="chart.partner.prospects.by.country" title="Prospects by country">
-	  <dataset type="sql">
-	  SELECT
-	    COUNT(self.id) AS _total_partner,
-	    addressCountry.name as _address_country
-	  FROM
-	    base_partner as self
-	  LEFT JOIN 
-		base_partner_address AS partner_address ON partner_address.partner = self.id AND partner_address.is_default_addr = true
-	  LEFT JOIN
-	    base_address as baseAddress ON baseAddress.id=partner_address.address
-	  LEFT JOIN  
-	    base_country AS addressCountry ON addressCountry.id=baseAddress.addressl7country
-	  WHERE
-	    self.is_prospect = true AND is_contact=false
-	  GROUP BY
-	   _address_country	
-	  ORDER BY
-	   _address_country
-	  </dataset>
-	  <category key="_address_country" type="text" title="Country"/>
-	  <series key="_total_partner" type="donut" title="Partners"/>
-	</chart>
-	
-	<chart name="chart.partner.prospects.by.industrySector" title="Prospects by Industry Sector">
-	  <dataset type="jpql">
-		SELECT 	
-			count(*) as _total_partner,
-			_partnerCategory.name as _industry_sector
-		FROM 
-			Partner self 
-		LEFT JOIN 
-			self.partnerCategory _partnerCategory 
-		WHERE 
-			self.isProspect = true AND self.isContact = false
-		group by
-			_partnerCategory.name
-		</dataset>
-	  <category key="_industry_sector" type="text" title="Industry Sector"/>
-	  <series key="_total_partner" type="donut" title="Partners"/>
-	</chart>
-	
-	<chart onInit="action.base.chart.set.date.6m" name="chart.customers.with.first.sale.order" title="New customers with first sale order">
-	   <search-fields>
-		 <field name="fromDate" title="From Date" type="date" x-required="true" />
-		 <field name="toDate" title="To Date" type="date" x-required="true" />
-	   </search-fields>
-	   <dataset type="jpql">
+  <chart name="chart.suppliers.by.country.bar" title="Suppliers by country">
+    <dataset type="sql">
+
+      SELECT
+      count(_partner.id) AS partners,
+      _country.name AS country_name
+      FROM
+      base_partner AS _partner
+      JOIN
+      base_partner_address AS _partner_address ON
+      _partner_address.partner = _partner.id AND
+      _partner_address.is_default_addr = true
+      JOIN
+      base_address AS _address ON _address.id = _partner_address.address
+      JOIN
+      base_country AS _country
+      ON _country.id = _address.addressL7country
+      WHERE
+      _partner.is_supplier = true
+      GROUP BY
+      _country.name
+
+    </dataset>
+    <category key="country_name" type="text" title="Country"/>
+    <series key="partners" type="donut" title="Suppliers"/>
+  </chart>
+
+  <chart name="chart.partner.prospects.by.country" title="Prospects by country">
+    <dataset type="sql">
+      SELECT
+      COUNT(self.id) AS _total_partner,
+      addressCountry.name as
+      _address_country
+      FROM
+      base_partner as self
+      LEFT JOIN
+      base_partner_address AS partner_address ON
+      partner_address.partner = self.id AND partner_address.is_default_addr =
+      true
+      LEFT JOIN
+      base_address as baseAddress ON baseAddress.id=partner_address.address
+      LEFT JOIN
+      base_country AS
+      addressCountry ON addressCountry.id=baseAddress.addressl7country
+      WHERE
+      self.is_prospect = true
+      AND is_contact=false
+      GROUP BY
+      _address_country
+      ORDER BY
+      _address_country
+    </dataset>
+    <category key="_address_country" type="text" title="Country"/>
+    <series key="_total_partner" type="donut" title="Partners"/>
+  </chart>
+
+  <chart name="chart.partner.prospects.by.industrySector" title="Prospects by Industry Sector">
+    <dataset type="jpql">
+      SELECT
+      count(*) as _total_partner,
+      _partnerCategory.name as _industry_sector
+      FROM
+      Partner self
+      LEFT JOIN
+      self.partnerCategory _partnerCategory
+      WHERE
+      self.isProspect = true AND
+      self.isContact = false
+      group by
+      _partnerCategory.name
+    </dataset>
+    <category key="_industry_sector" type="text" title="Industry Sector"/>
+    <series key="_total_partner" type="donut" title="Partners"/>
+  </chart>
+
+  <chart onInit="action.base.chart.set.date.6m" name="chart.customers.with.first.sale.order"
+    title="New customers with first sale order">
+    <search-fields>
+      <field name="fromDate" title="From Date" type="date" x-required="true"/>
+      <field name="toDate" title="To Date" type="date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql">
 	    <![CDATA[
-          
+
           SELECT
              COUNT(*) as customers,
              ' ' as title
           FROM
-             Partner self                          
+             Partner self
           WHERE
-             self.isCustomer = true             
+             self.isCustomer = true
              AND EXISTS (
                  FROM
                    SaleOrder so
@@ -157,12 +169,12 @@
                           AND so2 != so
                           AND so2.confirmationDateTime < so.confirmationDateTime
                           AND (so2.statusSelect = 3 OR so2.statusSelect = 4)))
-                             		
-		]]>
-	   </dataset>
-	   <category key="title" type="text" />
-	   <series key="customers" type="bar" />
-	</chart>
 
-	
+		]]>
+    </dataset>
+    <category key="title" type="text"/>
+    <series key="customers" type="bar"/>
+  </chart>
+
+
 </object-views>

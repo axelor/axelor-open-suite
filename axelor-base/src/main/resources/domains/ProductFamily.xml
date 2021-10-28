@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
- 
+
   <module name="base" package="com.axelor.apps.base.db"/>
- 
+
   <entity name="ProductFamily" lang="java" cacheable="true">
 
     <string name="code" title="Family Code" required="true" unique="true" index="true"/>
-    <string name="name" title="Family Name" required="true" />
-    <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="productFamily" title="Accounts Configurations"/>
- 
+    <string name="name" title="Family Name" required="true"/>
+    <one-to-many name="accountManagementList"
+      ref="com.axelor.apps.account.db.AccountManagement" mappedBy="productFamily"
+      title="Accounts Configurations"/>
+
   </entity>
 
 </domain-models>

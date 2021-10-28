@@ -6,12 +6,13 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="TemplateRule" lang="java">
-  	
-  	<string name="name" title="Name" namecolumn="true"/>
-  	
-  	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
-  	<one-to-many name="templateRuleLineList" ref="com.axelor.apps.base.db.TemplateRuleLine" orderBy="sequence" mappedBy="templateRule"/>
-    
+
+    <string name="name" title="Name" namecolumn="true"/>
+
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
+    <one-to-many name="templateRuleLineList"
+      ref="com.axelor.apps.base.db.TemplateRuleLine" orderBy="sequence" mappedBy="templateRule"/>
+
   </entity>
 
 </domain-models>

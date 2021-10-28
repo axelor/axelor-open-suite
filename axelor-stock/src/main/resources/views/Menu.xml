@@ -1,409 +1,415 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<menuitem name="stock-root" title="Stock management"  order="-85"  if="__config__.app.isApp('stock')"
-	icon="fa-cubes"  icon-background="#b6473f" />
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <menuitem name="stock-root" title="Stock management" order="-85"
+    if="__config__.app.isApp('stock')" icon="fa-cubes" icon-background="#b6473f"/>
 
 
-    <menuitem title="Stock moves" name="stock-root-stock-moves" parent="stock-root" />
+  <menuitem title="Stock moves" name="stock-root-stock-moves" parent="stock-root"/>
 
-	<menuitem name="stock-root-custdeliveries" parent="stock-root-stock-moves"
-		title="Customer deliveries" action="stock.root.custdeliveries" order="5"/>
+  <menuitem name="stock-root-custdeliveries" parent="stock-root-stock-moves"
+    title="Customer deliveries" action="stock.root.custdeliveries" order="5"/>
 
-	<action-view name="stock.root.custdeliveries" title="Customer deliveries"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-out-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
- 		<view-param name="forceTitle" value="true"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
-		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-		<context name="_isReversion" expr="eval: false"/>
-	</action-view>
+  <action-view name="stock.root.custdeliveries" title="Customer deliveries"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-out-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <view-param name="search-filters" value="customer-deliveries-filters"/>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+    <context name="_isReversion" expr="eval: false"/>
+  </action-view>
 
-    <menuitem name="stock-root-custreturns" parent="stock-root-stock-moves"
-        title="Customer returns" action="stock.root.custreturns" order="6"/>
+  <menuitem name="stock-root-custreturns" parent="stock-root-stock-moves"
+    title="Customer returns" action="stock.root.custreturns" order="6"/>
 
-    <action-view name="stock.root.custreturns" title="Customer returns"
-        model="com.axelor.apps.stock.db.StockMove" >
-        <view type="grid" name="stock-move-in-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-        <view type="form" name="stock-move-form"/>
- 		<view-param name="forceTitle" value="true"/>
-        <view-param name="search-filters" value="supplier-arrivals-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
-        <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
-        <context name="_isReversion" expr="eval: true"/>
-    </action-view>
+  <action-view name="stock.root.custreturns" title="Customer returns"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-in-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <view-param name="search-filters" value="supplier-arrivals-filters"/>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+    <context name="_isReversion" expr="eval: true"/>
+  </action-view>
 
-	<menuitem name="stock-root-suparrivals" parent="stock-root-stock-moves"
-		title="Supplier arrivals" action="stock.root.suparrivals" order="10"/>
+  <menuitem name="stock-root-suparrivals" parent="stock-root-stock-moves"
+    title="Supplier arrivals" action="stock.root.suparrivals" order="10"/>
 
-	<action-view name="stock.root.suparrivals" title="Supplier arrivals"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-in-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
- 		<view-param name="forceTitle" value="true"/>
-		<view-param name="search-filters" value="supplier-arrivals-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
-		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
-		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
-		<context name="_isReversion" expr="eval: false"/>
-	</action-view>
+  <action-view name="stock.root.suparrivals" title="Supplier arrivals"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-in-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <view-param name="search-filters" value="supplier-arrivals-filters"/>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+    <context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+    <context name="_isReversion" expr="eval: false"/>
+  </action-view>
 
-    <menuitem name="stock-root-supreturns" parent="stock-root-stock-moves"
-        title="Supplier returns" action="stock.root.supreturns" order="11"/>
+  <menuitem name="stock-root-supreturns" parent="stock-root-stock-moves"
+    title="Supplier returns" action="stock.root.supreturns" order="11"/>
 
-    <action-view name="stock.root.supreturns" title="Supplier returns"
-        model="com.axelor.apps.stock.db.StockMove" >
-        <view type="grid" name="stock-move-out-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-        <view type="form" name="stock-move-form"/>
-        <view-param name="forceTitle" value="true"/>
-        <view-param name="search-filters" value="customer-deliveries-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
-        <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-        <context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
-        <context name="_isReversion" expr="eval: true"/>
-    </action-view>
+  <action-view name="stock.root.supreturns" title="Supplier returns"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-out-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <view-param name="search-filters" value="customer-deliveries-filters"/>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+    <context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+    <context name="_isReversion" expr="eval: true"/>
+  </action-view>
 
-	<menuitem name="stock-root-internal" parent="stock-root-stock-moves"
-		title="Internal Stock Moves" action="stock.root.internal" order="15"/>
+  <menuitem name="stock-root-internal" parent="stock-root-stock-moves"
+    title="Internal Stock Moves" action="stock.root.internal" order="15"/>
 
-	<action-view name="stock.root.internal" title="Internal Stock Moves"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-        <view-param name="forceTitle" value="true"/>
-		<view-param name="search-filters" value="internal-stock-move-filters"/>
-		<domain>self.typeSelect = :_typeSelect</domain>
-		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
-	</action-view>
+  <action-view name="stock.root.internal" title="Internal Stock Moves"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <view-param name="search-filters" value="internal-stock-move-filters"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
+  </action-view>
 
-	<menuitem name="stock-root-custshipprep" parent="stock-root-stock-moves"
-		title="Cust. Shipment to prepare" action="stock.root.custshipprep" order="31" 
-		if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations" />
+  <menuitem name="stock-root-custshipprep" parent="stock-root-stock-moves"
+    title="Cust. Shipment to prepare" action="stock.root.custshipprep" order="31"
+    if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations"/>
 
-	<action-view name="stock.root.custshipprep" title="Cust. Shipment to prepare"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-out-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE AND self.statusSelect = :_statusSelect AND self.availabilityRequest = TRUE</domain>
-		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-		<context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
-		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SENDER"/>
-	</action-view>
-
-		
-	<menuitem name="stock-root-search" parent="stock-root" title="Tracking Number Search" action="stock.root.search" order="17"/>
-
-	<action-view name="stock.root.search" title="Search">
-		<view name="tracking-number-search" type="search"/>
-	</action-view>
-	
-<!-- 	MUST BE DELETED -->
-	
-	<menuitem name="stock-root-planned" parent="stock-root"
-		title="Forecasts"  order="20"/>
-	
-	<menuitem name="stock-root-incoming-production" parent="stock-root-planned"
-		title="Production needs" action="stock.root.incoming.production" />
-
-	<action-view name="stock.root.incoming.production" title="Production needs"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<domain>self.statusSelect = 2 and self.toStockLocation.id = 5</domain>
-	</action-view>	
-	
-	<menuitem name="stock-root-outcoming-production" parent="stock-root-planned"
-		title="Production forecasts" action="stock.root.outcoming.production" />
-
-	<action-view name="stock.root.outcoming.production" title="Production forecasts"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<domain>self.statusSelect = 2 and self.fromStockLocation.id = 5</domain>
-	</action-view>	
-	
-	<menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
-		title="Supplier deliveries" action="stock.root.incoming.supplier" />
-
-	<action-view name="stock.root.incoming.supplier" title="Supplier deliveries"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-		<domain>self.statusSelect = 2 and self.fromStockLocation.id = 3</domain>
-	</action-view>	
-	
-	<menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
-		title="Supplier returns" action="stock.root.outcoming.supplier" />
-
-	<action-view name="stock.root.outcoming.supplier" title="Supplier returns"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-		<domain>self.statusSelect = 2 and self.toStockLocation.id = 3</domain>
-	</action-view>	
-	
-	<menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
-		title="Customer deliveries" action="stock.root.outcoming.client" />
-
-	<action-view name="stock.root.outcoming.client" title="Customer deliveries"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-		<domain>self.statusSelect = 2 and self.toStockLocation.id = 2</domain>
-	</action-view>	
-	
-	<menuitem name="stock-root-incoming-client" parent="stock-root-planned"
-		title="Customer returns" action="stock.root.incoming.client" />
-
-	<action-view name="stock.root.incoming.client" title="Customer returns"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="supplier-arrivals-filters"/>
-		<domain>self.statusSelect = 2 and self.fromStockLocation.id = 2</domain>
-	</action-view>	
-	
-<!-- END MUST BE DELETED -->
-	
-	<menuitem name="stock-root-inventories" parent="stock-root"
-		title="Inventories" action="stock.root.inventories.draft"  order="25"/>
-	
-	<action-view name="stock.root.inventories.draft" title="Inventories"
-		model="com.axelor.apps.stock.db.Inventory" >
-		<view type="grid" name="inventory-grid" />
-		<view type="calendar" name="inventory-calendar"/>
-		<view type="form" name="inventory-form"/>
-		<view-param name="search-filters" value="inventories-filters"/>
-	</action-view>	
-		
-	<menuitem name="stock-root-all-line" parent="stock-root-stock-moves"
-		title="Stock move lines" action="stock.root.all.line"  order="30"/>
-
-	<action-view name="stock.root.all.line" title="Stock move lines"
-		model="com.axelor.apps.stock.db.StockMoveLine" >
-		<view type="grid" name="stock-move-line-all-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-line-all-form"/>
-		<view-param name="search-filters" value="stock-move-line-filters"/>
-	</action-view>		
-	
-	<menuitem name="stock-root-stock-per-day" parent="stock-root"
-		title="Stock Availability" action="stock.root.stock.per.day"  order="32"/>
-
-	<action-view name="stock.root.stock.per.day" title="Stock availability"
-		model="com.axelor.apps.base.db.Wizard" >
-		<view type="form" name="stock-move-wizard-stock-per-day"/>
-	</action-view>	
-	
-	<menuitem name="stock-root-products" parent="stock-root" order="38"
-		title="Products" action="stock.root.products" />
-
-	<action-view name="stock.root.products" title="Products"
-		model="com.axelor.apps.base.db.Product" >
-		<view type="grid" name="product-grid" />
-		<view type="form" name="product-form" />
-		<view type="cards" name="product-cards" />
-		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false and self.productTypeSelect = 'storable' and self.dtype = 'Product'</domain>
-		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
-		<context name="_fromStock" expr="eval:true" />
-	</action-view>
-	
-	<menuitem name="stock-root-stock-location" parent="stock-root"
-		title="Stock Locations" action="stock.root.stock.location" order="41"/>
-	
-	<action-view name="stock.root.stock.location" title="Stock Locations"
-		model="com.axelor.apps.stock.db.StockLocation" >
-		<view type="grid" name="stock-location-grid"/>
-		<view type="form" name="stock-location-form"/>
-		<view-param name="search-filters" value="stock-location-filters"/>
-	</action-view>
-	
-	<menuitem name="stock-root-stock-location-tree" parent="stock-root"
-		title="Stock Location Tree" action="stock.root.stock.location.tree" order="42"/>
-	
-	<action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
-		model="com.axelor.apps.stock.db.StockLocation" >
-		<view type="tree" name="stock-location-tree"/>
-	</action-view>
-
-	<menuitem name="stock-root-stock-correction" parent="stock-root"
-		title="Stock Corrections" action="stock.root.stock.correction" order="43"/>
-
-	<action-view name="stock.root.stock.correction" title="Stock Corrections"
-		model="com.axelor.apps.stock.db.StockCorrection">
-		<view type="grid" name="stock-correction-grid"/>
-		<view type="form" name="stock-correction-form"/>
-	</action-view>
-
-	<menuitem name="stock-root-abc-analysis" title="ABC analysis" order="27"
-		action="stock.root.abc.analysis" parent="stock-root"/>
-
-	<action-view name="stock.root.abc.analysis" title="ABC analysis"
-		model="com.axelor.apps.base.db.ABCAnalysis">
-		<view type="grid" name="abc-analysis-grid"/>
-		<view type="form" name="abc-analysis-form"/>
-		<domain>self.typeSelect = :_type</domain>
-		<context name="_type" expr="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl"/>
-	</action-view>
-		
-	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>
-		
-	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50" icon="fa-cog"/>
-	
-	<menuitem name="stock-root-incoterm" parent="stock-root-conf"
-		title="Incoterms" action="stock.root.incoterm" />
-	
-	<action-view name="stock.root.incoterm" title="Incoterms"
-		model="com.axelor.apps.stock.db.Incoterm" >
-		<view type="grid" name="incoterm-grid"/>
-		<view type="form" name="incoterm-form"/>
-	</action-view>
-	
-	<menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf"
-		title="Stock rules" action="stock.root.conf.stock.rules" />
-	
-	<action-view name="stock.root.conf.stock.rules" title="Stock rules"
-		model="com.axelor.apps.stock.db.StockRules" >
-		<view type="grid" name="stock-rules-grid" />
-		<view type="form" name="stock-rules-form" />
-		<context name="_duplicateFinderFields" expr="stockLocation;product"/>
-	</action-view>
-	
-	<menuitem name="stock-root-conf-stock-tracking-numbers" parent="stock-root-conf"
-		title="Tracking Numbers" action="stock.root.conf.stock.tracking.numbers" />
-	
-	<action-view name="stock.root.conf.stock.tracking.numbers" title="Tracking Numbers"
-		model="com.axelor.apps.stock.db.TrackingNumber" >
-		<view type="grid" name="tracking-number-grid" />
-		<view type="form" name="tracking-number-form"/>
-		<context name="_datePlusTwoMonths" expr="eval: __date__.plusMonths(2)"/>
-	</action-view>
-	
-	<menuitem name="stock-root-conf-freight-carrier" parent="stock-root-conf"
-		title="Freight Carrier" action="stock.root.conf.freight.carrier"/>
-		
-	<action-view name="stock.root.conf.freight.carrier" title="Freight Carrier"
-		model="com.axelor.apps.base.db.Partner">
-		<view type="cards" name="partner-cards" />
-		<view type="grid" name="partner-grid"/>
-		<view type="form" name="partner-form"/>
-		<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="partner-filters"/>
-		<domain>self.isCarrier = true</domain>
-		<context name="_isCarrier" expr="true"/>
-	</action-view>
-	
-	<menuitem name="stock-root-conf-freight-carrier-mode" parent="stock-root-conf"
-		title="Freight Carrier Mode" action="stock.root.conf.freight.carrier.mode"/>
-	
-	<action-view name="stock.root.conf.freight.carrier.mode" title="Freight Carrier Mode"
-		model="com.axelor.apps.stock.db.FreightCarrierMode">
-		<view type="grid" name="freight-carrier-mode-grid"/>
-		<view type="form" name="freight-carrier-mode-form"/>
-	</action-view>
-	
-	<menuitem name="stock-root-conf-shipment-mode" parent="stock-root-conf"
-		title="Shipment Mode" action="stock.root.conf.shipment.mode"/>
-		
-	<action-view name="stock.root.conf.shipment.mode" title="Shipment Mode"
-		model="com.axelor.apps.stock.db.ShipmentMode">
-		<view type="grid" name="shipment-mode-grid"/>
-		<view type="form" name="shipment-mode-form"/>	
-	</action-view>
-
-	<menuitem name="stock-root-conf-tracking-number-config" parent="stock-root-conf"
-		title="Tracking number configuration" action="stock.root.conf.tracking.number.config" />
-
-	<action-view name="stock.root.conf.tracking.number.config" title="Tracking number configuration"
-		model="com.axelor.apps.stock.db.TrackingNumberConfiguration" >
-		<view type="grid" name="tracking-number-configuration-grid"/>
-		<view type="form" name="tracking-number-configuration-form"/>
-	</action-view>
-
-	<menuitem name="stock-root-conf-customs-code-nomenclature"
-		parent="stock-root-conf" title="Customs code nomenclature:all"
-		action="stock.root.conf.customs.code.nomenclature" />
-
-	<action-view name="stock.root.conf.customs.code.nomenclature"
-		title="Customs code nomenclature:all" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
-		<view type="tree" name="customs-code-nomenclature-tree"/>
-		<view type="form" name="customs-code-nomenclature-form" />
-	</action-view>
-	
-<!-- ADMINISTRATION -->
+  <action-view name="stock.root.custshipprep" title="Cust. Shipment to prepare"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-out-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="search-filters" value="customer-deliveries-filters"/>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE AND self.statusSelect =
+      :_statusSelect AND self.availabilityRequest = TRUE</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+    <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
+    <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SENDER"/>
+  </action-view>
 
 
-<!-- 	<menuitem name="admin-root-batch-stock" parent="admin-root-batch" -->
-<!-- 		title="Stock batches" action="admin.root.batch.stock" /> -->
+  <menuitem name="stock-root-search" parent="stock-root" title="Tracking Number Search"
+    action="stock.root.search" order="17"/>
 
-<!-- 	<action-view name="admin.root.batch.stock" title="Stock batches" -->
-<!-- 		model="com.axelor.apps.stock.db.StockBatch" > -->
-<!-- 		<view type="grid" name="stock-batch-grid"/> -->
-<!-- 		<view type="form" name="stock-batch-form"/> -->
-<!-- 	</action-view> -->
-	
-	<menuitem name="menu-stock-dashboard-1" parent="stock-root-report" 
-		title="General"  action="stock.dashboard.one.view" />	
+  <action-view name="stock.root.search" title="Search">
+    <view name="tracking-number-search" type="search"/>
+  </action-view>
 
-	<action-view name="stock.dashboard.one.view" title="General Stock Details">
-		<view type="dashboard" name="stock.dashboard.one" />
-	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
-	</action-view>
-	
-	<menuitem name="menu-stock-dashboard-2" parent="stock-root-report" 
-		title="Deliveries"  action="stock.dashboard.two.view" />	
+  <!-- MUST BE DELETED -->
 
-	<action-view name="stock.dashboard.two.view" title="Deliveries Details">
-		<view type="dashboard" name="stock.dashboard.two" />	    
-	</action-view>
+  <menuitem name="stock-root-planned" parent="stock-root" title="Forecasts" order="20"/>
 
-    <menuitem title="Logistical forms" name="stock-root-logistical-forms" parent="stock-root" action="stock.root.logistical.forms"
-        order="39" />
+  <menuitem name="stock-root-incoming-production" parent="stock-root-planned"
+    title="Production needs" action="stock.root.incoming.production"/>
 
-    <action-view name="stock.root.logistical.forms" title="Logistical forms" model="com.axelor.apps.stock.db.LogisticalForm">
-        <view type="grid" name="logistical-form-grid" />
-        <view type="form" name="logistical-form-form" />
-        <view-param name="search-filters" value="logistical-form-filters"/>
-    </action-view>
+  <action-view name="stock.root.incoming.production" title="Production needs"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <domain>self.statusSelect = 2 and self.toStockLocation.id = 5</domain>
+  </action-view>
 
-	<menuitem name="stock-root-conf-cancel-reason" title="Cancel reason" parent="stock-root-conf"
-			  action="action.stock.view.cancel.reason"/>
+  <menuitem name="stock-root-outcoming-production" parent="stock-root-planned"
+    title="Production forecasts" action="stock.root.outcoming.production"/>
 
-	<action-view name="action.stock.view.cancel.reason" title="Cancel reason" model="com.axelor.apps.base.db.CancelReason">
-		<view type="grid" name="cancel-reason-grid"/>
-		<view type="form" name="cancel-reason-form"/>
-		<view-param name="search-filters" value="cancel-reason-filters"/>
-		<domain>self.applicationType = :_xApplicationType</domain>
-		<context name="_xApplicationType" expr="eval: com.axelor.apps.stock.db.StockMove"/>
-	</action-view>
+  <action-view name="stock.root.outcoming.production" title="Production forecasts"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <domain>self.statusSelect = 2 and self.fromStockLocation.id = 5</domain>
+  </action-view>
 
-	<menuitem name="stock-root-conf-stock-correction-reason" title="Stock Correction Reason" parent="stock-root-conf"
-		action="stock.root.conf.stock.correction.reason"/>
+  <menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
+    title="Supplier deliveries" action="stock.root.incoming.supplier"/>
 
-	<action-view name="stock.root.conf.stock.correction.reason" title="Stock Correction Reason" model="com.axelor.apps.stock.db.StockCorrectionReason">
-		<view type="grid" name="stock-correction-reason-grid"/>
-		<view type="form" name="stock-correction-reason-form"/>
-	</action-view>
+  <action-view name="stock.root.incoming.supplier" title="Supplier deliveries"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="search-filters" value="customer-deliveries-filters"/>
+    <domain>self.statusSelect = 2 and self.fromStockLocation.id = 3</domain>
+  </action-view>
+
+  <menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
+    title="Supplier returns" action="stock.root.outcoming.supplier"/>
+
+  <action-view name="stock.root.outcoming.supplier" title="Supplier returns"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="search-filters" value="customer-deliveries-filters"/>
+    <domain>self.statusSelect = 2 and self.toStockLocation.id = 3</domain>
+  </action-view>
+
+  <menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
+    title="Customer deliveries" action="stock.root.outcoming.client"/>
+
+  <action-view name="stock.root.outcoming.client" title="Customer deliveries"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="search-filters" value="customer-deliveries-filters"/>
+    <domain>self.statusSelect = 2 and self.toStockLocation.id = 2</domain>
+  </action-view>
+
+  <menuitem name="stock-root-incoming-client" parent="stock-root-planned"
+    title="Customer returns" action="stock.root.incoming.client"/>
+
+  <action-view name="stock.root.incoming.client" title="Customer returns"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-form"/>
+    <view-param name="search-filters" value="supplier-arrivals-filters"/>
+    <domain>self.statusSelect = 2 and self.fromStockLocation.id = 2</domain>
+  </action-view>
+
+  <!-- END MUST BE DELETED -->
+
+  <menuitem name="stock-root-inventories" parent="stock-root" title="Inventories"
+    action="stock.root.inventories.draft" order="25"/>
+
+  <action-view name="stock.root.inventories.draft" title="Inventories"
+    model="com.axelor.apps.stock.db.Inventory">
+    <view type="grid" name="inventory-grid"/>
+    <view type="calendar" name="inventory-calendar"/>
+    <view type="form" name="inventory-form"/>
+    <view-param name="search-filters" value="inventories-filters"/>
+  </action-view>
+
+  <menuitem name="stock-root-all-line" parent="stock-root-stock-moves"
+    title="Stock move lines" action="stock.root.all.line" order="30"/>
+
+  <action-view name="stock.root.all.line" title="Stock move lines"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-all-grid"/>
+    <view type="calendar" name="stock-move-calendar"/>
+    <view type="form" name="stock-move-line-all-form"/>
+    <view-param name="search-filters" value="stock-move-line-filters"/>
+  </action-view>
+
+  <menuitem name="stock-root-stock-per-day" parent="stock-root" title="Stock Availability"
+    action="stock.root.stock.per.day" order="32"/>
+
+  <action-view name="stock.root.stock.per.day" title="Stock availability"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="stock-move-wizard-stock-per-day"/>
+  </action-view>
+
+  <menuitem name="stock-root-products" parent="stock-root" order="38" title="Products"
+    action="stock.root.products"/>
+
+  <action-view name="stock.root.products" title="Products"
+    model="com.axelor.apps.base.db.Product">
+    <view type="grid" name="product-grid"/>
+    <view type="form" name="product-form"/>
+    <view type="cards" name="product-cards"/>
+    <view-param name="search-filters" value="products-filters"/>
+    <domain>self.isModel = false and self.productTypeSelect = 'storable' and self.dtype = 'Product'</domain>
+    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
+    <context name="_fromStock" expr="eval:true"/>
+  </action-view>
+
+  <menuitem name="stock-root-stock-location" parent="stock-root" title="Stock Locations"
+    action="stock.root.stock.location" order="41"/>
+
+  <action-view name="stock.root.stock.location" title="Stock Locations"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="grid" name="stock-location-grid"/>
+    <view type="form" name="stock-location-form"/>
+    <view-param name="search-filters" value="stock-location-filters"/>
+  </action-view>
+
+  <menuitem name="stock-root-stock-location-tree" parent="stock-root"
+    title="Stock Location Tree" action="stock.root.stock.location.tree" order="42"/>
+
+  <action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="tree" name="stock-location-tree"/>
+  </action-view>
+
+  <menuitem name="stock-root-stock-correction" parent="stock-root"
+    title="Stock Corrections" action="stock.root.stock.correction" order="43"/>
+
+  <action-view name="stock.root.stock.correction" title="Stock Corrections"
+    model="com.axelor.apps.stock.db.StockCorrection">
+    <view type="grid" name="stock-correction-grid"/>
+    <view type="form" name="stock-correction-form"/>
+  </action-view>
+
+  <menuitem name="stock-root-abc-analysis" title="ABC analysis" order="27"
+    action="stock.root.abc.analysis" parent="stock-root"/>
+
+  <action-view name="stock.root.abc.analysis" title="ABC analysis"
+    model="com.axelor.apps.base.db.ABCAnalysis">
+    <view type="grid" name="abc-analysis-grid"/>
+    <view type="form" name="abc-analysis-form"/>
+    <domain>self.typeSelect = :_type</domain>
+    <context name="_type" expr="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl"/>
+  </action-view>
+
+  <menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45"
+    icon="fa-bar-chart"/>
+
+  <menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50"
+    icon="fa-cog"/>
+
+  <menuitem name="stock-root-incoterm" parent="stock-root-conf" title="Incoterms"
+    action="stock.root.incoterm"/>
+
+  <action-view name="stock.root.incoterm" title="Incoterms"
+    model="com.axelor.apps.stock.db.Incoterm">
+    <view type="grid" name="incoterm-grid"/>
+    <view type="form" name="incoterm-form"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf" title="Stock rules"
+    action="stock.root.conf.stock.rules"/>
+
+  <action-view name="stock.root.conf.stock.rules" title="Stock rules"
+    model="com.axelor.apps.stock.db.StockRules">
+    <view type="grid" name="stock-rules-grid"/>
+    <view type="form" name="stock-rules-form"/>
+    <context name="_duplicateFinderFields" expr="stockLocation;product"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-stock-tracking-numbers" parent="stock-root-conf"
+    title="Tracking Numbers" action="stock.root.conf.stock.tracking.numbers"/>
+
+  <action-view name="stock.root.conf.stock.tracking.numbers" title="Tracking Numbers"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <view type="grid" name="tracking-number-grid"/>
+    <view type="form" name="tracking-number-form"/>
+    <context name="_datePlusTwoMonths" expr="eval: __date__.plusMonths(2)"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-freight-carrier" parent="stock-root-conf"
+    title="Freight Carrier" action="stock.root.conf.freight.carrier"/>
+
+  <action-view name="stock.root.conf.freight.carrier" title="Freight Carrier"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="cards" name="partner-cards"/>
+    <view type="grid" name="partner-grid"/>
+    <view type="form" name="partner-form"/>
+    <view-param name="limit" value="39"/>
+    <view-param name="search-filters" value="partner-filters"/>
+    <domain>self.isCarrier = true</domain>
+    <context name="_isCarrier" expr="true"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-freight-carrier-mode" parent="stock-root-conf"
+    title="Freight Carrier Mode" action="stock.root.conf.freight.carrier.mode"/>
+
+  <action-view name="stock.root.conf.freight.carrier.mode" title="Freight Carrier Mode"
+    model="com.axelor.apps.stock.db.FreightCarrierMode">
+    <view type="grid" name="freight-carrier-mode-grid"/>
+    <view type="form" name="freight-carrier-mode-form"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-shipment-mode" parent="stock-root-conf"
+    title="Shipment Mode" action="stock.root.conf.shipment.mode"/>
+
+  <action-view name="stock.root.conf.shipment.mode" title="Shipment Mode"
+    model="com.axelor.apps.stock.db.ShipmentMode">
+    <view type="grid" name="shipment-mode-grid"/>
+    <view type="form" name="shipment-mode-form"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-tracking-number-config" parent="stock-root-conf"
+    title="Tracking number configuration" action="stock.root.conf.tracking.number.config"/>
+
+  <action-view name="stock.root.conf.tracking.number.config"
+    title="Tracking number configuration"
+    model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
+    <view type="grid" name="tracking-number-configuration-grid"/>
+    <view type="form" name="tracking-number-configuration-form"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-customs-code-nomenclature" parent="stock-root-conf"
+    title="Customs code nomenclature:all" action="stock.root.conf.customs.code.nomenclature"/>
+
+  <action-view name="stock.root.conf.customs.code.nomenclature"
+    title="Customs code nomenclature:all" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
+    <view type="tree" name="customs-code-nomenclature-tree"/>
+    <view type="form" name="customs-code-nomenclature-form"/>
+  </action-view>
+
+  <!-- ADMINISTRATION -->
+
+
+  <!-- <menuitem name="admin-root-batch-stock" parent="admin-root-batch" -->
+  <!-- title="Stock batches" action="admin.root.batch.stock" /> -->
+
+  <!-- <action-view name="admin.root.batch.stock" title="Stock batches" -->
+  <!-- model="com.axelor.apps.stock.db.StockBatch" > -->
+  <!-- <view type="grid" name="stock-batch-grid"/> -->
+  <!-- <view type="form" name="stock-batch-form"/> -->
+  <!-- </action-view> -->
+
+  <menuitem name="menu-stock-dashboard-1" parent="stock-root-report" title="General"
+    action="stock.dashboard.one.view"/>
+
+  <action-view name="stock.dashboard.one.view" title="General Stock Details">
+    <view type="dashboard" name="stock.dashboard.one"/>
+    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
+  </action-view>
+
+  <menuitem name="menu-stock-dashboard-2" parent="stock-root-report" title="Deliveries"
+    action="stock.dashboard.two.view"/>
+
+  <action-view name="stock.dashboard.two.view" title="Deliveries Details">
+    <view type="dashboard" name="stock.dashboard.two"/>
+  </action-view>
+
+  <menuitem title="Logistical forms" name="stock-root-logistical-forms" parent="stock-root"
+    action="stock.root.logistical.forms" order="39"/>
+
+  <action-view name="stock.root.logistical.forms" title="Logistical forms"
+    model="com.axelor.apps.stock.db.LogisticalForm">
+    <view type="grid" name="logistical-form-grid"/>
+    <view type="form" name="logistical-form-form"/>
+    <view-param name="search-filters" value="logistical-form-filters"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-cancel-reason" title="Cancel reason"
+    parent="stock-root-conf" action="action.stock.view.cancel.reason"/>
+
+  <action-view name="action.stock.view.cancel.reason" title="Cancel reason"
+    model="com.axelor.apps.base.db.CancelReason">
+    <view type="grid" name="cancel-reason-grid"/>
+    <view type="form" name="cancel-reason-form"/>
+    <view-param name="search-filters" value="cancel-reason-filters"/>
+    <domain>self.applicationType = :_xApplicationType</domain>
+    <context name="_xApplicationType" expr="eval: com.axelor.apps.stock.db.StockMove"/>
+  </action-view>
+
+  <menuitem name="stock-root-conf-stock-correction-reason" title="Stock Correction Reason"
+    parent="stock-root-conf" action="stock.root.conf.stock.correction.reason"/>
+
+  <action-view name="stock.root.conf.stock.correction.reason"
+    title="Stock Correction Reason" model="com.axelor.apps.stock.db.StockCorrectionReason">
+    <view type="grid" name="stock-correction-reason-grid"/>
+    <view type="form" name="stock-correction-reason-form"/>
+  </action-view>
 
 </object-views>

@@ -1,81 +1,98 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="base-batch-grid" title="Base batches" model="com.axelor.apps.base.db.BaseBatch">
-		<field name="actionSelect" />
-		<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="createdOn"/>
-		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+  <grid name="base-batch-grid" title="Base batches" model="com.axelor.apps.base.db.BaseBatch">
+    <field name="actionSelect"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="createdOn"/>
+    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
- 
-    <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"  
-    onLoad="action-base-batch-attrs-action-select" 
-    onNew="action-group-base-basebatch-onnew">
-    	<panel name="mainPanel">
-		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
-		    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
-		    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="synchronizationDuration" widget="Integer" readonlyIf="allEvents" showIf="actionSelect == 2"/>
-			<field name="allEvents" widget="boolean-switch" showIf="actionSelect == 2"/>
-		</panel>
-	  	<panel-tabs name="targetPanelTab">
-	    	<panel name="targetPagePanel" title="Target page" >
-<!-- 	      		<panel-related field="targetConfigurationSet" colSpan="12"/> -->
-	      		<button name="targetBatchBtn" title="Target batch" onClick="save,action-base-batch-method-action-target"/>
-	    	</panel>
-	    	<panel name="informationPanel" title="Information">
-		      <field name="createdOn" title="Created on"/>
-		      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-		      <field name="description" showTitle="false" colSpan="12"/>
-		      <panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid"/>
-		    </panel>
-  		</panel-tabs>
-  		<panel name="synchronizeBtnPanel" sidebar="true">
-  			<button name="synchronizeBtn" showIf="actionSelect == 2" title="Batch calendar synchronization" onClick="save,action-base-batch-method-synchronize-calendars"/>
-  		</panel>
-    </form>
-    
-    <!-- ACTION GROUP -->
-    <action-group name="action-group-base-basebatch-onnew">
-    	<action name="action-base-batch-record-on-new"/>
-    	<action name="action-base-batch-attrs-action-select"/>
-    </action-group>
-    
-    <!-- ACTION RECORD -->
-    <action-record name="action-base-batch-record-on-new" model="com.axelor.apps.base.db.BaseBatch">
-		<field name="createdOn" expr="eval:__config__.app.getTodayDate(null)"/>
-		<field name="createdOn" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="__user__.activeCompany != null"/>
-		<field name="createdOn" expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-		<field name="createdBy" expr="eval:__user__"/>
-		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-	</action-record>
-    
-    <!-- ACTION METHOD -->
-	<action-method name="action-base-batch-method-action-target">
-		<call class="com.axelor.apps.base.web.BaseBatchController" method="actionTarget"/>
-	</action-method>
 
-	<action-method name="action-base-batch-method-synchronize-calendars">
-		<call class="com.axelor.apps.base.web.BaseBatchController" method="actionSynchronizeCalendars"/>
-	</action-method>
-	
-    <!-- ACTION ATTRS -->
-    <action-attrs name="action-base-batch-attrs-action-select">
-	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetPagePanel"/>
-	    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetConfigurationSet"/>
-	</action-attrs>
+  <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"
+    onLoad="action-base-batch-attrs-action-select" onNew="action-group-base-basebatch-onnew">
+    <panel name="mainPanel">
+      <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"
+        onChange="action-base-batch-condition-check-unique-code"/>
+      <field name="company" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid"/>
+      <field name="synchronizationDuration" widget="Integer" readonlyIf="allEvents"
+        showIf="actionSelect == 2"/>
+      <field name="allEvents" widget="boolean-switch" showIf="actionSelect == 2"/>
+    </panel>
+    <panel-tabs name="targetPanelTab">
+      <panel name="targetPagePanel" title="Target page">
+        <!-- <panel-related field="targetConfigurationSet" colSpan="12"/> -->
+        <button name="targetBatchBtn" title="Target batch"
+          onClick="save,action-base-batch-method-action-target"/>
+      </panel>
+      <panel name="informationPanel" title="Information">
+        <field name="createdOn" title="Created on"/>
+        <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+        <field name="description" showTitle="false" colSpan="12"/>
+        <panel-related name="batchListPanel" field="batchList" colSpan="12"
+          form-view="batch-form" grid-view="batch-grid"/>
+      </panel>
+    </panel-tabs>
+    <panel name="synchronizeBtnPanel" sidebar="true">
+      <button name="synchronizeBtn" showIf="actionSelect == 2"
+        title="Batch calendar synchronization"
+        onClick="save,action-base-batch-method-synchronize-calendars"/>
+    </panel>
+  </form>
 
-	<action-condition name="action-base-batch-condition-check-unique-code">
-		<check field="code" if="eval: code != null &amp;&amp; __repo__(com.axelor.db.EntityHelper.getEntityClass(__this__)).all().filter('self.code = ?', code).fetchOne()"
-			   error="This code is already use by another batch."/>
-	</action-condition>
+  <!-- ACTION GROUP -->
+  <action-group name="action-group-base-basebatch-onnew">
+    <action name="action-base-batch-record-on-new"/>
+    <action name="action-base-batch-attrs-action-select"/>
+  </action-group>
 
-	<search-filters name="base-batch-filters" model="com.axelor.apps.base.db.BaseBatch" title="Base batch filters">
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-    </search-filters>
-    
+  <!-- ACTION RECORD -->
+  <action-record name="action-base-batch-record-on-new"
+    model="com.axelor.apps.base.db.BaseBatch">
+    <field name="createdOn" expr="eval:__config__.app.getTodayDate(null)"/>
+    <field name="createdOn" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
+      if="__user__.activeCompany != null"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    <field name="createdBy" expr="eval:__user__"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <!-- ACTION METHOD -->
+  <action-method name="action-base-batch-method-action-target">
+    <call class="com.axelor.apps.base.web.BaseBatchController" method="actionTarget"/>
+  </action-method>
+
+  <action-method name="action-base-batch-method-synchronize-calendars">
+    <call class="com.axelor.apps.base.web.BaseBatchController"
+      method="actionSynchronizeCalendars"/>
+  </action-method>
+
+  <!-- ACTION ATTRS -->
+  <action-attrs name="action-base-batch-attrs-action-select">
+    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetPagePanel"/>
+    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetConfigurationSet"/>
+  </action-attrs>
+
+  <action-condition name="action-base-batch-condition-check-unique-code">
+    <check field="code"
+      if="eval: code != null &amp;&amp; __repo__(com.axelor.db.EntityHelper.getEntityClass(__this__)).all().filter('self.code = ?', code).fetchOne()"
+      error="This code is already use by another batch."/>
+  </action-condition>
+
+  <search-filters name="base-batch-filters" model="com.axelor.apps.base.db.BaseBatch"
+    title="Base batch filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </search-filters>
+
 </object-views>

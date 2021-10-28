@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    <grid name="stop-reason-grid" title="Blocking reasons" model="com.axelor.apps.base.db.StopReason">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    </grid>
-    <form name="stop-reason-form" title="Blocking reason" model="com.axelor.apps.base.db.StopReason">
-    	<panel name="mainPanel">
-        	<field name="name"/>
-        	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-        </panel>
-    </form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  <grid name="stop-reason-grid" title="Blocking reasons"
+    model="com.axelor.apps.base.db.StopReason">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+  </grid>
+  <form name="stop-reason-form" title="Blocking reason"
+    model="com.axelor.apps.base.db.StopReason">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    </panel>
+  </form>
 </object-views>

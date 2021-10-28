@@ -3,82 +3,96 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="calendar-grid" model="com.axelor.apps.base.db.ICalendar" title="Calendars">
-	  <field name="name" />
-	  <field name="user"/>
-	</grid>
-	
-	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" onSave="com.axelor.apps.base.web.ICalendarController:validate" width="large">
-		<menubar>
-			<menu name="iCalendarActionsMenu" title="Actions">
-				<item name="exportCalendarItem" title="Export calendar" action="com.axelor.apps.base.web.ICalendarController:exportCalendar"/>
-				<item name="importCalendarItem" title="Import calendar" action="com.axelor.apps.base.web.ICalendarController:importCalendar"/>
-				<item name="synchronizeCalendarItem" title="Synchronize calendar" action="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:synchronizeCalendar"/>
-			</menu>
-		</menubar>
-		<panel name="mainPanel" colSpan="12">
-			<field name="name" showTitle="false">
-				<viewer depends="name">
+  <grid name="calendar-grid" model="com.axelor.apps.base.db.ICalendar" title="Calendars">
+    <field name="name"/>
+    <field name="user"/>
+  </grid>
+
+  <form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar"
+    onSave="com.axelor.apps.base.web.ICalendarController:validate" width="large">
+    <menubar>
+      <menu name="iCalendarActionsMenu" title="Actions">
+        <item name="exportCalendarItem" title="Export calendar"
+          action="com.axelor.apps.base.web.ICalendarController:exportCalendar"/>
+        <item name="importCalendarItem" title="Import calendar"
+          action="com.axelor.apps.base.web.ICalendarController:importCalendar"/>
+        <item name="synchronizeCalendarItem" title="Synchronize calendar"
+          action="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:synchronizeCalendar"/>
+      </menu>
+    </menubar>
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" showTitle="false">
+        <viewer depends="name">
 					<![CDATA[
 						<h3>
 							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
 						</h3>
 					]]>
-				</viewer>
-				<editor>
-					<field name="name" showTitle="true"/>
-				</editor>
-			</field>
-		</panel>
-		<panel name="calendarOwnerPanel" colSpan="6">
-			<field name="user" title="calendar.owner" colSpan="3"/>
-			<field name="lastSynchronizationDateT" readonly="true" showIf="lastSynchronizationDateT"/>
-		</panel>
-		<panel-tabs name="mainPanelTab">
-			<panel name="eventsPanel" title ="Events" colSpan="12">
-				<panel-dashlet name="icalendarIeventPanel"  colSpan="12" height="540" showTitle="false" action="action-icalendar-view-ievent-dashlet"/>
-			</panel>
-			<panel name="connectionSettingsPanel" title="Connection settings" colSpan="12">
-				<panel name="detailsPanel" colSpan="12">
-					<field name="url" required="true"/>
-					<field name="typeSelect" required="true"/>
-					<field name="isSslConnection" onChange="action-calendar-record-set-port" widget="boolean-switch"/>
-					<field name="port"/>
-					<field name="synchronizationSelect"/>
-					<field name="synchronizationDuration" widget="selection"/>
-					<field name="keepRemote" widget="boolean-switch"/>
-				</panel>
-				<panel colSpan="12" name="loginInfoPanel">
-					<field name="login" required="true"/>
-					<field name="change" title="Change password" showIf="id &amp;&amp; !$readonly()" widget="boolean-switch"/>
-					<panel colSpan="12" showIf="change || !id" name="passwordPanel">
-						<field name="newPassword" title="Password" placeholder="new password" requiredIf="change || password==null" validIf="(!change &amp;&amp; id) || confirm == newPassword" widget="password" />
-						<field name="confirm" title="Confirm" placeholder="confirm password" widget="password"/>
-						<field name="password" hidden="true"/>
-					</panel>
-				</panel>
-				<panel name="connectPanel" colSpan="12" >
-					<button colSpan="3" name="connectBtn" title="Connect" onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:testConnect"/>
-					<field name="isValid" readonly="true" showTitle="false">
-						<viewer depends="isValid">
+        </viewer>
+        <editor>
+          <field name="name" showTitle="true"/>
+        </editor>
+      </field>
+    </panel>
+    <panel name="calendarOwnerPanel" colSpan="6">
+      <field name="user" title="calendar.owner" colSpan="3"/>
+      <field name="lastSynchronizationDateT" readonly="true" showIf="lastSynchronizationDateT"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="eventsPanel" title="Events" colSpan="12">
+        <panel-dashlet name="icalendarIeventPanel" colSpan="12" height="540"
+          showTitle="false" action="action-icalendar-view-ievent-dashlet"/>
+      </panel>
+      <panel name="connectionSettingsPanel" title="Connection settings" colSpan="12">
+        <panel name="detailsPanel" colSpan="12">
+          <field name="url" required="true"/>
+          <field name="typeSelect" required="true"/>
+          <field name="isSslConnection" onChange="action-calendar-record-set-port"
+            widget="boolean-switch"/>
+          <field name="port"/>
+          <field name="synchronizationSelect"/>
+          <field name="synchronizationDuration" widget="selection"/>
+          <field name="keepRemote" widget="boolean-switch"/>
+        </panel>
+        <panel colSpan="12" name="loginInfoPanel">
+          <field name="login" required="true"/>
+          <field name="change" title="Change password" showIf="id &amp;&amp; !$readonly()"
+            widget="boolean-switch"/>
+          <panel colSpan="12" showIf="change || !id" name="passwordPanel">
+            <field name="newPassword" title="Password" placeholder="new password"
+              requiredIf="change || password==null"
+              validIf="(!change &amp;&amp; id) || confirm == newPassword" widget="password"/>
+            <field name="confirm" title="Confirm" placeholder="confirm password"
+              widget="password"/>
+            <field name="password" hidden="true"/>
+          </panel>
+        </panel>
+        <panel name="connectPanel" colSpan="12">
+          <button colSpan="3" name="connectBtn" title="Connect"
+            onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:testConnect"/>
+          <field name="isValid" readonly="true" showTitle="false">
+            <viewer depends="isValid">
 							<![CDATA[
 								<h4>
 									<span class="label label-default" style="background-color: #2FA042; padding: 5px !important; display: inline-table; line-height: initial;" ng-show="record.isValid" x-translate>Valid</span>
 									<span class="label label-default" style="background-color: #B6473F; padding: 5px !important; display: inline-table; line-height: initial;" ng-show="!record.isValid" x-translate>Not valid</span>
 								</h4>
 							]]>
-						</viewer>
-					</field>
-				</panel>
-			</panel>
-			<panel colSpan="12" name="sharingSettingsPanel" title="Sharing settings">
-				<field name="sharingSettingList" canNew="true" canEdit="true" canRemove="true" showTitle="false" colSpan="12" grid-view="sharing-setting-calendar-grid" form-view="sharing-setting-calendar-form"/>
-			</panel>
-		</panel-tabs>
-	</form>
-	
-	<action-record name="action-calendar-record-set-port" model="com.axelor.apps.base.db.ICalendar">
-     	<field name="port" expr="eval: isSslConnection ? 443 : 80"/>
-    </action-record>
-	
+            </viewer>
+          </field>
+        </panel>
+      </panel>
+      <panel colSpan="12" name="sharingSettingsPanel" title="Sharing settings">
+        <field name="sharingSettingList" canNew="true" canEdit="true" canRemove="true"
+          showTitle="false" colSpan="12" grid-view="sharing-setting-calendar-grid"
+          form-view="sharing-setting-calendar-form"/>
+      </panel>
+    </panel-tabs>
+  </form>
+
+  <action-record name="action-calendar-record-set-port"
+    model="com.axelor.apps.base.db.ICalendar">
+    <field name="port" expr="eval: isSslConnection ? 443 : 80"/>
+  </action-record>
+
 </object-views>

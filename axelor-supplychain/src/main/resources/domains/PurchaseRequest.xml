@@ -7,10 +7,11 @@
 
   <entity name="PurchaseRequest" lang="java" cacheable="true">
 
-    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location"/>
 
     <track>
-    	<field name="stockLocation"/>
+      <field name="stockLocation"/>
     </track>
 
   </entity>

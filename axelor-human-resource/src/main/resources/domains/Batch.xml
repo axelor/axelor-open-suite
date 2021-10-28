@@ -6,9 +6,9 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Batch" lang="java" sequential="true">
-  	
-  	<many-to-one name="hrBatch" ref="com.axelor.apps.hr.db.HrBatch" />
-  
+
+    <many-to-one name="hrBatch" ref="com.axelor.apps.hr.db.HrBatch"/>
+
   </entity>
 
 </domain-models>

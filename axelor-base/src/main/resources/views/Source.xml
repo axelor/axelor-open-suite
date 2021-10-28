@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-    <grid name="source-grid" title="Source" model="com.axelor.apps.base.db.Source">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    </grid>
-    
-    <form name="source-form" title="Source" model="com.axelor.apps.base.db.Source">
-    	<panel name="mainPanel">
-        	<field name="name"/>
-        	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-        </panel>
-    </form>
-    
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="source-grid" title="Source" model="com.axelor.apps.base.db.Source">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+  </grid>
+
+  <form name="source-form" title="Source" model="com.axelor.apps.base.db.Source">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    </panel>
+  </form>
+
+
 </object-views>

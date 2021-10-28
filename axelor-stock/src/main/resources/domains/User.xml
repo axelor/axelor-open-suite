@@ -8,7 +8,7 @@
   <entity name="User" sequential="true" lang="java">
     <boolean name="useSignatureForStock" title="Use signature for certificate of conformity"/>
     <track>
-	   <field name="useSignatureForStock"/>
+      <field name="useSignatureForStock"/>
     </track>
   </entity>
 

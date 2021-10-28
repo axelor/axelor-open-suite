@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<grid name="import-history-grid" title="Historical" model="com.axelor.apps.base.db.ImportHistory" orderBy="-createdOn">
-		<field name="user" form-view="user-form" grid-view="user-grid"/>
-		<field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
-        <field name="createdOn"/>
-	</grid>
-	
-	<form name="import-history-form" cols="6" title="Historical" model="com.axelor.apps.base.db.ImportHistory">
-		<panel name="mainPanel" >
-			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-			<field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
-	        <field name="createdOn"/>
-	        <field name="logMetaFile" widget="binary-link" />
-		</panel>
-	</form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="import-history-grid" title="Historical"
+    model="com.axelor.apps.base.db.ImportHistory" orderBy="-createdOn">
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
+    <field name="createdOn"/>
+  </grid>
+
+  <form name="import-history-form" cols="6" title="Historical"
+    model="com.axelor.apps.base.db.ImportHistory">
+    <panel name="mainPanel">
+      <field name="user" form-view="user-form" grid-view="user-grid" canNew="false"
+        canEdit="false" canView="false"/>
+      <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
+      <field name="createdOn"/>
+      <field name="logMetaFile" widget="binary-link"/>
+    </panel>
+  </form>
 
 </object-views>

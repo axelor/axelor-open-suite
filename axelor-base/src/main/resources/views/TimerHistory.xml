@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-  <grid name="timer-history-grid" title="Timer history" model="com.axelor.apps.base.db.TimerHistory"
-    orderBy="startDateT">
+  <grid name="timer-history-grid" title="Timer history"
+    model="com.axelor.apps.base.db.TimerHistory" orderBy="startDateT">
     <field name="startDateT" width="140"/>
     <field name="endDateT" width="140"/>
   </grid>

@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="birt-template-grid" title="Birt Templates" model="com.axelor.apps.base.db.BirtTemplate">
-		<field name="name" />
-		<field name="templateLink" />
-	</grid>
+  <grid name="birt-template-grid" title="Birt Templates"
+    model="com.axelor.apps.base.db.BirtTemplate">
+    <field name="name"/>
+    <field name="templateLink"/>
+  </grid>
 
-	<form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate" onNew="action-birt-template-record-default" width="large">
-		<panel name="mainPanel">
-			<field name="name" colSpan="5" />
-			<field name="templateLink" colSpan="5" />
-			<field name="format" colSpan="2" />
-			<panel name="parametersPanel" title="Parameters" colSpan="12">
-				<field name="birtTemplateParameterList" showTitle="false" colSpan="12">
-					<viewer depends="name,value">
-						<![CDATA[                                         
+  <form name="birt-template-form" title="Birt Template"
+    model="com.axelor.apps.base.db.BirtTemplate" onNew="action-birt-template-record-default"
+    width="large">
+    <panel name="mainPanel">
+      <field name="name" colSpan="5"/>
+      <field name="templateLink" colSpan="5"/>
+      <field name="format" colSpan="2"/>
+      <panel name="parametersPanel" title="Parameters" colSpan="12">
+        <field name="birtTemplateParameterList" showTitle="false" colSpan="12">
+          <viewer depends="name,value">
+						<![CDATA[
 	        				<birtTemplateParameterList>{{record.name}} : {{record.value}}</birtTemplateParameterList>
 	        			]]>
-	        		</viewer>
-					<editor x-show-titles="false" itemSpan="4">
-						<field name="name" />
-						<field name="value" />
-						<field name="type" />
-					</editor>
-				</field>
-			</panel>
-		</panel>
-	</form>
+          </viewer>
+          <editor x-show-titles="false" itemSpan="4">
+            <field name="name"/>
+            <field name="value"/>
+            <field name="type"/>
+          </editor>
+        </field>
+      </panel>
+    </panel>
+  </form>
 
-	<action-record name="action-birt-template-record-default" model="com.axelor.apps.base.db.BirtTemplate">
-		<field name="format" expr="pdf" />
-	</action-record>
+  <action-record name="action-birt-template-record-default"
+    model="com.axelor.apps.base.db.BirtTemplate">
+    <field name="format" expr="pdf"/>
+  </action-record>
 
 </object-views>

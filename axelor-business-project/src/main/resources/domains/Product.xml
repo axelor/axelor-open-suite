@@ -6,7 +6,8 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Product">
-    <many-to-many name="taskTemplateSet" ref="com.axelor.apps.project.db.TaskTemplate" title="Task templates"/>
+    <many-to-many name="taskTemplateSet" ref="com.axelor.apps.project.db.TaskTemplate"
+      title="Task templates"/>
   </entity>
 
 </domain-models>

@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    <grid name="unit-conversion-grid" title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion">
-      <toolbar>
-      <button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
-      </toolbar>  
-        <field name="startUnit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="coef" x-scale="2"/>
-        <field name="formula"/>
-        <field name="endUnit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="typeSelect"/>
-    </grid>
-    <form name="unit-conversion-form" title="Unit conversion" model="com.axelor.apps.base.db.UnitConversion" width="large">
-    	<panel name="mainPanel" colSpan="10">
-    		<field name="typeSelect" required="true" colSpan="12" width="50%"/>
-    		
-    		<panel name="coeffPanel" colSpan="12" showIf="typeSelect == 1">
-				<field name="startUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-				<label name="equalTo1Label" title="=" colSpan="1"/>
-				<field name="coef" colSpan="3"/>
-				<label name="X1Label" title="X" colSpan="1"/>
-				<field name="endUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-			</panel>
-			<panel name="formulaPanel" colSpan="12" showIf="typeSelect == 2">
-				<field name="startUnit" colSpan="2" form-view="unit-form" grid-view="unit-grid"/>
-				<label name="equalTo2Label" title="=" colSpan="1"/>
-				<field name="formula" colSpan="6" widget="CodeEditor" x-code-syntax="groovy"/>
-				<label name="X2Label" title="X" colSpan="1"/>
-				<field name="endUnit" colSpan="2" form-view="unit-form" grid-view="unit-grid"/>
-			</panel>
-    	</panel>
-		
-    </form>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  <grid name="unit-conversion-grid" title="Unit conversions"
+    model="com.axelor.apps.base.db.UnitConversion">
+    <toolbar>
+      <button name="checkDuplicateBtn" title="Check Duplicate"
+        onClick="action-base-method-show-duplicate"/>
+    </toolbar>
+    <field name="startUnit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="coef" x-scale="2"/>
+    <field name="formula"/>
+    <field name="endUnit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="typeSelect"/>
+  </grid>
+  <form name="unit-conversion-form" title="Unit conversion"
+    model="com.axelor.apps.base.db.UnitConversion" width="large">
+    <panel name="mainPanel" colSpan="10">
+      <field name="typeSelect" required="true" colSpan="12" width="50%"/>
+
+      <panel name="coeffPanel" colSpan="12" showIf="typeSelect == 1">
+        <field name="startUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+        <label name="equalTo1Label" title="=" colSpan="1"/>
+        <field name="coef" colSpan="3"/>
+        <label name="X1Label" title="X" colSpan="1"/>
+        <field name="endUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+      </panel>
+      <panel name="formulaPanel" colSpan="12" showIf="typeSelect == 2">
+        <field name="startUnit" colSpan="2" form-view="unit-form" grid-view="unit-grid"/>
+        <label name="equalTo2Label" title="=" colSpan="1"/>
+        <field name="formula" colSpan="6" widget="CodeEditor" x-code-syntax="groovy"/>
+        <label name="X2Label" title="X" colSpan="1"/>
+        <field name="endUnit" colSpan="2" form-view="unit-form" grid-view="unit-grid"/>
+      </panel>
+    </panel>
+
+  </form>
 </object-views>

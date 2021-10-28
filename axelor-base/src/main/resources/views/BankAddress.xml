@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    <form name="bank-address-form" title="SWIFT address" model="com.axelor.apps.base.db.BankAddress"
-          onNew="action-attrs-bank-address-form-bank" onLoad="action-attrs-bank-address-form-bank">
-        <panel name="mainPanel">
-            <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="address"/>
-            <field name="label"/>
-            <field name="bank"/>
-        </panel>
-    </form>
+  <form name="bank-address-form" title="SWIFT address"
+    model="com.axelor.apps.base.db.BankAddress" onNew="action-attrs-bank-address-form-bank"
+    onLoad="action-attrs-bank-address-form-bank">
+    <panel name="mainPanel">
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="address"/>
+      <field name="label"/>
+      <field name="bank"/>
+    </panel>
+  </form>
 
-    <grid name="bank-address-grid" title="SWIFT address" model="com.axelor.apps.base.db.BankAddress">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="address"/>
-        <field name="label"/>
-        <field name="bank"/>
-    </grid>
+  <grid name="bank-address-grid" title="SWIFT address"
+    model="com.axelor.apps.base.db.BankAddress">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="address"/>
+    <field name="label"/>
+    <field name="bank"/>
+  </grid>
 
-    <action-attrs name="action-attrs-bank-address-form-bank">
-        <attribute for="bank" name="readonly" expr="eval: __parent__?._model == 'com.axelor.apps.base.db.BankDetails'"/>
-        <attribute for="bank" name="value" expr="eval: __parent__?.bank" if="__parent__?._model == 'com.axelor.apps.base.db.BankDetails'"/>
-    </action-attrs>
+  <action-attrs name="action-attrs-bank-address-form-bank">
+    <attribute for="bank" name="readonly"
+      expr="eval: __parent__?._model == 'com.axelor.apps.base.db.BankDetails'"/>
+    <attribute for="bank" name="value" expr="eval: __parent__?.bank"
+      if="__parent__?._model == 'com.axelor.apps.base.db.BankDetails'"/>
+  </action-attrs>
 
-    <action-method name="action-method-bank-address-fill-full-name">
-        <call class="com.axelor.apps.base.web.BankAddressController" method="fillFullName"/>
-    </action-method>
+  <action-method name="action-method-bank-address-fill-full-name">
+    <call class="com.axelor.apps.base.web.BankAddressController" method="fillFullName"/>
+  </action-method>
 </object-views>
