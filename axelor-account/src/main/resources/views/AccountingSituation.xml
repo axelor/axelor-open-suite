@@ -88,9 +88,9 @@
 		<panel name="mainPanel" >
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" domain=":company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
-       		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
-       		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
+			<field name="customerAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'" form-view="account-form" grid-view="account-grid"/>
+       		<field name="supplierAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'" form-view="account-form" grid-view="account-grid"/>
+       		<field name="employeeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'" form-view="account-form" grid-view="account-grid"/>
 			<field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		</panel>
