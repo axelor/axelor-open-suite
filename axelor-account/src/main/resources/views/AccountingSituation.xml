@@ -128,9 +128,15 @@
         grid-view="company-grid"/>
       <field name="partner" domain=":company member of self.companySet"
         form-view="partner-form" grid-view="partner-grid"/>
-      <field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
-      <field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
-      <field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
+      <field name="customerAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
+        form-view="customer-account-form" grid-view="account-grid"/>
+      <field name="supplierAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
+        form-view="supplier-account-form" grid-view="account-grid"/>
+      <field name="employeeAccount"
+        domain="self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
+        form-view="employee-account-form" grid-view="account-grid"/>
       <field name="companyInBankDetails" hidden="true" widget="SuggestBox"
         onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
