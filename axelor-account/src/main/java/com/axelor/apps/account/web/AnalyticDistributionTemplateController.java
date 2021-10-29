@@ -19,7 +19,8 @@ public class AnalyticDistributionTemplateController {
       if (!Beans.get(AnalyticDistributionTemplateService.class)
           .validateTemplatePercentages(analyticDistributionTemplate)) {
         response.setError(
-            I18n.get("The distribution is wrong, some axes percentage values are not equal to 100%"));
+            I18n.get(
+                "The distribution is wrong, some axes percentage values are not equal to 100%"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
