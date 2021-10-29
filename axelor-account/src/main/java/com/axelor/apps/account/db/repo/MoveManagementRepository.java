@@ -58,7 +58,8 @@ public class MoveManagementRepository extends MoveRepository {
           && entity.getStatusSelect() == STATUS_SIMULATED) {
         copy.setStatusSelect(STATUS_SIMULATED);
       }
-      copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);copy.setReference(null);
+      copy.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
+      copy.setReference(null);
       copy.setExportNumber(null);
       copy.setExportDate(null);
       copy.setAccountingReport(null);

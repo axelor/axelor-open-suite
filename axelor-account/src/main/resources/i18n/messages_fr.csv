@@ -1075,7 +1075,7 @@
 "Derogatory Resumption Move","Ecriture reprise dérogatoire",,
 "Description","Description",,
 "Description required","Description obligatoire",,
-"Designated account %s in move line %s is not allowed on the designated journal. Please modify journal settings or designated account to proceed.","Le compte désigné %s dans la ligne d'écriture %s n'est pas autorisé sur le journal désigné. Veuillez modifier les paramètres du journal ou le compte désigné pour continuer.",,
+"Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed.","Le compte désigné %s dans la ligne d'écriture %s n'est pas autorisé sur le journal %s. Veuillez modifier les paramètres du journal ou le compte désigné pour continuer.",,
 "Detail",,,
 "Detail payment amount","Détail du montant du paiement",,
 "Detailed","Détaillé",,

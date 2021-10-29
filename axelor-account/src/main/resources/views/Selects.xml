@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 
@@ -81,16 +82,16 @@
     <option order="15" value="14">General ledger (old presentation)</option>
     <option order="17" value="16">Acquisitions</option>
     <option order="18" value="17">Summary of gross values and depreciation</option>
-    <option order="19" value="19" >Preparatory Process for fees declaration</option>
-		<option order="20" value="20" >Fees declaration supporting file</option>
-		<option value="1000">Export journal entry -> Administration</option>
+    <option order="19" value="19">Preparatory Process for fees declaration</option>
+    <option order="20" value="20">Fees declaration supporting file</option>
+    <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
     <option value="1006">Export sale -> Acc. Soft.</option>
     <option value="1007">Export refunds -> Acc. Soft.</option>
     <option value="1008">Export treasury -> Acc. Soft.</option>
     <option value="1009">Export purchase -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
-		<option value="1011">Export N4DS</option>
+    <option value="1011">Export N4DS</option>
     <option order="2000" value="2000">Analytic balance</option>
     <option order="2001" value="2001">Analytic general ledger</option>
     <option order="3000" value="3000">Custom state</option>
@@ -104,7 +105,7 @@
     <option value="1008">Export treasury -> Acc. Soft.</option>
     <option value="1009">Export purchase -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
-		<option value="1011">Export N4DS</option>
+    <option value="1011">Export N4DS</option>
   </selection>
 
   <selection name='accounting.report.config.line.type.select'>
@@ -202,8 +203,8 @@
     <option value="20">Realize fixed asset lines</option>
     <option value="21">Close the annual accounts of the past year</option>
     <option value="22">Open the annual accounts of the next year</option>
-  <option value="23">Block customer with late payment issues</option>
-	</selection>
+    <option value="23">Block customer with late payment issues</option>
+  </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
     <option value="1">Expense Payment</option>
@@ -338,7 +339,8 @@
     <option value="3">Ordered and invoiced</option>
   </selection>
 
-  <selection name="meta.schedule.batch.service.select" id="account.meta.schedule.batch.service.select">
+  <selection name="meta.schedule.batch.service.select"
+    id="account.meta.schedule.batch.service.select">
     <option value="com.axelor.apps.account.service.batch.AccountingBatchService">com.axelor.apps.account.service.batch.AccountingBatchService</option>
   </selection>
 
@@ -397,7 +399,7 @@
     <option value="1">Payment to the factor</option>
     <option value="2">Payment to the factor after factor return</option>
   </selection>
-  
+
   <selection name="accounting.report.type.comparison.select">
     <option value="1">No comparison</option>
     <option value="2">Previous year</option>
@@ -405,8 +407,8 @@
   </selection>
 
   <selection name="accounting.report.type.no.of.periods.select">
-   <option value="1">1</option>
-   <option value="2">2</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
   </selection>
 
   <selection name="account.fixed.type.category.computation.method.select">
@@ -478,8 +480,8 @@
     <option value="isSupplier">Supplier</option>
     <option value="isCarrier">Carrier</option>
     <option value="isFactor">Factor</option>
-  <option value="isEmployee">Employee</option>
-	</selection>
+    <option value="isEmployee">Employee</option>
+  </selection>
 
   <selection name="account.journal.type.technical.type.select">
     <option value="1">Expense</option>
@@ -527,65 +529,65 @@
     <option value="reportedBalance">Reported balance</option>
   </selection>
 
-	<selection name="account.fixed.asset.transfer.reason">
-		<option value="1">Scrapping</option>
-		<option value="2">Cession</option>
-		<option value="3">Partial cession</option>
-	</selection>
+  <selection name="account.fixed.asset.transfer.reason">
+    <option value="1">Scrapping</option>
+    <option value="2">Cession</option>
+    <option value="3">Partial cession</option>
+  </selection>
 
-	<selection name="account.fixed.asset.depreciation.plan">
-		<option value="0">None</option>
-		<option value="1">Fiscal</option>
-		<option value="2">Economic</option>
-		<option value="3">Derogation</option>
-		<option value="4">IFRS</option>
-	</selection>
-	
-	<selection name="account.fixed.asset.first.depreciation.date.ref.select">
-		<option value="1">Acquisition Date</option>
-		<option value="2">First Service Date</option>
-	</selection>
-	<selection name="account.fixed.asset.origin">
-		<option value="1">Manual</option>
-		<option value="2">Invoice</option>
-		<option value="3">Move line</option>
-		<option value="4">Scission</option>
-		<option value="5">Partial Scrapping</option>
-		<option value="6">Partial Sale</option>
-		<option value="99">Import</option>
-	</selection>
-	
-	<selection name="account.fixed.type.category.fiscal.computation.method.select">
-		<option value="linear">Linear</option>
-		<option value="degressive">Degressive</option>
-	</selection>
-	
-	
-	<selection name="account.fixed.asset.periodicity.type">
-		<option value="1">Month</option>
-		<option value="12">Year</option>
-	</selection>
-	
-	<selection name="account.fixed.asset.fiscal.periodicity.type">
-		<option value="1">Month</option>
-		<option value="12">Year</option>
-	</selection>
-	
-	<selection name="account.fixed.asset.line.type.select">
-		<option value="1">Economic</option>
-		<option value="2">Fiscal</option>
-		<option value="3">IFRS</option>
-	</selection>
-	
-	<selection name="account.fixed.asset.disposal.type.select">
-		<option value="1">Scrapping</option>
-		<option value="2">Disposal Cession</option>
-	</selection>
-	
-	<selection name="account.fixed.asset.disposal.quantity.select">
-		<option value="1">Total</option>
-		<option value="2">Partial</option>
-	</selection>
+  <selection name="account.fixed.asset.depreciation.plan">
+    <option value="0">None</option>
+    <option value="1">Fiscal</option>
+    <option value="2">Economic</option>
+    <option value="3">Derogation</option>
+    <option value="4">IFRS</option>
+  </selection>
+
+  <selection name="account.fixed.asset.first.depreciation.date.ref.select">
+    <option value="1">Acquisition Date</option>
+    <option value="2">First Service Date</option>
+  </selection>
+  <selection name="account.fixed.asset.origin">
+    <option value="1">Manual</option>
+    <option value="2">Invoice</option>
+    <option value="3">Move line</option>
+    <option value="4">Scission</option>
+    <option value="5">Partial Scrapping</option>
+    <option value="6">Partial Sale</option>
+    <option value="99">Import</option>
+  </selection>
+
+  <selection name="account.fixed.type.category.fiscal.computation.method.select">
+    <option value="linear">Linear</option>
+    <option value="degressive">Degressive</option>
+  </selection>
+
+
+  <selection name="account.fixed.asset.periodicity.type">
+    <option value="1">Month</option>
+    <option value="12">Year</option>
+  </selection>
+
+  <selection name="account.fixed.asset.fiscal.periodicity.type">
+    <option value="1">Month</option>
+    <option value="12">Year</option>
+  </selection>
+
+  <selection name="account.fixed.asset.line.type.select">
+    <option value="1">Economic</option>
+    <option value="2">Fiscal</option>
+    <option value="3">IFRS</option>
+  </selection>
+
+  <selection name="account.fixed.asset.disposal.type.select">
+    <option value="1">Scrapping</option>
+    <option value="2">Disposal Cession</option>
+  </selection>
+
+  <selection name="account.fixed.asset.disposal.quantity.select">
+    <option value="1">Total</option>
+    <option value="2">Partial</option>
+  </selection>
 
   <selection name="account.deposit.type.select">
     <option value="1">Cheque</option>
@@ -593,39 +595,39 @@
     <option value="3">Bill of Exchange</option>
   </selection>
 
-    <selection name="account.config.analytic.axis.order.select">
-    	<option value="1">1</option>
-    	<option value="2">2</option>
-    	<option value="3">3</option>
-    	<option value="4">4</option>
-    	<option value="5">5</option>
-    </selection>
+  <selection name="account.config.analytic.axis.order.select">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </selection>
 
-    <selection name="account.general.analytic.axis.type.select">
-    	<option value="1">1</option>
-    	<option value="2">2</option>
-    	<option value="3">3</option>
-    	<option value="4">4</option>
-    	<option value="5">5</option>
-    </selection>
+  <selection name="account.general.analytic.axis.type.select">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </selection>
 
-    <selection name="account.general.analytic.grouping.value.grouping">
-    	<option value="0">0</option>
-    	<option value="1">1</option>
-    	<option value="2">2</option>
-    	<option value="3">3</option>
-    	<option value="4">4</option>
-    	<option value="5">5</option>
-    	<option value="6">6</option>
-    	<option value="7">7</option>
-    	<option value="8">8</option>
-    	<option value="9">9</option>
-    	<option value="10">10</option>
-    </selection>
+  <selection name="account.general.analytic.grouping.value.grouping">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+  </selection>
 
-    <selection name="account.financial.discount.discount.base.select">
-	   <option value="0">Tax excluded</option>
-	   <option value="1">Tax included</option>
+  <selection name="account.financial.discount.discount.base.select">
+    <option value="0">Tax excluded</option>
+    <option value="1">Tax included</option>
   </selection>
 
 </object-views>
