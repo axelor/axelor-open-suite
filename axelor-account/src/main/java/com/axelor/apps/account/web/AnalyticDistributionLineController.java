@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -51,7 +52,8 @@ public class AnalyticDistributionLineController {
       if (!Beans.get(AnalyticMoveLineService.class)
           .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
         response.setError(
-            "The distribution is wrong, some axes percentage values are higher than 100%");
+            I18n.get(
+                "The distribution is wrong, some axes percentage values are higher than 100%"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
