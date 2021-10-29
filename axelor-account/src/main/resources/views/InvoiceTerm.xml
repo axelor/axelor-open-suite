@@ -76,7 +76,7 @@
       <field name="percentage" readonly="true"/>
       <field name="isHoldBack" readonly="true"/>
       <field name="paymentMode" readonly="true"/>
-      <field name="bankDetails"/>
+      <field name="bankDetails" readonly="true"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" readonly="true"/>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4" hidden="true" showIf="financialDiscount != null" >
           <field name="financialDiscount" readonly="true"/>
