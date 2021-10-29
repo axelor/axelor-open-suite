@@ -435,4 +435,7 @@ public interface IExceptionMessage {
       "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
+  public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
+      "Please upload csv or txt or zip files only." /*)*/;
+  public static final String NO_TEXT_FILE_FOUND = /*$$(*/ "%s file not found in %s." /*)*/;
 }
