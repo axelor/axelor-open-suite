@@ -332,5 +332,5 @@
 		<attribute name="readonly" for="nbrOfAnalyticAxisSelect" expr="true" if="nbrOfAnalyticAxisSelect &lt; analyticAxisByCompanyList.size"/>
 		<attribute name="readonly" for="nbrOfAnalyticAxisSelect" expr="false" if="nbrOfAnalyticAxisSelect &gt;= analyticAxisByCompanyList.size"/>
 	</action-attrs>
-	
+
 </object-views>
