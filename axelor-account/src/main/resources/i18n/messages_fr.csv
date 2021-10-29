@@ -2231,6 +2231,7 @@
 "The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis.","Le nombre d'axes analytiques dans le champ Nbr. d'axes analytiques et le nombre d'enregistrements définis dans le tableau d'ordre des axes sont incohérents. Merci de configurer le bon nombre et ordre des axes analytiques dans le tableau d'Ordre des axes.",,
 "The deposit slip has already been published.","Le bordeau a déjà été édité",,
 "The distribution is wrong, some axes percentage values are higher than 100%","La distribution est invalide, certains axes ont un pourcentage supérieur à 100%",,
+"The distribution is wrong, some axes percentage values are not equal to 100%","La distribution est invalide, certains axes ont un pourcentage différent de 100%",,
 "The from date is incorrect","La date de départ est incorrecte",,
 "The move %s cannot be empty","L'écriture %s ne peut pas être vide",,
 "The move fields origin and description are empty, do you wish to continue ?","Les champs origine et description de l'écriture sont vides, voulez-vous continuer ?",,
