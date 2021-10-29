@@ -6,10 +6,11 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="RoutingActionCreate" lang="java">
-  
-  	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object"/>
-	<one-to-many name="routingActionCreateLineList" ref="com.axelor.apps.base.db.RoutingActionCreateLine" title="Fields"/>
-	    
+
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object"/>
+    <one-to-many name="routingActionCreateLineList"
+      ref="com.axelor.apps.base.db.RoutingActionCreateLine" title="Fields"/>
+
   </entity>
 
 </domain-models>
