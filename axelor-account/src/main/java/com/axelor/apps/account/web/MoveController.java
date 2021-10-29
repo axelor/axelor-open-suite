@@ -500,7 +500,7 @@ public class MoveController {
       Beans.get(MoveSimulateService.class).simulate(move);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      TraceBackService.trace(response, e);
     }
   }
 
