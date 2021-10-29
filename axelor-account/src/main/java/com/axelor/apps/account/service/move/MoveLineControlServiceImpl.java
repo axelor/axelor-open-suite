@@ -28,10 +28,10 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (move != null && journal != null && account != null) {
       Set<Account> validAccounts = journal.getValidAccountSet();
       Set<AccountType> validAccountTypes = journal.getValidAccountTypeSet();
-      if (ObjectUtils.isEmpty(validAccounts) || validAccounts.contains(account)) {
+      if (!ObjectUtils.isEmpty(validAccounts) && validAccounts.contains(account)) {
         isValid = true;
       }
-      if (ObjectUtils.isEmpty(validAccountTypes) || validAccountTypes.contains(accountType)) {
+      if (!ObjectUtils.isEmpty(validAccountTypes) && validAccountTypes.contains(accountType)) {
         isValid = true;
       }
       if (!isValid) {
