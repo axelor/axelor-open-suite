@@ -23,6 +23,7 @@
         onChange="action-advanced-export-validate-export-limit" required="true"/>
       <field name="queryFetchSize" colSpan="4"
         onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
+      <field name="includeArchivedRecords" colSpan="5"/>
       <label name="technicalHelperLabel"
         title="Warning, modifying those configuration can have technical repercussions."
         colSpan="12" css="label-bold label-danger"/>
@@ -98,5 +99,4 @@
       if="queryFetchSize &gt; maxExportLimit"
       action="action-advanced-export-record-set-last-fetch-size"/>
   </action-validate>
-
 </object-views>

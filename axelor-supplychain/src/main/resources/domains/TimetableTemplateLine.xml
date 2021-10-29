@@ -16,7 +16,6 @@
     <decimal name="percentage" scale="2" precision="5" max="100" min="0" required="true"/>
     <many-to-one name="timetableTemplate"
       ref="com.axelor.apps.supplychain.db.TimetableTemplate"/>
-
   </entity>
 
 </domain-models>

@@ -8,7 +8,7 @@
     <field name="name"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="parentProductCategory" form-view="product-category-form"
-      grid-view="product-family-grid"/>
+      grid-view="product-category-grid"/>
   </grid>
 
   <form name="product-category-form" title="Product category"
@@ -23,7 +23,7 @@
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="parentProductCategory" form-view="product-category-form"
-        grid-view="product-family-grid"/>
+        grid-view="product-category-grid"/>
       <field name="sequence" onSelect="action-attrs-product-category-form-set-sequence-domain"/>
       <field name="maxDiscount" onChange="action-group-product-category-max-discount-onchange"/>
     </panel>

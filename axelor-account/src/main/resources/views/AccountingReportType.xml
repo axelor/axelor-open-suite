@@ -32,7 +32,7 @@
         onChange="action-accounting-report-type-attrs-comparison-onchange"/>
       <field name="noOfPeriods" showIf="typeSelect == 3000 &amp;&amp; comparison != 1"/>
       <panel-related name="accountingReportTypeAccountingReportConfigLineListPanel"
-        field="accountingReportConfigLineList" colSpan="12"
+        field="accountingReportConfigLineList" colSpan="12" height="15" x-row-height="29"
         form-view="accounting-report-config-line-form"
         grid-view="accounting-report-config-line-grid" showIf="typeSelect == 3000"/>
     </panel>

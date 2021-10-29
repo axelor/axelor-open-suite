@@ -19,42 +19,28 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherElementToPayService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 
 @Singleton
-public class PayVoucherElementController {
+public class PayVoucherElementToPayController {
 
-  @Transactional
   public void updateAmountToPayCurrency(ActionRequest request, ActionResponse response) {
-    PayVoucherElementToPay elementToPayContext =
-        request.getContext().asType(PayVoucherElementToPay.class);
-    PayVoucherElementToPay elementToPay =
-        Beans.get(PayVoucherElementToPayRepository.class).find(elementToPayContext.getId());
-    Currency paymentVoucherCurrency = elementToPay.getPaymentVoucher().getCurrency();
-    BigDecimal amountToPayCurrency = null;
     try {
-      amountToPayCurrency =
-          Beans.get(CurrencyService.class)
-              .getAmountCurrencyConvertedAtDate(
-                  elementToPay.getCurrency(),
-                  paymentVoucherCurrency,
-                  elementToPay.getAmountToPay(),
-                  elementToPay.getPaymentVoucher().getPaymentDate());
+      PayVoucherElementToPay elementToPayContext =
+          request.getContext().asType(PayVoucherElementToPay.class);
+      PayVoucherElementToPay elementToPay =
+          Beans.get(PayVoucherElementToPayRepository.class).find(elementToPayContext.getId());
+
+      Beans.get(PayVoucherElementToPayService.class).updateAmountToPayCurrency(elementToPay);
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-    if (amountToPayCurrency != null) {
-      elementToPay.setAmountToPayCurrency(amountToPayCurrency);
-      Beans.get(PayVoucherElementToPayRepository.class).save(elementToPay);
-      response.setReload(true);
     }
   }
 }

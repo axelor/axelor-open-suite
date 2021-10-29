@@ -33,7 +33,6 @@
 
     <one-to-many ref="PaymentMoveLineDistribution"
       name="paymentMoveLineDistributionList" title="Payment move lines distribution"/>
-
     <unique-constraint columns="reconcileSeq,company"/>
 
     <finder-method name="findByMoveLines" using="debitMoveLine,creditMoveLine"/>

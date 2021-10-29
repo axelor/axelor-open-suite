@@ -129,7 +129,7 @@
         form-view="analytic-account-form"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
       <field name="percentage" colSpan="4" min="0" max="100"
-        onChange="action-analytic-move-line-method-compute-amount"/>
+        onChange="action-analytic-move-line-method-compute-amount,action-method-calculate-amount-with-percentage-analytic-move-line"/>
       <field name="originalPieceAmount" aggregate="sum"/>
       <field name="amount" colSpan="4" readonly="true"/>
       <field name="date" colSpan="4"/>

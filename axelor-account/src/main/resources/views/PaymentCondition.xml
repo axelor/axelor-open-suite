@@ -35,5 +35,4 @@
     <error message="The sum of line percentages (payment percentage) must be equal to 100"
       if="eval: paymentConditionLineList?.collect(){ it?.paymentPercentage }?.sum() != 100"/>
   </action-validate>
-
 </object-views>
