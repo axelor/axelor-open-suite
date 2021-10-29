@@ -1,154 +1,158 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 
-	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-	
-	<selection name="supplychain.batch.action.select">
-		<option value="1">Accounting cut-off</option>
-		<option value="3">Invoice orders</option>
-	</selection>
+  <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-	<selection name="supplychain.batch.invoice.stock.moves.action.select">
-		<option value="1">Accounting cut-off</option>
-		<option value="2">Invoice outgoing stock moves</option>
-		<option value="3">Invoice orders</option>
-	</selection>
-	
-	<selection name="supplychain.mrp.status.select">
-	    <option value="0">Draft</option>
-	    <option value="1">Calculation started</option>
-  	    <option value="2">Calculation ended</option>
-	</selection>
-	
-	<selection name="supplychain.mrp.line.element.select">
-	    <option value="1">Available stock</option>
-	    <option value="2">Purchase order</option>
-	    <option value="3">Sale order</option>
-	    <option value="4">Sales forecast</option>
-   	    <option value="5">Purchase proposal</option>
-	</selection>
-	
-	<selection name="supplychain.mrp.line.type.select">
-	    <option value="1">Entry of stock</option>
-	    <option value="2">Out of stock</option>
-	</selection>
-	
-	
-	<selection name="supplychain.mrp.line.related.to.select">
-		<option value="com.axelor.apps.sale.db.SaleOrderLine">Sale order line</option>
-		<option value="com.axelor.apps.purchase.db.PurchaseOrderLine">Purchase order line</option>
-		<option value="com.axelor.apps.supplychain.db.MrpForecast">Sale forecast</option>
-	</selection>
-	
-	<selection name="mrp.line.proposal.ref.select" id="supplychain.mrp.line.proposal.ref.select">
-		<option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
-	</selection>
-	
-	<selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
-		<option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
-	</selection>
+  <selection name="supplychain.batch.action.select">
+    <option value="1">Accounting cut-off</option>
+    <option value="3">Invoice orders</option>
+  </selection>
 
-	<selection name="meta.schedule.batch.service.select" id="supplychain.meta.schedule.batch.service.select">
-		<option value="com.axelor.apps.supplychain.service.batch.SupplychainBatchService">com.axelor.apps.supplychain.service.batch.SupplychainBatchService</option>
-	</selection>
+  <selection name="supplychain.batch.invoice.stock.moves.action.select">
+    <option value="1">Accounting cut-off</option>
+    <option value="2">Invoice outgoing stock moves</option>
+    <option value="3">Invoice orders</option>
+  </selection>
 
-	<selection name="supplychain.supplychain.batch.invoice.orders.type.select">
-		<option value="2">Purchase orders</option>
-	</selection>
+  <selection name="supplychain.mrp.status.select">
+    <option value="0">Draft</option>
+    <option value="1">Calculation started</option>
+    <option value="2">Calculation ended</option>
+  </selection>
 
-	<selection name="supplychain.supplychain.batch.sale.orders.invoice.orders.type.select">
-		<option value="1">Sale orders</option>
-		<option value="2">Purchase orders</option>
-	</selection>
+  <selection name="supplychain.mrp.line.element.select">
+    <option value="1">Available stock</option>
+    <option value="2">Purchase order</option>
+    <option value="3">Sale order</option>
+    <option value="4">Sales forecast</option>
+    <option value="5">Purchase proposal</option>
+  </selection>
 
-	<selection name="supplychain.sale.order.invoicing.wizard.select">
-		<option value="1">Invoice all</option>
-		<option value="2">Invoice selected lines</option>
-		<option value="3">Invoice an advance payment</option>
-		<option value="4">Invoice on timetable</option>
-	</selection>
+  <selection name="supplychain.mrp.line.type.select">
+    <option value="1">Entry of stock</option>
+    <option value="2">Out of stock</option>
+  </selection>
 
-	<selection name="supplychain.sale.order.type.select">
-		<option value="1">Standard</option>
-		<option value="2">Subscription</option>
-	</selection>
-	
-	<selection name="supplychain.sale.order.line.available.status.select">
-		<option value="1">Available</option>
-		<option value="2">Missing</option>
-	</selection>
-	
-	<selection name='iinvoice.operation.sub.type.select' id="supplychain.iinvoice.operation.sub.type.select">
-		<option value="6">Subscription</option>
-	</selection>
-	
-	<selection name="supplychain.supplychain.batch.accounting.cut.off.type.select">
-		<option value="1">Forecasted supplier invoices</option>
-		<option value="2">Forecasted customer invoices</option>
-	</selection>
 
-	<selection name="supplychain.mrp.forecast.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Confirmed</option>
-		<option value="3">Cancelled</option>
-	</selection>
+  <selection name="supplychain.mrp.line.related.to.select">
+    <option value="com.axelor.apps.sale.db.SaleOrderLine">Sale order line</option>
+    <option value="com.axelor.apps.purchase.db.PurchaseOrderLine">Purchase order line</option>
+    <option value="com.axelor.apps.supplychain.db.MrpForecast">Sale forecast</option>
+  </selection>
 
-	<selection name="sequence.generic.code.select" id="supplychain.sequence.generic.code.select">
-		<option value="mrp">MRP</option>
-	</selection>	
-	
-	<selection name="supplychain.estimated.date.select">
-		<option value="0">Current date</option>
-		<option value="1">Left empty</option>
-		<option value="2">Current date + days</option>
-	</selection>
+  <selection name="mrp.line.proposal.ref.select"
+    id="supplychain.mrp.line.proposal.ref.select">
+    <option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+  </selection>
 
-	<selection name="supplychain.stock.move.invoicing.wizard.select">
-      <option value="1">Invoice all</option>
-      <option value="2">Invoice partially stock move</option>
-	</selection>
+  <selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
+    <option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
+  </selection>
 
-	<selection name="supplychain.stock.move.invoicing.status.select">
-		<option value="0">Not invoiced</option>
-		<option value="1">Partially invoiced</option>
-		<option value="2">Invoiced</option>
-		<option value="3">Delayed invoicing</option>
-		<option value="4">Validated for invoicing</option>
-	</selection>
-	
-	<selection name='supplychain.declaration.of.exchanges.product.type.select'>
-		<option value='service'>declarationOfExchanges.Service</option>
-		<option value='storable'>declarationOfExchanges.ProductType.product</option>
-	</selection>
+  <selection name="meta.schedule.batch.service.select"
+    id="supplychain.meta.schedule.batch.service.select">
+    <option value="com.axelor.apps.supplychain.service.batch.SupplychainBatchService">com.axelor.apps.supplychain.service.batch.SupplychainBatchService</option>
+  </selection>
 
-	<selection name="supplychain.mrp.mrp.type.select">
-		<option value="1">MRP</option>
-		<option value="2">MPS</option>
-	</selection>
+  <selection name="supplychain.supplychain.batch.invoice.orders.type.select">
+    <option value="2">Purchase orders</option>
+  </selection>
 
-	<selection name="supplychain.mrp.line.type.application.field.select">
-		<option value="1">MRP</option>
-		<option value="2">MPS</option>
-	</selection>
+  <selection name="supplychain.supplychain.batch.sale.orders.invoice.orders.type.select">
+    <option value="1">Sale orders</option>
+    <option value="2">Purchase orders</option>
+  </selection>
 
-	<selection name="supplychain.mrp.forecast.technical.origin.select">
-		<option value="1">Created manually</option>
-		<option value="2">Created from SOP</option>
-	</selection>
-	
-	<selection name="base.base.partner.supply.chain.link.type.select">
-		<option value="Invoiced by">Invoiced by</option>
-		<option value="Delivered by">Delivered by</option>
-		<option value="Ordered by">Ordered by</option>
-	</selection>
+  <selection name="supplychain.sale.order.invoicing.wizard.select">
+    <option value="1">Invoice all</option>
+    <option value="2">Invoice selected lines</option>
+    <option value="3">Invoice an advance payment</option>
+    <option value="4">Invoice on timetable</option>
+  </selection>
 
-	<selection name="supplychain.sale.order.reservation.date.field">
-		<option value="0">Confirmation date</option>
-		<option value="1">Estimated shipping date</option>
-	</selection>
+  <selection name="supplychain.sale.order.type.select">
+    <option value="1">Standard</option>
+    <option value="2">Subscription</option>
+  </selection>
+
+  <selection name="supplychain.sale.order.line.available.status.select">
+    <option value="1">Available</option>
+    <option value="2">Missing</option>
+  </selection>
+
+  <selection name='iinvoice.operation.sub.type.select'
+    id="supplychain.iinvoice.operation.sub.type.select">
+    <option value="6">Subscription</option>
+  </selection>
+
+  <selection name="supplychain.supplychain.batch.accounting.cut.off.type.select">
+    <option value="1">Forecasted supplier invoices</option>
+    <option value="2">Forecasted customer invoices</option>
+  </selection>
+
+  <selection name="supplychain.mrp.forecast.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Confirmed</option>
+    <option value="3">Cancelled</option>
+  </selection>
+
+  <selection name="sequence.generic.code.select"
+    id="supplychain.sequence.generic.code.select">
+    <option value="mrp">MRP</option>
+  </selection>
+
+  <selection name="supplychain.estimated.date.select">
+    <option value="0">Current date</option>
+    <option value="1">Left empty</option>
+    <option value="2">Current date + days</option>
+  </selection>
+
+  <selection name="supplychain.stock.move.invoicing.wizard.select">
+    <option value="1">Invoice all</option>
+    <option value="2">Invoice partially stock move</option>
+  </selection>
+
+  <selection name="supplychain.stock.move.invoicing.status.select">
+    <option value="0">Not invoiced</option>
+    <option value="1">Partially invoiced</option>
+    <option value="2">Invoiced</option>
+    <option value="3">Delayed invoicing</option>
+    <option value="4">Validated for invoicing</option>
+  </selection>
+
+  <selection name='supplychain.declaration.of.exchanges.product.type.select'>
+    <option value='service'>declarationOfExchanges.Service</option>
+    <option value='storable'>declarationOfExchanges.ProductType.product</option>
+  </selection>
+
+  <selection name="supplychain.mrp.mrp.type.select">
+    <option value="1">MRP</option>
+    <option value="2">MPS</option>
+  </selection>
+
+  <selection name="supplychain.mrp.line.type.application.field.select">
+    <option value="1">MRP</option>
+    <option value="2">MPS</option>
+  </selection>
+
+  <selection name="supplychain.mrp.forecast.technical.origin.select">
+    <option value="1">Created manually</option>
+    <option value="2">Created from SOP</option>
+  </selection>
+
+  <selection name="base.base.partner.supply.chain.link.type.select">
+    <option value="Invoiced by">Invoiced by</option>
+    <option value="Delivered by">Delivered by</option>
+    <option value="Ordered by">Ordered by</option>
+  </selection>
+
+  <selection name="supplychain.sale.order.reservation.date.field">
+    <option value="0">Confirmation date</option>
+    <option value="1">Estimated shipping date</option>
+  </selection>
 
 	<selection name="supplychain.mrp.line.off.of.sales.select">
 		<option value="0">One-off sales included</option>

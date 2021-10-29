@@ -7,8 +7,8 @@
 
   <entity name="Sequence" lang="java">
 
-        <extra-code><![CDATA[
-        
+    <extra-code><![CDATA[
+
         //SEQUENCE SELECT
 		public static final String ACCOUNT_CLEARANCE = "accountClearance";
 		public static final String ACCOUNTING_REPORT = "accountingReport";
@@ -33,7 +33,7 @@
         public static final String TREASURY_INTERFACE = "treasuryInterface";
         public static final String PURCHASE_INTERFACE = "purchaseInterface";
         public static final String SUB_ROGATION_RELEASE = "subrogationRelease";
-        public static final String FIXED_ASSET = "fixedAsset";
+public static final String FIXED_ASSET = "fixedAsset";
         ]]></extra-code>
   </entity>
 

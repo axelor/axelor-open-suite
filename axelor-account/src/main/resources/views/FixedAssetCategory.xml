@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-	<grid name="fixed-asset-category-grid" title="Fixed asset categories" model="com.axelor.apps.account.db.FixedAssetCategory" orderBy="company,fixedAssetType,name">
-		<field name="name"/>
-	  <field name="fixedAssetType"/>
-	  <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-	  <field name="computationMethodSelect"/>
-	  <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
-	  <field name="chargeAccount" form-view="account-form" grid-view="account-grid"/>
-	  <field name="depreciationAccount" form-view="account-form" grid-view="account-grid"/>
-	</grid>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="fixed-asset-category-grid" title="Fixed asset categories"
+    model="com.axelor.apps.account.db.FixedAssetCategory" orderBy="company,fixedAssetType,name">
+    <field name="name"/>
+    <field name="fixedAssetType"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="computationMethodSelect"/>
+    <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
+    <field name="chargeAccount" form-view="account-form" grid-view="account-grid"/>
+    <field name="depreciationAccount" form-view="account-form" grid-view="account-grid"/>
+  </grid>
 
 <form name="fixed-asset-category-form" title="Fixed asset category" model="com.axelor.apps.account.db.FixedAssetCategory" width="large" onSave="action-fixed-asset-category-record-compute-duration" onNew="action-fixed-asset-category-record-default">
   <panel name="mainPanel">
@@ -52,7 +54,7 @@
         <field name="expenseDepreciationDerogatoryAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" form-view="account-form"/>
         <field name="capitalDepreciationDerogatoryAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'equity'" form-view="account-form"/>
         <field name="incomeDepreciationDerogatoryAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" form-view="account-form"/>
-      </panel>  
+      </panel>
       <panel name="exitAccountPanel" title="Assets cession" colspan="12">
         <field name="realisedAssetsValueAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'" form-view="account-form"/>
         <field name="realisedAssetsIncomeAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income' " form-view="account-form"/>
@@ -68,27 +70,32 @@
   </panel-tabs>
 </form>
 
-    
+
     <action-record name="action-fixed-asset-category-record-default" model="com.axelor.apps.account.db.FixedAssetCategory">
     	<field name="company" expr="eval: __user__.activeCompany"/>
     	<field name="computationMethodSelect" expr="eval: 'linear'"/>
     </action-record>
-    
+
     <action-record name="action-fixed-asset-category-record-compute-duration" model="com.axelor.apps.account.db.FixedAssetCategory">
     	<field name="durationInMonth" expr="eval: periodicityInMonth * numberOfDepreciation"/>
     </action-record>
     <action-attrs name="action-attrs-account-periodicity-type-select-on-change">
     	<attribute name="value" for="periodicityInMonth" expr="eval:periodicityTypeSelect"/>
     </action-attrs>
-    <action-attrs name="action-fixed-asset-attrs-set-degressive-coef">
-    	<attribute name="value" for="degressiveCoef" expr="eval: 1.25" if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &lt;= 4"/>
-    	<attribute name="value" for="degressiveCoef" expr="eval: 1.75" if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &gt; 4 &amp;&amp; numberOfDepreciation &lt;= 6"/>
-    	<attribute name="value" for="degressiveCoef" expr="eval: 2.25" if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &gt; 6"/>
-    </action-attrs>
-    
-    <search-filters name="fixed-asset-category-filters" model="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category filters">
-    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-    	<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
-    </search-filters>
-    
+  <action-attrs name="action-fixed-asset-attrs-set-degressive-coef">
+    <attribute name="value" for="degressiveCoef" expr="eval: 1.25"
+      if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &lt;= 4"/>
+    <attribute name="value" for="degressiveCoef" expr="eval: 1.75"
+      if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &gt; 4 &amp;&amp; numberOfDepreciation &lt;= 6"/>
+    <attribute name="value" for="degressiveCoef" expr="eval: 2.25"
+      if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &gt; 6"/>
+  </action-attrs>
+
+  <search-filters name="fixed-asset-category-filters"
+    model="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="analyticDistributionTemplate" hidden="true"
+      if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+  </search-filters>
 </object-views>

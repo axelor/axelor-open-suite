@@ -6,21 +6,26 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="SequenceVersion" lang="java">
-  	
-    <many-to-one name="sequence" title="Sequence" ref="com.axelor.apps.base.db.Sequence" initParam="true" />
-	<date name="startDate" required="true" initParam="true" />
-	<date name="endDate" initParam="true" />
+
+    <many-to-one name="sequence" title="Sequence" ref="com.axelor.apps.base.db.Sequence"
+      initParam="true"/>
+    <date name="startDate" required="true" initParam="true"/>
+    <date name="endDate" initParam="true"/>
     <long name="nextNum" title="Next N°" required="true" min="1" default="1" initParam="true"/>
-    
+
     <unique-constraint columns="sequence,startDate,endDate"/>
-    
+
     <index columns="sequence,startDate" name="idx_sequence_version_sequence_start_date"/>
-    <index columns="sequence,startDate,endDate" name="idx_sequence_version_sequence_start_date_end_date"/>
-    
-    <finder-method name="findByDate" using="sequence,LocalDate:date" filter="self.sequence = :sequence AND self.startDate &lt;= :date AND (self.endDate IS NULL OR self.endDate &gt;= :date)" />
-    <finder-method name="findByMonth" using="sequence,int:month,int:year" filter="self.sequence = :sequence AND MONTH(self.startDate) = :month AND YEAR(self.startDate) = :year" /> 
-    <finder-method name="findByYear" using="sequence,int:year" filter="self.sequence = :sequence AND YEAR(self.startDate) = :year" />
-       
+    <index columns="sequence,startDate,endDate"
+      name="idx_sequence_version_sequence_start_date_end_date"/>
+
+    <finder-method name="findByDate" using="sequence,LocalDate:date"
+      filter="self.sequence = :sequence AND self.startDate &lt;= :date AND (self.endDate IS NULL OR self.endDate &gt;= :date)"/>
+    <finder-method name="findByMonth" using="sequence,int:month,int:year"
+      filter="self.sequence = :sequence AND MONTH(self.startDate) = :month AND YEAR(self.startDate) = :year"/>
+    <finder-method name="findByYear" using="sequence,int:year"
+      filter="self.sequence = :sequence AND YEAR(self.startDate) = :year"/>
+
   </entity>
 
 </domain-models>
