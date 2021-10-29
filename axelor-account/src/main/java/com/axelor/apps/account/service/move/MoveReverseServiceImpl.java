@@ -64,7 +64,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getPartner(),
             dateOfReversion,
             move.getPaymentMode(),
-            MoveRepository.TECHNICAL_ORIGIN_ENTRY,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             move.getFunctionalOriginSelect(),
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
@@ -163,7 +163,6 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             originMoveLine.getCounter(),
             originMoveLine.getName(),
             null);
-    reverseMove.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
     return reverseMoveLine;
   }
 }
