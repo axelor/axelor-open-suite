@@ -15,7 +15,7 @@
 	        <field name="name"/>
 	        <field name="company" required="true" onChange="save"/>
    	        <field name="isSpecific" hidden="true"/>
-        </panel>      
+        </panel>
         <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific" field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid" form-view="analytic-distribution-line-form" onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
         <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific" field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid" form-view="analytic-distribution-line-personalized-form" onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="false"/>
     </form>

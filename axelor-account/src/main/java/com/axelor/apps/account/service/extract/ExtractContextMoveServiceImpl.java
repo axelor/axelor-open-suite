@@ -49,9 +49,15 @@ public class ExtractContextMoveServiceImpl implements ExtractContextMoveService 
         dateOfReversion = move.getDate();
         break;
 
+      case MoveRepository.DATE_OF_REVERSION_TOMORROW:
+        dateOfReversion =
+            Beans.get(AppBaseService.class).getTodayDate(move.getCompany()).plusDays(1);
+        break;
+
       case MoveRepository.DATE_OF_REVERSION_CHOOSE_DATE:
         dateOfReversion = LocalDate.parse(context.get("dateOfReversion").toString());
         break;
+
       default:
         throw new AxelorException(
             move,

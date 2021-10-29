@@ -24,6 +24,12 @@
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
+    
+    <boolean name="isComparativeBalance"  title="Comparative balance" default="false"/>
+    <date name="previousDateFrom" title="Previous year from" />
+    <date name="previousDateTo" title="Previous year to"/>
+    <many-to-one name="previousPeriod" ref="com.axelor.apps.base.db.Period" title="Previous period"/>
+    
     <many-to-one name="reportType" ref="com.axelor.apps.account.db.AccountingReportType" title="Report type"/>
 
     <boolean name="detailed" title="Detailed" default="false"/>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%	
 	query = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaJsonFieldRepository' as Class).all()
 	
@@ -29,7 +30,6 @@
 				\n\t\t\t<hidden>${field.hidden}</hidden>
 				\n\t\t\t<visibleInGrid>${field.visibleInGrid}</visibleInGrid>
 				\n\t\t\t<hideIf>${field.hideIf}</hideIf>
-				\n\t\t\t<isWkf>${field.isWkf}</isWkf>
 				\n\t\t\t<maxSize>${field.maxSize}</maxSize>
 				\n\t\t\t<minSize>${field.minSize}</minSize>
 				\n\t\t\t<model>${field.model}</model>
@@ -62,7 +62,7 @@
 	})
 	
 	if (!jsonFields.isEmpty()) {
-		jsonFields = """<?xml version="1.0" encoding="utf-8"?>\n<jason-fields>\n""" +  jsonFields + """\n</jason-fields>"""
+		jsonFields = """<jason-fields>\n""" +  jsonFields + """\n</jason-fields>"""
 	}
 	
 	out << """$jsonFields"""

@@ -59,7 +59,8 @@
 		// REVERSE DATE OF REVERSION
 		public static final int DATE_OF_REVERSION_TODAY = 1;
 		public static final int DATE_OF_REVERSION_ORIGINAL_MOVE_DATE = 2;
-		public static final int DATE_OF_REVERSION_CHOOSE_DATE = 3;
+		public static final int DATE_OF_REVERSION_TOMORROW = 3;
+		public static final int DATE_OF_REVERSION_CHOOSE_DATE = 4;
 
 		// FUNCTIONAL ORIGIN SELECT
 		public static final int FUNCTIONAL_ORIGIN_OPENING = 1;
