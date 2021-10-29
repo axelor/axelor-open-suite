@@ -2,74 +2,101 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-  
-  	<grid model="com.axelor.apps.base.db.AdvancedExport" title="Advance Fields Export" name="advanced-export-grid">
-  		<field name="name"/>
-  		<field name="metaModel"/>
-  	</grid>
-  
-  	<form name="advanced-export-form" title="Advanced Export" model="com.axelor.apps.base.db.AdvancedExport" width="large" 
-  		onNew="action-advanced-export-record-on-new">
-  		<panel name="generalInfoPanel">
-  			<field name="name" colSpan="4" required="true"/>
-      		<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid" colSpan="4" onChange="action-attr-reset-advanced-export-line" onSelect="action-advanced-export-attr-change-domain-from-model"/>
-    		<button name="selectAllBtn" title="Select all fields" colSpan="3" onClick="save,action-method-get-model-all-fields"/>
-    		<field name="maxExportLimit" colSpan="4" onChange="action-advanced-export-validate-export-limit" required="true"/>
-			<field name="queryFetchSize" colSpan="4" onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
-    		<label name="technicalHelperLabel" title="Warning, modifying those configuration can have technical repercussions." colSpan="12" css="label-bold label-danger"/>
-    	</panel>
-     	<panel-related name="advancedExportLineListPanel" field="advancedExportLineList" title="Fields" hideIf="metaModel == null" grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
-     	<panel name="actionsPanel">
-     		<button name="exportPDFBtn" title="Export PDF" icon="fa-reply" colSpan="3" onClick="save,action-export-pdf-method,save"/>
-    		<button name="exportExcelBtn" title="Export Excel" icon="fa-reply" colSpan="3" onClick="save,action-export-excel-method,save"/>
-    		<button name="exportCSVBtn" title="advanced.export.button.export.csv" icon="fa-reply" colSpan="3" onClick="save,action-export-csv-method,save"/>
-     	</panel>
-  	</form>
-  	
-  	<action-record name="action-advanced-export-record-on-new" model="com.axelor.apps.base.db.AdvancedExport">
-		<field name="metaModel" expr="eval: _metaModel" if="_metaModel"/>
-	</action-record>
-	
-	<action-record name="action-advanced-export-record-set-last-export-limit" model="com.axelor.apps.base.db.AdvancedExport">
-		<field name="maxExportLimit" expr="eval: id == null ? 1000 : __self__.getMaxExportLimit()" if="maxExportLimit &lt; queryFetchSize || maxExportLimit &lt;= 0"/>
-	</action-record>
-	
-	<action-record name="action-advanced-export-record-set-last-fetch-size" model="com.axelor.apps.base.db.AdvancedExport">
-		<field name="queryFetchSize" expr="eval: id == null ? 100 : __self__.getQueryFetchSize()" if="queryFetchSize &gt; maxExportLimit || queryFetchSize &lt;= 0"/>
-	</action-record>
-  	
-  	<action-method name="action-method-get-model-all-fields">
-  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="getModelAllFields"/>
-  	</action-method>
-  	
-  	<action-method name="action-export-pdf-method">
-  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportPDF"/>
-  	</action-method>
-  	
-  	<action-method name="action-export-excel-method">
-  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportExcel"/>
-  	</action-method>
-  	
-  	<action-method name="action-export-csv-method">
-  		<call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportCSV"/>
-  	</action-method>
-  	
-	<action-attrs name="action-attr-reset-advanced-export-line">
-		<attribute name="value" for="advancedExportLineList" expr="eval: null"/>
-	</action-attrs>
-	
-	<action-attrs name="action-advanced-export-attr-change-domain-from-model">
-		<attribute name="domain" for="metaModel" expr="eval: &quot; self.id = '${_metaModel.id}' &quot;" if="_metaModel"/>
-	</action-attrs>
-	
-	<action-validate name="action-advanced-export-validate-export-limit">
-		<error message="Export limit must be greater than zero." if="maxExportLimit &lt;= 0" action="action-advanced-export-record-set-last-export-limit"/>
-		<error message="Export limit must be greater than query fetch size." if="maxExportLimit &lt; queryFetchSize" action="action-advanced-export-record-set-last-export-limit"/>
-	</action-validate>
-	
-	<action-validate name="action-advanced-export-validate-query-fetch-size">
-		<error message="Query fetch size must be greater than zero." if="queryFetchSize &lt;= 0" action="action-advanced-export-record-set-last-fetch-size"/>
-		<error message="Query fetch size must be less than export limit." if="queryFetchSize &gt; maxExportLimit" action="action-advanced-export-record-set-last-fetch-size"/>
-	</action-validate>
-	
+
+  <grid model="com.axelor.apps.base.db.AdvancedExport" title="Advance Fields Export"
+    name="advanced-export-grid">
+    <field name="name"/>
+    <field name="metaModel"/>
+  </grid>
+
+  <form name="advanced-export-form" title="Advanced Export"
+    model="com.axelor.apps.base.db.AdvancedExport" width="large"
+    onNew="action-advanced-export-record-on-new">
+    <panel name="generalInfoPanel">
+      <field name="name" colSpan="4" required="true"/>
+      <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"
+        colSpan="4" onChange="action-attr-reset-advanced-export-line"
+        onSelect="action-advanced-export-attr-change-domain-from-model"/>
+      <button name="selectAllBtn" title="Select all fields" colSpan="3"
+        onClick="save,action-method-get-model-all-fields"/>
+      <field name="maxExportLimit" colSpan="4"
+        onChange="action-advanced-export-validate-export-limit" required="true"/>
+      <field name="queryFetchSize" colSpan="4"
+        onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
+      <label name="technicalHelperLabel"
+        title="Warning, modifying those configuration can have technical repercussions."
+        colSpan="12" css="label-bold label-danger"/>
+    </panel>
+    <panel-related name="advancedExportLineListPanel" field="advancedExportLineList"
+      title="Fields" hideIf="metaModel == null" grid-view="advanced-export-line-grid"
+      form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
+    <panel name="actionsPanel">
+      <button name="exportPDFBtn" title="Export PDF" icon="fa-reply" colSpan="3"
+        onClick="save,action-export-pdf-method,save"/>
+      <button name="exportExcelBtn" title="Export Excel" icon="fa-reply" colSpan="3"
+        onClick="save,action-export-excel-method,save"/>
+      <button name="exportCSVBtn" title="advanced.export.button.export.csv" icon="fa-reply"
+        colSpan="3" onClick="save,action-export-csv-method,save"/>
+    </panel>
+  </form>
+
+  <action-record name="action-advanced-export-record-on-new"
+    model="com.axelor.apps.base.db.AdvancedExport">
+    <field name="metaModel" expr="eval: _metaModel" if="_metaModel"/>
+  </action-record>
+
+  <action-record name="action-advanced-export-record-set-last-export-limit"
+    model="com.axelor.apps.base.db.AdvancedExport">
+    <field name="maxExportLimit" expr="eval: id == null ? 1000 : __self__.getMaxExportLimit()"
+      if="maxExportLimit &lt; queryFetchSize || maxExportLimit &lt;= 0"/>
+  </action-record>
+
+  <action-record name="action-advanced-export-record-set-last-fetch-size"
+    model="com.axelor.apps.base.db.AdvancedExport">
+    <field name="queryFetchSize" expr="eval: id == null ? 100 : __self__.getQueryFetchSize()"
+      if="queryFetchSize &gt; maxExportLimit || queryFetchSize &lt;= 0"/>
+  </action-record>
+
+  <action-method name="action-method-get-model-all-fields">
+    <call class="com.axelor.apps.base.web.AdvancedExportController" method="getModelAllFields"/>
+  </action-method>
+
+  <action-method name="action-export-pdf-method">
+    <call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportPDF"/>
+  </action-method>
+
+  <action-method name="action-export-excel-method">
+    <call class="com.axelor.apps.base.web.AdvancedExportController"
+      method="advancedExportExcel"/>
+  </action-method>
+
+  <action-method name="action-export-csv-method">
+    <call class="com.axelor.apps.base.web.AdvancedExportController" method="advancedExportCSV"/>
+  </action-method>
+
+  <action-attrs name="action-attr-reset-advanced-export-line">
+    <attribute name="value" for="advancedExportLineList" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-advanced-export-attr-change-domain-from-model">
+    <attribute name="domain" for="metaModel"
+      expr="eval: &quot; self.id = '${_metaModel.id}' &quot;" if="_metaModel"/>
+  </action-attrs>
+
+  <action-validate name="action-advanced-export-validate-export-limit">
+    <error message="Export limit must be greater than zero." if="maxExportLimit &lt;= 0"
+      action="action-advanced-export-record-set-last-export-limit"/>
+    <error message="Export limit must be greater than query fetch size."
+      if="maxExportLimit &lt; queryFetchSize"
+      action="action-advanced-export-record-set-last-export-limit"/>
+  </action-validate>
+
+  <action-validate name="action-advanced-export-validate-query-fetch-size">
+    <error message="Query fetch size must be greater than zero." if="queryFetchSize &lt;= 0"
+      action="action-advanced-export-record-set-last-fetch-size"/>
+    <error message="Query fetch size must be less than export limit."
+      if="queryFetchSize &gt; maxExportLimit"
+      action="action-advanced-export-record-set-last-fetch-size"/>
+  </action-validate>
+
 </object-views>

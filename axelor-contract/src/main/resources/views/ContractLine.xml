@@ -1,162 +1,184 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
               http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-    <grid name="contract-line-grid" title="Contract Lines"
-          model="com.axelor.apps.contract.db.ContractLine" canMove="true"
-          orderBy="sequence">
-        <hilite if="isConsumptionLine" background="primary"/>
+  <grid name="contract-line-grid" title="Contract Lines"
+    model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
+    <hilite if="isConsumptionLine" background="primary"/>
+    <field name="productName"/>
+    <field name="qty"/>
+    <field name="price"/>
+    <field name="exTaxTotal"/>
+    <field name="inTaxTotal"/>
+    <field name="isConsumptionLine" hidden="true"/>
+  </grid>
+
+  <form name="contract-line-form" title="Contract line"
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-attrs-hide-consumption-line"
+    onLoad="action-contract-line-attrs-hide-consumption-line">
+
+    <panel-tabs name="mainPanelTab">
+      <panel name="informationsPanel" title="Information">
+        <field name="product" canEdit="false"
+          onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"
+          domain="self.dtype = 'Product'"/>
         <field name="productName"/>
-        <field name="qty"/>
-        <field name="price"/>
-        <field name="exTaxTotal"/>
-        <field name="inTaxTotal"/>
-        <field name="isConsumptionLine" hidden="true"/>
-    </grid>
+        <field name="qty" readonlyIf="isConsumptionLine"
+          onChange="action-method-contract-line-compute-total"/>
+        <field name="price" onChange="action-method-contract-line-compute-total"/>
+        <field name="taxLine" canEdit="false"
+          onChange="action-method-contract-line-compute-total"/>
+        <field name="unit" canEdit="false"/>
+        <field name="exTaxTotal" readonly="true"/>
+        <field name="inTaxTotal" readonly="true"/>
+        <field name="isConsumptionLine" hidden="true"
+          onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
+        <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
+        <field name="description" colSpan="12" widget="html"/>
+        <field name="contractVersion" hidden="true"/>
+      </panel>
+      <panel name="analyticDistributionPanel" title="Analytics"
+        if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+        onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
+        <field name="analyticDistributionTemplate"
+          grid-view="analytic-distribution-template-grid"
+          form-view="analytic-distribution-template-form" canEdit="false"
+          onChange="action-contract-line-method-create-distribution"/>
+        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+          grid-view="analytic-move-line-distribution-grid"
+          form-view="analytic-move-line-distribution-form" colSpan="12"
+          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      </panel>
+    </panel-tabs>
+  </form>
 
-    <form name="contract-line-form" title="Contract line" model="com.axelor.apps.contract.db.ContractLine"
-          onNew="action-contract-line-attrs-hide-consumption-line"
-          onLoad="action-contract-line-attrs-hide-consumption-line">
-          
-          <panel-tabs name="mainPanelTab">
-        		<panel name="informationsPanel" title="Information">
-            		<field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total" domain="self.dtype = 'Product'"/>
-            		<field name="productName"/>
-            		<field name="qty" readonlyIf="isConsumptionLine" onChange="action-method-contract-line-compute-total"/>
-            		<field name="price" onChange="action-method-contract-line-compute-total"/>
-            		<field name="taxLine" canEdit="false" onChange="action-method-contract-line-compute-total"/>
-            		<field name="unit" canEdit="false"/>
-            		<field name="exTaxTotal" readonly="true"/>
-            		<field name="inTaxTotal" readonly="true"/>
-            		<field name="isConsumptionLine" hidden="true" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
-            		<field name="isInvoiced" readonly="true" showIf="isInvoiced" />
-            		<field name="description" colSpan="12" widget="html"/>
-            		<field name="contractVersion" hidden="true"/>
-        		</panel>
-        		<panel name="analyticDistributionPanel" title="Analytics" if="__config__.app.getApp('account').getManageAnalyticAccounting()"
-        				onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
-        			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false"
-        				onChange="action-contract-line-method-create-distribution"/>
-        			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-        			<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
-        		</panel>
-          </panel-tabs>
-    </form>
+  <action-attrs name="action-contract-line-attrs-hide-consumption-line"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <attribute name="hidden" for="isConsumptionLine"
+      expr="eval: !__parent__?.isConsumptionManagement"/>
+  </action-attrs>
 
-  <action-attrs name="action-contract-line-attrs-hide-consumption-line" model="com.axelor.apps.contract.db.ContractLine">
-    <attribute name="hidden" for="isConsumptionLine" expr="eval: !__parent__?.isConsumptionManagement"/>
+  <action-attrs
+    name="action-contract-line-attrs-set-analytic-distribution-template-domain">
+    <attribute name="domain" for="analyticDistributionTemplate"
+      expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
   </action-attrs>
-  
-  <action-attrs name="action-contract-line-attrs-set-analytic-distribution-template-domain">
-  	<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
-  </action-attrs>
-  
+
   <action-attrs name="action-contract-line-attrs-read-only-distribution-lines">
-  	<attribute name="readonly" for="analyticMoveLineList" expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
+    <attribute name="readonly" for="analyticMoveLineList"
+      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
-  
+
   <action-method name="action-contract-line-method-create-distribution">
-  	<call class="com.axelor.apps.contract.web.ContractLineController" method="createAnalyticDistributionWithTemplate"/>
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="createAnalyticDistributionWithTemplate"/>
   </action-method>
 
-    <action-record name="action-method-contract-line-change-is-consumption-line"
-                   model="com.axelor.apps.contract.db.ContractLine">
-        <field name="qty" expr="eval: 0"/>
-    </action-record>
+  <action-record name="action-method-contract-line-change-is-consumption-line"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <field name="qty" expr="eval: 0"/>
+  </action-record>
 
-    <action-method name="action-method-contract-line-compute-total">
-        <call class="com.axelor.apps.contract.web.ContractLineController"
-              method="computeTotal"/>
-    </action-method>
+  <action-method name="action-method-contract-line-compute-total">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="computeTotal"/>
+  </action-method>
 
-    <grid name="additional-contract-line-grid" title="Additional benefit lines"
-          model="com.axelor.apps.contract.db.ContractLine">
-        <hilite if="isInvoiced" background="success"/>
+  <grid name="additional-contract-line-grid" title="Additional benefit lines"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <hilite if="isInvoiced" background="success"/>
+    <field name="productName"/>
+    <field name="qty"/>
+    <field name="price"/>
+    <field name="exTaxTotal"/>
+    <field name="inTaxTotal"/>
+    <field name="isInvoiced" hidden="true"/>
+  </grid>
+
+  <form name="additional-contract-line-form" title="Additional benefit"
+    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced">
+
+    <panel-tabs name="mainPanelTab">
+      <panel name="informationsPanel" title="Information">
+        <field name="product" canEdit="false"
+          onChange="action-method-contract-change-product,action-method-contract-line-compute-total"
+          domain="self.dtype = 'Product'"/>
         <field name="productName"/>
-        <field name="qty"/>
-        <field name="price"/>
-        <field name="exTaxTotal"/>
-        <field name="inTaxTotal"/>
-        <field name="isInvoiced" hidden="true"/>
-    </grid>
+        <field name="qty" readonlyIf="isConsumptionLine"
+          onChange="action-method-contract-line-compute-total"/>
+        <field name="price" onChange="action-method-contract-line-compute-total"/>
+        <field name="taxLine" canEdit="false"
+          onChange="action-method-contract-line-compute-total"/>
+        <field name="unit" canEdit="false"/>
+        <field name="exTaxTotal" readonly="true"/>
+        <field name="inTaxTotal" readonly="true"/>
+        <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
+        <field name="description" colSpan="12" widget="html"/>
+      </panel>
+      <panel name="analyticDistributionPanel" title="Analytics"
+        if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+        onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
+        <field name="analyticDistributionTemplate"
+          grid-view="analytic-distribution-template-grid"
+          form-view="analytic-distribution-template-form" canEdit="false"
+          onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
+          onChange="action-contract-line-method-create-distribution"/>
+        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+          colSpan="12" grid-view="analytic-move-line-distribution-grid"
+          form-view="analytic-move-line-distribution-form"
+          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      </panel>
+    </panel-tabs>
+  </form>
 
-    <form name="additional-contract-line-form" title="Additional benefit"
-          model="com.axelor.apps.contract.db.ContractLine"
-          readonlyIf="isInvoiced">
-          
-          <panel-tabs name="mainPanelTab">
-        		<panel name="informationsPanel" title="Information">
-            		<field name="product" canEdit="false" onChange="action-method-contract-change-product,action-method-contract-line-compute-total" domain="self.dtype = 'Product'"/>
-            		<field name="productName"/>
-            		<field name="qty" readonlyIf="isConsumptionLine" onChange="action-method-contract-line-compute-total"/>
-            		<field name="price" onChange="action-method-contract-line-compute-total"/>
-            		<field name="taxLine" canEdit="false" onChange="action-method-contract-line-compute-total"/>
-            		<field name="unit" canEdit="false"/>
-            		<field name="exTaxTotal" readonly="true"/>
-            		<field name="inTaxTotal" readonly="true"/>
-            		<field name="isInvoiced" readonly="true" showIf="isInvoiced" />
-            		<field name="description" colSpan="12" widget="html"/>
-        		</panel>
-        		<panel name="analyticDistributionPanel" title="Analytics" if="__config__.app.getApp('account').getManageAnalyticAccounting()"
-        				onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
-        			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false"
-        				onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
-        				onChange="action-contract-line-method-create-distribution"/>
-        			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" colSpan="12" grid-view="analytic-move-line-distribution-grid"
-        				form-view="analytic-move-line-distribution-form" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-        			<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
-        		</panel>
-          </panel-tabs>
-    </form>
+  <grid name="contract-line-grid-for-template" title="Contract Lines"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <hilite if="isConsumptionLine" background="primary"/>
+    <field name="productName"/>
+    <field name="qty"/>
+    <field name="price"/>
+    <field name="isConsumptionLine" hidden="true"/>
+  </grid>
 
-    <grid name="contract-line-grid-for-template" title="Contract Lines"
-      model="com.axelor.apps.contract.db.ContractLine">
-        <hilite if="isConsumptionLine" background="primary"/>
-        <field name="productName"/>
-        <field name="qty"/>
-        <field name="price"/>
-        <field name="isConsumptionLine" hidden="true"/>
-    </grid>
+  <form name="contract-line-form-for-template" title="Contract Line"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <panel name="mainPanel">
+      <field name="product" canEdit="false"
+        onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
+      <field name="productName"/>
+      <field name="qty" readonlyIf="isConsumptionLine"/>
+      <field name="price"/>
+      <field name="taxLine" canEdit="false"/>
+      <field name="unit" canEdit="false"/>
+      <field name="isConsumptionLine"
+        onChange="action-method-contract-line-change-is-consumption-line"/>
+      <field name="description" colSpan="12" widget="html"/>
+    </panel>
+  </form>
 
-    <form name="contract-line-form-for-template" title="Contract Line"
-      model="com.axelor.apps.contract.db.ContractLine">
-        <panel name="mainPanel">
-            <field name="product" canEdit="false"
-              onChange="action-contract-template-method-change-product"
-              domain="self.dtype = 'Product'"/>
-            <field name="productName"/>
-            <field name="qty" readonlyIf="isConsumptionLine"/>
-            <field name="price"/>
-            <field name="taxLine" canEdit="false"/>
-            <field name="unit" canEdit="false"/>
-            <field name="isConsumptionLine"
-              onChange="action-method-contract-line-change-is-consumption-line"/>
-            <field name="description" colSpan="12" widget="html"/>
-        </panel>
-    </form>
+  <grid name="additional-contract-line-grid-for-template" title="Additional benefit lines"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <field name="productName"/>
+    <field name="qty"/>
+    <field name="price"/>
+  </grid>
 
-    <grid name="additional-contract-line-grid-for-template" title="Additional benefit lines"
-      model="com.axelor.apps.contract.db.ContractLine">
-        <field name="productName"/>
-        <field name="qty"/>
-        <field name="price"/>
-    </grid>
-
-    <form name="additional-contract-line-form-for-template" title="Additional benefit"
-      model="com.axelor.apps.contract.db.ContractLine">
-        <panel name="mainPanel">
-            <field name="product" canEdit="false"
-              onChange="action-contract-template-method-change-product"
-              domain="self.dtype = 'Product'"/>
-            <field name="productName"/>
-            <field name="qty"/>
-            <field name="price"/>
-            <field name="taxLine" canEdit="false"/>
-            <field name="unit" canEdit="false"/>
-            <field name="description" colSpan="12" widget="html"/>
-        </panel>
-    </form>
+  <form name="additional-contract-line-form-for-template" title="Additional benefit"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <panel name="mainPanel">
+      <field name="product" canEdit="false"
+        onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
+      <field name="productName"/>
+      <field name="qty"/>
+      <field name="price"/>
+      <field name="taxLine" canEdit="false"/>
+      <field name="unit" canEdit="false"/>
+      <field name="description" colSpan="12" widget="html"/>
+    </panel>
+  </form>
 
 </object-views>
