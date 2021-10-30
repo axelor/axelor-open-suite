@@ -13,7 +13,7 @@
       title="Bank" required="true"/>
     <many-to-one name="forecastReason"
       ref="com.axelor.apps.cash.management.db.ForecastReason" required="true" title="Reason"/>
-    <decimal name="amount" title="Amount" min="0"/>
+    <decimal name="amount" title="Amount"/>
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realizationDate" title="Realization date"/>
     <string name="comments" title="Comments" large="true"/>
