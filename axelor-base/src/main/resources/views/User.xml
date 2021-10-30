@@ -71,6 +71,7 @@
             <field name="chkPassword" title="Confirm password" placeholder="confirm password"
               widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
             <label name="passwordPatternDescriptionLabel" css="label-danger"/>
+            <field name="passwordUpdatedOn" readonly="true"/>
           </panel>
           <panel name="passwordOptionsPanel" showIf="code != $user">
             <field name="$generateRandomPassword" title="Generate random password"
@@ -200,6 +201,7 @@
             <field name="sendEmailUponPasswordChange"/>
           </panel>
         </panel>
+        <field name="passwordUpdatedOn" readonly="true"/>
       </panel>
     </panel>
 
