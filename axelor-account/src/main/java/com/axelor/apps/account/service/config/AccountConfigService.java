@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.config;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.DebtRecoveryConfigLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
@@ -26,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -36,6 +38,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -629,6 +632,16 @@ public class AccountConfigService {
     for (Journal journal : journalList) {
       journal.setAuthorizeSimulatedMove(false);
       journalRepo.save(journal);
+    }
+    AccountingReportRepository accountingReportRepo = Beans.get(AccountingReportRepository.class);
+    List<AccountingReport> accountingReportList =
+        accountingReportRepo
+            .all()
+            .filter("self.company = ?1 and self.displaySimulatedMove = true", company)
+            .fetch();
+    for (AccountingReport accountingReport : accountingReportList) {
+      accountingReport.setDisplaySimulatedMove(false);
+      accountingReportRepo.save(accountingReport);
     }
   }
 
