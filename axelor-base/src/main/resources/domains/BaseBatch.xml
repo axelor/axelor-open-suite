@@ -6,25 +6,27 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="BaseBatch" lang="java">
-  	
-  	<!-- HEADER -->
-  	<string name="code" title="Code" namecolumn="true" unique="true"/>
-    <integer name="actionSelect" title="Action" required="true" selection="ibase.batch.action.select"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
-    
+
+    <!-- HEADER -->
+    <string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true"
+      selection="ibase.batch.action.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
     <!-- OTHERS INFORMATION -->
-    <string name="description" title="Description" large="true" />
-    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="baseBatch" title="Batchs" />
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="baseBatch" title="Batchs"/>
 
-	<!-- CALENDAR BATCH  -->
-	<integer name="synchronizationDuration" min="0" title="Synchronization duration (week)"/>
- 	<boolean name="allEvents" title="All events"/>
+    <!-- CALENDAR BATCH -->
+    <integer name="synchronizationDuration" min="0" title="Synchronization duration (week)"/>
+    <boolean name="allEvents" title="All events"/>
 
- 	<extra-code>
+    <extra-code>
 		<![CDATA[
 		public static final int ACTION_SYNCHRONIZE_CALENDARS = 2;
 		]]>
- 	</extra-code>
+    </extra-code>
   </entity>
 
 </domain-models>

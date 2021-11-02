@@ -7,11 +7,13 @@
 
   <entity name="TimesheetReport" cacheable="true">
 
-      <date name="fromDate" title="From Date"/>
-      <date name="toDate" title="To Date"/>
-      <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Users"/>
-      <integer name="typeSelect" title="Type" selection="hr.employee.timesheet.report.type.select"/>
-	  <many-to-many name="reminderUserSet" ref="com.axelor.auth.db.User" title="User to be reminded"/>
+    <date name="fromDate" title="From Date"/>
+    <date name="toDate" title="To Date"/>
+    <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Users"/>
+    <integer name="typeSelect" title="Type"
+      selection="hr.employee.timesheet.report.type.select"/>
+    <many-to-many name="reminderUserSet" ref="com.axelor.auth.db.User"
+      title="User to be reminded"/>
 
   </entity>
 

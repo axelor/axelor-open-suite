@@ -103,6 +103,8 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
+import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.ProductVariantServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -241,5 +243,6 @@ public class BaseModule extends AxelorModule {
     bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
     bind(ModelEmailLinkService.class).to(ModelEmailLinkServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
+    bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
   }
 }

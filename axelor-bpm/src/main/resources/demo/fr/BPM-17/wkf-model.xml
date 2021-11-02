@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-17</code>
+
+    <name>Cancel and Compensate (SaleOrder)</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-17" camunda:diagramName="Cancel and Compensate (SaleOrder)" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-17">
+  <bpmn2:process id="Process_SO_compensate" name="Sale Order Compensate" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="SaleOrder" metaModelLabel="SaleOrder (Sale order)" isStartModel="true" model="com.axelor.apps.sale.db.SaleOrder" metaModelFullName="com.axelor.apps.sale.db.SaleOrder" title="Sale Order" />
+        <camunda:processConfigurationParameter metaModel="Invoice" metaModelLabel="Invoice (Invoice)" processPath="saleOrder" isStartModel="false" model="com.axelor.apps.account.db.Invoice" metaModelFullName="com.axelor.apps.account.db.Invoice" title="Invoice" />
+        <camunda:processConfigurationParameter metaModel="StockMove" metaModelLabel="StockMove (Stock move)" processPath="_find(&#39;SaleOrder&#39;, &#39;self.id = ?1&#39;,originId)" pathCondition="stockMove?.originTypeSelect == &#39;com.axelor.apps.sale.db.SaleOrder&#39;" isStartModel="false" model="com.axelor.apps.stock.db.StockMove" metaModelFullName="com.axelor.apps.stock.db.StockMove" pathConditionValue="[{&#34;metaModalName&#34;:&#34;StockMove&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;originTypeSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;com.axelor.apps.sale.db.SaleOrder&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;STRING&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;stockmove.origin.select&#34;,&#34;name&#34;:&#34;originTypeSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;com.axelor.apps.stock.db.Inventory&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;inventory-form&#34;,&#34;grid&#34;:&#34;inventory-grid&#34;},&#34;title&#34;:&#34;Inventory&#34;},{&#34;value&#34;:&#34;com.axelor.apps.sale.db.SaleOrder&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;sale-order-form&#34;,&#34;grid&#34;:&#34;sale-order-grid&#34;},&#34;title&#34;:&#34;Sale order&#34;},{&#34;value&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;purchase-order-form&#34;,&#34;grid&#34;:&#34;purchase-order-grid&#34;},&#34;title&#34;:&#34;Purchase order&#34;},{&#34;value&#34;:&#34;com.axelor.apps.production.db.ManufOrder&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;manuf-order-form&#34;,&#34;grid&#34;:&#34;manuf-order-grid&#34;},&#34;title&#34;:&#34;Manufacturing order&#34;},{&#34;value&#34;:&#34;com.axelor.apps.production.db.OperationOrder&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;operation-order-form&#34;,&#34;grid&#34;:&#34;operation-order-grid&#34;},&#34;title&#34;:&#34;Operation order&#34;},{&#34;value&#34;:&#34;com.axelor.apps.stock.db.StockCorrection&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;stock-correction-form&#34;,&#34;grid&#34;:&#34;stock-correction-grid&#34;},&#34;title&#34;:&#34;Stock correction&#34;}],&#34;type&#34;:&#34;STRING&#34;,&#34;title&#34;:&#34;Origin Type&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;stockmove.origin.select&#34;,&#34;name&#34;:&#34;originTypeSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;com.axelor.apps.stock.db.Inventory&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;inventory-form&#34;,&#34;grid&#34;:&#34;inventory-grid&#34;},&#34;title&#34;:&#34;Inventory&#34;},{&#34;value&#34;:&#34;com.axelor.apps.sale.db.SaleOrder&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;sale-order-form&#34;,&#34;grid&#34;:&#34;sale-order-grid&#34;},&#34;title&#34;:&#34;Sale order&#34;},{&#34;value&#34;:&#34;com.axelor.apps.purchase.db.PurchaseOrder&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;purchase-order-form&#34;,&#34;grid&#34;:&#34;purchase-order-grid&#34;},&#34;title&#34;:&#34;Purchase order&#34;},{&#34;value&#34;:&#34;com.axelor.apps.production.db.ManufOrder&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;manuf-order-form&#34;,&#34;grid&#34;:&#34;manuf-order-grid&#34;},&#34;title&#34;:&#34;Manufacturing order&#34;},{&#34;value&#34;:&#34;com.axelor.apps.production.db.OperationOrder&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;operation-order-form&#34;,&#34;grid&#34;:&#34;operation-order-grid&#34;},&#34;title&#34;:&#34;Operation order&#34;},{&#34;value&#34;:&#34;com.axelor.apps.stock.db.StockCorrection&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:{&#34;form&#34;:&#34;stock-correction-form&#34;,&#34;grid&#34;:&#34;stock-correction-grid&#34;},&#34;title&#34;:&#34;Stock correction&#34;}],&#34;type&#34;:&#34;STRING&#34;,&#34;title&#34;:&#34;Origin Type&#34;}]}]}]}]" title="Stock Move" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="Event_1ti9iuf" name="Start">
+      <bpmn2:outgoing>Flow_1edvmhe</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="Event_02tgzwk" name="End">
+      <bpmn2:incoming>Flow_1c26mn7</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_1c26mn7" sourceRef="Activity_0vgxzq7" targetRef="Event_02tgzwk" />
+    <bpmn2:transaction id="Activity_0vgxzq7" name="Sale order transaction process">
+      <bpmn2:incoming>Flow_1edvmhe</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1c26mn7</bpmn2:outgoing>
+      <bpmn2:subProcess id="Activity_184o3nv" name="Invoice sub process" triggeredByEvent="true">
+        <bpmn2:scriptTask id="Activity_0zhl4rf" name="Invoice cancel" isForCompensation="true" scriptFormat="axelor">
+          <bpmn2:script>invoice.statusSelect = 4</bpmn2:script>
+        </bpmn2:scriptTask>
+        <bpmn2:boundaryEvent id="Event_0lkwqac" attachedToRef="Activity_0uwp4uz">
+          <bpmn2:compensateEventDefinition id="CompensateEventDefinition_080vb7g" />
+        </bpmn2:boundaryEvent>
+        <bpmn2:sequenceFlow id="Flow_0maym7i" sourceRef="Event_0aaxzt7" targetRef="Activity_0uwp4uz" />
+        <bpmn2:startEvent id="Event_0aaxzt7" name="Start invoice" isInterrupting="false" camunda:metaModel="Invoice" camunda:metaModelModelName="com.axelor.apps.account.db.Invoice" camunda:metaModelLabel="Invoice">
+          <bpmn2:outgoing>Flow_0maym7i</bpmn2:outgoing>
+          <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_1x6qthh" camunda:variableName="invoice" camunda:variableEvent="">
+            <bpmn2:condition xs:type="bpmn2:tFormalExpression" language="axelor">invoice != null &amp;&amp; invoice.statusSelect == 2</bpmn2:condition>
+          </bpmn2:conditionalEventDefinition>
+        </bpmn2:startEvent>
+        <bpmn2:endEvent id="Event_1ltgubk" name="End invoice">
+          <bpmn2:incoming>Flow_16wqy6z</bpmn2:incoming>
+        </bpmn2:endEvent>
+        <bpmn2:sequenceFlow id="Flow_16wqy6z" sourceRef="Activity_0uwp4uz" targetRef="Event_1ltgubk" />
+        <bpmn2:task id="Activity_0uwp4uz" name="Invoice generated">
+          <bpmn2:incoming>Flow_0maym7i</bpmn2:incoming>
+          <bpmn2:outgoing>Flow_16wqy6z</bpmn2:outgoing>
+        </bpmn2:task>
+        <bpmn2:association id="Association_1dw6pah" associationDirection="One" sourceRef="Event_0lkwqac" targetRef="Activity_0zhl4rf" />
+      </bpmn2:subProcess>
+      <bpmn2:sequenceFlow id="Flow_0bzrr6n" sourceRef="Event_1xmlbm7" targetRef="Activity_18l3xmp" />
+      <bpmn2:sequenceFlow id="Flow_1t18f16" sourceRef="Activity_18l3xmp" targetRef="Event_1jk5d4p" />
+      <bpmn2:subProcess id="Activity_1nwimop" name="Stock move sub process" triggeredByEvent="true">
+        <bpmn2:scriptTask id="Activity_0terzpy" name="stock move cancel" isForCompensation="true" scriptFormat="axelor" camunda:query="false">
+          <bpmn2:script>stockMove.statusSelect = 4</bpmn2:script>
+        </bpmn2:scriptTask>
+        <bpmn2:endEvent id="Event_1wvjc3k" name="End stock">
+          <bpmn2:incoming>Flow_02vhctk</bpmn2:incoming>
+        </bpmn2:endEvent>
+        <bpmn2:boundaryEvent id="Event_1qghmlh" attachedToRef="Activity_0zil4hc">
+          <bpmn2:compensateEventDefinition id="CompensateEventDefinition_17wtz9s" />
+        </bpmn2:boundaryEvent>
+        <bpmn2:sequenceFlow id="Flow_0ey9ha7" sourceRef="Event_0rntf1s" targetRef="Activity_0zil4hc" />
+        <bpmn2:sequenceFlow id="Flow_02vhctk" sourceRef="Activity_0zil4hc" targetRef="Event_1wvjc3k" />
+        <bpmn2:startEvent id="Event_0rntf1s" name="Start stock" isInterrupting="false">
+          <bpmn2:outgoing>Flow_0ey9ha7</bpmn2:outgoing>
+          <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_17exn1b" camunda:variableName="stockMove" camunda:variableEvent="">
+            <bpmn2:condition xs:type="bpmn2:tFormalExpression" language="axelor">stockMove != null &amp;&amp; stockMove.statusSelect == 2</bpmn2:condition>
+          </bpmn2:conditionalEventDefinition>
+        </bpmn2:startEvent>
+        <bpmn2:task id="Activity_0zil4hc" name="Stock move generated">
+          <bpmn2:incoming>Flow_0ey9ha7</bpmn2:incoming>
+          <bpmn2:outgoing>Flow_02vhctk</bpmn2:outgoing>
+        </bpmn2:task>
+        <bpmn2:association id="Association_19wv0k5" associationDirection="One" sourceRef="Event_1qghmlh" targetRef="Activity_0terzpy" />
+      </bpmn2:subProcess>
+      <bpmn2:startEvent id="Event_1xmlbm7" name="start">
+        <bpmn2:outgoing>Flow_0bzrr6n</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:endEvent id="Event_1jk5d4p" name="End">
+        <bpmn2:incoming>Flow_1t18f16</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:boundaryEvent id="Event_1pt2puz" attachedToRef="Activity_18l3xmp">
+        <bpmn2:outgoing>Flow_1y072i8</bpmn2:outgoing>
+        <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_01n4nzt" camunda:variableName="saleOrder">
+          <bpmn2:condition xs:type="bpmn2:tFormalExpression" language="axelor">saleOrder.statusSelect == 5</bpmn2:condition>
+        </bpmn2:conditionalEventDefinition>
+      </bpmn2:boundaryEvent>
+      <bpmn2:sequenceFlow id="Flow_1y072i8" sourceRef="Event_1pt2puz" targetRef="Event_05jtry4" />
+      <bpmn2:endEvent id="Event_05jtry4" name="Cancel">
+        <bpmn2:incoming>Flow_1y072i8</bpmn2:incoming>
+        <bpmn2:cancelEventDefinition id="CancelEventDefinition_00ve2l0" />
+      </bpmn2:endEvent>
+      <bpmn2:userTask id="Activity_18l3xmp" name="Order created" camunda:completedIf="[5,4]?.contains(saleOrder?.statusSelect )" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;SaleOrder&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;in&#34;,&#34;fieldValue&#34;:[{&#34;name&#34;:&#34;5&#34;,&#34;title&#34;:&#34;Canceled&#34;},{&#34;name&#34;:&#34;4&#34;,&#34;title&#34;:&#34;Order completed&#34;}],&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;sale.order.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft quotation&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finalized quotation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Order confirmed&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Order completed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;readonly&#34;:true,&#34;selection&#34;:&#34;sale.order.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft quotation&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finalized quotation&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Order confirmed&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Order completed&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="model" value="com.axelor.apps.sale.db.SaleOrder" />
+            <camunda:property name="modelName" value="SaleOrder" />
+            <camunda:property name="modelLabel" value="Sale order" />
+            <camunda:property name="modelType" value="metaModel" />
+            <camunda:property name="view" value="sale-order-form" />
+            <camunda:property name="viewLabel" value="Sale order" />
+            <camunda:property name="item" value="cancelBtn" />
+            <camunda:property name="hidden" value="false" />
+            <camunda:property name="itemLabel" value="Cancel" />
+            <camunda:property name="permanent" value="false" />
+          </camunda:properties>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_0bzrr6n</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1t18f16</bpmn2:outgoing>
+      </bpmn2:userTask>
+    </bpmn2:transaction>
+    <bpmn2:boundaryEvent id="Event_0adavzc" attachedToRef="Activity_0vgxzq7">
+      <bpmn2:outgoing>Flow_0d0slun</bpmn2:outgoing>
+      <bpmn2:cancelEventDefinition id="CancelEventDefinition_1mt1mi2" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:endEvent id="Event_0amf300" name="Cancel">
+      <bpmn2:incoming>Flow_0d0slun</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0d0slun" sourceRef="Event_0adavzc" targetRef="Event_0amf300" />
+    <bpmn2:sequenceFlow id="Flow_1edvmhe" sourceRef="Event_1ti9iuf" targetRef="Activity_0vgxzq7" />
+  </bpmn2:process>
+  <bpmn2:error id="Error_0b4f5f9" name="Error_1csu63f" errorCode="Error_1csu63f" camunda:errorMessage="" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_SO_compensate">
+      <bpmndi:BPMNEdge id="Flow_1edvmhe_di" bpmnElement="Flow_1edvmhe" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="168" y="405" />
+        <di:waypoint x="410" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0d0slun_di" bpmnElement="Flow_0d0slun" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="1618" y="838" />
+        <di:waypoint x="1712" y="838" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c26mn7_di" bpmnElement="Flow_1c26mn7" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="1600" y="405" />
+        <di:waypoint x="1732" y="405" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1ti9iuf_di" bpmnElement="Event_1ti9iuf" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="132" y="387" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="138" y="430" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_02tgzwk_di" bpmnElement="Event_02tgzwk" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1732" y="387" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1740" y="430" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_069o94f_di" bpmnElement="Activity_0vgxzq7" isExpanded="true" bioc:stroke="#6097fc" bioc:fill="#e4ebf8" color:background-color="#e4ebf8" color:border-color="#6097fc">
+        <dc:Bounds x="410" y="-120" width="1190" height="1050" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1y072i8_di" bpmnElement="Flow_1y072i8" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="870" y="788" />
+        <di:waypoint x="870" y="840" />
+        <di:waypoint x="1007" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t18f16_di" bpmnElement="Flow_1t18f16" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="870" y="730" />
+        <di:waypoint x="1007" y="730" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bzrr6n_di" bpmnElement="Flow_0bzrr6n" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="658" y="730" />
+        <di:waypoint x="770" y="730" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1u1yoem_di" bpmnElement="Activity_184o3nv" isExpanded="true" bioc:stroke="#6097fc" bioc:fill="#e4ebf8" color:background-color="#e4ebf8" color:border-color="#6097fc">
+        <dc:Bounds x="600" y="-60" width="660" height="310" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_16wqy6z_di" bpmnElement="Flow_16wqy6z" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="1020" y="40" />
+        <di:waypoint x="1202" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0maym7i_di" bpmnElement="Flow_0maym7i" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="738" y="40" />
+        <di:waypoint x="920" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0s1g8ar_di" bpmnElement="Activity_0zhl4rf" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="920" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0atzvsa_di" bpmnElement="Event_0aaxzt7" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="702" y="22" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="690" y="65" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ltgubk_di" bpmnElement="Event_1ltgubk" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1202" y="22" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1192" y="65" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09612go_di" bpmnElement="Activity_0uwp4uz" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="920" y="0" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04mnyh1_di" bpmnElement="Event_0lkwqac" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="922" y="62" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1dw6pah_di" bpmnElement="Association_1dw6pah" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="940" y="98" />
+        <di:waypoint x="940" y="118" />
+        <di:waypoint x="1055" y="118" />
+        <di:waypoint x="1055" y="190" />
+        <di:waypoint x="1020" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_192fknh_di" bpmnElement="Activity_1nwimop" isExpanded="true" bioc:stroke="#6097fc" bioc:fill="#e4ebf8" color:background-color="#e4ebf8" color:border-color="#6097fc">
+        <dc:Bounds x="600" y="290" width="670" height="320" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_02vhctk_di" bpmnElement="Flow_02vhctk" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="970" y="520" />
+        <di:waypoint x="1162" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ey9ha7_di" bpmnElement="Flow_0ey9ha7" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="708" y="520" />
+        <di:waypoint x="870" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0jz7wm7_di" bpmnElement="Activity_0terzpy" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="910" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1wvjc3k_di" bpmnElement="Event_1wvjc3k" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1162" y="502" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1156" y="545" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fbyx4z_di" bpmnElement="Event_0rntf1s" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="672" y="502" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="664" y="545" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fbjgig_di" bpmnElement="Activity_0zil4hc" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="870" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_00112rq_di" bpmnElement="Event_1qghmlh" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="882" y="462" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_19wv0k5_di" bpmnElement="Association_19wv0k5" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="900" y="462" />
+        <di:waypoint x="900" y="446" />
+        <di:waypoint x="960" y="446" />
+        <di:waypoint x="960" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_09o9yyw_di" bpmnElement="Event_1xmlbm7" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="622" y="712" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="629" y="755" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0c5yj32_di" bpmnElement="Event_1jk5d4p" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1007" y="712" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1015" y="755" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_17rdsq5_di" bpmnElement="Event_05jtry4" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1007" y="822" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1008" y="865" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08k944m_di" bpmnElement="Activity_18l3xmp" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="770" y="690" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09ilzg3_di" bpmnElement="Event_1pt2puz" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="852" y="752" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0amf300_di" bpmnElement="Event_0amf300" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="1712" y="820" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1712" y="796" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ny3ycq_di" bpmnElement="Event_0adavzc" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="1582" y="820" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-17</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>

@@ -7,8 +7,10 @@
 
   <entity name="ManufOrder" lang="java">
 
-    <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType" title="Machine type"/>
-    <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Machine"/>
+    <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType"
+      title="Machine type"/>
+    <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine"
+      title="Machine"/>
 
     <extra-code><![CDATA[
 

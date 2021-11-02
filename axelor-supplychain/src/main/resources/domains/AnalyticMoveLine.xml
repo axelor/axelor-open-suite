@@ -6,14 +6,15 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AnalyticMoveLine" lang="java">
-	
-	<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
-	<many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine"/>
-	
-	<track>
-		<field name="saleOrderLine" on="UPDATE"/>
-	</track>
-	
+
+    <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <many-to-one name="purchaseOrderLine"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine"/>
+
+    <track>
+      <field name="saleOrderLine" on="UPDATE"/>
+    </track>
+
   </entity>
 
 </domain-models>

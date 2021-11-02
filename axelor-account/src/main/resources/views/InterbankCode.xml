@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-	<grid name="interbank-code-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="name"/>
-        <field name="description"/>
-    </grid>
-	
-    <grid name="interbank-code-line-custom-grid" title="Interbank codes lists" model="com.axelor.apps.account.db.InterbankCodeLine"> 
-		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-		<field name="name"/>
-		<field name="description"/>
-		<field name="technicalRejectOk"/>
-	</grid>
-	
-    <form name="interbank-code-form" title="Interbank codes lists" model="com.axelor.apps.account.db.InterbankCode" width="large">
-		<panel name="mainPanel">
-			<field name="typeSelect"/>
-			<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-			<field name="name"/>
-			<field name="endDate"/>
-		</panel>
-		<panel name="descriptionPanel" title="Description" >
-			<field name="description" showTitle="false" colSpan="12"/>
-		</panel> 
-		<panel-related name="interbankCodeLineListPanel" field="interbankCodeLineList" form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-grid"/>
-</form>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="interbank-code-grid" title="Blocking reason/reject codes lists"
+    model="com.axelor.apps.account.db.InterbankCode">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name"/>
+    <field name="description"/>
+  </grid>
+
+  <grid name="interbank-code-line-custom-grid" title="Interbank codes lists"
+    model="com.axelor.apps.account.db.InterbankCodeLine">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name"/>
+    <field name="description"/>
+    <field name="technicalRejectOk"/>
+  </grid>
+
+  <form name="interbank-code-form" title="Interbank codes lists"
+    model="com.axelor.apps.account.db.InterbankCode" width="large">
+    <panel name="mainPanel">
+      <field name="typeSelect"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="name"/>
+      <field name="endDate"/>
+    </panel>
+    <panel name="descriptionPanel" title="Description">
+      <field name="description" showTitle="false" colSpan="12"/>
+    </panel>
+    <panel-related name="interbankCodeLineListPanel" field="interbankCodeLineList"
+      form-view="interbank-code-line-custom-form" grid-view="interbank-code-line-grid"/>
+  </form>
+
 </object-views>
