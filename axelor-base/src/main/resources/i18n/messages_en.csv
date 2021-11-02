@@ -1750,7 +1750,7 @@
 "The scheduler service is enabled.",,,
 "The selected replacement account shall have similar property to the Source account. In this case, the replacement account is not set with compulsory anaytic distribution line on Move validation.",,,
 "The tags below can be used as a prefix or a suffix",,,
-"The temporarily closure of an accounting period will restrict operations on the Journal of accounting entries.",,,
+"The temporary closure of an accounting period will restrict operations on the journal of accounting entries.",,,
 "The to date is incorrect",,,
 "The webservice URL to retrieve exchange rate is not configured. Please select the method to retrieve exchange rates in the App Base configuration > Tab Interfaces > Panel Webservices",,,
 "The worth and quantity value of each class must be greater than 0.",,,

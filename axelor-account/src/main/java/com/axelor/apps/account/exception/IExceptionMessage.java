@@ -912,5 +912,5 @@ public interface IExceptionMessage {
       "Please set up an accounting batch to block customers with late payments" /*)*/;
 
   static final String ACCOUNT_PERIOD_TEMPORARILY_CLOSED = /*$$(*/
-      "The period of the move %s is temporarily closed and you do not have the necessary permissions to create entries" /*)*/;
+      "The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves " /*)*/;
 }

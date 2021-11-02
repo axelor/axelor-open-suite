@@ -71,16 +71,16 @@ public class PeriodController {
     try {
       Beans.get(PeriodService.class).validateTempClosure(period);
     } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+    }
+  }
+
+  public void validateClosure(ActionRequest request, ActionResponse response) {
+    Period period = request.getContext().asType(Period.class);
+    try {
+      Beans.get(PeriodService.class).validateClosure(period);
+    } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
-  
-  public void validateClosure(ActionRequest request, ActionResponse response) {
-	    Period period = request.getContext().asType(Period.class);
-	    try {
-	      Beans.get(PeriodService.class).validateClosure(period);
-	    } catch (Exception e) {
-	      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
-	    }
-	  }
 }

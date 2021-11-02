@@ -238,7 +238,7 @@ public class PeriodServiceImpl implements PeriodService {
       }
     }
   }
-  
+
   @Override
   public void validateClosure(Period period) throws AxelorException {
     if (period != null && period.getYear() != null && period.getYear().getCompany() != null) {

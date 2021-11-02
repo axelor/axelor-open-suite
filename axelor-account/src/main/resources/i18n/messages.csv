@@ -2264,7 +2264,7 @@
 "The partner is required and must be the same for all invoices",,,
 "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0.",,,
 "The payment mode is not in adequacy with the invoice type",,,
-"The period of the move %s is temporarily closed and you do not have the necessary permissions to create entries",,,
+"The period of the move %s is temporarily closed and you do not have the necessary permissions to edit moves",,,
 "The project must be the same for all invoices",,,
 "The reconcile %s cannot be removed, please select draft reconcile(s)",,,
 "The reconcile group cannot be validated since there is no lines.",,,
