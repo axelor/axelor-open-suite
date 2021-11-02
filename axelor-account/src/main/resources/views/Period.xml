@@ -27,15 +27,15 @@
 	
 	<action-group id="account-action-period-group-close" name="action-period-group-close">
 		<action name="save"/>
-		<action name="action-method-period-close"/>
 		<action name="action-method-validate-close-period"/>
+		<action name="action-method-period-close"/>
 		<action name="action-method-period-show-buttons"/>
 	</action-group>
 	
 	<action-group id="account-action-period-group-close-temp" name="action-period-group-close-temp">
 		<action name="save"/>
-		<action name="action-method-period-close-temp"/>
 		<action name="action-method-validate-close-temp-period"/>
+		<action name="action-method-period-close-temp"/>
 		<action name="action-method-period-show-buttons"/>
 	</action-group>
 	

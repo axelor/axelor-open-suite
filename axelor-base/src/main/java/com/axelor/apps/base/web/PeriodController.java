@@ -71,7 +71,7 @@ public class PeriodController {
     try {
       Beans.get(PeriodService.class).validateTempClosure(period);
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
 

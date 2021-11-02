@@ -31,7 +31,7 @@
 	        <field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
 	        <field name="temporarilyCloseDate" colSpan="6" showIf="statusSelect == 4" readonly="true"/>
 	        <button name="closeBtn" title="Permanently close period" onClick="action-period-group-close" hidden="true" prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
-	        <button name="temporarilyCloseBtn" title="Temporarily close period" onClick="action-period-group-close-temp" hidden="true" prompt="The temporary closure of an accounting period will restrict operations on the journal of accounting entries."/>
+	        <button name="temporarilyCloseBtn" title="Temporarily close period" onClick="action-period-group-close-temp" hidden="true" prompt="The temporary closure of an accounting period will restrict operations on the journal of accounting entries. Do you want to continue ?"/>
 	        <button name="adjustBtn" title="Adjust period" onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" hidden="true" />
 	        <button name="openBtn" title="Open period" onClick="save,action-period-record-status-open" hidden="true"/>
     	</panel>
@@ -61,14 +61,14 @@
     
 	<action-group name="action-period-group-close">
 		<action name="save"/>
-		<action name="action-method-period-close"/>
 		<action name="action-method-validate-close-period"/>
+		<action name="action-method-period-close"/>
 	</action-group>
 	
 	<action-group name="action-period-group-close-temp">
 		<action name="save"/>
-		<action name="action-method-period-close-temp"/>
 		<action name="action-method-validate-close-temp-period"/>
+		<action name="action-method-period-close-temp"/>
 	</action-group>
 
 	<action-method name="action-method-period-close">

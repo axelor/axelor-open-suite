@@ -33,6 +33,7 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import javax.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PeriodServiceAccountImpl extends PeriodServiceImpl implements PeriodServiceAccount {
@@ -80,6 +81,9 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
+      if (CollectionUtils.isEmpty(accountConfig.getClosureAuthorizedRoleList())) {
+        return true;
+      }
       for (Role role : accountConfig.getClosureAuthorizedRoleList()) {
         if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
           return true;
@@ -93,6 +97,9 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(period.getYear().getCompany());
+      if (CollectionUtils.isEmpty(accountConfig.getClosureAuthorizedRoleList())) {
+        return true;
+      }
       for (Role role : accountConfig.getTemporaryClosureAuthorizedRoleList()) {
         if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
           return true;
