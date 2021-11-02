@@ -242,4 +242,7 @@
     <bind to="reportType" search="self.importId = :reportTypeId"/>
   </input>
 
+  <input file="base_year.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.base.db.Year"/>
+
 </csv-inputs>
