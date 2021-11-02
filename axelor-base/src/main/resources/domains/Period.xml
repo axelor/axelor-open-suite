@@ -13,9 +13,9 @@
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
     <integer name="statusSelect" title="Status" readonly="true" selection="base.period.status.select" default="1"/>
-    <datetime name="closureDateTime" title="Permanently Closure date"/>
+    <datetime name="closureDateTime" title="Permanent closure date"/>
     <one-to-many name="adjustHistoryList" ref="com.axelor.apps.base.db.AdjustHistory" title="Adjust History" mappedBy="period"/>
-    <date name="temporarilyCloseDate" title="Temporarily Closure Date"/>
+    <date name="temporarilyCloseDate" title="Temporarily closure date"/>
   
   	<extra-code><![CDATA[
 	
