@@ -1051,7 +1051,7 @@
 "Depreciation method","метод амортизации",,
 "Description","Описание",,
 "Description required",,,
-"Designated account %s in move line %s is not allowed on the designated journal. Please modify journal settings or designated account to proceed.",,,
+"Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed.",,,
 "Detail",,,
 "Detail payment amount",,,
 "Detailed","Подробнее",,

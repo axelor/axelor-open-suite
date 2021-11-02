@@ -1,54 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="bank-details-bank-order-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
-		<field name="ownerName"/>
-		<field name="bankAddress"/>
-		<field name="iban"/>
-		<field name="bank.code"/>
-	</grid>
+  <grid name="bank-details-bank-order-grid" title="Bank details"
+    model="com.axelor.apps.base.db.BankDetails">
+    <field name="ownerName"/>
+    <field name="bankAddress"/>
+    <field name="iban"/>
+    <field name="bank.code"/>
+  </grid>
 
-    <grid name="bank-details-bank-order-company-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails" groupBy="company">
-        <field name="ownerName"/>
-        <field name="bankAddress"/>
-        <field name="iban"/>
-        <field name="code"/>
-        <field name="bank.code"/>
-        <field name="company" hidden="true" />
-		<field name="balanceUpdatedDate" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')">
-			<hilite if="$moment(__config__.date).diff(balanceUpdatedDate,'days') &gt; 3 &amp;&amp; $moment(__config__.date).diff(balanceUpdatedDate,'days') &lt; 7" color="warning" />
-			<hilite if="$moment(__config__.date).diff(balanceUpdatedDate,'days') &gt; 7" color="danger" />
-		</field>
-		<field name="balance" aggregate="sum" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')">
-			<hilite if="balance == 0" color="warning" />
-			<hilite if="balance &lt; 0" color="danger" />
-		</field>
-		<button name="showBalanceBtn" icon="fa-search" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" onClick="action-bank-details-view-show-bank-statement-lines"/>
-    </grid>
+  <grid name="bank-details-bank-order-company-grid" title="Bank details"
+    model="com.axelor.apps.base.db.BankDetails" groupBy="company">
+    <field name="ownerName"/>
+    <field name="bankAddress"/>
+    <field name="iban"/>
+    <field name="code"/>
+    <field name="bank.code"/>
+    <field name="company" hidden="true"/>
+    <field name="balanceUpdatedDate" if-module="axelor-bank-payment"
+      if="__config__.app.isApp('bank-payment')">
+      <hilite
+        if="$moment(__config__.date).diff(balanceUpdatedDate,'days') &gt; 3 &amp;&amp; $moment(__config__.date).diff(balanceUpdatedDate,'days') &lt; 7"
+        color="warning"/>
+      <hilite if="$moment(__config__.date).diff(balanceUpdatedDate,'days') &gt; 7"
+        color="danger"/>
+    </field>
+    <field name="balance" aggregate="sum" if-module="axelor-bank-payment"
+      if="__config__.app.isApp('bank-payment')">
+      <hilite if="balance == 0" color="warning"/>
+      <hilite if="balance &lt; 0" color="danger"/>
+    </field>
+    <button name="showBalanceBtn" icon="fa-search" if-module="axelor-bank-payment"
+      if="__config__.app.isApp('bank-payment')"
+      onClick="action-bank-details-view-show-bank-statement-lines"/>
+  </grid>
 
-    <tree name="bank-details-bank-payment-tree" title="Bank details tree">
-		<column name="company" type="string"/>
-		<column name="bankDetails" type="string"/>
-		<column name="active" type="boolean"/>
-		<column name="balanceUpdatedDate" type="date"/>
-		<column name="balance" type="decimal"/>
-		<column name="balanceBtn" type="button"/>
-    <column name="finalBalanceBtn" type="button" />
+  <tree name="bank-details-bank-payment-tree" title="Bank details tree">
+    <column name="company" type="string"/>
+    <column name="bankDetails" type="string"/>
+    <column name="active" type="boolean"/>
+    <column name="balanceUpdatedDate" type="date"/>
+    <column name="balance" type="decimal"/>
+    <column name="balanceBtn" type="button"/>
+    <column name="finalBalanceBtn" type="button"/>
 
-		<node model="com.axelor.apps.base.db.Company" onClick="action-company-form-view">
-			<field name="name" as="company"/>
-		</node>
+    <node model="com.axelor.apps.base.db.Company" onClick="action-company-form-view">
+      <field name="name" as="company"/>
+    </node>
 
-		<node model="com.axelor.apps.base.db.BankDetails" onClick="action-bank-details-form-view" parent="company">
-			<field name="fullName" as="bankDetails"/>
-			<field name="active" as="active"/>
-			<field name="balanceUpdatedDate" as="balanceUpdatedDate"/>
-			<field name="balance" as="balance"/>
-			<button name="balanceBtn" icon="fa-search" onClick="action-bank-details-view-show-bank-statement-lines"/>
-            <button name="finalBalanceBtn" icon="fa-indent" onClick="action-bank-details-view-show-bank-statement-lines-final-balance" />
-		</node>
-	</tree>
+    <node model="com.axelor.apps.base.db.BankDetails" onClick="action-bank-details-form-view"
+      parent="company">
+      <field name="fullName" as="bankDetails"/>
+      <field name="active" as="active"/>
+      <field name="balanceUpdatedDate" as="balanceUpdatedDate"/>
+      <field name="balance" as="balance"/>
+      <button name="balanceBtn" icon="fa-search"
+        onClick="action-bank-details-view-show-bank-statement-lines"/>
+      <button name="finalBalanceBtn" icon="fa-indent"
+        onClick="action-bank-details-view-show-bank-statement-lines-final-balance"/>
+    </node>
+  </tree>
 
 </object-views>
