@@ -16,7 +16,7 @@
 			<attribute name="onSave" value="action-method-period-show-buttons"/>
 		</extend>
 		<extend target="//button[@name='openBtn']">
-			<attribute name="onClick" value="save,action-period-record-status-open,action-method-period-show-buttons"/>
+			<attribute name="onClick" value="save,action-period-record-status-open,action-method-period-show-buttons,save"/>
 		</extend>
 	</form>
 	
