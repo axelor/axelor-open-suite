@@ -1,60 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppAccount" lang="java">
-		
-		<one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
-		
-		<!-- Comptabilité -->
-		<many-to-one name="transferAndDirectDebitInterbankCode" ref="com.axelor.apps.account.db.InterbankCode"
-			title="Code list for rejects/return of Direct debit, Wire Transfers and IPO" />
-		<many-to-one name="chequeInterbankCode" ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques" />
-		<one-to-many name="payerQualityConfigLineList" ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)" />
-		
-		<boolean name="manageCustomerCredit" title="Manage customerCredit"/>
-		<boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
-		<boolean name="manageFactors" />
+  <entity name="AppAccount" lang="java">
 
-        <integer name="partnerBalConfigSelect" title="Partner balance viewer configuration" selection="account.partner.bal.config.select" default="1"/>
+    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
-		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
-        <boolean name="paymentVouchersOnInvoice" />
-        
-        <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
-        <boolean name="manageFinancialDiscount" title="Manage financial discount" help="Field allowing to activate the financial discounts"/>
-        
-        <!-- DAS2 - N4DS -->
-        <many-to-one name="defaultServiceTypeTypology" ref="com.axelor.apps.account.db.ServiceType" title="Default service type" />
-        <string name="dasActiveNorm" title="Current version of N4DS standard"/>
-        
-		<extra-code><![CDATA[
-	
-	   
+    <!-- Comptabilité -->
+    <many-to-one name="transferAndDirectDebitInterbankCode"
+      ref="com.axelor.apps.account.db.InterbankCode"
+      title="Code list for rejects/return of Direct debit, Wire Transfers and IPO"/>
+    <many-to-one name="chequeInterbankCode"
+      ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques"/>
+    <one-to-many name="payerQualityConfigLineList"
+      ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)"/>
+
+    <boolean name="manageCustomerCredit" title="Manage customerCredit"/>
+    <boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
+    <boolean name="manageFactors"/>
+
+    <integer name="partnerBalConfigSelect" title="Partner balance viewer configuration"
+      selection="account.partner.bal.config.select" default="1"/>
+
+    <boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice"
+      default="true"/>
+    <boolean name="paymentVouchersOnInvoice"/>
+
+    <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
+    <boolean name="manageFinancialDiscount" title="Manage financial discount"
+      help="Field allowing to activate the financial discounts"/>
+
+    <!-- DAS2 - N4DS -->
+    <many-to-one name="defaultServiceTypeTypology"
+      ref="com.axelor.apps.account.db.ServiceType" title="Default service type"/>
+    <string name="dasActiveNorm" title="Current version of N4DS standard"/>
+
+    <extra-code><![CDATA[
+
+
 		public static final int DISTRIBUTION_TYPE_FREE = 1;
 		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
 		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
-	
-	
+
+
 		]]></extra-code>
-		
-		<track>
-			<field name="transferAndDirectDebitInterbankCode" on="UPDATE"/>
-			<field name="chequeInterbankCode" on="UPDATE"/>
-	
-			<field name="manageCustomerCredit" on="UPDATE"/>
 
-			<field name="manageAnalyticAccounting" on="UPDATE"/>
+    <track>
+      <field name="transferAndDirectDebitInterbankCode" on="UPDATE"/>
+      <field name="chequeInterbankCode" on="UPDATE"/>
 
-			<field name="manageFactors" on="UPDATE"/>
-			<field name="partnerBalConfigSelect" on="UPDATE"/>
-			<field name="manageAdvancePaymentInvoice" on="UPDATE"/>
-			<field name="paymentVouchersOnInvoice" on="UPDATE"/>
-			<field name="manageFinancialDiscount" on="UPDATE"/>
-		</track>
-	</entity>
+      <field name="manageCustomerCredit" on="UPDATE"/>
+
+      <field name="manageAnalyticAccounting" on="UPDATE"/>
+
+      <field name="manageFactors" on="UPDATE"/>
+      <field name="partnerBalConfigSelect" on="UPDATE"/>
+      <field name="manageAdvancePaymentInvoice" on="UPDATE"/>
+      <field name="paymentVouchersOnInvoice" on="UPDATE"/>
+      <field name="manageFinancialDiscount" on="UPDATE"/>
+    </track>
+  </entity>
 
 </domain-models>

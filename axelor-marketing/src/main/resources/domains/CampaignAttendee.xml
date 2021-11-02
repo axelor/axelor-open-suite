@@ -6,11 +6,12 @@
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
   <entity name="CampaignAttendee" lang="java" sequential="true">
-  	
-  	<string name="relatedToSelect" title="Related to" selection="campaign.attendee.related.to.select"/>
+
+    <string name="relatedToSelect" title="Related to"
+      selection="campaign.attendee.related.to.select"/>
     <long name="relatedToSelectId"/>
-  	<many-to-one name="campaign" ref="Campaign" />
-  
+    <many-to-one name="campaign" ref="Campaign"/>
+
   </entity>
 
 </domain-models>

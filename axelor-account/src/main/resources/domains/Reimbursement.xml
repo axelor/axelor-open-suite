@@ -6,39 +6,47 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="Reimbursement" sequential="true" lang="java">
-  
-  	<string name="ref" title="Ref." namecolumn="true" readonly="true"/>
-	<integer name="statusSelect" title="Status" selection="iaccount.reimbursement.status.select"/>
-	
-	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
-	<many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine" title="Overdue payment"/>
+
+    <string name="ref" title="Ref." namecolumn="true" readonly="true"/>
+    <integer name="statusSelect" title="Status"
+      selection="iaccount.reimbursement.status.select"/>
+
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
+    <many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine"
+      title="Overdue payment"/>
     <decimal name="amountReimbursed" title="Reimbursed amount" readonly="true"/>
-	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Bank Details"/>
     <string name="description" title="Description"/>
-    
-    <boolean name="rejectedOk" title="Rejected reimbursement" default="false" readonly="true"/>
-    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason" readonly="true"/>
+
+    <boolean name="rejectedOk" title="Rejected reimbursement" default="false"
+      readonly="true"/>
+    <many-to-one name="interbankCodeLine"
+      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason" readonly="true"/>
     <date name="rejectDate" title="Rejection date" readonly="true"/>
-	<many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Rejection move line" readonly="true"/>
-  	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-	
-	<decimal name="amountToReimburse" title="Amount to reimburse" readonly="true">
+    <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine"
+      title="Rejection move line" readonly="true"/>
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
+    <decimal name="amountToReimburse" title="Amount to reimburse" readonly="true">
 		<![CDATA[
     		BigDecimal total = new BigDecimal("0.0");
-	    	
+
 	    	if (moveLineSet != null && !moveLineSet.isEmpty()){
 	    		for (MoveLine line : moveLineSet){
 	    			total = total.add(line.getAmountRemaining());
 	    		}
 	    	}
-	    	
+
 	    	return total;
 	    ]]>
     </decimal>
-    
-	<unique-constraint columns="ref,company"/>
-    
+
+    <unique-constraint columns="ref,company"/>
+
     <extra-code><![CDATA[
 
     // STATUS SELECT
@@ -47,9 +55,9 @@
 	public static final int STATUS_VALIDATED = 3;
 	public static final int STATUS_REIMBURSED = 4;
 	public static final int STATUS_CANCELED = 5;
-	
+
     ]]></extra-code>
-	
+
   </entity>
 
 </domain-models>
