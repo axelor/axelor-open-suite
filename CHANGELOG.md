@@ -1,4 +1,24 @@
 # Changelog
+## [5.2.19] - 2021-11-02
+#### Bug Fixes
+
+* ACCOUNT MOVE: fix copy feature by resetting more fields during copy.
+* Advanced Export: add includeArchivedRecords boolean to manage archived records.
+* Lead: remove useless action called on lead creation causing issues with permission.
+* Account management: Add missing form and grid view to the field analytic distribution template.
+* SaleOrder: In sale order form view, fix invoice printing from a dashlet line.
+* PURCHASEORDER: fixed an issue where purchase orders were wrongfully labeled as delivered.
+* Email sending: fix NPE when sending email from scheduler.
+* Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order.
+* BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually.
+* Product Category: fix wrong grid view used for parent product category.
+* AbstractBatch: Fixed duration which was computed in minutes instead of seconds.
+* PRODUCT and PURCHASEORDERLINE: fix currency conversion when updating and using last purchase price.
+* Mrp: fix MRP process being stuck in a loop with wrong mrp line type configuration.
+* Advance payment invoice: prevent refund creation.
+* Move: in move grid view, fix NPE when we click on the button 'delete' without any move selected.
+* Fix french translation 'Personnaliser' to 'Personnalisé'.
+
 ## [5.2.18] - 2021-04-29
 ## Bug Fixes
 * ACCOUNT REVERSE MOVE: When generating a reverse move, keep references to analytic move lines.
@@ -771,6 +791,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[5.2.19]: https://github.com/axelor/axelor-open-suite/compare/v5.2.18...v5.2.19
 [5.2.18]: https://github.com/axelor/axelor-open-suite/compare/v5.2.17...v5.2.18
 [5.2.17]: https://github.com/axelor/axelor-open-suite/compare/v5.2.16...v5.2.17
 [5.2.16]: https://github.com/axelor/axelor-open-suite/compare/v5.2.15...v5.2.16
