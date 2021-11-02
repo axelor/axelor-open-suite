@@ -1,4 +1,20 @@
 # Changelog
+## 5.1.18 (2021-11-02)
+
+#### Fixed
+
+* LogisticalFormLine: Fix stock move line domain.
+* Stock Move Line: fixed conversion issue when changing values in editable-grid and form view.
+* ADVANCED EXPORT: fix extended selections not being exported.
+* EMPLOYMENT CONTRACT: fixed EmploymentContractTemplate doesn't exist error when printing.
+* Move line export: fix issue when exporting lines with special char in description.
+* PurchaseOrder: Fixed error on requesting when production module was missing.
+* Timesheet, Expense: Fix filter after clicking "Show timesheets/expenses to be validated".
+* AppCrm: Change french translation of the configuration to display customer description in opportunity.
+* Demo data: fix ICalendar permission that were not working.
+* Purchase order: fix error due to missing parameter when generating a purchase order printing for an email.
+* SaleOrder: fix NPE on product selection when the current user does not have an active company.
+
 ## [5.1.17] - 2020-10-09
 ## Improvements
 - SALE ORDER: set end of validity date when creating sale order from opportunity and project.
@@ -1600,6 +1616,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
+[5.1.18]: https://github.com/axelor/axelor-open-suite/compare/v5.1.17...v5.1.18
 [5.1.17]: https://github.com/axelor/axelor-open-suite/compare/v5.1.16...v5.1.17
 [5.1.16]: https://github.com/axelor/axelor-open-suite/compare/v5.1.15...v5.1.16
 [5.1.15]: https://github.com/axelor/axelor-open-suite/compare/v5.1.14...v5.1.15
