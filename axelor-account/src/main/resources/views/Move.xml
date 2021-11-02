@@ -343,7 +343,8 @@
   </action-group>
 
   <action-validate name="action-account-validate-prompt">
-    <alert message="The accounting of a move brings irrevocable integration of a move in Moves book" />
+    <alert
+      message="The accounting of a move brings irrevocable integration of a move in Moves book"/>
   </action-validate>
 
   <action-validate name="action-move-validate-check-date-of-reversion">
@@ -422,10 +423,12 @@
   </action-attrs>
 
   <action-attrs name="action-move-attrs-validate-button-title">
-    <attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
-      if="eval: !company?.accountConfig?.accountingDaybook || (statusSelect == MoveRepository.STATUS_ACCOUNTED || statusSelect == MoveRepository.STATUS_SIMULATED)" />
-    <attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('DayBook')"
-      if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect != MoveRepository.STATUS_ACCOUNTED &amp;&amp; statusSelect != MoveRepository.STATUS_SIMULATED)" />
+    <attribute name="title" for="validateBtn"
+      expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
+      if="eval: !company?.accountConfig?.accountingDaybook || (statusSelect == MoveRepository.STATUS_ACCOUNTED || statusSelect == MoveRepository.STATUS_SIMULATED)"/>
+    <attribute name="title" for="validateBtn"
+      expr="eval: com.axelor.i18n.I18n.get('DayBook')"
+      if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect != MoveRepository.STATUS_ACCOUNTED &amp;&amp; statusSelect != MoveRepository.STATUS_SIMULATED)"/>
   </action-attrs>
 
   <action-attrs
