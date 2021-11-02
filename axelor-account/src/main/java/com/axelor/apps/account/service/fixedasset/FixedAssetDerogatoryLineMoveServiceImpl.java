@@ -178,8 +178,10 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetDerogatoryLine.getDepreciationDate();
-    String origin = fixedAsset.getFixedAssetSeq();
-
+    String origin =
+        fixedAsset.getFixedAssetSeq() != null
+            ? fixedAsset.getFixedAssetSeq()
+            : fixedAsset.getReference();
     log.debug(
         "Creating an fixed asset derogatory line specific accounting entry {} (Company : {}, Journal : {})",
         fixedAsset.getReference(),

@@ -246,7 +246,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
-    String origin = fixedAsset.getFixedAssetSeq();
+    String origin =
+        fixedAsset.getFixedAssetSeq() != null
+            ? fixedAsset.getFixedAssetSeq()
+            : fixedAsset.getReference();
     BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
     BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
 
@@ -350,7 +353,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
-    String origin = fixedAsset.getFixedAssetSeq();
+    String origin =
+        fixedAsset.getFixedAssetSeq() != null
+            ? fixedAsset.getFixedAssetSeq()
+            : fixedAsset.getReference();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -442,7 +448,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
-    String origin = fixedAsset.getFixedAssetSeq();
+    String origin =
+        fixedAsset.getFixedAssetSeq() != null
+            ? fixedAsset.getFixedAssetSeq()
+            : fixedAsset.getReference();
 
     // Creating move
     Move move =
@@ -559,7 +568,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Journal journal = company.getAccountConfig().getCustomerSalesJournal();
     Partner partner = fixedAsset.getPartner();
-    String origin = fixedAsset.getFixedAssetSeq();
+    String origin =
+        fixedAsset.getFixedAssetSeq() != null
+            ? fixedAsset.getFixedAssetSeq()
+            : fixedAsset.getReference();
 
     // Creating move
     Move move =
