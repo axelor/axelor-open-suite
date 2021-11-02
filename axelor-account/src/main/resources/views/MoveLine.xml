@@ -466,6 +466,7 @@
 	<action name="action-method-move-line-set-required-analytic-accounts"/>
 	<action name="action-method-change-account-set-default-distribution-template"/>
     <action name="action-method-move-line-remove-account"/>
+    <action name="action-method-print-analytic-account-on-move-line"/>
   </action-group>
 
 	<action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">
