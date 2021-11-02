@@ -1,4 +1,4 @@
 ---
-title: "Advance search : fix syntax error in if condition."
+title: "Invoice line: in advance search, fix an error where it was not possible to select the field 'budget'."
 type: fix
 

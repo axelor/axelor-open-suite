@@ -1,4 +1,4 @@
 ---
-title: "InvoicePayment : NPE on payment cancel"
+title: "Invoice Payment: fix NPE on payment cancel."
 type: fix
 

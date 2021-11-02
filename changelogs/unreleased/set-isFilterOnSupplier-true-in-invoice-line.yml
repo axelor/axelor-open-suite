@@ -1,3 +1,3 @@
 ---
-title: "INVOICE LINE: isFilterOnSupplier is always true and can be set false manually."
+title: "INVOICE LINE: fixed an issue where the 'filter on supplier' field deactivated after a different modification in the form view."
 type: fix

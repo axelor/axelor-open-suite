@@ -1,4 +1,4 @@
 ---
-title: "BANK PAYMENT BATCH: renamed the controller method launchBankPaymentBatch to actionEbicsCertificate"
+title: "BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually."
 type: fix
 
