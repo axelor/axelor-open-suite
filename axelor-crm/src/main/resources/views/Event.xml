@@ -162,9 +162,15 @@
           <field name="subject" showTitle="true" colSpan="12"/>
         </editor>
       </field>
-      <field name="startDateTime" colSpan="3"
+      <field name="startDateTime" showIf="statusSelect == 1 || statusSelect == 11"
+        title="Planned start date" colSpan="3"
         onChange="action-event-method-compute-from-start-date-time,action-event-attrs-show-past-event-text"/>
-      <field name="endDateTime" colSpan="3"
+      <field name="startDateTime" hideIf="statusSelect == 1 || statusSelect == 11" colSpan="3"
+        onChange="action-event-method-compute-from-start-date-time,action-event-attrs-show-past-event-text"/>
+      <field name="endDateTime" showIf="statusSelect == 1 || statusSelect == 11"
+        title="Planned end date" colSpan="3"
+        onChange="action-event-method-compute-from-end-date-time"/>
+      <field name="endDateTime" hideIf="statusSelect == 1 || statusSelect == 11" colSpan="3"
         onChange="action-event-method-compute-from-end-date-time"/>
       <field name="allDay" colSpan="2"/>
       <field name="duration" widget="duration" colSpan="2"
