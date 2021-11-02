@@ -1,4 +1,26 @@
 # Changelog
+## [5.3.17] - 2021-11-02
+
+#### Fixed
+
+* ACCOUNT MOVE: fix copy feature by resetting more fields during copy.
+* Advanced Export: add includeArchivedRecords boolean to manage archived records.
+* Lead: remove useless action called on lead creation causing issues with permission.
+* Account management: Add missing form and grid view to the field analytic distribution template.
+* PURCHASEORDER: fixed an issue where purchase orders were wrongfully labeled as delivered.
+* Forecast Recap: fix the display of bank details last update balance date in form view.
+* Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order.
+* BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually.
+* Batch: Fixed duration which was computed in minutes instead of seconds.
+* TimesheetLine: fix rounding issues during working hours computation.
+* PRODUCT and PURCHASEORDERLINE: fix currency conversion when updating and using last purchase price.
+* Product Category: fix wrong grid view used for parent product category.
+* Extra hours: fix typo in french translation.
+* Invoice line: in advance search, fix an error where it was not possible to select the field 'budget'.
+* Advance payment invoice: prevent refund creation.
+* Move: in move grid view, fix NPE when we click on the button 'delete' without any move selected.
+* Fix french translation 'Personnaliser' to 'Personnalisé'.
+
 ## [5.3.16] - 2021-07-08
 
 #### Fixed
@@ -597,6 +619,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
+[5.3.17]: https://github.com/axelor/axelor-open-suite/compare/v5.3.16...v5.3.17
 [5.3.16]: https://github.com/axelor/axelor-open-suite/compare/v5.3.15...v5.3.16
 [5.3.15]: https://github.com/axelor/axelor-open-suite/compare/v5.3.14...v5.3.15
 [5.3.14]: https://github.com/axelor/axelor-open-suite/compare/v5.3.13...v5.3.14
