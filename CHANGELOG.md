@@ -1,3 +1,41 @@
+## [5.4.10] (2021-11-02)
+
+#### Changes
+
+* STOCKLOCATION: Add new configuration to compute stock valuation by purchase value.
+
+#### Fixed
+
+* ACCOUNT MOVE: fix copy feature by resetting more fields during copy.
+* Stock Move Line: unit price become readonly when generated from orders.
+* Advanced Export: add includeArchivedRecords boolean to manage archived records.
+* MRP: Use default procurement method configured in product per company.
+* Lead: remove useless action called on lead creation causing issues with permission.
+* FixedAsset: Fixed filter on company on Fixed asset category.
+* INVOICE LINE: fixed an issue where the 'filter on supplier' field deactivated after a different modification in the form view.
+* Account management: Add missing form and grid view to the field analytic distribution template.
+* Product: Add unicity constraint on serial number.
+* PURCHASEORDER: fixed an issue where purchase orders were wrongfully labeled as delivered.
+* Forecast Recap: fix display of bank details last update balance date in form view.
+* PRODUCT: Fix barcode image generation for Code\_39 and code\_128.
+* Product Category: fix wrong grid view used for parent product category.
+* Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order.
+* Invoice Payment: fix NPE on payment cancel.
+* Stocks: Fixed an issue where dashboards 'Upcoming supplier arrivals' and 'Late supplier arrivals' would either be empty or displaying unrelevant data.
+* BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually.
+* BatchLeaveManagement: Fix an issue where created leave lines had an empty name.
+* Batch: Fixed duration which was computed in minutes instead of seconds.
+* TimesheetLine: wrong rounded value fixed in working hours computation.
+* Sale order line: When adding a pack on a quotation, correctly set analytic, supply and production information.
+* Printings: fix printings issues when using an external birt runtime.
+* PRODUCT and PURCHASEORDERLINE: fix currency conversion when updating and using last purchase price.
+* Extra hours: fix typo in french translation.
+* Invoice line: in advance search, fix an error where it was not possible to select the field 'budget'.
+* Move: fix rounding issue display on totals during manual creation of a move line.
+* Advance payment invoice: prevent refund creation.
+* Move: in move grid view, fix NPE when we click on the button 'delete' without any move selected.
+* Fix french translation 'Personnaliser' to 'Personnalisé'.
+
 ## [5.4.9] (2021-06-08)
 
 #### Changes
@@ -400,6 +438,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.10]: https://github.com/axelor/axelor-open-suite/compare/v5.4.9...v5.4.10
 [5.4.9]: https://github.com/axelor/axelor-open-suite/compare/v5.4.8...v5.4.9
 [5.4.8]: https://github.com/axelor/axelor-open-suite/compare/v5.4.7...v5.4.8
 [5.4.7]: https://github.com/axelor/axelor-open-suite/compare/v5.4.6...v5.4.7

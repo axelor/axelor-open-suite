@@ -1,4 +1,0 @@
----
-title: "BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually."
-type: fix
-

@@ -1,3 +1,0 @@
----
-title: "Move: in move grid view, fix NPE when we click on the button 'delete' without any move selected."
-type: fix

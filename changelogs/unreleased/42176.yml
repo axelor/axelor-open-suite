@@ -1,3 +1,0 @@
----
-title: "Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order."
-type: fix
