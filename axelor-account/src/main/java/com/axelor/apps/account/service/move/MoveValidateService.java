@@ -296,7 +296,12 @@ public class MoveValidateService {
 
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
 
-    if (daybook && move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+    if (daybook
+        && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+            || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)
+        && !(move.getTechnicalOriginSelect() == MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC)
+        && (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
+            || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)) {
       move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
     } else {
       move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
