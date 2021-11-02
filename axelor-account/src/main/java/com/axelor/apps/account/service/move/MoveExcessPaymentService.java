@@ -77,7 +77,7 @@ public class MoveExcessPaymentService {
                       + " AND self.partner = ?5 ORDER BY self.date ASC",
                   company,
                   MoveRepository.STATUS_VALIDATED,
-                  MoveRepository.STATUS_DAYBOOK,
+                  MoveRepository.STATUS_ACCOUNTED,
                   true,
                   invoice.getPartner())
               .fetch();

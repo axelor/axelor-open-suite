@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="import-export-interface-grid" title="Import/Export interface"
+    model="com.axelor.apps.base.db.ImportExportInterface">
+    <field name="target"/>
+    <field name="interfaceSelect"/>
+    <field name="code"/>
+  </grid>
+
+  <form name="import-export-interface-form" title="Import/Export interface"
+    model="com.axelor.apps.base.db.ImportExportInterface">
+    <panel name="mainPanel">
+      <field name="target" widget="RefSelect" x-related="targetId" colSpan="12"/>
+      <field name="interfaceSelect"/>
+      <field name="code"/>
+    </panel>
+  </form>
+
+</object-views>

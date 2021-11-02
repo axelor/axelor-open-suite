@@ -1,132 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="HRConfig" cacheable="true">
-    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
-    <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product" title="Kilometric expense product" />
-    <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20"/>
-    <decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20"/>
-    <many-to-one name="toJustifyLeaveReason" title="Leave Reason for Leave to justify" ref="com.axelor.apps.hr.db.LeaveReason"/>
-    <string name="exportCodeForExtraHours" title="Export code for extra hour management" />
-    <string name="exportCodeForDuration" title="Export code for duration" />
-    
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true" unique="true"/>
+    <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product"
+      title="Kilometric expense product"/>
+    <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2"
+      precision="20"/>
+    <decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share"
+      scale="2" precision="20"/>
+    <many-to-one name="toJustifyLeaveReason" title="Leave Reason for Leave to justify"
+      ref="com.axelor.apps.hr.db.LeaveReason"/>
+    <string name="exportCodeForExtraHours" title="Export code for extra hour management"/>
+    <string name="exportCodeForDuration" title="Export code for duration"/>
+
     <!-- LUNCH VOUCHERS MANAGEMENT -->
-    
+
     <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers"/>
     <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
-    <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner" title="Lunch voucher supplier"/>
-	<integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select"/>
+    <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner"
+      title="Lunch voucher supplier"/>
+    <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format"
+      selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select"/>
 
-    <string name="exportCodeForLunchVoucherManagement" title="Export code for lunch voucher management" />
-    
+    <string name="exportCodeForLunchVoucherManagement"
+      title="Export code for lunch voucher management"/>
+
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->
-  	<boolean name="leaveMailNotification" title="Leave Request Notification Mail"/>
-  	<many-to-one name="sentLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Sent Leave Request Template"/>
-  	<many-to-one name="validatedLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Leave Request Template"/>
-  	<many-to-one name="refusedLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Leave Request Template"/>
-  	<many-to-one name="canceledLeaveTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Leave Request Template"/>
-  	
-  	<many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning"/>
-  	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Weekly Planning"/>
-  	<one-to-many name="kilometricAllowanceRateList" ref="com.axelor.apps.hr.db.KilometricAllowanceRate" title="Kilometric allowance rates" mappedBy="hrConfig"/>
-  	
-  	<!-- TIMESHEET MAIL NOTIFICATION -->
-  	<boolean name="timesheetMailNotification" title="Timesheet Notification Mail"/>
-  	<many-to-one name="sentTimesheetTemplate" ref="com.axelor.apps.message.db.Template" title="Confirmed Timesheet Template"/>
-  	<many-to-one name="validatedTimesheetTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Timesheet Template"/>
-  	<many-to-one name="refusedTimesheetTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Timesheet Template"/>
-  	<many-to-one name="canceledTimesheetTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Timesheet Template"/>
-  	
-  	<!-- EXPENSE MAIL NOTIFICATION -->
-  	<boolean name="expenseMailNotification" title="Expense Notification Mail"/>
-  	<many-to-one name="sentExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Sent Expense Template"/>
-  	<many-to-one name="validatedExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Expense Template"/>
-  	<many-to-one name="refusedExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Expense Template"/>
-  	<many-to-one name="canceledExpenseTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Expense Template"/>
+    <boolean name="leaveMailNotification" title="Leave Request Notification Mail"/>
+    <many-to-one name="sentLeaveTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Sent Leave Request Template"/>
+    <many-to-one name="validatedLeaveTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Validated Leave Request Template"/>
+    <many-to-one name="refusedLeaveTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Refused Leave Request Template"/>
+    <many-to-one name="canceledLeaveTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Canceled Leave Request Template"/>
 
-	<many-to-one name="expenseSequence" ref="com.axelor.apps.base.db.Sequence" title="Expense Sequence"/>
-  	
-  	<!-- EXTRA HOURS MAIL NOTIFICATION -->
-  	<boolean name="extraHoursMailNotification" title="Extra Hours Notification Mail"/>
-  	<many-to-one name="sentExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Confirmed Extra Hours Template"/>
-  	<many-to-one name="validatedExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Validated Extra Hours Template"/>
-  	<many-to-one name="refusedExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Refused Extra Hours Template"/>
-  	<many-to-one name="canceledExtraHoursTemplate" ref="com.axelor.apps.message.db.Template" title="Canceled Extra Hours Template"/>
-  	
-  	<!-- Seniority Leave Management Batch -->
-  	<one-to-many name="leaveManagementBatchRuleList" ref="com.axelor.apps.hr.db.LeaveManagementBatchRule" title="Leave management batch rule list" mappedBy="hrConfig"/>
-  	<string name="seniorityVariableName" title="Name for seniority variable" />
-  	<string name="ageVariableName" title="Name for age variable" />
-  	
-  	<string name="workingDaysVariableName" title="Name for working day variable" />
-	<string name="totalWorkingDaysVariableName" title="Name for total working day in a period variable"/>
-	
-	<!-- Unique product for the timesheet -->
-	<boolean name="useUniqueProductForTimesheet"  title="Use unique product for timesheet" />
-    <many-to-one name="uniqueTimesheetProduct" ref="com.axelor.apps.base.db.Product" title="Unique product for timesheet" />
+    <many-to-one name="publicHolidayEventsPlanning"
+      ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning"/>
+    <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning"
+      title="Weekly Planning"/>
+    <one-to-many name="kilometricAllowanceRateList"
+      ref="com.axelor.apps.hr.db.KilometricAllowanceRate" title="Kilometric allowance rates"
+      mappedBy="hrConfig"/>
+
+    <!-- TIMESHEET MAIL NOTIFICATION -->
+    <boolean name="timesheetMailNotification" title="Timesheet Notification Mail"/>
+    <many-to-one name="sentTimesheetTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Confirmed Timesheet Template"/>
+    <many-to-one name="validatedTimesheetTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Validated Timesheet Template"/>
+    <many-to-one name="refusedTimesheetTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Refused Timesheet Template"/>
+    <many-to-one name="canceledTimesheetTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Canceled Timesheet Template"/>
+
+    <!-- EXPENSE MAIL NOTIFICATION -->
+    <boolean name="expenseMailNotification" title="Expense Notification Mail"/>
+    <many-to-one name="sentExpenseTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Sent Expense Template"/>
+    <many-to-one name="validatedExpenseTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Validated Expense Template"/>
+    <many-to-one name="refusedExpenseTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Refused Expense Template"/>
+    <many-to-one name="canceledExpenseTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Canceled Expense Template"/>
+
+    <many-to-one name="expenseSequence" ref="com.axelor.apps.base.db.Sequence"
+      title="Expense Sequence"/>
+
+    <!-- EXTRA HOURS MAIL NOTIFICATION -->
+    <boolean name="extraHoursMailNotification" title="Extra Hours Notification Mail"/>
+    <many-to-one name="sentExtraHoursTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Confirmed Extra Hours Template"/>
+    <many-to-one name="validatedExtraHoursTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Validated Extra Hours Template"/>
+    <many-to-one name="refusedExtraHoursTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Refused Extra Hours Template"/>
+    <many-to-one name="canceledExtraHoursTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Canceled Extra Hours Template"/>
+
+    <!-- Seniority Leave Management Batch -->
+    <one-to-many name="leaveManagementBatchRuleList"
+      ref="com.axelor.apps.hr.db.LeaveManagementBatchRule" title="Leave management batch rule list"
+      mappedBy="hrConfig"/>
+    <string name="seniorityVariableName" title="Name for seniority variable"/>
+    <string name="ageVariableName" title="Name for age variable"/>
+
+    <string name="workingDaysVariableName" title="Name for working day variable"/>
+    <string name="totalWorkingDaysVariableName"
+      title="Name for total working day in a period variable"/>
+
+    <!-- Unique product for the timesheet -->
+    <boolean name="useUniqueProductForTimesheet" title="Use unique product for timesheet"/>
+    <many-to-one name="uniqueTimesheetProduct" ref="com.axelor.apps.base.db.Product"
+      title="Unique product for timesheet"/>
 
     <!-- DPAE -->
     <boolean name="enableDPAE" title="Enable DPAE" default="false"/>
     <string name="healthService" title="Health service"/>
-    <many-to-one name="healthServiceAddress" title="Health service address" ref="com.axelor.apps.base.db.Address"/>
+    <many-to-one name="healthServiceAddress" title="Health service address"
+      ref="com.axelor.apps.base.db.Address"/>
 
-  	 <track>
-  	    <field name="company" on="UPDATE"/>
-	    <field name="kilometricExpenseProduct" on="UPDATE"/>
-	    <field name="lunchVoucherWageShare" on="UPDATE"/>
-	    <field name="lunchVoucherEmployersShare" on="UPDATE"/>
-	    <field name="toJustifyLeaveReason" on="UPDATE"/>
-	    <field name="exportCodeForExtraHours" on="UPDATE"/>
+    <track>
+      <field name="company" on="UPDATE"/>
+      <field name="kilometricExpenseProduct" on="UPDATE"/>
+      <field name="lunchVoucherWageShare" on="UPDATE"/>
+      <field name="lunchVoucherEmployersShare" on="UPDATE"/>
+      <field name="toJustifyLeaveReason" on="UPDATE"/>
+      <field name="exportCodeForExtraHours" on="UPDATE"/>
 
-	    <field name="minStockLunchVoucher" on="UPDATE"/>
-	    <field name="availableStockLunchVoucher" on="UPDATE"/>
-	    <field name="supplierLunchVoucher" on="UPDATE"/>
-	    <field name="lunchVoucherFormatSelect" on="UPDATE"/>
+      <field name="minStockLunchVoucher" on="UPDATE"/>
+      <field name="availableStockLunchVoucher" on="UPDATE"/>
+      <field name="supplierLunchVoucher" on="UPDATE"/>
+      <field name="lunchVoucherFormatSelect" on="UPDATE"/>
 
-	    <field name="exportCodeForLunchVoucherManagement" on="UPDATE"/>
+      <field name="exportCodeForLunchVoucherManagement" on="UPDATE"/>
 
-	    <field name="leaveMailNotification" on="UPDATE"/>
-	    <field name="sentLeaveTemplate" on="UPDATE"/>
-	    <field name="validatedLeaveTemplate" on="UPDATE"/>
-	    <field name="refusedLeaveTemplate" on="UPDATE"/>
-	    <field name="canceledLeaveTemplate" on="UPDATE"/>
+      <field name="leaveMailNotification" on="UPDATE"/>
+      <field name="sentLeaveTemplate" on="UPDATE"/>
+      <field name="validatedLeaveTemplate" on="UPDATE"/>
+      <field name="refusedLeaveTemplate" on="UPDATE"/>
+      <field name="canceledLeaveTemplate" on="UPDATE"/>
 
-	    <field name="publicHolidayEventsPlanning" on="UPDATE"/>
-	    <field name="weeklyPlanning" on="UPDATE"/>
+      <field name="publicHolidayEventsPlanning" on="UPDATE"/>
+      <field name="weeklyPlanning" on="UPDATE"/>
 
-	    <field name="timesheetMailNotification" on="UPDATE"/>
-	    <field name="sentTimesheetTemplate" on="UPDATE"/>
-	    <field name="validatedTimesheetTemplate" on="UPDATE"/>
-	    <field name="refusedTimesheetTemplate" on="UPDATE"/>
-	    <field name="canceledTimesheetTemplate" on="UPDATE"/>
+      <field name="timesheetMailNotification" on="UPDATE"/>
+      <field name="sentTimesheetTemplate" on="UPDATE"/>
+      <field name="validatedTimesheetTemplate" on="UPDATE"/>
+      <field name="refusedTimesheetTemplate" on="UPDATE"/>
+      <field name="canceledTimesheetTemplate" on="UPDATE"/>
 
-	    <field name="expenseMailNotification" on="UPDATE"/>
-	    <field name="sentExpenseTemplate" on="UPDATE"/>
-	    <field name="validatedExpenseTemplate" on="UPDATE"/>
-	    <field name="refusedExpenseTemplate" on="UPDATE"/>
-	    <field name="canceledExpenseTemplate" on="UPDATE"/>
+      <field name="expenseMailNotification" on="UPDATE"/>
+      <field name="sentExpenseTemplate" on="UPDATE"/>
+      <field name="validatedExpenseTemplate" on="UPDATE"/>
+      <field name="refusedExpenseTemplate" on="UPDATE"/>
+      <field name="canceledExpenseTemplate" on="UPDATE"/>
 
-	    <field name="expenseSequence" on="UPDATE"/>
+      <field name="expenseSequence" on="UPDATE"/>
 
-	    <field name="extraHoursMailNotification" on="UPDATE"/>
-	    <field name="sentExtraHoursTemplate" on="UPDATE"/>
-	    <field name="validatedExtraHoursTemplate" on="UPDATE"/>
-	    <field name="refusedExtraHoursTemplate" on="UPDATE"/>
-	    <field name="canceledExtraHoursTemplate" on="UPDATE"/>
+      <field name="extraHoursMailNotification" on="UPDATE"/>
+      <field name="sentExtraHoursTemplate" on="UPDATE"/>
+      <field name="validatedExtraHoursTemplate" on="UPDATE"/>
+      <field name="refusedExtraHoursTemplate" on="UPDATE"/>
+      <field name="canceledExtraHoursTemplate" on="UPDATE"/>
 
-	    <field name="seniorityVariableName" on="UPDATE"/>
-	    <field name="ageVariableName" on="UPDATE"/>
+      <field name="seniorityVariableName" on="UPDATE"/>
+      <field name="ageVariableName" on="UPDATE"/>
 
-	    <field name="workingDaysVariableName" on="UPDATE"/>
-	    <field name="totalWorkingDaysVariableName" on="UPDATE"/>
+      <field name="workingDaysVariableName" on="UPDATE"/>
+      <field name="totalWorkingDaysVariableName" on="UPDATE"/>
 
-	    <field name="useUniqueProductForTimesheet" on="UPDATE"/>
-	    <field name="uniqueTimesheetProduct" on="UPDATE"/>
-  	 </track>
+      <field name="useUniqueProductForTimesheet" on="UPDATE"/>
+      <field name="uniqueTimesheetProduct" on="UPDATE"/>
+    </track>
   </entity>
-  
+
 </domain-models>

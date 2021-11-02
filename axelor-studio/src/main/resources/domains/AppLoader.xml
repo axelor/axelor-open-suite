@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppLoader" cacheable="true">
+    <string name="name" title="Name"/>
+    <many-to-one name="exportMetaFile" title="Export file"
+      ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="importMetaFile" title="Import file"
+      ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="importLog" title="Import Log" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-many name="exportedAppBuilderSet" ref="AppBuilder" title="Export Apps"/>
+    <many-to-many name="importedAppBuilderSet" ref="AppBuilder" title="Imported Apps"/>
+    <datetime name="exportedOn" title="Exported on"/>
+    <datetime name="importedOn" title="Imported on"/>
+    <one-to-many name="appDataLoaderList" ref="AppDataLoader" title="Export Data"
+      mappedBy="appLoader" orderBy="sequence"/>
+  </entity>
+
+</domain-models>

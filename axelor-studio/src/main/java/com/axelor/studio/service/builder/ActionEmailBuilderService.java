@@ -66,8 +66,8 @@ public class ActionEmailBuilderService {
     String xml =
         "<action-method name=\""
             + name
-            + "\" id=\"studio-"
-            + name
+            + "\" id=\""
+            + builder.getXmlId()
             + "\">\n\t"
             + "<call class=\"com.axelor.studio.service.builder.ActionEmailBuilderService\" method=\"sendEmail(id, '"
             + (builder.getIsJson()
@@ -85,7 +85,7 @@ public class ActionEmailBuilderService {
             + "if=\"id != null\"/>\n"
             + "</action-method>";
 
-    return studioMetaService.updateMetaAction(name, "action-method", xml, null);
+    return studioMetaService.updateMetaAction(name, "action-method", xml, null, builder.getXmlId());
   }
 
   @CallMethod

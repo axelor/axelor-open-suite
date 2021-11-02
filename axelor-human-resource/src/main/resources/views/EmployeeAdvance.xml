@@ -1,78 +1,93 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="employee-advance-grid" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance">
-		<field name="reason" />
-		<field name="date" />
-		<field name="remainingAmount" />
-		<field name="requestedAmount" />
-		<field name="employee" />
-		<field name="typeSelect" />
-		<field name="statusSelect" />
-		
-	</grid>
-	
-	<grid name="employee-advance-employee-grid" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance">
-		<field name="reason" />
-		<field name="date" />
-		<field name="remainingAmount" />
-		<field name="requestedAmount" />
-		<field name="typeSelect" />
-		<field name="statusSelect" />
-		
-	</grid>
-	
-	
-	<form name="employee-advance-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance" onNew="action-hr-employee-advance-record-on-new">
-		<panel name="mainPanel">
-			<field name="date" />
-			<field name="reason" />
-			<field name="typeSelect" />
-			<field name="employee" canNew="false" canEdit="false" canView="false"/>
-			<field name="paymentMode" />
-			<field name="requestedAmount" />
-			<field name="remainingAmount" hidden="true" showIf="statusSelect == 2" />
-		</panel>
-		<panel-related name="employeeAdvanceUsageListPanel" field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
-		<panel name="statusPanel" sidebar="true" >
-			<field name="statusSelect" />
-			<button name="validateBtn" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		
-		</panel>
-	</form>
-	
-	<form name="employee-advance-employee-form" title="Employee advance" model="com.axelor.apps.hr.db.EmployeeAdvance" onNew="action-hr-employee-advance-record-on-new">
-		<panel name="mainPanel">
-			<field name="date" />
-			<field name="reason" />
-			<field name="typeSelect" readonlyIf="statusSelect == 2"  />
-			<field name="paymentMode" domain="self.inOutSelect = 2"/>
-			<field name="requestedAmount" readonlyIf="statusSelect == 2"  />
-			<field name="remainingAmount" hidden="true" showIf="statusSelect == 2" readonly="true" />
-		</panel>
-		<panel-related name="employeeAdvanceUsageListPanel" field="employeeAdvanceUsageList" readonly="true" form-view="employee-advance-usage-advance-form" grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2" />
-		<panel name="statusPanel" sidebar="true" >
-			<field name="statusSelect" />
-			<button name="validateBtn" title="Validate" onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1" />		
-		</panel>
-	</form>
-	
-	<action-group name="action-hr-employee-advance-group-validate">
-		<action name="action-hr-employee-validate-is-hr-manager"/>
-		<action name="action-hr-employee-advance-record-validate"/>
-	</action-group>
-	
-	<action-validate name="action-hr-employee-validate-is-hr-manager">
-		<error message="You must be a HR manager to have the permission to do this." if="eval: !__user__.employee?.hrManager"/>
-	</action-validate>
-	
-	<action-record name="action-hr-employee-advance-record-validate" model="com.axelor.apps.hr.db.EmployeeAdvance">
-		<field name="statusSelect" expr="eval: EmployeeAdvanceRepository.STATUS_VALIDATED"/>
-		<field name="remainingAmount" expr="eval: requestedAmount"/>
-	</action-record>
-	
-	<action-record name="action-hr-employee-advance-record-on-new" model="com.axelor.apps.hr.db.EmployeeAdvance">
-		<field name="date" expr="eval: __date__"/>
-	</action-record>
-	
+  <grid name="employee-advance-grid" title="Employee advance"
+    model="com.axelor.apps.hr.db.EmployeeAdvance">
+    <field name="reason"/>
+    <field name="date"/>
+    <field name="remainingAmount"/>
+    <field name="requestedAmount"/>
+    <field name="employee"/>
+    <field name="typeSelect"/>
+    <field name="statusSelect"/>
+
+  </grid>
+
+  <grid name="employee-advance-employee-grid" title="Employee advance"
+    model="com.axelor.apps.hr.db.EmployeeAdvance">
+    <field name="reason"/>
+    <field name="date"/>
+    <field name="remainingAmount"/>
+    <field name="requestedAmount"/>
+    <field name="typeSelect"/>
+    <field name="statusSelect"/>
+
+  </grid>
+
+
+  <form name="employee-advance-form" title="Employee advance"
+    model="com.axelor.apps.hr.db.EmployeeAdvance" onNew="action-hr-employee-advance-record-on-new">
+    <panel name="mainPanel">
+      <field name="date"/>
+      <field name="reason"/>
+      <field name="typeSelect"/>
+      <field name="employee" canNew="false" canEdit="false" canView="false"/>
+      <field name="paymentMode"/>
+      <field name="requestedAmount"/>
+      <field name="remainingAmount" hidden="true" showIf="statusSelect == 2"/>
+    </panel>
+    <panel-related name="employeeAdvanceUsageListPanel"
+      field="employeeAdvanceUsageList" form-view="employee-advance-usage-advance-form"
+      grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2"/>
+    <panel name="statusPanel" sidebar="true">
+      <field name="statusSelect"/>
+      <button name="validateBtn" title="Validate"
+        onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1"/>
+    </panel>
+  </form>
+
+  <form name="employee-advance-employee-form" title="Employee advance"
+    model="com.axelor.apps.hr.db.EmployeeAdvance" onNew="action-hr-employee-advance-record-on-new">
+    <panel name="mainPanel">
+      <field name="date"/>
+      <field name="reason"/>
+      <field name="typeSelect" readonlyIf="statusSelect == 2"/>
+      <field name="paymentMode" domain="self.inOutSelect = 2"/>
+      <field name="requestedAmount" readonlyIf="statusSelect == 2"/>
+      <field name="remainingAmount" hidden="true" showIf="statusSelect == 2" readonly="true"/>
+    </panel>
+    <panel-related name="employeeAdvanceUsageListPanel"
+      field="employeeAdvanceUsageList" readonly="true"
+      form-view="employee-advance-usage-advance-form"
+      grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2"/>
+    <panel name="statusPanel" sidebar="true">
+      <field name="statusSelect"/>
+      <button name="validateBtn" title="Validate"
+        onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1"/>
+    </panel>
+  </form>
+
+  <action-group name="action-hr-employee-advance-group-validate">
+    <action name="action-hr-employee-validate-is-hr-manager"/>
+    <action name="action-hr-employee-advance-record-validate"/>
+  </action-group>
+
+  <action-validate name="action-hr-employee-validate-is-hr-manager">
+    <error message="You must be a HR manager to have the permission to do this."
+      if="eval: !__user__.employee?.hrManager"/>
+  </action-validate>
+
+  <action-record name="action-hr-employee-advance-record-validate"
+    model="com.axelor.apps.hr.db.EmployeeAdvance">
+    <field name="statusSelect" expr="eval: EmployeeAdvanceRepository.STATUS_VALIDATED"/>
+    <field name="remainingAmount" expr="eval: requestedAmount"/>
+  </action-record>
+
+  <action-record name="action-hr-employee-advance-record-on-new"
+    model="com.axelor.apps.hr.db.EmployeeAdvance">
+    <field name="date" expr="eval: __config__.date"/>
+  </action-record>
+
 </object-views>

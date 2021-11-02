@@ -17,13 +17,21 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.loader.XMLViews;
+import com.axelor.meta.schema.ObjectViews;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.ActionBuilder;
+import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.service.builder.MenuBuilderService;
 import java.util.HashMap;
 import java.util.Map;
@@ -110,5 +118,34 @@ public class MenuBuilderController {
     values.put("showAction", false);
 
     return values;
+  }
+
+  public void showMenuBuilderRecords(ActionRequest request, ActionResponse response) {
+
+    MenuBuilder menuBuilder = request.getContext().asType(MenuBuilder.class);
+    if (menuBuilder.getMetaMenu() == null || menuBuilder.getMetaMenu().getAction() == null) {
+      return;
+    }
+
+    try {
+      MetaAction metaAction = menuBuilder.getMetaMenu().getAction();
+      ObjectViews objectViews = XMLViews.fromXML(metaAction.getXml());
+      ActionView actionView = (ActionView) objectViews.getActions().get(0);
+
+      ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get(actionView.getTitle()));
+      actionViewBuilder.model(actionView.getModel());
+      actionViewBuilder.icon(actionView.getIcon());
+      actionViewBuilder.domain(actionView.getDomain());
+      actionViewBuilder.context("jsonModel", menuBuilder.getActionBuilder().getModel());
+      actionView.getViews().forEach(view -> actionViewBuilder.add(view.getType(), view.getName()));
+      if (ObjectUtils.notEmpty(actionView.getParams())) {
+        actionView
+            .getParams()
+            .forEach(param -> actionViewBuilder.param(param.getName(), param.getValue()));
+      }
+
+      response.setView(actionViewBuilder.map());
+    } catch (Exception e) {
+    }
   }
 }

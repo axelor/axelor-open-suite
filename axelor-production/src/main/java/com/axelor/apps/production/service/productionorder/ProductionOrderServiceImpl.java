@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -32,15 +33,12 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionOrderServiceImpl implements ProductionOrderService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
@@ -139,12 +137,92 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
     if (manufOrder != null) {
       if (saleOrder != null) {
-        manufOrder.setSaleOrder(saleOrder);
+        manufOrder.addSaleOrderSetItem(saleOrder);
         manufOrder.setClientPartner(saleOrder.getClientPartner());
         manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
       }
-      productionOrder.addManufOrderListItem(manufOrder);
+      productionOrder.addManufOrderSetItem(manufOrder);
+      manufOrder.addProductionOrderSetItem(productionOrder);
     }
+
+    productionOrder = updateProductionOrderStatus(productionOrder);
+    return productionOrderRepo.save(productionOrder);
+  }
+
+  @Override
+  public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet) {
+
+    if (CollectionUtils.isEmpty(productionOrderSet)) {
+      return productionOrderSet;
+    }
+
+    for (ProductionOrder productionOrder : productionOrderSet) {
+      updateProductionOrderStatus(productionOrder);
+    }
+
+    return productionOrderSet;
+  }
+
+  protected ProductionOrder updateProductionOrderStatus(ProductionOrder productionOrder) {
+
+    if (productionOrder.getStatusSelect() == null) {
+      return productionOrder;
+    }
+
+    int statusSelect = productionOrder.getStatusSelect();
+
+    if (productionOrder.getManufOrderSet().stream()
+        .allMatch(
+            manufOrder -> manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT)) {
+      statusSelect = ProductionOrderRepository.STATUS_DRAFT;
+      productionOrder.setStatusSelect(statusSelect);
+      return productionOrderRepo.save(productionOrder);
+    }
+
+    boolean oneStarted = false;
+    boolean onePlanned = false;
+    boolean allCancel = true;
+    boolean allCompleted = true;
+
+    for (ManufOrder manufOrder : productionOrder.getManufOrderSet()) {
+
+      switch (manufOrder.getStatusSelect()) {
+        case (ManufOrderRepository.STATUS_PLANNED):
+          onePlanned = true;
+          allCancel = false;
+          allCompleted = false;
+          break;
+        case (ManufOrderRepository.STATUS_IN_PROGRESS):
+        case (ManufOrderRepository.STATUS_STANDBY):
+          oneStarted = true;
+          allCancel = false;
+          allCompleted = false;
+          break;
+        case (ManufOrderRepository.STATUS_FINISHED):
+          allCancel = false;
+          break;
+        case (ManufOrderRepository.STATUS_CANCELED):
+          break;
+        default:
+          allCompleted = false;
+          break;
+      }
+    }
+
+    if (allCancel) {
+      statusSelect = ProductionOrderRepository.STATUS_CANCELED;
+    } else if (allCompleted) {
+      statusSelect = ProductionOrderRepository.STATUS_COMPLETED;
+    } else if (oneStarted) {
+      statusSelect = ProductionOrderRepository.STATUS_STARTED;
+    } else if (onePlanned
+        && (productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_DRAFT
+            || productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_CANCELED
+            || productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_COMPLETED)) {
+      statusSelect = ProductionOrderRepository.STATUS_PLANNED;
+    }
+
+    productionOrder.setStatusSelect(statusSelect);
     return productionOrderRepo.save(productionOrder);
   }
 }

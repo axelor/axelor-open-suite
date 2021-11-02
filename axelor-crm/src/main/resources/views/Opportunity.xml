@@ -1,203 +1,268 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-    
-  <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
-	 	<toolbar>
-	 		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
-<!--     		<button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="opportunity-grid" title="Opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
+    <toolbar>
+      <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
+        onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
+      <!-- <button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     </toolbar>
-	  <hilite color="danger" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
-		<hilite color="warning" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
-		<hilite color="primary" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
-		<hilite background="success" if="salesStageSelect == 5"/>
-		<hilite background="danger" if="salesStageSelect == 6"/>
-		<field name="opportunitySeq"/>
-		<field name="name" required="true"/>
-		<field name="createdOn" hidden="true"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <hilite color="danger"
+      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
+    <hilite color="warning"
+      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15"/>
+    <hilite color="primary"
+      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
+    <hilite background="success" if="salesStageSelect == 5"/>
+    <hilite background="danger" if="salesStageSelect == 6"/>
+    <field name="opportunitySeq"/>
+    <field name="name" required="true"/>
+    <field name="createdOn" hidden="true"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
-		<field name="salesStageSelect"/>
-		<field name="amount" aggregate="sum"/>
-		<field name="probability" aggregate="avg" widget="Progress"/>
-		<field name="expectedCloseDate"/>
-		<field name="user" form-view="user-form" grid-view="user-grid"/>
-		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
-			hideIf="user.id == _internalUserId"/>
-		<button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
-		<button name="closed-wonBtn" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
-		<button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
+    <field name="lead" form-view="lead-form" grid-view="lead-grid"/>
+    <field name="salesStageSelect"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="probability" aggregate="avg" widget="Progress"/>
+    <field name="expectedCloseDate"/>
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
+      onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
+      hideIf="user.id == _internalUserId"/>
+    <button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage"
+      onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3"/>
+    <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
+      onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4"/>
+    <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
+      onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4"/>
   </grid>
 
-  <grid name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate" >
-    <hilite color="danger" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
-		<hilite color="warning" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
-		<hilite color="primary" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
-		<hilite background="success" if="salesStageSelect == 5"/>
-		<hilite background="danger" if="salesStageSelect == 6"/>
-	<field name="opportunitySeq"/>
+  <grid name="my-opportunity-grid" title="My Opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
+    <hilite color="danger"
+      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
+    <hilite color="warning"
+      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15"/>
+    <hilite color="primary"
+      if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
+    <hilite background="success" if="salesStageSelect == 5"/>
+    <hilite background="danger" if="salesStageSelect == 6"/>
+    <field name="opportunitySeq"/>
     <field name="name" width="300"/>
-    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-		<field name="createdOn" hidden="true"/>
-		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="lead" form-view="lead-form" grid-view="lead-grid"/>
-		<field name="salesStageSelect"/>
-		<field name="amount" aggregate="sum"/>
-		<field name="probability" aggregate="avg" widget="Progress"/>
-		<field name="expectedCloseDate"/>
-		<button name="next-stageBtn" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click"/>
-		<button name="closed-wonBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click"/>
-		<button name="closed-lostBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click"/>
-  	</grid>
-
-  <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner">
-  		<field name="opportunitySeq"/>
-		<field name="name"/>
-		<field name="user" form-view="user-form" grid-view="user-grid"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-		<field name="currency" form-view="currency-form" grid-view="currency-grid"/>
-		<field name="expectedCloseDate"/>
-		<field name="amount"/>
-		<field name="salesStageSelect"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <field name="createdOn" hidden="true"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="lead" form-view="lead-form" grid-view="lead-grid"/>
+    <field name="salesStageSelect"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="probability" aggregate="avg" widget="Progress"/>
+    <field name="expectedCloseDate"/>
+    <button name="next-stageBtn" readonlyIf="salesStageSelect &gt; 3"
+      icon="fa-chevron-circle-right" help="Next stage"
+      onClick="action-group-crm-opportunity-nextstage-click"/>
+    <button name="closed-wonBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle"
+      help="Closed won" onClick="action-group-crm-opportunity-closedwon-click"/>
+    <button name="closed-lostBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle"
+      help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click"/>
   </grid>
-	
-	<grid name="opportunity-top-deal-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-amount" >
-		<field name="opportunitySeq"/>
-        <field name="name"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="amount" aggregate="sum"/>
-    </grid>
-    
-    <grid groupBy="partner" name="opportunity-key-account-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
-        <field name="opportunitySeq"/>
-        <field name="name"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="amount" aggregate="sum"/>
-    </grid>
-    
-    <grid name="opportunity-dashlet-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
-        <field name="opportunitySeq"/>
-        <field name="name"/>
-        <field name="salesStageSelect"/>
-        <field name="amount" aggregate="sum"/>
-        <field name="probability" aggregate="avg" widget="Progress"/>
-        <field name="expectedCloseDate"/>
-        <field name="user" form-view="user-form" grid-view="user-grid"/>
-    </grid>
-	
-    <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new">
-        <menubar>
-            <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
-                <item name="convertIntoQuotationItem" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Create a quotation" action="action-sale-group-generate-sale-order"/>
-                <item title="Schedule Event" action="save,action-opportunity-view-schedule-event"/>
-            </menu>
-        </menubar>
-        <panel name="mainPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
-            <field name="salesStageSelect" colSpan="12" widget="NavSelect" showTitle="false" readonly="true"/>
-           <field name="opportunitySeq" showTitle="false" colSpan="2">
-              <viewer depends="opportunitySeq"><![CDATA[
+
+  <grid name="opportunity-grid-group" title="Opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" groupBy="partner">
+    <field name="opportunitySeq"/>
+    <field name="name"/>
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="expectedCloseDate"/>
+    <field name="amount"/>
+    <field name="salesStageSelect"/>
+  </grid>
+
+  <grid name="opportunity-top-deal-grid" title="Opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" orderBy="-amount">
+    <field name="opportunitySeq"/>
+    <field name="name"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid groupBy="partner" name="opportunity-key-account-grid" title="Opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
+    <field name="opportunitySeq"/>
+    <field name="name"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid name="opportunity-dashlet-grid" title="Opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
+    <field name="opportunitySeq"/>
+    <field name="name"/>
+    <field name="salesStageSelect"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="probability" aggregate="avg" widget="Progress"/>
+    <field name="expectedCloseDate"/>
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+  </grid>
+
+  <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity"
+    onNew="action-opportunity-group-new">
+    <menubar>
+      <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+        <item name="convertIntoQuotationItem" if="__config__.app.isApp('sale')"
+          if-module="axelor-sale" title="Create a quotation"
+          action="action-sale-group-generate-sale-order"/>
+        <item title="Schedule Event" action="save,action-opportunity-view-schedule-event"/>
+      </menu>
+    </menubar>
+    <panel name="mainPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
+      <field name="salesStageSelect" colSpan="12" widget="NavSelect" showTitle="false"
+        readonly="true"/>
+      <field name="opportunitySeq" showTitle="false" colSpan="2">
+        <viewer depends="opportunitySeq"><![CDATA[
                  <h3>
                     <span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.opportunitySeq}}</span>
                  </h3>
               ]]></viewer>
-              <editor>
-                 <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
-              </editor>
-           </field>
-            <field name="name" showTitle="false" colSpan="10">
-                <viewer depends="name">
+        <editor>
+          <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
+        </editor>
+      </field>
+      <field name="name" showTitle="false" colSpan="10">
+        <viewer depends="name">
                     <![CDATA[
 						<h3>
 							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Opportunity</span> {{record.name}}</span>
 						</h3>
 					]]>
-                </viewer>
-                <editor>
-                    <field name="name" showTitle="true" css="label-bold bold"/>
-                </editor>
-            </field>
-            <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false" form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
-            <field name="source" colSpan="4" canEdit="false" form-view="source-form" grid-view="source-grid"/>
-            <field name="expectedCloseDate" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
-            <field name="nextStep" colSpan="12" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
-            <field name="probability" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" widget="Progress"/>
-            <field name="currency" colSpan="4" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
-            <panel name="caseDetailsPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12">
-                <field name="amount" colSpan="4"/>
-                <field name="bestCase" colSpan="4"/>
-                <field name="worstCase" colSpan="4"/>
-            </panel>
-        </panel>
+        </viewer>
+        <editor>
+          <field name="name" showTitle="true" css="label-bold bold"/>
+        </editor>
+      </field>
+      <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false"
+        form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
+      <field name="source" colSpan="4" canEdit="false" form-view="source-form"
+        grid-view="source-grid"/>
+      <field name="expectedCloseDate" colSpan="4"
+        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
+      <field name="nextStep" colSpan="12"
+        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
+      <field name="probability" colSpan="4"
+        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" widget="Progress"/>
+      <field name="currency" colSpan="4" canEdit="false" form-view="currency-form"
+        grid-view="currency-grid"/>
+      <panel name="caseDetailsPanel"
+        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12">
+        <field name="amount" colSpan="4"/>
+        <field name="bestCase" colSpan="4"/>
+        <field name="worstCase" colSpan="4"/>
+      </panel>
+    </panel>
 
-        <panel-tabs name="mainPanelTab">
-            <panel name="descriptionPanel" title="Description">
-                <field name="description" showTitle="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12" widget="html"/>
-            </panel>
-            	<panel name="customerDescriptionPanel" title="Customer Description" if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
-            		<field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
-            	</panel>
-            <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList" form-view="sale-order-form" grid-view="sale-order-opportunity-grid" canNew="false"/>
-        </panel-tabs>
+    <panel-tabs name="mainPanelTab">
+      <panel name="descriptionPanel" title="Description">
+        <field name="description" showTitle="false"
+          readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12" widget="html"/>
+      </panel>
+      <panel name="customerDescriptionPanel" title="Customer Description"
+        if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
+        <field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
+      </panel>
+      <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')"
+        if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList"
+        form-view="sale-order-form" grid-view="sale-order-opportunity-grid" canNew="false"/>
+    </panel-tabs>
 
-        <panel name="otherDetailsPanel" sidebar="true">
-            <button name="previous-stageBtn" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="save,action-opportunity-set-previous-stage,save"/>
-            <button name="next-stageBtn" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="save,action-opportunity-set-next-stage,save"/>
-            <button name="closed-wonBtn" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save"/>
-            <button name="closed-lostBtn" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
-            <panel name="followUpPanel" title="Follow-up" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
-                <field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
-                <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form" grid-view="company-grid"/>
-                <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
-                <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
-				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-				<panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
-				  <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
-         		  <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr" colSpan="12" css="red">
+    <panel name="otherDetailsPanel" sidebar="true">
+      <button name="previous-stageBtn" title="Previous step" hideIf="salesStageSelect &lt; 2"
+        icon="fa-chevron-circle-left" onClick="save,action-opportunity-set-previous-stage,save"/>
+      <button name="next-stageBtn" title="Next step" hideIf="salesStageSelect &gt; 3"
+        icon="fa-chevron-circle-right" onClick="save,action-opportunity-set-next-stage,save"/>
+      <button name="closed-wonBtn" title="Win" hideIf="salesStageSelect &gt; 4"
+        icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save"/>
+      <button name="closed-lostBtn" title="Lose" css="btn-danger"
+        hideIf="salesStageSelect &gt; 4" icon="fa-times"
+        onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
+      <panel name="followUpPanel" title="Follow-up"
+        readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
+        <field name="user" canNew="false" canView="false" canEdit="false"
+          form-view="user-form" grid-view="user-grid"/>
+        <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
+          grid-view="company-grid"/>
+        <field if="__config__.app.getApp('base').getTeamManagement()" name="team"
+          canEdit="false" form-view="team-form" grid-view="team-grid"/>
+        <field if="__config__.app.getApp('base').enableTradingNamesManagement"
+          name="tradingName" canEdit="false" domain=":company MEMBER OF self.companySet"
+          form-view="trading-name-form" grid-view="trading-name-grid"/>
+        <field if="__config__.app.getApp('base').getManageMultiBanks()"
+          if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox"
+          onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form"
+          grid-view="bank-details-grid"/>
+        <panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
+          <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
+          <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr"
+            colSpan="12" css="red">
             <viewer><![CDATA[{{record.lostReasonStr}}]]></viewer>
           </field>
-				</panel>
-			</panel>
-			<panel name="referencePanel" title="Reference" canCollapse="true">
-				<field name="partner" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid" onChange="action-opportunity-record-set-lead-onchange"/>
-				<field name="lead" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-set-partner-onchange"/>
-			</panel>
-			<panel name="postitPanel" title="Memo" canCollapse="true">
-				<field name="memo" showTitle="false" colSpan="12"/>
-			</panel>
-		</panel>
+        </panel>
+      </panel>
+      <panel name="referencePanel" title="Reference" canCollapse="true">
+        <field name="partner" canEdit="false"
+          readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"
+          domain="self.isContact = false AND :company member of self.companySet"
+          form-view="partner-form" grid-view="partner-grid"
+          onChange="action-opportunity-record-set-lead-onchange"/>
+        <field name="lead" canEdit="false"
+          readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form"
+          grid-view="lead-grid" onChange="action-opportunity-record-set-partner-onchange"/>
+      </panel>
+      <panel name="postitPanel" title="Memo" canCollapse="true">
+        <field name="memo" showTitle="false" colSpan="12"/>
+      </panel>
+    </panel>
 
-		<panel name="attrsPanel">
-			<field name="attrs" colSpan="12"/>
-		</panel>
-		<panel-mail name="mailPanel">
-			<mail-messages limit="4"/>
-			<mail-followers/>
-		</panel-mail>
-	</form>
- 
-	<kanban columnBy="salesStageSelect" sequenceBy="orderByState" limit="10" name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" onMove="action-opportunity-method-cancel-saleorders">
-		<field name="name"/>
-		<field name="description"/>
-		<field name="probability"/>
-		<field name="expectedCloseDate"/>
-		<field name="user"/>
-		<field name="salesStageSelect"/>
-        <field name="partner.name" />
-        <field name="partner.fixedPhone" />
-        <field name="partner.mobilePhone" />
-        <field name="amount" />
-        <field name="currency.symbol" />
-		<hilite color="danger" if="probability &lt;= 25"/>
-		<hilite color="success" if="probability &gt;= 75"/>
-		<hilite color="info" if="probability &gt;= 50"/>
-		<hilite color="warning" if="probability &lt; 50"/>
-        <template>
+    <panel name="attrsPanel">
+      <field name="attrs" colSpan="12"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <kanban columnBy="salesStageSelect" sequenceBy="orderByState" limit="10"
+    name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
+    onMove="action-opportunity-method-cancel-saleorders">
+    <field name="name"/>
+    <field name="description"/>
+    <field name="probability"/>
+    <field name="expectedCloseDate"/>
+    <field name="user"/>
+    <field name="salesStageSelect"/>
+    <field name="partner.name"/>
+    <field name="partner.fixedPhone"/>
+    <field name="partner.mobilePhone"/>
+    <field name="amount"/>
+    <field name="currency.symbol"/>
+    <hilite color="danger" if="probability &lt;= 25"/>
+    <hilite color="success" if="probability &gt;= 75"/>
+    <hilite color="info" if="probability &gt;= 50"/>
+    <hilite color="warning" if="probability &lt; 50"/>
+    <template>
             <![CDATA[
             <h4>{{record.name}}</h4>
             <img ng-if="user" ng-src="{{$image('user', 'image')}}">
@@ -211,7 +276,7 @@
                 </dl>
             </div>
             <div class="card-footer">
-                <i class='fa fa-clock-o'></i> <span>{{record.expectedCloseDate|date:'dd/MM/yyyy'}}</span>
+                <i class='fa fa-clock-o'></i> <span>{{$fmt('expectedCloseDate')}}</span>
             </div>
 						<div class="card-summary popover">
 							<p style="margin:2px;">
@@ -219,144 +284,172 @@
               </p>
 						</div>
             ]]>
-        </template>
-	</kanban>
+    </template>
+  </kanban>
 
-	<form name="opportunity-form-lost-popup" model="com.axelor.apps.crm.db.Opportunity"
-		title="Lost reason" width="large" onSave="action-opportunity-set-closed-lost,action-opportunity-method-cancel-saleorders">
-		<panel name="mainPanel">
-			<field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
-			<field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
-			<field name="lostReason.freeText" hidden="true"/>
-		</panel>
-	</form>
+  <form name="opportunity-form-lost-popup" model="com.axelor.apps.crm.db.Opportunity"
+    title="Lost reason" width="large"
+    onSave="action-opportunity-set-closed-lost,action-opportunity-method-cancel-saleorders">
+    <panel name="mainPanel">
+      <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
+      <field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
+      <field name="lostReason.freeText" hidden="true"/>
+    </panel>
+  </form>
 
-	<action-view name="action-opportunity-view-opportunity-lost-popup-view" model="com.axelor.apps.crm.db.Opportunity" title="Lost reason">
-	   <view type="form" name="opportunity-form-lost-popup"/>
-		<view-param name="popup" value="reload"/>
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="show-confirm" value="false" />
-		<view-param name="popup-save" value="true"/>
-		<view-param name="forceEdit" value="true" />
-		<context name="_showRecord" expr="eval: id"/>
-	</action-view>
+  <action-view name="action-opportunity-view-opportunity-lost-popup-view"
+    model="com.axelor.apps.crm.db.Opportunity" title="Lost reason">
+    <view type="form" name="opportunity-form-lost-popup"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
-    <action-group name="action-opportunity-group-new">
-       	<action name="action-opportunity-record-new"/>
-       	<action name="action-opportunity-record-currency"/>
-    	<action name="action-opportunity-record-default" if="_lead == null &amp;&amp; _partner == null"/>
-    	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
-    	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
-    </action-group>
-    
-    <action-group name="action-group-crm-opportunity-nextstage-click">
-    	<action name="action-opportunity-set-next-stage"/>
-    	<action name="save"/>
-    </action-group>
-    
-    <action-group name="action-group-crm-opportunity-closedwon-click">
-    	<action name="action-opportunity-set-closed-won"/>
-    	<action name="save"/>
-    </action-group>
-    
-    <action-group name="action-group-crm-opportunity-closedlost-click">
-    	<action name="action-opportunity-set-closed-lost"/>
-    	<action name="save"/>
-    </action-group>
+  <action-group name="action-opportunity-group-new">
+    <action name="action-opportunity-record-new"/>
+    <action name="action-opportunity-record-currency"/>
+    <action name="action-opportunity-record-default"
+      if="_lead == null &amp;&amp; _partner == null"/>
+    <action name="action-opportunity-record-from-partner" if="_partner != null"/>
+    <action name="action-opportunity-record-from-lead" if="_lead != null"/>
+  </action-group>
 
-    <action-view name="action-opportunity-view-schedule-event" model="com.axelor.apps.crm.db.Event" title="Create event">
-  		<view type="form" name="event-form"/>
-    	<view type="grid" name="event-grid"/>
-    	<context name="_opportunity" expr="eval: __this__"/>
-	</action-view>
+  <action-group name="action-group-crm-opportunity-nextstage-click">
+    <action name="action-opportunity-set-next-stage"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-group-crm-opportunity-closedwon-click">
+    <action name="action-opportunity-set-closed-won"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-group-crm-opportunity-closedlost-click">
+    <action name="action-opportunity-set-closed-lost"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-view name="action-opportunity-view-schedule-event"
+    model="com.axelor.apps.crm.db.Event" title="Create event">
+    <view type="form" name="event-form"/>
+    <view type="grid" name="event-grid"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+  </action-view>
 
 
-    <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    	<field name="salesStageSelect" expr="1"/>
-    	<field name="user" expr="eval:__user__"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    </action-record>
-    
-    <action-record name="action-opportunity-record-currency" model="com.axelor.apps.crm.db.Opportunity">
-	    <field name="currency" expr="eval: company?.currency"/>
-	</action-record>
-	
-	<action-record name="action-opportunity-record-default" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="partner" expr="eval: _customer"/>
-    	<field name="lead" expr="eval: _leadName"/>
-	</action-record>
-    
-    <action-record name="action-opportunity-record-from-partner" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="partner" expr="eval: _partner" if="_partner.isContact == false"/>
-    	<field name="partner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
-    	<field name="source" expr="eval: _partner.source"/>
-    	<field name="user" expr="eval: _partner.user" if="_partner.user != null || _partner.team != null"/>
-    	<field name="team" expr="eval: _partner.team" if="_partner.user != null || _partner.team != null"/>
-    	<field name="currency" expr="eval: _partner.currency"/>
-    	<field name="customerDescription" expr="eval: _partner.description"/>
-    </action-record>
-    
-    <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
-        <field name="name" />
-        <field name="partner.name" title="Customer name" />
-        <field name="partner.fixedPhone" title="Customer fixed phone" />
-        <field name="partner.mobilePhone" title="Customer mobile phone" />
-        <field name="amount" />
-        <field name="customerDescription" hidden="true" if="!__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity"/>
-        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
-		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
-        <field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
-		<field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
-		<field name="saleOrderList" hidden="true" if="!__config__.app.isApp('sale')"/>
-		<filter title="My opportunities">
-			<domain>self.user.id = :_internalUserId</domain>
-		</filter>
-		<filter title="Unassigned opportunities">
-			<domain>self.user IS NULL</domain>
-		</filter>
-		<filter title="My team opportunities">
-			<domain>self.team = :_myActiveTeam</domain>
-		</filter>
-	</search-filters>
-	
-	<action-record name="action-opportunity-set-previous-stage" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="salesStageSelect" expr="eval: salesStageSelect &gt; 4 ? 4 : salesStageSelect-1 "/>
-	</action-record>
-	
-	<action-record name="action-opportunity-set-next-stage" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="salesStageSelect" expr="eval: salesStageSelect+1"/>
-	</action-record>
-	
-	<action-record name="action-opportunity-set-closed-won" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="salesStageSelect" expr="eval:5"/>
-	</action-record>
-	
-	<action-record name="action-opportunity-set-closed-lost" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="salesStageSelect" expr="eval:6"/>
-	</action-record>
-	
-	<action-record name="action-opportunity-record-set-partner-onchange" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="partner" expr="eval: null" if="lead"/>
-	</action-record>
+  <action-record name="action-opportunity-record-new"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    <field name="salesStageSelect" expr="1"/>
+    <field name="user" expr="eval:__user__"/>
+    <field name="team"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+  </action-record>
 
-	<action-record name="action-opportunity-record-set-lead-onchange" model="com.axelor.apps.crm.db.Opportunity">
-		<field name="lead" expr="eval: null" if="partner"/>
-	</action-record>
+  <action-record name="action-opportunity-record-currency"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="currency" expr="eval: company?.currency"/>
+  </action-record>
 
-	<action-method name="action-show-opportunities-on-map-page">
-	  <call method="showOpportunitiesOnMap" class="com.axelor.apps.crm.web.OpportunityController"/>
-	</action-method>
+  <action-record name="action-opportunity-record-default"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="partner" expr="eval: _customer"/>
+    <field name="lead" expr="eval: _leadName"/>
+  </action-record>
 
-    <action-method name="action-opportunity-record-from-lead">
-        <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoOpportunity"/>
-    </action-method>
+  <action-record name="action-opportunity-record-from-partner"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="partner" expr="eval: _partner" if="_partner.isContact == false"/>
+    <field name="partner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
+    <field name="source" expr="eval: _partner.source"/>
+    <field name="user" expr="eval: _partner.user"
+      if="_partner.user != null || _partner.team != null"/>
+    <field name="team" expr="eval: _partner.team"
+      if="_partner.user != null || _partner.team != null"/>
+    <field name="currency" expr="eval: _partner.currency"/>
+    <field name="customerDescription" expr="eval: _partner.description"/>
+  </action-record>
 
-	<action-view name="dashlet.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid"/>
-		<view type="form" name="opportunity-form" />
-	</action-view>
+  <search-filters name="opportunity-filters"
+    model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
+    <field name="name"/>
+    <field name="partner.name" title="Customer name"/>
+    <field name="partner.fixedPhone" title="Customer fixed phone"/>
+    <field name="partner.mobilePhone" title="Customer mobile phone"/>
+    <field name="amount"/>
+    <field name="customerDescription" hidden="true"
+      if="!__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity"/>
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="tradingName" hidden="true"
+      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="tradingName" hidden="true"
+      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <field name="bankDetails" hidden="true"
+      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+    <field name="saleOrderList" hidden="true" if="!__config__.app.isApp('sale')"/>
+    <filter title="My opportunities">
+      <domain>self.user.id = :_internalUserId</domain>
+    </filter>
+    <filter title="Unassigned opportunities">
+      <domain>self.user IS NULL</domain>
+    </filter>
+    <filter title="My team opportunities">
+      <domain>self.team = :_myActiveTeam</domain>
+    </filter>
+  </search-filters>
+
+  <action-record name="action-opportunity-set-previous-stage"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="salesStageSelect"
+      expr="eval: salesStageSelect &gt; 4 ? 4 : salesStageSelect-1 "/>
+  </action-record>
+
+  <action-record name="action-opportunity-set-next-stage"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="salesStageSelect" expr="eval: salesStageSelect+1"/>
+  </action-record>
+
+  <action-record name="action-opportunity-set-closed-won"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="salesStageSelect" expr="eval:5"/>
+  </action-record>
+
+  <action-record name="action-opportunity-set-closed-lost"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="salesStageSelect" expr="eval:6"/>
+  </action-record>
+
+  <action-record name="action-opportunity-record-set-partner-onchange"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="partner" expr="eval: null" if="lead"/>
+  </action-record>
+
+  <action-record name="action-opportunity-record-set-lead-onchange"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="lead" expr="eval: null" if="partner"/>
+  </action-record>
+
+  <action-method name="action-show-opportunities-on-map-page">
+    <call method="showOpportunitiesOnMap" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-opportunity-record-from-lead">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="setConvertLeadIntoOpportunity"/>
+  </action-method>
+
+  <action-view name="dashlet.opportunity" title="Opportunities"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <view type="grid" name="opportunity-grid"/>
+    <view type="form" name="opportunity-form"/>
+  </action-view>
 
 </object-views>

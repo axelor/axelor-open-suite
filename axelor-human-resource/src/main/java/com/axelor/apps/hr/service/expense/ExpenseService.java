@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public interface ExpenseService {
 
@@ -51,21 +52,21 @@ public interface ExpenseService {
 
   public Message sendConfirmationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Expense expense) throws AxelorException;
 
   public Message sendValidationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void refuse(Expense expense) throws AxelorException;
 
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public Move ventilate(Expense expense) throws AxelorException;
@@ -75,7 +76,7 @@ public interface ExpenseService {
 
   public Message sendCancellationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException;
+          IllegalAccessException, MessagingException, IOException, JSONException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException;

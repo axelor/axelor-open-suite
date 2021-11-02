@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-   
-    <grid name="debt-recovery-config-line-grid" title="Debt recovery method configuration lines" editable="true" model="com.axelor.apps.account.db.DebtRecoveryConfigLine">
-        <field name="partnerCategory" form-view="partner-category-form" grid-view="partner-category-grid"/>
-        <field name="debtRecoveryMethod" form-view="debt-recovery-method-form" grid-view="debt-recovery-method-grid"/>
-    </grid>
-    
-    <form name="debt-recovery-config-line-form" title="Debt recovery method configuration line" model="com.axelor.apps.account.db.DebtRecoveryConfigLine"  >
-        <panel name="mainPanel" >
-        	<field name="partnerCategory" form-view="partner-category-form" grid-view="partner-category-grid"/>
-        	<field name="debtRecoveryMethod" form-view="debt-recovery-method-form" grid-view="debt-recovery-method-grid"/>
-        </panel>
-        
-    </form>
-    
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="debt-recovery-config-line-grid" title="Debt recovery method configuration lines"
+    editable="true" model="com.axelor.apps.account.db.DebtRecoveryConfigLine">
+    <field name="partnerCategory" form-view="partner-category-form"
+      grid-view="partner-category-grid"/>
+    <field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
+      grid-view="debt-recovery-method-grid"/>
+  </grid>
+
+  <form name="debt-recovery-config-line-form" title="Debt recovery method configuration line"
+    model="com.axelor.apps.account.db.DebtRecoveryConfigLine">
+    <panel name="mainPanel">
+      <field name="partnerCategory" form-view="partner-category-form"
+        grid-view="partner-category-grid"/>
+      <field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
+        grid-view="debt-recovery-method-grid"/>
+    </panel>
+
+  </form>
+
 </object-views>

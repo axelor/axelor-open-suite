@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -25,6 +26,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -168,5 +170,16 @@ public class ProdProcessService {
     } while (up != null && deep);
 
     return latestVersion;
+  }
+
+  public String print(ProdProcess prodProcess) throws AxelorException {
+    return ReportFactory.createReport(IReport.PROD_PROCESS, prodProcess.getName() + "-${date}")
+        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam("ProdProcessId", prodProcess.getId().toString())
+        .addParam(
+            "Timezone",
+            prodProcess.getCompany() != null ? prodProcess.getCompany().getTimezone() : null)
+        .generate()
+        .getFileLink();
   }
 }

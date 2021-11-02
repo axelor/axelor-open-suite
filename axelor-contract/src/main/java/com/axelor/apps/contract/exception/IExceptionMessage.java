@@ -35,4 +35,6 @@ public interface IExceptionMessage {
       "There is no contract associated with this version." /*)*/;
   String CONTRACT_MISSING_FIRST_PERIOD = /*$$(*/
       "Please fill the first period end date and the invoice frequency." /*)*/;
+  String CONTRACT_VERSION_EMPTY_NEXT_CONTRACT = /*$$(*/
+      "The next contract field is not set on the current contract version." /*)*/;
 }

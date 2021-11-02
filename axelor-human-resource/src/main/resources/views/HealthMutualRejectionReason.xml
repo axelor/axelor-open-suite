@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="health-mutual-rejection-reason-grid" title="Health mutual rejection reasons"
+    model="com.axelor.apps.hr.db.HealthMutualRejectionReason" orderBy="code">
+    <field name="code" width="50"/>
+    <field name="oldCode" width="50"/>
+    <field name="name"/>
+    <field name="isInactive"/>
+  </grid>
+
+  <form name="health-mutual-rejection-reason-form" title="Health mutual rejection reason"
+    model="com.axelor.apps.hr.db.HealthMutualRejectionReason">
+    <panel name="mainPanel">
+      <field name="code"/>
+      <field name="oldCode"/>
+      <field name="name" colSpan="12"/>
+      <field name="isInactive"/>
+    </panel>
+  </form>
+
+</object-views>

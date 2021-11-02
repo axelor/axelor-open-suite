@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form id="stock-trading-name-form" model="com.axelor.apps.base.db.TradingName"
+    title="Trading name" name="trading-name-form" extension="true">
+    <extend target="//panel[@name='mainPanel']">
+      <insert position="after">
+        <panel-related field="stockLocationList" name="stockLocationListPanel"
+          form-view="stock-location-form" grid-view="stock-location-light-grid" colSpan="12"/>
+        <panel name="locationsPanel" colSpan="12">
+          <field name="workshopDefaultStockLocation"
+            onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form"
+            grid-view="stock-location-grid"/>
+          <field name="receiptDefaultStockLocation"
+            onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form"
+            grid-view="stock-location-grid"/>
+          <field name="wasteDefaultStockLocation"
+            onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form"
+            grid-view="stock-location-grid"/>
+          <field name="shippingDefaultStockLocation"
+            onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form"
+            grid-view="stock-location-grid"/>
+          <field name="qualityControlDefaultStockLocation"
+            onSelect="action-stock-attrs-stock-locations-domain" form-view="stock-location-form"
+            grid-view="stock-location-grid"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-stock-attrs-stock-locations-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;"
+      for="receiptDefaultStockLocation"
+      if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()"/>
+
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;"
+      for="workshopDefaultStockLocation"
+      if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()"/>
+
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;"
+      for="wasteDefaultStockLocation"
+      if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()"/>
+
+    <attribute name="domain" expr="eval: &quot;self.id IS NULL &quot;"
+      for="receiptDefaultStockLocation" if="!stockLocationList || stockLocationList?.isEmpty()"/>
+
+    <attribute name="domain" expr="eval: &quot;self.id IS NULL &quot;"
+      for="workshopDefaultStockLocation" if="!stockLocationList || stockLocationList?.isEmpty()"/>
+
+    <attribute name="domain" expr="eval: &quot;self.id IS NULL &quot;"
+      for="wasteDefaultStockLocation" if="!stockLocationList || stockLocationList?.isEmpty()"/>
+
+    <attribute name="domain" for="shippingDefaultStockLocation"
+      if="stockLocationList != null &amp;&amp; !stockLocationList.isEmpty()"
+      expr="eval: &quot;self.id IN (${__this__?.stockLocationList?.collect{it.id}.join(',')}) &quot;"/>
+    <attribute name="domain" for="shippingDefaultStockLocation"
+      if="!stockLocationList || stockLocationList?.isEmpty()"
+      expr="eval: &quot;self.id IS NULL &quot;"/>
+
+    <attribute name="domain" for="qualityControlDefaultStockLocation"
+      expr="eval:companySet?.isEmpty() ? &quot;self = null&quot; : &quot; self.typeSelect != 3 AND self.company.id IN (${companySet?.collect{it.id}.join(',')}) &quot;"/>
+  </action-attrs>
+
+
+</object-views>

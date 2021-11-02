@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-7</code>
+
+    <name>Link event(Opportunity)</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-7" camunda:diagramName="Link event(Opportunity)" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-7">
+  <bpmn2:process id="Process_Link_Event" name="Link Event Opportunity" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Opportunity" metaModelLabel="Opportunity (Opportunity)" isStartModel="true" model="com.axelor.apps.crm.db.Opportunity" metaModelFullName="com.axelor.apps.crm.db.Opportunity" title="Opportunity" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:outgoing>Flow_1l9jepc</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="Activity_030kzyd" name="Qualification" camunda:completedIf="opportunity?.salesStageSelect != 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_0dzq521</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1ykwedv</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_03di94y" name="New" camunda:key="New" camunda:completedIf="opportunity?.salesStageSelect != 1" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;1&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_1l9jepc</bpmn2:incoming>
+      <bpmn2:incoming>Flow_089kz07</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1invuzg</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_0jlfws8" name="Negotiation" camunda:completedIf="opportunity?.salesStageSelect != 4" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;4&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_082hied</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0vj6i6t</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_1l9jepc" sourceRef="StartEvent_1" targetRef="Activity_03di94y" />
+    <bpmn2:intermediateCatchEvent id="Event_1j39kpd" name="State-5">
+      <bpmn2:outgoing>Flow_1pkv9z8</bpmn2:outgoing>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_00i14by" name="State-5" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:sequenceFlow id="Flow_1pkv9z8" sourceRef="Event_1j39kpd" targetRef="Activity_1l4hu9n" />
+    <bpmn2:sequenceFlow id="Flow_1mds1xd" sourceRef="Event_04oln32" targetRef="Activity_09ilshk" />
+    <bpmn2:intermediateCatchEvent id="Event_04oln32" name="State-6">
+      <bpmn2:outgoing>Flow_1mds1xd</bpmn2:outgoing>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_0afy9d4" name="State-6" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:userTask id="Activity_1l4hu9n" name="Closed Won" camunda:completedIf="opportunity?.salesStageSelect != 5" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;5&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:completedIfCombinator="and" camunda:metaModel="Opportunity" camunda:metaModelModelName="com.axelor.apps.crm.db.Opportunity" camunda:metaModelLabel="Opportunity" camunda:emailNotification="true" camunda:template="Opportunity Won" camunda:actionEmailTitle="Opportunity ${opportunitySeq} Won">
+      <bpmn2:incoming>Flow_1pkv9z8</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0dib1fl</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_09ilshk" name="Closed Lost" camunda:completedIf="opportunity?.salesStageSelect != 6" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;6&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:completedIfCombinator="and" camunda:metaModel="Opportunity" camunda:metaModelModelName="com.axelor.apps.crm.db.Opportunity" camunda:metaModelLabel="Opportunity" camunda:emailNotification="true" camunda:template="Opportunity Lost" camunda:actionEmailTitle="Opportunity ${opportunitySeq} Lost">
+      <bpmn2:incoming>Flow_1mds1xd</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0xrjbh7</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1lig8js" name="Proposition" camunda:completedIf="opportunity?.salesStageSelect != 3" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_0xvwgxu</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_08gn6fc</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_089kz07" sourceRef="Event_19anwqu" targetRef="Activity_03di94y" />
+    <bpmn2:sequenceFlow id="Flow_0dzq521" sourceRef="Event_1s11f7z" targetRef="Activity_030kzyd" />
+    <bpmn2:sequenceFlow id="Flow_0xvwgxu" sourceRef="Event_1vzsxqc" targetRef="Activity_1lig8js" />
+    <bpmn2:sequenceFlow id="Flow_082hied" sourceRef="Event_0iwrivj" targetRef="Activity_0jlfws8" />
+    <bpmn2:intermediateCatchEvent id="Event_0iwrivj" name="State-4">
+      <bpmn2:outgoing>Flow_082hied</bpmn2:outgoing>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_1vnpxpt" name="State-4" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:intermediateCatchEvent id="Event_1vzsxqc" name="State-3">
+      <bpmn2:outgoing>Flow_0xvwgxu</bpmn2:outgoing>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_03tbij1" name="State-3" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:intermediateCatchEvent id="Event_1s11f7z" name="State-2">
+      <bpmn2:outgoing>Flow_0dzq521</bpmn2:outgoing>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_0tqn31u" name="State-2" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:intermediateCatchEvent id="Event_19anwqu" name="State-1">
+      <bpmn2:outgoing>Flow_089kz07</bpmn2:outgoing>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_1i5il1i" name="State-1" />
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:exclusiveGateway id="Gateway_1nrusib">
+      <bpmn2:incoming>Flow_1invuzg</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1ykwedv</bpmn2:incoming>
+      <bpmn2:incoming>Flow_08gn6fc</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0vj6i6t</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0dib1fl</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0xrjbh7</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1g1u05h</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0jl2kd9</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0df8522</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_19h5ux0</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0f0jcs9</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0nmy6nz</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_1invuzg" sourceRef="Activity_03di94y" targetRef="Gateway_1nrusib" />
+    <bpmn2:sequenceFlow id="Flow_1ykwedv" sourceRef="Activity_030kzyd" targetRef="Gateway_1nrusib" />
+    <bpmn2:sequenceFlow id="Flow_08gn6fc" sourceRef="Activity_1lig8js" targetRef="Gateway_1nrusib" />
+    <bpmn2:sequenceFlow id="Flow_0vj6i6t" sourceRef="Activity_0jlfws8" targetRef="Gateway_1nrusib" />
+    <bpmn2:sequenceFlow id="Flow_0dib1fl" sourceRef="Activity_1l4hu9n" targetRef="Gateway_1nrusib" />
+    <bpmn2:sequenceFlow id="Flow_0xrjbh7" sourceRef="Activity_09ilshk" targetRef="Gateway_1nrusib" />
+    <bpmn2:sequenceFlow id="Flow_1g1u05h" name="New" sourceRef="Gateway_1nrusib" targetRef="Event_0nliwt4" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;1&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:conditionCombinator="and" camunda:key="New">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">opportunity?.salesStageSelect == 1</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0jl2kd9" sourceRef="Gateway_1nrusib" targetRef="Event_0o9r2fv" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">opportunity?.salesStageSelect == 2</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0df8522" sourceRef="Gateway_1nrusib" targetRef="Event_0x9v9hk" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">opportunity?.salesStageSelect == 3</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_19h5ux0" sourceRef="Gateway_1nrusib" targetRef="Event_1a7fqpu" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;5&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">opportunity?.salesStageSelect == 5</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0f0jcs9" sourceRef="Gateway_1nrusib" targetRef="Event_15w8yju" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;6&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">opportunity?.salesStageSelect == 6</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0nmy6nz" sourceRef="Gateway_1nrusib" targetRef="Event_0v8dbeb" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Opportunity&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;salesStageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;4&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.opportunity.sales.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;salesStageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Nouvelle&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Qualification&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Proposition&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Négociation&#34;},{&#34;value&#34;:&#34;5&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée gagnée&#34;},{&#34;value&#34;:&#34;6&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Fermée perdue&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Etape de vente&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">opportunity?.salesStageSelect == 4</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:intermediateThrowEvent id="Event_0nliwt4">
+      <bpmn2:incoming>Flow_1g1u05h</bpmn2:incoming>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_1hy4oi3" name="State-1" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="Event_0o9r2fv" name="Qualification">
+      <bpmn2:incoming>Flow_0jl2kd9</bpmn2:incoming>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_09b6txr" name="State-2" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="Event_0x9v9hk" name="Proposition">
+      <bpmn2:incoming>Flow_0df8522</bpmn2:incoming>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_060tg3y" name="State-3" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="Event_1a7fqpu" name="Closed Won">
+      <bpmn2:incoming>Flow_19h5ux0</bpmn2:incoming>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_1h1gxqk" name="State-5" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="Event_15w8yju" name="Closed Lost">
+      <bpmn2:incoming>Flow_0f0jcs9</bpmn2:incoming>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_0q73ey5" name="State-6" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="Event_0v8dbeb" name="Negotiation">
+      <bpmn2:incoming>Flow_0nmy6nz</bpmn2:incoming>
+      <bpmn2:linkEventDefinition id="LinkEventDefinition_1kmmipm" name="State-4" />
+    </bpmn2:intermediateThrowEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Link_Event">
+      <bpmndi:BPMNEdge id="Flow_0nmy6nz_di" bpmnElement="Flow_0nmy6nz" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="695" y="-40" />
+        <di:waypoint x="740" y="-40" />
+        <di:waypoint x="740" y="50" />
+        <di:waypoint x="892" y="50" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f0jcs9_di" bpmnElement="Flow_0f0jcs9" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="695" y="-40" />
+        <di:waypoint x="740" y="-40" />
+        <di:waypoint x="740" y="230" />
+        <di:waypoint x="892" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19h5ux0_di" bpmnElement="Flow_19h5ux0" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="695" y="-40" />
+        <di:waypoint x="740" y="-40" />
+        <di:waypoint x="740" y="140" />
+        <di:waypoint x="892" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0df8522_di" bpmnElement="Flow_0df8522" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="695" y="-40" />
+        <di:waypoint x="892" y="-40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jl2kd9_di" bpmnElement="Flow_0jl2kd9" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="695" y="-40" />
+        <di:waypoint x="740" y="-40" />
+        <di:waypoint x="740" y="-130" />
+        <di:waypoint x="892" y="-130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g1u05h_di" bpmnElement="Flow_1g1u05h" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="695" y="-40" />
+        <di:waypoint x="740" y="-40" />
+        <di:waypoint x="740" y="-220" />
+        <di:waypoint x="892" y="-220" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="898" y="-195" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xrjbh7_di" bpmnElement="Flow_0xrjbh7" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="540" y="230" />
+        <di:waypoint x="670" y="230" />
+        <di:waypoint x="670" y="-15" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dib1fl_di" bpmnElement="Flow_0dib1fl" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="540" y="140" />
+        <di:waypoint x="670" y="140" />
+        <di:waypoint x="670" y="-15" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vj6i6t_di" bpmnElement="Flow_0vj6i6t" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="540" y="50" />
+        <di:waypoint x="670" y="50" />
+        <di:waypoint x="670" y="-15" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08gn6fc_di" bpmnElement="Flow_08gn6fc" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="540" y="-40" />
+        <di:waypoint x="645" y="-40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ykwedv_di" bpmnElement="Flow_1ykwedv" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="540" y="-130" />
+        <di:waypoint x="670" y="-130" />
+        <di:waypoint x="670" y="-65" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1invuzg_di" bpmnElement="Flow_1invuzg" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="540" y="-220" />
+        <di:waypoint x="670" y="-220" />
+        <di:waypoint x="670" y="-65" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_082hied_di" bpmnElement="Flow_082hied" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="388" y="50" />
+        <di:waypoint x="440" y="50" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xvwgxu_di" bpmnElement="Flow_0xvwgxu" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="388" y="-40" />
+        <di:waypoint x="440" y="-40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dzq521_di" bpmnElement="Flow_0dzq521" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="388" y="-130" />
+        <di:waypoint x="440" y="-130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_089kz07_di" bpmnElement="Flow_089kz07" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="388" y="-220" />
+        <di:waypoint x="440" y="-220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mds1xd_di" bpmnElement="Flow_1mds1xd" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="388" y="230" />
+        <di:waypoint x="440" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pkv9z8_di" bpmnElement="Flow_1pkv9z8" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="388" y="140" />
+        <di:waypoint x="440" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l9jepc_di" bpmnElement="Flow_1l9jepc" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="490" y="-282" />
+        <di:waypoint x="490" y="-260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="472" y="-318" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="438" y="-307" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wy7q68_di" bpmnElement="Activity_030kzyd" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="440" y="-170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0o1d5ae_di" bpmnElement="Activity_03di94y" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="440" y="-260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yu1nv2_di" bpmnElement="Activity_0jlfws8" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="440" y="10" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1qqhpfe_di" bpmnElement="Event_1j39kpd" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="352" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="352" y="165" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xto6cd_di" bpmnElement="Event_04oln32" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="352" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="352" y="255" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0h440oe_di" bpmnElement="Activity_1l4hu9n" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="440" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dcqrf4_di" bpmnElement="Activity_09ilshk" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="440" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07yx8et_di" bpmnElement="Activity_1lig8js" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="440" y="-80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ypajeq_di" bpmnElement="Event_0iwrivj" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="352" y="32" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="353" y="75" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_17hynre_di" bpmnElement="Event_1vzsxqc" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="352" y="-58" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="353" y="-15" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1sz7uum_di" bpmnElement="Event_1s11f7z" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="352" y="-148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="352" y="-105" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xqt6nf_di" bpmnElement="Event_19anwqu" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="352" y="-238" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="352" y="-195" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1nrusib_di" bpmnElement="Gateway_1nrusib" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="645" y="-65" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bcxs0u_di" bpmnElement="Event_0nliwt4" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="892" y="-238" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1igv9z9_di" bpmnElement="Event_0o9r2fv" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="892" y="-148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="880" y="-105" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0umexjj_di" bpmnElement="Event_0x9v9hk" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="892" y="-58" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="883" y="-15" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0bb420i_di" bpmnElement="Event_1a7fqpu" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="892" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="880" y="165" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0773osu_di" bpmnElement="Event_15w8yju" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="892" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="881" y="255" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fb2iui_di" bpmnElement="Event_0v8dbeb" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="892" y="32" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="883" y="75" width="56" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-7</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>

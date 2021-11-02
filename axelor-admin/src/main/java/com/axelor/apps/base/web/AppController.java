@@ -24,10 +24,12 @@ import com.axelor.apps.base.service.app.AccessConfigImportService;
 import com.axelor.apps.base.service.app.AccessTemplateService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.common.Inflector;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.schema.actions.ActionView;
@@ -70,20 +72,31 @@ public class AppController {
 
   public void configure(ActionRequest request, ActionResponse response) {
 
-    App app = request.getContext().asType(App.class);
+    Context context = request.getContext();
 
-    String code = app.getCode();
+    MetaView formView = null;
+    String code = (String) context.get("code");
     String appName = Inflector.getInstance().camelize(code);
-    String viewName = "app-" + code + "-config-form";
+    Model config = (Model) context.get("app" + appName);
+    String model = "com.axelor.apps.base.db.App" + appName;
 
-    if (Beans.get(MetaViewRepository.class).findByName(viewName) == null) {
+    if (config != null) {
+      formView =
+          Beans.get(MetaViewRepository.class)
+              .all()
+              .filter(
+                  "self.type = 'form' AND self.model = ? AND self.name like '%-config-form'", model)
+              .fetchOne();
+    }
+
+    if (formView == null) {
       response.setFlash(I18n.get(IExceptionMessages.NO_CONFIG_REQUIRED));
     } else {
       response.setView(
-          ActionView.define(I18n.get("Configure") + ": " + app.getName())
-              .add("form", viewName)
-              .model("com.axelor.apps.base.db.App" + appName)
-              .context("_showRecord", app.getId())
+          ActionView.define(I18n.get("Configure") + ": " + context.get("name"))
+              .add("form", formView.getName())
+              .model(model)
+              .context("_showRecord", config.getId())
               .param("forceEdit", "true")
               .map());
     }
@@ -114,7 +127,7 @@ public class AppController {
     String language = (String) context.get("languageSelect");
     AppRepository appRepository = Beans.get(AppRepository.class);
 
-    List<App> appList = new ArrayList<App>();
+    List<App> appList = new ArrayList<>();
     for (Map<String, Object> appData : apps) {
       App app = appRepository.find(Long.parseLong(appData.get("id").toString()));
       appList.add(app);

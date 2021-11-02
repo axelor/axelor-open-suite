@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-8</code>
+
+    <name>Default flow (Helpdesk ticket)</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-8" camunda:diagramName="Default flow (Helpdesk ticket)" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-8" camunda:versionTag="">
+  <bpmn2:process id="Process_Default_Flow" name="Default flow" isExecutable="true" camunda:displayStatus="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Ticket" metaModelLabel="Ticket (Ticket)" isStartModel="true" model="com.axelor.apps.helpdesk.db.Ticket" metaModelFullName="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" name="Draft">
+      <bpmn2:outgoing>Flow_1ockt5g</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_1ockt5g" sourceRef="StartEvent_1" targetRef="Activity_0zerxgb" />
+    <bpmn2:exclusiveGateway id="Gateway_16gso67" default="Flow_0r9o33h">
+      <bpmn2:incoming>Flow_1mmgbsz</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_15b6syx</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0r7zq0k</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1omygcq</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0rnxl1m</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0r9o33h</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_1mmgbsz" sourceRef="Activity_0zerxgb" targetRef="Gateway_16gso67" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;1&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">ticket?.statusSelect == 1</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_15b6syx" name="Urgent" sourceRef="Gateway_16gso67" targetRef="Activity_0p4dmno" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;prioritySelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;4&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.priority.select&#34;,&#34;defaultValue&#34;:2,&#34;name&#34;:&#34;prioritySelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;green&#34;,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Low&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;blue&#34;,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Normal&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;orange&#34;,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;High&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;red&#34;,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Urgent&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Priority&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.priority.select&#34;,&#34;defaultValue&#34;:2,&#34;name&#34;:&#34;prioritySelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;green&#34;,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Low&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;blue&#34;,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Normal&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;orange&#34;,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;High&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;red&#34;,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Urgent&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Priority&#34;}]},{&#34;fieldName&#34;:&#34;deadlineDateT&#34;,&#34;operator&#34;:&#34;isNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;DATETIME&#34;,&#34;field&#34;:{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;title&#34;:&#34;Deadline&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;title&#34;:&#34;Deadline&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">ticket?.prioritySelect == 4 &amp;&amp; ticket?.deadlineDateT == null</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0r7zq0k" name="High" sourceRef="Gateway_16gso67" targetRef="Activity_17n4m5o" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;prioritySelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.priority.select&#34;,&#34;defaultValue&#34;:2,&#34;name&#34;:&#34;prioritySelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;green&#34;,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Low&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;blue&#34;,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Normal&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;orange&#34;,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;High&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;red&#34;,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Urgent&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Priority&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.priority.select&#34;,&#34;defaultValue&#34;:2,&#34;name&#34;:&#34;prioritySelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;green&#34;,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Low&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;blue&#34;,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Normal&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;orange&#34;,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;High&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;red&#34;,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Urgent&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Priority&#34;}]},{&#34;fieldName&#34;:&#34;deadlineDateT&#34;,&#34;operator&#34;:&#34;isNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;DATETIME&#34;,&#34;field&#34;:{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;title&#34;:&#34;Deadline&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;title&#34;:&#34;Deadline&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">ticket?.prioritySelect == 3 &amp;&amp; ticket?.deadlineDateT == null</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1omygcq" name="Normal" sourceRef="Gateway_16gso67" targetRef="Activity_061lxrj" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;prioritySelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.priority.select&#34;,&#34;defaultValue&#34;:2,&#34;name&#34;:&#34;prioritySelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;green&#34;,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Low&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;blue&#34;,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Normal&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;orange&#34;,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;High&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;red&#34;,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Urgent&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Priority&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.priority.select&#34;,&#34;defaultValue&#34;:2,&#34;name&#34;:&#34;prioritySelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;green&#34;,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Low&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;blue&#34;,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Normal&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;orange&#34;,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;High&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;red&#34;,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Urgent&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Priority&#34;}]},{&#34;fieldName&#34;:&#34;deadlineDateT&#34;,&#34;operator&#34;:&#34;isNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;DATETIME&#34;,&#34;field&#34;:{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;title&#34;:&#34;Deadline&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;title&#34;:&#34;Deadline&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">ticket?.prioritySelect == 2 &amp;&amp; ticket?.deadlineDateT == null</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0rnxl1m" name="Low" sourceRef="Gateway_16gso67" targetRef="Activity_1hwb68p" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;prioritySelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;1&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.priority.select&#34;,&#34;defaultValue&#34;:2,&#34;name&#34;:&#34;prioritySelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;green&#34;,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Low&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;blue&#34;,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Normal&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;orange&#34;,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;High&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;red&#34;,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Urgent&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Priority&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.priority.select&#34;,&#34;defaultValue&#34;:2,&#34;name&#34;:&#34;prioritySelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;green&#34;,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Low&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;blue&#34;,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Normal&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;orange&#34;,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;High&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:&#34;red&#34;,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Urgent&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Priority&#34;}]},{&#34;fieldName&#34;:&#34;deadlineDateT&#34;,&#34;operator&#34;:&#34;isNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;DATETIME&#34;,&#34;field&#34;:{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;title&#34;:&#34;Deadline&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;title&#34;:&#34;Deadline&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">ticket?.prioritySelect == 1 &amp;&amp; ticket?.deadlineDateT == null</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0r9o33h" sourceRef="Gateway_16gso67" targetRef="Activity_09jtfa0" />
+    <bpmn2:sequenceFlow id="Flow_08ew3mp" sourceRef="Activity_0p4dmno" targetRef="Gateway_0kw873j" />
+    <bpmn2:sequenceFlow id="Flow_03mbv19" sourceRef="Activity_17n4m5o" targetRef="Gateway_0kw873j" />
+    <bpmn2:sequenceFlow id="Flow_1kurso1" sourceRef="Activity_09jtfa0" targetRef="Gateway_0kw873j" />
+    <bpmn2:sequenceFlow id="Flow_1w9ci2f" sourceRef="Activity_061lxrj" targetRef="Gateway_0kw873j" />
+    <bpmn2:sequenceFlow id="Flow_0p69col" sourceRef="Activity_1hwb68p" targetRef="Gateway_0kw873j" />
+    <bpmn2:inclusiveGateway id="Gateway_0kw873j">
+      <bpmn2:incoming>Flow_08ew3mp</bpmn2:incoming>
+      <bpmn2:incoming>Flow_03mbv19</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1kurso1</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1w9ci2f</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0p69col</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_14qq3x1</bpmn2:outgoing>
+    </bpmn2:inclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_14qq3x1" sourceRef="Gateway_0kw873j" targetRef="Activity_0rdyh75" />
+    <bpmn2:sequenceFlow id="Flow_0c3of3z" sourceRef="Activity_0rdyh75" targetRef="Activity_1w7l9cp" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">ticket?.statusSelect == 2</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:userTask id="Activity_0rdyh75" name="In progress" camunda:key="In progress" camunda:completedIf="ticket?.statusSelect != 1" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;1&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true" camunda:buttonLabels="Resolve,Close" camunda:buttons="validateTicketBtn,finishTicketBtn">
+      <bpmn2:incoming>Flow_14qq3x1</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0c3of3z</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1nuskn4</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1w7l9cp" name="Resolved" camunda:completedIf="ticket?.statusSelect != 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_0c3of3z</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0nr4fzr</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:scriptTask id="Activity_0p4dmno" name="Deadline 3 days" scriptFormat="axelor">
+      <bpmn2:incoming>Flow_15b6syx</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_08ew3mp</bpmn2:outgoing>
+      <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusDays(3)
+</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:scriptTask id="Activity_17n4m5o" name="Deadline 1 week" scriptFormat="axelor">
+      <bpmn2:incoming>Flow_0r7zq0k</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_03mbv19</bpmn2:outgoing>
+      <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusWeeks(1)</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:scriptTask id="Activity_061lxrj" name="Deadline 2 week" scriptFormat="axelor">
+      <bpmn2:incoming>Flow_1omygcq</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1w9ci2f</bpmn2:outgoing>
+      <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusWeeks(2)</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:scriptTask id="Activity_1hwb68p" name="Deadline 1 month" scriptFormat="axelor">
+      <bpmn2:incoming>Flow_0rnxl1m</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0p69col</bpmn2:outgoing>
+      <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusMonths(1)</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:task id="Activity_09jtfa0" name="Deadline already filled">
+      <bpmn2:incoming>Flow_0r9o33h</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1kurso1</bpmn2:outgoing>
+    </bpmn2:task>
+    <bpmn2:userTask id="Activity_0zerxgb" name="Draft" camunda:completedIf="ticket?.statusSelect != 0" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;0&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and" camunda:displayStatus="true" camunda:buttonLabels="Start,Close" camunda:buttons="startTicketBtn,finishTicketBtn">
+      <bpmn2:incoming>Flow_1ockt5g</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1mmgbsz</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0aslg75</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="Event_0nzedaz" name="Closed" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_0aslg75</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1nuskn4</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0nr4fzr</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0aslg75" sourceRef="Activity_0zerxgb" targetRef="Event_0nzedaz" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">ticket?.statusSelect == 3</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1nuskn4" sourceRef="Activity_0rdyh75" targetRef="Event_0nzedaz" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Ticket&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;helpdesk.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;New&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;In progress&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Resolved&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Closed&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">ticket?.statusSelect == 3</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0nr4fzr" sourceRef="Activity_1w7l9cp" targetRef="Event_0nzedaz" />
+    <bpmn2:group id="Group_1hu55dk" categoryValueRef="CategoryValue_0nu5b0x" />
+  </bpmn2:process>
+  <bpmn2:category id="Category_07f0iva">
+    <bpmn2:categoryValue id="CategoryValue_0nu5b0x" value="Based on priority, fill deadline if deadline is empty" />
+  </bpmn2:category>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Default_Flow">
+      <bpmndi:BPMNEdge id="Flow_0nr4fzr_di" bpmnElement="Flow_0nr4fzr" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="1240" y="260" />
+        <di:waypoint x="1240" y="590" />
+        <di:waypoint x="768" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nuskn4_di" bpmnElement="Flow_1nuskn4" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="1070" y="260" />
+        <di:waypoint x="1070" y="590" />
+        <di:waypoint x="768" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0aslg75_di" bpmnElement="Flow_0aslg75" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="410" y="260" />
+        <di:waypoint x="410" y="590" />
+        <di:waypoint x="732" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c3of3z_di" bpmnElement="Flow_0c3of3z" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="1120" y="220" />
+        <di:waypoint x="1190" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14qq3x1_di" bpmnElement="Flow_14qq3x1" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="955" y="220" />
+        <di:waypoint x="1020" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p69col_di" bpmnElement="Flow_0p69col" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="800" y="450" />
+        <di:waypoint x="930" y="450" />
+        <di:waypoint x="930" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w9ci2f_di" bpmnElement="Flow_1w9ci2f" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="800" y="330" />
+        <di:waypoint x="930" y="330" />
+        <di:waypoint x="930" y="245" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kurso1_di" bpmnElement="Flow_1kurso1" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="800" y="220" />
+        <di:waypoint x="905" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03mbv19_di" bpmnElement="Flow_03mbv19" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="800" y="110" />
+        <di:waypoint x="930" y="110" />
+        <di:waypoint x="930" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08ew3mp_di" bpmnElement="Flow_08ew3mp" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="800" y="0" />
+        <di:waypoint x="930" y="0" />
+        <di:waypoint x="930" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0r9o33h_di" bpmnElement="Flow_0r9o33h" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="625" y="220" />
+        <di:waypoint x="700" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rnxl1m_di" bpmnElement="Flow_0rnxl1m" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="600" y="245" />
+        <di:waypoint x="600" y="450" />
+        <di:waypoint x="700" y="450" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="633" y="433" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1omygcq_di" bpmnElement="Flow_1omygcq" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="600" y="245" />
+        <di:waypoint x="600" y="330" />
+        <di:waypoint x="700" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="605" y="289" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0r7zq0k_di" bpmnElement="Flow_0r7zq0k" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="600" y="195" />
+        <di:waypoint x="600" y="110" />
+        <di:waypoint x="700" y="110" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="633" y="83" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15b6syx_di" bpmnElement="Flow_15b6syx" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="600" y="195" />
+        <di:waypoint x="600" y="0" />
+        <di:waypoint x="700" y="0" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="616" y="-27" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mmgbsz_di" bpmnElement="Flow_1mmgbsz" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="460" y="220" />
+        <di:waypoint x="575" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ockt5g_di" bpmnElement="Flow_1ockt5g" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="248" y="220" />
+        <di:waypoint x="360" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="212" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="219" y="245" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_16gso67_di" bpmnElement="Gateway_16gso67" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="575" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_14hh11g_di" bpmnElement="Gateway_0kw873j" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="905" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pj3jds_di" bpmnElement="Activity_0rdyh75" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="1020" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pttdxw_di" bpmnElement="Activity_1w7l9cp" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="1190" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xmel9r_di" bpmnElement="Activity_0p4dmno" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="700" y="-40" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cxb7c6_di" bpmnElement="Activity_17n4m5o" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="700" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1sv92yn_di" bpmnElement="Activity_061lxrj" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="700" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01h22qn_di" bpmnElement="Activity_1hwb68p" bioc:stroke="#ff9e0f" bioc:fill="#ffeed4" color:background-color="#ffeed4" color:border-color="#ff9e0f">
+        <dc:Bounds x="700" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jp0e18_di" bpmnElement="Activity_09jtfa0" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="700" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n0pq7u_di" bpmnElement="Activity_0zerxgb" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="360" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nzedaz_di" bpmnElement="Event_0nzedaz" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="732" y="572" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="733" y="615" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Group_1hu55dk_di" bpmnElement="Group_1hu55dk" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="550" y="-110" width="440" height="650" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="727" y="-103" width="87" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-8</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>

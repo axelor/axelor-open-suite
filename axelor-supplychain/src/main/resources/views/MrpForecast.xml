@@ -1,77 +1,87 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-    <grid name="mrp-forecast-grid" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecasts" orderBy="-forecastDate,product.code">
-        <hilite if="$moment(forecastDate) &lt; $moment(todayDate)" color="danger"/>
-     	<field name="id" title="Ref"/>
-       	<field name="forecastDate"/>
-       	<field name="product"/>
-        <field name="qty" aggregate="sum" x-scale="2"/>
-        <field name="unit"/>
-       	<field name="stockLocation"/>
-       	<field name="partner"/>
-       	<field name="statusSelect"/>
-    </grid>
-    
-	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast" width="large"
-		  onNew="action-mrp-forecast-record-set-technical-origin,action-mrp-forecast-attrs-scale-and-precision" onLoad="action-mrp-forecast-attrs-scale-and-precision">
-		<panel name="mainPanel">
-			<panel name="statusSelectPanel" colSpan="8">
-				<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="8"/>
-				<field name="technicalOrigin" showTitle="false" colSpan="4" readonly="true" showIf="$readonly()">
-					<viewer>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="mrp-forecast-grid" model="com.axelor.apps.supplychain.db.MrpForecast"
+    title="MRP forecasts" orderBy="-forecastDate,product.code">
+    <hilite if="$moment(forecastDate) &lt; $moment(todayDate)" color="danger"/>
+    <field name="id" title="Ref"/>
+    <field name="forecastDate"/>
+    <field name="product"/>
+    <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="unit"/>
+    <field name="stockLocation"/>
+    <field name="partner"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast"
+    title="MRP forecast" width="large"
+    onNew="action-mrp-forecast-record-set-technical-origin,action-mrp-forecast-attrs-scale-and-precision"
+    onLoad="action-mrp-forecast-attrs-scale-and-precision">
+    <panel name="mainPanel">
+      <panel name="statusSelectPanel" colSpan="8">
+        <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="8"/>
+        <field name="technicalOrigin" showTitle="false" colSpan="4" readonly="true"
+          showIf="$readonly()">
+          <viewer>
 						<![CDATA[
 							<h4 class="text-right">
 								<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOrigin == 1" x-translate>Created manually</span>
 								<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOrigin == 2" x-translate>Created from SOP</span>
 							</h4>
 						]]>
-					</viewer>
-				</field>
-			</panel>
-			<panel name="actionsPanel" colSpan="4" itemSpan="12">
-				<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="save,action-mrp-forecast-attrs-confirm-btn-on-click,save"/>
-				<button name="cancelBtn" title="Cancel" hideIf="statusSelect == 3" onClick="save,action-mrp-forecast-attrs-cancel-btn-on-click,save"/>
-			</panel>
-	    	<panel name="detailsPanel" colSpan="12">
-	        	<field name="id" title="Ref"/>
-	        	<field name="forecastDate"/>
-   	        	<field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit" domain="self.dtype = 'Product'"/>
-   	        	<field name="qty"/>
-   	        	<field name="unit"/>
-        		<field name="stockLocation"/>
-        		<field name="partner"/>
-        		<field name="note" colSpan="12"/>
-	    	</panel>
-	    </panel>
+          </viewer>
+        </field>
+      </panel>
+      <panel name="actionsPanel" colSpan="4" itemSpan="12">
+        <button name="confirmBtn" title="Confirm" showIf="statusSelect == 1"
+          onClick="save,action-mrp-forecast-attrs-confirm-btn-on-click,save"/>
+        <button name="cancelBtn" title="Cancel" hideIf="statusSelect == 3"
+          onClick="save,action-mrp-forecast-attrs-cancel-btn-on-click,save"/>
+      </panel>
+      <panel name="detailsPanel" colSpan="12">
+        <field name="id" title="Ref"/>
+        <field name="forecastDate"/>
+        <field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"
+          domain="self.dtype = 'Product'"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="stockLocation"/>
+        <field name="partner"/>
+        <field name="note" colSpan="12"/>
+      </panel>
+    </panel>
 
-	    <panel-mail name="mailPanel">
-			<mail-messages limit="4" />
-			<mail-followers />
-		</panel-mail>
-	 </form>
-	 
-	 <action-record name="action-mrp-forecast-record-unit" model="com.axelor.apps.supplychain.db.MrpForecast">
-	 	<field name="unit" expr="eval: product?.salesUnit" if="product?.salesUnit != null"/>
-	 	<field name="unit" expr="eval: product?.unit" if="product?.salesUnit == null"/>
-	 </action-record>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
 
- 	<action-attrs name="action-mrp-forecast-attrs-scale-and-precision">
-		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-	</action-attrs>
+  <action-record name="action-mrp-forecast-record-unit"
+    model="com.axelor.apps.supplychain.db.MrpForecast">
+    <field name="unit" expr="eval: product?.salesUnit" if="product?.salesUnit != null"/>
+    <field name="unit" expr="eval: product?.unit" if="product?.salesUnit == null"/>
+  </action-record>
 
-	 <action-record name="action-mrp-forecast-record-set-technical-origin" model="com.axelor.apps.supplychain.db.MrpForecast">
-	 	<field name="technicalOrigin" expr="eval: 1"/>
-	 </action-record>
+  <action-attrs name="action-mrp-forecast-attrs-scale-and-precision">
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
 
-	 <action-attrs name="action-mrp-forecast-attrs-confirm-btn-on-click">
-	 	<attribute name="value" for="statusSelect" expr="eval: 2"/>
-	 </action-attrs>
+  <action-record name="action-mrp-forecast-record-set-technical-origin"
+    model="com.axelor.apps.supplychain.db.MrpForecast">
+    <field name="technicalOrigin" expr="eval: 1"/>
+  </action-record>
 
-	 <action-attrs name="action-mrp-forecast-attrs-cancel-btn-on-click">
-	 	<attribute name="value" for="statusSelect" expr="eval: 3"/>
-	 </action-attrs>
+  <action-attrs name="action-mrp-forecast-attrs-confirm-btn-on-click">
+    <attribute name="value" for="statusSelect" expr="eval: 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-mrp-forecast-attrs-cancel-btn-on-click">
+    <attribute name="value" for="statusSelect" expr="eval: 3"/>
+  </action-attrs>
 
 </object-views>

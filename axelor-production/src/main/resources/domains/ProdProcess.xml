@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="ProdProcess" lang="java">
 
-    <one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases" orderBy="priority"/>
+    <one-to-many name="prodProcessLineList"
+      ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases"
+      orderBy="priority"/>
     <string name="name" title="Label" required="true" massUpdate="true"/>
     <string name="code" title="Code"/>
     <boolean name="outsourcing" title="Outsourcing"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
     <string name="fullName" namecolumn="true" title="Label"/>
-    <integer name="statusSelect" title="Status" readonly="true" selection="production.prod.process.status.select" default="1"/>
+    <integer name="statusSelect" title="Status" readonly="true"
+      selection="production.prod.process.status.select" default="1"/>
 
     <boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
 
-    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock location" massUpdate="true"/>
-    <many-to-one name="producedProductStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product" massUpdate="true"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Production stock location" massUpdate="true"/>
+    <many-to-one name="producedProductStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product"
+      massUpdate="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop" massUpdate="true"/>
+    <many-to-one name="workshopStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Workshop" massUpdate="true"/>
 
     <integer name="versionNumber" title="Version number" default="1"/>
-    <many-to-one name="originalProdProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Original production process" />
+    <many-to-one name="originalProdProcess"
+      ref="com.axelor.apps.production.db.ProdProcess" title="Original production process"/>
 
     <boolean name="isEnabledForAllProducts" title="Enable the process for other products"/>
 
     <decimal name="launchQty" title="Launch quantity" precision="20" scale="10"/>
     <integer name="stockMoveRealizeOrderSelect" default="1" massUpdate="true"
-            selection="production.manuf.order.stock.move.realize.order.select"/>
-            
-    <many-to-one name="subcontractors" ref="com.axelor.apps.base.db.Partner" title="Subcontractor"/>
-    <many-to-one name="outsourcingStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>
-    <boolean name="generatePurchaseOrderOnMoPlanning" title="Generate a purchase order on MO planning" />
+      selection="production.manuf.order.stock.move.realize.order.select"/>
+
+    <many-to-one name="subcontractors" ref="com.axelor.apps.base.db.Partner"
+      title="Subcontractor"/>
+    <many-to-one name="outsourcingStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>
+    <boolean name="generatePurchaseOrderOnMoPlanning"
+      title="Generate a purchase order on MO planning"/>
 
     <extra-code><![CDATA[
 
@@ -45,23 +57,23 @@
 
     ]]></extra-code>
 
-	<track>
-		<field name="name"/>
-		<field name="code"/>
-		<field name="outsourcing"/>
-		<field name="company"/>
-		<field name="fullName"/>
-		<field name="statusSelect"/>
-		<field name="isConsProOnOperation"/>
-		<field name="stockLocation"/>
-		<field name="producedProductStockLocation"/>
-		<field name="product"/>
-		<field name="workshopStockLocation"/>
-		<field name="versionNumber"/>
-		<field name="originalProdProcess"/>
-		<field name="isEnabledForAllProducts"/>
-		<field name="launchQty"/>
-		<field name="stockMoveRealizeOrderSelect"/>
-	</track>
+    <track>
+      <field name="name"/>
+      <field name="code"/>
+      <field name="outsourcing"/>
+      <field name="company"/>
+      <field name="fullName"/>
+      <field name="statusSelect"/>
+      <field name="isConsProOnOperation"/>
+      <field name="stockLocation"/>
+      <field name="producedProductStockLocation"/>
+      <field name="product"/>
+      <field name="workshopStockLocation"/>
+      <field name="versionNumber"/>
+      <field name="originalProdProcess"/>
+      <field name="isEnabledForAllProducts"/>
+      <field name="launchQty"/>
+      <field name="stockMoveRealizeOrderSelect"/>
+    </track>
   </entity>
 </domain-models>

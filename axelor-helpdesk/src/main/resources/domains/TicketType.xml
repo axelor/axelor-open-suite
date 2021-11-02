@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="helpdesk" package="com.axelor.apps.helpdesk.db"/>
 
   <entity name="TicketType">
 
-        <string name="name" required="true"/>
+    <string name="name" required="true"/>
 
   </entity>
 

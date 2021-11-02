@@ -1,6 +1,7 @@
 "key","message","comment","context"
 "%d messages has been regenerated successfully and %d errors append.","Se han regenerado %d mensajes con éxito y se han agregado %d errores.",,
 "Add Signature","Añadir firma",,
+"Add Signature",,,
 "Address","Habla a",,
 "Address Block","Bloque de direcciones",,
 "All messages","Todos los mensajes",,

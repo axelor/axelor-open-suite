@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-6.2</code>
+
+    <name>Event</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-6.2" camunda:diagramName="Event" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-6">
+  <bpmn2:process id="Event_Proc" name="Event Message Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Event" metaModelLabel="Event (Events)" isStartModel="true" model="com.axelor.apps.crm.db.Event" metaModelFullName="com.axelor.apps.crm.db.Event" title="Event" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:sequenceFlow id="Flow_105n6xj" sourceRef="StartEvent_1" targetRef="Activity_0vzdwak" />
+    <bpmn2:sequenceFlow id="Flow_17m43kf" sourceRef="Activity_0vzdwak" targetRef="Event_0s42f4m" />
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="axelor">event = $ctx.create('Event');
+event.lead = $ctx.find('Lead',$ctx.getVariable(Lead_Message_Process, 'leadId'))?.getTarget()
+event.subject = 'Event From LEAD: ' + event.lead.fullName
+event.startDateTime = LocalDateTime.now()
+event.endDateTime = LocalDateTime.now().plusHours(1)
+$ctx.createVariable(event,execution)
+$ctx.save(event)</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>Flow_105n6xj</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_1j5k2mi" messageRef="Message_0gkikow" />
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="Event_0s42f4m" name="End">
+      <bpmn2:incoming>Flow_17m43kf</bpmn2:incoming>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_1c7dl95" messageRef="Message_0kj4jzm" />
+    </bpmn2:endEvent>
+    <bpmn2:userTask id="Activity_0vzdwak" name="Complete event" camunda:completedIf="event?.statusSelect == 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Event&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;statusSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;crm.event.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Realized&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;},{&#34;value&#34;:&#34;11&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Not started&#34;},{&#34;value&#34;:&#34;12&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;On going&#34;},{&#34;value&#34;:&#34;13&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Pending&#34;},{&#34;value&#34;:&#34;14&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:6,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;15&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:7,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reported&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;crm.event.status.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;statusSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Realized&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Canceled&#34;},{&#34;value&#34;:&#34;11&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Not started&#34;},{&#34;value&#34;:&#34;12&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;On going&#34;},{&#34;value&#34;:&#34;13&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:5,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Pending&#34;},{&#34;value&#34;:&#34;14&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:6,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Finished&#34;},{&#34;value&#34;:&#34;15&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:7,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Reported&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Status&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_105n6xj</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_17m43kf</bpmn2:outgoing>
+    </bpmn2:userTask>
+  </bpmn2:process>
+  <bpmn2:message id="Message_1fakaf4" name="Create-event" />
+  <bpmn2:message id="Message_0gkikow" name="Create-Event" />
+  <bpmn2:message id="Message_1uojlcv" name="" />
+  <bpmn2:message id="Message_0kj4jzm" name="Complete-Event-${Lead_Message_Process}" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Event_Proc">
+      <bpmndi:BPMNEdge id="Flow_17m43kf_di" bpmnElement="Flow_17m43kf" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="400" y="230" />
+        <di:waypoint x="452" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_105n6xj_di" bpmnElement="Flow_105n6xj" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="248" y="230" />
+        <di:waypoint x="300" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1tdaxc6_di" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="212" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="218" y="255" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10m7orw_di" bpmnElement="Event_0s42f4m" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="452" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="460" y="255" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0c24zmy_di" bpmnElement="Activity_0vzdwak" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="300" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-6</appBuilder>
+
+  </wkf-model>
+  <wkf-model>
+
+    <code>BPM-6.1</code>
+
+    <name>Lead</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-6.1" camunda:diagramName="Lead" camunda:wkfStatusColor="blue" camunda:appBuilder="BPM-6">
+  <bpmn2:process id="Lead_Message_Process" name="Lead Message Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Lead" metaModelLabel="Lead (Lead)" isStartModel="true" model="com.axelor.apps.crm.db.Lead" metaModelFullName="com.axelor.apps.crm.db.Lead" title="Lead" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:outgoing>Flow_05rlx7q</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_05rlx7q" sourceRef="StartEvent_1" targetRef="Event_0d8b5dw" />
+    <bpmn2:sequenceFlow id="Flow_0x1js5i" sourceRef="Event_0d8b5dw" targetRef="Event_0vpnz66" />
+    <bpmn2:endEvent id="Event_1mdvb9r" name="End">
+      <bpmn2:incoming>Flow_08kni36</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_08kni36" sourceRef="Event_0vpnz66" targetRef="Event_1mdvb9r" />
+    <bpmn2:intermediateThrowEvent id="Event_0d8b5dw" name="Create event">
+      <bpmn2:incoming>Flow_05rlx7q</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0x1js5i</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_14spl9p" messageRef="Message_0oy5a52" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateCatchEvent id="Event_0vpnz66" name="Complete event">
+      <bpmn2:incoming>Flow_0x1js5i</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_08kni36</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_1qrmfh1" messageRef="Message_1ryjuwu" />
+    </bpmn2:intermediateCatchEvent>
+  </bpmn2:process>
+  <bpmn2:message id="Message_1ryjuwu" name="Complete-Event-${Lead_Message_Process}" />
+  <bpmn2:message id="Message_0oy5a52" name="Create-Event" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Lead_Message_Process">
+      <bpmndi:BPMNEdge id="Flow_08kni36_di" bpmnElement="Flow_08kni36" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="378" y="180" />
+        <di:waypoint x="432" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x1js5i_di" bpmnElement="Flow_0x1js5i" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="288" y="180" />
+        <di:waypoint x="342" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05rlx7q_di" bpmnElement="Flow_05rlx7q" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="198" y="180" />
+        <di:waypoint x="252" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="162" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="168" y="198" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mdvb9r_di" bpmnElement="Event_1mdvb9r" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="432" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="440" y="205" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1q6cd9i_di" bpmnElement="Event_0d8b5dw" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="252" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="239" y="198" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1r35ky5_di" bpmnElement="Event_0vpnz66" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="342" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="322" y="205" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-6</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>

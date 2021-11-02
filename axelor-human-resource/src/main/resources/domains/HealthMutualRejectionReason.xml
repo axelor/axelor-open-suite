@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="HealthMutualRejectionReason" lang="java" cacheable="true">
+    <string name="code" title="Code"/>
+    <string name="oldCode" title="Old code"/>
+    <string name="name" title="RejectionReason.name" namecolumn="true"/>
+    <boolean name="isInactive" title="Inactive"/>
+  </entity>
+
+</domain-models>

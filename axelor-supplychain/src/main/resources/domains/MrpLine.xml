@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
- 
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
- 
+
   <entity name="MrpLine" lang="java">
-  
-      	<many-to-one name="mrp" ref="com.axelor.apps.supplychain.db.Mrp" title="Mrp"/>
-     	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-		<decimal name="qty" title="Qty" precision="20" scale="10"/>
-        <decimal name="cumulativeQty" title="Cumulative qty" precision="20" scale="10"/>
-        <many-to-one name="mrpLineType" ref="com.axelor.apps.supplychain.db.MrpLineType" title="Type"/>
-      	<date name="maturityDate" title="Maturity"/>      
-      	<integer name="maxLevel" title="Maximum level"/>
-      	<decimal name="minQty" title="Min qty" precision="20" scale="10"/>
-  		<string name="relatedToSelectName" title="Related to"/>
-      	<one-to-many name="mrpLineOriginList" ref="com.axelor.apps.supplychain.db.MrpLineOrigin" mappedBy="mrpLine" title="Origins"/>
-  		<boolean name="proposalGenerated" default="false" required="true" readonly="true"/>
-  		<string name="proposalSelect" selection="mrp.line.proposal.ref.select" readonly="true"/>
-  		<long name="proposalSelectId" readonly="true"/>
-		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    
-        <!-- TRANSIENT FIELD -->
-        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" transient="true"/>
-        <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" transient="true"/>
-    
-		<boolean name="isEditedByUser" title="Edited by user"/>
-		
+
+    <many-to-one name="mrp" ref="com.axelor.apps.supplychain.db.Mrp" title="Mrp"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <decimal name="qty" title="Qty" precision="20" scale="10"/>
+    <decimal name="cumulativeQty" title="Cumulative qty" precision="20" scale="10"/>
+    <many-to-one name="mrpLineType" ref="com.axelor.apps.supplychain.db.MrpLineType"
+      title="Type"/>
+    <date name="maturityDate" title="Maturity"/>
+    <integer name="maxLevel" title="Maximum level"/>
+    <decimal name="minQty" title="Min qty" precision="20" scale="10"/>
+    <decimal name="idealQty" title="Ideal Qty" precision="20" scale="10"/>
+    <decimal name="reOrderQty" title="Refill Qty" precision="20" scale="10"/>
+    <string name="relatedToSelectName" title="Related to"/>
+    <one-to-many name="mrpLineOriginList"
+      ref="com.axelor.apps.supplychain.db.MrpLineOrigin" mappedBy="mrpLine" title="Origins"/>
+    <boolean name="proposalGenerated" default="false" required="true" readonly="true"/>
+    <boolean name="proposalToProcess" title="To process" default="false"/>
+    <string name="proposalSelect" selection="mrp.line.proposal.ref.select" readonly="true"/>
+    <long name="proposalSelectId" readonly="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Supplier" massUpdate="true"/>
+    <boolean name="warnDelayFromSupplier" readonly="true"/>
+    <boolean name="isOutDayNbBetweenPurchaseAndProposal" readonly="true"/>
+
+    <!-- TRANSIENT FIELD -->
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      transient="true"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"
+      transient="true"/>
+
+    <boolean name="isEditedByUser" title="Edited by user"/>
+
   </entity>
 
 </domain-models>

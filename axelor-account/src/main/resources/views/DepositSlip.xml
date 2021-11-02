@@ -1,138 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slips"
-	    orderBy="-depositDate,-depositNumber">
-	  <field name="depositNumber" width="120"/>
-	  <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-	  <field name="companyBankDetails" />
-	  <field name="depositDate" />
-	  <field name="totalAmount" />
-	  <field name="chequeCount" />
-	  <field name="publicationDate"/>
-	</grid>
+  <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip"
+    title="Deposit slips" orderBy="-depositDate,-depositNumber">
+    <field name="depositNumber" width="120"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="companyBankDetails"/>
+    <field name="depositDate"/>
+    <field name="depositType"/>
+    <field name="totalAmount"/>
+    <field name="chequeCount"/>
+    <field name="publicationDate"/>
+  </grid>
 
-    <form name="cheque-deposit-slip-form" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip"
-        onNew="action-group-deposit-slip-onnew"
-        onLoad="action-deposit-slip-company-bank-details-visibility" width="large">
+  <form name="cheque-deposit-slip-form" model="com.axelor.apps.account.db.DepositSlip"
+    title="Deposit slip" onNew="action-group-deposit-slip-onnew"
+    onLoad="action-deposit-slip-company-bank-details-visibility" width="large">
 
-        <toolbar>
-            <button name="loadPaymentsBtn" title="Load cheques" icon="fa-list" onClick="save,action-deposit-slip-load-payments"
-                hideIf="publicationDate" />
-            <button name="publishBtn" title="Publish deposit slip" icon="fa-print" onClick="save,action-deposit-slip-publish"
-                hideIf="publicationDate" readonlyIf="!paymentVoucherList" prompt="Are you sure you want to publish this deposit slip?" />
-        </toolbar>
+    <toolbar>
+      <button name="loadPaymentsBtn" title="Load cheques" icon="fa-list"
+        onClick="save,action-deposit-slip-load-payments" hideIf="publicationDate"/>
+      <button name="publishBtn" title="Publish deposit slip" icon="fa-print"
+        onClick="save,action-deposit-slip-publish" hideIf="publicationDate"
+        readonlyIf="!paymentVoucherList"
+        prompt="Are you sure you want to publish this deposit slip?"/>
+    </toolbar>
 
-        <panel name="paymentVouchersOnInvoicePanel" colSpan="12" if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice">
-            <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
+    <panel name="paymentVouchersOnInvoicePanel" colSpan="12"
+      if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice">
+      <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
+    </panel>
+
+    <panel name="definitionPanel" readonlyIf="publicationDate">
+      <field name="depositType"/>
+
+      <panel name="periodPanel" title="Period" colSpan="12">
+        <field name="fromDate"/>
+        <field name="toDate"/>
+      </panel>
+    </panel>
+
+    <panel name="companyDetailsPanel" readonlyIf="publicationDate">
+      <field name="company" onChange="action-deposit-slip-company-onchange" canEdit="false"
+        colSpan="4"/>
+      <field name="currency" canEdit="false" colSpan="4"/>
+      <field name="depositDate" colSpan="4"/>
+      <panel name="companyBankDetailsPanel" hidden="true" colSpan="12">
+        <field name="companyBankDetails" canEdit="false" canNew="false"
+          onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4"/>
+        <panel name="subCompanyBankDetailsPanel" showIf="companyBankDetails" colSpan="8">
+          <field name="companyBankDetails.bank.bankName" title="Bank name"/>
+          <field name="companyBankDetails.accountNbr"/>
         </panel>
+      </panel>
+    </panel>
 
-        <panel name="periodPanel" title="Period" readonlyIf="publicationDate">
-            <field name="fromDate" />
-            <field name="toDate" />
-        </panel>
+    <panel name="depositDetailsPanel" showIf="depositNumber">
+      <field name="depositNumber"/>
+      <field name="publicationDate"/>
+    </panel>
 
-        <panel name="companyDetailsPanel" readonlyIf="publicationDate">
-            <field name="company" onChange="action-deposit-slip-company-onchange" canEdit="false" colSpan="4" />
-            <field name="currency" canEdit="false" colSpan="4" />
-            <field name="depositDate" colSpan="4" />
-            <panel name="companyBankDetailsPanel" hidden="true" colSpan="12">
-                <field name="companyBankDetails" canEdit="false" canNew="false"
-                    onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4" />
-                <panel name="subCompanyBankDetailsPanel" showIf="companyBankDetails" colSpan="8">
-                    <field name="companyBankDetails.bank.bankName" title="Bank name" />
-                    <field name="companyBankDetails.accountNbr" />
-                </panel>
-            </panel>
-        </panel>
+    <panel-related name="paymentVoucherListPanel" field="paymentVoucherList"
+      grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
+      readonlyIf="publicationDate" canNew="false" canRemove="false"/>
 
-        <panel name="depositDetailsPanel" showIf="depositNumber">
-            <field name="depositNumber" />
-            <field name="publicationDate" />
-        </panel>
+    <panel name="paymentDetailsPanel" showIf="paymentVoucherList">
+      <field name="totalAmount"/>
+      <field name="chequeCount"/>
+    </panel>
 
-        <panel-related name="paymentVoucherListPanel" field="paymentVoucherList" grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
-            readonlyIf="publicationDate" canNew="false" canRemove="false" />
+  </form>
 
-        <panel name="paymentDetailsPanel" showIf="paymentVoucherList">
-            <field name="totalAmount" />
-            <field name="chequeCount" />
-        </panel>
+  <action-group name="action-group-deposit-slip-onnew">
+    <action name="action-deposit-slip-company-bank-details-visibility"/>
+    <action name="action-cheque-deposit-slip-defaults"/>
+    <action name="action-deposit-slip-defaults"/>
+    <action name="action-deposit-slip-company-onchange"/>
+  </action-group>
 
-    </form>
+  <action-record name="action-cheque-deposit-slip-defaults"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <field name="paymentModeTypeSelect" expr="eval: __repo__(PaymentMode).TYPE_CHEQUE"/>
+  </action-record>
 
-	<action-group name="action-group-deposit-slip-onnew">
-		<action name="action-deposit-slip-company-bank-details-visibility" />
-		<action name="action-cheque-deposit-slip-defaults" />
-		<action name="action-deposit-slip-defaults" />
-		<action name="action-deposit-slip-company-onchange" />
-	</action-group>
+  <action-attrs name="action-deposit-slip-company-bank-details-visibility">
+    <attribute for="companyBankDetailsPanel" name="hidden"
+      expr="eval: !__config__.app.getApp('base').manageMultiBanks"/>
+  </action-attrs>
 
-    <action-record name="action-cheque-deposit-slip-defaults" model="com.axelor.apps.account.db.DepositSlip">
-        <field name="paymentModeTypeSelect" expr="eval: __repo__(PaymentMode).TYPE_CHEQUE" />
-    </action-record>
+  <action-record name="action-deposit-slip-defaults"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="depositDate" expr="eval: __config__.app.todayDate"/>
+  </action-record>
 
-    <action-attrs name="action-deposit-slip-company-bank-details-visibility">
-        <attribute for="companyBankDetailsPanel" name="hidden" expr="eval: !__config__.app.getApp('base').manageMultiBanks" />
-    </action-attrs>
+  <action-record name="action-deposit-slip-company-onchange"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <field name="companyBankDetails" expr="eval: company?.defaultBankDetails"/>
+    <field name="currency" expr="eval: company?.currency"/>
+  </action-record>
 
-    <action-record name="action-deposit-slip-defaults" model="com.axelor.apps.account.db.DepositSlip">
-        <field name="company" expr="eval: __user__.activeCompany" />
-        <field name="depositDate" expr="eval: __config__.app.todayDate" />
-    </action-record>
+  <action-attrs name="action-deposit-slip-company-bank-details-domain"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;"
+      for="companyBankDetails" if="!company?.bankDetailsList?.isEmpty()"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;"
+      for="companyBankDetails" if="company?.bankDetailsList?.isEmpty()"/>
+  </action-attrs>
 
-    <action-record name="action-deposit-slip-company-onchange" model="com.axelor.apps.account.db.DepositSlip">
-        <field name="companyBankDetails" expr="eval: company?.defaultBankDetails" />
-        <field name="currency" expr="eval: company?.currency" />
-    </action-record>
+  <action-method name="action-deposit-slip-load-payments"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <call class="com.axelor.apps.account.web.DepositSlipController" method="loadPayments"/>
+  </action-method>
 
-    <action-attrs name="action-deposit-slip-company-bank-details-domain" model="com.axelor.apps.account.db.DepositSlip">
-        <attribute name="domain"
-            expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;"
-            for="companyBankDetails" if="!company?.bankDetailsList?.isEmpty()" />
-        <attribute name="domain"
-            expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;" for="companyBankDetails"
-            if="company?.bankDetailsList?.isEmpty()" />
-    </action-attrs>
+  <action-method name="action-deposit-slip-publish"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <call class="com.axelor.apps.account.web.DepositSlipController" method="publish"/>
+  </action-method>
 
-    <action-method name="action-deposit-slip-load-payments" model="com.axelor.apps.account.db.DepositSlip">
-        <call class="com.axelor.apps.account.web.DepositSlipController" method="loadPayments" />
-    </action-method>
+  <grid title="Payment vouchers" name="payment-voucher-deposit-slip-grid"
+    model="com.axelor.apps.account.db.PaymentVoucher" orderBy="paymentDate">
 
-    <action-method name="action-deposit-slip-publish" model="com.axelor.apps.account.db.DepositSlip">
-        <call class="com.axelor.apps.account.web.DepositSlipController" method="publish" />
-    </action-method>
+    <field name="ref"/>
+    <field name="partner"/>
+    <field name="paymentDate"/>
+    <field name="paidAmount"/>
+    <field name="currency"/>
+    <field name="chequeOwner"/>
+    <field name="chequeDate"/>
+  </grid>
 
-    <grid title="Payment vouchers" name="payment-voucher-deposit-slip-grid" model="com.axelor.apps.account.db.PaymentVoucher"
-        orderBy="paymentDate">
+  <form title="Payment voucher" name="payment-voucher-deposit-slip-form"
+    model="com.axelor.apps.account.db.PaymentVoucher">
+    <panel name="mainPanel" colSpan="12" readonly="true">
+      <field name="partner"/>
+      <field name="paymentDate"/>
+      <field name="paidAmount"/>
+      <field name="currency"/>
+    </panel>
+    <panel name="chequeDetailsPanel" title="Cheque" colSpan="12">
+      <field name="chequeNumber"/>
+      <field name="chequeBank"/>
+      <field name="chequeOwner"/>
+      <field name="chequeDate"/>
+    </panel>
+  </form>
 
-        <field name="ref" />
-        <field name="partner" />
-        <field name="paymentDate" />
-        <field name="paidAmount" />
-        <field name="currency" />
-        <field name="chequeOwner" />
-        <field name="chequeDate" />
-    </grid>
-
-    <form title="Payment voucher" name="payment-voucher-deposit-slip-form" model="com.axelor.apps.account.db.PaymentVoucher">
-        <panel name="mainPanel" colSpan="12" readonly="true">
-            <field name="partner" />
-            <field name="paymentDate" />
-            <field name="paidAmount" />
-	        <field name="currency" />
-        </panel>
-        <panel name="chequeDetailsPanel" title="Cheque" colSpan="12">
-            <field name="chequeNumber" />
-            <field name="chequeBank" />
-            <field name="chequeOwner" />
-            <field name="chequeDate" />
-        </panel>
-    </form>
-    
-    <search-filters name="cheque-deposit-slip-filters" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip filters">
-    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-    </search-filters>
+  <search-filters name="cheque-deposit-slip-filters"
+    model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </search-filters>
 
 </object-views>

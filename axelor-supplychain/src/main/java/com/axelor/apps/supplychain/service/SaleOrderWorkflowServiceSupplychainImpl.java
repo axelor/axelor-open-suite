@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -60,12 +61,19 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       UserService userService,
+      SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService) {
 
-    super(sequenceService, partnerRepo, saleOrderRepo, appSaleService, userService);
+    super(
+        sequenceService,
+        partnerRepo,
+        saleOrderRepo,
+        appSaleService,
+        userService,
+        saleOrderLineService);
 
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;

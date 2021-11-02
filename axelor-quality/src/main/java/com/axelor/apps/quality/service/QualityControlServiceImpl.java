@@ -37,6 +37,7 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
 import javax.mail.MessagingException;
+import wslite.json.JSONException;
 
 public class QualityControlServiceImpl implements QualityControlService {
 
@@ -129,7 +130,7 @@ public class QualityControlServiceImpl implements QualityControlService {
   @Override
   public void sendEmail(QualityControl qualityControl)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException {
+          MessagingException, IOException, AxelorException, JSONException {
     Template template =
         Beans.get(AppQualityService.class).getAppQuality().getQualityControlTemplate();
 

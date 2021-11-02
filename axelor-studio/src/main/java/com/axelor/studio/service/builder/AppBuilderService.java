@@ -46,6 +46,7 @@ public class AppBuilderService {
       app.setName(appBuilder.getName());
     }
 
+    app.setIsCustom(true);
     app.setImage(appBuilder.getImage());
     app.setDescription(appBuilder.getDescription());
     Set<App> depends = new HashSet<App>();
@@ -54,8 +55,7 @@ public class AppBuilderService {
       app.setDependsOnSet(depends);
     }
     app.setSequence(appBuilder.getSequence());
-    app.setInitDataLoaded(true);
-    app.setDemoDataLoaded(true);
+    app.setModules(appBuilder.getModules());
 
     appBuilder.setGeneratedApp(appRepo.save(app));
 

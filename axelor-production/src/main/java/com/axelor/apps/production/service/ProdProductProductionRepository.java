@@ -61,8 +61,7 @@ public class ProdProductProductionRepository extends ProdProductRepository {
     return super.populate(json, context);
   }
 
-  protected BigDecimal computeMissingQty(
-      Long productId, BigDecimal qty, Long toProduceManufOrderId) {
+  public BigDecimal computeMissingQty(Long productId, BigDecimal qty, Long toProduceManufOrderId) {
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForQty();
     if (productId == null || qty == null || toProduceManufOrderId == null) {
       return BigDecimal.ZERO;

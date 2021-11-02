@@ -30,6 +30,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -44,7 +45,6 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -114,19 +114,19 @@ public class WorkflowVentilationProjectServiceImpl
       for (TimesheetLine timesheetLine : invoicingProject.getLogTimesSet()) {
         timesheetLine.setInvoiced(true);
 
-        if (timesheetLine.getTeamTask() == null) {
+        if (timesheetLine.getProjectTask() == null) {
           continue;
         }
 
         timesheetLine
-            .getTeamTask()
-            .setInvoiced(this.checkInvoicedTimesheetLines(timesheetLine.getTeamTask()));
+            .getProjectTask()
+            .setInvoiced(this.checkInvoicedTimesheetLines(timesheetLine.getProjectTask()));
       }
       for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
         expenseLine.setInvoiced(true);
       }
-      for (TeamTask teamTask : invoicingProject.getTeamTaskSet()) {
-        teamTask.setInvoiced(true);
+      for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
+        projectTask.setInvoiced(true);
       }
       for (Project project : invoicingProject.getProjectSet()) {
         project.setInvoiced(true);
@@ -137,12 +137,12 @@ public class WorkflowVentilationProjectServiceImpl
     }
   }
 
-  private boolean checkInvoicedTimesheetLines(TeamTask teamTask) {
+  private boolean checkInvoicedTimesheetLines(ProjectTask projectTask) {
 
     long timesheetLineCnt =
         timesheetLineRepo
             .all()
-            .filter("self.teamTask.id = ?1 AND self.invoiced = ?2", teamTask.getId(), false)
+            .filter("self.projectTask.id = ?1 AND self.invoiced = ?2", projectTask.getId(), false)
             .count();
 
     return timesheetLineCnt == 0;

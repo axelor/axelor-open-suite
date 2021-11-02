@@ -39,6 +39,8 @@ import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
+import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -89,6 +91,8 @@ import com.axelor.apps.base.service.PrintTemplateLineService;
 import com.axelor.apps.base.service.PrintTemplateLineServiceImpl;
 import com.axelor.apps.base.service.PrintTemplateService;
 import com.axelor.apps.base.service.PrintTemplateServiceImpl;
+import com.axelor.apps.base.service.ProductCategoryService;
+import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductCompanyServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -215,6 +219,7 @@ public class BaseModule extends AxelorModule {
     bind(PartnerService.class).to(PartnerServiceImpl.class);
     bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
+    bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
     bind(GlobalTrackingLogService.class).to(GlobalTrackingLogServiceImpl.class);
     if (AppSettings.get()
         .get("hibernate.session_factory.interceptor", "")
@@ -227,5 +232,6 @@ public class BaseModule extends AxelorModule {
     bind(PrintTemplateLineService.class).to(PrintTemplateLineServiceImpl.class);
     bind(AdvancedImportRepository.class).to(AdvancedImportBaseRepository.class);
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
+    bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
   }
 }

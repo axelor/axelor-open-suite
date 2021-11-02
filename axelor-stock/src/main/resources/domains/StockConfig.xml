@@ -1,118 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockConfig" lang="java" cacheable="true">
 
-    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true" unique="true"/>
 
-    <many-to-one name="receiptDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
-    <many-to-one name="pickupDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"/>
-    <many-to-one name="qualityControlDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location"/>
+    <many-to-one name="receiptDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
+    <many-to-one name="pickupDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"/>
+    <many-to-one name="qualityControlDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location"/>
 
-   	<many-to-one name="customerVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
-    <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
-    <many-to-one name="inventoryVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
+    <many-to-one name="customerVirtualStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
+    <many-to-one name="supplierVirtualStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
+    <many-to-one name="inventoryVirtualStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
 
-    <many-to-one name="virtualOutsourcingStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Virtual outsourcing stock location"/>
-    <many-to-one name="outsourcingReceiptStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing receipt stock location"/>
+    <many-to-one name="virtualOutsourcingStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Virtual outsourcing stock location"/>
+    <many-to-one name="outsourcingReceiptStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing receipt stock location"/>
 
-	<many-to-one name="customsMassUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of mass"/>
+    <many-to-one name="customsMassUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Unit of mass"/>
 
-    <boolean name="realizeStockMovesUponParcelPalletCollection" title="Realize stock moves upon parcel/pallet collection" />
+    <boolean name="realizeStockMovesUponParcelPalletCollection"
+      title="Realize stock moves upon parcel/pallet collection"/>
 
-    <boolean name="plannedStockMoveAutomaticMail" title="Send email when planning stock move" default="false"/>
-    <boolean name="realStockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
-    <many-to-one name="plannedStockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
-    <many-to-one name="realStockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <boolean name="plannedStockMoveAutomaticMail"
+      title="Send email when planning stock move" default="false"/>
+    <boolean name="realStockMoveAutomaticMail" title="Send email on stock move realization"
+      default="false"/>
+    <many-to-one name="plannedStockMoveMessageTemplate" title="Message template"
+      ref="com.axelor.apps.message.db.Template"/>
+    <many-to-one name="realStockMoveMessageTemplate" title="Message template"
+      ref="com.axelor.apps.message.db.Template"/>
 
-    <boolean name="logisticalFormAutomaticEmail" title="Send email when saving logistical form" default="false"/>
-    <many-to-one name="logisticalFormMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <boolean name="logisticalFormAutomaticEmail"
+      title="Send email when saving logistical form" default="false"/>
+    <many-to-one name="logisticalFormMessageTemplate" title="Message template"
+      ref="com.axelor.apps.message.db.Template"/>
 
-    <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="stockConfig"/>
+    <one-to-many name="freightCarrierCustomerAccountNumberList"
+      ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber"
+      title="Customer account numbers to carriers" mappedBy="stockConfig"/>
 
-    <string name="conformityCertificateTitle" title="Certificate of conformity title" translatable="true"/>
-    <string name="conformityCertificateDescription" title="Text in certificate of conformity" large="true" translatable="true"/>
-    <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Default signatory user"/>
-    
-    <boolean name="displayTrackNbrOnPickingPrinting" title="Display tracking number details on Picking printing" default="true"/>
-	<boolean name="displayBarcodeOnPickingPrinting" title="Display barcode on Picking printing" default="true"/>
-    <boolean name="displayCustomerCodeOnPickingPrinting" title="Display customer code on picking printing" default="true"/>
+    <string name="conformityCertificateTitle" title="Certificate of conformity title"
+      translatable="true"/>
+    <string name="conformityCertificateDescription" title="Text in certificate of conformity"
+      large="true" translatable="true"/>
+    <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User"
+      title="Default signatory user"/>
 
-	<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing" default="true"/>
-	
-	<boolean name="displayLineDetailsOnPrinting" title="Display line details on printing" default="true"/>
-	<boolean name="isWithReturnSurplus" title="Return Surplus"/>
-	<boolean name="isWithBackorder" title="Manage backorder"/>
-	
-	<boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed" default="true"/>
-	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing" default="true"/>
-	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing" default="true"/>
-	<boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing" default="true"/>
-	<boolean name="isDisplayPurchaseValueInPrinting" title="Display purchase value in location financial data printing" default="true"/>
-	<integer name="stockValuationTypeSelect" title="Stock location value on form view" selection="stock.stock.location.value.type"/>
-	<integer name="inventoryValuationTypeSelect" title="Inventory valuation type" selection="stock.stock.location.value.type"/>
+    <boolean name="displayTrackNbrOnPickingPrinting"
+      title="Display tracking number details on Picking printing" default="true"/>
+    <boolean name="displayBarcodeOnPickingPrinting"
+      title="Display barcode on Picking printing" default="true"/>
+    <boolean name="displayCustomerCodeOnPickingPrinting"
+      title="Display customer code on picking printing" default="true"/>
 
-	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing" default="true"/>
-	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing" default="true"/>
-	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
-	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing" default="true"/>
-	<boolean name="displayPriceOnPrinting" title="Display price on printing" default="true"/>
-	<boolean name="displayOrderReferenceAndOrderDate" title="Display order reference and order date" default="true"/>
+    <boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"
+      default="true"/>
 
-	<extra-code><![CDATA[
+    <boolean name="displayLineDetailsOnPrinting" title="Display line details on printing"
+      default="true"/>
+    <boolean name="isWithReturnSurplus" title="Return Surplus"/>
+    <boolean name="isWithBackorder" title="Manage backorder"/>
+
+    <boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed"
+      default="true"/>
+    <boolean name="isDisplaySaleValueInPrinting"
+      title="Display sale value in location financial data printing" default="true"/>
+    <boolean name="isDisplayAccountingValueInPrinting"
+      title="Display accounting value in location financial data printing" default="true"/>
+    <boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing"
+      default="true"/>
+    <boolean name="isDisplayPurchaseValueInPrinting"
+      title="Display purchase value in location financial data printing" default="true"/>
+    <integer name="stockValuationTypeSelect" title="Stock location value on form view"
+      selection="stock.stock.location.value.type"/>
+    <integer name="inventoryValuationTypeSelect" title="Inventory valuation type"
+      selection="stock.stock.location.value.type"/>
+
+    <boolean name="displayTrackNbrOnCertificateOfConformityPrinting"
+      title="Display tracking number details on certificate of conformity printing" default="true"/>
+    <boolean name="displayExtRefOnCertificateOfConformityPrinting"
+      title="Display external ref. on certificate of conformity printing" default="true"/>
+    <many-to-one name="stockRuleMessageTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+    <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"
+      default="true"/>
+    <boolean name="displayPriceOnPrinting" title="Display price on printing" default="true"/>
+    <boolean name="displayOrderReferenceAndOrderDate"
+      title="Display order reference and order date" default="true"/>
+
+    <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
 		public static final int VALUATION_TYPE_ACCOUNTING_VALUE = 2;
 		public static final int VALUATION_TYPE_SALE_VALUE = 3;
 	]]></extra-code>
 
-	<track>
-		<field name="company" on="UPDATE"/>
-		
-		<field name="receiptDefaultStockLocation" on="UPDATE"/>
-		<field name="pickupDefaultStockLocation" on="UPDATE"/>
-		<field name="qualityControlDefaultStockLocation" on="UPDATE"/>
-		
-		<field name="customerVirtualStockLocation" on="UPDATE"/>
-		<field name="supplierVirtualStockLocation" on="UPDATE"/>
-		<field name="inventoryVirtualStockLocation" on="UPDATE"/>
-		
-		<field name="customsMassUnit" on="UPDATE"/>
-		
-		<field name="realizeStockMovesUponParcelPalletCollection" on="UPDATE"/>
-		
-		<field name="plannedStockMoveAutomaticMail" on="UPDATE"/>
-		<field name="realStockMoveAutomaticMail" on="UPDATE"/>
-		<field name="plannedStockMoveMessageTemplate" on="UPDATE"/>
-		<field name="realStockMoveMessageTemplate" on="UPDATE"/>
-		
-		<field name="conformityCertificateTitle" on="UPDATE"/>
-		<field name="conformityCertificateDescription" on="UPDATE"/>
-		<field name="signatoryUser" on="UPDATE"/>
-		
-		<field name="displayTrackNbrOnPickingPrinting" on="UPDATE"/>
-		<field name="displayBarcodeOnPickingPrinting" on="UPDATE"/>
-		<field name="displayCustomerCodeOnPickingPrinting" on="UPDATE"/>
-		
-		<field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
-		
-		<field name="displayLineDetailsOnPrinting" on="UPDATE"/>
-		<field name="isWithReturnSurplus" on="UPDATE"/>
-		<field name="isWithBackorder" on="UPDATE"/>
-		
-		<field name="pickingOrderPrintingDetailed" on="UPDATE"/>
-		<field name="isDisplaySaleValueInPrinting" on="UPDATE"/>
-		<field name="isDisplayAccountingValueInPrinting" on="UPDATE"/>
-		<field name="isDisplayAgPriceInPrinting" on="UPDATE"/>
-		<field name="stockValuationTypeSelect" on="UPDATE"/>
-		<field name="inventoryValuationTypeSelect" on="UPDATE"/>
+    <track>
+      <field name="company" on="UPDATE"/>
 
-		<field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
-		<field name="displayExtRefOnCertificateOfConformityPrinting" on="UPDATE"/>
-	</track>
+      <field name="receiptDefaultStockLocation" on="UPDATE"/>
+      <field name="pickupDefaultStockLocation" on="UPDATE"/>
+      <field name="qualityControlDefaultStockLocation" on="UPDATE"/>
+
+      <field name="customerVirtualStockLocation" on="UPDATE"/>
+      <field name="supplierVirtualStockLocation" on="UPDATE"/>
+      <field name="inventoryVirtualStockLocation" on="UPDATE"/>
+
+      <field name="customsMassUnit" on="UPDATE"/>
+
+      <field name="realizeStockMovesUponParcelPalletCollection" on="UPDATE"/>
+
+      <field name="plannedStockMoveAutomaticMail" on="UPDATE"/>
+      <field name="realStockMoveAutomaticMail" on="UPDATE"/>
+      <field name="plannedStockMoveMessageTemplate" on="UPDATE"/>
+      <field name="realStockMoveMessageTemplate" on="UPDATE"/>
+
+      <field name="conformityCertificateTitle" on="UPDATE"/>
+      <field name="conformityCertificateDescription" on="UPDATE"/>
+      <field name="signatoryUser" on="UPDATE"/>
+
+      <field name="displayTrackNbrOnPickingPrinting" on="UPDATE"/>
+      <field name="displayBarcodeOnPickingPrinting" on="UPDATE"/>
+      <field name="displayCustomerCodeOnPickingPrinting" on="UPDATE"/>
+
+      <field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
+
+      <field name="displayLineDetailsOnPrinting" on="UPDATE"/>
+      <field name="isWithReturnSurplus" on="UPDATE"/>
+      <field name="isWithBackorder" on="UPDATE"/>
+
+      <field name="pickingOrderPrintingDetailed" on="UPDATE"/>
+      <field name="isDisplaySaleValueInPrinting" on="UPDATE"/>
+      <field name="isDisplayAccountingValueInPrinting" on="UPDATE"/>
+      <field name="isDisplayAgPriceInPrinting" on="UPDATE"/>
+      <field name="stockValuationTypeSelect" on="UPDATE"/>
+      <field name="inventoryValuationTypeSelect" on="UPDATE"/>
+
+      <field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
+      <field name="displayExtRefOnCertificateOfConformityPrinting" on="UPDATE"/>
+    </track>
   </entity>
-  
+
 </domain-models>

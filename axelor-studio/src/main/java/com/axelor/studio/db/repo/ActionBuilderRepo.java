@@ -42,7 +42,7 @@ public class ActionBuilderRepo extends ActionBuilderRepository {
   @Override
   public void remove(ActionBuilder actionBuilder) {
 
-    metaService.removeMetaActions(actionBuilder.getName());
+    metaService.removeMetaActions(actionBuilder.getXmlId());
 
     MetaStore.clear();
 

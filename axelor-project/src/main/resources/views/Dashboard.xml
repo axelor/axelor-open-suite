@@ -1,51 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-	
-	<dashboard name="project-my-projects" title="My projects">
-		<dashlet action="action-project-db-my-tasks-to-do"/>
-		<dashlet action="action-project-db-my-tasks-due"/>
-		<dashlet action="action-project-db-my-today-planning"/>
-		<dashlet action="action-project-db-my-upcomming-planning"/>
-	</dashboard>
-	
-	<dashboard name="project-planned-charge" title="Planned charge">
-		<dashlet action="chart:chart.daily.planned.charge.in.month.per.project" colSpan="12"/>
-		<dashlet action="chart:chart.daily.planned.charge.in.month.per.employee" colSpan="12"/>
-		<dashlet action="chart:chart.average.daily.planned.charge.in.month.per.employee" colSpan="12"/>
-	</dashboard>
-	
-	<action-view name="action-project-db-my-tasks-to-do" title="My tasks to do" model="com.axelor.team.db.TeamTask">
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
-		<domain><![CDATA[
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <dashboard name="project-my-projects" title="My projects">
+    <dashlet action="action-project-db-my-tasks-to-do"/>
+    <dashlet action="action-project-db-my-tasks-due"/>
+    <dashlet action="action-project-db-my-today-planning"/>
+    <dashlet action="action-project-db-my-upcomming-planning"/>
+  </dashboard>
+
+  <dashboard name="project-planned-charge" title="Planned charge">
+    <dashlet action="chart:chart.daily.planned.charge.in.month.per.project" colSpan="12"/>
+    <dashlet action="chart:chart.daily.planned.charge.in.month.per.employee" colSpan="12"/>
+    <dashlet action="chart:chart.average.daily.planned.charge.in.month.per.employee"
+      colSpan="12"/>
+  </dashboard>
+
+  <action-view name="action-project-db-my-tasks-to-do" title="My tasks to do"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <domain><![CDATA[
       (self.assignedTo = :__user__ AND self.status NOT IN :closed_status) AND
       (self.taskDeadline <= current_date OR self.taskDate <= current_date)
     ]]></domain>
     <context name="closed_status" expr="#{['closed', 'canceled']}"/>
-	</action-view>
-	
-	<action-view name="action-project-db-my-tasks-due" title="My tasks due" model="com.axelor.team.db.TeamTask">
-		<view type="grid" name="team-task-grid" />
-		<view type="form" name="team-task-form" />
-		<domain><![CDATA[
+  </action-view>
+
+  <action-view name="action-project-db-my-tasks-due" title="My tasks due"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <domain><![CDATA[
       (self.assignedTo = :__user__  AND self.status NOT IN :closed_status) AND
       (self.taskDeadline <= current_date)
     ]]></domain>
-    <context name="closed_status" expr="#{['closed', 'canceled']}"/>
-	</action-view>
-	
-	<action-view name="action-project-db-my-today-planning" title="My today planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
-		<view type="grid" name="project-planning-db-grid" />
-		<view type="form" name="project-planning-time-form" />
-		<domain>self.date = :__datetime__ AND self.user = :__user__</domain>
-	</action-view>
-	
-	<action-view name="action-project-db-my-upcomming-planning" title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
-		<view type="grid" name="project-planning-db-grid" />
-		<view type="form" name="project-planning-time-form" />
-		<domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
-	</action-view>
-	
+    <context name="closed_status" expr="#{'closed', 'canceled'}"/>
+  </action-view>
+
+  <action-view name="action-project-db-my-today-planning" title="My today planning"
+    model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <view type="grid" name="project-planning-db-grid"/>
+    <view type="form" name="project-planning-time-form"/>
+    <domain>self.date = :__datetime__ AND self.user = :__user__</domain>
+  </action-view>
+
+  <action-view name="action-project-db-my-upcomming-planning"
+    title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <view type="grid" name="project-planning-db-grid"/>
+    <view type="form" name="project-planning-time-form"/>
+    <domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
+  </action-view>
+
 </object-views>

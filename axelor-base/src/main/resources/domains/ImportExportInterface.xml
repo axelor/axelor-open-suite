@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ImportExportInterface" lang="java">
+
+    <integer name="interfaceSelect" title="Interface" selection="import.export.interface"
+      required="true"/>
+    <string name="code" title="Code" required="true"/>
+    <string name="target" title="Target" required="true"
+      selection="import.export.interface.origin.select"/>
+    <long name="targetId" title="Target Id" required="true"/>
+
+    <extra-code>
+      <![CDATA[
+
+	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
+
+	   		]]>
+    </extra-code>
+
+  </entity>
+
+</domain-models>

@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="talent" package="com.axelor.apps.talent.db"/>
+  <module name="talent" package="com.axelor.apps.talent.db"/>
 
-	<entity name="TrainingRegister" lang="java" cacheable="true">
-		<many-to-one name="trainingSession" ref="com.axelor.apps.talent.db.TrainingSession" title="Session"/>
-		<many-to-one name="training" ref="com.axelor.apps.talent.db.Training" title="Training" required="true"/>
-		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" required="true"/>
-		<datetime name="fromDate" title="From date" required="true"/>
-		<datetime name="toDate" title="To date" required="true"/>
-		<decimal name="rating" title="Rating"/>
-		<integer name="statusSelect" title="Status" selection="training.register.status.select" />
-		<many-to-one name="calendar" ref="com.axelor.apps.base.db.ICalendar" title="Calendar"/>
-		<string name="fullName" namecolumn="true"/>
-		<one-to-many name="eventList" title="Event list" ref="com.axelor.apps.crm.db.Event"/>
-	</entity>
+  <entity name="TrainingRegister" lang="java" cacheable="true">
+    <many-to-one name="trainingSession" ref="com.axelor.apps.talent.db.TrainingSession"
+      title="Session"/>
+    <many-to-one name="training" ref="com.axelor.apps.talent.db.Training"
+      title="Training" required="true"/>
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"
+      required="true"/>
+    <datetime name="fromDate" title="From date" required="true"/>
+    <datetime name="toDate" title="To date" required="true"/>
+    <decimal name="rating" title="Rating"/>
+    <integer name="statusSelect" title="Status" selection="training.register.status.select"/>
+    <many-to-one name="calendar" ref="com.axelor.apps.base.db.ICalendar"
+      title="Calendar"/>
+    <string name="fullName" namecolumn="true"/>
+    <one-to-many name="eventList" title="Event list" ref="com.axelor.apps.crm.db.Event"/>
+  </entity>
 
 </domain-models>

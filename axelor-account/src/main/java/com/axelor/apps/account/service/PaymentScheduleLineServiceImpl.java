@@ -200,7 +200,8 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
                 null,
                 partner,
                 paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     MoveLine creditMoveLine =
         moveService

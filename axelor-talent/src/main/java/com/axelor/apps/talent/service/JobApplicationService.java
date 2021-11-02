@@ -25,4 +25,6 @@ public interface JobApplicationService {
   public Employee hire(JobApplication jobApplication);
 
   public String computeFullName(JobApplication jobApplication);
+
+  public void setDMSFile(JobApplication jobApplication);
 }

@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="sale" package="com.axelor.apps.sale.db" />
+  <module name="sale" package="com.axelor.apps.sale.db"/>
 
-	<entity name="PackLine" lang="java">
+  <entity name="PackLine" lang="java">
 
-		<integer name="sequence" title="Seq."/>
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-		<string name="productName" title="Displayed Product name"/>
-		<decimal name="quantity" title="Qty" precision="20" scale="10"/>
-		<decimal name="price" title="Price"/>
-		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-		<integer name="typeSelect" selection="line.type.select" title="Type"/>
-		<boolean name="isShowTotal" title="Show Total"/>
-		<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
+    <integer name="sequence" title="Seq."/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <string name="productName" title="Displayed Product name"/>
+    <decimal name="quantity" title="Qty" precision="20" scale="10"/>
+    <decimal name="price" title="Price"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <integer name="typeSelect" selection="line.type.select" title="Type"/>
+    <many-to-one name="pack" title="Pack" ref="com.axelor.apps.sale.db.Pack"/>
 
-	</entity>
+    <extra-code>
+            <![CDATA[
+                // TYPE SELECT
+                public static final int TYPE_NORMAL = 0;
+                public static final int TYPE_TITLE = 1;
+                public static final int TYPE_START_OF_PACK = 2;
+                public static final int TYPE_END_OF_PACK = 3;
+        ]]>
+    </extra-code>
+  </entity>
 
 </domain-models>

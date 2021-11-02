@@ -1,41 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="fleet" package="com.axelor.apps.fleet.db"/>
+  <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-	<entity name="Vehicle" lang="java" cacheable="true">
-		<string name="plateNo" title="Plate number" />
-		<string name="name" title="Name"  required="false" readonly="true"/>
-		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
-		<string name="chasisNo" title="Chassis Number" />
-		<many-to-one name="driverPartner" title="Driver" ref="com.axelor.apps.base.db.Partner" />
-		<one-to-one  name="vehicleModel" ref="com.axelor.apps.fleet.db.VehicleModel" title="Model"  />
-		<one-to-many name="vehicleFuelLogList" ref="VehicleFuelLog" title="Fuel log" mappedBy="vehicle"/>
-		<one-to-many name="vehicleServiceLogList" ref="VehicleServiceLog" title="Service log" mappedBy="vehicle"/>
-		<one-to-many name="vehicleContractList" ref="VehicleContract" title="Vehicle contract" mappedBy="vehicle"/>
-		<one-to-many name="vehicleCostList" ref="VehicleCost" title="Vehicle Cost" mappedBy="vehicle"/>
-		<date name="acquisitionDate" title="Acquisition Date" />
-		<string name="color" title="Color" />
-		<string name="vehicleState" title="State" large="true"/>
-		<string name="location" title="Location" />
-		<integer name="seats" title="Seats" />
-		<integer name="doors" title="Doors" />
-		<many-to-many name="vehicleTagSet" ref="VehicleTag" title="Tags"/>
-		<decimal name="vehicleOdometer"  title="Odometer" />
-		<integer name="transmissionSelect" title="Transmission" selection="fleet.vehicle.transimission.select" />
-		<integer name="fuelTypeSelect" title="Fuel type" selection="fleet.vehicle.fuel.type.select" />
-		<integer name="horsePower" title="Horse Power" />
-		<decimal name="horsePowerTax" title="Horse Power Tax" />
-		<integer name="powerKw" title="Power(KW)" />
-		<decimal name="co2emission" title="CO2 Emissions" />
-		<many-to-one name="image"  title="Image" ref="com.axelor.meta.db.MetaFile" />
-		<decimal name="carValue" title="Car value" />
-		<boolean name="isArchived" default="false" title="Archived"/>
-		<boolean name="isRentalCar" title="Rental car"/>
-		<string name="fuelCardNumber" title="Fuel card number"/>
-		<string name="fuelCardCode" title="Fuel card code"/>
-		<one-to-many name="vehicleRepairList" title="Repairs" ref="com.axelor.apps.fleet.db.VehicleRepair"/>
-	</entity>
+  <entity name="Vehicle" lang="java" cacheable="true">
+    <string name="plateNo" title="Plate number"/>
+    <string name="name" title="Name" required="false" readonly="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <string name="chasisNo" title="Chassis Number"/>
+    <many-to-one name="driverPartner" title="Driver"
+      ref="com.axelor.apps.base.db.Partner"/>
+    <one-to-one name="vehicleModel" ref="com.axelor.apps.fleet.db.VehicleModel"
+      title="Model"/>
+    <one-to-many name="vehicleFuelLogList" ref="VehicleFuelLog" title="Fuel log"
+      mappedBy="vehicle"/>
+    <one-to-many name="vehicleServiceLogList" ref="VehicleServiceLog"
+      title="Service log" mappedBy="vehicle"/>
+    <one-to-many name="vehicleContractList" ref="VehicleContract"
+      title="Vehicle contract" mappedBy="vehicle"/>
+    <one-to-many name="vehicleCostList" ref="VehicleCost" title="Vehicle Cost"
+      mappedBy="vehicle"/>
+    <date name="acquisitionDate" title="Acquisition Date"/>
+    <string name="color" title="Color"/>
+    <string name="vehicleState" title="State" large="true"/>
+    <string name="location" title="Location"/>
+    <integer name="seats" title="Seats"/>
+    <integer name="doors" title="Doors"/>
+    <many-to-many name="vehicleTagSet" ref="VehicleTag" title="Tags"/>
+    <decimal name="vehicleOdometer" title="Odometer"/>
+    <integer name="transmissionSelect" title="Transmission"
+      selection="fleet.vehicle.transimission.select"/>
+    <integer name="fuelTypeSelect" title="Fuel type"
+      selection="fleet.vehicle.fuel.type.select"/>
+    <integer name="horsePower" title="Horse Power"/>
+    <decimal name="horsePowerTax" title="Horse Power Tax"/>
+    <integer name="powerKw" title="Power(KW)"/>
+    <decimal name="co2emission" title="CO2 Emissions"/>
+    <many-to-one name="image" title="Image" ref="com.axelor.meta.db.MetaFile"/>
+    <decimal name="carValue" title="Car value"/>
+    <boolean name="isArchived" default="false" title="Archived"/>
+    <boolean name="isRentalCar" title="Rental car"/>
+    <string name="fuelCardNumber" title="Fuel card number"/>
+    <string name="fuelCardCode" title="Fuel card code"/>
+    <one-to-many name="vehicleRepairList" title="Repairs"
+      ref="com.axelor.apps.fleet.db.VehicleRepair"/>
+  </entity>
 
 </domain-models>

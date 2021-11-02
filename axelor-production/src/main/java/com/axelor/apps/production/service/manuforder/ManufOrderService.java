@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface ManufOrderService {
 
@@ -241,4 +242,25 @@ public interface ManufOrderService {
    * @return the query.
    */
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
+
+  public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
+      throws AxelorException;
+
+  public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
+      BillOfMaterial bom, ManufOrder mo, List<Product> productList);
+
+  /**
+   * Merge different manufacturing orders into a single one.
+   *
+   * @param ids List of ids of manufacturing orders to merge
+   * @throws AxelorException
+   */
+  public void merge(List<Long> ids) throws AxelorException;
+
+  /**
+   * Check if the manufacturing orders can be merged.
+   *
+   * @param ids List of ids of manufacturing orders to merge
+   */
+  public boolean canMerge(List<Long> ids);
 }
