@@ -7,7 +7,8 @@
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 	</grid>
 
-	<form name="account-config-form" title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" onNew="action-account-config-record-default" onSave="action-account-config-group-on-save" width="large">
+	<form name="account-config-form" title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" 
+	onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new" onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new" width="large">
 		<toolbar>
 			<button name="showInvoiceBtn" title="Invoices" onClick="save,action-company-view-invoice"/>
 		</toolbar>
@@ -265,11 +266,13 @@
 				</field>
 			</panel>
 			<panel name="analyticPanel" if="__config__.app.getApp('account').getManageAnalyticAccounting()" title="Analytic">
-				<field name="manageAnalyticAccounting"/>
-				<field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
+				<field name="manageAnalyticAccounting" onChange="action-attrs-account-config-set-is-can-new"/>
+				<field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" onChange="action-attrs-account-config-set-is-can-new"/>
 				<field name="analyticDistributionTypeSelect" showIf="manageAnalyticAccounting"/>
 				<field name="analyticJournal" domain="self.company = :company" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting"/>
-				<field name="analyticAxisByCompanyList" colSpan="12" canNew="true" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+				<field name="analyticAxisByCompanyList" colSpan="12" canNew="$isCanNew" showIf="manageAnalyticAccounting" requiredIf="manageAnalyticAccounting" 
+				onChange="action-attrs-account-config-set-is-can-new" form-view="analytic-axis-by-company-config-form" grid-view="analytic-axis-by-company-grid"/>
+				<field name="$isCanNew" type="boolean" hidden="true"/>
 			</panel>
 			
 		</panel-tabs>
@@ -326,5 +329,10 @@
 	<action-method name="action-account-config-method-deactivate-simultated-moves">
 	    <call class="com.axelor.apps.account.web.AccountConfigController" method="deactivateSimulatedMoves" if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
 	</action-method>
+	
+	<action-attrs name="action-attrs-account-config-set-is-can-new">
+		<attribute name="value" for="$isCanNew" expr="eval: analyticAxisByCompanyList.size() &lt; nbrOfAnalyticAxisSelect" if="analyticAxisByCompanyList != null &amp;&amp; manageAnalyticAccounting"/>
+	</action-attrs>
+
 	
 </object-views>
