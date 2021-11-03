@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
@@ -78,10 +79,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -862,34 +866,45 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    * @throws AxelorException
    * @return
    */
-  public List<ManufOrder> generateAllSubManufOrder(
-      List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException {
+  public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
+      throws AxelorException {
     List<ManufOrder> moList = new ArrayList<>();
-    List<BillOfMaterial> childBomList = new ArrayList<>(billOfMaterialList);
+    Set<Product> productManufactured = new HashSet<>();
+    List<Pair<BillOfMaterial, BigDecimal>> childBomList =
+        getToConsumeSubBomList(manufOrder.getBillOfMaterial(), manufOrder, productList);
     // prevent infinite loop
     int depth = 0;
     while (!childBomList.isEmpty()) {
-      if (depth >= 100) {
+      if (depth >= 25) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
       }
-      List<BillOfMaterial> tempChildBomList = new ArrayList<>();
-      for (BillOfMaterial childBom : childBomList) {
-        moList.add(
+      List<Pair<BillOfMaterial, BigDecimal>> tempChildBomList = new ArrayList<>();
+
+      for (Pair<BillOfMaterial, BigDecimal> childBomPair : childBomList) {
+        BillOfMaterial childBom = childBomPair.getLeft();
+        BigDecimal qtyRequested = childBomPair.getRight();
+
+        if (productManufactured.contains(childBom.getProduct())) {
+          continue;
+        }
+
+        manufOrder =
             generateManufOrder(
                 childBom.getProduct(),
-                childBom.getQty(),
+                qtyRequested.multiply(childBom.getQty()),
                 childBom.getPriority(),
                 IS_TO_INVOICE,
                 childBom,
                 null,
                 manufOrder.getPlannedStartDateT(),
-                ORIGIN_TYPE_OTHER));
-        tempChildBomList.addAll(
-            childBom.getBillOfMaterialSet().stream()
-                .filter(BillOfMaterial::getDefineSubBillOfMaterial)
-                .collect(Collectors.toList()));
+                ORIGIN_TYPE_OTHER);
+
+        moList.add(manufOrder);
+        productManufactured.add(childBom.getProduct());
+
+        tempChildBomList.addAll(getToConsumeSubBomList(childBom, manufOrder, null));
       }
       childBomList.clear();
       childBomList.addAll(tempChildBomList);
@@ -897,6 +912,38 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       depth++;
     }
     return moList;
+  }
+
+  public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
+      BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList) {
+    List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
+
+    for (BillOfMaterial bom : billOfMaterial.getBillOfMaterialSet()) {
+      Product product = bom.getProduct();
+      if (productList != null && !productList.contains(product)) {
+        continue;
+      }
+
+      BigDecimal qtyReq =
+          computeToConsumeProdProductLineQuantity(
+              mo.getBillOfMaterial().getQty(), mo.getQty(), bom.getQty());
+
+      if (bom.getDefineSubBillOfMaterial()) {
+        if (bom.getProdProcess() != null) {
+          bomList.add(Pair.of(bom, qtyReq));
+        }
+      } else {
+        if ((product.getProductSubTypeSelect()
+                    == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
+                || product.getProductSubTypeSelect()
+                    == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)
+            && product.getDefaultBillOfMaterial() != null
+            && product.getDefaultBillOfMaterial().getProdProcess() != null) {
+          bomList.add(Pair.of(product.getDefaultBillOfMaterial(), qtyReq));
+        }
+      }
+    }
+    return bomList;
   }
 
   @Transactional(rollbackOn = {Exception.class})
