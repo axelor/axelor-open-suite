@@ -2295,6 +2295,7 @@
 "The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis.",,,
 "The deposit slip has already been published.",,,
 "The distribution is wrong, some axes percentage values are higher than 100%",,,
+"The distribution is wrong, some axes percentage values are not equal to 100%",,,
 "The from date is incorrect",,,
 "The line can not be simulated because there is no journal or it does not authorize simulated move",,,
 "The move %s cannot be empty",,,

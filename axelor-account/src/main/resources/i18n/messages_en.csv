@@ -2331,6 +2331,7 @@
 "The deposit slip has already been published.",,,
 "The disposal of the asset cannot be executed while depreciation has already been accounted.",,,
 "The distribution is wrong, some axes percentage values are higher than 100%",,,
+"The distribution is wrong, some axes percentage values are not equal to 100%",,,
 "The from date is incorrect",,,
 "The input failover date is not conforme compare with the dates and configured depreciation duration.",,,
 "The input past depreciation amount cannot be greater than the gross value of the fixed asset.",,,

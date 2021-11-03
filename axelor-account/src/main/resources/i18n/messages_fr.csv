@@ -2343,6 +2343,7 @@
 "The deposit slip has already been published.","Le bordeau a déjà été édité",,
 "The disposal of the asset cannot be executed while depreciation has already been accounted.","La sortie de l'immobilisaiton ne peut être réalisée dès lors que l'amortissement a déjà été constaté.",,
 "The distribution is wrong, some axes percentage values are higher than 100%","La distribution est invalide, certains axes ont un pourcentage supérieur à 100%",,
+"The distribution is wrong, some axes percentage values are not equal to 100%","La distribution est invalide, certains axes ont un pourcentage différent de 100%",,
 "The from date is incorrect","La date de départ est incorrecte",,
 "The input failover date is not conforme compare with the dates and configured depreciation duration.","La Date saisie de reprise n'est pas conforme par rapport aux dates et durée d'amortissement configurée.",,
 "The input past depreciation amount cannot be greater than the gross value of the fixed asset.","Le montant des amortissements antérieurs ne peut pas être supérieur à la valeur brute de l'immobilisation.",,
