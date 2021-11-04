@@ -2,12 +2,6 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    <action-attrs name="action-attrs-base-set-readonly-fields-if-in-move">
-    	<attribute name="readonly" for="name" expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
-    	<attribute name="readonly" for="code" expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
-    	<attribute name="readonly" for="typeSelect" expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
-    	<attribute name="readonly" for="inOutSelect" expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
-    </action-attrs>
 
   <grid name="payment-mode-grid" title="Payment Mode"
     model="com.axelor.apps.account.db.PaymentMode">
@@ -16,8 +10,9 @@
   </grid>
 
   <form name="payment-mode-form" title="Payment Mode"
-    model="com.axelor.apps.account.db.PaymentMode" onNew="action-payment-mode-set-default"
-    width="large">
+    model="com.axelor.apps.account.db.PaymentMode"
+    onNew="action-payment-mode-set-default,action-attrs-base-set-readonly-fields-if-in-move"
+    onLoad="action-attrs-base-set-readonly-fields-if-in-move" width="large">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -76,6 +71,17 @@
 
   <action-attrs name="action-payment-mode-attrs-on-order-type-change">
     <attribute name="value" for="bankOrderFileFormat" expr=""/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-base-set-readonly-fields-if-in-move">
+    <attribute name="readonly" for="name"
+      expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="code"
+      expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="typeSelect"
+      expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="inOutSelect"
+      expr="eval: __repo__(Move).all().filter('self.paymentMode = ?', __this__).count() > 0"/>
   </action-attrs>
 
   <search-filters name="payment-mode-filters"

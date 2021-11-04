@@ -14,8 +14,8 @@
   </grid>
 
   <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"
-    onNew="account-journal-record-default" width="large"
-    onLoad="action-journal-group-on-load-actions">
+    onNew="account-journal-record-default,action-attrs-account-journal-readonly-if-journal-in-move"
+    width="large" onLoad="action-journal-group-on-load-actions">
     <panel name="statusPanel" title="Status">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="9"/>
@@ -93,16 +93,8 @@
       </panel>
 
     </panel-tabs>
-	<action-group name="action-journal-group-on-load-actions">
-		<action name="action-journal-method-set-totals" if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
-		<action name="action-attrs-account-journal-readonly-if-journal-in-move"/>
-	</action-group>
-	
-	<action-attrs name="action-attrs-account-journal-readonly-if-journal-in-move">
-		<attribute name="readonly" for="name" expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
-		<attribute name="readonly" for="code" expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
-		<attribute name="readonly" for="journalType" expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
-	</action-attrs>
+
+
 
   </form>
 
@@ -139,8 +131,19 @@
   </action-record>
 
   <action-group name="action-journal-group-on-load-actions">
-    <action name="action-journal-method-set-totals" if="journalType.isDisplayBalances"/>
+    <action name="action-journal-method-set-totals"
+      if="journalType != null &amp;&amp; journalType.isDisplayBalances"/>
+    <action name="action-attrs-account-journal-readonly-if-journal-in-move"/>
   </action-group>
+
+  <action-attrs name="action-attrs-account-journal-readonly-if-journal-in-move">
+    <attribute name="readonly" for="name"
+      expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
+    <attribute name="readonly" for="code"
+      expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
+    <attribute name="readonly" for="journalType"
+      expr="eval:  (__repo__(Move).all().filter('self.journal = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1"/>
+  </action-attrs>
 
   <action-method name="action-journal-method-set-totals">
     <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>

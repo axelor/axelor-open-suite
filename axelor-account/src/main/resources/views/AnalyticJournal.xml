@@ -5,6 +5,7 @@
 
   <grid name="analytic-journal-grid" title="Analytic Journal"
     model="com.axelor.apps.account.db.AnalyticJournal">
+    <field name="code"/>
     <field name="name"/>
     <field name="type" form-view="analytic-journal-type-form"
       grid-view="analytic-journal-type-grid"/>
@@ -15,9 +16,10 @@
   <form name="analytic-journal-form" title="Analytic Journal"
     model="com.axelor.apps.account.db.AnalyticJournal" onNew="action-analytic-journal-set-default"
     onLoad="action-analytic-journal-on-load"
-    onSave="action-validate-for-analytic-journal-without-company">
+    onSave="action-method-accounting-analytic-journal-check-on-unicity,action-validate-for-analytic-journal-without-company">
     <panel name="mainPanel">
       <field name="name"/>
+      <field name="code"/>
       <field name="type" form-view="analytic-journal-type-form"
         grid-view="analytic-journal-type-grid"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
@@ -41,6 +43,7 @@
 
   <action-group name="action-analytic-journal-on-load">
     <action name="action-attrs-analytic-journal-on-load"/>
+    <action name="action-attrs-account-analytic-journal-readonly-if-in-analytic-move-lines"/>
   </action-group>
 
   <action-attrs name="action-attrs-analytic-journal-on-load">
@@ -55,11 +58,15 @@
       if="company == null"/>
   </action-validate>
 
-    <action-method name="action-method-accounting-analytic-journal-check-on-unicity">
-    	<call class="com.axelor.apps.account.web.AnalyticJournalController" method="controlUniqueCode"/>
-    </action-method>
-    <action-attrs name="action-attrs-account-analytic-journal-readonly-if-in-analytic-move-lines">
-    	<attribute name="readonly" for="name" expr="eval: __repo__(AnalyticMoveLine).all().filter('self.analyticJournal = ?', __this__).count() > 0"/>
-    	<attribute name="readonly" for="code" expr="eval: __repo__(AnalyticMoveLine).all().filter('self.analyticJournal = ?', __this__).count() > 0"/>
-    </action-attrs>
+  <action-method name="action-method-accounting-analytic-journal-check-on-unicity">
+    <call class="com.axelor.apps.account.web.AnalyticJournalController"
+      method="controlUniqueCode"/>
+  </action-method>
+  <action-attrs
+    name="action-attrs-account-analytic-journal-readonly-if-in-analytic-move-lines">
+    <attribute name="readonly" for="name"
+      expr="eval: __repo__(AnalyticMoveLine).all().filter('self.analyticJournal = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="code"
+      expr="eval: __repo__(AnalyticMoveLine).all().filter('self.analyticJournal = ?', __this__).count() > 0"/>
+  </action-attrs>
 </object-views>

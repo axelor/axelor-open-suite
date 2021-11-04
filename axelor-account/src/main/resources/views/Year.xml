@@ -16,7 +16,8 @@
   </grid>
 
   <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year"
-    onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet" onSave="action-year-check-date"
+    onLoad="action-attrs-year-hide-linked-adjusting-moves-dashlet,action-attrs-account-fiscal-year-readonly-if-in-move"
+    onSave="action-year-check-date,action-method-account-year-control-dates"
     onNew="action-year-account-record-new">
     <panel name="mainPanel" readonlyIf="statusSelect == 2">
       <field name="name"/>
@@ -24,8 +25,8 @@
       <field name="company" widget="SuggestBox" form-view="company-form" required="true"
         colSpan="3" grid-view="company-grid"/>
       <panel name="datesPanel" title="Dates" colSpan="12">
-        <field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
-        <field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
+        <field name="fromDate" colSpan="3"/>
+        <field name="toDate" colSpan="3"/>
         <field name="reportedBalanceDate" required="true" colSpan="3"/>
       </panel>
     </panel>
@@ -94,13 +95,17 @@
     <call class="com.axelor.apps.account.web.YearController" method="adjust"/>
   </action-method>
 
-    <action-method name="action-method-account-year-control-dates">
-    	<call class="com.axelor.apps.account.web.YearController" method="controlDates"/>
-    </action-method>
-    <action-attrs name="action-attrs-account-fiscal-year-readonly-if-in-move">
-    	<attribute name="readonly" for="fromDate" expr="eval: (__repo__(Move).all().filter('self.period.id in (?)', __this__?.periodList?.collect{it.id}).count() > 0) &amp;&amp; statusSelect == 1 "/>
-		<attribute name="readonly" for="toDate" expr="eval: (__repo__(Move).all().filter('self.period.id in (?)', __this__?.periodList?.collect{it.id}).count() > 0) &amp;&amp; statusSelect == 1 "/>
-		<attribute name="readonly" for="periodDurationSelect" expr="eval: (__repo__(Move).all().filter('self.period.id in (?)', __this__?.periodList?.collect{it.id}).count() > 0) &amp;&amp; statusSelect == 1 "/>
-		<attribute name="readonly" for="generatePeriodsBtn" expr="eval: (__repo__(Move).all().filter('self.period.id in (?)', __this__?.periodList?.collect{it.id}).count() > 0) &amp;&amp; statusSelect == 1 "/>
-    </action-attrs>
+  <action-method name="action-method-account-year-control-dates">
+    <call class="com.axelor.apps.account.web.YearController" method="controlDates"/>
+  </action-method>
+  <action-attrs name="action-attrs-account-fiscal-year-readonly-if-in-move">
+    <attribute name="readonly" for="fromDate"
+      expr="eval: (__repo__(Move).all().filter('self.period.id in (?)', __this__?.periodList?.collect{it.id}).count() > 0) &amp;&amp; statusSelect == 1 "/>
+    <attribute name="readonly" for="toDate"
+      expr="eval: (__repo__(Move).all().filter('self.period.id in (?)', __this__?.periodList?.collect{it.id}).count() > 0) &amp;&amp; statusSelect == 1 "/>
+    <attribute name="readonly" for="periodDurationSelect"
+      expr="eval: (__repo__(Move).all().filter('self.period.id in (?)', __this__?.periodList?.collect{it.id}).count() > 0) &amp;&amp; statusSelect == 1 "/>
+    <attribute name="readonly" for="generatePeriodsBtn"
+      expr="eval: (__repo__(Move).all().filter('self.period.id in (?)', __this__?.periodList?.collect{it.id}).count() > 0) &amp;&amp; statusSelect == 1 "/>
+  </action-attrs>
 </object-views>
