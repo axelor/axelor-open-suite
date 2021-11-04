@@ -214,6 +214,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
+    if (ObjectUtils.isEmpty(account)
+        || ObjectUtils.notEmpty(account) && !account.getUseForPartnerBalance()) {
+      partner = null;
+    }
+
     return new MoveLine(
         move,
         partner,
