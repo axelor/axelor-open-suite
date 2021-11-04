@@ -21,11 +21,12 @@
       <field name="discountRate"/>
       <field name="legalNotice" colSpan="12"/>
     </panel>
-    <panel-dashlet name="viewLinkedPartnersPanel" action="action-account-financial-discount-view-partners"/>
+    <panel-dashlet name="viewLinkedPartnersPanel"
+      action="action-account-financial-discount-view-partners"/>
   </form>
-  
-  <action-view name="action-account-financial-discount-view-partners" title="Linked Partners"
-    model="com.axelor.apps.base.db.Partner">
+
+  <action-view name="action-account-financial-discount-view-partners"
+    title="Linked Partners" model="com.axelor.apps.base.db.Partner">
     <view type="grid" name="partner-grid"/>
     <view type="form" name="partner-form"/>
     <domain>self.financialDiscount.id = :id</domain>
