@@ -593,6 +593,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             move.getOrigin(),
             move.getDescription());
     moveLine.setSourceTaxLine(taxLine);
+    moveLine.setTaxLine(taxLine);
     moveLine.setDescription(move.getDescription());
     return moveLine;
   }
