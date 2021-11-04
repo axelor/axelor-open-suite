@@ -106,7 +106,8 @@
           onChange="action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
         <field name="fixedAssetCategory.isProrataTemporis"/>
         <field name="fixedAssetCategory.isUSProrataTemporis"
-          showIf="fixedAssetCategory.isProrataTemporis"/><panel name="fiscalFailoverValuesPanel" showIf="originSelect == 99"
+          showIf="fixedAssetCategory.isProrataTemporis"/>
+        <panel name="fiscalFailoverValuesPanel" showIf="originSelect == 99"
           title="Failover parameters" readonlyIf="statusSelect > 1">
           <field name="fiscalNbrOfPastDepreciations" requiredIf="originSelect == 99" min="0"/>
           <field name="fiscalAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"/>
@@ -225,8 +226,8 @@
         onChange="action-fixed-asset-validate-check-first-depreciation-date" required="true"/>
     </panel>
     <panel name="allValuesPanel" sidebar="true">
-      <field name="grossValue" requiredIf="originSelect == 99" min="0"readonlyIf="statusSelect > 1"
-        onChange="action-fixed-asset-record-set-residual-value"/>
+      <field name="grossValue" requiredIf="originSelect == 99" min="0"
+        readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
       <field name="residualValue"
         readonlyIf="fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3"/>
       <field name="accountingValue" hideIf="depreciationPlanSelect.includes('0')"/>
@@ -234,7 +235,7 @@
     <panel name="failoverValuesPanel" showIf="originSelect == 99" title="Failover parameters"
       sidebar="true" readonlyIf="statusSelect > 1">
       <field name="failoverDate" requiredIf="originSelect == 99"/>
-      </panel>
+    </panel>
     <panel name="toUpdateValuesPanel" title="Update Depreciation parameters"
       showIf="statusSelect == 2" readonlyIf="!$canUpdateDepreciation" sidebar="true">
       <field name="correctedAccountingValue"
@@ -658,8 +659,8 @@
   </action-attrs>
 
   <action-group name="action-group-account-fixed-asset-failover-control">
-    <action  name="action-method-account-fixed-asset-failover-control" if="originSelect == 99"/>
-    </action-group>
+    <action name="action-method-account-fixed-asset-failover-control" if="originSelect == 99"/>
+  </action-group>
 
   <action-method name="action-method-account-fixed-asset-failover-control">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="failOverControl"/>
