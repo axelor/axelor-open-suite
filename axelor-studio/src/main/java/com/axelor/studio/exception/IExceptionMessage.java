@@ -26,9 +26,6 @@ public interface IExceptionMessage {
   /** Check if chart name doesn't contains any space. */
   static final String CHART_BUILDER_1 = /*$$(*/ "The name must not contain spaces" /*)*/;
 
-  /** Message to display on click of edit icon of node or transition if workflow is not saved. */
-  static final String WKF_1 = /*$$(*/ "Workflow is not saved" /*)*/;
-
   static final String CANNOT_ALTER_NODES = /*$$(*/
       "Can't alter nodes for real existing selection field" /*)*/;
 }

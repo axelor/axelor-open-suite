@@ -6,18 +6,22 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="InventoryLine" lang="java">
-  
-  	<many-to-one name="inventory" ref="com.axelor.apps.stock.db.Inventory" title="Inventory"/>
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>    
-	<decimal name="currentQty" title="Current Qty" precision="20" scale="10"/>
-	<decimal name="realQty" title="Real Qty" nullable="true" precision="20" scale="10"/>
-	<many-to-one name="unit" title="Unit" ref="com.axelor.apps.base.db.Unit"/>
-	<string name="description" title="Description" large="true" multiline="true"/>
+
+    <many-to-one name="inventory" ref="com.axelor.apps.stock.db.Inventory"
+      title="Inventory"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <decimal name="currentQty" title="Current Qty" precision="20" scale="10"/>
+    <decimal name="realQty" title="Real Qty" nullable="true" precision="20" scale="10"/>
+    <many-to-one name="unit" title="Unit" ref="com.axelor.apps.base.db.Unit"/>
+    <string name="description" title="Description" large="true" multiline="true"/>
     <string name="rack" title="Rack"/>
-	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="TrackingNumber"/>
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
+      title="TrackingNumber"/>
     <decimal name="gap" title="Gap" readonly="true"/>
     <decimal name="gapValue" title="Gap value" readonly="true"/>
-		<decimal name="realValue" title="Real valuation" readonly="true"/>
-	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
+    <decimal name="realValue" title="Real valuation" readonly="true"/>
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location"/>
   </entity>
 </domain-models>

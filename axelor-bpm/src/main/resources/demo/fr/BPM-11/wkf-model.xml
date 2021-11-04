@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-11</code>
+
+    <name>Event sub process (Campaign)</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-11" camunda:diagramName="Event sub process (Campaign)" camunda:appBuilder="BPM-11" camunda:wkfStatusColor="blue">
+  <bpmn2:process id="Process_Event_Sub_Process" name="Event Sub Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="Campaign" metaModelLabel="Campaign (Campaign)" isStartModel="true" model="com.axelor.apps.marketing.db.Campaign" metaModelFullName="com.axelor.apps.marketing.db.Campaign" title="Campaign" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:sequenceFlow id="Flow_0crbjpd" sourceRef="StartEvent_1" targetRef="Activity_17hbvrc" />
+    <bpmn2:sequenceFlow id="Flow_0wuzmu9" sourceRef="Activity_17hbvrc" targetRef="Activity_1gf70ve" />
+    <bpmn2:userTask id="Activity_17hbvrc" name="Draft" camunda:buttonLabels="Plan" camunda:buttons="planBtn">
+      <bpmn2:incoming>Flow_0crbjpd</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0wuzmu9</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1gf70ve" name="Planned" camunda:buttonLabels="Start,Cancel" camunda:buttons="startBtn,cancelBtn">
+      <bpmn2:incoming>Flow_0wuzmu9</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1bmt4bh</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_0hiv6fj" name="Suspended" camunda:buttonLabels="Start,Cancel" camunda:buttons="startBtn,cancelBtn" camunda:completedIf="campaign?.stageSelect != 3" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Campaign&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;stageSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_0skphiz</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0nam8s0</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:exclusiveGateway id="Gateway_0xjoeg6">
+      <bpmn2:incoming>Flow_0xtgt9w</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0skphiz</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_14bvda7</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_0skphiz" sourceRef="Gateway_0xjoeg6" targetRef="Activity_0hiv6fj" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Campaign&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;stageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;3&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">campaign?.stageSelect == 3</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:subProcess id="Activity_0z9mgle" name="Event sub process interrupting" triggeredByEvent="true">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.apps.marketing.db.Campaign" />
+          <camunda:property name="modelName" value="Campaign" />
+          <camunda:property name="modelLabel" value="Campaign" />
+          <camunda:property name="modelType" value="metaModel" />
+          <camunda:property name="view" value="campaign-form" />
+          <camunda:property name="viewLabel" value="Campaign" />
+          <camunda:property name="item" value="actionsPanel" />
+          <camunda:property name="hidden" value="true" />
+          <camunda:property name="itemLabel" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:sequenceFlow id="Flow_1p21tdg" sourceRef="Event_07cl3a4" targetRef="Activity_0123h4e" />
+      <bpmn2:task id="Activity_0123h4e" name="Cancel">
+        <bpmn2:incoming>Flow_1p21tdg</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_0145628</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_0145628" sourceRef="Activity_0123h4e" targetRef="Event_1kgy2df" />
+      <bpmn2:startEvent id="Event_07cl3a4" name="Start">
+        <bpmn2:outgoing>Flow_1p21tdg</bpmn2:outgoing>
+        <bpmn2:conditionalEventDefinition id="ConditionalEventDefinition_1p8hnw6" camunda:variableName="cancelBtn" camunda:variableEvent="">
+          <bpmn2:condition xs:type="bpmn2:tFormalExpression" language="axelor">cancelBtn == true</bpmn2:condition>
+        </bpmn2:conditionalEventDefinition>
+      </bpmn2:startEvent>
+      <bpmn2:endEvent id="Event_1kgy2df" name="End">
+        <bpmn2:incoming>Flow_0145628</bpmn2:incoming>
+      </bpmn2:endEvent>
+    </bpmn2:subProcess>
+    <bpmn2:startEvent id="StartEvent_1" name="Start" camunda:initiator="">
+      <bpmn2:extensionElements />
+      <bpmn2:outgoing>Flow_0crbjpd</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_14bvda7" sourceRef="Gateway_0xjoeg6" targetRef="Event_1bmfv2r" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Campaign&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;stageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;4&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">campaign?.stageSelect == 4</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:userTask id="Activity_0piemol" name="Started" camunda:buttonLabels="Suspend,End,Cancel" camunda:buttons="suspendBtn,endedBtn,cancelBtn" camunda:completedIf="campaign?.stageSelect != 2" camunda:completedIfValue="[{&#34;metaModalName&#34;:&#34;Campaign&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;stageSelect&#34;,&#34;operator&#34;:&#34;!=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;}]}]}]}]" camunda:completedIfCombinator="and">
+      <bpmn2:incoming>Flow_1tcmlkn</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1bmt4bh</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0xtgt9w</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_0nam8s0" sourceRef="Activity_0hiv6fj" targetRef="Event_0oi9s10" camunda:conditionValue="[{&#34;metaModalName&#34;:&#34;Campaign&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;stageSelect&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;2&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;INTEGER&#34;,&#34;field&#34;:{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;selection&#34;:&#34;campaign.stage.select&#34;,&#34;defaultValue&#34;:0,&#34;name&#34;:&#34;stageSelect&#34;,&#34;selectionList&#34;:[{&#34;value&#34;:&#34;0&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:0,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Draft&#34;},{&#34;value&#34;:&#34;1&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:1,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Planned&#34;},{&#34;value&#34;:&#34;2&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:2,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Started&#34;},{&#34;value&#34;:&#34;3&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:3,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Suspended&#34;},{&#34;value&#34;:&#34;4&#34;,&#34;icon&#34;:null,&#34;color&#34;:null,&#34;order&#34;:4,&#34;hidden&#34;:false,&#34;data&#34;:null,&#34;title&#34;:&#34;Ended&#34;}],&#34;type&#34;:&#34;INTEGER&#34;,&#34;title&#34;:&#34;Stage&#34;}]}]}]}]" camunda:conditionCombinator="and">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">campaign?.stageSelect == 2</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0xtgt9w" sourceRef="Activity_0piemol" targetRef="Gateway_0xjoeg6" />
+    <bpmn2:subProcess id="Activity_1tv9ivk" name="Event sub process non interrupting" triggeredByEvent="true">
+      <bpmn2:task id="Activity_03z5cb6" name="Campaign start again">
+        <bpmn2:incoming>Flow_05zwkhm</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_0cm31e9</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:endEvent id="Event_05oq2e3" name="End">
+        <bpmn2:incoming>Flow_0cm31e9</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="Flow_05zwkhm" sourceRef="Event_1qoq304" targetRef="Activity_03z5cb6" />
+      <bpmn2:sequenceFlow id="Flow_0cm31e9" sourceRef="Activity_03z5cb6" targetRef="Event_05oq2e3" />
+      <bpmn2:startEvent id="Event_1qoq304" name="Start" isInterrupting="false">
+        <bpmn2:outgoing>Flow_05zwkhm</bpmn2:outgoing>
+        <bpmn2:messageEventDefinition id="MessageEventDefinition_0gimqjn" messageRef="Message_0th42xp" />
+      </bpmn2:startEvent>
+    </bpmn2:subProcess>
+    <bpmn2:intermediateThrowEvent id="Event_0oi9s10" name="Campaign Start message">
+      <bpmn2:incoming>Flow_0nam8s0</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1tcmlkn</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_1gptqmf" messageRef="Message_0wqqb80" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:sequenceFlow id="Flow_1tcmlkn" sourceRef="Event_0oi9s10" targetRef="Activity_0piemol" />
+    <bpmn2:sequenceFlow id="Flow_1bmt4bh" sourceRef="Activity_1gf70ve" targetRef="Activity_0piemol" />
+    <bpmn2:endEvent id="Event_1bmfv2r" name="Ended">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.apps.marketing.db.Campaign" />
+          <camunda:property name="modelName" value="Campaign" />
+          <camunda:property name="modelLabel" value="Campaign" />
+          <camunda:property name="modelType" value="metaModel" />
+          <camunda:property name="view" value="campaign-form" />
+          <camunda:property name="viewLabel" value="Campaign" />
+          <camunda:property name="item" value="cancelBtn" />
+          <camunda:property name="hidden" value="true" />
+          <camunda:property name="itemLabel" value="Cancel" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_14bvda7</bpmn2:incoming>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_00bbnws" signalRef="Signal_3r8cr0l" />
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmn2:message id="Message_0vkgau9" name="StartCamp" />
+  <bpmn2:message id="Message_1rwmbvq" name="StartCamp" />
+  <bpmn2:message id="Message_1ynxztf" name="CampaignRestart" />
+  <bpmn2:message id="Message_0i1g672" name="CampaignRestart" />
+  <bpmn2:message id="Message_1uev3j6" name="CampaignRestart" />
+  <bpmn2:escalation id="Escalation_0qpbvs2" name="Escalation_15supvd" escalationCode="RestartCampaign" />
+  <bpmn2:message id="Message_0gf1byk" name="Camp" />
+  <bpmn2:message id="Message_1t98yn4" name="CampaignStart" />
+  <bpmn2:message id="Message_0el9865" name="CampaignStart" />
+  <bpmn2:message id="Message_0qj7mql" name="CampaignStart" />
+  <bpmn2:message id="Message_1l86iw9" name="CampaignStart" />
+  <bpmn2:message id="Message_12rd4cy" name="CampaignStart" />
+  <bpmn2:message id="Message_0x3naxk" name="CampaignStart" />
+  <bpmn2:message id="Message_1ttu5gy" name="CampaignStart" />
+  <bpmn2:message id="Message_03gtmci" name="CampaignStart-{" />
+  <bpmn2:signal id="Signal_3r8cr0l" name="Signal_1fv902d" />
+  <bpmn2:message id="Message_0nd55ia" name="CampaignStart-${campaign.id}" />
+  <bpmn2:message id="Message_1o3mg2r" name="CampaignStart" />
+  <bpmn2:message id="Message_1i2ihro" name="CampaignStart-${campaign.id}" />
+  <bpmn2:message id="Message_11rafn2" name="CampaignStart-${campaign.id}" />
+  <bpmn2:message id="Message_0wrgefo" name="CampaignStart-${campaign.id}" />
+  <bpmn2:message id="Message_0ymcwx2" name="CampaignStart-${campaign.id}" />
+  <bpmn2:message id="Message_17f93cr" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_100yzfh" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_14p0fqy" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_0fcax0r" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_0nxcgxp" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_0kushsq" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_0wrf8kp" name="CampaignStart-${campaign.id}" />
+  <bpmn2:message id="Message_00n3xbt" name="CampaignStart-${campaign.id}" />
+  <bpmn2:message id="Message_0x38xn1" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_06xyzqv" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_0l6lq87" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_0rmrca2" name="CampaignStart-${campaignId}" />
+  <bpmn2:message id="Message_0wqqb80" name="CampaignStart" />
+  <bpmn2:message id="Message_0th42xp" name="CampaignStart" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Event_Sub_Process">
+      <bpmndi:BPMNEdge id="Flow_1bmt4bh_di" bpmnElement="Flow_1bmt4bh" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="540" y="180" />
+        <di:waypoint x="610" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tcmlkn_di" bpmnElement="Flow_1tcmlkn" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="660" y="300" />
+        <di:waypoint x="660" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xtgt9w_di" bpmnElement="Flow_0xtgt9w" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="710" y="180" />
+        <di:waypoint x="745" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nam8s0_di" bpmnElement="Flow_0nam8s0" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="870" y="300" />
+        <di:waypoint x="870" y="318" />
+        <di:waypoint x="678" y="318" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14bvda7_di" bpmnElement="Flow_14bvda7" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="770" y="155" />
+        <di:waypoint x="770" y="80" />
+        <di:waypoint x="842" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0skphiz_di" bpmnElement="Flow_0skphiz" bioc:stroke="#909090" color:border-color="#909090">
+        <di:waypoint x="770" y="205" />
+        <di:waypoint x="770" y="260" />
+        <di:waypoint x="820" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wuzmu9_di" bpmnElement="Flow_0wuzmu9" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="380" y="180" />
+        <di:waypoint x="440" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0crbjpd_di" bpmnElement="Flow_0crbjpd" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="228" y="180" />
+        <di:waypoint x="280" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1nswstb_di" bpmnElement="Activity_17hbvrc" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="280" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12aldpg_di" bpmnElement="Activity_1gf70ve" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="440" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yrf5xy_di" bpmnElement="Activity_0hiv6fj" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="820" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0xjoeg6_di" bpmnElement="Gateway_0xjoeg6" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="745" y="155" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q2v1xs_di" bpmnElement="Activity_0z9mgle" isExpanded="true" bioc:stroke="#6097fc" bioc:fill="#e4ebf8" color:background-color="#e4ebf8" color:border-color="#6097fc">
+        <dc:Bounds x="190" y="300" width="360" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0145628_di" bpmnElement="Flow_0145628" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="420" y="420" />
+        <di:waypoint x="472" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p21tdg_di" bpmnElement="Flow_1p21tdg" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="268" y="420" />
+        <di:waypoint x="320" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0vutvoj_di" bpmnElement="Activity_0123h4e" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="320" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10i74oz_di" bpmnElement="Event_07cl3a4" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="232" y="402" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="238" y="445" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0h1kwyf_di" bpmnElement="Event_1kgy2df" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="472" y="402" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="481" y="445" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tdz217_di" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="192" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="198" y="205" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1h7g99g_di" bpmnElement="Activity_0piemol" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="610" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sp29hy_di" bpmnElement="Activity_1tv9ivk" isExpanded="true" bioc:stroke="#6097fc" bioc:fill="#e4ebf8" color:background-color="#e4ebf8" color:border-color="#6097fc">
+        <dc:Bounds x="190" y="540" width="360" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0cm31e9_di" bpmnElement="Flow_0cm31e9" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="410" y="620" />
+        <di:waypoint x="462" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05zwkhm_di" bpmnElement="Flow_05zwkhm" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="258" y="620" />
+        <di:waypoint x="310" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_03z5cb6_di" bpmnElement="Activity_03z5cb6" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="310" y="580" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05oq2e3_di" bpmnElement="Event_05oq2e3" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="462" y="602" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="471" y="645" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0cuviqw_di" bpmnElement="Event_1qoq304" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="222" y="602" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="228" y="645" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0o9f3e2_di" bpmnElement="Event_0oi9s10" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="642" y="300" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="623" y="343" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1lrwkeo_di" bpmnElement="Event_1bmfv2r" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="842" y="62" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="844" y="105" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-11</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>
