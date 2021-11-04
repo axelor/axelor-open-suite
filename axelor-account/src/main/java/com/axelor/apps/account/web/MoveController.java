@@ -62,12 +62,12 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class MoveController {
 
-  public void validate(ActionRequest request, ActionResponse response) {
+  public void accounting(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
     move = Beans.get(MoveRepository.class).find(move.getId());
     try {
-      Beans.get(MoveValidateService.class).validate(move);
+      Beans.get(MoveValidateService.class).accounting(move);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -140,7 +140,7 @@ public class MoveController {
   }
 
   @SuppressWarnings("unchecked")
-  public void validateMultipleMoves(ActionRequest request, ActionResponse response) {
+  public void accountingMultipleMoves(ActionRequest request, ActionResponse response) {
     List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
     try {
       if (moveIds != null && !moveIds.isEmpty()) {
@@ -156,7 +156,7 @@ public class MoveController {
                 .order("date")
                 .fetch();
         if (!moveList.isEmpty()) {
-          boolean error = Beans.get(MoveValidateService.class).validateMultiple(moveList);
+          boolean error = Beans.get(MoveValidateService.class).accountingMultiple(moveList);
           if (error) {
             response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_NOT_OK));
           } else {

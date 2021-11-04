@@ -183,7 +183,7 @@ public class ImportMove {
     try {
       if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
-        moveValidateService.validate(move);
+        moveValidateService.accounting(move);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

@@ -155,7 +155,7 @@ public class AccountClearanceService {
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
     }
 
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);

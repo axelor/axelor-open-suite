@@ -6,9 +6,9 @@
   <grid name="move-grid" orderBy="-date" canArchive="false" title="Account moves"
     model="com.axelor.apps.account.db.Move" canDelete="false">
     <toolbar>
-      <button name="validateMoveBtn" title="Validate"
-        prompt="The validation of a move brings irrevocable integration of a move in Moves book"
-        onClick="action-move-method-validate-multiple-moves"/>
+      <button name="accountingMoveBtn" title="Accounting.toAccount"
+        prompt="The accounting of a move brings irrevocable integration of a move in Moves book"
+        onClick="action-move-method-accounting-multiple-moves"/>
       <button name="deleteMovesBtn" title="Delete" icon="fa-trash"
         onClick="action-move-method-delete-multiple-moves"/>
       <button name="moveLinesBtn" title="See Move Lines"
@@ -132,8 +132,8 @@
           hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
         <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <button name="validateBtn" title="Validate"
-          onClick="action-account-move-group-validate-click" colSpan="12"
+        <button name="accountingBtn" title="Accounting.toAccount"
+          onClick="action-account-move-group-accounting-click" colSpan="12"
           hideIf="statusSelect == 3 || statusSelect == 4"/>
         <button name="simulateBtn" title="Simulate"
           onClick="action-move-account-group-simulate" colSpan="12"
@@ -325,11 +325,11 @@
     <action name="action-account-move-method-compute-totals"/>
   </action-group>
 
-  <action-group name="action-account-move-group-validate-click">
-    <action name="action-account-validate-prompt"
+  <action-group name="action-account-move-group-accounting-click">
+    <action name="action-account-accounting-prompt"
       if="(!company?.accountConfig?.accountingDaybook &amp;&amp;statusSelect == 1) || (company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect == 2 || statusSelect == 5))"/>
     <action name="save"/>
-    <action name="action-move-method-validate"/>
+    <action name="action-move-method-accounting"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin-and-description-on-lines">
@@ -342,7 +342,7 @@
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
 
-  <action-validate name="action-account-validate-prompt">
+  <action-validate name="action-account-accounting-prompt">
     <alert
       message="The accounting of a move brings irrevocable integration of a move in Moves book"/>
   </action-validate>
@@ -423,10 +423,10 @@
   </action-attrs>
 
   <action-attrs name="action-move-attrs-validate-button-title">
-    <attribute name="title" for="validateBtn"
+    <attribute name="title" for="accountingBtn"
       expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
       if="eval: !company?.accountConfig?.accountingDaybook || (statusSelect == MoveRepository.STATUS_ACCOUNTED || statusSelect == MoveRepository.STATUS_SIMULATED)"/>
-    <attribute name="title" for="validateBtn"
+    <attribute name="title" for="accountingBtn"
       expr="eval: com.axelor.i18n.I18n.get('DayBook')"
       if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; (statusSelect != MoveRepository.STATUS_ACCOUNTED &amp;&amp; statusSelect != MoveRepository.STATUS_SIMULATED)"/>
   </action-attrs>
@@ -447,8 +447,8 @@
   </action-attrs>
 
   <!-- ACTION METHOD -->
-  <action-method name="action-move-method-validate">
-    <call class="com.axelor.apps.account.web.MoveController" method="validate"/>
+  <action-method name="action-move-method-accounting">
+    <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
   </action-method>
 
   <action-method name="action-move-method-update-in-day-book-mode">
@@ -471,8 +471,8 @@
     <call class="com.axelor.apps.account.web.MoveController" method="updateLines"/>
   </action-method>
 
-  <action-method name="action-move-method-validate-multiple-moves">
-    <call class="com.axelor.apps.account.web.MoveController" method="validateMultipleMoves"/>
+  <action-method name="action-move-method-accounting-multiple-moves">
+    <call class="com.axelor.apps.account.web.MoveController" method="accountingMultipleMoves"/>
   </action-method>
 
   <action-method name="action-move-method-delete-multiple-moves">

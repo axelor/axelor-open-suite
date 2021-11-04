@@ -209,7 +209,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         balance);
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
     } else {
       moveRepository.remove(move);
       return null;

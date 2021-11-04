@@ -126,7 +126,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     }
 
     if (validatedMove && isAutomaticAccounting) {
-      moveValidateService.validate(newMove);
+      moveValidateService.accounting(newMove);
     }
 
     return moveRepository.save(newMove);

@@ -198,26 +198,26 @@ public class MoveValidateService {
   }
 
   /**
-   * Valider une écriture comptable.
+   * Accounting a move.
    *
    * @param move
    * @throws AxelorException
    */
-  public void validate(Move move) throws AxelorException {
+  public void accounting(Move move) throws AxelorException {
 
-    this.validate(move, true);
+    this.accounting(move, true);
   }
 
   /**
-   * Valider une écriture comptable.
+   * Accounting a move.
    *
    * @param move
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void validate(Move move, boolean updateCustomerAccount) throws AxelorException {
+  public void accounting(Move move, boolean updateCustomerAccount) throws AxelorException {
 
-    log.debug("Validation de l'écriture comptable {}", move.getReference());
+    log.debug("Comptabilisation de l'écriture comptable {}", move.getReference());
 
     this.checkPreconditions(move);
 
@@ -381,7 +381,7 @@ public class MoveValidateService {
     }
   }
 
-  public boolean validateMultiple(List<? extends Move> moveList) {
+  public boolean accountingMultiple(List<? extends Move> moveList) {
     boolean error = false;
     if (moveList == null) {
       return error;
@@ -389,7 +389,7 @@ public class MoveValidateService {
     try {
       for (Move move : moveList) {
 
-        validate(moveRepository.find(move.getId()));
+        accounting(moveRepository.find(move.getId()));
         JPA.clear();
       }
     } catch (Exception e) {
@@ -416,7 +416,7 @@ public class MoveValidateService {
     Move move;
 
     while (!((move = moveListQuery.fetchOne()) == null)) {
-      validate(move);
+      accounting(move);
       JPA.clear();
     }
   }
