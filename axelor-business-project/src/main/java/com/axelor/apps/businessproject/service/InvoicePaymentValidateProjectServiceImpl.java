@@ -21,9 +21,12 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
@@ -48,25 +51,31 @@ public class InvoicePaymentValidateProjectServiceImpl
   @Inject
   public InvoicePaymentValidateProjectServiceImpl(
       PaymentModeService paymentModeService,
-      MoveService moveService,
-      MoveLineService moveLineService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveToolService moveToolService,
+      MoveLineCreateService moveLineCreateService,
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
+      InvoicePaymentToolService invoicePaymentToolService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
-      InvoicePaymentToolService invoicePaymentToolService,
-      InvoicingProjectRepository invoicingProjectRepo) {
+      InvoicingProjectRepository invoicingProjectRepo,
+      AppAccountService appAccountService) {
     super(
         paymentModeService,
-        moveService,
-        moveLineService,
+        moveCreateService,
+        moveValidateService,
+        moveToolService,
+        moveLineCreateService,
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
+        invoicePaymentToolService,
         bankOrderCreateService,
         bankOrderService,
-        invoicePaymentToolService);
+        appAccountService);
     this.invoicingProjectRepo = invoicingProjectRepo;
   }
 

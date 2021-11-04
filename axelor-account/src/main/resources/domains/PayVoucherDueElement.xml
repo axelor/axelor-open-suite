@@ -17,5 +17,5 @@
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	
   </entity>
-  
+
 </domain-models>

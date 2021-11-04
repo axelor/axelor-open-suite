@@ -3,22 +3,27 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-  <module name="project" package="com.axelor.apps.project.db" />
+  <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="ProjectTask">
 
-    <boolean name="toInvoice" title="To invoice" />
-    <boolean name="invoiced" title="Invoiced" />
-    <decimal name="exTaxTotal" title="ProjectTask.exTaxTotal" />
-    <integer name="discountTypeSelect" title="Discount type" selection="base.price.list.line.amount.type.select" default="3" />
-    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10" />
-    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10" />
-    <integer name="invoicingType" selection="business.project.task.invoicing.type.select" default="3" title="Invoicing Type" />
-    <boolean name="isPaid" title="Paid" />
-    <many-to-one name="customerReferral" ref="com.axelor.auth.db.User" title="Customer referral" />
-    <many-to-one name="saleOrderLine" title="Related sale order line" ref="com.axelor.apps.sale.db.SaleOrderLine" />
-    <many-to-one name="invoiceLine" title="Related Invoice line" ref="com.axelor.apps.account.db.InvoiceLine" />
-    <boolean name="isTaskRefused" title="Refused" />
+    <boolean name="toInvoice" title="To invoice"/>
+    <boolean name="invoiced" title="Invoiced"/>
+    <decimal name="exTaxTotal" title="ProjectTask.exTaxTotal"/>
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select" default="3"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <integer name="invoicingType" selection="business.project.task.invoicing.type.select"
+      default="3" title="Invoicing Type"/>
+    <boolean name="isPaid" title="Paid"/>
+    <many-to-one name="customerReferral" ref="com.axelor.auth.db.User"
+      title="Customer referral"/>
+    <many-to-one name="saleOrderLine" title="Related sale order line"
+      ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <many-to-one name="invoiceLine" title="Related Invoice line"
+      ref="com.axelor.apps.account.db.InvoiceLine"/>
+    <boolean name="isTaskRefused" title="Refused"/>
 
     <extra-code>
 			<![CDATA[
@@ -29,8 +34,8 @@
     </extra-code>
 
     <track>
-      <field name="invoicingType" />
-      <field name="customerReferral" />
+      <field name="invoicingType"/>
+      <field name="customerReferral"/>
     </track>
   </entity>
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2021 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -88,13 +88,37 @@ public class FullContextHelper {
     return null;
   }
 
+  public static FullContext filterOne(
+      String modelName, String queryStr, Map<String, Object> paramMap) throws AxelorException {
+
+    Query<? extends Model> query = createQuery(modelName, queryStr, paramMap, null);
+    try {
+      Model model = query.fetchOne();
+      if (model != null) {
+        return new FullContext(model);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get("Error executing query: %s"),
+          queryStr);
+    }
+
+    return null;
+  }
+
   private static Query<? extends Model> createQuery(
       String modelName, String queryStr, Map<String, Object> paramMap, Object[] params) {
 
     JpaRepository<? extends Model> repo = null;
     if (JpaScanner.findModel(modelName) == null) {
       repo = Beans.get(MetaJsonRecordRepository.class);
-      queryStr += " AND self.jsonModel = '" + modelName + "'";
+      if (queryStr != null) {
+        queryStr += " AND self.jsonModel = '" + modelName + "'";
+      } else {
+        queryStr = "self.jsonModel = '" + modelName + "'";
+      }
     } else {
       repo = getRepository(modelName);
     }
@@ -104,7 +128,7 @@ public class FullContextHelper {
       query = query.filter(queryStr).bind(paramMap);
     } else if (params != null) {
       query = query.filter(queryStr, params);
-    } else {
+    } else if (queryStr != null) {
       query = query.filter(queryStr);
     }
 
@@ -133,6 +157,20 @@ public class FullContextHelper {
     }
 
     Query<? extends Model> query = createQuery(modelName, queryStr, null, params);
+
+    for (Model model : query.fetch()) {
+      wkfEntities.add(new FullContext(model));
+    }
+
+    return wkfEntities;
+  }
+
+  public static List<FullContext> filter(
+      String modelName, String queryStr, Map<String, Object> paramMap) {
+
+    List<FullContext> wkfEntities = new ArrayList<FullContext>();
+
+    Query<? extends Model> query = createQuery(modelName, queryStr, paramMap, null);
 
     for (Model model : query.fetch()) {
       wkfEntities.add(new FullContext(model));

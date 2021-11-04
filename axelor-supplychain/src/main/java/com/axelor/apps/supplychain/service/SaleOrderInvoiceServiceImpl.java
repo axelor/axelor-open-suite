@@ -919,24 +919,27 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
     Invoice invoice =
         Query.of(Invoice.class)
-            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .filter(
+                " self.saleOrder.id = :saleOrderId "
+                    + "AND self.statusSelect != :invoiceStatus "
+                    + "AND self.operationSubTypeSelect != :advancePaymentSubType")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .bind("advancePaymentSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
             .fetchOne();
     List<Integer> operationSelectList = new ArrayList<>();
-    operationSelectList.add(0);
     if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_LINES));
+      operationSelectList.add(SaleOrderRepository.INVOICE_LINES);
     }
     if (manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
-      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT));
+      operationSelectList.add(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT);
     }
     if (allowTimetableInvoicing) {
-      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_TIMETABLES));
+      operationSelectList.add(SaleOrderRepository.INVOICE_TIMETABLES);
     }
     if (invoice == null && amountInvoiced.compareTo(BigDecimal.ZERO) == 0
         || exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
-      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ALL));
+      operationSelectList.add(SaleOrderRepository.INVOICE_ALL);
     }
 
     return operationSelectList;

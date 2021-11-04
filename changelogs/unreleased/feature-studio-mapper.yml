@@ -1,7 +1,0 @@
----
-title: "Studio: Mapper to create new single record from another record."
-type: feature
-description: |
-  The mapper allows to map fields between source and target model. 
-  It is used to create a new record or to update existing one. 
-  It can be executed from any button by using single common action. 

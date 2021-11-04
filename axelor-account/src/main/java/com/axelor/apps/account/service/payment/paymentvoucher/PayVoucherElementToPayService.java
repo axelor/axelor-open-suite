@@ -21,12 +21,29 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PayVoucherElementToPayService {
+
+  protected CurrencyService currencyService;
+  protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
+
+  @Inject
+  public PayVoucherElementToPayService(
+      CurrencyService currencyService,
+      PayVoucherElementToPayRepository payVoucherElementToPayRepo) {
+    this.currencyService = currencyService;
+    this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
+  }
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -64,5 +81,21 @@ public class PayVoucherElementToPayService {
       log.debug("End createPayVoucherElementToPay ELSE.");
       return null;
     }
+  }
+
+  @Transactional(rollbackOn = AxelorException.class)
+  public void updateAmountToPayCurrency(PayVoucherElementToPay elementToPay)
+      throws AxelorException {
+    Currency paymentVoucherCurrency = elementToPay.getPaymentVoucher().getCurrency();
+    BigDecimal amountToPayCurrency =
+        currencyService.getAmountCurrencyConvertedAtDate(
+            elementToPay.getCurrency(),
+            paymentVoucherCurrency,
+            elementToPay.getAmountToPay(),
+            elementToPay.getPaymentVoucher().getPaymentDate());
+    elementToPay.setAmountToPayCurrency(amountToPayCurrency);
+    elementToPay.setRemainingAmountAfterPayment(
+        elementToPay.getRemainingAmount().subtract(elementToPay.getAmountToPay()));
+    payVoucherElementToPayRepo.save(elementToPay);
   }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	query = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaJsonModelRepository' as Class).all()
+	
+	if(__ids__ != null) {
+		query = query.filter('self.appBuilder.id in ?1',__ids__)
+	} 
+	
+	jsonModels = ""
+	query.fetch().each({ 
+		model -> jsonModels += """\n\t\t<json-model>
+				\n\t\t\t<name>${model.name}</name>
+				\n\t\t\t<title>${model.title}</title>
+                \n\t\t\t<onNew>${model.onNew}</onNew>
+				\n\t\t\t<onSave>${model.onSave}</onSave>
+				\n\t\t\t<formWidth>${model.formWidth}</formWidth>
+				\n\t\t\t<isGenerateMenu>${model.isGenerateMenu}</isGenerateMenu>
+				\n\t\t\t<menuBuilder name='${model.menuBuilder?.name}' title='${model.menuBuilder?.title}' xmlId='${model.menuBuilder?.xmlId}' />
+                \n\t\t\t<menuTitle>${model.menuTitle}</menuTitle>
+                \n\t\t\t<menuIcon>${model.menuIcon}</menuIcon>
+                \n\t\t\t<menuBackground>${model.menuBackground}</menuBackground>
+                \n\t\t\t<menuOrder>${model.menuOrder}</menuOrder>
+                \n\t\t\t<menuTop>${model.menuTop}</menuTop>
+                \n\t\t\t<menuParent>${model.menuParent?.xmlId}</menuParent>
+				\n\t\t\t<appBuilder>${model.appBuilder?.code}</appBuilder>
+				\n\t\t</json-model>"""
+	})
+	
+	if (!jsonModels.isEmpty()) {
+		jsonModels = """<json-models>\n""" +  jsonModels + """\n</json-models>"""
+	}
+	
+	out << """$jsonModels"""
+%>

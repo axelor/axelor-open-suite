@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppPurchase" lang="java" extends="App">
-		<boolean name="managePurchaseOrderVersion" title="Manage purchase order versions" default="false"/>
-		<boolean name="managePurchasesUnits" title="Manage purchases unit on products"/>
-        <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"/>
-		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
-		<boolean name="manageSupplierCatalog" title="Manage supplier catalog"/>
-		<boolean name="isDisplayPurchaseOrderLineNumber" title="Display purchase order line number"/>		
-		<boolean name="enablePurchasesProductByTradName" title="Filter products by trading name" default="false"/>
-		<many-to-one name="purchaseUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
-		
-		<track>
-			<field name="managePurchaseOrderVersion" on="UPDATE"/>
-			<field name="managePurchasesUnits" on="UPDATE"/>
-			<field name="manageMultiplePurchaseQuantity" on="UPDATE"/>
-			<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
-			<field name="manageSupplierCatalog" on="UPDATE"/>
-			<field name="isDisplayPurchaseOrderLineNumber" on="UPDATE"/>
-		</track>
-		
-	</entity>
+  <entity name="AppPurchase" lang="java">
+
+    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+
+    <boolean name="managePurchaseOrderVersion" title="Manage purchase order versions"
+      default="false"/>
+    <boolean name="managePurchasesUnits" title="Manage purchases unit on products"/>
+    <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"/>
+    <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
+    <boolean name="manageSupplierCatalog" title="Manage supplier catalog"/>
+    <boolean name="isDisplayPurchaseOrderLineNumber"
+      title="Display purchase order line number"/>
+    <boolean name="enablePurchasesProductByTradName" title="Filter products by trading name"
+      default="false"/>
+    <many-to-one name="purchaseUnit" title="Default unit"
+      ref="com.axelor.apps.base.db.Unit"/>
+
+    <track>
+      <field name="managePurchaseOrderVersion" on="UPDATE"/>
+      <field name="managePurchasesUnits" on="UPDATE"/>
+      <field name="manageMultiplePurchaseQuantity" on="UPDATE"/>
+      <field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
+      <field name="manageSupplierCatalog" on="UPDATE"/>
+      <field name="isDisplayPurchaseOrderLineNumber" on="UPDATE"/>
+    </track>
+
+  </entity>
 
 </domain-models>

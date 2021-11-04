@@ -1,149 +1,199 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-	
-	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" 
-		width="large" canDelete="false" canNew="false" canCopy="false" >
-		<toolbar>
-		    <button name="back" title="Back" hidden="true" onClick=""/>
-		    <button name="search" title="Search" hidden="true" onClick=""/>
-		    <button name="exportObjectsBtn" title="Export Object" onClick="action-base-general-export-objects"/>
-		    <button name="remindTimesheetsBtn" title="Timesheets Reminder" onClick="action-method-general-remind-timesheet"/>
-		</toolbar>
-		<panel name="todayPanel" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
-			<field name="today"/>
-		</panel>
-		<panel-tabs name="mainPanelTab">
-			<panel name="configurationPanel" title="Configuration" colSpan="12">
-    	    	<field name="defaultPartnerLanguage" />
-    		    <field name="enableTradingNamesManagement" widget="boolean-switch"/>
-    	    	<field name="activateSendingEmail" widget="boolean-switch"/>
-    	    	<field name="emailAccountByUser" widget="boolean-switch"/>
-    	    	<field name="productInAtiSelect"/>
-    	    	<field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
-   	    		<field name="nbDecimalDigitForQty" colSpan="3"/>
-    	    	<field name="computeMethodDiscountSelect"/>
-    	    	<field name="timeLoggingPreferenceSelect"/>
-    	    	<field name="dailyWorkHours"/>
-    	    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
-    	    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
-    	    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
-    	    	<field name="teamManagement" widget="boolean-switch"/>
-    	    	<field name="manageSubsidiaryPartner" widget="boolean-switch"/>
-    	    	<panel name="productBarCodePanel" title="Product BarCode">
-    	    		<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
-    	    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
-       			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
-			    </panel>
-                <field name="generatePartnerSequence" widget="boolean-switch"/>
-				<field name="manageProductVariants" widget="boolean-switch"/>
-				<panel name="productSequenceManagement" colSpan="12" itemSpan="4">
-					<field name="generateProductSequence" widget="boolean-switch"/>
-					<field name="productSequenceTypeSelect"  showIf="generateProductSequence"/>
-					<field name="productSequence" onSelect="action-attrs-app-base-config-set-product-sequence-domain" showIf="generateProductSequence &amp;&amp; productSequenceTypeSelect == 'Per product'"/>
-				</panel>
-				<field name="manageMultiBanks" widget="boolean-switch"/>
-				<field name="enterpriseCommunication" widget="boolean-switch"/>
-				<field name="enableCalendars" widget="boolean-switch"/>
-				<field name="document" widget="boolean-switch"/>
-                <field name="passwordChangedTemplate"/>
-                <field name="limitNumberTasksGenerated"/>
-                <field name="enableMultiCompany" widget="boolean-switch" onChange="action-base-validate-multi-company-boolean"/>
-                <field name="storeStreets" widget="boolean-switch" />
-                <field name="isSharedAddress" widget="boolean-switch" />
-                <panel name="printingsPanel" title="Printings" colSpan="12">
-                    <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true" colSpan="3" help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
-                    <field name="regroupProductsTypeSelect" widget="MultiSelect" showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
-                    <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
-                    <field name="regroupProductsLabelServices" showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1" colspan="6" />
-                    <field name="regroupProductsLabelProducts" showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1" colspan="6" />
-				</panel>
-				<panel-related field="companySpecificProductFieldsSet" domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false" canEdit="false" grid-view="meta-field-details-grid" form-view="meta-field-form"/>
-				<panel itemSpan="12" colSpan="6">
-                	<field name="defaultMailMessageTemplate"/>
-                	<panel-related field="mailTemplateAssociationList" grid-view="mail-template-association-grid" form-view="mail-template-association-form"/>
-                </panel>
-                <panel name="stylePanel" title="Style" colSpan="12">
-                	<field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
-                </panel>
-			</panel>
-		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
-				<panel name="mapPanel" title="Mapping"  colSpan="12">
-					<field name="mapApiSelect"/>
-					<button name="checkMapApiBtn" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi" hideIf="mapApiSelect == 2"/>
-					<field name="googleMapsApiKey" widget="password" hideIf="mapApiSelect == 2"/>
-					<spacer hidden="true" colSpan="6" />
-					<field name="osmRoutingServiceApiSelect" hideIf="mapApiSelect == 1" requiredIf="mapApiSelect == 2" help="Use YOUR navigation (http://www.yournavigation.org/api/1.0/gosmore.php) or OSRM (https://router.project-osrm.org/route/v1/driving) Open source routing APIs to get routing information based upon a given start/end location."/>
-				</panel>
-				<panel name="qasPanel" title="Addresses validation"  colSpan="12">
-					<field name="qasWsdlUrl"/>
-					<button name="checkQasWsdlBtn" title="Test connection to QAS webservice"   onClick="com.axelor.apps.base.web.AddressController:check"/>
-					<field name="hasQasValidation" widget="boolean-switch"/>
-				</panel>
-				<panel name="wsPanel" title="Webservices"  colSpan="12">
-					<field name="currencyWsURL" colSpan="6" onChange="action-app-base-method-currency-ws-onchange-check-quartz-scheduler"/>
-					<field name="fixerApiKey" colSpan="4" requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'" showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
-					<field name="isFixerAPIPaid" colSpan="2" requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'" showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
-				</panel>
-				
-				<panel name="geonamesPanel" title="GeoNames"  colSpan="12">
-					<field name="geoNamesDumpUrl" colSpan="6"/>
-					<field name="geoNamesZipUrl" colSpan="6"/>
-				</panel>
-				
-		    </panel>
-		    <panel name="currencyConversionPanel" title="Currency conversion" colSpan="12">
-				<button name="updateCurrencyConversionBtn" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion" readonlyIf="!currencyConversionLineList"/>
-				<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
-			</panel>
-			<panel name="globalTrackingConfigurationPanel" title="Global tracking configuration" colSpan="12" >
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase"
+    width="large" canDelete="false" canNew="false" canCopy="false"
+    onSave="action-base-method-model-email-link-onsave">
+    <toolbar>
+      <button name="back" title="Back" hidden="true" onClick=""/>
+      <button name="search" title="Search" hidden="true" onClick=""/>
+      <button name="exportObjectsBtn" title="Export Object"
+        onClick="action-base-general-export-objects"/>
+      <button name="remindTimesheetsBtn" title="Timesheets Reminder"
+        onClick="action-method-general-remind-timesheet"/>
+    </toolbar>
+    <panel name="testingPanel" title="Testing"
+      if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
+      <field name="today"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="configurationPanel" title="Configuration" colSpan="12">
+        <field name="defaultPartnerLanguage"/>
+        <field name="enableTradingNamesManagement" widget="boolean-switch"/>
+        <field name="activateSendingEmail" widget="boolean-switch"/>
+        <field name="emailAccountByUser" widget="boolean-switch"/>
+        <field name="productInAtiSelect"/>
+        <field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
+        <field name="nbDecimalDigitForQty" colSpan="3"/>
+        <field name="computeMethodDiscountSelect"/>
+        <field name="timeLoggingPreferenceSelect"/>
+        <field name="dailyWorkHours"/>
+        <field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="teamManagement" widget="boolean-switch"/>
+        <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
+        <panel name="productBarCodePanel" title="Product BarCode">
+          <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
+          <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"
+            widget="boolean-switch"/>
+          <field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true"
+            requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
+        </panel>
+        <field name="generatePartnerSequence" widget="boolean-switch"/>
+        <field name="manageProductVariants" widget="boolean-switch"/>
+        <panel name="productSequenceManagement" colSpan="12" itemSpan="4">
+          <field name="generateProductSequence" widget="boolean-switch"/>
+          <field name="productSequenceTypeSelect" showIf="generateProductSequence"/>
+          <field name="productSequence"
+            onSelect="action-attrs-app-base-config-set-product-sequence-domain"
+            showIf="generateProductSequence &amp;&amp; productSequenceTypeSelect == 'Per product'"/>
+        </panel>
+        <field name="manageMultiBanks" widget="boolean-switch"/>
+        <field name="enterpriseCommunication" widget="boolean-switch"/>
+        <field name="enableCalendars" widget="boolean-switch"/>
+        <field name="document" widget="boolean-switch"/>
+        <field name="passwordChangedTemplate"/>
+        <field name="limitNumberTasksGenerated"/>
+        <field name="enableMultiCompany" widget="boolean-switch"
+          onChange="action-base-validate-multi-company-boolean"/>
+        <field name="storeStreets" widget="boolean-switch"/>
+        <field name="isSharedAddress" widget="boolean-switch"/>
+        <panel name="printingsPanel" title="Printings" colSpan="12">
+          <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true"
+            colSpan="3"
+            help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
+          <field name="regroupProductsTypeSelect" widget="MultiSelect"
+            showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings"
+            colSpan="3"/>
+          <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings"
+            requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
+          <field name="regroupProductsLabelServices"
+            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1"
+            colspan="6"/>
+          <field name="regroupProductsLabelProducts"
+            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1"
+            colspan="6"/>
+        </panel>
+        <panel-related field="companySpecificProductFieldsSet"
+          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false"
+          canEdit="false" grid-view="meta-field-details-grid" form-view="meta-field-form"/>
+        <panel itemSpan="12" colSpan="6">
+          <field name="defaultMailMessageTemplate"/>
+          <field name="manageCcBccRelatedTo" widget="boolean-switch"/>
+          <panel-related field="mailTemplateAssociationList"
+            grid-view="mail-template-association-grid" form-view="mail-template-association-form"/>
+        </panel>
+        <field name="emailLinkList" colSpan="12"
+          onChange="action-base-method-model-email-link-onsave"/>
+        <panel name="stylePanel" title="Style" colSpan="12">
+          <field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
+        </panel>
+      </panel>
+      <panel name="interfacesPanel" title="Interfaces" colSpan="12">
+        <panel name="mapPanel" title="Mapping" colSpan="12">
+          <field name="mapApiSelect"/>
+          <button name="checkMapApiBtn" title="Test mapping service connection"
+            onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi"
+            hideIf="mapApiSelect == 2"/>
+          <field name="googleMapsApiKey" widget="password" hideIf="mapApiSelect == 2"/>
+          <spacer hidden="true" colSpan="6"/>
+          <field name="osmRoutingServiceApiSelect" hideIf="mapApiSelect == 1"
+            requiredIf="mapApiSelect == 2"
+            help="Use YOUR navigation (http://www.yournavigation.org/api/1.0/gosmore.php) or OSRM (https://router.project-osrm.org/route/v1/driving) Open source routing APIs to get routing information based upon a given start/end location."/>
+        </panel>
+        <panel name="qasPanel" title="Addresses validation" colSpan="12">
+          <field name="qasWsdlUrl"/>
+          <button name="checkQasWsdlBtn" title="Test connection to QAS webservice"
+            onClick="com.axelor.apps.base.web.AddressController:check"/>
+          <field name="hasQasValidation" widget="boolean-switch"/>
+        </panel>
+        <panel name="wsPanel" title="Webservices" colSpan="12">
+          <field name="currencyWsURL" colSpan="6"
+            onChange="action-app-base-method-currency-ws-onchange-check-quartz-scheduler"/>
+          <field name="fixerApiKey" colSpan="4"
+            requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"
+            showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
+          <field name="isFixerAPIPaid" colSpan="2"
+            requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"
+            showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
+        </panel>
+
+        <panel name="geonamesPanel" title="GeoNames" colSpan="12">
+          <field name="geoNamesDumpUrl" colSpan="6"/>
+          <field name="geoNamesZipUrl" colSpan="6"/>
+        </panel>
+
+      </panel>
+      <panel name="currencyConversionPanel" title="Currency conversion" colSpan="12">
+        <button name="updateCurrencyConversionBtn"
+          title="Update &amp; Historize conversion rate"
+          onClick="save,action-base-method-update-currency-conversion"
+          readonlyIf="!currencyConversionLineList"/>
+        <field name="currencyConversionLineList" colSpan="12"
+          grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
+      </panel>
+      <panel name="globalTrackingConfigurationPanel" title="Global tracking configuration"
+        colSpan="12">
         <panel name="globalTrackingConfigurationSubPanel" title="Logs configuration">
-					<field name="globalTrackingLogPersistence"/>
-					<button name="cleanBtn" title="Clean logs manually" onClick="save,action-method-clean-global-tracking-logs"/>			
-				</panel>
-				<panel-related title="Global tracking configuration lines" field="globalTrackingConfigurationLines" colSpan="12" form-view="global-tracking-configuration-line-form" grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true" />
-			</panel>
-		</panel-tabs>
-		<panel-mail name="mailPanel">
-			<mail-messages limit="4"/>
-			<mail-followers/>
-		</panel-mail>
-	</form>
-	
-	<!-- ACTION METHOD -->
-	<action-method name="action-method-clean-global-tracking-logs">
-		<call class="com.axelor.apps.base.web.GlobalTrackingConfigController" method="cleanGlobalTrackingLogs"/>
-	</action-method>
+          <field name="globalTrackingLogPersistence"/>
+          <button name="cleanBtn" title="Clean logs manually"
+            onClick="save,action-method-clean-global-tracking-logs"/>
+        </panel>
+        <panel-related title="Global tracking configuration lines"
+          field="globalTrackingConfigurationLines" colSpan="12"
+          form-view="global-tracking-configuration-line-form"
+          grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true"/>
+      </panel>
+    </panel-tabs>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
 
-	<action-method name="action-base-method-update-currency-conversion">
-		<call class="com.axelor.apps.base.web.AppBaseController" method="updateCurrencyConversion" />
-	</action-method>
-	
-	<action-method name="action-base-general-export-objects">
-	    <call method="exportObjects" class="com.axelor.apps.base.web.AppBaseController"/>
-	</action-method>
-	
-	<action-method name="action-method-general-remind-timesheet">
-		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
-	</action-method>
-	
-	<action-method name="action-app-base-method-currency-ws-onchange-check-quartz-scheduler">
-      <call class="com.axelor.apps.base.web.AppBaseController" method="checkQuartzScheduler"/>
-   </action-method>
-	
-	<!-- ACTION VALIDATE -->
-	<action-validate name="action-base-validate-multi-company-boolean">
-		<error if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1" action="action-base-record-set-enable-multi-company" message="You can not turn-off this configuration because more than one company is configurated in the system."/>
-	</action-validate>
-	
-	<!-- ACTION RECORD -->
-	<action-record name="action-base-record-set-enable-multi-company" model="com.axelor.apps.base.db.AppBase">
-  		<field if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1" name="enableMultiCompany" expr="eval: true"/>
-	</action-record>
+  <!-- ACTION METHOD -->
+  <action-method name="action-method-clean-global-tracking-logs">
+    <call class="com.axelor.apps.base.web.GlobalTrackingConfigController"
+      method="cleanGlobalTrackingLogs"/>
+  </action-method>
 
-	<!-- ACTION ATTRS -->
-	<action-attrs name="action-attrs-app-base-config-set-product-sequence-domain">
-		<attribute name="domain" for="productSequence" expr="eval: &quot; self.codeSelect = 'product' &quot;"/>
-	</action-attrs>
+  <action-method name="action-base-method-update-currency-conversion">
+    <call class="com.axelor.apps.base.web.AppBaseController" method="updateCurrencyConversion"/>
+  </action-method>
+
+  <action-method name="action-base-general-export-objects">
+    <call method="exportObjects" class="com.axelor.apps.base.web.AppBaseController"/>
+  </action-method>
+
+  <action-method name="action-method-general-remind-timesheet">
+    <call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
+  </action-method>
+
+  <action-method
+    name="action-app-base-method-currency-ws-onchange-check-quartz-scheduler">
+    <call class="com.axelor.apps.base.web.AppBaseController" method="checkQuartzScheduler"/>
+  </action-method>
+
+  <!-- ACTION VALIDATE -->
+  <action-validate name="action-base-validate-multi-company-boolean">
+    <error if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1"
+      action="action-base-record-set-enable-multi-company"
+      message="You can not turn-off this configuration because more than one company is configurated in the system."/>
+  </action-validate>
+
+  <!-- ACTION RECORD -->
+  <action-record name="action-base-record-set-enable-multi-company"
+    model="com.axelor.apps.base.db.AppBase">
+    <field if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1"
+      name="enableMultiCompany" expr="eval: true"/>
+  </action-record>
+
+  <!-- ACTION ATTRS -->
+  <action-attrs name="action-attrs-app-base-config-set-product-sequence-domain">
+    <attribute name="domain" for="productSequence"
+      expr="eval: &quot; self.codeSelect = 'product' &quot;"/>
+  </action-attrs>
 </object-views>

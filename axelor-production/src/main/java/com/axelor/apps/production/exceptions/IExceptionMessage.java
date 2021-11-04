@@ -93,6 +93,9 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_MERGE_ERROR = /*$$(*/
       "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and same workshop stock location and with all bill of materials compatibles." /*)*/;
 
+  static final String MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE = /*$$(*/
+      "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles." /*)*/;
+
   /** Operation Order Controller */
   static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;
@@ -186,6 +189,9 @@ public interface IExceptionMessage {
 
   static final String NO_PRODUCT_SELECTED = /*$$(*/
       "Please select at least one product in the list." /*)*/;
+
+  static final String DUPLICATE_PRODUCT_SELECTED = /*$$(*/
+      "Multiple same product selected in the list." /*)*/;
 
   static final String MO_CREATED = /*$$(*/ "%d MO created." /*)*/;
 

@@ -51,6 +51,7 @@ import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.ProdProcessLineServiceImpl;
 import com.axelor.apps.production.service.ProdProductProductionRepository;
+import com.axelor.apps.production.service.ProductVariantServiceProductionImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderServiceProductionImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
@@ -58,7 +59,6 @@ import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
-import com.axelor.apps.production.service.StockMoveProductionServiceImpl;
 import com.axelor.apps.production.service.StockRulesServiceProductionImpl;
 import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.apps.production.service.WorkCenterServiceImpl;
@@ -106,9 +106,9 @@ import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
+import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 
 public class ProductionModule extends AxelorModule {
@@ -141,7 +141,6 @@ public class ProductionModule extends AxelorModule {
     bind(ProdProcessRepository.class).to(ProdProcessManagementRepository.class);
     bind(StockMoveLineSupplychainRepository.class).to(StockMoveLineProductionRepository.class);
     bind(ProdProcessLineService.class).to(ProdProcessLineServiceImpl.class);
-    bind(StockMoveServiceSupplychainImpl.class).to(StockMoveProductionServiceImpl.class);
     bind(ProdProductRepository.class).to(ProdProductProductionRepository.class);
     bind(RawMaterialRequirementService.class).to(RawMaterialRequirementServiceImpl.class);
     bind(RawMaterialRequirementRepository.class)
@@ -165,5 +164,6 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderReservedQtyService.class).to(ManufOrderReservedQtyServiceImpl.class);
     bind(WorkCenterService.class).to(WorkCenterServiceImpl.class);
     bind(ConfiguratorProdProductService.class).to(ConfiguratorProdProductServiceImpl.class);
+    bind(ProductVariantServiceSupplyChainImpl.class).to(ProductVariantServiceProductionImpl.class);
   }
 }
