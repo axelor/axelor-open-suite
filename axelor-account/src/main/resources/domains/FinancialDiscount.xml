@@ -16,8 +16,6 @@
       help="Discount amount in % on discount base if the payment of an invoice is made before due date"/>
     <string name="legalNotice" title="Legal notice" large="true" required="true"
       help="Legal notice displayed on invoices where a discount was granted"/>
-    <one-to-many ref="com.axelor.apps.base.db.Partner" name="partnerList"
-      title="Linked partners"/>
 
     <extra-code><![CDATA[
 
