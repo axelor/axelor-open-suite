@@ -12,6 +12,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -35,6 +36,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
 
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository;
   protected MoveCreateService moveCreateService;
+  protected MoveLineCreateService moveLineCreateService;
   protected MoveRepository moveRepo;
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected MoveValidateService moveValidateService;
@@ -45,12 +47,14 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       MoveCreateService moveCreateService,
       MoveRepository moveRepo,
       FixedAssetLineMoveService fixedAssetLineMoveService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveLineCreateService moveLineCreateService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.moveValidateService = moveValidateService;
+    this.moveLineCreateService = moveLineCreateService;
   }
 
   @Override
@@ -174,8 +178,10 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetDerogatoryLine.getDepreciationDate();
-    String origin = fixedAsset.getReference();
-
+    String origin =
+        fixedAsset.getFixedAssetSeq() != null
+            ? fixedAsset.getFixedAssetSeq()
+            : fixedAsset.getReference();
     log.debug(
         "Creating an fixed asset derogatory line specific accounting entry {} (Company : {}, Journal : {})",
         fixedAsset.getReference(),
@@ -195,7 +201,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
-            null);
+            fixedAsset.getName());
 
     if (move != null) {
 
@@ -210,39 +216,21 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
             "Expense depreciation derogatory/Capital depreciation derogatory/Income depreciation derogatory");
       }
-      // Creating accounting debit move line
       MoveLine debitMoveLine =
-          new MoveLine(
-              move,
-              partner,
-              debitLineAccount,
-              date,
-              null,
-              1,
-              amount,
-              BigDecimal.ZERO,
-              fixedAsset.getName(),
-              origin,
-              null,
-              BigDecimal.ZERO,
-              date);
+          moveLineCreateService.createMoveLine(
+              move, partner, debitLineAccount, amount, true, date, 1, origin, fixedAsset.getName());
       moveLines.add(debitMoveLine);
-      // Creating accounting debit move line
       MoveLine creditMoveLine =
-          new MoveLine(
+          moveLineCreateService.createMoveLine(
               move,
               partner,
               creditLineAccount,
-              date,
-              null,
-              2,
-              BigDecimal.ZERO,
               amount,
-              fixedAsset.getName(),
+              false,
+              date,
+              2,
               origin,
-              null,
-              BigDecimal.ZERO,
-              date);
+              fixedAsset.getName());
       moveLines.add(creditMoveLine);
       move.getMoveLineList().addAll(moveLines);
     }
