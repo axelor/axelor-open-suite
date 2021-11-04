@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -276,8 +277,12 @@ public class FixedAssetController {
 
   public void failOverControl(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
-    Beans.get(FixedAssetFailOverControlService.class).controlFailOver(fixedAsset);
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      Beans.get(FixedAssetFailOverControlService.class).controlFailOver(fixedAsset);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setDepreciationPlanSelect(ActionRequest request, ActionResponse response) {

@@ -23,15 +23,26 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
     Objects.requireNonNull(fixedAsset);
     FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
     if (isFailOver(fixedAsset) && fixedAssetCategory != null) {
-      if (fixedAssetCategory
-          .getComputationMethodSelect()
-          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR));
-      }
       if (fixedAsset.getAlreadyDepreciatedAmount() != null
           && fixedAsset.getAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                IExceptionMessage
+                    .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
+      }
+      if (fixedAsset.getFiscalAlreadyDepreciatedAmount() != null
+          && fixedAsset.getFiscalAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
+              > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                IExceptionMessage
+                    .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
+      }
+      if (fixedAsset.getIfrsAlreadyDepreciatedAmount() != null
+          && fixedAsset.getIfrsAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
+              > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
@@ -47,15 +58,17 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
                 : ChronoUnit.YEARS;
         if (fixedAssetCategory.getFirstDepreciationDateInitSelect()
                 == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION
-            && chronoUnit.between(fixedAsset.getAcquisitionDate(), fixedAsset.getFailoverDate())
-                >= fixedAsset.getFiscalNumberOfDepreciation()) {
+            && (chronoUnit.between(fixedAsset.getAcquisitionDate(), fixedAsset.getFailoverDate())
+                    >= fixedAsset.getFiscalNumberOfDepreciation()
+                || fixedAsset.getFailoverDate().isBefore(fixedAsset.getAcquisitionDate()))) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM));
         } else if (fixedAssetCategory.getFirstDepreciationDateInitSelect()
                 == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
-            && chronoUnit.between(fixedAsset.getFirstServiceDate(), fixedAsset.getFailoverDate())
-                >= fixedAsset.getFiscalNumberOfDepreciation()) {
+            && (chronoUnit.between(fixedAsset.getFirstServiceDate(), fixedAsset.getFailoverDate())
+                    >= fixedAsset.getFiscalNumberOfDepreciation()
+                || fixedAsset.getFailoverDate().isBefore(fixedAsset.getFirstServiceDate()))) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_FAILOVER_CONTROL_DATE_NOT_CONFORM));
@@ -66,10 +79,7 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
 
   @Override
   public boolean isFailOver(FixedAsset fixedAsset) {
-    return fixedAsset.getFailoverDate() != null
-        || (fixedAsset.getNbrOfPastDepreciations() != null
-            && fixedAsset.getNbrOfPastDepreciations() > 0)
-        || (fixedAsset.getAlreadyDepreciatedAmount() != null
-            && fixedAsset.getAlreadyDepreciatedAmount().signum() > 0);
+    return fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT
+        && fixedAsset.getFailoverDate() != null;
   }
 }

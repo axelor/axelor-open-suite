@@ -29,12 +29,12 @@
 
     <string name="computationMethodSelect" title="Computation method"
       selection="account.fixed.type.category.computation.method.select"/>
-
     <decimal name="degressiveCoef" title="Degressive coef"/>
-
     <integer name="periodicityInMonth" title="Periodicity in month" default="12"/>
     <integer name="numberOfDepreciation" title="Number of depreciation" default="1"/>
     <integer name="durationInMonth" title="Duration in month"/>
+    <integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>
+    <decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
 
     <date name="acquisitionDate" title="Date of acquisition"/>
     <date name="firstDepreciationDate" title="First depreciation date"/>
@@ -71,8 +71,6 @@
     <date name="firstServiceDate" title="First Service Date"/>
     <date name="failoverDate" title="Failover Date"/>
     <decimal name="pastDepreciation" title="Past Depreciation"/>
-    <integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>
-    <decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
     <decimal name="accountingValue" title="Accounting value"/>
     <decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
 
@@ -88,6 +86,8 @@
     <integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month"
       default="12"/>
     <integer name="fiscalDurationInMonth" title="Fiscal Duration In Month"/>
+    <integer name="fiscalNbrOfPastDepreciations" title="Nbr of past depreciations"/>
+    <decimal name="fiscalAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"
       mappedBy="fiscalFixedAsset"/>
@@ -101,6 +101,8 @@
       selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
     <integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month" default="12"/>
     <integer name="ifrsDurationInMonth" title="IFRS Duration In Month"/>
+    <integer name="ifrsNbrOfPastDepreciations" title="Nbr of past depreciations"/>
+    <decimal name="ifrsAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List" mappedBy="ifrsFixedAsset"/>
 
@@ -144,7 +146,6 @@
 		public static final int DISPOSABLE_TYPE_SELECT_SCRAPPING = 1;
 		public static final int DISPOSABLE_TYPE_SELECT_CESSION = 2;
         public static final int DISPOSABLE_TYPE_SELECT_ONGOING_CESSION = 3;
-
 		public static final int DISPOSABLE_QTY_SELECT_TOTAL = 1;
 		public static final int DISPOSABLE_QTY_SELECT_PARTIAL = 2;
 
@@ -153,7 +154,6 @@
 		public static final int TRANSFERED_REASON_CESSION = 2;
 		public static final int TRANSFERED_REASON_PARTIAL_CESSION = 3;
         public static final int TRANSFERED_REASON_ONGOING_CESSION = 4;
-
 		//Origin select
 		public static final int ORIGINAL_SELECT_MANUAL = 1;
 		public static final int ORIGINAL_SELECT_INVOICE = 2;
