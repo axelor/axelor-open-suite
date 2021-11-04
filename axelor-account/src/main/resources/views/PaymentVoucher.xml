@@ -101,7 +101,8 @@
     <panel-stack name="otherDetailsPanel" readonlyIf="statusSelect >= 2">
       <panel-related name="payVoucherDueElementListPanel" colSpan="12"
         field="payVoucherDueElementList" form-view="pay-voucher-due-element-form"
-        grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1"/>
+        grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1" orderBy="sequence"
+        canMove="true"/>
       <panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1">
         <button name="loadSelectedLinesBtn" title="Load selected lines"
           onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save"
@@ -112,7 +113,7 @@
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
         field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form"
-        grid-view="pay-voucher-element-to-pay-grid"/>
+        grid-view="pay-voucher-element-to-pay-grid" orderBy="sequence"/>
     </panel-stack>
 
   </form>
