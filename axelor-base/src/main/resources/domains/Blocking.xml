@@ -6,21 +6,25 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Blocking" lang="java">
-  
-    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies"/>
+
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
+      title="Companies"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    
-	<integer name="blockingSelect" title="Blocking Type" selection="base.blocking.select" default="1"/>
+
+    <integer name="blockingSelect" title="Blocking Type" selection="base.blocking.select"
+      default="1"/>
 
     <date name="blockingToDate" title="Block until"/>
-    <many-to-one name="blockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <many-to-one name="blockingByUser" ref="com.axelor.auth.db.User" title="Blocking done by"/>
+    <many-to-one name="blockingReason" ref="com.axelor.apps.base.db.StopReason"
+      title="Blocking reason"/>
+    <many-to-one name="blockingByUser" ref="com.axelor.auth.db.User"
+      title="Blocking done by"/>
 
     <string name="name" title="Reference" search="partner">
         <![CDATA[return partner != null ? partner.getName() : "";]]>
     </string>
 
-      <extra-code>
+    <extra-code>
           <![CDATA[
               public static final Integer REMINDER_BLOCKING = 1;
               public static final Integer INVOICING_BLOCKING = 2;
@@ -28,8 +32,8 @@
 
               public static final int PURCHASE_BLOCKING = 6;
           ]]>
-      </extra-code>
-    
+    </extra-code>
+
   </entity>
 
 </domain-models>

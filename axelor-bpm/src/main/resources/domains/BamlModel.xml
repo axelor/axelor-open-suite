@@ -7,10 +7,11 @@
 
   <entity name="BamlModel" cacheable="true">
 
-      <string name="name" title="Name" required="true" />
-      <string name="bamlXml" title="Input xml" large="true" />
-      <string name="resultScript" title="Result script" large="true" />
-      <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder" title="App builder"/>
+    <string name="name" title="Name" required="true"/>
+    <string name="bamlXml" title="Input xml" large="true"/>
+    <string name="resultScript" title="Result script" large="true"/>
+    <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder"
+      title="App builder"/>
 
   </entity>
 

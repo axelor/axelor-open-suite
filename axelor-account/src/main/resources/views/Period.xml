@@ -1,40 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-	
-	<form name="period-moves-to-validate-form" model="com.axelor.apps.base.db.Period" title="Moves to validate">
-		<panel-dashlet action="action-move-view-period-moves-to-validate"/>
-		<panel name="buttonsPanel">
-			<button name="continueBtn" title="Continue" onClick="action-period-method-close-continue"/>
-		</panel>
-	</form>
-	
-	 <form id="account-period-form" name="period-form" title="Period" model="com.axelor.apps.base.db.Period" extension="true">
-	 	<extend target="/" if-module="axelor-account">
-	 		<attribute name="onLoad" value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-attrs-account-readonly-if-period-in-move"/>
-	 		<attribute name="onSave" value="action-method-account-period-control-dates"/>
-	 	</extend>
-	 </form>
-	  <form id="account-period-year-form" name="period-year-form" title="Period" model="com.axelor.apps.base.db.Period" extension="true">
-  	 	<extend target="/" if-module="axelor-account">
-	 		<attribute name="onLoad" value="action-attrs-period-hide-linked-adjusting-moves-dashlet,action-attrs-account-readonly-if-period-in-move"/>
-	 		<attribute name="onSave" value="action-method-account-period-control-dates"/>
-	 	</extend>
-	  </form> 
-	 
-	<action-group name="action-period-group-close" id="action-account-period-group-close">
-		<action name="save"/>
-		<action name="action-period-method-search-moves"/>
-	</action-group>
-	
-	<action-method name="action-period-method-search-moves">
-		<call class="com.axelor.apps.account.web.PeriodController" method="searchPeriodMoves"/>
-	</action-method>
-	
-	<action-method name="action-period-method-close-continue">
-		<call class="com.axelor.apps.account.web.PeriodController" method="continueClose"/>
-	</action-method>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="period-moves-to-validate-form" model="com.axelor.apps.base.db.Period"
+    title="Moves to validate">
+    <panel-dashlet action="action-move-view-period-moves-to-validate"/>
+    <panel name="buttonsPanel">
+      <button name="continueBtn" title="Continue"
+        onClick="action-period-method-close-continue"/>
+    </panel>
+  </form>
+
+  <action-group name="action-period-group-close" id="action-account-period-group-close">
+    <action name="save"/>
+    <action name="action-period-method-search-moves"/>
+  </action-group>
+
+  <action-method name="action-period-method-search-moves">
+    <call class="com.axelor.apps.account.web.PeriodController" method="searchPeriodMoves"/>
+  </action-method>
+
+  <action-method name="action-period-method-close-continue">
+    <call class="com.axelor.apps.account.web.PeriodController" method="continueClose"/>
+  </action-method>
+
 	<action-method name="action-method-account-period-control-dates">
 		<call class="com.axelor.apps.account.web.PeriodController" method="controlDates"/>
 	</action-method>
@@ -44,5 +34,4 @@
 		<attribute name="readonly" for="toDate" expr="eval: (__repo__(Move).all().filter('self.period = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1 &amp;&amp; year?.statusSelect == 1"/>
 		<attribute name="readonly" for="year" expr="eval: (__repo__(Move).all().filter('self.period = ?', __this__).count() > 0) &amp;&amp; statusSelect == 1 &amp;&amp; year?.statusSelect == 1"/>
 	</action-attrs>
-	
 </object-views>
