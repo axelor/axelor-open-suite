@@ -1,58 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
-    <module name="account" package="com.axelor.apps.account.db"/>
+  <module name="account" package="com.axelor.apps.account.db"/>
 
-    <entity name="InvoiceLine" lang="java">
+  <entity name="InvoiceLine" lang="java">
 
-        <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
+    <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
-        <integer name="sequence" title="Seq."/>
+    <integer name="sequence" title="Seq."/>
 
-        <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-        <string name="productName"  title="Product Name"/>
-        <string name="productCode" title="Product Code"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <string name="productName" title="Product Name"/>
+    <string name="productCode" title="Product Code"/>
 
-        <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
-        <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
-        <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
-        <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-        <decimal name="qty" title="Qty" precision="20" scale="10"/>
-        <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
-        <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2" readonly="true"/>
-        <decimal name="inTaxTotal" title="Total A.T.I."/>
-        <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-        <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
+    <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
+    <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <decimal name="qty" title="Qty" precision="20" scale="10"/>
+    <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
+    <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I."/>
+    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
+      title="Tax Equiv"/>
 
-        <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-        <integer name="discountTypeSelect" title="Discount type" selection="base.price.list.line.amount.type.select" default="0"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select" default="0"/>
 
-        <string name="description" title="Description" large="true"/>
-        <boolean name="fixedAssets" title="Fixed Assets"/>
+    <string name="description" title="Description" large="true"/>
+    <boolean name="fixedAssets" title="Fixed Assets"/>
 
-        <!--   	Champ technique non affiché, utilisé pour les reportings -->
-        <decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" hidden="true"/>
-        <decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
+    <!-- Champ technique non affiché, utilisé pour les reportings -->
+    <decimal name="companyExTaxTotal" title="Total W.T. in Acc. currency" hidden="true"/>
+    <decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
 
 
-        <one-to-many name="analyticMoveLineList" ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines" mappedBy="invoiceLine"/>
-        <many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    <one-to-many name="analyticMoveLineList"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines"
+      mappedBy="invoiceLine"/>
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
-        <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
-        <one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="invoiceLine"/>
-        <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
+    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
+    <one-to-many name="budgetDistributionList"
+      ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution"
+      mappedBy="invoiceLine"/>
+    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
 
-        <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account"/>
-        
-        <many-to-one name="fixedAssetCategory" ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
+    <many-to-one name="account" ref="com.axelor.apps.account.db.Account"
+      title="Accounting.Account"/>
 
-        <integer name="typeSelect" title="Type" selection="line.type.select"/>
+    <many-to-one name="fixedAssetCategory"
+      ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
 
-        <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
-        <string name="taxCode" readonly="true"/>
-        <string name="name" title="Name" search="invoice,productName">
+    <integer name="typeSelect" title="Type" selection="line.type.select"/>
+
+    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <string name="taxCode" readonly="true"/>
+    <string name="name" title="Name" search="invoice,productName">
             <![CDATA[
    	    	String name = "";
 	  		if(invoice != null && invoice.getInvoiceId() != null){
@@ -67,9 +77,9 @@
 	  		}
 	  		return name;
 	    ]]>
-        </string>
-        
-	<extra-code>
+    </string>
+
+    <extra-code>
 		<![CDATA[
 			// TYPE SELECT
 			public static final int TYPE_NORMAL = 0;
@@ -77,17 +87,17 @@
             public static final int TYPE_START_OF_PACK = 2;
             public static final int TYPE_END_OF_PACK = 3;
 	  	]]>
-	</extra-code>
-        
-        <track>
-        	<field name="unit"/>
-        	<field name="qty"/>
-        	<field name="price"/>
-        	<field name="taxLine"/>
-        	<field name="account"/>
-        	<field name="analyticDistributionTemplate"/>
-        </track>
-        
-    </entity>
+    </extra-code>
+
+    <track>
+      <field name="unit"/>
+      <field name="qty"/>
+      <field name="price"/>
+      <field name="taxLine"/>
+      <field name="account"/>
+      <field name="analyticDistributionTemplate"/>
+    </track>
+
+  </entity>
 
 </domain-models>

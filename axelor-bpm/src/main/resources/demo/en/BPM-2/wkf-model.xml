@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wkf-models>
 
-		<wkf-model>
-							
-			<code>BPM-2</code>
-							
-			<name>PizzaDelivery</name>
-							
-			<isActive>true</isActive>
-							
-			<diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+  <wkf-model>
+
+    <code>BPM-2</code>
+
+    <name>PizzaDelivery</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-2" camunda:diagramName="PizzaDelivery" camunda:appBuilder="BPM-2" camunda:wkfStatusColor="green">
   <bpmn2:collaboration id="Collaboration_0pb74ca">
     <bpmn2:participant id="Pizza_Customer" name="Pizza Customer" processRef="Pizza_Main" />
@@ -548,14 +548,14 @@ $ctx.createVariable($ctx.save(rec), execution)</camunda:script>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
 ]]></diagramXml>
-							
-			<versionTag></versionTag>
-							
-			<previousVersion></previousVersion>
-							
-			<description></description>
-							
-			<appBuilder>BPM-2</appBuilder>
-							
-		</wkf-model>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-2</appBuilder>
+
+  </wkf-model>
 </wkf-models>
