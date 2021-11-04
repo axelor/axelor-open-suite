@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -54,6 +55,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
+      IntercoService intercoService,
       InvoiceEstimatedPaymentService invoiceEstimatedPaymentService) {
     super(
         validateFactory,
@@ -67,7 +69,8 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         accountConfigService,
         moveToolService,
         invoiceLineRepo,
-        appBaseService);
+        appBaseService,
+        intercoService);
     this.invoiceEstimatedPaymentService = invoiceEstimatedPaymentService;
   }
 

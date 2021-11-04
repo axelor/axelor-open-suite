@@ -7,11 +7,15 @@
 
   <entity name="Sequence" lang="java">
 
-    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="false"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+      required="false"/>
     <string name="name" title="Name" required="true"/>
-    <string name="codeSelect" title="Document concerned" required="true" selection="sequence.generic.code.select"/>
-    <enum name="sequenceTypeSelect" default="NUMBERS" ref="SequenceTypeSelect" title="Sequence type" required="true"/>
-    <enum name="sequenceLettersTypeSelect" default="UPPERCASE" ref="SequenceLettersTypeSelect" title="Uppercase / lowercase"/>
+    <string name="codeSelect" title="Document concerned" required="true"
+      selection="sequence.generic.code.select"/>
+    <enum name="sequenceTypeSelect" default="NUMBERS" ref="SequenceTypeSelect"
+      title="Sequence type" required="true"/>
+    <enum name="sequenceLettersTypeSelect" default="UPPERCASE" ref="SequenceLettersTypeSelect"
+      title="Uppercase / lowercase"/>
     <string name="prefixe" title="Prefix"/>
     <string name="suffixe" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
@@ -19,45 +23,46 @@
 
     <boolean name="yearlyResetOk" title="Yearly reset"/>
     <boolean name="monthlyResetOk" title="Monthly reset"/>
-    
-    <one-to-many name="sequenceVersionList" ref="com.axelor.apps.base.db.SequenceVersion" mappedBy="sequence" title="Versions"/>
+
+    <one-to-many name="sequenceVersionList"
+      ref="com.axelor.apps.base.db.SequenceVersion" mappedBy="sequence" title="Versions"/>
 
     <string name="fullName" title="Full name" namecolumn="true"/>
-    
+
     <unique-constraint columns="company,codeSelect,prefixe,suffixe"/>
     <index columns="codeSelect,company" name="idx_sequence_code_company"/>
     <finder-method name="find" using="codeSelect,company"/>
     <finder-method name="findByCodeSelect" using="codeSelect"/>
-    
-     <extra-code><![CDATA[
-        
+
+    <extra-code><![CDATA[
+
         //SEQUENCE SELECT
         public static final String PARTNER = "partner";
         public static final String PRODUCT = "product";
-        
+
      ]]></extra-code>
-     
-     <track on="UPDATE">
-    	<field name="codeSelect"/>
-    	<field name="company"/>
-    	<field name="sequenceTypeSelect"/>
-    	<field name="padding"/>
-    	<field name="toBeAdded"/>
-    	<field name="prefixe"/>
-    	<field name="suffixe"/>
-    	<field name="yearlyResetOk"/>
-    	<field name="monthlyResetOk"/>
+
+    <track on="UPDATE">
+      <field name="codeSelect"/>
+      <field name="company"/>
+      <field name="sequenceTypeSelect"/>
+      <field name="padding"/>
+      <field name="toBeAdded"/>
+      <field name="prefixe"/>
+      <field name="suffixe"/>
+      <field name="yearlyResetOk"/>
+      <field name="monthlyResetOk"/>
     </track>
-    
+
   </entity>
 
-	<enum name="SequenceTypeSelect">
-		<item name="NUMBERS" title="Use numbers"/>
-		<item name="LETTERS" title="Use letters"/>
-	</enum>
+  <enum name="SequenceTypeSelect">
+    <item name="NUMBERS" title="Use numbers"/>
+    <item name="LETTERS" title="Use letters"/>
+  </enum>
 
-	<enum name="SequenceLettersTypeSelect">
-		<item name="UPPERCASE" title="Use uppercases"/>
-		<item name="LOWERCASE" title="Use lowercases"/>
-	</enum>
+  <enum name="SequenceLettersTypeSelect">
+    <item name="UPPERCASE" title="Use uppercases"/>
+    <item name="LOWERCASE" title="Use lowercases"/>
+  </enum>
 </domain-models>

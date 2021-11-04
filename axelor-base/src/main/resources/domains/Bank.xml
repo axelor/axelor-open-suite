@@ -8,21 +8,27 @@
   <entity name="Bank" lang="java">
 
     <string name="fullName" title="Name" search="code,bankName"/>
-  
-    <integer name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true" selection="base.bank.bank.details.type.select" default="1"/>
-    <string name="code" title="BIC (Bank Identifier)" namecolumn="true" required="true" unique="true"/>
+
+    <integer name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true"
+      selection="base.bank.bank.details.type.select" default="1"/>
+    <string name="code" title="BIC (Bank Identifier)" namecolumn="true" required="true"
+      unique="true"/>
 
     <string name="bankName" title="Bank Name" max="255"/>
-    
-    <string name="businessPartyPrefix" title="Business Party Prefix (Bank Code)" min="4" max="4"/>
+
+    <string name="businessPartyPrefix" title="Business Party Prefix (Bank Code)" min="4"
+      max="4"/>
     <many-to-one name="country" title="Country" ref="com.axelor.apps.base.db.Country"/>
-    <string name="businessPartySuffix" title="Business Party Suffix (Location Code)" min="2" max="2"/>
+    <string name="businessPartySuffix" title="Business Party Suffix (Location Code)" min="2"
+      max="2"/>
     <string name="branchIdentifier" title="Branch Identifier (Branch Code)" max="3"/>
-    
-    <one-to-many name="bankAddressList" ref="com.axelor.apps.base.db.BankAddress" mappedBy="bank" title="SWIFT address"/>
-    
-    <one-to-many name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" mappedBy="bank"/>
-    
+
+    <one-to-many name="bankAddressList" ref="com.axelor.apps.base.db.BankAddress"
+      mappedBy="bank" title="SWIFT address"/>
+
+    <one-to-many name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      mappedBy="bank"/>
+
     <extra-code><![CDATA[
       //BANK DETAILS IDENTIFIER TYPE SELECT
       public static final int BANK_IDENTIFIER_TYPE_OTHER = 0;

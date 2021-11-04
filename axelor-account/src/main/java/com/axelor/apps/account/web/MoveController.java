@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
@@ -56,6 +57,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveController {
@@ -246,7 +248,7 @@ public class MoveController {
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
     try {
       List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-      if (!moveIds.isEmpty()) {
+      if (!CollectionUtils.isEmpty(moveIds)) {
         List<? extends Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
@@ -483,8 +485,7 @@ public class MoveController {
 
   public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
@@ -492,11 +493,23 @@ public class MoveController {
     }
   }
 
-  public void checkPreconditions(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setSimulate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move =
+          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Beans.get(MoveSimulateService.class).simulate(move);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void validateOriginDescription(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveValidateService.class).checkPreconditions(move);
+      if (move.getOrigin() == null && move.getDescription() == null) {
+        response.setAlert(I18n.get(IExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
