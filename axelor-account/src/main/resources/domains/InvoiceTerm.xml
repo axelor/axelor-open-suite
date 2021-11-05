@@ -28,8 +28,7 @@
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Move line" readonly="true"/>
     <many-to-one name="paymentConditionLine"
-      ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line"
-      required="true"/>
+      ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line"/>
     <boolean name="isCustomized" title="Is customized" default="false"/>
     <many-to-one ref="com.axelor.apps.base.db.BankDetails" name="bankDetails"/>
 
