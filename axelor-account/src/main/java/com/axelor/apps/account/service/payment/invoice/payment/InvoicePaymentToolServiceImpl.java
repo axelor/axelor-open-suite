@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -41,6 +42,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -73,6 +75,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoice.setAmountPaid(computeAmountPaid(invoice));
     invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
     updateHasPendingPayments(invoice);
+    updatePaymentProgress(invoice);
     invoiceRepo.save(invoice);
     log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
   }
@@ -204,5 +207,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
           invoicePayment.getInvoice().getInvoiceId());
     }
+  }
+
+  @Override
+  public void updatePaymentProgress(Invoice invoice) {
+
+    invoice.setPaymentProgress(
+        invoice
+            .getAmountPaid()
+            .multiply(new BigDecimal(100))
+            .divide(
+                invoice.getInTaxTotal(),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP)
+            .intValue());
   }
 }

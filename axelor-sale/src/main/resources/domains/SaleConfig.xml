@@ -29,6 +29,7 @@
       title="Validity duration per default"/>
     <boolean name="isAnalyticDistributionRequired"
       title="Analytic distribution required on sale order line"/>
+    <decimal name="defaultHoldBackPercentage" title="Default holdback percentage"/>
 
     <track>
       <field name="company" on="UPDATE"/>
