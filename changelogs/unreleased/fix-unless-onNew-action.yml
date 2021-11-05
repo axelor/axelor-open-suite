@@ -1,5 +1,3 @@
 ---
-title: "Lead: Useless Account action in onNew"
+title: "Lead: remove useless action called on lead creation causing issues with permission."
 type: fix
-description: |
-       removed useless action from the onNew action group.

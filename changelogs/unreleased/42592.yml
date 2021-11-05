@@ -1,3 +1,3 @@
 ---
-title: "Anomaly 42592 - fix NPE when we click on delete move without any move selected"
+title: "Move: in move grid view, fix NPE when we click on the button 'delete' without any move selected."
 type: fix

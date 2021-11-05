@@ -1,3 +1,3 @@
 ---
-title: "fix the error at the creation of a new invoice after the generation of an invoice from a purchase order"
+title: "Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order."
 type: fix
