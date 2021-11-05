@@ -48,11 +48,12 @@ public class AnalyticDistributionLineController {
   public void validateLines(ActionRequest request, ActionResponse response) {
     try {
       AnalyticDistributionTemplate analyticDistributionTemplate =
-        request.getContext().asType(AnalyticDistributionTemplate.class);
-    if (!Beans.get(AnalyticMoveLineService.class)
-        .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
-      response.setError(
-          I18n.get("The configured distribution is incorrect, the sum of percentages for at least an axis is higher than 100%"));
+          request.getContext().asType(AnalyticDistributionTemplate.class);
+      if (!Beans.get(AnalyticMoveLineService.class)
+          .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+        response.setError(
+            I18n.get(
+                "The configured distribution is incorrect, the sum of percentages for at least an axis is higher than 100%"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

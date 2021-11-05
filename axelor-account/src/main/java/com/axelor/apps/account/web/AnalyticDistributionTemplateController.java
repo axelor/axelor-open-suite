@@ -19,7 +19,8 @@ public class AnalyticDistributionTemplateController {
       if (!Beans.get(AnalyticDistributionTemplateService.class)
           .validateTemplatePercentages(analyticDistributionTemplate)) {
         response.setError(
-            I18n.get("The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%"));
+            I18n.get(
+                "The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
