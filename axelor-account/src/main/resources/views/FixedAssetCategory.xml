@@ -23,20 +23,28 @@
       <field name="name"/>
       <field name="company" form-view="company-form" grid-view="company-grid"/>
       <field name="fixedAssetType" form-view="fixed-asset-type-form"
-        grid-view="fixed-asset-type-grid"/>
+        grid-view="fixed-asset-type-grid"
+        onChange="action-fixed-asset-category-group-onchange-fixed-asset-type"/>
+      <field name="fixedAssetType.technicalTypeSelect" hidden="true"/>
       <field name="isValidateFixedAsset"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="depreciationPanel" title="Depreciation method" colspan="12">
         <panel name="depreciationParametersPanel" title="Depreciation">
-          <field name="depreciationPlanSelect" widget="MultiSelect" required="true"/>
+          <field name="depreciationPlanSelect" widget="MultiSelect" required="true"
+            readonlyIf="fixedAssetType.technicalTypeSelect == 1"/>
           <field name="computationMethodSelect"
-            onChange="action-fixed-asset-attrs-set-degressive-coef" colspan="6" required="true"/>
-          <field name="firstDepreciationDateInitSelect" required="true"/>
+            onChange="action-fixed-asset-attrs-set-degressive-coef" colspan="6"
+            requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"
+            showIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
+          <field name="firstDepreciationDateInitSelect"
+            requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"
+            showIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
           <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"
             validIf="computationMethodSelect == 'linear' || (computationMethodSelect == 'degressive' &amp;&amp; degressiveCoef != 0.00)"/>
         </panel>
-        <panel name="periodicityParametersPanel" title="Periodicity">
+        <panel name="periodicityParametersPanel" title="Periodicity"
+          showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="numberOfDepreciation"
             onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"
             min="1"/>
@@ -53,13 +61,16 @@
           <field name="journal" domain="self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
         </panel>
-        <panel name="depreciationAccountsPanel" title="Depreciation">
+        <panel name="depreciationAccountsPanel" title="Depreciation"
+          showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="chargeAccount"
             domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
-            form-view="account-form" grid-view="account-grid"/>
+            form-view="account-form" grid-view="account-grid"
+            requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
           <field name="depreciationAccount"
             domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
-            form-view="account-form" grid-view="account-grid"/>
+            form-view="account-form" grid-view="account-grid"
+            requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
           <field name="debtReceivableAccount"
             domain="self.company = :company AND self.accountType.technicalTypeSelect = 'receivable'"
             form-view="account-form"/>
@@ -70,7 +81,8 @@
             domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
             form-view="account-form"/>
         </panel>
-        <panel name="derogatoryAccountsPanel" title="Derogatory depreciation">
+        <panel name="derogatoryAccountsPanel" title="Derogatory depreciation"
+          showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="expenseDepreciationDerogatoryAccount"
             domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
             form-view="account-form"/>
@@ -81,7 +93,8 @@
             domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
             form-view="account-form"/>
         </panel>
-        <panel name="exitAccountPanel" title="Assets cession" colspan="12">
+        <panel name="exitAccountPanel" title="Assets cession" colspan="12"
+          showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="realisedAssetsValueAccount"
             domain="self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
             form-view="account-form"/>
@@ -89,7 +102,8 @@
             domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income' "
             form-view="account-form"/>
         </panel>
-        <panel name="ifrsAccountsPanel" title="IFRS depreciation">
+        <panel name="ifrsAccountsPanel" title="IFRS depreciation"
+          showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="ifrsDepreciationAccount" form-view="account-form"/>
           <field name="ifrsChargeAccount" form-view="account-form"/>
         </panel>
@@ -104,6 +118,10 @@
     </panel-tabs>
   </form>
 
+  <action-group name="action-fixed-asset-category-group-onchange-fixed-asset-type">
+    <action name="action-fixed-asset-category-method-set-depreciation-plan-select-to-none"/>
+    <action name="action-fixed-asset-category-attrs-set-depreciation-plan-select-readonly"/>
+  </action-group>
 
   <action-record name="action-fixed-asset-category-record-default"
     model="com.axelor.apps.account.db.FixedAssetCategory">
@@ -111,13 +129,21 @@
     <field name="computationMethodSelect" expr="eval: 'linear'"/>
   </action-record>
 
+  <action-method
+    name="action-fixed-asset-category-method-set-depreciation-plan-select-to-none">
+    <call class="com.axelor.apps.account.web.FixedAssetCategoryController"
+      method="setDepreciationPlanSelectToNone"/>
+  </action-method>
+
   <action-record name="action-fixed-asset-category-record-compute-duration"
     model="com.axelor.apps.account.db.FixedAssetCategory">
     <field name="durationInMonth" expr="eval: periodicityInMonth * numberOfDepreciation"/>
   </action-record>
+
   <action-attrs name="action-attrs-account-periodicity-type-select-on-change">
     <attribute name="value" for="periodicityInMonth" expr="eval:periodicityTypeSelect"/>
   </action-attrs>
+
   <action-attrs name="action-fixed-asset-attrs-set-degressive-coef">
     <attribute name="value" for="degressiveCoef" expr="eval: 1.25"
       if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &lt;= 4"/>
