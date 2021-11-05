@@ -18,6 +18,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -56,6 +57,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineConsolidateService moveLineConsolidateService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -68,7 +70,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       InvoiceService invoiceService,
       MoveLineToolService moveLineToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      MoveLineConsolidateService moveLineConsolidateService) {
+      MoveLineConsolidateService moveLineConsolidateService,
+      InvoiceTermService invoiceTermService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -79,6 +82,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineConsolidateService = moveLineConsolidateService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -505,8 +509,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     MoveLine moveLine = null;
     MoveLine holdBackMoveLine;
+    LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
         account = invoiceService.getPartnerAccount(invoice, true);
@@ -526,7 +530,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 null,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
-                invoice.getDueDate(),
+                invoiceTerm.getDueDate(),
                 invoice.getOriginDate(),
                 moveLineId++,
                 origin,
@@ -551,7 +555,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   null,
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
-                  invoiceTerm.getDueDate(),
+                  latestDueDate,
                   invoice.getOriginDate(),
                   moveLineId++,
                   origin,

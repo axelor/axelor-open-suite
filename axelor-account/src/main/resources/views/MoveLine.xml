@@ -262,6 +262,12 @@
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"/>
     </panel>
     <panel-tabs name="mainPanelTab">
+      <panel name="generateFixedAssetPanel" title="Generate fixed asset">
+        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ? "
+          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
+        <field name="fixedAssetCategory"
+          showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
+      </panel>
       <panel name="invoiceTermPanel" title="Invoice term" readonly="true"
         showIf="account.hasInvoiceTerm" colSpan="12">
         <field name="account.hasInvoiceTerm" hidden="true"/>
@@ -458,6 +464,12 @@
 
     </panel>
     <panel-tabs name="mainPanelTab">
+      <panel name="generateFixedAssetPanel" title="Generate fixed asset">
+        <field name="$generateFixedAsset" title="Generate a fixed asset from this line ? "
+          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
+        <field name="fixedAssetCategory"
+          showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
+      </panel>
       <panel name="invoiceTermPanel" title="Invoice term" readonly="true"
         showIf="account.hasInvoiceTerm" colSpan="12">
         <field name="account.hasInvoiceTerm" hidden="true"/>
@@ -579,6 +591,7 @@
     <action name="action-move-line-debit-credit-validate"/>
     <action name="action-move-line-debit-credit-clean"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
   </action-group>
 
@@ -742,12 +755,9 @@
 
   <action-record name="action-move-line-record-set-currencyAmount"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="currencyAmount" expr="eval: debit / currencyRate"
-      if="debit != 0 &amp;&amp; isOtherCurrency"/>
-    <field name="currencyAmount" expr="eval: credit / currencyRate"
-      if="credit != 0 &amp;&amp; isOtherCurrency"/>
-    <field name="currencyAmount" expr="eval: 0"
-      if="(debit == 0 &amp;&amp; credit == 0) || !isOtherCurrency"/>
+    <field name="currencyAmount" expr="eval: debit / currencyRate" if="debit != 0"/>
+    <field name="currencyAmount" expr="eval: credit / currencyRate" if="credit != 0"/>
+    <field name="currencyAmount" expr="eval: 0" if="(debit == 0 &amp;&amp; credit == 0)"/>
   </action-record>
 
   <action-record name="action-move-line-record-set-amount"

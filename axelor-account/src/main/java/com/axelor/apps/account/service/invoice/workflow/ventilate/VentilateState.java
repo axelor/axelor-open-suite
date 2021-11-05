@@ -26,7 +26,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -69,7 +69,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected UserService userService;
 
-  protected FixedAssetService fixedAssetService;
+  protected FixedAssetGenerationService fixedAssetGenerationService;
 
   protected InvoiceTermService invoiceTermService;
 
@@ -82,7 +82,7 @@ public class VentilateState extends WorkflowInvoice {
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
       UserService userService,
-      FixedAssetService fixedAssetService,
+      FixedAssetGenerationService fixedAssetGenerationService,
       InvoiceTermService invoiceTermService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
@@ -91,7 +91,7 @@ public class VentilateState extends WorkflowInvoice {
     this.invoiceRepo = invoiceRepo;
     this.workflowService = workflowService;
     this.userService = userService;
-    this.fixedAssetService = fixedAssetService;
+    this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.invoiceTermService = invoiceTermService;
   }
 
@@ -255,9 +255,10 @@ public class VentilateState extends WorkflowInvoice {
     if (InvoiceToolService.isPurchase(invoice)) {
 
       invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
-    }
+    } else {
 
-    invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+      invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+    }
   }
 
   protected void setMove() throws AxelorException {
@@ -283,7 +284,7 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("Generate fixed asset");
     // Create fixed asset
-    fixedAssetService.createFixedAssets(invoice);
+    fixedAssetGenerationService.createFixedAssets(invoice);
   }
 
   /**

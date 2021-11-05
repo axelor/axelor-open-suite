@@ -1,0 +1,112 @@
+package com.axelor.apps.account.service.fixedasset;
+
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+public class FixedAssetLineIfrsComputationServiceImpl
+    extends AbstractFixedAssetLineComputationServiceImpl {
+
+  @Inject
+  public FixedAssetLineIfrsComputationServiceImpl(
+      FixedAssetFailOverControlService fixedAssetFailOverControlService) {
+    super(fixedAssetFailOverControlService);
+  }
+
+  @Override
+  protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      return fixedAsset.getFailoverDate();
+    }
+    return fixedAsset.getFirstDepreciationDate();
+  }
+
+  @Override
+  protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
+    if (!fixedAsset.getIsIfrsEqualToFiscalDepreciation()
+        && fixedAsset
+            .getIfrsComputationMethodSelect()
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+      return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
+    }
+
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && getComputationMethodSelect(fixedAsset)
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+      return fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset));
+    }
+    return fixedAsset.getGrossValue();
+  }
+
+  @Override
+  protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
+    return fixedAsset.getFirstDepreciationDate();
+  }
+
+  @Override
+  protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
+    return fixedAsset.getAcquisitionDate();
+  }
+
+  @Override
+  protected List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsFixedAssetLineList();
+  }
+
+  @Override
+  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsNumberOfDepreciation();
+  }
+
+  @Override
+  protected String getComputationMethodSelect(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsComputationMethodSelect();
+  }
+
+  @Override
+  protected BigDecimal getDegressiveCoef(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsDegressiveCoef();
+  }
+
+  @Override
+  protected Integer getPeriodicityInMonth(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsPeriodicityInMonth();
+  }
+
+  @Override
+  protected Integer getTypeSelect() {
+
+    return FixedAssetLineRepository.TYPE_SELECT_IFRS;
+  }
+
+  @Override
+  protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
+    return fixedAsset.getFixedAssetCategory().getIsProrataTemporis();
+  }
+
+  @Override
+  protected BigDecimal computeInitialDegressiveDepreciation(
+      FixedAsset fixedAsset, BigDecimal baseValue) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+      FixedAssetLine dummyPreviousLine = new FixedAssetLine();
+      dummyPreviousLine.setAccountingValue(baseValue);
+      return super.computeOnGoingDegressiveDepreciation(fixedAsset, dummyPreviousLine);
+    }
+    return super.computeInitialDegressiveDepreciation(fixedAsset, baseValue);
+  }
+
+  @Override
+  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsNbrOfPastDepreciations();
+  }
+
+  @Override
+  protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsAlreadyDepreciatedAmount();
+  }
+}

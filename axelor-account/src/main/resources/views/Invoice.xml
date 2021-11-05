@@ -199,6 +199,7 @@
     <field name="amountRemaining" aggregate="sum"/>
     <field name="currency"/>
     <field name="statusSelect"/>
+    <field name="paymentProgress" widget="Progress"/>
     <field name="pfpValidateStatusSelect" title="PFP"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" title="PFP val."
@@ -519,6 +520,11 @@
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
+      <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
+        showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
+        <panel-related name="invoiceTermListPanel" field="invoiceTermList"
+          colSpan="12" form-view="invoice-term-invoice-form" grid-view="invoice-term-invoice-grid"/>
+      </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
         <panel name="deliveryAddressPanel" colSpan="12" hidden="true"
@@ -710,7 +716,7 @@ InvoiceSet.length > 0))"
         <panel name="financialDiscountPanel" colSpan="12"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
           <field name="financialDiscount" colSpan="6"
-            onChange="action-record-invoice-set-financial-discount-informations"
+            onChange="action-record-invoice-set-financial-discount-informations,action-method-invoice-financial-discount-update-invoice-terms"
             showIf="statusSelect &gt;=3"/>
           <field name="financialDiscountRate" colSpan="6"
             showIf="statusSelect &gt;=3 &amp;&amp; financialDiscount"/>
@@ -746,12 +752,6 @@ InvoiceSet.length > 0))"
             domain="self.company = :company AND self.partner = :partner"
             form-view="payment-schedule-form" grid-view="payment-schedule-grid"/>
         </panel>
-      </panel>
-      <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
-        showIf="invoiceTermList != null &amp;&amp; operationTypeSelect != 4 &amp;&amp; operationTypeSelect != 2">
-        <panel-related name="invoiceTermListPanel" field="invoiceTermList"
-          colSpan="12" form-view="invoice-term-invoice-form" grid-view="invoice-term-invoice-grid"
-          canNew="false" canRemove="false"/>
       </panel>
     </panel-tabs>
 
@@ -928,8 +928,6 @@ InvoiceSet.length > 0))"
         <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
           readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
-        <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
-          if="__config__.app.isApp('cash-management')" colSpan="12"/>
       </panel>
     </panel-stack>
 
@@ -1086,8 +1084,6 @@ InvoiceSet.length > 0))"
         <field name="dueDate" onChange="action-invoice-method-estimated-payment-dates"
           readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
-        <field name="estimatedPaymentDate" readonly="true" if-module="axelor-cash-management"
-          if="__config__.app.isApp('cash-management')"/>
       </panel>
     </panel-stack>
 
@@ -1453,6 +1449,7 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
+    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-record-due-date"/>
@@ -1964,6 +1961,16 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-compute-invoice-terms-due-dates">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="computeInvoiceTermsDueDates"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-validate-invoice-terms-before-save">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="validateInvoiceTermsBeforeSave"/>
+  </action-method>
+
+  <action-method name="action-method-invoice-financial-discount-update-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateInvoiceTermsFinancialDiscount"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

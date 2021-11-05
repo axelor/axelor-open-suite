@@ -20,9 +20,11 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -42,7 +44,16 @@ public interface InvoiceTermService {
       throws AxelorException;
 
   /**
-   * Method to init invoice terms due dates
+   * Method that creates a customized invoiceTerm
+   *
+   * @param invoice
+   * @return
+   * @throws AxelorException
+   */
+  public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm);
+
+  /**
+   * Method to initialize invoice terms due dates
    *
    * @param invoice
    * @param invoiceDate
@@ -75,6 +86,15 @@ public interface InvoiceTermService {
    * @return
    */
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice);
+
+  /**
+   * Return the latest invoice terms due date by ignoring holdback invoice terms Return invoice due
+   * date if no invoice terms found
+   *
+   * @param invoice
+   * @return
+   */
+  public LocalDate getLatestInvoiceTermDueDate(Invoice invoice);
 
   /**
    * Update amount remaining and paid status
@@ -115,4 +135,60 @@ public interface InvoiceTermService {
    * @throws AxelorException
    */
   public boolean checkInvoiceTermsPercentageSum(Invoice invoice) throws AxelorException;
+
+  /**
+   * compute the sum of invoice terms percentages
+   *
+   * @param invoice
+   * @throws AxelorException
+   */
+  public BigDecimal computePercentageSum(Invoice invoice);
+
+  /**
+   * Update invoice terms financial discount if not paid with invoice financial discount
+   *
+   * @param invoice
+   * @return
+   */
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
+
+  /**
+   * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
+   * based on due date
+   *
+   * @param invoice
+   */
+  public void initInvoiceTermsSequence(Invoice invoice);
+
+  /**
+   * check if invoice term creation is prohibited returns true if prohibited
+   *
+   * @param invoice
+   * @return
+   */
+  public boolean checkInvoiceTermCreationConditions(Invoice invoice);
+
+  /**
+   * check if invoice term deletion is prohibited returns true if prohibited
+   *
+   * @param invoice
+   * @return
+   */
+  public boolean checkInvoiceTermDeletionConditions(Invoice invoice);
+
+  /**
+   * checks if there is deleted hold back invoice terms while invoice ventilated
+   *
+   * @param invoice
+   * @return
+   */
+  public boolean checkIfThereIsDeletedHoldbackInvoiceTerms(Invoice invoice);
+
+  /**
+   * return existing moveLine related to invoiceTerm with isHoldBack = false
+   *
+   * @param invoice
+   * @return
+   */
+  public MoveLine getExistingInvoiceTermMoveLine(Invoice invoice);
 }
