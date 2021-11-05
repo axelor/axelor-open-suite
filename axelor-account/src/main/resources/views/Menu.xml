@@ -103,6 +103,14 @@
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
   </action-view>
 
+  <menuitem name="invoice-root-invoice-terms" parent="invoice-root" order="21"
+    title="Terms list" action="invoice.root.invoice.terms"/>
+
+  <action-view name="invoice.root.invoice.terms" title="Terms list"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-grid"/>
+    <view type="form" name="invoice-term-form"/>
+  </action-view>
 
   <menuitem name="account-root-payment-schedule" title="Payment Schedule" order="25"
     if-module="axelor-bank-payment" parent="invoice-root"
