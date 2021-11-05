@@ -7,7 +7,7 @@
     model="com.axelor.apps.account.db.Move" canDelete="false">
     <toolbar>
       <button name="accountingMoveBtn" title="Accounting.toAccount"
-        prompt="By clicking on this button, if validity conditions are satisfied and depending on the status of the move(s) selected, move(s) status will be updated. Depending if Daybook option is activated which will bring a status before the move being Accounted, please be aware that Accounting a move brings irrevocable integration of the move in their respective moves book."
+        prompt="By clicking on this button, if validity conditions are satisfied and depending on the status of the move(s) selected, move(s) status will be updated. Depending if Daybook option is activated which will bring a status before the move being Accounted, please be aware that Accounting a move brings irrevocable integration of the move in their respective moves book. Do you wish to continue ?"
         onClick="action-move-method-accounting-multiple-moves"/>
       <button name="deleteMovesBtn" title="Delete" icon="fa-trash"
         onClick="action-move-method-delete-multiple-moves"/>
@@ -344,7 +344,7 @@
 
   <action-validate name="action-account-accounting-prompt">
     <alert
-      message="By clicking on this button, if validity conditions are satisfied and depending on the status of the move(s) selected, move(s) status will be updated. Depending if Daybook option is activated which will bring a status before the move being Accounted, please be aware that Accounting a move brings irrevocable integration of the move in their respective moves book."/>
+      message="By clicking on this button, if validity conditions are satisfied and depending on the status of the move(s) selected, move(s) status will be updated. Depending if Daybook option is activated which will bring a status before the move being Accounted, please be aware that Accounting a move brings irrevocable integration of the move in their respective moves book. Do you wish to continue ?"/>
   </action-validate>
 
   <action-validate name="action-move-validate-check-date-of-reversion">

@@ -42,7 +42,7 @@ public interface IExceptionMessage {
       "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
 
   static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
-      "Error or anomaly detected making it impossible to proceed in the move accounting operation. Please check the logs. Move generating error : %s" /*)*/;
+      "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs." /*)*/;
   static final String MOVE_ACCOUNTING_OK = /*$$(*/
       "The selected moves have been successfully, if activated set to daybook, or else accounted." /*)*/;
   static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
