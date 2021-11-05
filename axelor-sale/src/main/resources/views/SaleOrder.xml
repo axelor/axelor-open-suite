@@ -1926,7 +1926,8 @@
   </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-availability">
-    <attribute name="hidden" for="availabilityRequestLabel" if="__config__.app.isApp('stock')"
+    <attribute name="hidden" for="availabilityRequestLabel"
+      if="__config__.app.isApp('stock')"
       expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
     <attribute name="hidden" expr="eval: statusSelect != 3"
       for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
