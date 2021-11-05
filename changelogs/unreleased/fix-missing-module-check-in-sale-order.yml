@@ -1,0 +1,3 @@
+---
+title: "SaleOrder : Fixed stock related action missing module check"
+type: fix
