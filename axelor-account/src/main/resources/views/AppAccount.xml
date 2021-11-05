@@ -28,8 +28,7 @@
           showIf="activateFixedAssetBarCodeGeneration == true" widget="boolean-switch"/>
         <field name="fixedAssetBarcodeTypeConfig"
           showIf="activateFixedAssetBarCodeGeneration == true"
-          requiredIf="activateFixedAssetBarCodeGeneration &amp;&amp; !editFixedAssetBarcodeType"
-         />
+          requiredIf="activateFixedAssetBarCodeGeneration &amp;&amp; !editFixedAssetBarcodeType"/>
       </panel>
       <panel name="accountingExportPanel" title="Accounting exports">
         <field name="dasActiveNorm"/>
