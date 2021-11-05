@@ -71,6 +71,7 @@ public class MoveTemplateService {
       MoveLineCreateService moveLineCreateService,
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
+      TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;

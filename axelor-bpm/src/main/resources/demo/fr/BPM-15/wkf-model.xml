@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wkf-models>
+
+
+  <wkf-model>
+
+    <code>BPM-15</code>
+
+    <name>Multi instance signal</name>
+
+    <isActive>true</isActive>
+
+    <diagramXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" camunda:code="BPM-15" camunda:diagramName="Multi instance signal" camunda:appBuilder="BPM-15">
+  <bpmn2:collaboration id="Collaboration_069052m">
+    <bpmn2:participant id="Participant_1xtx1xq" name="Bill subscription" processRef="MultiInstnaceSignalProcess" />
+    <bpmn2:participant id="Participant_0sne38g" name="Credit card bill subscription" processRef="Process_0d0lw7z" />
+    <bpmn2:participant id="Participant_1ribjg7" name="Electricity bill" processRef="Process_07mlhjr" />
+  </bpmn2:collaboration>
+  <bpmn2:process id="MultiInstnaceSignalProcess" name="Bill subscription process" isExecutable="true" camunda:versionTag="" camunda:displayStatus="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaJsonModel="BillSubscription" metaJsonModelLabel="BillSubscription (Bill subscription)" isStartModel="true" isCustom="true" model="com.axelor.meta.db.MetaJsonRecord" title="Bill Subscription" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:laneSet id="LaneSet_0spuik0" />
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:outgoing>Flow_03up0om</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_03up0om" sourceRef="StartEvent_1" targetRef="Activity_1f6hbw9" />
+    <bpmn2:userTask id="Activity_1f6hbw9" name="Draft" camunda:buttonLabels="Subscribe" camunda:buttons="buttonSubscribe" camunda:displayStatus="true">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="BillSubscription" />
+          <camunda:property name="modelLabel" value="Bill subscription" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="view" value="custom-model-BillSubscription-form" />
+          <camunda:property name="viewLabel" value="Bill subscription" />
+          <camunda:property name="item" value="buttonSubscribe" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Subscribe" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_03up0om</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_13288qk</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_0ubk5aa" sourceRef="Activity_1v4m0z6" targetRef="Activity_00efhkc">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">buttonSubscribe</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_10t3rad" sourceRef="Activity_00efhkc" targetRef="Gateway_19pk1o9" />
+    <bpmn2:userTask id="Activity_1v4m0z6" name="On Hold" camunda:buttonLabels="Cancel,Subscribe" camunda:buttons="buttonCancel,buttonSubscribe" camunda:displayStatus="true">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="BillSubscription" />
+          <camunda:property name="modelLabel" value="Bill subscription" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="view" value="custom-model-BillSubscription-form" />
+          <camunda:property name="viewLabel" value="Bill subscription" />
+          <camunda:property name="item" value="buttonCancel" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Cancel" />
+          <camunda:property name="permanent" value="false" />
+          <camunda:property name="item" value="buttonSubscribe" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Subscribe" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0pyo3ig</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0ubk5aa</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1lnw58h</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_0pyo3ig" sourceRef="Gateway_19pk1o9" targetRef="Activity_1v4m0z6">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">buttonHold</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1xbg1eh" sourceRef="Gateway_19pk1o9" targetRef="Event_0tsr3ly">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">buttonCancel</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1lnw58h" sourceRef="Activity_1v4m0z6" targetRef="Event_0tsr3ly">
+      <bpmn2:conditionExpression xs:type="bpmn2:tFormalExpression" language="axelor">buttonCancel</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="Event_0tsr3ly" name="Cancel" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_1xbg1eh</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1lnw58h</bpmn2:incoming>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_1ff1g7i" signalRef="Signal_2a7utju" />
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_13288qk" sourceRef="Activity_1f6hbw9" targetRef="Event_0wnvmsg" />
+    <bpmn2:sequenceFlow id="Flow_1bt302m" sourceRef="Event_0wnvmsg" targetRef="Activity_00efhkc" />
+    <bpmn2:intermediateThrowEvent id="Event_0wnvmsg" name="Start all subscriptions">
+      <bpmn2:incoming>Flow_13288qk</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1bt302m</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_07xv25h" signalRef="Signal_1l7jbhr" />
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:userTask id="Activity_00efhkc" name="Subscribe" camunda:buttonLabels="Cancel,Hold" camunda:buttons="buttonCancel,buttonHold" camunda:displayStatus="true">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="BillSubscription" />
+          <camunda:property name="modelLabel" value="Bill subscription" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="view" value="custom-model-BillSubscription-form" />
+          <camunda:property name="viewLabel" value="Bill subscription" />
+          <camunda:property name="item" value="buttonHold" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Hold" />
+          <camunda:property name="permanent" value="false" />
+          <camunda:property name="item" value="buttonCancel" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Cancel" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0ubk5aa</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1bt302m</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_10t3rad</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:exclusiveGateway id="Gateway_19pk1o9">
+      <bpmn2:incoming>Flow_10t3rad</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0pyo3ig</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_1xbg1eh</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+  </bpmn2:process>
+  <bpmn2:signal id="Signal_1l7jbhr" name="Signal_0hsbl2k" />
+  <bpmn2:signal id="Signal_2a7utju" name="Signal_1qrnjjn" />
+  <bpmn2:process id="Process_0d0lw7z" name="Credit card bill subscription process" isExecutable="true" camunda:displayStatus="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaJsonModel="CreditCardBillSubcription" metaJsonModelLabel="CreditCardBillSubcription (Credit card bill subscription)" isStartModel="true" model="com.axelor.meta.db.MetaJsonRecord" title="Credit card bill subscription" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:sequenceFlow id="Flow_0fnw8c8" sourceRef="Event_0v1qtw5" targetRef="Activity_10o0vqf" />
+    <bpmn2:sequenceFlow id="Flow_158m4m4" sourceRef="Activity_10o0vqf" targetRef="Activity_1wqbr87" />
+    <bpmn2:sequenceFlow id="Flow_1ff5yja" sourceRef="Activity_1wqbr87" targetRef="Event_1sq0lzb" />
+    <bpmn2:sequenceFlow id="Flow_0mxn0ap" sourceRef="Event_1981uw8" targetRef="Activity_1wqbr87" />
+    <bpmn2:boundaryEvent id="Event_1981uw8" attachedToRef="Activity_10o0vqf">
+      <bpmn2:outgoing>Flow_0mxn0ap</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_0grhxbb" signalRef="Signal_1l7jbhr" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:subProcess id="Activity_1b6dwlt" triggeredByEvent="true">
+      <bpmn2:task id="Activity_0xjbfbu" name="Cancel">
+        <bpmn2:incoming>Flow_0ew4f9h</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1dgs9dy</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_0ew4f9h" sourceRef="Event_10pyu0j" targetRef="Activity_0xjbfbu" />
+      <bpmn2:endEvent id="Event_1d2brhy" name="Cancel End" camunda:displayStatus="true">
+        <bpmn2:incoming>Flow_1dgs9dy</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="Flow_1dgs9dy" sourceRef="Activity_0xjbfbu" targetRef="Event_1d2brhy" />
+      <bpmn2:startEvent id="Event_10pyu0j" name="Cancel Start">
+        <bpmn2:outgoing>Flow_0ew4f9h</bpmn2:outgoing>
+        <bpmn2:signalEventDefinition id="SignalEventDefinition_0q9wzgh" signalRef="Signal_2a7utju" />
+      </bpmn2:startEvent>
+    </bpmn2:subProcess>
+    <bpmn2:userTask id="Activity_1wqbr87" name="Subscribed" camunda:displayStatus="true" camunda:buttonLabels="End" camunda:buttons="buttonEnd">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="CreditCardBillSubcription" />
+          <camunda:property name="modelLabel" value="Credit card bill subscription" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="item" value="buttonEnd" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="End" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_158m4m4</bpmn2:incoming>
+      <bpmn2:incoming>Flow_0mxn0ap</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1ff5yja</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_10o0vqf" name="Draft" camunda:displayStatus="true" camunda:buttonLabels="Start" camunda:buttons="buttonStart">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="CreditCardBillSubcription" />
+          <camunda:property name="modelLabel" value="Credit card bill subscription" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="item" value="buttonStart" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Start" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0fnw8c8</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_158m4m4</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="Event_1sq0lzb" name="End" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_1ff5yja</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:startEvent id="Event_0v1qtw5" name="Start">
+      <bpmn2:outgoing>Flow_0fnw8c8</bpmn2:outgoing>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmn2:process id="Process_07mlhjr" name="Electricity bill subscription process" isExecutable="true" camunda:displayStatus="true">
+    <bpmn2:extensionElements>
+      <camunda:processConfiguration>
+        <camunda:processConfigurationParameter metaModel="ElectricityBillSubscription" metaModelLabel="ElectricityBillSubscription (Electricity bill subscription)" isStartModel="true" model="com.axelor.dms.db.DMSFile" title="Electricity bill subscription" />
+      </camunda:processConfiguration>
+    </bpmn2:extensionElements>
+    <bpmn2:endEvent id="Event_0nv6oms" name="End" camunda:displayStatus="true">
+      <bpmn2:incoming>Flow_0fdyxwd</bpmn2:incoming>
+      <bpmn2:incoming>Flow_12wt0bj</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:userTask id="Activity_1jaiyz5" name="Draft" camunda:displayStatus="true" camunda:buttonLabels="Start" camunda:buttons="buttonStart">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="ElectricityBillSubscription" />
+          <camunda:property name="modelLabel" value="Electricity bill subscription" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="item" value="buttonStart" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="Start" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0lmfcpn</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1bx9mei</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="Activity_1f6wkvn" name="Subscribed" camunda:displayStatus="true" camunda:buttonLabels="End" camunda:buttons="buttonEnd">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+          <camunda:property />
+          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+          <camunda:property name="modelName" value="ElectricityBillSubscription" />
+          <camunda:property name="modelLabel" value="Electricity bill subscription" />
+          <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="item" value="buttonEnd" />
+          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemLabel" value="End" />
+          <camunda:property name="permanent" value="false" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1bx9mei</bpmn2:incoming>
+      <bpmn2:incoming>Flow_09yzaim</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0fdyxwd</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:boundaryEvent id="Event_0vhzmqq" attachedToRef="Activity_1jaiyz5">
+      <bpmn2:outgoing>Flow_09yzaim</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_1ce7duu" signalRef="Signal_1l7jbhr" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:boundaryEvent id="Event_15zgsbh" attachedToRef="Activity_1f6wkvn">
+      <bpmn2:outgoing>Flow_12wt0bj</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_133sehe" signalRef="Signal_2a7utju" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="Flow_0lmfcpn" sourceRef="Event_1e7rgui" targetRef="Activity_1jaiyz5" />
+    <bpmn2:sequenceFlow id="Flow_1bx9mei" sourceRef="Activity_1jaiyz5" targetRef="Activity_1f6wkvn" />
+    <bpmn2:sequenceFlow id="Flow_0fdyxwd" sourceRef="Activity_1f6wkvn" targetRef="Event_0nv6oms" />
+    <bpmn2:sequenceFlow id="Flow_09yzaim" sourceRef="Event_0vhzmqq" targetRef="Activity_1f6wkvn" />
+    <bpmn2:sequenceFlow id="Flow_12wt0bj" sourceRef="Event_15zgsbh" targetRef="Event_0nv6oms" />
+    <bpmn2:startEvent id="Event_1e7rgui" name="Start">
+      <bpmn2:outgoing>Flow_0lmfcpn</bpmn2:outgoing>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_069052m">
+      <bpmndi:BPMNShape id="Participant_1xtx1xq_di" bpmnElement="Participant_1xtx1xq" isHorizontal="true" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="132" y="220" width="978" height="272" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1bt302m_di" bpmnElement="Flow_1bt302m" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="488" y="350" />
+        <di:waypoint x="560" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13288qk_di" bpmnElement="Flow_13288qk" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="380" y="350" />
+        <di:waypoint x="452" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lnw58h_di" bpmnElement="Flow_1lnw58h" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="910" y="350" />
+        <di:waypoint x="910" y="382" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xbg1eh_di" bpmnElement="Flow_1xbg1eh" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="750" y="375" />
+        <di:waypoint x="750" y="400" />
+        <di:waypoint x="892" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pyo3ig_di" bpmnElement="Flow_0pyo3ig" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="750" y="325" />
+        <di:waypoint x="750" y="310" />
+        <di:waypoint x="860" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10t3rad_di" bpmnElement="Flow_10t3rad" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="660" y="350" />
+        <di:waypoint x="725" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ubk5aa_di" bpmnElement="Flow_0ubk5aa" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="910" y="270" />
+        <di:waypoint x="910" y="250" />
+        <di:waypoint x="610" y="250" />
+        <di:waypoint x="610" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03up0om_di" bpmnElement="Flow_03up0om" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="228" y="350" />
+        <di:waypoint x="280" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="192" y="332" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="198" y="308" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w3dseh_di" bpmnElement="Activity_1f6hbw9" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="280" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02cwc79_di" bpmnElement="Activity_1v4m0z6" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="860" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0uzkj85_di" bpmnElement="Event_0tsr3ly" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="892" y="382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="893" y="425" width="35" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ipvtjq_di" bpmnElement="Event_0wnvmsg" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="452" y="332" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="438" y="375" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06w88an_di" bpmnElement="Activity_00efhkc" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="560" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_19pk1o9_di" bpmnElement="Gateway_19pk1o9" isMarkerVisible="true" bioc:stroke="#f9c000" bioc:fill="#fdecb3" color:background-color="#fdecb3" color:border-color="#f9c000">
+        <dc:Bounds x="725" y="325" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_0sne38g_di" bpmnElement="Participant_0sne38g" isHorizontal="true" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="132" y="510" width="978" height="240" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0mxn0ap_di" bpmnElement="Flow_0mxn0ap" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="408" y="660" />
+        <di:waypoint x="429" y="660" />
+        <di:waypoint x="429" y="650" />
+        <di:waypoint x="450" y="650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ff5yja_di" bpmnElement="Flow_1ff5yja" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="550" y="620" />
+        <di:waypoint x="612" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_158m4m4_di" bpmnElement="Flow_158m4m4" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="390" y="620" />
+        <di:waypoint x="450" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fnw8c8_di" bpmnElement="Flow_0fnw8c8" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="238" y="620" />
+        <di:waypoint x="290" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0riyi95_di" bpmnElement="Activity_1b6dwlt" isExpanded="true" bioc:stroke="#6097fc" bioc:fill="#e4ebf8" color:background-color="#e4ebf8" color:border-color="#6097fc">
+        <dc:Bounds x="660" y="560" width="350" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1dgs9dy_di" bpmnElement="Flow_1dgs9dy" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="900" y="610" />
+        <di:waypoint x="952" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ew4f9h_di" bpmnElement="Flow_0ew4f9h" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="748" y="610" />
+        <di:waypoint x="800" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0xjbfbu_di" bpmnElement="Activity_0xjbfbu" bioc:stroke="#5eaeda" bioc:fill="#cfe7f4" color:background-color="#cfe7f4" color:border-color="#5eaeda">
+        <dc:Bounds x="800" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1d2brhy_di" bpmnElement="Event_1d2brhy" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="952" y="592" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="942" y="635" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1awaigm_di" bpmnElement="Event_10pyu0j" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="712" y="592" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="700" y="635" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0goyywh_di" bpmnElement="Activity_1wqbr87" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="450" y="580" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1e14s3b_di" bpmnElement="Activity_10o0vqf" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="290" y="580" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1sq0lzb_di" bpmnElement="Event_1sq0lzb" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="612" y="602" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="620" y="578" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0v1qtw5_di" bpmnElement="Event_0v1qtw5" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="202" y="602" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="208" y="645" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15wp14g_di" bpmnElement="Event_1981uw8" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="372" y="642" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1ribjg7_di" bpmnElement="Participant_1ribjg7" isHorizontal="true" bioc:stroke="#c8c8c8" color:border-color="#c8c8c8">
+        <dc:Bounds x="132" y="780" width="978" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_12wt0bj_di" bpmnElement="Flow_12wt0bj" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="578" y="900" />
+        <di:waypoint x="640" y="900" />
+        <di:waypoint x="640" y="878" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09yzaim_di" bpmnElement="Flow_09yzaim" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="418" y="900" />
+        <di:waypoint x="439" y="900" />
+        <di:waypoint x="439" y="890" />
+        <di:waypoint x="460" y="890" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fdyxwd_di" bpmnElement="Flow_0fdyxwd" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="560" y="860" />
+        <di:waypoint x="622" y="860" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bx9mei_di" bpmnElement="Flow_1bx9mei" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="400" y="860" />
+        <di:waypoint x="460" y="860" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lmfcpn_di" bpmnElement="Flow_0lmfcpn" bioc:stroke="#8095b3" color:border-color="#8095b3">
+        <di:waypoint x="238" y="860" />
+        <di:waypoint x="300" y="860" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0nv6oms_di" bpmnElement="Event_0nv6oms" bioc:stroke="#ff7043" bioc:fill="#ffd4c7" color:background-color="#ffd4c7" color:border-color="#ff7043">
+        <dc:Bounds x="622" y="842" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="630" y="823" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ngs6th_di" bpmnElement="Activity_1jaiyz5" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="300" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0r84kl4_di" bpmnElement="Activity_1f6wkvn" bioc:stroke="#3fbdd6" bioc:fill="#c5ebf3" color:background-color="#c5ebf3" color:border-color="#3fbdd6">
+        <dc:Bounds x="460" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1e7rgui_di" bpmnElement="Event_1e7rgui" bioc:stroke="#55c041" bioc:fill="#ccecc6" color:background-color="#ccecc6" color:border-color="#55c041">
+        <dc:Bounds x="202" y="842" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="208" y="885" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_18pivt1_di" bpmnElement="Event_15zgsbh" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="542" y="882" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_041qgh5_di" bpmnElement="Event_0vhzmqq" bioc:stroke="#ff9800" bioc:fill="#ffe0b3" color:background-color="#ffe0b3" color:border-color="#ff9800">
+        <dc:Bounds x="382" y="882" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
+]]></diagramXml>
+
+    <versionTag></versionTag>
+
+    <previousVersion></previousVersion>
+
+    <description></description>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </wkf-model>
+
+
+</wkf-models>

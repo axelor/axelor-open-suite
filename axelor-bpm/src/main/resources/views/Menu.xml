@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <menuitem title="BPM Studio" name="menu-wkf-bpm-studio" parent="app-builder-root"
+    action="action-wkf-view-open-editor" order="19"/>
+
+  <menuitem title="BPM Manager" name="menu-wkf-bpm-manager" parent="app-builder-root"
+    action="action.wkf.bpm.manager" order="20"/>
+  <action-view name="action.wkf.bpm.manager" title="BPM Manager"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="bpm-manager-dashboard-form"/>
+  </action-view>
+
+  <menuitem title="BPM Config" name="menu-wkf-root" parent="app-builder-root" order="21"/>
+
+  <menuitem title="BPM Model" name="menu-wkf-model" parent="menu-wkf-root"
+    action="wkf.model.all" order="5"/>
+
+  <action-view name="wkf.model.all" title="BPM Model"
+    model="com.axelor.apps.bpm.db.WkfModel">
+    <view type="grid" name="wkf-model-grid"/>
+    <view type="form" name="wkf-model-form"/>
+    <domain>self.isActive is true</domain>
+    <context name="__check_version" expr="eval: true"/>
+  </action-view>
+
+  <menuitem title="BPM Instance" name="menu-wkf-instance" parent="menu-wkf-root"
+    action="wkf.instance.all" order="10"/>
+
+  <action-view name="wkf.instance.all" title="BPM Instance"
+    model="com.axelor.apps.bpm.db.WkfInstance">
+    <view type="grid" name="wkf-instance-grid"/>
+    <view type="form" name="wkf-instance-form"/>
+  </action-view>
+
+  <menuitem title="DMN Models" name="menu-wkf-dmn-model" parent="menu-wkf-root"
+    action="wkf.dmn.model.all" order="15"/>
+
+  <action-view name="wkf.dmn.model.all" title="DMN Models"
+    model="com.axelor.apps.bpm.db.WkfDmnModel">
+    <view type="grid" name="wkf-dmn-model-grid"/>
+    <view type="form" name="wkf-dmn-model-form"/>
+  </action-view>
+
+  <menuitem title="BAML Models" name="menu-baml-model" parent="menu-wkf-root"
+    action="baml.model.all" order="20"/>
+
+  <action-view name="baml.model.all" title="BAML Models"
+    model="com.axelor.apps.bpm.db.BamlModel">
+    <view type="grid" name="baml-model-grid"/>
+    <view type="form" name="baml-model-form"/>
+  </action-view>
+
+</object-views>

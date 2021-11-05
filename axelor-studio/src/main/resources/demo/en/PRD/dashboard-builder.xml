@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dashboard-builders>
+
+
+  <dashboard-builder>
+
+    <name>product-dashboard</name>
+
+    <title>Product dashboard</title>
+
+    <model></model>
+
+    <appBuilder>PRD</appBuilder>
+
+  </dashboard-builder>
+
+
+</dashboard-builders>

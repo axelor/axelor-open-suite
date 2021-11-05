@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<%	
+	query = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.AppBuilderRepository' as Class).all()
+
+	if(__ids__ != null) {
+		query = query.filter('self.id in ?1',__ids__)
+	}
+	
+	appBuilders = ""
+	query.fetch().each({ 
+		depends = ""
+		it.dependsOnSet?.each({ depend -> depends +="\n\t\t\t<depend code=\"${depend.code}\"/> " })
+		
+		appBuilders += """\n\t<app-builder>
+		<name>${it.name}</name>
+		<code>${it.code}</code>
+		<description>${it.description}</description>
+		<depends>$depends</depends>
+		<image name=\"${it.image?.fileName}\">${com.axelor.studio.service.ExportService.getImage(it.image)}</image>
+		<sequence>${it.sequence}</sequence>
+		<modules>${it.modules}</modules>
+		\n\t</app-builder>"""
+	})
+	
+	if (!appBuilders.isEmpty()) {
+		appBuilders = """<app-builders>\n""" +  appBuilders + """\n</app-builders>"""
+	}
+	
+	out << """$appBuilders"""
+%>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+
+  <input file="menu-builder.xml" root="menu-builders">
+
+    <bind node="menu-builder" type="com.axelor.studio.db.MenuBuilder"
+      search="self.xmlId = :xmlId" call="com.axelor.studio.service.ImportService:importMenuBuilder"
+      update="true">
+      <bind node="name" to="name"/>
+      <bind node="xmlId" to="xmlId"/>
+      <bind node="title" to="title"/>
+      <bind node="icon" to="icon"/>
+      <bind node="iconBackground" to="iconBackground"/>
+      <bind node="order" to="order"/>
+      <bind node="tag" to="tag"/>
+      <bind node="tagCount" to="tagCount"/>
+      <bind node="tagStyle" to="tagStyle"/>
+      <bind node="top" to="top"/>
+      <bind node="left" to="left"/>
+      <bind node="mobile" to="mobile"/>
+      <bind node="hidden" to="hidden"/>
+      <bind node="link" to="link"/>
+      <bind node="conditionToCheck" to="conditionToCheck"/>
+      <bind node="moduleToCheck" to="moduleToCheck"/>
+      <bind node="showAction" to="showAction"/>
+      <bind node="parentMenu" to="parentMenu" search="self.name = :parentMenu"/>
+      <bind node="actionBuilder" to="actionBuilder" search="self.name = :actionBuilder"/>
+      <bind node="groups/group" to="groups" search="self.code = :groupCode" update="true"
+        create="false">
+        <bind node="text()" to="code" alias="groupCode"/>
+      </bind>
+      <bind node="roles/role" to="roles" search="self.name = :roleName" update="true"
+        create="false">
+        <bind node="text()" to="name" alias="roleName"/>
+      </bind>
+      <bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
+    </bind>
+
+  </input>
+
+</xml-inputs>
