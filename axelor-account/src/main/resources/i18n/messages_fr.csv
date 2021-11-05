@@ -1154,7 +1154,7 @@
 "Error in move deleting or archiving, please check the log","Erreur dans la suppression ou l'archivage d'un mouvement, veuillez vérifier le journal.",,
 "Error in move generation","Erreur lors de la génération de l'écriture",,
 "Error on uploading printed invoice:","Erreur lors de l'enregistrement de l'impression de la facture :",,
-"Error or anomaly detected making it impossible to proceed in the move accounting operation. Please check the logs.","Erreur ou anomalie détectée rendant impossible de continuer le processus de comptabilisation. Veuillez vérifier les logs.",,
+"Error or anomaly detected making it impossible to proceed in the move accounting operation. Please check the logs. Move generating error : %s","Erreur ou anomalie détectée rendant impossible de continuer le processus de comptabilisation. Veuillez vérifier les logs. Écritures générant une erreur : %s",,
 "Excel","Excel",,
 "Exclude from DAS2 report","Exclure du rapport DAS2",,
 "Expected amount","Montant prévu",,

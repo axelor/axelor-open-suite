@@ -156,13 +156,14 @@ public class MoveController {
                 .order("date")
                 .fetch();
         if (!moveList.isEmpty()) {
-          boolean error = Beans.get(MoveValidateService.class).accountingMultiple(moveList);
-          if (error) {
-            response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_NOT_OK));
+          String error = Beans.get(MoveValidateService.class).accountingMultiple(moveList);
+          if (error.length() > 0) {
+            response.setFlash(
+                String.format(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
           } else {
             response.setFlash(I18n.get(IExceptionMessage.MOVE_ACCOUNTING_OK));
-            response.setReload(true);
           }
+          response.setReload(true);
         } else {
           response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
         }

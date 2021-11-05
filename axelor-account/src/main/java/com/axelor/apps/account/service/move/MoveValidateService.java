@@ -381,23 +381,27 @@ public class MoveValidateService {
     }
   }
 
-  public boolean accountingMultiple(List<? extends Move> moveList) {
-    boolean error = false;
+  public String accountingMultiple(List<? extends Move> moveList) {
+    String errors = "";
     if (moveList == null) {
-      return error;
+      return errors;
     }
-    try {
-      for (Move move : moveList) {
+    for (Move move : moveList) {
 
+      try {
         accounting(moveRepository.find(move.getId()));
         JPA.clear();
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        if (errors.length() > 0) {
+          errors = errors.concat(", ");
+        }
+        errors = errors.concat(move.getReference());
+        JPA.clear();
       }
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      error = true;
-      JPA.clear();
     }
-    return error;
+
+    return errors;
   }
 
   @Transactional(rollbackOn = {Exception.class})
