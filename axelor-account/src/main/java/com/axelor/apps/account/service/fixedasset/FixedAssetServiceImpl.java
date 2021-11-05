@@ -30,6 +30,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AnalyticFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -186,6 +188,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       return FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION;
     } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
       return FixedAssetRepository.TRANSFERED_REASON_CESSION;
+    } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_ONGOING_CESSION) {
+      return FixedAssetRepository.TRANSFERED_REASON_ONGOING_CESSION;
     }
     return FixedAssetRepository.TRANSFERED_REASON_SCRAPPING;
   }
@@ -255,10 +259,16 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           .getDepreciationPlanSelect()
           .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
         fixedAsset = fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
+      } else {
+        fixedAsset.setNumberOfDepreciation(fixedAsset.getNumberOfDepreciation() - 1);
       }
 
       if (fixedAsset.getIsEqualToFiscalDepreciation()) {
         fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
+      } else if (fixedAsset
+          .getDepreciationPlanSelect()
+          .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+        fixedAsset.setAccountingValue(BigDecimal.ZERO);
       } else {
         fixedAsset.setAccountingValue(
             fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
@@ -573,5 +583,33 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAssetDerogatoryLineService.multiplyLinesBy(fixedAssetDerogatoryLineList, prorata);
       }
     }
+  }
+
+  @Override
+  public void onChangeDepreciationPlan(FixedAsset fixedAsset) {
+    FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+    if (ObjectUtils.isEmpty(fixedAssetCategory)
+        || StringUtils.isEmpty(fixedAsset.getDepreciationPlanSelect())
+        || fixedAsset
+            .getDepreciationPlanSelect()
+            .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+      return;
+    }
+
+    fixedAsset.setJournal(fixedAssetCategory.getJournal());
+    fixedAsset.setComputationMethodSelect(fixedAssetCategory.getComputationMethodSelect());
+    fixedAsset.setDegressiveCoef(fixedAssetCategory.getDegressiveCoef());
+    fixedAsset.setPeriodicityInMonth(fixedAssetCategory.getPeriodicityInMonth());
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+      fixedAsset.setNumberOfDepreciation(fixedAssetCategory.getNumberOfDepreciation() - 1);
+    } else {
+      fixedAsset.setNumberOfDepreciation(fixedAssetCategory.getNumberOfDepreciation());
+    }
+    fixedAsset.setDurationInMonth(fixedAssetCategory.getDurationInMonth());
+    fixedAsset.setAnalyticDistributionTemplate(
+        fixedAssetCategory.getAnalyticDistributionTemplate());
+    fixedAsset.setFiscalPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
   }
 }
