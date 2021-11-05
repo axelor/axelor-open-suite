@@ -124,6 +124,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
@@ -144,6 +146,8 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelService;
@@ -200,6 +204,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
@@ -352,6 +358,10 @@ public class AccountModule extends AxelorModule {
 
     bind(DebtRecoveryRepository.class).to(DebtRecoveryAccountRepository.class);
 
+    bind(InvoiceTermService.class).to(InvoiceTermServiceImpl.class);
+
+    bind(InvoiceTermPaymentService.class).to(InvoiceTermPaymentServiceImpl.class);
+
     bind(AnalyticRulesRepository.class).to(AccountAnalyticRulesRepository.class);
 
     bind(AnalyticDistributionTemplateService.class)
@@ -413,5 +423,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveSimulateService.class).to(MoveSimulateServiceImpl.class);
 
     bind(AnalyticDistributionLineService.class).to(AnalyticDistributionLineServiceImpl.class);
+
+    bind(FixedAssetCategoryService.class).to(FixedAssetCategoryServiceImpl.class);
   }
 }

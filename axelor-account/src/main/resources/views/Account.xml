@@ -42,8 +42,9 @@
   </tree>
 
   <form name="account-form" title="Accounting.Account"
-    model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-record-new"
-    onLoad="action-account-method-compute-balance"
+    model="com.axelor.apps.account.db.Account" width="large"
+    onNew="action-account-record-new,action-attrs-account-account-readonly-if-account-in-move-line"
+    onLoad="action-account-method-compute-balance,action-attrs-account-account-readonly-if-account-in-move-line"
     onSave="action-account-method-check-if-code-already-exist-for-company,action-on-change-distribution-template-account">
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8">
@@ -65,6 +66,8 @@
           domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
+        <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
+          showIf="useForPartnerBalance"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
@@ -122,7 +125,8 @@
   </form>
 
   <form name="account-info-form" title="Accounting.Account"
-    model="com.axelor.apps.account.db.Account" width="large">
+    model="com.axelor.apps.account.db.Account" width="large"
+    onLoad="action-attrs-account-account-readonly-if-account-in-move-line">
     <panel name="mainPanel" title="Account details" readonly="true">
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
       <field name="name" colSpan="9" css="bold"/>
@@ -255,5 +259,16 @@
   <action-method name="action-on-change-distribution-template-account">
     <call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
   </action-method>
+
+  <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
+    <attribute name="readonly" for="name"
+      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="code"
+      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="reconcileOk"
+      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
+    <attribute name="readonly" for="analyticDistributionAuthorized"
+      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
+  </action-attrs>
 
 </object-views>

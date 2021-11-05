@@ -38,9 +38,9 @@
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"
       required="true"/>
     <many-to-one name="chargeAccount" ref="com.axelor.apps.account.db.Account"
-      title="Charge account" required="true"/>
+      title="Charge account"/>
     <many-to-one name="depreciationAccount" ref="com.axelor.apps.account.db.Account"
-      title="Depreciation account" required="true"/>
+      title="Depreciation account"/>
 
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
@@ -67,12 +67,20 @@
     <many-to-one ref="com.axelor.apps.account.db.Account" name="ifrsChargeAccount"
       title="IFRS Charge Account"/>
 
+
     <extra-code><![CDATA[
 
 	   	// Reference Date for first depreciation
 		public static final int REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION = 1;
 		public static final int REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE = 2;
 
+        // Depreciation plan select
+
+        public static final String DEPRECIATION_PLAN_SELECT_NONE = "0";
+        public static final String DEPRECIATION_PLAN_SELECT_FISCAL= "1";
+        public static final String DEPRECIATION_PLAN_SELECT_ECONOMIC = "2";
+        public static final String DEPRECIATION_PLAN_SELECT_DEROGATION = "3";
+        public static final String DEPRECIATION_PLAN_SELECT_IFRS = "4";
 	]]></extra-code>
   </entity>
 
