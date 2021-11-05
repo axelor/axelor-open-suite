@@ -145,7 +145,7 @@
 
 		public static final int DISPOSABLE_TYPE_SELECT_SCRAPPING = 1;
 		public static final int DISPOSABLE_TYPE_SELECT_CESSION = 2;
-
+        public static final int DISPOSABLE_TYPE_SELECT_ONGOING_CESSION = 3;
 		public static final int DISPOSABLE_QTY_SELECT_TOTAL = 1;
 		public static final int DISPOSABLE_QTY_SELECT_PARTIAL = 2;
 
@@ -153,7 +153,7 @@
 		public static final int TRANSFERED_REASON_SCRAPPING = 1;
 		public static final int TRANSFERED_REASON_CESSION = 2;
 		public static final int TRANSFERED_REASON_PARTIAL_CESSION = 3;
-
+        public static final int TRANSFERED_REASON_ONGOING_CESSION = 4;
 		//Origin select
 		public static final int ORIGINAL_SELECT_MANUAL = 1;
 		public static final int ORIGINAL_SELECT_INVOICE = 2;
