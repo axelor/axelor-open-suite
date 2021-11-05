@@ -42,7 +42,7 @@
       title="Activate bar code generation for fixed asset" default="false"/>
     <boolean name="editFixedAssetBarcodeType"
       title="Specify the barcode type by fixed asset" default="false"/>
-    <many-to-one name="fixedAssetBarcodeTypeConfig" title="Barcode type to use"
+    <many-to-one name="fixedAssetBarcodeTypeConfig" title="Fixed asset barcode type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 
     <extra-code><![CDATA[
