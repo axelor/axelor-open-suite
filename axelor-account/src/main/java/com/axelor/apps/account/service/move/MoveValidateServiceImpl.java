@@ -222,7 +222,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     Boolean dayBookMode =
-        accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();
+        accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
+            && move.getJournal().getAllowAccountingDaybook();
 
     if (!dayBookMode || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
       moveSequenceService.setSequence(move);
