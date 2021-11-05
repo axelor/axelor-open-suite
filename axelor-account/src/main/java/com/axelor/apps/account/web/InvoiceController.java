@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -45,6 +46,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -69,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -227,6 +230,105 @@ public class InvoiceController {
     Beans.get(InvoiceService.class).cancel(invoice);
     response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
     response.setReload(true);
+  }
+
+  public void validateInvoiceTermsBeforeSave(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+
+      if (invoiceTermService.checkInvoiceTermCreationConditions(invoice)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_CREATION_PROHIBITED));
+        return;
+      }
+      if (invoiceTermService.checkIfThereIsDeletedHoldbackInvoiceTerms(invoice)) {
+        response.setError(
+            I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED));
+        return;
+      }
+      if (invoiceTermService.checkInvoiceTermDeletionConditions(invoice)) {
+        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_DELETION_PROHIBITED));
+        return;
+      }
+      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        if (!invoiceTermService.checkInvoiceTermsSum(invoice)) {
+          response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_AMOUNT_MISMATCH));
+          return;
+        }
+        if (!invoiceTermService.checkInvoiceTermsPercentageSum(invoice)) {
+          response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH));
+          return;
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice.getPaymentCondition() == null) {
+        return;
+      }
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        return;
+      }
+      invoice = invoiceTermService.computeInvoiceTerms(invoice);
+      response.setValues(invoice);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeInvoiceTermsDueDates(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        return;
+      }
+      if (InvoiceToolService.isPurchase(invoice)) {
+        if (invoice.getOriginDate() != null) {
+          invoice = invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
+        } else {
+          invoice =
+              invoiceTermService.setDueDates(
+                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
+        }
+      } else {
+        if (invoice.getInvoiceDate() != null) {
+          invoice = invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+        } else {
+          invoice =
+              invoiceTermService.setDueDates(
+                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
+        }
+      }
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateInvoiceTermsFinancialDiscount(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        return;
+      }
+      response.setValue("invoiceTermList", invoiceTermService.updateFinancialDiscount(invoice));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**

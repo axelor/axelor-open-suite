@@ -35,6 +35,7 @@
     <string name="compatiblePartnerTypeSelect" title="Compatible partner"
       selection="account.journal.compatible.partner.type.select"/>
     <boolean name="authorizeSimulatedMove" title="Authorize simulated move?"/>
+    <boolean name="allowAccountingDaybook" title="Allow accounting daybook"/>
 
     <unique-constraint columns="company,code,name"/>
 
