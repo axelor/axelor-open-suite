@@ -1,3 +1,0 @@
----
-title: "Contract Version: Fix NPE on contract version when we push a new version to waiting status and to ongoing status."
-type: fix

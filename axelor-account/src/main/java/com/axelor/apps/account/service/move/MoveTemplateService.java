@@ -71,6 +71,7 @@ public class MoveTemplateService {
       MoveLineCreateService moveLineCreateService,
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
+      TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -144,6 +145,7 @@ public class MoveTemplateService {
                 moveTemplate.getJournal().getCompany(),
                 null,
                 partner,
+                moveDate,
                 moveDate,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
@@ -234,6 +236,7 @@ public class MoveTemplateService {
                 moveTemplate.getJournal().getCompany(),
                 null,
                 null,
+                moveDate,
                 moveDate,
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,

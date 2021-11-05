@@ -186,6 +186,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             company.getCurrency(),
             partner,
             moveDate,
+            originDate,
             null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             functionalOriginSelect,

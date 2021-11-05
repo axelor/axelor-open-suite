@@ -95,23 +95,6 @@ public interface ITranslation {
   public static final String INVOICE_DELIVERY_ADDRESS = /*$$(*/ "Invoice.deliveryAddress"; /*)*/
   public static final String INVOICE_ORIGINAL_INVOICE = /*$$(*/ "Invoice.originalInvoice"; /*)*/
   public static final String INVOICE_SHIPPING_DATE = /*$$(*/ "Invoice.shippingDate"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_NAME = /*$$(*/ "Invoice.invoiceTermName"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_AMOUNT = /*$$(*/
-      "Invoice.invoiceTermAmount"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_AMOUNT_REMAINING = /*$$(*/
-      "Invoice.invoiceTermAmountRemaining"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_DUE_DATE = /*$$(*/
-      "Invoice.invoiceTermDueDate"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_ESTIMATED_PAYMENT_DATE = /*$$(*/
-      "Invoice.invoiceTermEstimatedPaymentDate"; /*)*/
-  public static final String INVOICE_INVOICE_TERMS_FINANCIAL_DISCOUNT =
-      "Invoice.invoiceTermsFinancialDiscount";
-  public static final String INVOICE_INVOICE_TERM_PERCENTAGE = /*$$(*/
-      "Invoice.invoiceTermPercentage"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_HOLD_BACK = /*$$(*/
-      "Invoice.invoiceTermHoldBack"; /*)*/
-  public static final String INVOICE_INVOICE_TERM_PAID = /*$$(*/ "Invoice.invoiceTermPaid"; /*)*/
-  public static final String INVOICE_INVOICE_TERMS = /*$$(*/ "Invoice.invoiceTerms"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
@@ -299,8 +282,12 @@ public interface ITranslation {
       "AccountingReportType2.debit"; /*)*/
   public static final String ACCOUNTING_REPORT_2_CREDIT = /*$$(*/
       "AccountingReportType2.credit"; /*)*/
-  public static final String ACCOUNTING_REPORT_2_GENERAL_BALANCE = /*$$(*/
-      "AccountingReportType2.generalBalance"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_VARIATION = /*$$(*/
+      "AccountingReportType2.variation"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_N = /*$$(*/ "AccountingReportType2.N"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_N_1 = /*$$(*/ "AccountingReportType2.N-1"; /*)*/
+  public static final String ACCOUNTING_REPORT_2_VALUE = /*$$(*/
+      "AccountingReportType2.value"; /*)*/
 
   public static final String ACCOUNTING_REPORT_6_TITLE = /*$$(*/
       "AccountingReportType6.title"; /*)*/

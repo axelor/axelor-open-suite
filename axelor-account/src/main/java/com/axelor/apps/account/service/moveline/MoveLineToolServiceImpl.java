@@ -5,10 +5,13 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -248,7 +251,10 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     TaxLine taxLine = null;
     LocalDate date = moveLine.getDate();
     if (date == null) {
-      date = moveLine.getDueDate();
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.MOVE_LINE_MISSING_DATE));
     }
     if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
       taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
@@ -270,11 +276,9 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     } else {
       moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
-    if (!move.getCurrency().equals(move.getCompany().getCurrency())) {
-      BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
-      moveLine.setCurrencyAmount(
-          unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
-    }
+    BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
+    moveLine.setCurrencyAmount(
+        unratedAmount.divide(moveLine.getCurrencyRate(), MathContext.DECIMAL128));
     return moveLine;
   }
 }

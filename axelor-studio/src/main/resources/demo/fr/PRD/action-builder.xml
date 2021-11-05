@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="utf-8"?>
+<action-builders>
+
+
+  <action-builder>
+
+    <name>menu-json-model-ProductCategory</name>
+
+    <xmlId>menu-json-model-ProductCategory</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>ProductCategory</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Catégorie de produit</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-ProductCategory-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-ProductCategory-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>menu-json-model-Product</name>
+
+    <xmlId>menu-json-model-Product</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>Product</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Produits</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-Product-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-Product-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>menu-json-model-ProductOrderLine</name>
+
+    <xmlId>menu-json-model-ProductOrderLine</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>ProductOrderLine</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Ligne de commande produit</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-ProductOrderLine-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-ProductOrderLine-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>menu-json-model-ProductOrder</name>
+
+    <xmlId>menu-json-model-ProductOrder</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model>ProductOrder</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Commande produit</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>grid</viewType>
+
+        <viewName>custom-model-ProductOrder-grid</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+      <view>
+
+        <viewType>form</viewType>
+
+        <viewName>custom-model-ProductOrder-form</viewName>
+
+        <sequence>0</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-create-invoice-from-timesheet</name>
+
+    <xmlId>action-create-invoice-from-timesheet</xmlId>
+
+    <typeSelect>0</typeSelect>
+
+    <model>com.axelor.apps.hr.db.Timesheet</model>
+
+    <targetModel>com.axelor.apps.account.db.Invoice</targetModel>
+
+    <lines>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>partner</metaField>
+        <valueJson></valueJson>
+        <valueField>company</valueField>
+        <value>$.company.partner</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>partner</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>company</metaField>
+        <valueJson></valueJson>
+        <valueField>company</valueField>
+        <value>$.company</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>company</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>currency</metaField>
+        <valueJson></valueJson>
+        <valueField>company</valueField>
+        <value>$.company.currency</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>currency</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>operationTypeSelect</metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>3</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>operationTypeSelect</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>paymentCondition</metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value></value>
+        <conditionText></conditionText>
+        <filter>self.code = '15D_EOM'</filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>paymentCondition</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>paymentMode</metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value></value>
+        <conditionText></conditionText>
+        <filter>self.code = 'OUT_WT'</filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>paymentMode</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>$.timesheetLineList.sum($.hoursDuration*$$.user.employee.hourlyRate)</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>total</name>
+        <dummy>true</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>exTaxTotal</metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>_$.total</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>exTaxTotal</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>inTaxTotal</metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>_$.total</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>inTaxTotal</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>com.axelor.apps.account.db.Invoice</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>invoiceLineList</metaField>
+        <valueJson></valueJson>
+        <valueField>timesheetLineList</valueField>
+        <value>$.timesheetLineList</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>invoiceLineList</name>
+        <dummy>false</dummy>
+        <subLines>
+          <line>
+            <target>InvoiceLine</target>
+            <source>com.axelor.apps.hr.db.Timesheet</source>
+            <metaJsonField></metaJsonField>
+            <metaField>exTaxTotal</metaField>
+            <valueJson></valueJson>
+            <valueField></valueField>
+            <value>$.hoursDuration*$$.user.employee.hourlyRate</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>exTaxTotal</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+          <line>
+            <target>InvoiceLine</target>
+            <source>com.axelor.apps.hr.db.Timesheet</source>
+            <metaJsonField></metaJsonField>
+            <metaField>price</metaField>
+            <valueJson></valueJson>
+            <valueField></valueField>
+            <value>$$.user.employee.hourlyRate</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>price</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+          <line>
+            <target>InvoiceLine</target>
+            <source>com.axelor.apps.hr.db.Timesheet</source>
+            <metaJsonField></metaJsonField>
+            <metaField>product</metaField>
+            <valueJson></valueJson>
+            <valueField>product</valueField>
+            <value>$.product</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>product</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+          <line>
+            <target>InvoiceLine</target>
+            <source>com.axelor.apps.hr.db.Timesheet</source>
+            <metaJsonField></metaJsonField>
+            <metaField>productName</metaField>
+            <valueJson></valueJson>
+            <valueField>product</valueField>
+            <value>$.product.name</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>productName</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+          <line>
+            <target>InvoiceLine</target>
+            <source>com.axelor.apps.hr.db.Timesheet</source>
+            <metaJsonField></metaJsonField>
+            <metaField>qty</metaField>
+            <valueJson></valueJson>
+            <valueField>hoursDuration</valueField>
+            <value>$.hoursDuration</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>qty</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+          <line>
+            <target>InvoiceLine</target>
+            <source>com.axelor.apps.hr.db.Timesheet</source>
+            <metaJsonField></metaJsonField>
+            <metaField>unit</metaField>
+            <valueJson></valueJson>
+            <valueField></valueField>
+            <value></value>
+            <conditionText></conditionText>
+            <filter>self.name = 'Hour'</filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>unit</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title></title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+
+    </actionBuilderViews>
+
+    <isJson>false</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-timesheet-line-invert-to-invoice</name>
+
+    <xmlId>action-timesheet-line-invert-to-invoice</xmlId>
+
+    <typeSelect>1</typeSelect>
+
+    <model>com.axelor.apps.hr.db.Timesheet</model>
+
+    <targetModel></targetModel>
+
+    <lines>
+      <line>
+        <target>com.axelor.apps.hr.db.Timesheet</target>
+        <source>com.axelor.apps.hr.db.Timesheet</source>
+        <metaJsonField></metaJsonField>
+        <metaField>timesheetLineList</metaField>
+        <valueJson></valueJson>
+        <valueField>timesheetLineList</valueField>
+        <value>$.timesheetLineList</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>timesheetLineList</name>
+        <dummy>false</dummy>
+        <subLines>
+          <line>
+            <target>TimesheetLine</target>
+            <source>com.axelor.apps.hr.db.Timesheet</source>
+            <metaJsonField></metaJsonField>
+            <metaField>toInvoice</metaField>
+            <valueJson></valueJson>
+            <valueField>toInvoice</valueField>
+            <value>!$.toInvoice</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>toInvoice</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title></title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+
+    </actionBuilderViews>
+
+    <isJson>false</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-create-product-order-from-category</name>
+
+    <xmlId>action-create-product-order-from-category</xmlId>
+
+    <typeSelect>0</typeSelect>
+
+    <model>ProductCategory</model>
+
+    <targetModel>ProductOrder</targetModel>
+
+    <lines>
+      <line>
+        <target>ProductOrder</target>
+        <source>ProductCategory</source>
+        <metaJsonField>customer</metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value></value>
+        <conditionText></conditionText>
+        <filter>self.name = 'Axelor'</filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>customer</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>ProductOrder</target>
+        <source>ProductCategory</source>
+        <metaJsonField>status</metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>1</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>status</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>ProductOrder</target>
+        <source>ProductCategory</source>
+        <metaJsonField>total</metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>$.products.sum($.price)</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>total</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+      <line>
+        <target>ProductOrder</target>
+        <source>ProductCategory</source>
+        <metaJsonField>lines</metaJsonField>
+        <metaField></metaField>
+        <valueJson>products</valueJson>
+        <valueField></valueField>
+        <value>$.products</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>lines</name>
+        <dummy>false</dummy>
+        <subLines>
+          <line>
+            <target>ProductOrderLine</target>
+            <source>Product</source>
+            <metaJsonField>product</metaJsonField>
+            <metaField></metaField>
+            <valueJson></valueJson>
+            <valueField></valueField>
+            <value>$</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>product</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+          <line>
+            <target>ProductOrderLine</target>
+            <source>Product</source>
+            <metaJsonField>price</metaJsonField>
+            <metaField></metaField>
+            <valueJson>price</valueJson>
+            <valueField></valueField>
+            <value>$.price</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>price</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+          <line>
+            <target>ProductOrderLine</target>
+            <source>Product</source>
+            <metaJsonField>qty</metaJsonField>
+            <metaField></metaField>
+            <valueJson></valueJson>
+            <valueField></valueField>
+            <value>1</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>qty</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+          <line>
+            <target>ProductOrderLine</target>
+            <source>Product</source>
+            <metaJsonField>total</metaJsonField>
+            <metaField></metaField>
+            <valueJson>price</valueJson>
+            <valueField></valueField>
+            <value>$.price</value>
+            <conditionText></conditionText>
+            <filter></filter>
+            <validationTypeSelect></validationTypeSelect>
+            <validationMsg></validationMsg>
+            <name>total</name>
+            <dummy>false</dummy>
+            <subLines>
+            </subLines>
+          </line>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title></title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-product-order-line-update-total</name>
+
+    <xmlId>action-product-order-line-update-total</xmlId>
+
+    <typeSelect>1</typeSelect>
+
+    <model>ProductOrderLine</model>
+
+    <targetModel>ProductOrderLine</targetModel>
+
+    <lines>
+      <line>
+        <target>ProductOrderLine</target>
+        <source>ProductOrderLine</source>
+        <metaJsonField>total</metaJsonField>
+        <metaField></metaField>
+        <valueJson></valueJson>
+        <valueField></valueField>
+        <value>$.price*$.qty</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>total</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title></title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-product-order-line-get-product-details</name>
+
+    <xmlId>action-product-order-line-get-product-details</xmlId>
+
+    <typeSelect>1</typeSelect>
+
+    <model>ProductOrderLine</model>
+
+    <targetModel>ProductOrderLine</targetModel>
+
+    <lines>
+      <line>
+        <target>ProductOrderLine</target>
+        <source>ProductOrderLine</source>
+        <metaJsonField>price</metaJsonField>
+        <metaField></metaField>
+        <valueJson>product</valueJson>
+        <valueField></valueField>
+        <value>$.product.price</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>price</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title></title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>action-product-order-update-total</name>
+
+    <xmlId>action-product-order-update-total</xmlId>
+
+    <typeSelect>1</typeSelect>
+
+    <model>ProductOrder</model>
+
+    <targetModel>ProductOrder</targetModel>
+
+    <lines>
+      <line>
+        <target>ProductOrder</target>
+        <source>ProductOrder</source>
+        <metaJsonField>total</metaJsonField>
+        <metaField></metaField>
+        <valueJson>lines</valueJson>
+        <valueField></valueField>
+        <value>$.lines.sum($.total)</value>
+        <conditionText></conditionText>
+        <filter></filter>
+        <validationTypeSelect></validationTypeSelect>
+        <validationMsg></validationMsg>
+        <name>total</name>
+        <dummy>false</dummy>
+        <subLines>
+        </subLines>
+      </line>
+
+    </lines>
+
+    <title></title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>false</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+  <action-builder>
+
+    <name>bpm-dashboard-product-dashboard</name>
+
+    <xmlId>bpm-dashboard-product-dashboard</xmlId>
+
+    <typeSelect>3</typeSelect>
+
+    <model></model>
+
+    <targetModel></targetModel>
+
+    <lines>
+
+    </lines>
+
+    <title>Tableau de bord produit</title>
+
+    <emailTemplate>
+
+    </emailTemplate>
+
+    <transactional>false</transactional>
+
+    <scriptType>0</scriptType>
+
+    <scriptText></scriptText>
+
+    <actionBuilderViews>
+      <view>
+
+        <viewType>dashboard</viewType>
+
+        <viewName>product-dashboard</viewName>
+
+        <sequence>1</sequence>
+
+      </view>
+
+    </actionBuilderViews>
+
+    <isJson>true</isJson>
+
+    <domainCondition></domainCondition>
+
+    <viewParams>
+
+    </viewParams>
+
+    <menuAction>true</menuAction>
+
+    <appBuilder>PRD</appBuilder>
+
+  </action-builder>
+
+
+</action-builders>

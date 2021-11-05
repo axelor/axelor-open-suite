@@ -50,5 +50,4 @@
 	<action-method name="action-method-period-show-buttons">
 		<call class="com.axelor.apps.account.web.PeriodController" method="showButtons"/>
 	</action-method>
-	
 </object-views>

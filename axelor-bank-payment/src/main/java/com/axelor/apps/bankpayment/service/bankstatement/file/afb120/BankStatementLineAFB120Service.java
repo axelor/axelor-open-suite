@@ -44,7 +44,7 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
   @Inject
   public BankStatementLineAFB120Service(
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
-    super();
+    super(bankPaymentBankStatementLineAFB120Repository);
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
   }
@@ -146,11 +146,10 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
       String extention)
       throws AxelorException {
     String reportName = IReport.BANK_STATEMENT_LINES_AFB120;
-    ;
     return ReportFactory.createReport(
             reportName, initialLine.getBankStatement().getName() + "-${date}")
         .addParam("InitialLineId", initialLine.getId())
-        .addParam("FinalLineId", initialLine.getId())
+        .addParam("FinalLineId", finalLine.getId())
         .addParam("FromDate", fromDate)
         .addParam("ToDate", toDate)
         .addParam("BankDetails", bankDetails)

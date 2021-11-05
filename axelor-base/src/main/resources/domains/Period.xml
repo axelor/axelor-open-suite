@@ -6,10 +6,11 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Period" lang="java" cacheable="true">
-  
+
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code"/>
-    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year" required="true"/>
+    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year"
+      required="true"/>
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
     <integer name="statusSelect" title="Status" readonly="true" selection="base.period.status.select" default="1"/>
@@ -18,14 +19,13 @@
     <date name="temporarilyCloseDate" title="Temporarily closure date"/>
   
   	<extra-code><![CDATA[
-	
 	   	// STATUS SELECT
 		public static final int STATUS_OPENED = 1;
 		public static final int STATUS_CLOSED = 2;
 		public static final int STATUS_ADJUSTING = 3;
 		public static final int STATUS_TEMPORARILY_CLOSED = 4;
 
-	]]></extra-code>   
+	]]></extra-code>
   </entity>
 
 </domain-models>
