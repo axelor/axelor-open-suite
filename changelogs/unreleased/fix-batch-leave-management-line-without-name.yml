@@ -1,3 +1,0 @@
----
-title: "BatchLeaveManagement: Fix an issue where created leave lines had an empty name."
-type: fix

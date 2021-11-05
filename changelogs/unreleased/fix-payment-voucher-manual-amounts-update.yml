@@ -1,3 +1,0 @@
----
-title: "PaymentVoucher: Fix remaining amount update when updating amount in imputation lines."
-type: fix
