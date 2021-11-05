@@ -182,13 +182,12 @@
           canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid"
           domain="self.company = :company"/>
       </panel>
-      <panel if="__config__.app.getApp('account').getActivateSerialNumberBarcodeGeneration()"
+      <panel if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"
         name="barcodePanel" title="Barcode" readonlyIf="barcode != null" colspan="12">
         <field name="serialNumber" readonlyIf="barcode != null"/>
         <field name="barcodeTypeConfig" colspan="4"
-          if="__config__.app.getApp('account').getEditSerialNumberBarcodeType()"/>
-        <field
-          if="__config__.app.getApp('account').getActivateSerialNumberBarcodeGeneration()"
+          if="__config__.app.getApp('account').getEditFixedAssetBarcodeType()"/>
+        <field if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"
           name="barcode" showTitle="false" colSpan="12" widget="image"/>
       </panel>
       <panel name="commentsPanel" title="Commentary">
@@ -661,7 +660,7 @@
     name="action-record-account-fixed-asset-set-default-serial-number-config-type"
     model="com.axelor.apps.account.db.FixedAsset">
     <field name="barcodeTypeConfig"
-      expr="eval: __config__?.app?.getApp('account')?.getSerialNumberBarcodeTypeConfig()"
-      if="__config__.app.getApp('account').getActivateSerialNumberBarcodeGeneration()"/>
+      expr="eval: __config__?.app?.getApp('account')?.getFixedAssetBarcodeTypeConfig()"
+      if="__config__.app.getApp('account').getActivateFixedAssetBarCodeGeneration()"/>
   </action-record>
 </object-views>
