@@ -10,13 +10,13 @@
     <string name="message" title="Message" large="true"/>
     <many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"/>
     <boolean name="isClosed" title="Closed" readonly="true"/>
-    
+
     <track>
       <field name="title"/>
-	  <field name="message"/>
-	  <field name="project"/>
-	  <field name="isClosed"/>
+      <field name="message"/>
+      <field name="project"/>
+      <field name="isClosed"/>
     </track>
-  </entity> 
+  </entity>
 
 </domain-models>

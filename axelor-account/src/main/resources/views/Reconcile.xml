@@ -1,94 +1,114 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-    
-	<grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
-		<field name="reconcileSeq" width="120"/>
-		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-	  <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-	  <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
-	  <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-	  <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
-	  <field name="amount" aggregate="sum"/>
-	  <field name="reconciliationDate"/>
-	  <field name="statusSelect"/>
-	</grid>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="move-line-reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
-		<field name="reconcileSeq" width="120"/>
-        <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-        <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-        <field name="amount" aggregate="sum"/>
-        <field name="reconciliationDate"/>
-        <field name="statusSelect"/>
-    </grid>
+  <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
+    <field name="reconcileSeq" width="120"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+    <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
+    <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+    <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="reconciliationDate"/>
+    <field name="statusSelect"/>
+  </grid>
 
-    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile" canDelete="statusSelect == 1" >
-        <panel name="reconcileGroupPanel" showTitle="false" colSpan="12">
-		    <panel name="companyPanel" showTitle="false" colSpan="8">
-			    <field name="company" canEdit="false"/>
-		    </panel>
-            <field name="reconcileGroup.code" showTitle="false" colSpan="4">
-                <viewer depends="reconcileGroup.code">
+  <grid name="move-line-reconcile-grid" title="Reconcile"
+    model="com.axelor.apps.account.db.Reconcile">
+    <field name="reconcileSeq" width="120"/>
+    <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+    <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="reconciliationDate"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"
+    canDelete="statusSelect == 1">
+    <panel name="reconcileGroupPanel" showTitle="false" colSpan="12">
+      <panel name="companyPanel" showTitle="false" colSpan="8">
+        <field name="company" canEdit="false"/>
+      </panel>
+      <field name="reconcileGroup.code" showTitle="false" colSpan="4">
+        <viewer depends="reconcileGroup.code">
                   <![CDATA[
                      <h3>
                          <span style="margin: 5px 0 !important; display: inline-table; line-height: initial; text-align:right; display:block; width:100%;">{{record.reconcileGroup.code}}</span>
                      </h3>
                   ]]>
-                </viewer>
-            </field>
-        </panel>
-		<panel name="mainPanel">
-			<field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-debit" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3" onSelect="action-reconcile-attrs-domain-credit" form-view="move-line-form" grid-view="move-line-grid"/>
-			<field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
-			<field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
-		</panel>
-		<panel-related field="paymentMoveLineDistributionList" grid-view="payment-move-line-distribution-grid" form-view="payment-move-line-distribution-form" readonly="true"/>
-		<panel sidebar="true" name="actionsPanel" title="Actions">
-    		<button name="reconcileBtn" title="Btn.Reconcile" showIf="statusSelect == 1" onClick="save,action-reconcile-method-reconcile"/>
-			<button name="unreconcileBtn" title="Unreconcile" showIf="statusSelect == 2"   onClick="save,action-reconcile-method-unreconcile"/>
-		</panel>
-		<panel sidebar="true" name="infoPanel" title="Info">
-			<field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
-			<field name="statusSelect"/>
-			<field name="reconciliationDate"/>
-			<field name="reconciliationCancelDate" hidden="true" showIf="statusSelect == 3"/>
-			<field name="reconcileSeq" colSpan="12" readonly="true"/>
-		</panel>
-	</form>
-   	
-   	
-	<action-attrs name="action-reconcile-attrs-domain-debit">
-		<attribute if="eval: creditMoveLine != null" name="domain" expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.partner.id = ${creditMoveLine?.partner?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="debitMoveLine"/>
-		<attribute if="eval: creditMoveLine == null" name="domain" expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="debitMoveLine"/>
-	</action-attrs>
-    
-	<action-attrs name="action-reconcile-attrs-domain-credit">
-		<attribute if="eval: debitMoveLine != null" name="domain" expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.partner.id = ${debitMoveLine?.partner?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="creditMoveLine"/>
-		<attribute if="eval: debitMoveLine == null" name="domain" expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;" for="creditMoveLine"/>
-	</action-attrs>
-    
-    <action-method name="action-reconcile-method-reconcile">
-    	<call class="com.axelor.apps.account.web.ReconcileController" method="reconcile"/>
-    </action-method>
-    
-    <action-method name="action-reconcile-method-unreconcile">
-    	<call class="com.axelor.apps.account.web.ReconcileController" method="unreconcile"/>
-    </action-method>
+        </viewer>
+      </field>
+    </panel>
+    <panel name="mainPanel">
+      <field name="debitMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3"
+        onSelect="action-reconcile-attrs-domain-debit" form-view="move-line-form"
+        grid-view="move-line-grid"/>
+      <field name="creditMoveLine" readonlyIf="statusSelect == 2 || statusSelect == 3"
+        onSelect="action-reconcile-attrs-domain-credit" form-view="move-line-form"
+        grid-view="move-line-grid"/>
+      <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
+      <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
+    </panel>
+    <panel-related field="paymentMoveLineDistributionList"
+      grid-view="payment-move-line-distribution-grid"
+      form-view="payment-move-line-distribution-form" readonly="true"/>
+    <panel sidebar="true" name="actionsPanel" title="Actions">
+      <button name="reconcileBtn" title="Btn.Reconcile" showIf="statusSelect == 1"
+        onClick="save,action-reconcile-method-reconcile"/>
+      <button name="unreconcileBtn" title="Unreconcile" showIf="statusSelect == 2"
+        onClick="save,action-reconcile-method-unreconcile"/>
+    </panel>
+    <panel sidebar="true" name="infoPanel" title="Info">
+      <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
+      <field name="statusSelect"/>
+      <field name="reconciliationDate"/>
+      <field name="reconciliationCancelDate" hidden="true" showIf="statusSelect == 3"/>
+      <field name="reconcileSeq" colSpan="12" readonly="true"/>
+    </panel>
+  </form>
 
-    <search-filters name="reconcile-filters" model="com.axelor.apps.account.db.Reconcile" title="Reconcile filters">
-    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<filter title="Draft">
-			<domain>self.statusSelect = 1</domain>
-		</filter>
-		<filter title="Confirmed">
-			<domain>self.statusSelect = 2</domain>
-		</filter>
-		<filter title="Canceled">
-			<domain>self.statusSelect = 3</domain>
-		</filter>
-	</search-filters>
-	
+
+  <action-attrs name="action-reconcile-attrs-domain-debit">
+    <attribute if="eval: creditMoveLine != null" name="domain"
+      expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.partner.id = ${creditMoveLine?.partner?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;"
+      for="debitMoveLine"/>
+    <attribute if="eval: creditMoveLine == null" name="domain"
+      expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.debit > 0.0 AND self.account.reconcileOk = 'true'&quot;"
+      for="debitMoveLine"/>
+  </action-attrs>
+
+  <action-attrs name="action-reconcile-attrs-domain-credit">
+    <attribute if="eval: debitMoveLine != null" name="domain"
+      expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.partner.id = ${debitMoveLine?.partner?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;"
+      for="creditMoveLine"/>
+    <attribute if="eval: debitMoveLine == null" name="domain"
+      expr="eval: &quot;(self.move.statusSelect = 2 OR self.move.statusSelect = 3) AND self.move.company.id = ${company?.id} AND self.credit > 0.0 AND self.account.reconcileOk = 'true'&quot;"
+      for="creditMoveLine"/>
+  </action-attrs>
+
+  <action-method name="action-reconcile-method-reconcile">
+    <call class="com.axelor.apps.account.web.ReconcileController" method="reconcile"/>
+  </action-method>
+
+  <action-method name="action-reconcile-method-unreconcile">
+    <call class="com.axelor.apps.account.web.ReconcileController" method="unreconcile"/>
+  </action-method>
+
+  <search-filters name="reconcile-filters"
+    model="com.axelor.apps.account.db.Reconcile" title="Reconcile filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <filter title="Draft">
+      <domain>self.statusSelect = 1</domain>
+    </filter>
+    <filter title="Confirmed">
+      <domain>self.statusSelect = 2</domain>
+    </filter>
+    <filter title="Canceled">
+      <domain>self.statusSelect = 3</domain>
+    </filter>
+  </search-filters>
+
 </object-views>

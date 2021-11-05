@@ -19,7 +19,14 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,18 +36,64 @@ import com.google.inject.Singleton;
 public class AnalyticDistributionLineController {
 
   public void computeAmount(ActionRequest request, ActionResponse response) {
-    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-    response.setValue(
-        "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
+    try {
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+      response.setValue(
+          "amount", Beans.get(AnalyticMoveLineService.class).computeAmount(analyticMoveLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void validateLines(ActionRequest request, ActionResponse response) {
-    AnalyticDistributionTemplate analyticDistributionTemplate =
-        request.getContext().asType(AnalyticDistributionTemplate.class);
-    if (!Beans.get(AnalyticMoveLineService.class)
-        .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
-      response.setError(
-          "The distribution is wrong, some axes percentage values are higher than 100%");
+    try {
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          request.getContext().asType(AnalyticDistributionTemplate.class);
+      if (!Beans.get(AnalyticMoveLineService.class)
+          .validateLines(analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+        response.setError(
+            I18n.get(
+                "The distribution is wrong, some axes percentage values are higher than 100%"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageNewAnalyticDistributionLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+      if (moveLine != null)
+        response.setValue(
+            "analyticJournal",
+            Beans.get(AccountConfigService.class)
+                .getAccountConfig(moveLine.getAccount().getCompany())
+                .getAnalyticJournal());
+      if (moveLine.getDate() != null) {
+        response.setValue("date", moveLine.getDate());
+      } else {
+        response.setValue(
+            "date",
+            Beans.get(AppBaseService.class).getTodayDate(moveLine.getAccount().getCompany()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+      MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+      if (analyticMoveLine != null && moveLine != null) {
+        response.setValue(
+            "amount",
+            Beans.get(MoveLineService.class).getAnalyticAmount(moveLine, analyticMoveLine));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

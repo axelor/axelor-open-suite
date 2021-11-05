@@ -6,14 +6,16 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="PaymentCondition" lang="java" cacheable="true">
-  	
-   	<string name="name" title="Name" required="true" translatable="true"/>
+
+    <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
     <boolean name="isFree" title="Free"/>
     <decimal name="advancePaymentNeeded" default="0" title="Percentage of advance payment"/>
-    <one-to-many name="paymentConditionLineList" ref="com.axelor.apps.account.db.PaymentConditionLine" mappedBy="paymentCondition" title="Payment condition lines"/>
+    <one-to-many name="paymentConditionLineList"
+      ref="com.axelor.apps.account.db.PaymentConditionLine" mappedBy="paymentCondition"
+      title="Payment condition lines"/>
 
-		<extra-code><![CDATA[
+    <extra-code><![CDATA[
 
 				// TYPE SELECT
 			public static final int TYPE_NET = 1;

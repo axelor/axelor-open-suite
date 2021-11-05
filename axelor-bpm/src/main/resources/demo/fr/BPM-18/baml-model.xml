@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<baml-models>
+
+  <baml-model>
+
+    <name>Create inventory</name>
+
+    <bamlXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<process-actions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <process-action id="Process_1" name="Create new inventory" targetModel="Inventory" sourceModel="ProductFamily">
+    <query id="Query_0hr41ft" name="Fetch stock location" target="stockLocation" expression="&#34;self.name = ?1&#34;, &#39;Main Warehouse&#39;" expressionValue="[{&#34;metaModalName&#34;:&#34;StockLocation&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;name&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;Entrepôt principal&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;STRING&#34;,&#34;field&#34;:{&#34;name&#34;:&#34;name&#34;,&#34;type&#34;:&#34;STRING&#34;,&#34;title&#34;:&#34;Name&#34;,&#34;required&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;name&#34;:&#34;name&#34;,&#34;type&#34;:&#34;STRING&#34;,&#34;title&#34;:&#34;Name&#34;,&#34;required&#34;:true}]}]}],&#34;generateWithId&#34;:false}]" model="StockLocation" returnType="SINGLE" />
+    <mapper id="Mapper_1hvh7jy" name="Create Inventory" targetField="Inventory">
+      <script>def rec = $ctx.create('Inventory')
+rec.company = $ctx.filterOne('Company','self.name = ?1','Axelor')?.getTarget()
+rec.inventoryTitle = 'Inventory from BAML'
+rec.statusSelect = 1
+rec.typeSelect = 1
+rec.stockLocation = $ctx.find('StockLocation',stockLocation?.id)?.getTarget()
+rec.productFamily = $ctx.find('ProductFamily',productFamily?.id)?.getTarget()
+return $ctx.save(rec)</script>
+      <scriptMeta>{"fields":[{"dataPath":"[0]","type":"MANY_TO_ONE","target":"Company","value":{"selected":{"value":"Axelor","targetName":"name"},"from":"none"},"name":"company","modelSubField":[]},{"dataPath":"[1]","type":"STRING","value":{"selected":{"value":"Inventory from BAML"},"from":"none"},"name":"inventoryTitle","modelSubField":[]},{"dataPath":"[2]","type":"INTEGER","value":{"selected":{"value":"1"},"from":"none"},"name":"statusSelect","modelSubField":[]},{"dataPath":"[3]","type":"INTEGER","value":{"selected":{"value":"1"},"from":"none"},"name":"typeSelect","modelSubField":[]},{"dataPath":"[4]","type":"MANY_TO_ONE","target":"StockLocation","value":{"from":"context","selected":{"value":"stockLocation"}},"name":"stockLocation","modelSubField":[{"name":"StockLocation","version":0,"type":"metaModel","fullName":"com.axelor.apps.stock.db.StockLocation","id":394}]},{"dataPath":"[5]","type":"MANY_TO_ONE","target":"ProductFamily","value":{"from":"context","selected":{"value":"productFamily"}},"name":"productFamily","modelSubField":[{"name":"ProductFamily","version":0,"type":"metaModel","fullName":"com.axelor.apps.base.db.ProductFamily","id":86}]}],"targetModel":"Inventory","sourceModelList":[],"newRecord":true,"isJson":false}</scriptMeta>
+    </mapper>
+    <sequenceFlow id="Flow_1ct5yvh" sourceRef="Query_0hr41ft" targetRef="Mapper_1hvh7jy" />
+    <query id="Query_0n02cyd" name="Fetch products" target="products" expression="&#34;self.productFamily.id = ?1&#34;, productFamily?.id" expressionValue="[{&#34;metaModalName&#34;:&#34;Product&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;productFamily.id&#34;,&#34;operator&#34;:&#34;=&#34;,&#34;fieldValue&#34;:&#34;productFamily?.id&#34;,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:&#34;context&#34;,&#34;relatedValueFieldName&#34;:{&#34;readonly&#34;:true,&#34;hidden&#34;:true,&#34;name&#34;:&#34;id&#34;,&#34;type&#34;:&#34;LONG&#34;,&#34;title&#34;:&#34;Id&#34;,&#34;primary&#34;:true},&#34;relatedValueModal&#34;:{&#34;processInstanceId&#34;:null,&#34;importOrigin&#34;:null,&#34;updatedBy&#34;:null,&#34;fullName&#34;:&#34;com.axelor.apps.base.db.ProductFamily&#34;,&#34;metaFields&#34;:[{&#34;name&#34;:&#34;id&#34;,&#34;id&#34;:1811,&#34;$version&#34;:0},{&#34;name&#34;:&#34;name&#34;,&#34;id&#34;:1810,&#34;$version&#34;:0},{&#34;name&#34;:&#34;createdBy&#34;,&#34;id&#34;:1808,&#34;$version&#34;:0},{&#34;name&#34;:&#34;importId&#34;,&#34;id&#34;:1805,&#34;$version&#34;:0},{&#34;name&#34;:&#34;archived&#34;,&#34;id&#34;:1804,&#34;$version&#34;:0},{&#34;name&#34;:&#34;attrs&#34;,&#34;id&#34;:1802,&#34;$version&#34;:0},{&#34;name&#34;:&#34;accountManagementList&#34;,&#34;id&#34;:1799,&#34;$version&#34;:0},{&#34;name&#34;:&#34;version&#34;,&#34;id&#34;:1796,&#34;$version&#34;:0},{&#34;name&#34;:&#34;createdOn&#34;,&#34;id&#34;:1795,&#34;$version&#34;:0},{&#34;name&#34;:&#34;updatedOn&#34;,&#34;id&#34;:1793,&#34;$version&#34;:0},{&#34;name&#34;:&#34;updatedBy&#34;,&#34;id&#34;:1791,&#34;$version&#34;:0},{&#34;name&#34;:&#34;code&#34;,&#34;id&#34;:1790,&#34;$version&#34;:0},{&#34;name&#34;:&#34;importOrigin&#34;,&#34;id&#34;:1789,&#34;$version&#34;:0},{&#34;name&#34;:&#34;processInstanceId&#34;,&#34;id&#34;:1787,&#34;$version&#34;:0}],&#34;updatedOn&#34;:null,&#34;createdOn&#34;:&#34;2021-10-08T11:41:05.765Z&#34;,&#34;version&#34;:0,&#34;tableName&#34;:&#34;BASE_PRODUCT_FAMILY&#34;,&#34;importId&#34;:null,&#34;createdBy&#34;:null,&#34;name&#34;:&#34;ProductFamily&#34;,&#34;id&#34;:86,&#34;packageName&#34;:&#34;com.axelor.apps.base.db&#34;,&#34;selected&#34;:false,&#34;title&#34;:&#34;Accounting family&#34;,&#34;type&#34;:&#34;metaModel&#34;},&#34;fieldType&#34;:&#34;LONG&#34;,&#34;field&#34;:{&#34;readonly&#34;:true,&#34;hidden&#34;:true,&#34;name&#34;:&#34;id&#34;,&#34;type&#34;:&#34;LONG&#34;,&#34;title&#34;:&#34;Id&#34;,&#34;primary&#34;:true},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;massUpdate&#34;:true,&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;,&#34;code&#34;],&#34;name&#34;:&#34;productFamily&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Accounting family&#34;,&#34;target&#34;:&#34;com.axelor.apps.base.db.ProductFamily&#34;},{&#34;readonly&#34;:true,&#34;hidden&#34;:true,&#34;name&#34;:&#34;id&#34;,&#34;type&#34;:&#34;LONG&#34;,&#34;title&#34;:&#34;Id&#34;,&#34;primary&#34;:true}],&#34;relatedElseValueModal&#34;:null,&#34;isShowMetaModelField&#34;:true}]}],&#34;generateWithId&#34;:false}]" model="Product" returnType="MULTIPLE" />
+    <sequenceFlow id="Flow_0yfci9f" sourceRef="Mapper_1hvh7jy" targetRef="Query_0n02cyd" />
+    <loop id="Loop_0zw5h5y" name="Loop on products" target="product" expression="products">
+      <mapper id="Mapper_0kequma" name="Create Inventory Line" targetField="InventoryLine">
+        <script>def rec = $ctx.create('InventoryLine')
+rec.currentQty = 25
+rec.inventory = $ctx.find('Inventory',inventory?.id)?.getTarget()
+rec.product = $ctx.find('Product',product?.id)?.getTarget()
+rec.realQty = 25
+rec.unit = $ctx.find('Unit',product?.unit?.id)?.getTarget()
+return $ctx.save(rec)</script>
+        <scriptMeta>{"fields":[{"dataPath":"[2]","type":"DECIMAL","value":{"selected":{"value":25},"from":"none"},"name":"currentQty","modelSubField":[]},{"dataPath":"[8]","type":"MANY_TO_ONE","target":"Inventory","value":{"from":"context","selected":{"value":"inventory"}},"name":"inventory","modelSubField":[{"name":"Inventory","version":0,"type":"metaModel","fullName":"com.axelor.apps.stock.db.Inventory","id":401}]},{"dataPath":"[10]","type":"MANY_TO_ONE","target":"Product","value":{"from":"context","selected":{"value":"product"}},"name":"product","modelSubField":[{"name":"Product","version":0,"type":"metaModel","fullName":"com.axelor.apps.base.db.Product","id":61}]},{"dataPath":"[12]","type":"DECIMAL","value":{"selected":{"value":25},"from":"none"},"name":"realQty","modelSubField":[]},{"dataPath":"[15]","type":"MANY_TO_ONE","target":"Unit","value":{"selected":{"value":"product?.unit"},"from":"context"},"name":"unit","modelSubField":[{"name":"Product","version":0,"type":"metaModel","fullName":"com.axelor.apps.base.db.Product","id":61},{"name":"unit","type":"MANY_TO_ONE","title":"Unit","target":"com.axelor.apps.base.db.Unit"}]}],"targetModel":"InventoryLine","sourceModelList":[],"newRecord":true,"isJson":false}</scriptMeta>
+      </mapper>
+    </loop>
+    <sequenceFlow id="Flow_10i3xms" sourceRef="Query_0n02cyd" targetRef="Loop_0zw5h5y" />
+  </process-action>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNEdge id="Flow_10i3xms_di" bpmnElement="Flow_10i3xms">
+        <di:waypoint x="470" y="95" />
+        <di:waypoint x="470" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yfci9f_di" bpmnElement="Flow_0yfci9f">
+        <di:waypoint x="300" y="70" />
+        <di:waypoint x="445" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ct5yvh_di" bpmnElement="Flow_1ct5yvh">
+        <di:waypoint x="85" y="70" />
+        <di:waypoint x="200" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Query_0hr41ft_di" bpmnElement="Query_0hr41ft" isMarkerVisible="true">
+        <dc:Bounds x="35" y="45" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="32" y="8" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Mapper_1hvh7jy_di" bpmnElement="Mapper_1hvh7jy">
+        <dc:Bounds x="200" y="30" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Query_0n02cyd_di" bpmnElement="Query_0n02cyd" isMarkerVisible="true">
+        <dc:Bounds x="445" y="45" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="433" y="21" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Loop_0zw5h5y_di" bpmnElement="Loop_0zw5h5y" isExpanded="true">
+        <dc:Bounds x="290" y="180" width="340" height="190" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Mapper_0kequma_di" bpmnElement="Mapper_0kequma">
+        <dc:Bounds x="410" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</process-actions>
+]]></bamlXml>
+
+    <resultScript><![CDATA[import com.axelor.db.mapper.Adapter
+import com.axelor.inject.Beans
+import com.axelor.apps.bpm.context.*
+
+Model _execute(Model productFamilyV){
+productFamily = WkfContextHelper.create(productFamilyV)
+
+def stockLocation = WkfContextHelper.filterOne('StockLocation',"self.name = ?1", 'Entrepôt principal')
+def inventory = {
+def rec = $ctx.create('Inventory')
+rec.company = $ctx.filterOne('Company','self.name = ?1','Axelor')?.getTarget()
+rec.inventoryTitle = 'Inventory from BAML'
+rec.statusSelect = 1
+rec.typeSelect = 1
+rec.stockLocation = $ctx.find('StockLocation',stockLocation?.id)?.getTarget()
+rec.productFamily = $ctx.find('ProductFamily',productFamily?.id)?.getTarget()
+return $ctx.save(rec)
+}()
+
+def products = WkfContextHelper.filter('Product',"self.productFamily.id = ?1", productFamily?.id)
+
+for (product in products){
+def inventoryLine = {
+def rec = $ctx.create('InventoryLine')
+rec.currentQty = 25
+rec.inventory = $ctx.find('Inventory',inventory?.id)?.getTarget()
+rec.product = $ctx.find('Product',product?.id)?.getTarget()
+rec.realQty = 25
+rec.unit = $ctx.find('Unit',product?.unit?.id)?.getTarget()
+return $ctx.save(rec)
+}()
+
+}
+return inventory.getTarget()
+}
+return _execute(productFamily)
+]]></resultScript>
+
+    <appBuilder>BPM-18</appBuilder>
+
+  </baml-model>
+  <baml-model>
+
+    <name>Create Invoice From Sale Order</name>
+
+    <bamlXml><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<process-actions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <process-action id="ProcessAction_1" name="Create Invoice From Sale Order" targetModel="Invoice" sourceModel="SaleOrder">
+    <mapper id="Mapper_0g762qq" name="Create Invoice" sourceField="SaleOrder" targetField="Invoice">
+      <script>def rec = $ctx.create('Invoice')
+def src = saleOrder
+rec.address = $ctx.find('Address',src.mainInvoicingAddress?.id)?.getTarget()
+rec.addressStr = src.mainInvoicingAddressStr
+rec.company = $ctx.find('Company',src.company?.id)?.getTarget()
+rec.contactPartner = $ctx.find('Partner',src.contactPartner?.id)?.getTarget()
+rec.currency = $ctx.find('Currency',src.currency?.id)?.getTarget()
+rec.deliveryAddressStr = src.deliveryAddressStr
+rec.operationSubTypeSelect = 1
+rec.operationTypeSelect = 3
+rec.inAti = src.inAti
+rec.partner = $ctx.find('Partner',src.clientPartner?.id)?.getTarget()
+rec.saleOrder = $ctx.find('SaleOrder',src?.id)?.getTarget()
+rec.statusSelect = 1
+rec.companyInTaxTotal = src.inTaxTotal
+rec.inTaxTotal = src.inTaxTotal
+rec.companyTaxTotal = src.companyExTaxTotal
+rec.taxTotal = src.exTaxTotal
+rec.companyExTaxTotal = src.companyExTaxTotal
+rec.exTaxTotal = src.exTaxTotal
+rec.paymentCondition = $ctx.find('PaymentCondition',src.paymentCondition?.id)?.getTarget()
+rec.paymentMode = $ctx.find('PaymentMode',src.paymentMode?.id)?.getTarget()
+rec.priceList = $ctx.find('PriceList',src.priceList?.id)?.getTarget()
+rec.deliveryAddress = $ctx.find('Address',src.deliveryAddress?.id)?.getTarget()
+return $ctx.save(rec)</script>
+      <scriptMeta>{"fields":[{"dataPath":"[0]","type":"MANY_TO_ONE","target":"Address","value":{"selected":{"value":"mainInvoicingAddress"},"from":"source"},"name":"address","modelSubField":[{"name":"mainInvoicingAddress","type":"MANY_TO_ONE","title":"Main/Invoicing address","target":"com.axelor.apps.base.db.Address"}]},{"dataPath":"[1]","type":"TEXT","value":{"selected":{"value":"mainInvoicingAddressStr"},"from":"source"},"name":"addressStr","modelSubField":[{"name":"mainInvoicingAddressStr","type":"TEXT","title":"Main/Invoicing address"}]},{"dataPath":"[2]","type":"MANY_TO_ONE","target":"Company","value":{"selected":{"value":"company"},"from":"source"},"name":"company","modelSubField":[{"name":"company","type":"MANY_TO_ONE","title":"Company","target":"com.axelor.apps.base.db.Company"}]},{"dataPath":"[3]","type":"MANY_TO_ONE","target":"Partner","value":{"selected":{"value":"contactPartner"},"from":"source"},"name":"contactPartner","modelSubField":[{"name":"contactPartner","type":"MANY_TO_ONE","title":"Customer contact","target":"com.axelor.apps.base.db.Partner"}]},{"dataPath":"[4]","type":"MANY_TO_ONE","target":"Currency","value":{"selected":{"value":"currency"},"from":"source"},"name":"currency","modelSubField":[{"name":"currency","type":"MANY_TO_ONE","title":"Currency","target":"com.axelor.apps.base.db.Currency"}]},{"dataPath":"[5]","type":"TEXT","value":{"selected":{"value":"deliveryAddressStr"},"from":"source"},"name":"deliveryAddressStr","modelSubField":[{"name":"deliveryAddressStr","type":"TEXT","title":"Delivery address"}]},{"dataPath":"[6]","type":"INTEGER","value":{"from":"none","selected":{"value":"1"}},"name":"operationSubTypeSelect","modelSubField":[]},{"dataPath":"[7]","type":"INTEGER","value":{"from":"none","selected":{"value":"3"}},"name":"operationTypeSelect","modelSubField":[]},{"dataPath":"[8]","type":"BOOLEAN","value":{"selected":{"value":"inAti"},"from":"source"},"name":"inAti","modelSubField":[{"name":"inAti","type":"BOOLEAN","title":"In ATI"}]},{"dataPath":"[9]","type":"MANY_TO_ONE","target":"Partner","value":{"selected":{"value":"clientPartner"},"from":"source"},"name":"partner","modelSubField":[{"name":"clientPartner","type":"MANY_TO_ONE","title":"Customer","target":"com.axelor.apps.base.db.Partner"}]},{"dataPath":"[10]","type":"MANY_TO_ONE","target":"SaleOrder","value":{"selected":{"value":"SOURCE"},"from":"source"},"name":"saleOrder","modelSubField":[{"name":"SaleOrder","version":0,"fullName":"com.axelor.apps.sale.db.SaleOrder","title":"SOURCE","id":368}]},{"dataPath":"[11]","type":"INTEGER","value":{"from":"none","selected":{"value":"1"}},"name":"statusSelect","modelSubField":[]},{"dataPath":"[12]","type":"DECIMAL","value":{"selected":{"value":"inTaxTotal"},"from":"source"},"name":"companyInTaxTotal","modelSubField":[{"name":"inTaxTotal","type":"DECIMAL","title":"Total A.T.I."}]},{"dataPath":"[13]","type":"DECIMAL","value":{"selected":{"value":"inTaxTotal"},"from":"source"},"name":"inTaxTotal","modelSubField":[{"name":"inTaxTotal","type":"DECIMAL","title":"Total A.T.I."}]},{"dataPath":"[14]","type":"DECIMAL","value":{"selected":{"value":"companyExTaxTotal"},"from":"source"},"name":"companyTaxTotal","modelSubField":[{"name":"companyExTaxTotal","type":"DECIMAL","title":"Total W.T."}]},{"dataPath":"[15]","type":"DECIMAL","value":{"selected":{"value":"exTaxTotal"},"from":"source"},"name":"taxTotal","modelSubField":[{"name":"exTaxTotal","type":"DECIMAL","title":"Total W.T."}]},{"dataPath":"[16]","type":"DECIMAL","value":{"selected":{"value":"companyExTaxTotal"},"from":"source"},"name":"companyExTaxTotal","modelSubField":[{"name":"companyExTaxTotal","type":"DECIMAL","title":"Total W.T."}]},{"dataPath":"[17]","type":"DECIMAL","value":{"selected":{"value":"exTaxTotal"},"from":"source"},"name":"exTaxTotal","modelSubField":[{"name":"exTaxTotal","type":"DECIMAL","title":"Total W.T."}]},{"dataPath":"[18]","type":"MANY_TO_ONE","target":"PaymentCondition","value":{"selected":{"value":"paymentCondition"},"from":"source"},"name":"paymentCondition","modelSubField":[{"name":"paymentCondition","type":"MANY_TO_ONE","title":"Payment condition","target":"com.axelor.apps.account.db.PaymentCondition"}]},{"dataPath":"[19]","type":"MANY_TO_ONE","target":"PaymentMode","value":{"selected":{"value":"paymentMode"},"from":"source"},"name":"paymentMode","modelSubField":[{"name":"paymentMode","type":"MANY_TO_ONE","title":"Payment mode","target":"com.axelor.apps.account.db.PaymentMode"}]},{"dataPath":"[20]","type":"MANY_TO_ONE","target":"PriceList","value":{"selected":{"value":"priceList"},"from":"source"},"name":"priceList","modelSubField":[{"name":"priceList","type":"MANY_TO_ONE","title":"Price list","target":"com.axelor.apps.base.db.PriceList"}]},{"dataPath":"[42]","type":"MANY_TO_ONE","target":"Address","value":{"selected":{"value":"deliveryAddress"},"from":"source"},"name":"deliveryAddress","modelSubField":[{"name":"deliveryAddress","type":"MANY_TO_ONE","title":"Delivery address","target":"com.axelor.apps.base.db.Address"}]}],"targetModel":"Invoice","sourceModel":"SaleOrder","sourceModelList":[{"name":"SaleOrder","fullName":"com.axelor.apps.sale.db.SaleOrder","metaFields":[{"name":"deliveryComments","id":8459,"$version":0},{"name":"interco","id":8458,"$version":0},{"name":"deliveryState","id":8454,"$version":0},{"name":"advancePaymentNeeded","id":8448,"$version":0},{"name":"createdBy","id":8445,"$version":0},{"name":"confirmedByUser","id":8443,"$version":0},{"name":"amountInvoiced","id":8441,"$version":0},{"name":"versionNumber","id":8439,"$version":0},{"name":"salespersonUser","id":8437,"$version":0},{"name":"shipmentMode","id":8435,"$version":0},{"name":"exTaxTotal","id":8434,"$version":0},{"name":"fullName","id":8432,"$version":0},{"name":"contractEndDate","id":8430,"$version":0},{"name":"specificPackage","id":8428,"$version":0},{"name":"paymentMode","id":8426,"$version":0},{"name":"paymentCondition","id":8421,"$version":0},{"name":"nextInvoicingStartPeriodDate","id":8420,"$version":0},{"name":"accountedRevenue","id":8419,"$version":0},{"name":"shipmentDate","id":8418,"$version":0},{"name":"deliveryAddressStr","id":8417,"$version":0},{"name":"company","id":8416,"$version":0},{"name":"directOrderLocation","id":8415,"$version":0},{"name":"toStockLocation","id":8414,"$version":0},{"name":"printingSettings","id":8413,"$version":0},{"name":"marginRate","id":8412,"$version":0},{"name":"duration","id":8411,"$version":0},{"name":"priceList","id":8410,"$version":0},{"name":"batchSet","id":8409,"$version":0},{"name":"title","id":8408,"$version":0},{"name":"inAti","id":8407,"$version":0},{"name":"forwarderPartner","id":8406,"$version":0},{"name":"description","id":8405,"$version":0},{"name":"nextInvPeriodStartDate","id":8404,"$version":0},{"name":"importOrigin","id":8403,"$version":0},{"name":"amountToBeSpreadOverTheTimetable","id":8402,"$version":0},{"name":"timetableTemplate","id":8401,"$version":0},{"name":"orderDate","id":8400,"$version":0},{"name":"endOfValidityDate","id":8399,"$version":0},{"name":"saleOrderTypeSelect","id":8398,"$version":0},{"name":"incoterm","id":8397,"$version":0},{"name":"electronicSignature","id":8396,"$version":0},{"name":"clientPartner","id":8395,"$version":0},{"name":"templateUser","id":8394,"$version":0},{"name":"saleOrderLineList","id":8393,"$version":0},{"name":"mainInvoicingAddress","id":8391,"$version":0},{"name":"advancePaymentAmountNeeded","id":8390,"$version":0},{"name":"creationDate","id":8388,"$version":0},{"name":"nextInvoicingDate","id":8386,"$version":0},{"name":"subscriptionText","id":8384,"$version":0},{"name":"contractStartDate","id":8382,"$version":0},{"name":"markup","id":8380,"$version":0},{"name":"updatedBy","id":8377,"$version":0},{"name":"orderBeingEdited","id":8374,"$version":0},{"name":"processInstanceId","id":8373,"$version":0},{"name":"inTaxTotal","id":8366,"$version":0},{"name":"isTacitAgreement","id":8364,"$version":0},{"name":"freightCarrierMode","id":8362,"$version":0},{"name":"invoiceComments","id":8360,"$version":0},{"name":"productionNote","id":8359,"$version":0},{"name":"noticePeriodInDays","id":8358,"$version":0},{"name":"totalGrossMargin","id":8354,"$version":0},{"name":"project","id":8351,"$version":0},{"name":"taxTotal","id":8344,"$version":0},{"name":"advanceTotal","id":8341,"$version":0},{"name":"companyExTaxTotal","id":8338,"$version":0},{"name":"isNeedingConformityCertificate","id":8334,"$version":0},{"name":"orderNumber","id":8333,"$version":0},{"name":"saleOrderLineTaxList","id":8331,"$version":0},{"name":"pickingOrderComments","id":8330,"$version":0},{"name":"internalNote","id":8328,"$version":0},{"name":"manualUnblock","id":8326,"$version":0},{"name":"specificNotes","id":8324,"$version":0},{"name":"importId","id":8322,"$version":0},{"name":"standardDelay","id":8321,"$version":0},{"name":"statusSelect","id":8320,"$version":0},{"name":"companyBankDetails","id":8319,"$version":0},{"name":"team","id":8318,"$version":0},{"name":"hideDiscount","id":8317,"$version":0},{"name":"stockMoveList","id":8316,"$version":0},{"name":"subscriptionComment","id":8315,"$version":0},{"name":"blockedOnCustCreditExceed","id":8314,"$version":0},{"name":"toInvoiceViaTask","id":8313,"$version":0},{"name":"tradingName","id":8312,"$version":0},{"name":"totalCostPrice","id":8311,"$version":0},{"name":"deliveryDate","id":8310,"$version":0},{"name":"cancelReason","id":8309,"$version":0},{"name":"contactPartner","id":8308,"$version":0},{"name":"currency","id":8307,"$version":0},{"name":"isIspmRequired","id":8306,"$version":0},{"name":"cancelReasonStr","id":8305,"$version":0},{"name":"saleOrderScheduleLineList","id":8304,"$version":0},{"name":"timetableList","id":8303,"$version":0},{"name":"archived","id":8302,"$version":0},{"name":"proformaComments","id":8300,"$version":0},{"name":"createdOn","id":8297,"$version":0},{"name":"contractPeriodInMonths","id":8295,"$version":0},{"name":"numberOfPeriods","id":8293,"$version":0},{"name":"createdByInterco","id":8292,"$version":0},{"name":"advancePaymentList","id":8286,"$version":0},{"name":"computationDate","id":8283,"$version":0},{"name":"stockLocation","id":8271,"$version":0},{"name":"saleOrderSeq","id":8264,"$version":0},{"name":"confirmationDateTime","id":8260,"$version":0},{"name":"currentContractPeriodEndDate","id":8257,"$version":0},{"name":"template","id":8253,"$version":0},{"name":"invoicedFirstDate","id":8249,"$version":0},{"name":"deliveredPartner","id":8245,"$version":0},{"name":"externalReference","id":8241,"$version":0},{"name":"isToPrintLineSubTotal","id":8238,"$version":0},{"name":"attrs","id":8234,"$version":0},{"name":"version","id":8231,"$version":0},{"name":"companyCostTotal","id":8226,"$version":0},{"name":"updatedOn","id":8223,"$version":0},{"name":"opportunity","id":8220,"$version":0},{"name":"groupProductsOnPrintings","id":8218,"$version":0},{"name":"invoicedPartner","id":8213,"$version":0},{"name":"id","id":8211,"$version":0},{"name":"nextInvoicingEndPeriodDate","id":8209,"$version":0},{"name":"deliveryAddress","id":8208,"$version":0},{"name":"deliveryCondition","id":8205,"$version":0},{"name":"mainInvoicingAddressStr","id":8203,"$version":0},{"name":"periodicityTypeSelect","id":8202,"$version":0},{"name":"expectedRealisationDate","id":8200,"$version":0},{"name":"carrierPartner","id":8198,"$version":0}],"id":368,"version":0,"type":"metaModel"}],"newRecord":true,"isJson":false}</scriptMeta>
+    </mapper>
+    <loop id="Loop_0idb2ji" name="Loop on sale order lines" target="saleOrderLine" expression="saleOrder?.saleOrderLineList">
+      <mapper id="Mapper_194ma4j" name="Create Invoice Line" sourceField="SaleOrderLine" targetField="InvoiceLine">
+        <script>def rec = $ctx.create('InvoiceLine')
+def src = saleOrderLine
+rec.description = src.description
+rec.product = $ctx.find('Product',src.product?.id)?.getTarget()
+rec.productName = src.productName
+rec.qty = src.qty
+rec.saleOrderLine = $ctx.find('SaleOrderLine',src?.id)?.getTarget()
+rec.taxLine = $ctx.find('TaxLine',src.taxLine?.id)?.getTarget()
+rec.inTaxTotal = src.inTaxTotal
+rec.companyInTaxTotal = src.companyInTaxTotal
+rec.exTaxTotal = src.exTaxTotal
+rec.companyExTaxTotal = src.companyExTaxTotal
+rec.typeSelect = src.typeSelect
+rec.unit = $ctx.find('Unit',src.unit?.id)?.getTarget()
+rec.inTaxPrice = src.inTaxPrice
+rec.price = src.price
+rec.priceDiscounted = src.priceDiscounted
+rec.discountAmount = src.discountAmount
+rec.discountTypeSelect = src.discountTypeSelect
+rec.invoice = $ctx.find('Invoice',invoice?.id)?.getTarget()
+return $ctx.save(rec)</script>
+        <scriptMeta>{"fields":[{"dataPath":"[0]","type":"TEXT","value":{"selected":{"value":"description"},"from":"source"},"name":"description","modelSubField":[{"name":"description","type":"TEXT","title":"Description"}]},{"dataPath":"[1]","type":"MANY_TO_ONE","target":"Product","value":{"selected":{"value":"product"},"from":"source"},"name":"product","modelSubField":[{"name":"product","type":"MANY_TO_ONE","title":"Product","target":"com.axelor.apps.base.db.Product"}]},{"dataPath":"[2]","type":"STRING","value":{"selected":{"value":"productName"},"from":"source"},"name":"productName","modelSubField":[{"name":"productName","type":"STRING","title":"Displayed Product name"}]},{"dataPath":"[3]","type":"DECIMAL","value":{"selected":{"value":"qty"},"from":"source"},"name":"qty","modelSubField":[{"name":"qty","type":"DECIMAL","title":"Qty"}]},{"dataPath":"[4]","type":"MANY_TO_ONE","target":"SaleOrderLine","value":{"selected":{"value":"SOURCE"},"from":"source"},"name":"saleOrderLine","modelSubField":[{"name":"SaleOrderLine","version":0,"type":"metaModel","fullName":"com.axelor.apps.sale.db.SaleOrderLine","title":"SOURCE","id":367}]},{"dataPath":"[5]","type":"MANY_TO_ONE","target":"TaxLine","value":{"selected":{"value":"taxLine"},"from":"source"},"name":"taxLine","modelSubField":[{"name":"taxLine","type":"MANY_TO_ONE","title":"Tax","target":"com.axelor.apps.account.db.TaxLine"}]},{"dataPath":"[6]","type":"DECIMAL","value":{"selected":{"value":"inTaxTotal"},"from":"source"},"name":"inTaxTotal","modelSubField":[{"name":"inTaxTotal","type":"DECIMAL","title":"Total A.T.I."}]},{"dataPath":"[7]","type":"DECIMAL","value":{"selected":{"value":"companyInTaxTotal"},"from":"source"},"name":"companyInTaxTotal","modelSubField":[{"name":"companyInTaxTotal","type":"DECIMAL","title":"Total A.T.I. in company currency"}]},{"dataPath":"[8]","type":"DECIMAL","value":{"selected":{"value":"exTaxTotal"},"from":"source"},"name":"exTaxTotal","modelSubField":[{"name":"exTaxTotal","type":"DECIMAL","title":"Total W.T."}]},{"dataPath":"[9]","type":"DECIMAL","value":{"selected":{"value":"companyExTaxTotal"},"from":"source"},"name":"companyExTaxTotal","modelSubField":[{"name":"companyExTaxTotal","type":"DECIMAL","title":"Total W.T. in company currency"}]},{"dataPath":"[10]","type":"INTEGER","value":{"selected":{"value":"typeSelect"},"from":"source"},"name":"typeSelect","modelSubField":[{"name":"typeSelect","type":"INTEGER","title":"Type"}]},{"dataPath":"[11]","type":"MANY_TO_ONE","target":"Unit","value":{"selected":{"value":"unit"},"from":"source"},"name":"unit","modelSubField":[{"name":"unit","type":"MANY_TO_ONE","title":"Unit","target":"com.axelor.apps.base.db.Unit"}]},{"dataPath":"[12]","type":"DECIMAL","value":{"selected":{"value":"inTaxPrice"},"from":"source"},"name":"inTaxPrice","modelSubField":[{"name":"inTaxPrice","type":"DECIMAL","title":"Unit price A.T.I."}]},{"dataPath":"[13]","type":"DECIMAL","value":{"selected":{"value":"price"},"from":"source"},"name":"price","modelSubField":[{"name":"price","type":"DECIMAL","title":"Unit price W.T."}]},{"dataPath":"[14]","type":"DECIMAL","value":{"selected":{"value":"priceDiscounted"},"from":"source"},"name":"priceDiscounted","modelSubField":[{"name":"priceDiscounted","type":"DECIMAL","title":"Unit price discounted"}]},{"dataPath":"[15]","type":"DECIMAL","value":{"selected":{"value":"discountAmount"},"from":"source"},"name":"discountAmount","modelSubField":[{"name":"discountAmount","type":"DECIMAL","title":"Discount amount"}]},{"dataPath":"[16]","type":"INTEGER","value":{"selected":{"value":"discountTypeSelect"},"from":"source"},"name":"discountTypeSelect","modelSubField":[{"name":"discountTypeSelect","type":"INTEGER","title":"Discount type"}]},{"dataPath":"[29]","type":"MANY_TO_ONE","target":"Invoice","value":{"from":"context","selected":{"value":"invoice"}},"name":"invoice","modelSubField":[{"name":"Invoice","version":0,"type":"metaModel","fullName":"com.axelor.apps.account.db.Invoice","id":208}]}],"targetModel":"InvoiceLine","sourceModel":"SaleOrderLine","sourceModelList":[{"name":"SaleOrderLine","fullName":"com.axelor.apps.sale.db.SaleOrderLine","metaFields":[{"name":"discountsNeedReview","id":8287,"$version":0},{"name":"analyticDistributionTemplate","id":8284,"$version":0},{"name":"discountDerogation","id":8280,"$version":0},{"name":"progress","id":8273,"$version":0},{"name":"deliveryState","id":8269,"$version":0},{"name":"priceDiscounted","id":8267,"$version":0},{"name":"createdBy","id":8262,"$version":0},{"name":"importId","id":8255,"$version":0},{"name":"amountInvoiced","id":8252,"$version":0},{"name":"companyInTaxTotal","id":8247,"$version":0},{"name":"availableStatus","id":8243,"$version":0},{"name":"standardDelay","id":8236,"$version":0},{"name":"manualId","id":8233,"$version":0},{"name":"parentId","id":8229,"$version":0},{"name":"isComplementaryProductsUnhandledYet","id":8225,"$version":0},{"name":"exTaxTotal","id":8217,"$version":0},{"name":"subMarginRate","id":8214,"$version":0},{"name":"fullName","id":8207,"$version":0},{"name":"reservedQty","id":8206,"$version":0},{"name":"pickingOrderInfo","id":8204,"$version":0},{"name":"selectedComplementaryProductList","id":8201,"$version":0},{"name":"saleSupplySelect","id":8199,"$version":0},{"name":"subTotalMarkup","id":8197,"$version":0},{"name":"product","id":8196,"$version":0},{"name":"companyCostPrice","id":8195,"$version":0},{"name":"saleOrder","id":8194,"$version":0},{"name":"enableFreezeFields","id":8193,"$version":0},{"name":"requestedReservedQty","id":8192,"$version":0},{"name":"archived","id":8191,"$version":0},{"name":"subTotalCostPrice","id":8190,"$version":0},{"name":"isHideUnitAmounts","id":8189,"$version":0},{"name":"discountTypeSelect","id":8188,"$version":0},{"name":"createdOn","id":8187,"$version":0},{"name":"analyticMoveLineList","id":8186,"$version":0},{"name":"description","id":8185,"$version":0},{"name":"importOrigin","id":8184,"$version":0},{"name":"taxEquiv","id":8183,"$version":0},{"name":"isInvoiceControlled","id":8182,"$version":0},{"name":"qty","id":8181,"$version":0},{"name":"unit","id":8180,"$version":0},{"name":"sequence","id":8179,"$version":0},{"name":"isToPrintLineSubTotal","id":8178,"$version":0},{"name":"attrs","id":8177,"$version":0},{"name":"desiredDelivDate","id":8176,"$version":0},{"name":"version","id":8175,"$version":0},{"name":"companyCostTotal","id":8174,"$version":0},{"name":"updatedOn","id":8173,"$version":0},{"name":"inTaxPrice","id":8172,"$version":0},{"name":"subTotalGrossMargin","id":8171,"$version":0},{"name":"billOfMaterial","id":8170,"$version":0},{"name":"taxLine","id":8169,"$version":0},{"name":"invoiced","id":8168,"$version":0},{"name":"updatedBy","id":8167,"$version":0},{"name":"processInstanceId","id":8166,"$version":0},{"name":"inTaxTotal","id":8165,"$version":0},{"name":"id","id":8164,"$version":0},{"name":"availableStatusSelect","id":8163,"$version":0},{"name":"mainSaleOrderLine","id":8162,"$version":0},{"name":"price","id":8161,"$version":0},{"name":"supplierPartner","id":8160,"$version":0},{"name":"invoicingDate","id":8159,"$version":0},{"name":"isShowTotal","id":8158,"$version":0},{"name":"productName","id":8155,"$version":0},{"name":"isQtyRequested","id":8152,"$version":0},{"name":"typeSelect","id":8146,"$version":0},{"name":"project","id":8144,"$version":0},{"name":"estimatedDelivDate","id":8141,"$version":0},{"name":"discountAmount","id":8137,"$version":0},{"name":"companyExTaxTotal","id":8132,"$version":0},{"name":"oldQty","id":8127,"$version":0},{"name":"complementarySaleOrderLineList","id":8124,"$version":0},{"name":"toInvoice","id":8122,"$version":0},{"name":"deliveredQty","id":8117,"$version":0}],"id":367,"version":0,"type":"metaModel"}],"newRecord":true,"isJson":false}</scriptMeta>
+      </mapper>
+    </loop>
+    <sequenceFlow id="Flow_08cokom" sourceRef="Mapper_0g762qq" targetRef="Loop_0idb2ji" />
+    <conditional id="Condition_1sg0vfb" name="If customer&#39;s email is not empty set email sending options on invoice" expression="invoice?.partner?.emailAddress != null" expressionValue="[{&#34;metaModalName&#34;:&#34;Invoice&#34;,&#34;metaModalType&#34;:&#34;metaModel&#34;,&#34;rules&#34;:[{&#34;id&#34;:0,&#34;parentId&#34;:-1,&#34;combinator&#34;:&#34;and&#34;,&#34;rules&#34;:[{&#34;fieldName&#34;:&#34;partner?.emailAddress&#34;,&#34;operator&#34;:&#34;isNotNull&#34;,&#34;fieldValue&#34;:null,&#34;fieldValue2&#34;:null,&#34;isRelationalValue&#34;:null,&#34;relatedValueFieldName&#34;:null,&#34;relatedValueModal&#34;:null,&#34;fieldType&#34;:&#34;ONE_TO_ONE&#34;,&#34;field&#34;:{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;emailAddress&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;ONE_TO_ONE&#34;,&#34;title&#34;:&#34;Email&#34;,&#34;target&#34;:&#34;com.axelor.apps.message.db.EmailAddress&#34;},&#34;isShow&#34;:false,&#34;allField&#34;:[{&#34;targetName&#34;:&#34;fullName&#34;,&#34;targetSearch&#34;:[&#34;fullName&#34;],&#34;name&#34;:&#34;partner&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;MANY_TO_ONE&#34;,&#34;title&#34;:&#34;Partner&#34;,&#34;required&#34;:true,&#34;target&#34;:&#34;com.axelor.apps.base.db.Partner&#34;},{&#34;targetName&#34;:&#34;name&#34;,&#34;targetSearch&#34;:[&#34;name&#34;],&#34;name&#34;:&#34;emailAddress&#34;,&#34;perms&#34;:null,&#34;type&#34;:&#34;ONE_TO_ONE&#34;,&#34;title&#34;:&#34;Email&#34;,&#34;target&#34;:&#34;com.axelor.apps.message.db.EmailAddress&#34;}]}]}],&#34;generateWithId&#34;:false}]">
+      <mapper id="Mapper_1hqef90" name="Update invoice" targetField="Invoice">
+        <script>invoice.invoiceAutomaticMailOnValidate = true
+invoice.invoiceAutomaticMail = true
+invoice.invoiceMessageTemplateOnValidate = $ctx.filterOne('Template','self.name = ?1','Customer Invoice')?.getTarget()
+invoice.invoiceMessageTemplate = $ctx.filterOne('Template','self.name = ?1','Customer Invoice')?.getTarget()</script>
+        <scriptMeta>{"fields":[{"dataPath":"[0]","type":"BOOLEAN","value":{"selected":{"value":true},"from":"none"},"name":"invoiceAutomaticMailOnValidate","modelSubField":[]},{"dataPath":"[1]","type":"BOOLEAN","value":{"selected":{"value":true},"from":"none"},"name":"invoiceAutomaticMail","modelSubField":[]},{"dataPath":"[2]","type":"MANY_TO_ONE","target":"Template","value":{"selected":{"value":"Customer Invoice","targetName":"name"},"from":"none"},"name":"invoiceMessageTemplateOnValidate","modelSubField":[]},{"dataPath":"[3]","type":"MANY_TO_ONE","target":"Template","value":{"selected":{"value":"Customer Invoice","targetName":"name"},"from":"none"},"name":"invoiceMessageTemplate","modelSubField":[]}],"targetModel":"Invoice","sourceModelList":[],"newRecord":false,"isJson":false}</scriptMeta>
+      </mapper>
+    </conditional>
+    <sequenceFlow id="Flow_0pjr84q" sourceRef="Loop_0idb2ji" targetRef="Condition_1sg0vfb" />
+  </process-action>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ProcessAction_1">
+      <bpmndi:BPMNEdge id="Flow_0pjr84q_di" bpmnElement="Flow_0pjr84q">
+        <di:waypoint x="660" y="190" />
+        <di:waypoint x="785" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08cokom_di" bpmnElement="Flow_08cokom">
+        <di:waypoint x="260" y="200" />
+        <di:waypoint x="380" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Mapper_0g762qq_di" bpmnElement="Mapper_0g762qq">
+        <dc:Bounds x="160" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Loop_0idb2ji_di" bpmnElement="Loop_0idb2ji" isExpanded="true">
+        <dc:Bounds x="380" y="90" width="280" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Mapper_194ma4j_di" bpmnElement="Mapper_194ma4j">
+        <dc:Bounds x="470" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Condition_1sg0vfb_di" bpmnElement="Condition_1sg0vfb" isExpanded="true">
+        <dc:Bounds x="785" y="90" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Mapper_1hqef90_di" bpmnElement="Mapper_1hqef90">
+        <dc:Bounds x="910" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</process-actions>
+]]></bamlXml>
+
+    <resultScript><![CDATA[import com.axelor.db.mapper.Adapter
+import com.axelor.inject.Beans
+import com.axelor.apps.bpm.context.*
+
+Model _execute(Model saleOrderV){
+saleOrder = WkfContextHelper.create(saleOrderV)
+def invoice = {
+def rec = $ctx.create('Invoice')
+def src = saleOrder
+rec.address = $ctx.find('Address',src.mainInvoicingAddress?.id)?.getTarget()
+rec.addressStr = src.mainInvoicingAddressStr
+rec.company = $ctx.find('Company',src.company?.id)?.getTarget()
+rec.contactPartner = $ctx.find('Partner',src.contactPartner?.id)?.getTarget()
+rec.currency = $ctx.find('Currency',src.currency?.id)?.getTarget()
+rec.deliveryAddressStr = src.deliveryAddressStr
+rec.operationSubTypeSelect = 1
+rec.operationTypeSelect = 3
+rec.inAti = src.inAti
+rec.partner = $ctx.find('Partner',src.clientPartner?.id)?.getTarget()
+rec.saleOrder = $ctx.find('SaleOrder',src?.id)?.getTarget()
+rec.statusSelect = 1
+rec.companyInTaxTotal = src.inTaxTotal
+rec.inTaxTotal = src.inTaxTotal
+rec.companyTaxTotal = src.companyExTaxTotal
+rec.taxTotal = src.exTaxTotal
+rec.companyExTaxTotal = src.companyExTaxTotal
+rec.exTaxTotal = src.exTaxTotal
+rec.paymentCondition = $ctx.find('PaymentCondition',src.paymentCondition?.id)?.getTarget()
+rec.paymentMode = $ctx.find('PaymentMode',src.paymentMode?.id)?.getTarget()
+rec.priceList = $ctx.find('PriceList',src.priceList?.id)?.getTarget()
+rec.deliveryAddress = $ctx.find('Address',src.deliveryAddress?.id)?.getTarget()
+return $ctx.save(rec)
+}()
+
+for (saleOrderLine in saleOrder?.saleOrderLineList){
+def invoiceLine = {
+def rec = $ctx.create('InvoiceLine')
+def src = saleOrderLine
+rec.description = src.description
+rec.product = $ctx.find('Product',src.product?.id)?.getTarget()
+rec.productName = src.productName
+rec.qty = src.qty
+rec.saleOrderLine = $ctx.find('SaleOrderLine',src?.id)?.getTarget()
+rec.taxLine = $ctx.find('TaxLine',src.taxLine?.id)?.getTarget()
+rec.inTaxTotal = src.inTaxTotal
+rec.companyInTaxTotal = src.companyInTaxTotal
+rec.exTaxTotal = src.exTaxTotal
+rec.companyExTaxTotal = src.companyExTaxTotal
+rec.typeSelect = src.typeSelect
+rec.unit = $ctx.find('Unit',src.unit?.id)?.getTarget()
+rec.inTaxPrice = src.inTaxPrice
+rec.price = src.price
+rec.priceDiscounted = src.priceDiscounted
+rec.discountAmount = src.discountAmount
+rec.discountTypeSelect = src.discountTypeSelect
+rec.invoice = $ctx.find('Invoice',invoice?.id)?.getTarget()
+return $ctx.save(rec)
+}()
+
+}
+if(invoice?.partner?.emailAddress != null) {
+invoice.invoiceAutomaticMailOnValidate = true
+invoice.invoiceAutomaticMail = true
+invoice.invoiceMessageTemplateOnValidate = $ctx.filterOne('Template','self.name = ?1','Customer Invoice')?.getTarget()
+invoice.invoiceMessageTemplate = $ctx.filterOne('Template','self.name = ?1','Customer Invoice')?.getTarget()
+
+}
+return invoice.getTarget()
+}
+return _execute(saleOrder)
+]]></resultScript>
+
+    <appBuilder>BPM-18</appBuilder>
+
+  </baml-model>
+</baml-models>

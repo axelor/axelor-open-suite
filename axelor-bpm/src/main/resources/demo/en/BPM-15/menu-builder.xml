@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu-builders>
+
+
+  <menu-builder>
+
+    <name>studio-menu-billing-subscription-root</name>
+
+    <xmlId>studio-menu-billing-subscription-root</xmlId>
+
+    <title>Bill subscription</title>
+
+    <icon>fa-files-o</icon>
+
+    <iconBackground>violet</iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>false</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu></parentMenu>
+
+    <actionBuilder></actionBuilder>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-menu-billsubscription</name>
+
+    <xmlId>studio-menu-billsubscription</xmlId>
+
+    <title>Bill subscription</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>0</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-menu-billing-subscription-root</parentMenu>
+
+    <actionBuilder>studio-menu-billsubscription</actionBuilder>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-menu-creditcardbillsubcription</name>
+
+    <xmlId>studio-menu-creditcardbillsubcription</xmlId>
+
+    <title>CC bill subscription</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>1</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-menu-billing-subscription-root</parentMenu>
+
+    <actionBuilder>studio-menu-creditcardbillsubcription</actionBuilder>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </menu-builder>
+  <menu-builder>
+
+    <name>studio-menu-electricitybillsubscription</name>
+
+    <xmlId>studio-menu-electricitybillsubscription</xmlId>
+
+    <title>Electricity bill subcription</title>
+
+    <icon></icon>
+
+    <iconBackground></iconBackground>
+
+    <order>2</order>
+
+    <tag></tag>
+
+    <tagGet></tagGet>
+
+    <tagCount>false</tagCount>
+
+    <tagStyle></tagStyle>
+
+    <top>false</top>
+
+    <left>true</left>
+
+    <mobile>false</mobile>
+
+    <hidden>false</hidden>
+
+    <link></link>
+
+    <conditionToCheck></conditionToCheck>
+
+    <moduleToCheck></moduleToCheck>
+
+    <showAction>true</showAction>
+
+    <groups>
+
+    </groups>
+
+    <roles>
+
+    </roles>
+
+    <parentMenu>studio-menu-billing-subscription-root</parentMenu>
+
+    <actionBuilder>studio-menu-electricitybillsubscription</actionBuilder>
+
+    <appBuilder>BPM-15</appBuilder>
+
+  </menu-builder>
+
+
+</menu-builders>

@@ -1,4 +1,4 @@
-"importId";"accountManagement.importId";"ruleType";"partner.importId";"counterpartAccount.code";"bankStatementQuery.importId";"searchLabel"
+"importId";"accountManagement.importId";"ruleTypeSelect";"partner.importId";"counterpartAccount.code";"bankStatementQuery.importId";"searchLabel"
 10;25;0;20;"401100";10;"CHEQUE"
 20;27;0;20;"401100";11;"DEC_AUTRES"
 30;24;0;20;"401100";12;"DEC_CB"

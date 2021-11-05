@@ -206,6 +206,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .bind("statusSelectList", statusSelectList)
             .bind("bankDetails", forecastRecap.getBankDetails())
             .bind("operationTypeSelect", forecastRecapLineType.getOperationTypeSelect())
+            .bind("forecastRecapLineTypeId", forecastRecapLineType.getId())
             .bind(
                 "fromDateMinusDuration",
                 forecastRecap.getFromDate().minusDays(forecastRecapLineType.getEstimatedDuration()))
@@ -352,7 +353,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return "self.estimatedDate BETWEEN :fromDate AND :toDate "
             + "AND self.company = :company "
             + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails) "
-            + "AND self.realizationDate IS NULL";
+            + "AND self.realizationDate IS NULL "
+            + "AND self.forecastRecapLineType.id = :forecastRecapLineTypeId";
       case ForecastRecapLineTypeRepository.ELEMENT_OPPORTUNITY:
         return "self.company = :company "
             + "AND self.expectedCloseDate BETWEEN :fromDate AND :toDate "
@@ -717,9 +719,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
   }
 
-  @Override
   @Transactional
-  public void createForecastRecapLine(
+  protected void createForecastRecapLine(
       LocalDate date,
       int type,
       BigDecimal amount,
