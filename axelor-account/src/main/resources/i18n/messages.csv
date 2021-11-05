@@ -2227,6 +2227,8 @@
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.",,,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book",,,
 "The company is required and must be the same for all invoices",,,
+"The configured distribution is incorrect, the sum of percentages for at least an axis is higher than 100%",,,
+"The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%",,,
 "The currency is required and must be the same for all invoices",,,
 "The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis.",,,
 "The deposit slip has already been published.",,,
