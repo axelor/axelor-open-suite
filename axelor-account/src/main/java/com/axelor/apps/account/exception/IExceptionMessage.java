@@ -42,8 +42,9 @@ public interface IExceptionMessage {
       "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
 
   static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
-      "Error in move accounting, please check the log" /*)*/;
-  static final String MOVE_ACCOUNTING_OK = /*$$(*/ "Moves accounted successfully" /*)*/;
+      "Error or anomaly detected making it impossible to proceed in the move accounting operation. Please check the logs." /*)*/;
+  static final String MOVE_ACCOUNTING_OK = /*$$(*/
+      "The selected moves have been successfully, if activated set to daybook, or else accounted." /*)*/;
   static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
