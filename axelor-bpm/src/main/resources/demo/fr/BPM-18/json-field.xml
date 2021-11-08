@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jason-fields>
+
+  <json-field>
+
+    <name>panel10</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.base.db.ProductFamily</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-18&apos;)</includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-18</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>createInventoryBaml</name>
+
+    <title>Create inventory from baml</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.base.db.ProductFamily</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>action-wkf-baml-model-view-wizard</onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-18&apos;)</includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-18</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>panelCreateInvoice</name>
+
+    <title></title>
+
+    <type>panel</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.sale.db.SaleOrder</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick></onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-18&apos;)</includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>0</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-18</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+  <json-field>
+
+    <name>createInvoiceFromBaml</name>
+
+    <title>Create Invoice From BAML</title>
+
+    <type>button</type>
+
+    <defaultValue></defaultValue>
+
+    <domain></domain>
+
+    <enumType></enumType>
+
+    <help></help>
+
+    <formView></formView>
+
+    <gridView></gridView>
+
+    <hidden>false</hidden>
+
+    <visibleInGrid>false</visibleInGrid>
+
+    <hideIf></hideIf>
+
+    <maxSize>0</maxSize>
+
+    <minSize>0</minSize>
+
+    <model>com.axelor.apps.sale.db.SaleOrder</model>
+
+    <modelField>attrs</modelField>
+
+    <nameField>false</nameField>
+
+    <onChange></onChange>
+
+    <onClick>action-wkf-baml-model-view-wizard</onClick>
+
+    <precision>6</precision>
+
+    <regex></regex>
+
+    <required>false</required>
+
+    <requiredIf></requiredIf>
+
+    <readonly>false</readonly>
+
+    <readonlyIf></readonlyIf>
+
+    <includeIf>__config__.app.isApp(&apos;BPM-18&apos;)</includeIf>
+
+    <scale>2</scale>
+
+    <selection></selection>
+
+    <sequence>1</sequence>
+
+    <showIf></showIf>
+
+    <targetModel></targetModel>
+
+    <widget></widget>
+
+    <widgetAttrs></widgetAttrs>
+
+    <valueExpr></valueExpr>
+
+    <jsonModel></jsonModel>
+
+    <targetJsonModel></targetJsonModel>
+
+    <appBuilder>BPM-18</appBuilder>
+
+    <modelAppBuilder></modelAppBuilder>
+
+    <isSelectionField>false</isSelectionField>
+
+    <selectionText></selectionText>
+
+  </json-field>
+</jason-fields>

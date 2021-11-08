@@ -1,6 +1,42 @@
-## [6.1.0-beta] (2021-02-26)
+## [6.1.1] (2021-11-05)
+
+#### Changes
+
+* Group: add a new configuration to allow or forbid grid customization per group.
+* Product Category: fix wrong grid view used for parent product category.
+* ACCOUNTING SITUATION: Add filters on customer account and supplier account.
+
+#### Fixed
+
+* ACCOUNT MOVE: fix copy feature by resetting more fields during copy.
+* PaymentVoucher: Fix remaining amount update when updating amount in imputation lines.
+* Improve module application cards design: fix spacing and margin cards for better UI/UX.
+* FORECAST GENERATOR: fix issue when generating outgoing forecast.
+* Advanced Export: add includeArchivedRecords boolean to manage archived records.
+* Lead: remove useless action called on lead creation causing issues with permission.
+* Account management: Add missing form and grid view to the field analytic distribution template.
+* Forecast Recap: fix display of bank details last update balance date in form view.
+* ANALYTIC DISTRIBUTION TEMPLATE: add missing french translation for an error message.
+* Accounting Report: fix custom accounting report xlsx format.
+* Invoice: fix error happening during the creation of a new invoice after generating an invoice from a purchase order.
+* BANK PAYMENT BATCH: fix java.lang.NoSuchMethodException error when trying to run the batch manually.
+* BatchLeaveManagement: Fix an issue where created leave lines had an empty name.
+* Batch: Fixed duration which was computed in minutes instead of seconds.
+* Contract: Fixed quantity scale not using config when generating an invoice from a contract with prorata.
+* PRODUCT and PURCHASEORDERLINE: fix currency conversion when setting last purchase price as product cost price.
+* Sale Order: correctly hide availability request label when stock module is not included.
+* Product: fix stock details never showing any stock location line.
+* Move: in move grid view, fix NPE when we click on the button 'delete' without any move selected.
+* Fix french translation 'Personnaliser' to 'Personnalisé'.
+
+## [6.1.0] (2021-10-14)
 
 #### Features
+
+* BPM: Axelor BPM feature
+
+New module that allows management of business processes by using BPM2.0 standard.
+It adds features to create, deploy, run, edit and monitor the entire business process.
 
 * TRADING NAME:
     * Add list of trading names that can sell / buy on a product, add configuration to filter the products available on sale order / purchase order lines based on trading names.
@@ -60,7 +96,7 @@ Add new invoicing status for move line: 'delayed for invoicing' and 'validated f
 Add a new configuration to enable the use of different partners for invoicing and
 delivery than the main partner.
 
-* Partner: Add default partner category in company's configuration.
+* Partner: Add default partner category in company configuration.
 * Add max discount in product category
 
 Add a new field in product category allowing to force a maximum amount of
@@ -90,6 +126,26 @@ There is now a button on manuf orders to recursively generate all sub manuf orde
     * Orders that use shipment mode with free shipping add automatically an order line with the shipping cost.
     * If the order amount is greater than the free shipping threshold, the order line of the shipping cost is removed.
     * Partners that are not suppliers can override the shipment mode shipping cost and free shipping threshold.
+* HR: Employment contract management
+
+Manage following configurations related to employeement contract management:
+Collective agreement, Qualification, Qualification level, Paygrid, Employments, SMIC value,
+Contract types, Amendment types, Probation periods,
+Health mutual rejection reason.
+
+* Partner & SaleOrder: Manage complementary products for partner, generating sale order lines with configured products on every new sale order.
+* MOVE: add new values for functional origin: Sale, Purchase, Payment, Cut Off and Fixed Asset.
+* MetaMenu, MenuBuilder & ActionBuilder : Allow to edit xmlId.
+* Custom app style: Add String field to specify custom css style in base app configration.
+* Studio : New UI with real view attributes value change
+* Studio: Mapper to create new single record from another record.
+
+The mapper allows to map fields between source and target model.
+It is used to create a new record or to update existing one.
+It can be executed from any button by using single common action.
+
+* SelectionBuilder: Add support to export and import with app builder.
+
 
 #### Changes
 
@@ -179,6 +235,24 @@ parent manufacturing order.
 * Sale order: In a sale order, add a message when the external reference is already used in another sale order.
 * Partner: Add registration code to demo data.
 * SUPPLIER PORTAL: Improvements on supplier portal view.
+* UNIT CONVERSION: add help text in form view.
+* Accounting report: simplify which fields are displayed and required to generate journal entry export.
+* Configurator: allow to fill many-to-many fields from a configurator.
+* PAYMENT MODE: reset bankOrderFileFormat field on orderTypeSelect change in form.
+* Partner: main activity is now a separated entity instead of just a code.
+* SaleOrderLine: description in title line is now displayed.
+* STOCK LOCATION: Add a boolean field to display or not virtual stock location lines in 'Location Lines' and 'Stock location details'.
+* Address: when creating a new address, the default country is now determined from the logged user active company instead of always selecting France.
+* MRP: Use correct quantity for purchase proposals when the quantity needs to be a multiple.
+* Demo data: complete demo data with new products, accounting and app configurations.
+* INVOICE PAYMENT: add type in invoice payment form.
+* SALEORDER / EVENT: set more fields of event generated from SaleOrder.
+* Extra hours: make extra hours line list readonly except for draft and confirmed status.
+* Invoice: Add original invoice reference to refund printing.
+* Unit Conversion: add data demo of a conversion using a script.
+* Mrp: add possibility to select lines for proposal generation.
+* ManufOrder: "plan only missing quantites" is now activated by default on manufacturing order form.
+* Configurator: remove save when changing fields value in form view to improve performance.
 
 #### Fixed
 
@@ -186,6 +260,10 @@ parent manufacturing order.
 * PRODUCT: fix product grid price display for purchase, sale, stock and production menus.
 * Resource reservation: Error message when reserving an already reserved resource.
 * MRP: Link purchase order to the sale order when the purchase order is generated from MRP.
+* DataBackup: avoid duplicate issue when reimporting a backup.
+* DataBackup: Fix data backup stuck in 'In progress' status when exception occurs.
+* APP BUILDER: fix wrong french translation in menu builder.
+* Dark theme: fix focused item in suggestbox and phone country list.
 * Studio: Add modules field on app builder
 
 Just like the string field 'modules' on app, adding modules field on app builder allows to create real app properly.
@@ -201,8 +279,12 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 
 #### Removed
 
-* Removing Work-centers list from the production module
-* Removing Invoicing General Reportings
+* Removed Work center list from production module.
+* Removed invoicing general reportings.
+* Studio: On addition of axelor-bpm module the old Wkf and related models were removed.
+* DebtRecoveryLevel: Remove object and replace references with integer sequence.
+* Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
-[6.1.0-beta]: https://github.com/axelor/axelor-open-suite/compare/v6.0.7...v6.1-beta
+[6.1.1]: https://github.com/axelor/axelor-open-suite/compare/v6.1.0...v6.1.1
+[6.1.0]: https://github.com/axelor/axelor-open-suite/compare/v6.0.15...v6.1.0
