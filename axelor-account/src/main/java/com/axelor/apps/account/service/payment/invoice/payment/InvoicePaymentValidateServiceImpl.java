@@ -247,7 +247,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       move = fillMoveWithoutFinancialDiscount(invoicePayment, move, customerAccount);
     }
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     for (MoveLine moveline : move.getMoveLineList()) {
       if (moveline.getAccount() == customerAccount) {

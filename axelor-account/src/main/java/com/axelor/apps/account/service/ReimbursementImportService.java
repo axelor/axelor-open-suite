@@ -229,7 +229,7 @@ public class ReimbursementImportService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void validateMove(Move move) throws AxelorException {
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
     moveRepo.save(move);
   }
 
