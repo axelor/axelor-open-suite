@@ -717,6 +717,51 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_20_TO = /*$$(*/ "AccountingReportType20.to"; /*)*/
   public static final String ACCOUNTING_REPORT_20_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType20.total_report"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_22_COMPANY =
+      /*$$(*/ "AccountingReportType22.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_CREATED_ON =
+      /*$$(*/ "AccountingReportType22.created_on"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_CUMULATIVE_DEPRECIATION_END =
+      /*$$(*/ "AccountingReportType22.cumulative_depreciation_end"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_CUMULATIVE_DEPRECIATION_START =
+      /*$$(*/ "AccountingReportType22.cumulative_depreciation_start"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_CUMULATIVE_IMPAIRMENT_VALUE_END =
+      /*$$(*/ "AccountingReportType22.cumulative_impairment_value_end"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_CUMULATIVE_IMPAIRMENT_VALUE_START =
+      /*$$(*/ "AccountingReportType22.cumulative_impairment_value_start"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_CURRENCY =
+      /*$$(*/ "AccountingReportType22.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_DEPRECIATION_IMPROVEMENTS =
+      /*$$(*/ "AccountingReportType22.depreciation_improvements"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_DEPRECIATION_REDUCTIONS =
+      /*$$(*/ "AccountingReportType22.depreciation_reductions"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_DEPRECIATION_TABLE =
+      /*$$(*/ "AccountingReportType22.depreciation_table"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_FROM =
+      /*$$(*/ "AccountingReportType22.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_HEADINGS =
+      /*$$(*/ "AccountingReportType22.headings"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_IMPAIRMENT_VALUE_IMPROVEMENTS =
+      /*$$(*/ "AccountingReportType22.impairment_value_improvements"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_IMPAIRMENT_VALUE_REDUCTIONS =
+      /*$$(*/ "AccountingReportType22.impairment_value_reductions"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_IMPAIRMENT_VALUE_TABLE =
+      /*$$(*/ "AccountingReportType22.impairment_value_table"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_SITUATIONS_AND_MOVES =
+      /*$$(*/ "AccountingReportType22.situations_and_moves"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_TECHNICAL_TYPE_2 =
+      /*$$(*/ "AccountingReportType22.technical_type_2"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_TECHNICAL_TYPE_3 =
+      /*$$(*/ "AccountingReportType22.technical_type_3"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_TECHNICAL_TYPE_4 =
+      /*$$(*/ "AccountingReportType22.technical_type_4"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_TITLE =
+      /*$$(*/ "AccountingReportType22.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_TO = /*$$(*/ "AccountingReportType22.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_22_TOTAL = /*$$(*/
+      "AccountingReportType22.total"; /*)*/
+
   public static final String ACCOUNTING_REPORT_LABEL_PROVISIONAL =
       /*$$(*/ "AccountingReportType.provisional"; /*)*/
   public static final String ACCOUNTING_REPORT_LABEL_STATUS_SELECT_TITLE =
