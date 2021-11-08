@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -38,6 +39,18 @@ public class AnalyticDistributionTemplateController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          request.getContext().asType(AnalyticDistributionTemplate.class);
+      Beans.get(AnalyticDistributionTemplateService.class)
+          .checkAnalyticAccounts(analyticDistributionTemplate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

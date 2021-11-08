@@ -144,7 +144,7 @@ public class FixedAssetController {
         response.setView(
             ActionView.define("Specific Analytic Distribution Template")
                 .model(AnalyticDistributionTemplate.class.getName())
-                .add("form", "analytic-distribution-template-specific-form")
+                .add("form", "analytic-distribution-template-fixed-asset-form")
                 .param("popup", "true")
                 .param("forceEdit", "true")
                 .param("show-toolbar", "false")

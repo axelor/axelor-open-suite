@@ -15,4 +15,7 @@ public interface AnalyticDistributionTemplateService {
 
   AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
       throws AxelorException;
+
+  void checkAnalyticAccounts(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException;
 }

@@ -1795,6 +1795,7 @@
 "Pfp validator changed successfully",,,
 "Planned",,,
 "Please enter valid start date and end date",,,
+"Please fill analytic accounts in all analytic distribution lines.",,,
 "Please fill input lines",,,
 "Please fill printing settings on following invoices: %s",,,
 "Please fill printing settings on invoice %s.",,,

@@ -1795,6 +1795,7 @@
 "Pfp validator changed successfully","Délégation effectuée avec succés",,
 "Planned","Planifié",,
 "Please enter valid start date and end date","Veuillez sélectionner des dates de début et date de fin valides.",,
+"Please fill analytic accounts in all analytic distribution lines.","Veuillez sélectionner des comptes analytiques pour chaque ligne analytique.",,
 "Please fill input lines","Merci de renseigner les lignes en entré",,
 "Please fill printing settings on following invoices: %s","Merci de remplir les paramètres d'impressions sur les factures suivantes : %s",,
 "Please fill printing settings on invoice %s.","Merci de remplir les paramètres d'impressions sur la facture %s",,

@@ -905,4 +905,7 @@ public interface IExceptionMessage {
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
       "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+
+  static final String FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING = /*$$(*/
+      "Please fill analytic accounts in all analytic distribution lines." /*)*/;
 }

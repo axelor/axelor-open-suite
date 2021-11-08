@@ -7,14 +7,18 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticDistributionTemplateServiceImpl
     implements AnalyticDistributionTemplateService {
@@ -90,27 +94,42 @@ public class AnalyticDistributionTemplateServiceImpl
 
     for (AnalyticAxisByCompany analyticAxisByCompany :
         accountConfig.getAnalyticAxisByCompanyList()) {
-      AnalyticDistributionLine specificAnalyticDistributionLine = new AnalyticDistributionLine();
-      specificAnalyticDistributionLine.setAnalyticAxis(analyticAxisByCompany.getAnalyticAxis());
-      specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
-          specificAnalyticDistributionTemplate);
-      specificAnalyticDistributionLine.setAnalyticJournal(accountConfig.getAnalyticJournal());
-
+      boolean isIn = false;
       if (analyticDistributionTemplate != null
-          && !analyticDistributionTemplate.getAnalyticDistributionLineList().isEmpty()) {
+          && CollectionUtils.isNotEmpty(
+              analyticDistributionTemplate.getAnalyticDistributionLineList())) {
         for (AnalyticDistributionLine analyticDistributionLine :
             analyticDistributionTemplate.getAnalyticDistributionLineList()) {
           if (analyticDistributionLine
-                  .getAnalyticAxis()
-                  .equals(specificAnalyticDistributionLine.getAnalyticAxis())
-              && analyticDistributionLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
-            specificAnalyticDistributionLine.setAnalyticAccount(
-                analyticDistributionLine.getAnalyticAccount());
+              .getAnalyticAxis()
+              .equals(analyticAxisByCompany.getAnalyticAxis())) {
+            AnalyticDistributionLine specificAnalyticDistributionLine =
+                analyticDistributionLineService.createAnalyticDistributionLine(
+                    analyticAxisByCompany.getAnalyticAxis(),
+                    analyticDistributionLine.getAnalyticAccount(),
+                    accountConfig.getAnalyticJournal(),
+                    analyticDistributionLine.getPercentage());
+            specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
+                specificAnalyticDistributionTemplate);
+            specificAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
+                specificAnalyticDistributionLine);
+            isIn = true;
           }
         }
       }
-      specificAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
-          specificAnalyticDistributionLine);
+      if (!isIn) {
+        AnalyticDistributionLine specificAnalyticDistributionLine =
+            analyticDistributionLineService.createAnalyticDistributionLine(
+                analyticAxisByCompany.getAnalyticAxis(),
+                null,
+                accountConfig.getAnalyticJournal(),
+                new BigDecimal(100));
+        specificAnalyticDistributionLine.setAnalyticDistributionTemplate(
+            specificAnalyticDistributionTemplate);
+
+        specificAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
+            specificAnalyticDistributionLine);
+      }
     }
     analyticDistributionTemplateRepository.save(specificAnalyticDistributionTemplate);
     if (analyticDistributionTemplate != null) {
@@ -144,5 +163,22 @@ public class AnalyticDistributionTemplateServiceImpl
               analyticAxisByCompany.getAnalyticAxis(), null, null, BigDecimal.valueOf(100)));
     }
     return analyticDistributionTemplate;
+  }
+
+  @Override
+  public void checkAnalyticAccounts(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null
+        && CollectionUtils.isNotEmpty(
+            analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      for (AnalyticDistributionLine analyticDistributionLine :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        if (analyticDistributionLine.getAnalyticAccount() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING));
+        }
+      }
+    }
   }
 }
