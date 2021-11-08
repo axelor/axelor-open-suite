@@ -30,16 +30,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class AnalyticJournalController {
 
-  public void controlUniqueCode(ActionRequest request, ActionResponse response) {
-
-    try {
-      Beans.get(AnalyticJournalControlService.class)
-          .controlDuplicateCode(request.getContext().asType(AnalyticJournal.class));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void setReadOnly(ActionRequest request, ActionResponse response) {
     try {
       AnalyticJournal analyticJournal =
