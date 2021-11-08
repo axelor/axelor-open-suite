@@ -48,7 +48,7 @@
 
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date"/>
-    <date name="dueDate" title="Due Date"/>
+    <date name="dueDate" title="Next due date"/>
     <date name="originDate" title="Origin date"/>
     <date name="paymentDate" title="Payment date"/>
 
@@ -210,6 +210,11 @@
     <string name="legalNotice" title="Legal notice" large="true"
       help="Legal notice displayed on invoices where a discount was granted"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
+
+    <!-- Invoice terms -->
+    <integer name="paymentProgress" title="Payment progress" default="0"/>
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="invoice" title="Invoice terms"/>
 
     <unique-constraint columns="invoiceId,company"/>
 

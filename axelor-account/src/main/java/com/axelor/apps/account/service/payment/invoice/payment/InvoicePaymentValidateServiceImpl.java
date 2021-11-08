@@ -26,7 +26,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -54,8 +55,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidateService {
 
@@ -69,6 +72,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected ReconcileService reconcileService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected AppAccountService appAccountService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -81,6 +85,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
       InvoicePaymentToolService invoicePaymentToolService,
+      InvoiceTermService invoiceTermService,
       AppAccountService appAccountService) {
 
     this.paymentModeService = paymentModeService;
@@ -92,6 +97,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.reconcileService = reconcileService;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
   }
 
@@ -121,6 +127,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
+
+    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
@@ -199,7 +207,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     Journal journal =
         paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
 
-    MoveLine invoiceMoveLine = moveToolService.getInvoiceCustomerMoveLineByLoop(invoice);
+    List<MoveLine> invoiceMoveLines = moveToolService.getInvoiceCustomerMoveLines(invoicePayment);
 
     if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
 
@@ -207,11 +215,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
       customerAccount = accountConfigService.getAdvancePaymentAccount(accountConfig);
     } else {
-      if (invoiceMoveLine == null) {
+      if (CollectionUtils.isEmpty(invoiceMoveLines)) {
         return null;
       }
-      customerAccount = invoiceMoveLine.getAccount();
+      customerAccount = invoiceMoveLines.get(0).getAccount();
     }
+
     Move move =
         moveCreateService.createMove(
             journal,
@@ -245,15 +254,17 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         customerMoveLine = moveline;
       }
     }
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      Reconcile reconcile =
-          reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
 
-      invoicePayment.setReconcile(reconcile);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      for (MoveLine invoiceMoveLine : invoiceMoveLines) {
+        invoicePayment.addReconcileListItem(
+            reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false));
+      }
     }
     invoicePayment.setMove(move);
 
-    return invoicePaymentRepository.save(invoicePayment);
+    invoicePaymentRepository.save(invoicePayment);
+    return invoicePayment;
   }
 
   public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
@@ -346,7 +357,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               move,
               customerAccount,
               purchAccount,
-              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount());
+              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount(),
+              accountConfigService.getAccountConfig(company).getPurchFinancialDiscountTax());
 
     } else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
 
@@ -364,7 +376,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               move,
               customerAccount,
               saleAccount,
-              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount());
+              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount(),
+              accountConfigService.getAccountConfig(company).getSaleFinancialDiscountTax());
     }
 
     return move;
@@ -376,7 +389,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       Move move,
       Account customerAccount,
       Account account,
-      Account configAccount)
+      Account configAccount,
+      Tax financialDiscountTax)
       throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
@@ -409,7 +423,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             move.getOrigin(),
             move.getDescription()));
 
-    move.addMoveLineListItem(
+    MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
             partner,
@@ -420,7 +434,16 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             null,
             2,
             origin,
-            invoicePayment.getDescription()));
+            invoicePayment.getDescription());
+
+    if (invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      moveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
+      moveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
+      moveLine.setTaxCode(financialDiscountTax.getCode());
+    }
+
+    move.addMoveLineListItem(moveLine);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(

@@ -50,7 +50,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   public void close(Period period) throws AxelorException {
 
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
-      moveValidateService.validateMultiple(getMoveListToValidateQuery(period));
+      moveValidateService.accountingMultiple(getMoveListToValidateQuery(period));
       period = periodRepo.find(period.getId());
     }
     super.close(period);

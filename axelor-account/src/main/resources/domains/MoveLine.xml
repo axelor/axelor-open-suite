@@ -47,7 +47,10 @@
     <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
 
     <string name="postedNbr" title="Posted number"/>
-
+    <!-- Fixed asset fields -->
+    <many-to-one name="fixedAssetCategory"
+      ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"
+      help="If this field is filled, once the move will change from Draft to Validated, a new fixed asset record will be generated based on this moveLine data and the selected category data"/>
     <!-- Field not displayed, used during the payment voucher input -->
     <decimal name="maxAmountToReconcile" title="Max Amount to reconcile"/>
     <many-to-one name="paymentScheduleLine"
@@ -71,7 +74,6 @@
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
-
     <boolean name="isOtherCurrency" default="false"/>
 
     <string name="accountCode" readonly="true"/>
@@ -96,6 +98,9 @@
       ref="com.axelor.apps.account.db.ReconcileGroup"/>
 
     <date name="originDate" title="Origin date" initParam="true"/>
+
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="moveLine" title="Invoice terms"/>
 
     <!-- DAS2 -->
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"

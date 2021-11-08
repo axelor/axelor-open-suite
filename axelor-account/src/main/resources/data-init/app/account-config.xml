@@ -25,4 +25,8 @@
     call="com.axelor.csv.script.ImportAnalyticLevel:importAnalyticLevel"
     type="com.axelor.apps.account.db.AnalyticLevel"/>
 
+  <input file="account_fixedAssetType.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.account.db.FixedAssetType"/>
+
+
 </csv-inputs>
