@@ -427,7 +427,7 @@
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
-        onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
+        onChange="action-account-invoice-method-show-duplicate-invoice-nbr-warning"/>
       <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false"
         readonly="true">
         <viewer>
@@ -1206,7 +1206,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-attrs-change-create-refund-title"/>
     <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
-    <action name="action-account-invoice-atts-suppier-invoice-nbr"/>
+    <action name="action-account-invoice-method-show-duplicate-invoice-nbr-warning"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
       if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
@@ -1528,12 +1528,6 @@ InvoiceSet.length > 0))"
       if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
   </action-attrs>
 
-  <action-attrs name="action-account-invoice-atts-suppier-invoice-nbr">
-    <attribute name="hidden" for="$duplicateInvoiceNbr"
-      expr="eval: !((supplierInvoiceNb != null &amp;&amp; id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.id != ?', supplierInvoiceNb , id).count() > 0)
-                 || (supplierInvoiceNb != null &amp;&amp; id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ?', supplierInvoiceNb).count() > 0))"/>
-  </action-attrs>
-
   <action-attrs name="action-attrs-invoice-other-reason">
     <attribute for="reasonOfRefusalToPayStr" name="hidden"
       expr="reasonOfRefusalToPay.freeText == false"/>
@@ -1642,6 +1636,12 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-regenerate-and-show-invoice">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="regenerateAndShowInvoice"/>
+  </action-method>
+
+  <action-method
+    name="action-account-invoice-method-show-duplicate-invoice-nbr-warning">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="showDuplicateInvoiceNbrWarning"/>
   </action-method>
 
   <action-validate name="action-invoice-validate-regenerate-invoice">
