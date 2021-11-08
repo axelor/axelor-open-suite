@@ -159,7 +159,7 @@ public class MoveController {
                     MoveRepository.STATUS_CANCELED)
                 .order("date")
                 .fetch();
-        if (!moveList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(moveList)) {
           PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
