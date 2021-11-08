@@ -327,7 +327,8 @@
   </grid>
 
   <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
-    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
+    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
+    onSave="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner">
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
@@ -484,7 +485,7 @@
         requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2"
         onChange="action-attrs-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
       <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12" showTitle="false"
-        readonly="true">
+        type="boolean" readonly="true">
         <viewer>
                 <![CDATA[
                	  <h4>
@@ -2247,10 +2248,24 @@ InvoiceSet.length > 0))"
       if="originDate != null &amp;&amp; supplierInvoiceNb != null &amp;&amp; partner != null"
       expr="eval: !((id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.partner.id = ? AND YEAR(self.originDate) = ? AND self.statusSelect != 4', supplierInvoiceNb, partner.id, originDate.getYear()).count() > 0)
       				|| (id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.partner.id = ? AND YEAR(self.originDate) = ? AND self.id != ? AND self.statusSelect != 4', supplierInvoiceNb, partner.id, originDate.getYear(), id).count() > 0))"/>
+    <attribute name="value" for="$duplicateInvoiceNbrSameYear"
+      if="originDate != null &amp;&amp; supplierInvoiceNb != null &amp;&amp; partner != null"
+      expr="eval: ((id == null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.partner.id = ? AND YEAR(self.originDate) = ? AND self.statusSelect != 4', supplierInvoiceNb, partner.id, originDate.getYear()).count() > 0)
+      				|| (id != null &amp;&amp; __repo__(Invoice).all().filter('self.supplierInvoiceNb = ? AND self.partner.id = ? AND YEAR(self.originDate) = ? AND self.id != ? AND self.statusSelect != 4', supplierInvoiceNb, partner.id, originDate.getYear(), id).count() > 0))"/>
     <attribute name="hidden" for="$duplicateInvoiceNbrSameYear"
       if="!(originDate != null &amp;&amp; supplierInvoiceNb != null &amp;&amp; partner != null)"
       expr="eval:true"/>
+    <attribute name="value" for="$duplicateInvoiceNbrSameYear"
+      if="!(originDate != null &amp;&amp; supplierInvoiceNb != null &amp;&amp; partner != null)"
+      expr="eval:false"/>
   </action-attrs>
+
+  <action-validate
+    name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner">
+    <alert
+      message="Watch out, an invoice already exist with this number for the same supplier and year. Do you want to proceed ?"
+      if="duplicateInvoiceNbrSameYear"/>
+  </action-validate>
 
 
 </object-views>
