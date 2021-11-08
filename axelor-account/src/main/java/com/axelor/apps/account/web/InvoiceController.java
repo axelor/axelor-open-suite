@@ -1011,4 +1011,15 @@ public class InvoiceController {
     }
     response.setAttr("partner", "domain", domain);
   }
+
+  public void showDuplicateInvoiceNbrWarning(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      boolean isDuplicateInvoiceNbr =
+          Beans.get(InvoiceService.class).getIsDuplicateInvoiceNbr(invoice);
+      response.setAttr("$duplicateInvoiceNbr", "hidden", !isDuplicateInvoiceNbr);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
