@@ -63,7 +63,7 @@ public class MoveLineController {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
     try {
-      if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+      if (moveLine.getMove() != null && moveLine.getMove().getCompany() != null && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
           && Beans.get(AccountConfigService.class)
               .getAccountConfig(moveLine.getMove().getCompany())
               .getManageAnalyticAccounting()) {
@@ -443,7 +443,7 @@ public class MoveLineController {
           && moveLine.getAccount().getCompany() != null
           && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
           && Beans.get(AccountConfigService.class)
-              .getAccountConfig(moveLine.getMove().getCompany())
+              .getAccountConfig(moveLine.getAccount().getCompany())
               .getManageAnalyticAccounting()) {
         Integer nbrAxis =
             Beans.get(AccountConfigService.class)
