@@ -77,10 +77,11 @@ public class InvoiceManagementRepository extends InvoiceRepository {
         && invoice.getPartner() != null
         && (all()
                 .filter(
-                    "self.supplierInvoiceNb = ?1 AND self.partner.id = ?2 AND YEAR(self.originDate) = ?3",
+                    "self.supplierInvoiceNb = ?1 AND self.partner.id = ?2 AND YEAR(self.originDate) = ?3 AND self.statusSelect != ?4",
                     invoice.getSupplierInvoiceNb(),
                     invoice.getPartner().getId(),
-                    invoice.getOriginDate().getYear())
+                    invoice.getOriginDate().getYear(),
+                    InvoiceRepository.STATUS_CANCELED)
                 .fetchStream()
                 .filter(savedInvoice -> !savedInvoice.getId().equals(invoice.getId()))
                 .count())
